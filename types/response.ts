@@ -35,9 +35,9 @@ export interface ChatbotResponseData {
 }
 
 export interface FeedbackRequest {
-    responseId: string;
-    feedback: "positive" | "negative";
-    comment?: string;
+  responseId: string;
+  feedback: "like" | "dislike";
+  comment?: string;
 }
 
 export interface FeedbackResponse {

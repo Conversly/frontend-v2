@@ -2,6 +2,7 @@
 
 import { Toaster } from "@/components/ui/sonner";
 import QueryClientProvider from "@/contexts/query";
+import { AuthProvider } from "@/contexts/auth";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 
@@ -21,12 +22,14 @@ export default function AppContextProvider({
 
   return (
     <QueryClientProvider>
-      <Suspense>
-        <NuqsAdapter>
-          <Toaster />
-          {children}
-        </NuqsAdapter>
-      </Suspense>
+      <AuthProvider>
+        <Suspense>
+          <NuqsAdapter>
+            <Toaster />
+            {children}
+          </NuqsAdapter>
+        </Suspense>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

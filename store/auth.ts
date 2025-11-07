@@ -18,7 +18,6 @@ export const useAuth = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      userSettings: null,
       isUserFetching: false,
       setUser: (user) => set({ user }),
       setIsUserFetching: (isUserFetching) => set({ isUserFetching }),

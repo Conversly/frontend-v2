@@ -9,24 +9,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { SignInDialog } from "@/components/auth/SignInDialog";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { getLoggedInUser } from "@/lib/api/user";
 import { QUERY_KEY } from "@/utils/query-key";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
-import { useAuth as useAuthHook } from "@/hooks/use-auth";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout, setUser } = useAuth();
   const [mounted, setMounted] = useState(false);
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { startGoogleRedirect } = useAuthHook();
+  const { theme, setTheme } = useTheme();
 
   console.log("Navbar user:", user);
 
@@ -73,11 +74,11 @@ export default function Navbar() {
           <div className="container px-4 sm:px-6 lg:px-8 py-4">
             <div
               className={`
-                rounded-2xl backdrop-blur-sm border border-gray-800/60
+                rounded-2xl backdrop-blur-sm border border-border dark:border-gray-800/60
                 ${
                   scrolled
-                    ? "bg-gray-900/60 shadow-lg shadow-black/20"
-                    : "bg-gray-900/30"
+                    ? "bg-background/80 dark:bg-gray-900/60 shadow-lg shadow-black/20"
+                    : "bg-background/50 dark:bg-gray-900/30"
                 }
                 transition-all duration-300
               `}
@@ -89,10 +90,10 @@ export default function Navbar() {
                     <span className="text-xl font-bold text-white">C</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xl font-bold text-white font-display">
+                    <span className="text-xl font-bold text-foreground dark:text-white font-display">
                       ConverslyAI
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-muted-foreground dark:text-gray-400">
                       AI-Powered Knowledge Base
                     </span>
                   </div>
@@ -102,25 +103,25 @@ export default function Navbar() {
                 <nav className="flex items-center gap-8">
                   <Link
                     href="#features"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-muted-foreground dark:text-gray-300 hover:text-foreground dark:hover:text-white transition-colors"
                   >
                     Features
                   </Link>
                   <Link
                     href="#pricing"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-muted-foreground dark:text-gray-300 hover:text-foreground dark:hover:text-white transition-colors"
                   >
                     Pricing
                   </Link>
                   <Link
                     href="#faq"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-muted-foreground dark:text-gray-300 hover:text-foreground dark:hover:text-white transition-colors"
                   >
                     FaQs
                   </Link>
                   <Link
                     href="#blog"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-muted-foreground dark:text-gray-300 hover:text-foreground dark:hover:text-white transition-colors"
                   >
                     Blog
                   </Link>
@@ -136,35 +137,80 @@ export default function Navbar() {
 
                 {/* Auth Buttons */}
                 <div className="flex items-center gap-4">
+                  {/* Theme Switcher */}
+                  {mounted && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                      className="text-foreground dark:text-gray-300 hover:text-foreground dark:hover:text-white hover:bg-muted dark:hover:bg-gray-800/50"
+                      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    >
+                      {theme === 'dark' ? (
+                        <Sun className="h-5 w-5" />
+                      ) : (
+                        <Moon className="h-5 w-5" />
+                      )}
+                    </Button>
+                  )}
+
                   {user ? (
                     <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <div className="w-10 h-10 rounded-full border-2 border-pink-500/50 overflow-hidden">
+                      <DropdownMenuTrigger asChild>
+                        <button className="w-10 h-10 rounded-full border-2 border-pink-500/50 overflow-hidden hover:border-pink-500 transition-colors cursor-pointer">
                           <Image
                             src={user.avatarUrl || "/default-avatar.png"}
-                            alt="User avatar"
+                            alt={user.name || user.displayName || user.username || "User avatar"}
                             width={40}
                             height={40}
                             className="w-full h-full object-cover"
                           />
-                        </div>
+                        </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="bg-gray-900 border border-gray-800">
-                        <DropdownMenuItem>
+                      <DropdownMenuContent className="bg-gray-900 border border-gray-800" align="end">
+                        <DropdownMenuLabel className="font-normal">
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none text-white">
+                              {user.name || user.displayName || user.username || "User"}
+                            </p>
+                            {user.username && (
+                              <p className="text-xs leading-none text-gray-400">
+                                @{user.username}
+                              </p>
+                            )}
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-gray-800" />
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href="/chatbot"
+                            className="w-full text-gray-300 hover:text-white cursor-pointer"
+                          >
+                            Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                           <Link
                             href="/profile"
-                            className="w-full text-gray-300 hover:text-white"
+                            className="w-full text-gray-300 hover:text-white cursor-pointer"
                           >
                             Profile
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <button
-                            onClick={() => logout(queryClient)}
-                            className="w-full text-left text-gray-300 hover:text-white"
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href="/settings"
+                            className="w-full text-gray-300 hover:text-white cursor-pointer"
                           >
-                            Sign Out
-                          </button>
+                            Settings
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-gray-800" />
+                        <DropdownMenuItem
+                          onClick={() => logout(queryClient)}
+                          className="w-full text-gray-300 hover:text-white cursor-pointer text-red-400 hover:text-red-300"
+                        >
+                          Sign Out
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -173,7 +219,7 @@ export default function Navbar() {
                       <Button
                         variant="ghost"
                         className="text-gray-300 hover:text-white hover:bg-gray-800/50"
-                        onClick={() => setIsSignInOpen(true)}
+                        onClick={() => router.push("/login")}
                       >
                         Sign In
                       </Button>
@@ -181,12 +227,10 @@ export default function Navbar() {
                       {/* Get Started Button */}
                       <Button
                         className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
-                        onClick={() => router.push("/create")}
+                        onClick={() => router.push("/login")}
                       >
                         Get Started
                       </Button>
-
-                      {/* New Stylish Demo Button */}
                     </>
                   )}
                 </div>
@@ -195,11 +239,6 @@ export default function Navbar() {
           </div>
         </motion.header>
       )}
-      
-      <SignInDialog 
-        isOpen={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)} 
-      />
     </>
   );
 }

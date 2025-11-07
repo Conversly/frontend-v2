@@ -35,15 +35,15 @@ export function DashboardLayout({ children, chatbotId, chatbotName: propChatbotN
   }, [isChatbotPage, propChatbotName, activeChatbotId]);
 
   return (
-    <div className="min-h-screen bg-black relative">
+    <div className="min-h-screen bg-background relative dark:bg-black">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/20 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-grid-white/5 dark:[mask-image:radial-gradient(black,transparent_70%)] [mask-image:radial-gradient(white,transparent_70%)]" />
       </div>
 
       {/* Top Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 border-b border-gray-800/60">
+      <div className="fixed top-0 left-0 right-0 z-50 border-b border-border dark:border-gray-800/60 bg-background/80 backdrop-blur-sm">
         <Navbar />
       </div>
 
@@ -56,7 +56,7 @@ export function DashboardLayout({ children, chatbotId, chatbotName: propChatbotN
         />
 
         {/* Main Content */}
-        <main className="flex-1 overflow-x-hidden">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto">
           <div className="container mx-auto px-6 py-8">
             {children}
           </div>

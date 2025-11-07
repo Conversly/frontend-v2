@@ -61,13 +61,13 @@ export const getChatbotResponse = async (
 /**
  * Submit feedback for a chatbot response
  * @param responseId - The responseId from the original chatbot response
- * @param feedback - Either "positive" or "negative"
+ * @param feedback - Either "like" or "dislike"
  * @param comment - Optional comment about the feedback
  * @returns FeedbackResponse with success status
  */
 export const submitFeedback = async (
   responseId: string,
-  feedback: "positive" | "negative",
+  feedback: "like" | "dislike",
   comment?: string,
 ): Promise<FeedbackResponse> => {
   const requestBody: FeedbackRequest = {

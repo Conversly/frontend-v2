@@ -2,9 +2,11 @@ import {
   createChatBot,
   getInstructions,
   getChatbots,
+  getChatbot,
   deleteChatbot,
 } from "@/lib/api/chatbot";
 import { QUERY_KEY } from "@/utils/query-key";
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateChatbot = () => {
@@ -30,9 +32,27 @@ export const useGetInstructions = () => {
 };
 
 export const useGetChatbots = () => {
+  const isAuthenticated = typeof window !== "undefined" 
+    ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
+    : false;
+
   return useQuery({
     queryKey: [QUERY_KEY.GET_CHATBOTS],
     queryFn: getChatbots,
+    enabled: isAuthenticated, // Only fetch when authenticated
+    staleTime: 60_000,
+  });
+};
+
+export const useChatbot = (chatbotId: string) => {
+  const isAuthenticated = typeof window !== "undefined" 
+    ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
+    : false;
+
+  return useQuery({
+    queryKey: [QUERY_KEY.GET_CHATBOT, chatbotId],
+    queryFn: () => getChatbot(chatbotId),
+    enabled: isAuthenticated && !!chatbotId,
     staleTime: 60_000,
   });
 };

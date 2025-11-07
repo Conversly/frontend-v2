@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Bot } from "lucide-react";
 import { GoogleAuth } from "@/components/auth";
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
 interface SignInDialogProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export function SignInDialog({ isOpen, onClose }: SignInDialogProps) {
   useEffect(() => {
     if (!isOpen) return;
     const checkAuthStatus = () => {
-      const isLoggedIn = localStorage.getItem('is-logged-in');
+      const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN);
       if (isLoggedIn === 'true') {
         onClose();
       }

@@ -37,7 +37,7 @@ export const GoogleAuth: React.FC<GoogleAuthProps> = ({
       variant="outline"
       onClick={handleLogin}
       disabled={isLoading}
-      className={`h-9 bg-[#181818] text-foreground-medium hover:text-foreground-light flex items-center gap-2 ${className || ""}`}
+      className={`h-9 bg-[#181818] text-foreground-medium hover:text-foreground-light flex items-center gap-2 justify-center ${className || ""}`}
     >
       {isLoading ? (
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-[#7fac93]" />

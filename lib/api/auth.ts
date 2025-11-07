@@ -1,7 +1,6 @@
 import { fetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import { GoogleOauthResponse } from "@/types/auth";
-import { redirect } from "next/navigation";
 
 export const logout = async () => {
   const res = await fetch(
@@ -9,13 +8,13 @@ export const logout = async () => {
     {
       method: "POST",
     },
-  ).then((res) => res.data);
+  ).then((res) => res.data) as ApiResponse<{ success: boolean; message: string }>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
 
-  return redirect("/");
+  return res;
 };
 
 export const googleOauth = async (
