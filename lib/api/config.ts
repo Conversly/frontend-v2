@@ -31,6 +31,9 @@ export const API = {
     ANALYTICS: {
       BASE_URL: () => "/analytics",
       GET_ANALYTICS: () => "/:chatbotId",
+      GET_SUMMARY: () => "/analytics/summary",
+      GET_CHARTS: () => "/analytics/charts",
+      GET_FEEDBACKS: () => "/analytics/feedbacks",
     },
     DEPLOY: {
       BASE_URL: () => "/deploy",
