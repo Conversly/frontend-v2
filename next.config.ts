@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: "https://terminal.apps.shashankkk.site/api/v1/:path*",
+        destination: "https://terminal.apps.verlyai.xyz/api/v1/:path*",
       },
     ];
   },

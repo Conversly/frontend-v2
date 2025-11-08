@@ -327,8 +327,11 @@ export default function IntegrationPage() {
     setIsFacebookLoading(true);
     
     try {
+      // Store botId in sessionStorage for the callback to retrieve
+      sessionStorage.setItem('whatsapp_setup_bot_id', botId);
+      
       // Launch Embedded Signup flow with callback registration
-      console.log('Calling FB.login with config:', { config_id: configId });
+      console.log('Calling FB.login with config:', { config_id: configId, botId });
       
       window.FB.login(
         (response: any) => {
@@ -341,6 +344,8 @@ export default function IntegrationPage() {
           override_default_response_type: true,
           extras: {
             setup: {},
+            featureType: '',
+            sessionInfoVersion: '3'
           }
         }
       );

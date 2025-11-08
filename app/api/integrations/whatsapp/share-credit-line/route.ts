@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     const url = new URL(
-      `https://graph.facebook.com/v21.0/${EXTENDED_CREDIT_LINE_ID}/whatsapp_credit_sharing_and_attach`
+      `https://graph.facebook.com/v24.0/${EXTENDED_CREDIT_LINE_ID}/whatsapp_credit_sharing_and_attach`
     );
     url.searchParams.append('waba_currency', currency);
     url.searchParams.append('waba_id', wabaId);

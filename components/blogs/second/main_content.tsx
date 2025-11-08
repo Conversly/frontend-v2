@@ -37,7 +37,7 @@ export function BlogContent() {
         <div className="bg-neutral-900 text-white p-8 rounded-lg text-center">
           <p className="text-xl font-semibold mb-4">Ready to create your chatbot?</p>
           <a
-            href="https://conversly.shashankkk.site"
+            href="https://dev.verclyai.xyz"
             className="inline-block bg-white text-neutral-900 px-8 py-3 rounded-full font-semibold hover:bg-neutral-100 transition-colors"
           >
             Start with Conversly.ai today

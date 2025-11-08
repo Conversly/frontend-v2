@@ -23,9 +23,8 @@ export async function POST(request: NextRequest) {
     
     const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
     const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
-    const REDIRECT_URI = process.env.NEXT_PUBLIC_APP_URL 
-      ? `${process.env.NEXT_PUBLIC_APP_URL}/chatbot/${botId}/integration`
-      : `http://localhost:3000/chatbot/${botId}/integration`;
+    const REDIRECT_URI = process.env.FACEBOOK_REDIRECT_URI || 
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/whatsapp/facebook-callback`;
 
     if (!FACEBOOK_APP_ID || !FACEBOOK_APP_SECRET) {
       return NextResponse.json(
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Exchange authorization code for access token
     const tokenResponse = await fetch(
-      `https://graph.facebook.com/v18.0/oauth/access_token?` +
+      `https://graph.facebook.com/v24.0/oauth/access_token?` +
       `client_id=${FACEBOOK_APP_ID}` +
       `&client_secret=${FACEBOOK_APP_SECRET}` +
       `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +

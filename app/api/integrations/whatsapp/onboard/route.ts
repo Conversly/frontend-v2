@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     // Step 2: Subscribe to webhooks on customer's WABA
     try {
       const subscribeResponse = await fetch(
-        `https://graph.facebook.com/v21.0/${wabaId}/subscribed_apps`,
+        `https://graph.facebook.com/v24.0/${wabaId}/subscribed_apps`,
         {
           method: 'POST',
           headers: {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     if (SYSTEM_TOKEN && EXTENDED_CREDIT_LINE_ID) {
       try {
         const creditLineUrl = new URL(
-          `https://graph.facebook.com/v21.0/${EXTENDED_CREDIT_LINE_ID}/whatsapp_credit_sharing_and_attach`
+          `https://graph.facebook.com/v24.0/${EXTENDED_CREDIT_LINE_ID}/whatsapp_credit_sharing_and_attach`
         );
         creditLineUrl.searchParams.append('waba_currency', currency);
         creditLineUrl.searchParams.append('waba_id', wabaId);
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
       const pin = Math.floor(100000 + Math.random() * 900000).toString();
 
       const registerResponse = await fetch(
-        `https://graph.facebook.com/v21.0/${phoneNumberId}/register`,
+        `https://graph.facebook.com/v24.0/${phoneNumberId}/register`,
         {
           method: 'POST',
           headers: {
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
     if (testMessagePhoneNumber && testMessageBody) {
       try {
         const messageResponse = await fetch(
-          `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+          `https://graph.facebook.com/v24.0/${phoneNumberId}/messages`,
           {
             method: 'POST',
             headers: {
