@@ -48,13 +48,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get redirect URI from environment (must match Facebook App settings)
+    const REDIRECT_URI = process.env.FACEBOOK_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/whatsapp/facebook-callback`;
+
     // Step 1: Exchange authorization code for access token
-    const tokenUrl = new URL('https://graph.facebook.com/v21.0/oauth/access_token');
+    const tokenUrl = new URL('https://graph.facebook.com/v24.0/oauth/access_token');
     tokenUrl.searchParams.append('client_id', FACEBOOK_APP_ID);
     tokenUrl.searchParams.append('client_secret', FACEBOOK_APP_SECRET);
+    tokenUrl.searchParams.append('redirect_uri', REDIRECT_URI);
     tokenUrl.searchParams.append('code', code);
 
-    console.log('Exchanging code for token...');
+    console.log('Exchanging code for token...', { redirectUri: REDIRECT_URI });
     
     const tokenResponse = await fetch(tokenUrl.toString());
 
@@ -104,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Exchange for long-lived token (60-day expiration)
-    const longLivedTokenUrl = new URL('https://graph.facebook.com/v21.0/oauth/access_token');
+    const longLivedTokenUrl = new URL('https://graph.facebook.com/v24.0/oauth/access_token');
     longLivedTokenUrl.searchParams.append('grant_type', 'fb_exchange_token');
     longLivedTokenUrl.searchParams.append('client_id', FACEBOOK_APP_ID);
     longLivedTokenUrl.searchParams.append('client_secret', FACEBOOK_APP_SECRET);

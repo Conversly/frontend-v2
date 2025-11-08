@@ -3,8 +3,8 @@
 import React from "react";
 
 const ShareButtons = ({blogId} : {blogId : string}) => {
-  const pageUrl = encodeURIComponent(`https://conversly.shashankkk.site/blog/${blogId}`);
-const pageTitle = encodeURIComponent("Check out this amazing article on Conversly.ai!");
+  const pageUrl = encodeURIComponent(`https://dev.verlyai.xyz/blog/${blogId}`);
+const pageTitle = encodeURIComponent("Check out this amazing article on verly.ai!");
 
 const twitterShareUrl = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
 const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;

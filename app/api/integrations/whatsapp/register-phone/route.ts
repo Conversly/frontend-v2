@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${phoneNumberId}/register`,
+      `https://graph.facebook.com/v24.0/${phoneNumberId}/register`,
       {
         method: 'POST',
         headers: {
