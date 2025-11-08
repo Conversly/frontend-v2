@@ -55,8 +55,10 @@ export function convertBackendToUIMessage(
        role,
        content: response.response,
        createdAt: new Date(),
-       citations: response.citations,
-       responseId: response.responseId,
+       citations: response.citations?.map((citation, index) => ({
+           source: `Source ${index + 1}`,
+           text: citation
+       })),
    }
 }
 

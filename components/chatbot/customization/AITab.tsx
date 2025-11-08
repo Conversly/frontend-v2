@@ -26,10 +26,11 @@ interface AITabProps {
   config: UIConfigInput;
   updateConfig: (updates: Partial<UIConfigInput>) => void;
   systemPrompt: string;
+  onSystemPromptChange: (prompt: string) => void;
   chatbotId?: string;
 }
 
-export function AITab({ config, updateConfig, systemPrompt, chatbotId }: AITabProps) {
+export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange, chatbotId }: AITabProps) {
   const [promptTopic, setPromptTopic] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const { mutate: generatePrompt } = useGetInstructions();
@@ -44,7 +45,7 @@ export function AITab({ config, updateConfig, systemPrompt, chatbotId }: AITabPr
       promptTopic,
       {
         onSuccess: (data) => {
-          updateConfig({ systemPrompt: data.systemPrompt });
+          onSystemPromptChange(data.systemPrompt);
           toast.success('System prompt generated successfully');
           setIsGenerating(false);
         },
@@ -62,7 +63,7 @@ export function AITab({ config, updateConfig, systemPrompt, chatbotId }: AITabPr
       return;
     }
     try {
-      await updateInstructions(chatbotId, config.systemPrompt || systemPrompt);
+      await updateInstructions(chatbotId, systemPrompt);
       toast.success('System prompt saved successfully');
     } catch (error: any) {
       toast.error(error?.message || 'Failed to save prompt');
@@ -99,13 +100,13 @@ export function AITab({ config, updateConfig, systemPrompt, chatbotId }: AITabPr
               </Tooltip>
             </div>
             <Textarea
-              value={config.systemPrompt || systemPrompt || ''}
-              onChange={(e) => updateConfig({ systemPrompt: e.target.value })}
+              value={systemPrompt || ''}
+              onChange={(e) => onSystemPromptChange(e.target.value)}
               className="bg-muted/50 border-border/50 text-foreground min-h-[200px] font-mono text-sm"
               placeholder="You are a helpful assistant..."
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              {(config.systemPrompt || systemPrompt || '').length} characters
+              {(systemPrompt || '').length} characters
             </p>
           </div>
 

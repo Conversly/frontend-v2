@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,7 +33,14 @@ interface CustomizationTabProps {
   systemPrompt: string;
 }
 
-export function CustomizationTab({ chatbotId, systemPrompt }: CustomizationTabProps) {
+export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt }: CustomizationTabProps) {
+  const [systemPrompt, setSystemPrompt] = useState(initialSystemPrompt);
+  
+  // Update systemPrompt when initialSystemPrompt changes
+  useEffect(() => {
+    setSystemPrompt(initialSystemPrompt);
+  }, [initialSystemPrompt]);
+  
   // Icons array for widget customization
   const icons = [
     { id: 'chat', component: <MessageCircle className="w-6 h-6" /> },
@@ -241,6 +248,7 @@ export function CustomizationTab({ chatbotId, systemPrompt }: CustomizationTabPr
                   config={config} 
                   updateConfig={updateConfig} 
                   systemPrompt={systemPrompt}
+                  onSystemPromptChange={setSystemPrompt}
                   chatbotId={chatbotId}
                 />
               </TabsContent>
