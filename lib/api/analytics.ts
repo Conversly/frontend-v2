@@ -1,6 +1,6 @@
 import { fetch } from "@/lib/api/axios";
 import { API } from "@/lib/api/config";
-import { GetAnalyticsResponse, AnalyticsData } from "@/types/analytics";
+import { GetAnalyticsResponse, AnalyticsData, GetSummaryResponse, GetFeedbacksResponse, GetChartsResponse } from "@/types/analytics";
 
 export const getAnalytics = async (chatbotId: string): Promise<AnalyticsData> => {
   try {
@@ -36,7 +36,7 @@ export const getAnalyticsSummary = async (chatbotId: string): Promise<any> => {
     
     const res = await fetch(urlWithParams, {
       method: "GET"
-    }).then((res) => res.data) as GetAnalyticsResponse;
+    }).then((res) => res.data) as GetSummaryResponse;
 
     if (!res.success) {
       throw new Error("Failed to fetch analytics summary");
@@ -61,7 +61,7 @@ export const getAnalyticsCharts = async (chatbotId: string): Promise<any> => {
     console.log('Charts API - Final URL:', urlWithParams);
     const res = await fetch(urlWithParams, {
       method: "GET"
-    }).then((res) => res.data) as GetAnalyticsResponse;   
+    }).then((res) => res.data) as GetChartsResponse;   
     if (!res.success) {
       throw new Error("Failed to fetch analytics charts");
     }
@@ -84,7 +84,7 @@ export const getAnalyticsFeedbacks = async (chatbotId: string): Promise<any> => 
     console.log('Feedbacks API - Final URL:', urlWithParams);
     const res = await fetch(urlWithParams, {
       method: "GET"
-    }).then((res) => res.data) as GetAnalyticsResponse;   
+    }).then((res) => res.data) as GetFeedbacksResponse;   
     if (!res.success) {
       throw new Error("Failed to fetch analytics feedbacks");
     }
