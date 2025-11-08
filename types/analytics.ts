@@ -61,4 +61,90 @@ export interface GetFeedbacksResponse {
   success: boolean;
   data: FeedbackItem[];
 }
+
+export interface TopicSeriesPoint {
+  date: string; // ISO date (YYYY-MM-DD)
+  messages: number;
+  likes: number;
+  dislikes: number;
+}
+
+export interface TopicSeries {
+  topicId: number;
+  topicName: string;
+  color: string | null;
+  series: TopicSeriesPoint[];
+}
+
+export interface TopicBarChartData {
+  topics: TopicSeries[];
+  dateRange: { startDate: string; endDate: string }; // ISO dates
+}
+
+export interface GetTopicBarChartResponse {
+  success: boolean;
+  data: TopicBarChartData;
+}
+
+export interface TopicAggregate {
+  topicId: number;
+  topicName: string;
+  color: string | null;
+  messages: number;
+  likes: number;
+  dislikes: number;
+}
+
+export interface TopicPieChartData {
+  topics: TopicAggregate[];
+  dateRange: { startDate: string; endDate: string };
+}
+
+export interface GetTopicPieChartResponse {
+  success: boolean;
+  data: TopicPieChartData;
+}
+
+// Topic CRUD types
+export interface CreateTopicInput {
+  chatbotId: number;
+  name: string;
+}
+
+export interface TopicResponse {
+  id: number;
+  chatbotId: number;
+  name: string;
+  color: string | null;
+  createdAt: Date | null;
+}
+
+export interface UpdateTopicInput {
+  id: number;
+  name?: string;
+}
+
+export interface DeleteTopicInput {
+  id: number;
+}
+
+export interface DeleteTopicResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface GetTopicsResponse {
+  success: boolean;
+  data: TopicResponse[];
+}
+
+export interface CreateTopicResponse {
+  success: boolean;
+  data: TopicResponse;
+}
+
+export interface UpdateTopicResponse {
+  success: boolean;
+  data: TopicResponse;
+}
   

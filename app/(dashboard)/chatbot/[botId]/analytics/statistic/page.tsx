@@ -2,8 +2,10 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { useAnalyticsSummaryQuery, useAnalyticsChartsQuery, useAnalyticsFeedbacksQuery } from "@/services/analytics";
-import { MessageSquare, Users, ThumbsUp, TrendingUp, Calendar, BarChart3 } from "lucide-react";
+import { MessageSquare, Users, ThumbsUp, TrendingUp, Calendar, BarChart3, Settings } from "lucide-react";
+import { useState } from "react";
 import { 
   LineChart, 
   Line, 
@@ -30,11 +32,14 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function StatisticPage({ params }: StatisticPageProps) {
   const { botId } = params;
+  const [selectedDays, setSelectedDays] = useState<number>(7);
+  const [feedbackLimit, setFeedbackLimit] = useState<number>(10);
+  
   console.log('Rendering StatisticPage for botId:', botId);
   
   const { data: summaryData, isLoading: summaryLoading, error: summaryError } = useAnalyticsSummaryQuery(botId);
-  const { data: chartsData, isLoading: chartsLoading, error: chartsError } = useAnalyticsChartsQuery(botId);
-  const { data: feedbacksData, isLoading: feedbacksLoading, error: feedbacksError } = useAnalyticsFeedbacksQuery(botId);
+  const { data: chartsData, isLoading: chartsLoading, error: chartsError } = useAnalyticsChartsQuery(botId, selectedDays);
+  const { data: feedbacksData, isLoading: feedbacksLoading, error: feedbacksError } = useAnalyticsFeedbacksQuery(botId, feedbackLimit);
 
   const formatDate = (dateString: string) => {
     try {
@@ -96,6 +101,63 @@ export default function StatisticPage({ params }: StatisticPageProps) {
           Analyze conversation topics and trending themes
         </p>
       </div>
+
+      {/* Controls */}
+      <Card className="p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4" />
+              <span className="font-medium">Charts Period:</span>
+              <div className="flex space-x-2">
+                <Button
+                  variant={selectedDays === 7 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedDays(7)}
+                >
+                  7 Days
+                </Button>
+                <Button
+                  variant={selectedDays === 30 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedDays(30)}
+                >
+                  30 Days
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Settings className="h-4 w-4" />
+              <span className="font-medium">Feedback Limit:</span>
+              <div className="flex space-x-2">
+                <Button
+                  variant={feedbackLimit === 5 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFeedbackLimit(5)}
+                >
+                  5
+                </Button>
+                <Button
+                  variant={feedbackLimit === 10 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFeedbackLimit(10)}
+                >
+                  10
+                </Button>
+                <Button
+                  variant={feedbackLimit === 20 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFeedbackLimit(20)}
+                >
+                  20
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
