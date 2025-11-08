@@ -24,6 +24,7 @@ import {
   Code,
   Link as LinkIcon,
   type LucideIcon,
+  Link,
 } from "lucide-react";
 
 export interface NavItem {
@@ -145,6 +146,12 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     description: "Configure automated actions and integrations",
   },
   {
+    title: "Integration",
+    href: `/chatbot/${botId}/integration`,
+    icon: Link,
+    description: "Connect your chatbot to external services",
+  },
+  {
     title: "Contacts",
     href: `/chatbot/${botId}/contacts`,
     icon: Users,
@@ -193,6 +200,7 @@ export const BREADCRUMB_LABELS: Record<string, string> = {
   notion: "Notion",
   customize: "Customize",
   actions: "Actions",
+  integration: "Integration",
   contacts: "Contacts",
   deploy: "Deploy",
   settings: "Settings",
