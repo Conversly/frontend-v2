@@ -20,7 +20,7 @@ export default function Home() {
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
-            <span className="font-bold text-xl">Chatbase</span>
+            <span className="font-bold text-xl">VerlyAi</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login">
@@ -203,7 +203,7 @@ export default function Home() {
             Ready to transform customer service?
           </h2>
           <p className="text-lg text-muted-foreground">
-            Join thousands of businesses using Chatbase to deliver exceptional
+            Join thousands of businesses using VerlyAi to deliver exceptional
             customer experiences
           </p>
           <Link href="/signup">
@@ -217,7 +217,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-border py-12 bg-card/50">
         <div className="max-w-7xl mx-auto px-6 text-center text-muted-foreground">
-          <p>© 2025 Chatbase. All rights reserved.</p>
+          <p>© 2025 VerlyAi. All rights reserved.</p>
         </div>
       </footer>
     </main>
