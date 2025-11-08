@@ -70,11 +70,17 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     icon: BarChart3,
     description: "Monitor performance and insights",
     children: [
-      {
-        title: "Chats",
-        href: `/chatbot/${botId}/analytics/chats`,
-        icon: TrendingUp,
-        description: "Monitor chat volume, response times, and engagement metrics",
+      // {
+      //   title: "Chats",
+      //   href: `/chatbot/${botId}/analytics/chats`,
+      //   icon: TrendingUp,
+      //   description: "Monitor chat volume, response times, and engagement metrics",
+      // },
+            {
+        title: "Statistics",
+        href: `/chatbot/${botId}/analytics/statistic`,
+        icon: Paintbrush,
+        description: "View detailed statistics and data visualizations",
       },
       {
         title: "Topics",
@@ -82,12 +88,13 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         icon: Hash,
         description: "Analyze conversation topics and trending themes",
       },
-      {
-        title: "Sentiment",
-        href: `/chatbot/${botId}/analytics/sentiment`,
-        icon: Smile,
-        description: "Track user sentiment and satisfaction levels",
-      },
+      // {
+      //   title: "Sentiment",
+      //   href: `/chatbot/${botId}/analytics/sentiment`,
+      //   icon: Smile,
+      //   description: "Track user sentiment and satisfaction levels",
+      // },
+
     ],
   },
   {
