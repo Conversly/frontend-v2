@@ -7,6 +7,7 @@ import {
   FeedbackRequest,
   FeedbackResponse,
   ChatMessage,
+  PlaygroundResponseRequest,
 } from "@/types/response";
 import axios from "axios";
 
@@ -57,6 +58,53 @@ export const getChatbotResponse = async (
 
   return res;
 };
+
+
+
+/**
+ * Send a chat query to the chatbot and get a response
+ * @param messages - Array of chat messages (conversation history)
+ * @param user - User information including unique_client_id and conversly_web_id (API_KEY)
+ * @param mode - Response mode (default: "default")
+ * @param metadata - Optional metadata like origin_url
+ * @returns ChatbotResponseData with response text and citations
+ */
+export const getPlaygroundResponse = async (
+  messages: ChatMessage[],
+  user: PlaygroundResponseRequest["user"],
+  mode: string = "default",
+  systemPrompt: string,
+  temperature: number,
+  model: string,
+  metadata?: PlaygroundResponseRequest["metadata"],
+): Promise<ChatbotResponseData> => {
+  const requestBody: PlaygroundResponseRequest = {
+    query: JSON.stringify(messages),
+    mode,
+    config: {
+      systemPrompt: systemPrompt,
+      temperature: temperature,
+      model: model,
+    },
+    user,
+    metadata,
+  };
+
+  const res = await responseFetch(API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.PLAYGROUND(), {
+    method: "POST",
+    data: requestBody,
+  }).then((res) => res.data as ChatbotResponseData);
+
+  if (!res.success) {
+    throw new Error("Failed to get playground response");
+  }
+
+  return res;
+};
+
+
+
+
 
 /**
  * Submit feedback for a chatbot response

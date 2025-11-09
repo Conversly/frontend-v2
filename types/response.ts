@@ -27,6 +27,18 @@ export interface ChatbotResponseRequest {
     metadata?: ResponseRequestMetadata;
 }
 
+export interface PlaygroundResponseRequest {
+    query: string; // JSON stringified array of ChatMessage
+    mode: "default" | string;
+    config: {
+        systemPrompt: string;
+        temperature: number;
+        model: string;
+    }
+    user: ResponseUser;
+    metadata?: ResponseRequestMetadata;
+}
+
 export interface ChatbotResponseData {
     responseId?: string;
     response: string;
@@ -55,10 +67,7 @@ export function convertBackendToUIMessage(
        role,
        content: response.response,
        createdAt: new Date(),
-       citations: response.citations?.map((citation, index) => ({
-           source: `Source ${index + 1}`,
-           text: citation
-       })),
+       citations: response.citations ?? [],
    }
 }
 

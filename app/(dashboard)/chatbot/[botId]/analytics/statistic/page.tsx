@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useAnalyticsSummaryQuery, useAnalyticsChartsQuery, useAnalyticsFeedbacksQuery } from "@/services/analytics";
 import { MessageSquare, Users, ThumbsUp, TrendingUp, Calendar, BarChart3, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, use } from "react";
 import { 
   LineChart, 
   Line, 
@@ -23,15 +23,15 @@ import {
 } from "recharts";
 
 interface StatisticPageProps {
-  params: {
+  params: Promise<{
     botId: string;
-  };
+  }>;
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function StatisticPage({ params }: StatisticPageProps) {
-  const { botId } = params;
+  const { botId } = use(params);
   const [selectedDays, setSelectedDays] = useState<number>(7);
   const [feedbackLimit, setFeedbackLimit] = useState<number>(10);
   
