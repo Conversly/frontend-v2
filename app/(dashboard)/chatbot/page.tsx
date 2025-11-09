@@ -47,7 +47,7 @@ export default function ChatbotsPage() {
   };
 
   const handleCreateChatbot = () => {
-    router.push("/chatbot/create");
+    router.push("/chatbot/create/setup");
   };
 
   if (isLoading) {

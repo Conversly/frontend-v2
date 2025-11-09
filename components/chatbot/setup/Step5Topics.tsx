@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createTopic, deleteTopic } from "@/lib/api/chatbot";
+import { getTopics } from "@/lib/api/analytics";
 
 interface Step5TopicsProps {
   chatbotId: string;
@@ -15,6 +16,28 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
   const [topics, setTopics] = useState<Array<{ id: number; name: string }>>([]);
   const [newTopic, setNewTopic] = useState("");
   const [isSavingTopic, setIsSavingTopic] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (!chatbotId) return;
+      setIsLoading(true);
+      try {
+        const list = await getTopics(String(chatbotId));
+        if (cancelled) return;
+        setTopics(list.map((t) => ({ id: t.id, name: t.name })));
+      } catch (err: any) {
+        if (!cancelled) toast.error(err?.message || "Failed to load topics");
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [chatbotId]);
 
   const handleAddTopic = async () => {
     if (!chatbotId) {
@@ -71,7 +94,10 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {topics.length === 0 && <span className="text-sm text-muted-foreground">No topics yet. Add your first one.</span>}
+        {isLoading && <span className="text-sm text-muted-foreground">Loading topics…</span>}
+        {!isLoading && topics.length === 0 && (
+          <span className="text-sm text-muted-foreground">No topics yet. Add your first one.</span>
+        )}
         {topics.map((t) => (
           <div key={t.id} className="flex items-center gap-2 rounded-md border bg-muted/40 px-3 py-1">
             <span className="text-sm">{t.name}</span>

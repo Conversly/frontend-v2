@@ -49,7 +49,7 @@ export function Step1UrlAndUsecase({
           <div className="flex h-10 w-full items-center rounded-md border border-input bg-background text-foreground">
             <button
               type="button"
-              onClick={() => setProtocol((p) => (p === "https://" ? "http://" : "https://"))}
+              onClick={() => setProtocol(protocol === "https://" ? "http://" : "https://")}
               className="flex w-fit items-center gap-2 rounded-md border-none bg-transparent px-3 py-2 text-sm outline-hidden transition-colors"
               disabled={isSubmitting}
             >

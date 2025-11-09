@@ -1,21 +1,22 @@
 'use client';
 
-import { bootstrapAgentSetup } from '@/lib/api/setup';
+import { analyzeImage, bootstrapAgentSetup } from '@/lib/api/setup';
 import type { BootstrapSetupInput, BootstrapSetupResult } from '@/types/setup';
 import type { DataSourceItem } from '@/types/datasource';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
+import type { DataSource } from '@/store/chatbot/data-sources';
 import { useSystemPromptStore } from '@/store/chatbot/system-prompt';
 import { useCustomizationStore } from '@/store/chatbot/customization';
 
-function mapDataSources(items: DataSourceItem[]) {
+function mapDataSources(items: DataSourceItem[]): DataSource[] {
   return items.map((s) => ({
     id: String(s.id),
-    type:
-      s.type === 'DOCUMENT'
-        ? 'file'
-        : s.type === 'URL'
-        ? 'url'
-        : 'text',
+    type: (() => {
+      const t = String(s.type || '').toLowerCase();
+      if (t.includes('url') || t.includes('website') || t === 'web') return 'url';
+      if (t.includes('doc') || t.includes('file') || t === 'document') return 'file';
+      return 'text';
+    })(),
     name: s.name,
     createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : undefined,
   }));
@@ -25,6 +26,17 @@ export async function runInitialSetup(
   input: BootstrapSetupInput
 ): Promise<BootstrapSetupResult> {
   const result = await bootstrapAgentSetup(input);
+
+  if (!result.analyzeImage && result.inferPrompt?.logoUrl) {
+    try {
+      const analysis = await analyzeImage({
+        chatbotId: input.chatbotId,
+        imageUrl: result.inferPrompt.logoUrl,
+      });
+      result.analyzeImage = analysis;
+    } catch {
+    }
+  }
 
   // Hydrate data sources
   if (result.searchSources?.data) {
@@ -37,8 +49,15 @@ export async function runInitialSetup(
     useSystemPromptStore.getState().setSavedPrompt(result.inferPrompt.systemPrompt);
   }
 
-  // Hydrate customization (name, color, logo if provided)
+  // Hydrate customization from server, then apply suggestions (name, color, logo if provided)
   const customization = useCustomizationStore.getState();
+  if (customization.loadCustomization) {
+    try {
+      await customization.loadCustomization(input.chatbotId);
+    } catch {
+      // Non-fatal; proceed with local defaults if remote load fails
+    }
+  }
   const draft = customization.draftConfig ?? customization.savedPayload ? customization.draftConfig : null;
   const primaryColor =
     result.analyzeImage?.primaryColor ||

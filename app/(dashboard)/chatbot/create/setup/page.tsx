@@ -56,6 +56,7 @@ export default function SetupWizardPage() {
   const draftConfig = useCustomizationStore((s) => s.draftConfig);
   const setDraftConfig = useCustomizationStore((s) => s.setDraftConfig);
   const saveCustomization = useCustomizationStore((s) => s.saveCustomization);
+  const loadCustomization = useCustomizationStore((s) => s.loadCustomization);
 
   // Step 4 state (personality)
   const draftPrompt = useSystemPromptStore((s) => s.draftPrompt);
@@ -108,6 +109,13 @@ export default function SetupWizardPage() {
     };
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Ensure UI config is fetched from API when entering Step 4 (safety net)
+  useEffect(() => {
+    if (step === 4 && chatbotId && !draftConfig) {
+      loadCustomization(chatbotId).catch(() => {});
+    }
+  }, [step, chatbotId, draftConfig, loadCustomization]);
+
   // Step 2 continue
   const onStep2Continue = () => {
     setStep(4);
@@ -122,7 +130,7 @@ export default function SetupWizardPage() {
     try {
       await saveCustomization(chatbotId);
       toast.success("UI saved");
-      setStep(4);
+      setStep(5);
     } catch (err: any) {
       toast.error(err?.message || "Failed to save UI");
     }
@@ -148,7 +156,7 @@ export default function SetupWizardPage() {
       <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
         {/* LEFT PANEL (fixed canvas/loading) */}
         <section className="flex h-full w-full flex-col justify-center gap-8 p-6 lg:border-r lg:p-20">
-          <div className="h-full w-full overflow-hidden">
+          <div className="hidden h-full w-full overflow-hidden lg:block">
             <LeftCanvas />
           </div>
         </section>

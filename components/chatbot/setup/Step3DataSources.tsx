@@ -12,6 +12,10 @@ interface Step3DataSourcesProps {
 
 export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
   const sources = useDataSources();
+  const websiteCount = sources.filter((s) => s.type === "url").length;
+  const fileCount = sources.filter((s) => s.type === "file").length;
+  const textCount = sources.filter((s) => s.type === "text").length;
+  const recentWebsites = sources.filter((s) => s.type === "url").slice(0, 5);
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
@@ -22,17 +26,33 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <SourceRow icon={<FileText className="h-5 w-5" />} label="File" count={0} />
-        <SourceRow icon={<MessageSquare className="h-5 w-5" />} label="Text" count={0} />
+        <SourceRow icon={<FileText className="h-5 w-5" />} label="File" count={fileCount} />
+        <SourceRow icon={<MessageSquare className="h-5 w-5" />} label="Text" count={textCount} />
         <SourceRow
           icon={<Globe className="h-5 w-5" />}
           label="Website"
-          count={sources.filter((s) => s.type === "url").length}
+          count={websiteCount}
           variant="success"
         />
         <SourceRow icon={<HelpCircle className="h-5 w-5" />} label="Q&A" count={0} />
         <SourceRow icon={<Notebook className="h-5 w-5" />} label="Notion" count={0} />
       </div>
+
+      {websiteCount > 0 && (
+        <div className="rounded-lg border bg-muted/40 p-3">
+          <div className="mb-2 text-xs font-medium text-muted-foreground">Recently added websites</div>
+          <ul className="flex flex-col gap-2">
+            {recentWebsites.map((s) => (
+              <li key={s.id} className="flex items-center justify-between text-sm">
+                <span className="truncate">{s.name}</span>
+                {s.createdAt && (
+                  <span className="text-xs text-muted-foreground">{new Date(s.createdAt).toLocaleDateString()}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <Button className="w-full" onClick={onContinue}>
         Train & continue
