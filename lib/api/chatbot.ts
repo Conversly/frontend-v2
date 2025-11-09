@@ -7,6 +7,11 @@ import {
   GetChatbotsResponse,
   DeleteChatbotInput,
   DeleteChatbotResponse,
+  CreateTopicInput,
+  TopicResponse,
+  UpdateTopicInput,
+  DeleteTopicInput,
+  DeleteTopicResponse,
 } from "@/types/chatbot";
 
 export const createChatBot = async (chatbot: CreateChatbotInput) => {
@@ -107,5 +112,75 @@ export const deleteChatbot = async (
     console.error(error);
     throw new Error(error.message || "Failed to delete chatbot");
   }
+};
+
+
+export const createTopic = async (input: CreateTopicInput): Promise<TopicResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.CREATE_TOPIC(),
+    {
+      method: "POST",
+      data: input,
+    },
+  ).then((res) => res.data) as ApiResponse<TopicResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
+export const updateTopic = async (input: UpdateTopicInput): Promise<TopicResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.UPDATE_TOPIC(),
+    {
+      method: "PATCH",
+      data: input,
+    },
+  ).then((res) => res.data) as ApiResponse<TopicResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
+export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicResponse> => {
+  try {
+    const endpoint = API.ENDPOINTS.CHATBOT.DELETE_TOPIC().replace(":id", input.id.toString());
+    const res = await fetch(
+      API.ENDPOINTS.CHATBOT.BASE_URL() + endpoint,
+      {
+        method: "DELETE",
+      },
+    ).then((res) => res.data) as DeleteTopicResponse;
+
+    if (!res.success) {
+      throw new Error(res.message || "Failed to delete topic");
+    }
+
+    return res;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error(error.message || "Failed to delete topic");
+  }
+};
+
+export const getTopic = async (id: number): Promise<TopicResponse> => {
+  const endpoint = API.ENDPOINTS.CHATBOT.GET_TOPIC().replace(":id", id.toString());
+  const res = await fetch(
+    API.ENDPOINTS.CHATBOT.BASE_URL() + endpoint,
+    {
+      method: "GET",
+    },
+  ).then((res) => res.data) as ApiResponse<TopicResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
 };
 
