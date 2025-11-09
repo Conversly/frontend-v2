@@ -1,5 +1,3 @@
-import { GET } from "@/app/api/webhooks/whatsapp/route";
-
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1",
   RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL || "/api/v1",
