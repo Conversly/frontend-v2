@@ -21,6 +21,11 @@ export const API = {
       EDIT_INSTRUCTIONS: () => "/prompt",  // post
       GET_CHATBOT: () => "/:chatbotId",  // get
       GET_CHATBOTS: () => "/",  // get
+      CREATE_TOPIC: () => "/topics",  // post
+      UPDATE_TOPIC: () => "/topics",  // patch
+      DELETE_TOPIC: () => "/topics/:id",  // delete
+      GET_TOPIC: () => "/topics/:id",  // get
+      
     },
     DATA_SOURCE: {
       BASE_URL: () => "/datasource",  
@@ -56,6 +61,13 @@ export const API = {
     RESPONSE: {
       BASE_URL: () => "/response",
       FEEDBACK: () => "/feedback",  // post
+    },
+    SETUP: {
+      BASE_URL: () => "/setup",
+      ANALYZE_IMAGE: () => "/analyze-image",  // post
+      INFER_PROMPT: () => "/infer-prompt",  // post
+      SEARCH_SOURCES: () => "/search-sources",  // post
+      TOPIC: () => "/topic",  // post
     }
   },
 };
