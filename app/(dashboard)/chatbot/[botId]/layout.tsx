@@ -2,6 +2,7 @@
 
 import { ChatbotSidebar } from "@/components/dashboard/chatbot-sidebar";
 import { useParams } from "next/navigation";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 
 export default function ChatbotLayout({
   children,
@@ -12,11 +13,13 @@ export default function ChatbotLayout({
   const botId = params.botId as string;
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <ChatbotSidebar botId={botId} />
-      <main className="flex-1 overflow-y-auto overflow-x-hidden">
-        {children}
-      </main>
-    </div>
+    <SidebarProvider>
+      <div className="flex h-screen overflow-hidden">
+        <ChatbotSidebar botId={botId} />
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          {children}
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
