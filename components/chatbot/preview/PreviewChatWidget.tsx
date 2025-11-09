@@ -12,12 +12,11 @@ interface PreviewChatWidgetProps {
 }
 
 export function PreviewChatWidget({ config }: PreviewChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(config.autoShowInitial ?? true)
+  const [isOpen, setIsOpen] = useState<boolean>(true)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const autoShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const initialMessages: Message[] = config.InitialMessage
@@ -41,48 +40,15 @@ export function PreviewChatWidget({ config }: PreviewChatWidgetProps) {
     setIsTyping(false)
   }, [config.InitialMessage])
 
+  // Always keep widget open in preview mode
   useEffect(() => {
-    if (autoShowTimeoutRef.current) {
-      clearTimeout(autoShowTimeoutRef.current)
-      autoShowTimeoutRef.current = null
-    }
-
-    if (!config.widgetEnabled) {
-      setIsOpen(false)
-      return
-    }
-
-    if (!config.autoShowInitial) {
-      setIsOpen(false)
-      return
-    }
-
-    const delay = Math.max(0, config.autoShowDelaySec ?? 0)
-    if (delay > 0) {
-      setIsOpen(false)
-      autoShowTimeoutRef.current = setTimeout(() => {
-        setIsOpen(true)
-        autoShowTimeoutRef.current = null
-      }, delay * 1000)
-    } else {
-      setIsOpen(true)
-    }
-
-    return () => {
-      if (autoShowTimeoutRef.current) {
-        clearTimeout(autoShowTimeoutRef.current)
-        autoShowTimeoutRef.current = null
-      }
-    }
-  }, [config.autoShowInitial, config.autoShowDelaySec, config.widgetEnabled])
+    setIsOpen(true)
+  }, [])
 
   useEffect(() => {
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
-      }
-      if (autoShowTimeoutRef.current) {
-        clearTimeout(autoShowTimeoutRef.current)
       }
     }
   }, [])

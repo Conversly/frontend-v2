@@ -6,21 +6,25 @@ import type { Message } from "@/components/widget/helpers/chat-message"
 import { cn } from "@/lib/utils"
 import { ActualOverlayWidget } from "./ActualOverlayWidget"
 import { ActualCornerWidget } from "./ActualCornerWidget"
-import { getChatbotResponse, submitFeedback } from "@/lib/api/response"
+import { getChatbotResponse, getPlaygroundResponse, submitFeedback } from "@/lib/api/response"
 import { convertBackendToUIMessage, convertUIToBackendMessages } from "@/types/response"
 
 interface ActualChatWidgetProps {
   config: UIConfigInput
   className?: string
+  playgroundConfig?: {
+    systemPrompt: string
+    model: string
+    temperature: number
+  }
 }
 
-export function ActualChatWidget({ config, className }: ActualChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(config.autoShowInitial ?? true)
+export function ActualChatWidget({ config, className, playgroundConfig }: ActualChatWidgetProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(true)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const autoShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const uniqueClientId = useMemo(() => {
     if (typeof window === "undefined") return config.uniqueClientId || ""
@@ -56,54 +60,40 @@ export function ActualChatWidget({ config, className }: ActualChatWidgetProps) {
     setIsTyping(false)
   }, [config.InitialMessage])
 
+  // Always keep widget open in preview/playground mode
   useEffect(() => {
-    if (autoShowTimeoutRef.current) {
-      clearTimeout(autoShowTimeoutRef.current)
-      autoShowTimeoutRef.current = null
-    }
-
-    if (!config.widgetEnabled) {
-      setIsOpen(false)
-      return
-    }
-
-    if (!config.autoShowInitial) {
-      setIsOpen(false)
-      return
-    }
-
-    const delay = Math.max(0, config.autoShowDelaySec ?? 0)
-    if (delay > 0) {
-      setIsOpen(false)
-      autoShowTimeoutRef.current = setTimeout(() => {
-        setIsOpen(true)
-        autoShowTimeoutRef.current = null
-      }, delay * 1000)
-    } else {
-      setIsOpen(true)
-    }
-
-    return () => {
-      if (autoShowTimeoutRef.current) {
-        clearTimeout(autoShowTimeoutRef.current)
-        autoShowTimeoutRef.current = null
-      }
-    }
-  }, [config.autoShowInitial, config.autoShowDelaySec, config.widgetEnabled])
+    setIsOpen(true)
+  }, [])
 
   useEffect(() => {
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }
-      if (autoShowTimeoutRef.current) {
-        clearTimeout(autoShowTimeoutRef.current)
-      }
     }
   }, [])
 
   const sendToBackend = async (allMessages: Message[], mode: string = "default") => {
     const backendMessages = convertUIToBackendMessages(allMessages)
+    
+    // Use playground API if playground config is provided
+    if (playgroundConfig) {
+      const res = await getPlaygroundResponse(
+        backendMessages,
+        {
+          uniqueClientId,
+          converslyWebId: config.converslyWebId,
+        },
+        mode,
+        playgroundConfig.systemPrompt,
+        playgroundConfig.temperature,
+        playgroundConfig.model,
+        typeof window !== "undefined" ? { originUrl: window.location.href } : undefined
+      )
+      return convertBackendToUIMessage(res, "assistant")
+    }
+    
+    // Otherwise use regular chatbot API
     const res = await getChatbotResponse(
       backendMessages,
       {
