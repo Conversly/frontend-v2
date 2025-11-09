@@ -3,13 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronRight, Bot } from "lucide-react";
+import { ChevronRight, Bot, ChevronLeft, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { getChatbotNavItems, type NavItem } from "@/lib/constants/navigation";
 import { useChatbot } from "@/services/chatbot";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSidebar } from "@/contexts/SidebarContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ChatbotSidebarProps {
   botId: string;
@@ -18,6 +25,7 @@ interface ChatbotSidebarProps {
 export function ChatbotSidebar({ botId }: ChatbotSidebarProps) {
   const pathname = usePathname();
   const { data: chatbot, isLoading } = useChatbot(botId);
+  const { isCollapsed, toggleSidebar } = useSidebar();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     activity: true,
     analytics: true,
@@ -44,6 +52,27 @@ export function ChatbotSidebar({ botId }: ChatbotSidebarProps) {
     });
 
     if (hasChildren) {
+      if (isCollapsed) {
+        return (
+          <Tooltip key={item.title}>
+            <TooltipTrigger asChild>
+              <div
+                className={cn(
+                  "flex items-center justify-center w-10 h-10 mx-auto mb-1 rounded-md transition-all",
+                  "text-foreground/70 hover:text-foreground hover:bg-muted/50",
+                  (isActive || hasActiveChild) && "bg-muted/70 text-foreground"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>{item.title}</p>
+            </TooltipContent>
+          </Tooltip>
+        );
+      }
+
       return (
         <Collapsible
           key={item.title}
@@ -76,6 +105,28 @@ export function ChatbotSidebar({ botId }: ChatbotSidebarProps) {
       );
     }
 
+    if (isCollapsed) {
+      return (
+        <Tooltip key={item.title}>
+          <TooltipTrigger asChild>
+            <Link
+              href={item.href || "#"}
+              className={cn(
+                "flex items-center justify-center w-10 h-10 mx-auto mb-1 rounded-md transition-all",
+                "text-foreground/60 hover:text-foreground hover:bg-muted/50",
+                isActive && "bg-muted text-foreground"
+              )}
+            >
+              <Icon className="h-4 w-4" />
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>{item.title}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+
     return (
       <Link
         key={item.title}
@@ -94,31 +145,65 @@ export function ChatbotSidebar({ botId }: ChatbotSidebarProps) {
   };
 
   return (
-    <div className="flex h-full w-[220px] flex-col border-r bg-background">
-      <div className="flex h-[60px] items-center px-4 border-b">
-        <div className="flex items-center gap-2">
+    <div 
+      className={cn(
+        "flex h-full flex-col border-r bg-background transition-all duration-300",
+        isCollapsed ? "w-16" : "w-[220px]"
+      )}
+    >
+      <div className={cn(
+        "flex h-[60px] items-center border-b transition-all duration-300",
+        isCollapsed ? "px-2 justify-center" : "px-4 justify-between"
+      )}>
+        {!isCollapsed && (
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+              <Bot className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex flex-col">
+              {isLoading ? (
+                <>
+                  <Skeleton className="h-4 w-20 mb-1" />
+                  <Skeleton className="h-3 w-16" />
+                </>
+              ) : (
+                <>
+                  <h2 className="text-sm font-semibold leading-none">
+                    {chatbot?.name || "Chatbot"}
+                  </h2>
+                  <span className="text-xs text-muted-foreground">Agent</span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+        {isCollapsed && !isLoading && (
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
             <Bot className="h-4 w-4 text-primary" />
           </div>
-          <div className="flex flex-col">
-            {isLoading ? (
-              <>
-                <Skeleton className="h-4 w-20 mb-1" />
-                <Skeleton className="h-3 w-16" />
-              </>
-            ) : (
-              <>
-                <h2 className="text-sm font-semibold leading-none">
-                  {chatbot?.name || "Chatbot"}
-                </h2>
-                <span className="text-xs text-muted-foreground">Agent</span>
-              </>
-            )}
-          </div>
-        </div>
+        )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleSidebar}
+              className="h-8 w-8"
+            >
+              {isCollapsed ? (
+                <PanelLeftOpen className="h-4 w-4" />
+              ) : (
+                <PanelLeftClose className="h-4 w-4" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>Toggle Sidebar ({navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+B)</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       <ScrollArea className="flex-1 px-3 py-3">
-        <nav className="space-y-0.5">
+        <nav className={cn("space-y-0.5", isCollapsed && "flex flex-col items-center")}>
           {navItems.map((item) => renderNavItem(item))}
         </nav>
       </ScrollArea>
