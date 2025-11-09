@@ -48,6 +48,11 @@ export const API = {
       DELETE_TOPIC: () => "/chatbot/topics/:id",  // delete
       GET_TOPIC: () => "/chatbot/topics/list",  // get
     },
+    ACTIVITY: {
+      BASE_URL: () => "/activity",
+      GET_ACTIVITY: () => "/chatlogs",  // get
+      GET_MESSAGES: () => "/messages",  // get
+    },
     DEPLOY: {
       BASE_URL: () => "/deploy",
       WIDGET: () => "/widget/config",  // get
@@ -59,7 +64,9 @@ export const API = {
     },
     
     RESPONSE: {
-      BASE_URL: () => "/response",
+      BASE_URL: () => "/",
+      RESPONSE: () => "/response",
+      PLAYGROUND: () => "/playground/response",  // get
       FEEDBACK: () => "/feedback",  // post
     },
     SETUP: {
