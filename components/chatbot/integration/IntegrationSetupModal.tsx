@@ -104,7 +104,7 @@ export function IntegrationSetupModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl h-[85vh] p-0 gap-0 overflow-hidden" showCloseButton={true}>
+      <DialogContent className="w-[95vw] max-w-[1600px] h-[90vh] p-0 gap-0 overflow-hidden" showCloseButton={true}>
         <div className="grid grid-cols-2 h-full overflow-hidden">
           {/* Left Panel - Setup Instructions */}
           <div className="border-r bg-muted/30 flex flex-col h-full overflow-hidden">
