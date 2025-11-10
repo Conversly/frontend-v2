@@ -38,14 +38,14 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-black py-24 relative overflow-hidden">
+    <section className="bg-background py-24 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
+        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container relative">
+      <div className="container mx-auto relative">
         {/* Section Header */}
         <motion.div
           className="text-center mb-16"
@@ -53,10 +53,10 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">How it works</h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-            We transform your knowledge base into an <span className="text-white">reliable and production-ready</span>{" "}
-            AI-powered <span className="text-pink-500">answer engine optimized for accuracy</span>.
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">How it works</h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            We transform your knowledge base into an <span className="text-foreground">reliable and production-ready</span>{" "}
+            AI-powered <span className="text-primary">answer engine optimized for accuracy</span>.
           </p>
         </motion.div>
 
@@ -71,37 +71,37 @@ export default function HowItWorks() {
               transition={{ delay: index * 0.2 }}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-              <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-2xl" />
+              <div className="relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6 h-full">
                 {/* Icon */}
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${step.gradient} mb-6`}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center bg-primary/10 mb-6"
                 >
-                  <step.icon className={`w-6 h-6 ${step.iconColor}`} />
+                  <step.icon className="w-6 h-6 text-primary" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
-                <p className="text-gray-400 mb-6">{step.description}</p>
+                <h3 className="text-xl font-semibold text-foreground mb-3">{step.title}</h3>
+                <p className="text-muted-foreground mb-6">{step.description}</p>
 
                 {/* Stats */}
                 <div className="flex items-baseline gap-2 mb-6">
-                  <span className="text-2xl font-bold text-pink-500">{step.stats}</span>
-                  <span className="text-sm text-gray-400">{step.statsLabel}</span>
+                  <span className="text-2xl font-bold text-primary">{step.stats}</span>
+                  <span className="text-sm text-muted-foreground">{step.statsLabel}</span>
                 </div>
 
                 {/* Image/Preview */}
-                <div className="relative rounded-xl overflow-hidden bg-gray-800/50">
+                <div className="relative rounded-xl overflow-hidden bg-muted/50">
                   <img
                     src={step.image || "/placeholder.svg"}
                     alt={`${step.title} preview`}
                     className="w-full h-auto object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                 </div>
 
                 {/* Hover Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 to-purple-500/0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl" />
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl" />
               </div>
             </motion.div>
           ))}
