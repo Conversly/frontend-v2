@@ -70,7 +70,7 @@ export function WorkspaceHeader() {
       <div className="container flex h-16 max-w-full items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4 md:gap-6">
           <Link href="/chatbot" className="shrink-0">
-            <h1 className="text-2.5xl md:text-4xl font-bold hover:text-primary transition-colors">
+            <h1 className="text-3xl md:text-4xl font-bold hover:text-primary transition-colors">
               Conversly
             </h1>
           </Link>
