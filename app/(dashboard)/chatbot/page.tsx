@@ -52,9 +52,12 @@ export default function ChatbotsPage() {
 
   if (isLoading) {
     return (
-      <div className="container py-6">
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="container mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+        <div className="flex items-center justify-center py-20">
+          <div className="flex flex-col items-center space-y-4">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading your chatbots...</p>
+          </div>
         </div>
       </div>
     );
@@ -62,15 +65,19 @@ export default function ChatbotsPage() {
 
   if (error) {
     return (
-      <div className="container py-6">
-        <Card className="p-12">
-          <div className="flex flex-col items-center justify-center text-center">
-            <Bot className="mb-4 h-12 w-12 text-destructive" />
-            <h3 className="mb-2 text-lg font-semibold">Error loading chatbots</h3>
-            <p className="mb-4 text-sm text-muted-foreground">
-              {error instanceof Error ? error.message : "Failed to load chatbots"}
-            </p>
-            <Button onClick={() => window.location.reload()}>
+      <div className="container mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+        <Card className="mx-auto max-w-md p-12">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="rounded-full bg-destructive/10 p-4">
+              <Bot className="h-12 w-12 text-destructive" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold">Error loading chatbots</h3>
+              <p className="text-sm text-muted-foreground">
+                {error instanceof Error ? error.message : "Failed to load chatbots"}
+              </p>
+            </div>
+            <Button onClick={() => window.location.reload()} size="lg" className="mt-4">
               Try Again
             </Button>
           </div>
@@ -80,7 +87,7 @@ export default function ChatbotsPage() {
   }
 
   return (
-    <div className="container py-6">
+    <div className="container px-4 py-6 md:px-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Chatbots</h1>
@@ -95,20 +102,22 @@ export default function ChatbotsPage() {
       </div>
 
       {chatbots && chatbots.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {chatbots.map((chatbot) => (
-            <Card key={chatbot.id} className="relative overflow-hidden">
-              <CardHeader>
+            <Card key={chatbot.id} className="group relative flex h-full flex-col overflow-hidden transition-all duration-200 hover:shadow-lg">
+              <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Bot className="h-5 w-5 text-primary" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
+                      <Bot className="h-6 w-6 text-primary" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">{chatbot.name}</CardTitle>
-                      <div className="mt-1 flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-xl font-semibold leading-tight">
+                        {chatbot.name}
+                      </CardTitle>
+                      <div className="mt-1.5 flex items-center gap-2">
                         <div className="h-2 w-2 rounded-full bg-green-500" />
-                        <span className="text-xs capitalize text-muted-foreground">
+                        <span className="text-sm font-medium text-muted-foreground">
                           Active
                         </span>
                       </div>
@@ -116,7 +125,7 @@ export default function ChatbotsPage() {
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -139,34 +148,43 @@ export default function ChatbotsPage() {
                   </DropdownMenu>
                 </div>
               </CardHeader>
-              <CardContent>
-                <CardDescription className="mb-4 line-clamp-2">
-                  {chatbot.description || "No description"}
-                </CardDescription>
-                {chatbot.createdAt && (
-                  <div className="mb-4 text-sm text-muted-foreground">
-                    Created {new Date(chatbot.createdAt).toLocaleDateString()}
+              <CardContent className="flex flex-1 flex-col pt-0">
+                <div className="flex flex-1 flex-col">
+                  <CardDescription className="line-clamp-2 text-sm leading-relaxed min-h-10">
+                    {chatbot.description || "No description provided"}
+                  </CardDescription>
+                  <div className="mt-4 text-sm text-muted-foreground">
+                    {chatbot.createdAt 
+                      ? `Created ${new Date(chatbot.createdAt).toLocaleDateString()}`
+                      : "Created recently"
+                    }
                   </div>
-                )}
-                <Link href={`/chatbot/${chatbot.id}`}>
-                  <Button className="w-full" variant="outline">
-                    Open Dashboard
-                  </Button>
-                </Link>
+                </div>
+                <div className="mt-6">
+                  <Link href={`/chatbot/${chatbot.id}`}>
+                    <Button className="w-full" variant="outline" size="lg">
+                      Open Dashboard
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       ) : (
-        <Card className="p-12">
-          <div className="flex flex-col items-center justify-center text-center">
-            <Bot className="mb-4 h-12 w-12 text-muted-foreground" />
-            <h3 className="mb-2 text-lg font-semibold">No chatbots yet</h3>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Get started by creating your first chatbot
-            </p>
-            <Button onClick={handleCreateChatbot}>
-              <Plus className="mr-2 h-4 w-4" />
+        <Card className="mx-auto max-w-md p-12">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="rounded-full bg-muted/50 p-4">
+              <Bot className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold">No chatbots yet</h3>
+              <p className="text-sm text-muted-foreground">
+                Get started by creating your first chatbot to begin engaging with your customers
+              </p>
+            </div>
+            <Button onClick={handleCreateChatbot} size="lg" className="mt-4">
+              <Plus className="mr-2 h-5 w-5" />
               Create Chatbot
             </Button>
           </div>
