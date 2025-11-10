@@ -67,44 +67,44 @@ export function WorkspaceHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/chatbot">
-            <h1 className="text-xl font-semibold hover:text-primary transition-colors">
+      <div className="container flex h-16 max-w-full items-center justify-between px-4 md:px-6">
+        <div className="flex items-center gap-4 md:gap-6">
+          <Link href="/chatbot" className="shrink-0">
+            <h1 className="text-2.5xl md:text-4xl font-bold hover:text-primary transition-colors">
               Conversly
             </h1>
           </Link>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center">
             <Link href="/chatbot">
               <Button
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "gap-2",
+                  "gap-2 h-10 px-4 text-sm font-medium",
                   isOnChatbotsPage && "bg-accent text-accent-foreground"
                 )}
               >
                 <Bot className="h-4 w-4" />
-                Chatbots
+                <span className="hidden sm:inline">Chatbots</span>
               </Button>
             </Link>
           </nav>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           {/* Theme Toggle */}
           {mounted && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="h-8 w-8"
+              className="h-10 w-10 shrink-0"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark' ? (
-                <Sun className="h-4 w-4" />
+                <Sun className="h-5 w-5" />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon className="h-5 w-5" />
               )}
             </Button>
           )}
@@ -112,10 +112,10 @@ export function WorkspaceHeader() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full shrink-0">
+                  <Avatar className="h-9 w-9">
                     <AvatarImage src={user.avatarUrl || undefined} alt={getUserDisplayName()} />
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    <AvatarFallback className="text-sm font-medium">{getUserInitials()}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -151,7 +151,7 @@ export function WorkspaceHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="ghost" onClick={() => router.push("/login")}>
+            <Button variant="ghost" onClick={() => router.push("/login")} className="h-10 px-4 text-sm font-medium shrink-0">
               Sign In
             </Button>
           )}
