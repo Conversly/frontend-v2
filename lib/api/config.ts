@@ -44,7 +44,7 @@ export const API = {
     },
     ACTIVITY: {
       BASE_URL: () => "/activity",
-      GET_ACTIVITY: () => "/chatlogs",  // get
+      GET_CHATLOGS: () => "/chatlogs",  // get
       GET_MESSAGES: () => "/messages",  // get
     },
     DEPLOY: {

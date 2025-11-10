@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 
-export default function ChatbotPage({
+export default async function ChatbotPage({
   params,
 }: {
-  params: { botId: string };
+  params: Promise<{ botId: string }>;
 }) {
-  redirect(`/chatbot/${params.botId}/playground`);
+  const { botId } = await params;
+  redirect(`/chatbot/${botId}/playground`);
 }
