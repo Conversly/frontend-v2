@@ -49,7 +49,7 @@ export default function Navbar() {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">C</span>
+              <span className="text-primary-foreground font-bold text-lg">V</span>
             </div>
             <span className="font-bold text-xl">VerlyAi</span>
           </Link>

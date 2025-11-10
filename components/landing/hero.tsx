@@ -139,19 +139,18 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Heading */}
+            {/* Heading */}   AI agents for magical customer experiences
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight font-display">
-              Transform Your{" "}
+              AI Support Agents for{" "}
               <span className="text-primary">
-                Documentation
+                Magical Customer Experiences
               </span>{" "}
-              Into Intelligence
             </h1>
 
             {/* Description */}
             <p className="text-xl text-muted-foreground mb-8 max-w-xl font-sans">
-              Create custom AI chatbots trained on your knowledge base.
-              Deploy anywhere or integrate via API for seamless knowledge sharing.
+            Build and deploy AI support agents that solve customer problems
+              instantly. No coding required. Works with your existing tools.
             </p>
 
             {/* Feature Pills */}
