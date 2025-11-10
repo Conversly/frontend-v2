@@ -45,11 +45,11 @@ export default function Navbar() {
 
   return (
     mounted && (
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 text-gray-900">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">C</span>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-lg">V</span>
             </div>
             <span className="font-bold text-xl">VerlyAi</span>
           </Link>
@@ -57,7 +57,7 @@ export default function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <div className="w-10 h-10 rounded-full border overflow-hidden">
+                  <div className="w-10 h-10 rounded-full border border-border overflow-hidden">
                     <Image
                       src={user.avatarUrl || "/default-avatar.png"}
                       alt="User avatar"
@@ -87,7 +87,7 @@ export default function Navbar() {
                   <Button variant="ghost">Sign In</Button>
                 </Link>
                 <Link href="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button>
                     Get Started Free
                   </Button>
                 </Link>

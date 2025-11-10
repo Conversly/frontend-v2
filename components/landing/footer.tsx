@@ -52,15 +52,15 @@ const item = {
 
 export default function Footer() {
   return (
-    <footer className="bg-black relative overflow-hidden">
+    <footer className="bg-background text-foreground relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-purple-500/20 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-primary/20 via-background to-transparent opacity-30" />
+        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(black,transparent_70%)]" />
       </div>
 
       {/* Main Footer */}
-      <div className="container relative py-16">
+      <div className="container mx-auto px-4 relative py-16">
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12"
           variants={container}
@@ -76,7 +76,7 @@ export default function Footer() {
 
         {/* Social Links & Copyright */}
         <motion.div 
-          className="pt-8 border-t border-gray-800"
+          className="pt-8 border-t border-border"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -87,17 +87,17 @@ export default function Footer() {
                 <Link
                   key={social.name}
                   href={social.href}
-                  className="text-gray-400 hover:text-pink-500 transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <social.icon className="w-5 h-5" />
                 </Link>
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
-              <span className="text-gray-400">All systems operational</span>
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-muted-foreground">All systems operational</span>
             </div>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               © {new Date().getFullYear()} ConverslyAI. All rights reserved.
             </p>
           </div>
@@ -105,7 +105,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Gradient Line */}
-      <div className="h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500" />
+      <div className="h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
     </footer>
   )
 }
@@ -113,13 +113,13 @@ export default function Footer() {
 function FooterSection({ title, links }: { title: string; links: { name: string; href: string }[] }) {
   return (
     <motion.div variants={item}>
-      <h3 className="text-white font-semibold mb-4">{title}</h3>
+      <h3 className="text-foreground font-semibold mb-4">{title}</h3>
       <ul className="space-y-2">
         {links.map((link) => (
           <li key={link.name}>
             <Link 
               href={link.href} 
-              className="text-gray-400 hover:text-pink-500 transition-colors duration-200"
+              className="text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               {link.name}
             </Link>

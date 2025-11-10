@@ -48,35 +48,35 @@ const features = [
 export default function FeaturesSection() {
   return (
     <section
-      className="bg-black pt-12 pb-24 relative overflow-hidden font-sans" // Default font: Inter
+      className="bg-background pt-12 pb-24 relative overflow-hidden font-sans"
       id="features"
     >
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
+        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container relative">
+      <div className="container mx-auto relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 mb-6">
-            <Zap className="w-4 h-4 text-pink-500" />
-            <span className="text-sm font-medium bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text font-heading">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary font-heading">
               Powerful Features
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-display">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-display">
             Everything You Need to Build
-            <span className="block bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+            <span className="block text-primary">
               Intelligent Assistants
             </span>
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Transform your website into an intelligent assistant. Let it handle
             customer queries with precision and speed.
           </p>
@@ -92,39 +92,36 @@ export default function FeaturesSection() {
               transition={{ delay: index * 0.2 }}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-              <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-2xl" />
+              <div className="relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6">
                 {/* Icon & Stats */}
                 <div className="flex items-start justify-between mb-6">
                   <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${feature.gradient}`}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-primary/10"
                   >
-                    <feature.icon className={`w-6 h-6 ${feature.iconColor}`} />
+                    <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <div className="flex items-baseline gap-1">
                     <span
-                      className={`text-2xl font-bold ${feature.iconColor} font-heading`}
+                      className="text-2xl font-bold text-primary font-heading"
                     >
                       {feature.stats}
                     </span>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       {feature.statsLabel}
                     </span>
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-white mb-3 font-heading">
+                <h3 className="text-xl font-semibold text-foreground mb-3 font-heading">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400">{feature.description}</p>
+                <p className="text-muted-foreground">{feature.description}</p>
 
                 {/* Hover Effect */}
                 <div
-                  className={`
-                  absolute inset-0 bg-gradient-to-r ${feature.gradient}
-                  opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl
-                `}
+                  className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl"
                 />
               </div>
             </motion.div>

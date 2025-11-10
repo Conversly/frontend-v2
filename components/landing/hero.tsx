@@ -36,16 +36,16 @@ const features = [
 // A modern chatbot UI component
 function ChatUI() {
   return (
-    <div className="w-full max-w-md bg-gray-900/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-800/60 font-sans">
+    <div className="w-full max-w-md bg-card/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-border font-sans">
       {/* Chat header */}
-      <div className="px-4 py-3 flex items-center justify-between border-b border-gray-800/60">
+      <div className="px-4 py-3 flex items-center justify-between border-b border-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10">
-            <Bot className="w-5 h-5 text-pink-500" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+            <Bot className="w-5 h-5 text-primary" />
           </div>
-          <span className="font-semibold text-white">Knowledge Assistant</span>
+          <span className="font-semibold text-foreground">Knowledge Assistant</span>
         </div>
-        <button className="text-gray-400 hover:text-white transition-colors">
+        <button className="text-muted-foreground hover:text-foreground transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -67,27 +67,27 @@ function ChatUI() {
       <div className="p-4 space-y-4 min-h-[300px]">
         {/* Bot message */}
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10">
-            <Bot className="w-5 h-5 text-pink-500" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+            <Bot className="w-5 h-5 text-primary" />
           </div>
-          <div className="bg-gray-800/50 text-gray-200 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+          <div className="bg-muted text-foreground rounded-2xl rounded-tl-none p-4 max-w-[80%]">
             <p>How can I help you with our API documentation?</p>
           </div>
         </div>
 
         {/* User message */}
         <div className="flex items-start justify-end gap-3">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%]">
+          <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-none p-4 max-w-[80%]">
             <p>What's the rate limit for the search endpoint?</p>
           </div>
         </div>
 
         {/* Bot reply */}
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10">
-            <Bot className="w-5 h-5 text-pink-500" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+            <Bot className="w-5 h-5 text-primary" />
           </div>
-          <div className="bg-gray-800/50 text-gray-200 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+          <div className="bg-muted text-foreground rounded-2xl rounded-tl-none p-4 max-w-[80%]">
             <p>
               The search endpoint has a rate limit of 100 requests per minute
               per API key. You can monitor your usage in the dashboard.
@@ -97,14 +97,14 @@ function ChatUI() {
       </div>
 
       {/* Chat input */}
-      <div className="p-4 border-t border-gray-800/60">
+      <div className="p-4 border-t border-border">
         <div className="flex items-center gap-2">
           <input
             type="text"
             placeholder="Ask about your documentation..."
-            className="flex-1 bg-gray-800/50 text-white rounded-xl px-4 py-2 border border-gray-700/50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+            className="flex-1 bg-muted text-foreground rounded-xl px-4 py-2 border border-border focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
-          <button className="bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl p-2 hover:opacity-90 transition-opacity">
+          <button className="bg-primary text-primary-foreground rounded-xl p-2 hover:opacity-90 transition-opacity">
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
@@ -115,14 +115,14 @@ function ChatUI() {
 
 export default function Hero() {
   return (
-    <section className="bg-black pt-32 pb-12 relative overflow-hidden">
+    <section className="bg-background pt-32 pb-12 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/20 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-transparent opacity-30" />
+        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container relative">
+      <div className="container mx-auto relative">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div
@@ -132,26 +132,25 @@ export default function Hero() {
             className="font-sans"
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 mb-8">
-              <Sparkles className="w-4 h-4 text-pink-500" />
-              <span className="text-sm font-medium bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text font-heading">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary font-heading">
                 AI-Powered Knowledge Base
               </span>
             </div>
 
-            {/* Heading */}
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight font-display">
-              Transform Your{" "}
-              <span className="bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
-                Documentation
+            {/* Heading */}   AI agents for magical customer experiences
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight font-display">
+              AI Support Agents for{" "}
+              <span className="text-primary">
+                Magical Customer Experiences
               </span>{" "}
-              Into Intelligence
             </h1>
 
             {/* Description */}
-            <p className="text-xl text-gray-400 mb-8 max-w-xl font-sans">
-              Create custom AI chatbots trained on your knowledge base.
-              Deploy anywhere or integrate via API for seamless knowledge sharing.
+            <p className="text-xl text-muted-foreground mb-8 max-w-xl font-sans">
+            Build and deploy AI support agents that solve customer problems
+              instantly. No coding required. Works with your existing tools.
             </p>
 
             {/* Feature Pills */}
@@ -159,14 +158,14 @@ export default function Hero() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900/60 backdrop-blur-sm border border-gray-800/60"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card/60 backdrop-blur-sm border border-border"
                 >
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br ${feature.gradient}`}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10"
                   >
-                    <feature.icon className={`w-4 h-4 ${feature.iconColor}`} />
+                    <feature.icon className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="text-sm text-gray-300 font-sans">
+                  <span className="text-sm text-foreground font-sans">
                     {feature.label}
                   </span>
                 </div>
@@ -177,8 +176,8 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 font-heading">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
-                onClick={() => redirect("/create")}
+                className="bg-primary text-primary-foreground hover:opacity-90 rounded-xl group"
+                onClick={() => redirect("/chatbot/create/setup")}
               >
                 Start Building Free
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -186,7 +185,7 @@ export default function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-gray-800 text-white hover:bg-gray-800/50 rounded-xl"
+                className="rounded-xl"
               >
                 View Documentation
               </Button>
@@ -200,7 +199,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 blur-3xl" />
+            <div className="absolute inset-0 bg-primary/10 blur-3xl" />
             <div className="relative">
               <ChatUI />
             </div>

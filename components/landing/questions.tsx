@@ -49,34 +49,34 @@ export default function QuestionsSection() {
   )
 
   return (
-    <section className="bg-black py-24 relative overflow-hidden" id="faq">
+    <section className="bg-background py-24 relative overflow-hidden" id="faq">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/20 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-transparent opacity-30" />
+        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container relative">
+      <div className="container mx-auto relative">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 mb-6">
-            <HelpCircle className="w-4 h-4 text-pink-500" />
-            <span className="text-sm font-medium bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+            <HelpCircle className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
               FAQ
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Got
-            <span className="bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text mx-3">
+            <span className="text-primary mx-3">
               Questions
             </span>
             ?
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
             Find answers to common questions about our platform.
           </p>
 
@@ -87,9 +87,9 @@ export default function QuestionsSection() {
               placeholder="Search questions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-xl px-12 py-3 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+              className="w-full bg-card/60 backdrop-blur-sm border border-border rounded-xl px-12 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           </div>
         </motion.div>
 
@@ -108,22 +108,22 @@ export default function QuestionsSection() {
               transition={{ delay: index * 0.1 }}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-xl" />
-              <motion.div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-xl" />
+              <motion.div className="relative bg-card/60 backdrop-blur-sm border border-border rounded-xl overflow-hidden">
                 <button
                   onClick={() => setActiveAccordion(activeAccordion === index ? null : index)}
                   className="w-full px-6 py-4 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 text-pink-500">
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 border border-primary/20 text-primary">
                       {faq.category}
                     </span>
-                    <span className="text-white font-medium">{faq.question}</span>
+                    <span className="text-foreground font-medium">{faq.question}</span>
                   </div>
                   {activeAccordion === index ? (
-                    <ChevronUp className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-primary flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-primary flex-shrink-0" />
                   )}
                 </button>
 
@@ -136,8 +136,8 @@ export default function QuestionsSection() {
                       transition={{ duration: 0.2 }}
                     >
                       <div className="px-6 pb-4">
-                        <div className={`p-4 rounded-lg bg-gradient-to-br ${faq.gradient}`}>
-                          <p className="text-gray-200">{faq.answer}</p>
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <p className="text-foreground">{faq.answer}</p>
                         </div>
                       </div>
                     </motion.div>
