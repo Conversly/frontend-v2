@@ -5,9 +5,13 @@ import { useParams } from "next/navigation";
 import { MessageList } from "@/components/widget/helpers/message-list";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
 import type { MessageItem } from "@/types/activity";
+import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
+import { downloadJsonFile } from "@/lib/utils";
+import { Download, Filter } from "lucide-react";
 
 export default function ChatLogsPage() {
   const params = useParams();
@@ -27,6 +31,15 @@ export default function ChatLogsPage() {
     data: messages,
     isLoading: isLoadingMessages,
   } = useMessagesQuery(botId, selectedConvId || "");
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<ChatLogsFilters>({
+    fromDate: null,
+    toDate: null,
+    confidence: null,
+    source: null,
+    feedback: null,
+  });
 
   const renderedMessages = useMemo(() => {
     if (!messages) return [];
@@ -91,10 +104,45 @@ export default function ChatLogsPage() {
       {/* Chat panel */}
       <div className="flex-1 flex flex-col">
         <div className="border-b bg-background px-6 py-4">
-          <h1 className="text-xl font-semibold">Playground</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
-          </p>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold">Playground</h1>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFilterOpen(true)}
+                className="gap-2"
+              >
+                <Filter className="h-4 w-4" />
+                Filter
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                disabled={!selectedConvId || renderedMessages.length === 0}
+                onClick={() => {
+                  if (!selectedConvId) return;
+                  const payload = {
+                    conversationId: selectedConvId,
+                    chatbotId: botId,
+                    exportedAt: new Date().toISOString(),
+                    filtersApplied: filters,
+                    messages: renderedMessages,
+                  };
+                  downloadJsonFile(`chat-${botId}-${selectedConvId}.json`, payload);
+                }}
+              >
+                <Download className="h-4 w-4" />
+                Download JSON
+              </Button>
+            </div>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">
@@ -115,6 +163,22 @@ export default function ChatLogsPage() {
           )}
         </div>
       </div>
+
+      <ChatLogsFilterDialog
+        open={isFilterOpen}
+        onOpenChange={setIsFilterOpen}
+        value={filters}
+        onChange={setFilters}
+        onClear={() =>
+          setFilters({
+            fromDate: null,
+            toDate: null,
+            confidence: null,
+            source: null,
+            feedback: null,
+          })
+        }
+      />
     </div>
   );
 }
