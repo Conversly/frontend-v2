@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useParams } from "next/navigation";
 import { 
   Dialog, 
   DialogContent, 
@@ -17,12 +18,14 @@ import {
 import { toast } from "sonner";
 import { 
   useTopicBarChartQuery, 
-  useTopicPieChartQuery,
+  useTopicPieChartQuery
+} from "@/services/analytics";
+import {
   useTopicsQuery,
   useCreateTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation
-} from "@/services/analytics";
+} from "@/services/chatbot";
 import { BarChart3, PieChart, Calendar, TrendingUp, MessageSquare, ThumbsUp, ThumbsDown, Plus, Edit, Trash2, Settings } from "lucide-react";
 import { 
   LineChart, 
@@ -41,16 +44,13 @@ import {
 } from "recharts";
 import { useState } from "react";
 
-interface TopicsPageProps {
-  params: {
-    botId: string;
-  };
-}
+ 
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7c7c'];
 
-export default function TopicsPage({ params }: TopicsPageProps) {
-  const { botId } = params;
+export default function TopicsPage() {
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const [selectedDays, setSelectedDays] = useState<number>(7);
   
   // Topic management state  

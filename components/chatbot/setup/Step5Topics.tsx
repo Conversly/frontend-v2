@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createTopic, deleteTopic } from "@/lib/api/chatbot";
-import { getTopics } from "@/lib/api/analytics";
+import { getTopic } from "@/lib/api/chatbot";
 
 interface Step5TopicsProps {
   chatbotId: string;
@@ -24,7 +24,7 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
       if (!chatbotId) return;
       setIsLoading(true);
       try {
-        const list = await getTopics(String(chatbotId));
+        const list = await getTopic(Number(chatbotId));
         if (cancelled) return;
         setTopics(list.map((t) => ({ id: t.id, name: t.name })));
       } catch (err: any) {

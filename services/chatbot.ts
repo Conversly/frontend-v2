@@ -4,7 +4,12 @@ import {
   getChatbots,
   getChatbot,
   deleteChatbot,
+  getTopic,
+  createTopic,
+  updateTopic,
+  deleteTopic,
 } from "@/lib/api/chatbot";
+import type { TopicResponse } from "@/types/chatbot";
 import { QUERY_KEY } from "@/utils/query-key";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -67,3 +72,76 @@ export const useDeleteChatbot = () => {
     },
   });
 };
+
+
+// Topic CRUD hooks
+export const useTopicsQuery = (chatbotId: string) =>
+  useQuery<TopicResponse[]>({
+    queryKey: [QUERY_KEY.TOPICS, chatbotId],
+    queryFn: () => getTopic(Number(chatbotId)),
+    staleTime: 60_000,
+  });
+
+export const useCreateTopicMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: createTopic,
+    onSuccess: (data, variables) => {
+      // Invalidate topics query to refetch data
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPICS, variables.chatbotId.toString()]
+      });
+      // Also invalidate topic charts as they might have changed
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_BAR_CHART, variables.chatbotId.toString()]
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_PIE_CHART, variables.chatbotId.toString()]
+      });
+    },
+  });
+};
+
+export const useUpdateTopicMutation = (chatbotId: string) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: updateTopic,
+    onSuccess: () => {
+      // Invalidate topics query to refetch data
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPICS, chatbotId]
+      });
+      // Also invalidate topic charts as they might have changed
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_BAR_CHART, chatbotId]
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_PIE_CHART, chatbotId]
+      });
+    },
+  });
+};
+
+export const useDeleteTopicMutation = (chatbotId: string) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: deleteTopic,
+    onSuccess: () => {
+      // Invalidate topics query to refetch data
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPICS, chatbotId]
+      });
+      // Also invalidate topic charts as they might have changed
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_BAR_CHART, chatbotId]
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [QUERY_KEY.TOPIC_PIE_CHART, chatbotId]
+      });
+    },
+  });
+};
+  
