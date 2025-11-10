@@ -40,15 +40,11 @@ export const API = {
       GET_CHARTS: () => "/analytics/charts",
       GET_FEEDBACKS: () => "/analytics/feedbacks",
       GET_TOPIC_BAR_CHART: () => "/analytics/topics/bar-chart",
-      GET_TOPIC_PIE_CHART: () => "/analytics/topics/pie-chart",
-      CREATE_TOPIC: () => "/chatbot/topics",  // post
-      UPDATE_TOPIC: () => "/chatbot/topics",  // patch
-      DELETE_TOPIC: () => "/chatbot/topics/:id",  // delete
-      GET_TOPIC: () => "/chatbot/topics/list",  // get
+      GET_TOPIC_PIE_CHART: () => "/analytics/topics/pie-chart"
     },
     ACTIVITY: {
       BASE_URL: () => "/activity",
-      GET_ACTIVITY: () => "/chatlogs",  // get
+      GET_CHATLOGS: () => "/chatlogs",  // get
       GET_MESSAGES: () => "/messages",  // get
     },
     DEPLOY: {
