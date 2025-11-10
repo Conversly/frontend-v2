@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,31 +10,26 @@ import {
   Users,
   Shield,
 } from "lucide-react";
+import Navbar from "@/components/landing/navbar";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    try {
+      const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN);
+      if (isLoggedIn === "true") {
+        router.replace("/chatbot");
+      }
+    } catch {}
+  }, [router]);
+
   return (
     <main className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">C</span>
-            </div>
-            <span className="font-bold text-xl">VerlyAi</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Started Free
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">

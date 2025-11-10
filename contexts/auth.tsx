@@ -17,23 +17,45 @@ export const useAuthContext = () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { setUser } = useAuth();
+  const { setUser, setAuthStatus } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
-  // Only fetch user data if authenticated flag is set
-  const isAuthenticated = typeof window !== "undefined" 
+  // Read authentication flag for route protection only
+  const isAuthenticated = typeof window !== "undefined"
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
-  const { data: user, error } = useQuery({
+  const { data: user, error, isFetching } = useQuery({
     queryKey: [QUERY_KEY.LOGGED_IN_USER],
     queryFn: async () => {
       return await getLoggedInUser();
     },
-    enabled: isAuthenticated, // Only fetch when authenticated
     retry: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  // Update auth status based on query state
+  useEffect(() => {
+    if (isFetching) {
+      setAuthStatus('loading');
+    } else if (user) {
+      setAuthStatus('authenticated');
+      setUser(user);
+    } else {
+      setAuthStatus('unauthenticated');
+      setUser(null);
+    }
+  }, [isFetching, user, setAuthStatus, setUser]);
+
+  // Handle authentication errors
+  useEffect(() => {
+    if (error) {
+      setAuthStatus('unauthenticated');
+      setUser(null);
+      console.error("Authentication error:", error);
+    }
+  }, [error, setAuthStatus, setUser]);
 
   // Protect dashboard routes - redirect to home if not authenticated
   useEffect(() => {
@@ -48,24 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [router, pathname, isAuthenticated]);
-
-  // Update Zustand store with user data
-  useEffect(() => {
-    if (user) {
-      setUser(user);
-    }
-  }, [user, setUser]);
-
-  // Handle authentication errors
-  useEffect(() => {
-    if (error) {
-      // Clear auth flag on error (e.g., expired session)
-      if (typeof window !== "undefined") {
-        localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "false");
-      }
-      console.error("Authentication error:", error);
-    }
-  }, [error]);
 
   return (
     <AuthContext.Provider value={{}}>

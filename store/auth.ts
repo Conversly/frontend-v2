@@ -8,9 +8,9 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthState {
   user: User | null;
-  isUserFetching: boolean;
-  setUser: (user: User) => void;
-  setIsUserFetching: (isFetching: boolean) => void;
+  authStatus: 'loading' | 'authenticated' | 'unauthenticated';
+  setUser: (user: User | null) => void;
+  setAuthStatus: (status: 'loading' | 'authenticated' | 'unauthenticated') => void;
   logout: (queryClient?: QueryClient) => void;
 }
 
@@ -18,9 +18,9 @@ export const useAuth = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      isUserFetching: false,
+      authStatus: 'loading',
       setUser: (user) => set({ user }),
-      setIsUserFetching: (isUserFetching) => set({ isUserFetching }),
+      setAuthStatus: (authStatus) => set({ authStatus }),
       logout: async (queryClient?: QueryClient) => {
         if (queryClient) {
           queryClient.removeQueries({
@@ -33,7 +33,7 @@ export const useAuth = create<AuthState>()(
 
         set({
           user: null,
-          isUserFetching: false,
+          authStatus: 'unauthenticated',
         });
         await apiLogout();
         window.location.reload();
