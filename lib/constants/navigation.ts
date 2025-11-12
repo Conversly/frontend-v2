@@ -25,6 +25,7 @@ import {
   Link as LinkIcon,
   type LucideIcon,
   Link,
+  LayoutDashboard,
 } from "lucide-react";
 
 export interface NavItem {
@@ -40,6 +41,12 @@ export interface NavItem {
  * Follows the structure defined in the requirements and API documentation
  */
 export const getChatbotNavItems = (botId: string): NavItem[] => [
+  {
+    title: "Workspace",
+    href: `/chatbot`,
+    icon: LayoutDashboard,
+    description: "View all your chatbots",
+  },
   {
     title: "Playground",
     href: `/chatbot/${botId}/playground`,

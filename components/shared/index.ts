@@ -1,5 +1,3 @@
 export { ThemeProvider } from "./theme-provider"
 export { ThemeToggle, ThemeToggleButton } from "./theme-toggle"
-export { DashboardLayout } from "./DashboardLayout"
-export { DashboardSidebar } from "./DashboardSidebar"
 export { MemoizedMarkdown } from "./memoized-markdown"
