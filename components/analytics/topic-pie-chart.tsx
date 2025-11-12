@@ -9,14 +9,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7c7c'];
-
 interface TopicData {
   name: string;
   value: number;
   likes: number;
   dislikes: number;
   color: string;
+  [key: string]: string | number;
 }
 
 interface TopicPieChartProps {
