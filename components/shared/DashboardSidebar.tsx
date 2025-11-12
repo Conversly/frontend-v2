@@ -199,7 +199,7 @@ export function DashboardSidebar({ chatbotId, chatbotName }: DashboardSidebarPro
   const navigationItems = isChatbotPage ? chatbotItems : dashboardItems;
 
   return (
-    <aside className="w-64 bg-card/60 backdrop-blur-sm border-r border-border dark:bg-gray-900/60 dark:border-gray-800/60 h-screen sticky top-0 overflow-y-auto">
+    <aside className="w-64 bg-card/60 backdrop-blur-sm border-r border-border dark:bg-gray-900/60 dark:border-gray-800/60 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
       <div className="p-6">
         {/* Header */}
         {isChatbotPage && chatbotName && (
