@@ -4,20 +4,12 @@ import { merge } from "@/utils/ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist",
+const inter = Inter({
+  variable: "--font-inter",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  preload: true,
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-mono",
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
   preload: true,
   subsets: ["latin"],
   display: "swap",
@@ -37,7 +29,7 @@ export default function RootLayout({
   const isTesting = process.env.NEXT_PUBLIC_TESTING_ENABLED === "true";
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {isTesting && (
           <script
@@ -55,9 +47,8 @@ export default function RootLayout({
       </head>
       <body
         className={merge(
-          geist.variable,
-          geistMono.variable,
-          "body antialiased",
+          inter.variable,
+          "font-sans antialiased",
         )}
       >
         <GoogleOAuthProvider
