@@ -37,13 +37,13 @@ export default function RootLayout({
             src="//unpkg.com/react-scan/dist/auto.global.js"
           />
         )}
-        <Script
+        {/* <Script
           src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min.js"
           data-chatbot-id="5"
           data-testing="false"
           strategy="afterInteractive"
           crossOrigin="anonymous"
-        />
+        /> */}
       </head>
       <body
         className={merge(
