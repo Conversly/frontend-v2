@@ -24,9 +24,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ConverslyAI",
+  title: "VerlyAI",
   description:
-    "ConverslyAI - Empowering Conversations with Intelligent Chatbots",
+    "VerlyAI - Empowering Conversations with Intelligent Chatbots",
 };
 
 export default function RootLayout({
@@ -57,7 +57,7 @@ export default function RootLayout({
         className={merge(
           geist.variable,
           geistMono.variable,
-          "body antialiased",
+          "antialiased",
         )}
       >
         <GoogleOAuthProvider
