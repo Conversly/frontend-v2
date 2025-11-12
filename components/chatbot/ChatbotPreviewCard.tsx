@@ -18,26 +18,52 @@ interface ChatbotPreviewCardProps {
   onDelete: (chatbotId: number) => void;
 }
 
-// Generate a color based on chatbot name for visual variety
-const getColorFromName = (name: string): string => {
-  const colors = [
-    'rgb(0, 217, 217)',    // Cyan
-    'rgb(139, 92, 246)',   // Purple
-    'rgb(59, 130, 246)',   // Blue
-    'rgb(236, 72, 153)',   // Pink
-    'rgb(34, 197, 94)',    // Green
-    'rgb(251, 146, 60)',   // Orange
+// Generate gradient colors based on chatbot name for visual variety
+const getGradientFromName = (name: string): { gradient: string; baseColor: string } => {
+  const gradients = [
+    {
+      gradient: 'linear-gradient(135deg, rgb(0, 217, 217) 0%, rgb(0, 180, 216) 50%, rgb(0, 150, 199) 100%)',
+      baseColor: 'rgb(0, 217, 217)'
+    }, // Cyan gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(139, 92, 246) 0%, rgb(124, 58, 237) 50%, rgb(109, 40, 217) 100%)',
+      baseColor: 'rgb(139, 92, 246)'
+    }, // Purple gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 50%, rgb(29, 78, 216) 100%)',
+      baseColor: 'rgb(59, 130, 246)'
+    }, // Blue gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(236, 72, 153) 0%, rgb(219, 39, 119) 50%, rgb(190, 24, 93) 100%)',
+      baseColor: 'rgb(236, 72, 153)'
+    }, // Pink gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(34, 197, 94) 0%, rgb(22, 163, 74) 50%, rgb(20, 83, 45) 100%)',
+      baseColor: 'rgb(34, 197, 94)'
+    }, // Green gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(251, 146, 60) 0%, rgb(249, 115, 22) 50%, rgb(234, 88, 12) 100%)',
+      baseColor: 'rgb(251, 146, 60)'
+    }, // Orange gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(168, 85, 247) 0%, rgb(147, 51, 234) 50%, rgb(126, 34, 206) 100%)',
+      baseColor: 'rgb(168, 85, 247)'
+    }, // Violet gradient
+    {
+      gradient: 'linear-gradient(135deg, rgb(14, 165, 233) 0%, rgb(2, 132, 199) 50%, rgb(3, 105, 161) 100%)',
+      baseColor: 'rgb(14, 165, 233)'
+    }, // Sky gradient
   ];
   
   const hash = name.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
   
-  return colors[Math.abs(hash) % colors.length];
+  return gradients[Math.abs(hash) % gradients.length];
 };
 
 export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProps) {
-  const backgroundColor = getColorFromName(chatbot.name);
+  const { gradient, baseColor } = getGradientFromName(chatbot.name);
   
   // Calculate time since last update
   const getTimeSinceUpdate = () => {
@@ -64,7 +90,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
       >
         <div 
           className="relative flex h-full w-full select-none items-end justify-center overflow-hidden"
-          style={{ backgroundColor }}
+          style={{ background: gradient }}
         >
           {/* Mini Chat Interface */}
           <div 
@@ -91,7 +117,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
               {/* User Message Bubble */}
               <div 
                 className="z-10 ml-auto w-1/2 max-w-full rounded-xl px-4 py-3.5 font-sans"
-                style={{ backgroundColor }}
+                style={{ background: gradient }}
               />
             </div>
           </div>
@@ -101,14 +127,14 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
             className="absolute inset-0 h-full w-full scale-110"
             style={{ 
               filter: 'brightness(0.95)',
-              backgroundColor 
+              background: gradient
             }}
           >
             {/* Placeholder gradient overlay for visual effect */}
             <div 
               className="h-full w-full"
               style={{
-                background: `linear-gradient(135deg, ${backgroundColor}dd 0%, ${backgroundColor}88 50%, ${backgroundColor}dd 100%)`,
+                background: `linear-gradient(135deg, ${baseColor}dd 0%, ${baseColor}88 50%, ${baseColor}dd 100%)`,
                 opacity: 0.3
               }}
             />
