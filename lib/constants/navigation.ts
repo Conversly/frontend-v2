@@ -116,12 +116,6 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         description: "Upload documents to enhance your chatbot's knowledge base",
       },
       {
-        title: "Web",
-        href: `/chatbot/${botId}/sources/web`,
-        icon: Globe,
-        description: "Connect web sources and URLs",
-      },
-      {
         title: "Website",
         href: `/chatbot/${botId}/sources/website`,
         icon: LinkIcon,
