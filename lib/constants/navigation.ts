@@ -26,6 +26,8 @@ import {
   type LucideIcon,
   Link,
   LayoutDashboard,
+  Bot,
+  Home,
 } from "lucide-react";
 
 export interface NavItem {
@@ -213,3 +215,27 @@ export const BREADCRUMB_LABELS: Record<string, string> = {
   deploy: "Deploy",
   settings: "Settings",
 };
+
+/**
+ * Navigation items for the main dashboard sidebar
+ */
+export const getDashboardNavItems = (): NavItem[] => [
+  {
+    title: "Home",
+    href: "/",
+    icon: Home,
+    description: "Go to home page",
+  },
+  {
+    title: "Chatbots",
+    href: "/chatbot",
+    icon: Bot,
+    description: "View and manage all your chatbots",
+  },
+  {
+    title: "Settings",
+    href: "/settings",
+    icon: Settings,
+    description: "Configure your account settings",
+  },
+];
