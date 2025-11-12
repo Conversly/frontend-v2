@@ -63,8 +63,8 @@ export default function PlaygroundPage() {
           buttonText: styles.buttonText || "Chat with us",
           appearance: styles.appearance || "light",
           widgetButtonText: styles.buttonText || "Chat with us",
-          chatWidth: styles.chatWidth || "350px",
-          chatHeight: styles.chatHeight || "500px",
+          chatWidth: "420px", // Fixed default for playground, ignore config
+          chatHeight: "650px", // Fixed default for playground, ignore config
           displayStyle: "overlay", // Force overlay for playground
           converslyWebId: chatbotData.apiKey || "",
           uniqueClientId: "",
@@ -134,14 +134,6 @@ export default function PlaygroundPage() {
 
   return (
     <div className="flex h-full flex-col bg-background">
-      {/* Header */}
-      <div className="border-b bg-background px-6 py-4">
-        <h1 className="text-xl font-semibold">Playground</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Test your chatbot with custom configurations
-        </p>
-      </div>
-
       {/* Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
@@ -155,7 +147,7 @@ export default function PlaygroundPage() {
                 model,
                 temperature,
               }}
-              className="w-full h-[700px] shadow-2xl"
+              className="w-[420px] h-[620px] shadow-2xl"
             />
           </div>
         </div>
@@ -187,7 +179,7 @@ export default function PlaygroundPage() {
                     value={systemPrompt}
                     onChange={(e) => setSystemPrompt(e.target.value)}
                     placeholder="You are a helpful assistant..."
-                    className="min-h-[200px] font-mono text-xs resize-none"
+                    className="h-[200px] font-mono text-[11px] resize-none overflow-y-auto"
                   />
                   <p className="mt-1.5 text-xs text-muted-foreground">
                     {systemPrompt.length} characters
