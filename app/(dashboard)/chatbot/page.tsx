@@ -9,11 +9,13 @@ import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useSetupStore } from "@/store/chatbot/setup";
 
 export default function ChatbotsPage() {
   const router = useRouter();
   const { data: chatbots, isLoading, error } = useGetChatbots();
   const { mutate: deleteChatbot } = useDeleteChatbot();
+  const resetSetup = useSetupStore((s) => s.reset);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -40,6 +42,9 @@ export default function ChatbotsPage() {
   };
 
   const handleCreateChatbot = () => {
+    // Reset any existing setup state to start fresh
+    resetSetup();
+    // Navigate to setup page
     router.push("/chatbot/create/setup");
   };
 

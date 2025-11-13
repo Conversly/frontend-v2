@@ -31,6 +31,7 @@ interface SetupWizardState {
   setUseCase: (u: string) => void;
   setIsSubmitting: (b: boolean) => void;
   setChatbotId: (id: string) => void;
+  reset: () => void;
 
   startProcessing: (input: StartProcessingInput) => Promise<StartProcessingResult>;
 }
@@ -49,6 +50,14 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
   setUseCase: (u) => set({ useCase: u }),
   setIsSubmitting: (b) => set({ isSubmitting: b }),
   setChatbotId: (id) => set({ chatbotId: id }),
+  reset: () => set({
+    step: 1,
+    protocol: 'https://',
+    host: '',
+    useCase: 'General AI Agent',
+    isSubmitting: false,
+    chatbotId: '',
+  }),
 
   startProcessing: async ({ websiteUrl, useCase, host }) => {
     set({ isSubmitting: true });
