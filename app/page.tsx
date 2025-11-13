@@ -25,7 +25,7 @@ export default function Home() {
   }, [router]);
 
   return (
-    <main className="bg-black">
+    <main className="bg-background">
       <Navbar />
       <Hero />
       <FeaturesSection />
