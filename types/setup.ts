@@ -67,4 +67,18 @@ export interface BootstrapSetupResult {
   };
 }
 
+export interface FetchSitemapInput {
+  chatbotId: string;
+  websiteUrl: string;
+}
+
+
+export interface FetchSitemapResponse {
+  urls: string[];
+  pages: string[];
+  files: string[];
+  source: 'sitemap' | 'crawl';
+  totalCount: number;
+}
+
 

@@ -66,6 +66,9 @@ export const getChatbotResponse = async (
  * @param messages - Array of chat messages (conversation history)
  * @param user - User information including unique_client_id and conversly_web_id (API_KEY)
  * @param mode - Response mode (default: "default")
+ * @param systemPrompt - System prompt for the assistant
+ * @param temperature - Temperature setting for the model
+ * @param model - Model to use for the playground
  * @param metadata - Optional metadata like origin_url
  * @returns ChatbotResponseData with response text and citations
  */
@@ -90,10 +93,14 @@ export const getPlaygroundResponse = async (
     metadata,
   };
 
-  const res = await responseFetch(API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.PLAYGROUND(), {
-    method: "POST",
-    data: requestBody,
-  }).then((res) => res.data as ChatbotResponseData);
+  // Use responseFetch instead of base axios instance
+  const res = await responseFetch(
+    API.ENDPOINTS.RESPONSE.PLAYGROUND(),
+    {
+      method: "POST",
+      data: requestBody,
+    },
+  ).then((res) => res.data as ChatbotResponseData);
 
   if (!res.success) {
     throw new Error("Failed to get playground response");
@@ -101,7 +108,6 @@ export const getPlaygroundResponse = async (
 
   return res;
 };
-
 
 
 

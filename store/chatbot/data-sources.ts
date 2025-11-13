@@ -15,7 +15,7 @@ export interface DataSource {
 export interface PendingSource {
   id: string;
   type: 'Website' | 'Document' | 'QandA' | 'CSV';
-  name: string;
+  name: string; // For QandA type: can contain multiple questions joined with " | " delimiter
   content?: File | string;
   citation?: string;
   blobData?: DocumentData; // Store the blob result after upload

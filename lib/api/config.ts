@@ -1,6 +1,6 @@
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1",
-  RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL || "/api/v1",
+  RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL,
   ENDPOINTS: {
     USER: {
       BASE_URL: () => "/user",
@@ -65,6 +65,7 @@ export const API = {
     },
     SETUP: {
       BASE_URL: () => "/setup",
+      FETCH_SITEMAP: () => "/sitemap",  // get
       ANALYZE_IMAGE: () => "/analyze-image",  // post
       INFER_PROMPT: () => "/infer-prompt",  // post
       SEARCH_SOURCES: () => "/search-sources",  // post
