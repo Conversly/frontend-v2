@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useSystemPromptStore } from "@/store/chatbot/system-prompt";
 import { useCustomizationStore } from "@/store/chatbot/customization";
+import { QUERY_KEY } from "@/utils/query-key";
 import { RightPanel } from "@/components/chatbot/setup/RightPanel";
 import { SourcesSummary } from "@/components/chatbot/setup/SourcesSummary";
 import { PreviewChatWidget } from "@/components/chatbot/preview/PreviewChatWidget";
@@ -39,6 +41,7 @@ function useStagedProgress(active: boolean) {
 
 export default function SetupWizardPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const step = useSetupStore((s) => s.step);
   const setStep = useSetupStore((s) => s.setStep);
   const chatbotId = useSetupStore((s) => s.chatbotId);
