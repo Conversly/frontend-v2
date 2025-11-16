@@ -1,6 +1,6 @@
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1",
-  RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL || "/api/v1",
+  RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL,
   ENDPOINTS: {
     USER: {
       BASE_URL: () => "/user",
@@ -22,7 +22,8 @@ export const API = {
       CREATE_TOPIC: () => "/topics",  // post
       UPDATE_TOPIC: () => "/topics",  // patch
       DELETE_TOPIC: () => "/topics/:id",  // delete
-      GET_TOPIC: () => "/topics/:id",  // get
+      GET_TOPIC: () => "/topics/:id",  // get (single topic by topic ID)
+      GET_TOPICS: () => "/:chatbotId/topics",  // get (all topics for a chatbot)
       
     },
     DATA_SOURCE: {
@@ -65,18 +66,11 @@ export const API = {
     },
     SETUP: {
       BASE_URL: () => "/setup",
+      FETCH_SITEMAP: () => "/sitemap",  // get
       ANALYZE_IMAGE: () => "/analyze-image",  // post
       INFER_PROMPT: () => "/infer-prompt",  // post
       SEARCH_SOURCES: () => "/search-sources",  // post
       TOPIC: () => "/topic",  // post
-    },
-    WHATSAPP: {
-      BASE_URL: () => "/whatsapp",
-      CREATE_INTEGRATION: () => "/integration",  // post
-      UPDATE_INTEGRATION: () => "/integration",  // patch
-      GET_INTEGRATION: () => "/integration",  // get
-      DELETE_INTEGRATION: () => "/integration",  // delete
-      SEND_MESSAGE: () => "/send",  // post
     }
   },
 };

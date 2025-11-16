@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function PlaygroundPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
 
   const [config, setConfig] = useState<UIConfigInput | null>(null);
   const [systemPrompt, setSystemPrompt] = useState("");

@@ -16,9 +16,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function IntegrationPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const { collapseSidebar, expandSidebar } = useSidebar();
+
+  if (!botId) {
+    return null;
+  }
   
   // State management
   const [integrations, setIntegrations] = useState<IntegrationConfig[]>(INTEGRATION_PLATFORMS);

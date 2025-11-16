@@ -15,7 +15,7 @@ import type { GetChatbotsResponse } from "@/types/chatbot";
 
 interface ChatbotPreviewCardProps {
   chatbot: GetChatbotsResponse;
-  onDelete: (chatbotId: number) => void;
+  onDelete: (chatbotId: string) => void;
 }
 
 // Generate gradient colors based on chatbot name for visual variety

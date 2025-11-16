@@ -78,7 +78,7 @@ export const useDeleteChatbot = () => {
 export const useTopicsQuery = (chatbotId: string) =>
   useQuery<TopicResponse[]>({
     queryKey: [QUERY_KEY.TOPICS, chatbotId],
-    queryFn: () => getTopic(Number(chatbotId)),
+    queryFn: () => getTopic(chatbotId),
     staleTime: 60_000,
   });
 
@@ -90,14 +90,14 @@ export const useCreateTopicMutation = () => {
     onSuccess: (data, variables) => {
       // Invalidate topics query to refetch data
       queryClient.invalidateQueries({ 
-        queryKey: [QUERY_KEY.TOPICS, variables.chatbotId.toString()]
+        queryKey: [QUERY_KEY.TOPICS, variables.chatbotId]
       });
       // Also invalidate topic charts as they might have changed
       queryClient.invalidateQueries({ 
-        queryKey: [QUERY_KEY.TOPIC_BAR_CHART, variables.chatbotId.toString()]
+        queryKey: [QUERY_KEY.TOPIC_BAR_CHART, variables.chatbotId]
       });
       queryClient.invalidateQueries({ 
-        queryKey: [QUERY_KEY.TOPIC_PIE_CHART, variables.chatbotId.toString()]
+        queryKey: [QUERY_KEY.TOPIC_PIE_CHART, variables.chatbotId]
       });
     },
   });

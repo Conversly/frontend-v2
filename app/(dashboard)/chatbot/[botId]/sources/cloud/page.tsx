@@ -5,8 +5,12 @@ import { CloudDataSources } from '@/components/chatbot/data-sources';
 import { SourcesSidebar } from '@/components/chatbot/SourcesSidebar';
 
 export default function CloudPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+
+  if (!botId) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -20,7 +24,7 @@ export default function CloudPage() {
               </p>
             </div>
 
-            <CloudDataSources chatbotId={botId?.toString() ?? ''} />
+            <CloudDataSources chatbotId={botId} />
           </div>
 
           <div className="lg:sticky lg:top-6 lg:self-start">

@@ -80,8 +80,8 @@ export const fetchEmbeddings = async (
 };
 
 export const deleteKnowledge = async (
-  chatbotId: number,
-  datasourceId: number
+  chatbotId: string,
+  datasourceId: string
 ): Promise<DeleteKnowledgeResponse> => {
   try {
     const res = await fetch(

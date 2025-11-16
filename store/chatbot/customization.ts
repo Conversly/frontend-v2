@@ -32,16 +32,16 @@ interface CustomizationState {
   
   setDraftConfig: (draft: NonNullable<CustomizationState['draftConfig']>) => void;
   resetDraftFromSaved: () => void;
-  loadCustomization: (chatbotId: string | number) => Promise<void>;
-  saveCustomization: (chatbotId: string | number) => Promise<ChatbotCustomizationPayload>;
+  loadCustomization: (chatbotId: string) => Promise<void>;
+  saveCustomization: (chatbotId: string) => Promise<ChatbotCustomizationPayload>;
   
   // Domain methods
-  loadDomains: (chatbotId: string | number) => Promise<void>;
-  addDomain: (chatbotId: string | number, domain: string) => Promise<void>;
+  loadDomains: (chatbotId: string) => Promise<void>;
+  addDomain: (chatbotId: string, domain: string) => Promise<void>;
   
   // API Key methods
-  loadApiKey: (chatbotId: string | number) => Promise<void>;
-  generateApiKey: (chatbotId: string | number) => Promise<string>;
+  loadApiKey: (chatbotId: string) => Promise<void>;
+  generateApiKey: (chatbotId: string) => Promise<string>;
 }
 
 function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput {

@@ -5,7 +5,7 @@ export interface CreateChatbotInput {
   }
   
   export interface ChatbotResponse {
-    id: number;
+    id: string;
     userId: string;
     name: string;
     description: string;
@@ -21,7 +21,7 @@ export interface InstructionResponse {
 }
 
 export interface GetChatbotsResponse {
-  id: number;
+  id: string;
   name: string;
   description: string;
   createdAt: Date | null;
@@ -29,7 +29,7 @@ export interface GetChatbotsResponse {
 }
 
 export interface DeleteChatbotInput {
-  id: number;
+  id: string;
 }
 
 export interface DeleteChatbotResponse {
@@ -39,25 +39,25 @@ export interface DeleteChatbotResponse {
 
 // Topic types
 export interface CreateTopicInput {
-  chatbotId: number;
+  chatbotId: string;
   name: string;
 }
 
 export interface TopicResponse {
-  id: number;
-  chatbotId: number;
+  id: string;
+  chatbotId: string;
   name: string;
   color: string | null;
   createdAt: Date | null;
 }
 
 export interface UpdateTopicInput {
-  id: number;
+  id: string;
   name?: string;
 }
 
 export interface DeleteTopicInput {
-  id: number;
+  id: string;
 }
 
 export interface DeleteTopicResponse {

@@ -96,7 +96,7 @@ export interface ConnectedIntegration {
 }
 
 export interface WhatsAppIntegrationResponse {
-  id: number;
+  id: string;
   chatbotId: string; // UUID
   phoneNumberId: string;
   accessToken: string;

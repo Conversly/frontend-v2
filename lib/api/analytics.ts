@@ -35,9 +35,8 @@ export const getAnalytics = async (chatbotId: string): Promise<AnalyticsData> =>
 
 export const getAnalyticsSummary = async (chatbotId: string): Promise<any> => {
   try {
-    // Ensure chatbotId is a valid numeric string
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
     const endpoint = API.ENDPOINTS.ANALYTICS.GET_SUMMARY();
@@ -61,9 +60,8 @@ export const getAnalyticsSummary = async (chatbotId: string): Promise<any> => {
 
 export const getAnalyticsCharts = async (chatbotId: string, days: number = 7): Promise<any> => {
   try {
-    // Ensure chatbotId is a valid numeric string
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
     
     const endpoint = API.ENDPOINTS.ANALYTICS.GET_CHARTS();
@@ -84,9 +82,8 @@ export const getAnalyticsCharts = async (chatbotId: string, days: number = 7): P
 
 export const getAnalyticsFeedbacks = async (chatbotId: string, limit: number = 5): Promise<any> => {
   try {
-    // Ensure chatbotId is a valid numeric string
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
     
     const endpoint = API.ENDPOINTS.ANALYTICS.GET_FEEDBACKS();
@@ -108,9 +105,8 @@ export const getAnalyticsFeedbacks = async (chatbotId: string, limit: number = 5
 
 export const getAnalyticsTopicBarChart = async (chatbotId: string, days: number = 7): Promise<TopicBarChartData> => {
   try {
-    // Ensure chatbotId is a valid numeric string
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
     const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_BAR_CHART();
@@ -134,9 +130,8 @@ export const getAnalyticsTopicBarChart = async (chatbotId: string, days: number 
 
 export const getAnalyticsTopicPieChart = async (chatbotId: string, days: number = 7): Promise<TopicPieChartData> => {
   try {
-    // Ensure chatbotId is a valid numeric string
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
     const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_PIE_CHART();

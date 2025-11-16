@@ -14,8 +14,12 @@ import { downloadJsonFile } from "@/lib/utils";
 import { Download, Filter } from "lucide-react";
 
 export default function ChatLogsPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+
+  if (!botId) {
+    return null;
+  }
 
   const { data: chatlogs, isLoading: isLoadingChatlogs } = useChatlogsQuery(botId);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
