@@ -61,8 +61,22 @@ export function Step1UrlAndUsecase({
               placeholder="portfolio.shashankkk.site"
               className="h-10 w-full rounded-s-none border-none"
               value={host}
-              onChange={(e) => setHost(e.target.value)}
+              onChange={(e) => {
+                let value = e.target.value;
+                // Remove protocol if user pastes full URL
+                value = value.replace(/^https?:\/\//i, '');
+                // Remove www. prefix (optional, but common)
+                value = value.replace(/^www\./i, '');
+                // Remove path, query params, and hash
+                value = value.split('/')[0].split('?')[0].split('#')[0];
+                // Trim all whitespace
+                value = value.trim();
+                // Remove trailing slash
+                value = value.replace(/\/$/, '');
+                setHost(value);
+              }}
               disabled={isSubmitting}
+              autoComplete="url"
             />
           </div>
         </div>

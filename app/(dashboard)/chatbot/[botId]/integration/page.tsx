@@ -28,7 +28,8 @@ export default function IntegrationPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   // Get webhook URL for the current bot
-  const webhookUrl = `https://api.conversly.ai/webhook/whatsapp/${botId}`;
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/v1';
+  const webhookUrl = "https://webhook-wa-mcnp.onrender.com/webhook/";
 
   // Auto-collapse sidebar when integration is connected
   useEffect(() => {
@@ -79,27 +80,45 @@ export default function IntegrationPage() {
 
   // Handle connection
   const handleConnect = async (credentials: Record<string, string>) => {
-    if (!selectedPlatform) return;
+    if (!selectedPlatform || !botId) return;
 
-    setIsSetupModalOpen(false);
-    
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      setIsSetupModalOpen(false);
       
-    // Update integration status
-    setIntegrations(prev =>
-      prev.map(integration =>
-        integration.id === selectedPlatform
-          ? { ...integration, status: 'connected' as const }
-          : integration
-      )
-    );
+      if (selectedPlatform === 'whatsapp') {
+        // Import WhatsApp API function
+        const { createWhatsAppIntegration } = await import('@/lib/api/whatsapp');
+        
+        await createWhatsAppIntegration({
+          chatbotId: botId, // UUID string
+          phoneNumberId: credentials.phoneNumberId,
+          accessToken: credentials.accessToken,
+          verifyToken: credentials.verifyToken,
+          webhookSecret: credentials.webhookSecret,
+          businessAccountId: credentials.businessAccountId,
+          webhookUrl: credentials.webhookUrl || webhookUrl,
+        });
+      } else {
+        // For other platforms, use placeholder
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+      
+      // Update integration status
+      setIntegrations(prev =>
+        prev.map(integration =>
+          integration.id === selectedPlatform
+            ? { ...integration, status: 'connected' as const }
+            : integration
+        )
+      );
 
-    // Show the integration sidebar and collapse main sidebar
-    setActiveIntegration(selectedPlatform);
-    toast.success(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} connected successfully!`);
-    
-    console.log('Connected with credentials:', credentials);
+      // Show the integration sidebar and collapse main sidebar
+      setActiveIntegration(selectedPlatform);
+      toast.success(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} connected successfully!`);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to connect integration');
+      console.error('Connection error:', error);
+    }
   };
 
   // Handle disconnection

@@ -69,6 +69,14 @@ export const API = {
       INFER_PROMPT: () => "/infer-prompt",  // post
       SEARCH_SOURCES: () => "/search-sources",  // post
       TOPIC: () => "/topic",  // post
+    },
+    WHATSAPP: {
+      BASE_URL: () => "/whatsapp",
+      CREATE_INTEGRATION: () => "/integration",  // post
+      UPDATE_INTEGRATION: () => "/integration",  // patch
+      GET_INTEGRATION: () => "/integration",  // get
+      DELETE_INTEGRATION: () => "/integration",  // delete
+      SEND_MESSAGE: () => "/send",  // post
     }
   },
 };
