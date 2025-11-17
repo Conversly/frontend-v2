@@ -89,7 +89,8 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
         playgroundConfig.chatbotId,
         playgroundConfig.systemPrompt,
         playgroundConfig.temperature,
-        playgroundConfig.model,
+        // playgroundConfig.model,
+        "gemini-2.0-flash-lite",
         typeof window !== "undefined" ? { originUrl: window.location.href } : undefined
       )
       return convertBackendToUIMessage(res, "assistant")
