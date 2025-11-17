@@ -66,6 +66,7 @@ export const getChatbotResponse = async (
  * @param messages - Array of chat messages (conversation history)
  * @param user - User information including unique_client_id and conversly_web_id (API_KEY)
  * @param mode - Response mode (default: "default")
+ * @param chatbotId - ID of the chatbot
  * @param systemPrompt - System prompt for the assistant
  * @param temperature - Temperature setting for the model
  * @param model - Model to use for the playground
@@ -76,6 +77,7 @@ export const getPlaygroundResponse = async (
   messages: ChatMessage[],
   user: PlaygroundResponseRequest["user"],
   mode: string = "default",
+  chatbotId: string,
   systemPrompt: string,
   temperature: number,
   model: string,
@@ -84,11 +86,13 @@ export const getPlaygroundResponse = async (
   const requestBody: PlaygroundResponseRequest = {
     query: JSON.stringify(messages),
     mode,
-    config: {
-      systemPrompt: systemPrompt,
-      temperature: temperature,
-      model: model,
+    chatbot: {
+      chatbotId: chatbotId,
+      chatbotSystemPrompt: systemPrompt,
+      chatbotModel: model,
+      chatbotTemperature: temperature,
     },
+    chatbotId: chatbotId,
     user,
     metadata,
   };

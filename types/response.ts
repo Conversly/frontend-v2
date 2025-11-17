@@ -30,11 +30,13 @@ export interface ChatbotResponseRequest {
 export interface PlaygroundResponseRequest {
     query: string; // JSON stringified array of ChatMessage
     mode: "default" | string;
-    config: {
-        systemPrompt: string;
-        temperature: number;
-        model: string;
+    chatbot: {
+        chatbotId: string;
+        chatbotSystemPrompt: string;
+        chatbotModel: string;
+        chatbotTemperature: number;
     }
+    chatbotId: string;
     user: ResponseUser;
     metadata?: ResponseRequestMetadata;
 }

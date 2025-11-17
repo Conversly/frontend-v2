@@ -13,6 +13,7 @@ interface ActualChatWidgetProps {
   config: UIConfigInput
   className?: string
   playgroundConfig?: {
+    chatbotId: string
     systemPrompt: string
     model: string
     temperature: number
@@ -85,6 +86,7 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
           converslyWebId: config.converslyWebId,
         },
         mode,
+        playgroundConfig.chatbotId,
         playgroundConfig.systemPrompt,
         playgroundConfig.temperature,
         playgroundConfig.model,

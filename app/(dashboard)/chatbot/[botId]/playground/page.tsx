@@ -143,6 +143,7 @@ export default function PlaygroundPage() {
               key={widgetKey}
               config={config} 
               playgroundConfig={{
+                chatbotId: botId,
                 systemPrompt,
                 model,
                 temperature,
