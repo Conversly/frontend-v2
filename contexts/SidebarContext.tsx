@@ -7,12 +7,15 @@ interface SidebarContextType {
   toggleSidebar: () => void;
   collapseSidebar: () => void;
   expandSidebar: () => void;
+  userToggled: boolean;
+  setUserToggled: (value: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [userToggled, setUserToggled] = useState(false);
 
   // Load state from localStorage
   useEffect(() => {
@@ -25,7 +28,9 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   // Save state to localStorage
   useEffect(() => {
     localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
-  }, [isCollapsed]);
+    // Trigger custom event for other components to listen
+    window.dispatchEvent(new CustomEvent('sidebar-state-changed', { detail: { isCollapsed, userToggled } }));
+  }, [isCollapsed, userToggled]);
 
   // Keyboard shortcut handler (Cmd+B or Ctrl+B)
   useEffect(() => {
@@ -40,9 +45,20 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const toggleSidebar = () => setIsCollapsed(prev => !prev);
-  const collapseSidebar = () => setIsCollapsed(true);
-  const expandSidebar = () => setIsCollapsed(false);
+  const toggleSidebar = () => {
+    setUserToggled(true);
+    setIsCollapsed(prev => !prev);
+  };
+  const collapseSidebar = () => {
+    // Only auto-collapse if user hasn't manually toggled
+    if (!userToggled) {
+      setIsCollapsed(true);
+    }
+  };
+  const expandSidebar = () => {
+    setIsCollapsed(false);
+    setUserToggled(false); // Reset when explicitly expanded
+  };
 
   return (
     <SidebarContext.Provider
@@ -51,6 +67,8 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         toggleSidebar,
         collapseSidebar,
         expandSidebar,
+        userToggled,
+        setUserToggled,
       }}
     >
       {children}

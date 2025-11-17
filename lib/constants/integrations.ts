@@ -156,22 +156,10 @@ export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
     path: '/analytics',
   },
   {
-    id: 'templates',
-    label: 'Message Templates',
-    icon: 'FileText',
-    path: '/templates',
-  },
-  {
-    id: 'automation',
-    label: 'Automation',
-    icon: 'Zap',
-    path: '/automation',
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
+    id: 'profile',
+    label: 'Profile',
     icon: 'Settings',
-    path: '/settings',
+    path: '/profile',
   },
 ];
 

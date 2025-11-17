@@ -136,7 +136,11 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
               )}
             >
               <span className="flex items-center gap-2">
-                {isConnected ? 'Manage' : isComingSoon ? 'Coming Soon' : 'Set Up Integration'}
+                {isConnected 
+                  ? (integration.id === 'whatsapp' ? 'Open' : 'Manage')
+                  : isComingSoon 
+                    ? 'Coming Soon' 
+                    : 'Set Up Integration'}
                 {!isConnected && !isComingSoon && (
                   <ArrowRight className="w-4 h-4" />
                 )}
