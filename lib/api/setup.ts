@@ -11,6 +11,8 @@ import {
   GenerateTopicsResponse,
   BootstrapSetupInput,
   BootstrapSetupResult,
+  FetchSitemapInput,
+  FetchSitemapResponse,
 } from "@/types/setup";
 
 export const analyzeImage = async (
@@ -30,6 +32,29 @@ export const analyzeImage = async (
 
   return res.data;
 };
+
+
+export const fetchSitemap = async (
+  input: FetchSitemapInput
+): Promise<FetchSitemapResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.FETCH_SITEMAP(),
+    {
+      method: "POST",
+      data : {
+        chatbotId: input.chatbotId,
+        websiteUrl: input.websiteUrl,
+      },
+    }).then((r) => r.data) as ApiResponse<FetchSitemapResponse>;
+
+    if (!res.success) {
+      throw new Error(res.message);
+    }
+  
+    return res.data;
+};
+
+
 
 export const inferPrompt = async (
   input: InferPromptInput

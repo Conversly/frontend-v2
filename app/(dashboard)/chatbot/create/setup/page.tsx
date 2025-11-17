@@ -19,6 +19,8 @@ import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { LeftCanvas } from "@/components/chatbot/setup/LeftCanvas";
+import { QUERY_KEY } from "@/utils/query-key";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning";
 
@@ -53,7 +55,44 @@ export default function SetupWizardPage() {
   const setUseCase = useSetupStore((s) => s.setUseCase);
   const isSubmitting = useSetupStore((s) => s.isSubmitting);
   const startProcessing = useSetupStore((s) => s.startProcessing);
+  const reset = useSetupStore((s) => s.reset);
   const stage = useStagedProgress(isSubmitting && step === 2);
+
+  // Only redirect on browser refresh (F5 or Ctrl+R)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Set a flag that will be checked on next page load
+      sessionStorage.setItem('was-refreshed', 'true');
+    };
+
+    // Check if we arrived here via refresh
+    const wasRefreshed = sessionStorage.getItem('was-refreshed');
+    if (wasRefreshed) {
+      sessionStorage.removeItem('was-refreshed');
+      console.warn("Page refresh detected. Redirecting to chatbots list.");
+      reset();
+      router.replace("/chatbot");
+      return;
+    }
+
+    // Listen for page unload to detect refresh
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [reset, router]);
+
+
+
+  // Additional runtime safety check
+  useEffect(() => {
+    if (step > 2 && !chatbotId) {
+      console.warn("Runtime check: Invalid state detected. Redirecting to chatbots list.");
+      reset();
+      router.replace("/chatbot");
+    }
+  }, [step, chatbotId, reset, router]);
 
   // Step 3 state (UI customization)
   const draftConfig = useCustomizationStore((s) => s.draftConfig);
@@ -139,12 +178,12 @@ export default function SetupWizardPage() {
           host: trimmedHost 
         });
         if (cancelled) return;
-        Object.entries(result.errors).forEach(([k, v]) => {
-          if (v) toast.error(`${k}: ${v}`);
-        });
-        // Invalidate chatbots cache since a new chatbot was created
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
-        toast.success("Initial setup complete");
+      Object.entries(result.errors).forEach(([k, v]) => {
+        if (v) toast.error(`${k}: ${v}`);
+      });
+      // Invalidate chatbots cache since a new chatbot was created
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+      toast.success("Initial setup complete");
         setStep(3);
       } catch (err: any) {
         if (!cancelled) {
@@ -194,6 +233,9 @@ export default function SetupWizardPage() {
     }
     try {
       await savePrompt(chatbotId);
+      // Invalidate chatbots cache so the new chatbot appears in the list
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+
       toast.success("Agent ready!");
       router.push(`/chatbot/${chatbotId}`);
     } catch (err: any) {
