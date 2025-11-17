@@ -24,6 +24,7 @@ export interface WhatsAppCredentials {
   phoneNumberId: string;
   accessToken: string;
   verifyToken: string;
+  webhookSecret?: string; // Facebook App Secret for webhook verification
   businessAccountId?: string;
   webhookUrl?: string;
 }
@@ -92,4 +93,17 @@ export interface ConnectedIntegration {
   connectedAt: Date;
   credentials: Partial<IntegrationCredentials>;
   isActive: boolean;
+}
+
+export interface WhatsAppIntegrationResponse {
+  id: string;
+  chatbotId: string; // UUID
+  phoneNumberId: string;
+  accessToken: string;
+  verifyToken: string;
+  webhookSecret?: string | null; // Facebook App Secret for webhook verification
+  businessAccountId?: string | null;
+  webhookUrl?: string | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 }

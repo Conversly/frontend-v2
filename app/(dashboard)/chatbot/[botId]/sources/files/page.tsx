@@ -11,8 +11,13 @@ import { SourcesSidebar } from '@/components/chatbot/SourcesSidebar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function FilesSourcePage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  
+  if (!botId) {
+    return null;
+  }
+
   const { addPendingSource, uploadFile } = useDataSourcesStore();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);

@@ -9,8 +9,8 @@ import type {
 
 export const getChatlogs = async (chatbotId: string): Promise<ChatlogItem[]> => {
   try {
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
     const endpoint =  API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.GET_CHATLOGS();
@@ -36,8 +36,8 @@ export const getMessages = async (
   uniqueConvId: string,
 ): Promise<MessageItem[]> => {
   try {
-    if (!chatbotId || !/^\d+$/.test(chatbotId)) {
-      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid number.`);
+    if (!chatbotId || chatbotId.trim() === '') {
+      throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
     if (!uniqueConvId || !uniqueConvId.trim()) {
       throw new Error("uniqueConvId is required");

@@ -33,8 +33,8 @@ export default function TopicsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newTopicName, setNewTopicName] = useState("");
-  const [editingTopic, setEditingTopic] = useState<{ id: number; name: string } | null>(null);
-  const [deletingTopicId, setDeletingTopicId] = useState<number | null>(null);
+  const [editingTopic, setEditingTopic] = useState<{ id: string; name: string } | null>(null);
+  const [deletingTopicId, setDeletingTopicId] = useState<string | null>(null);
   
   // Chart data queries
   const { data: barChartData, isLoading: barChartLoading, error: barChartError } = useTopicBarChartQuery(botId, selectedDays);
@@ -64,7 +64,7 @@ export default function TopicsPage() {
 
     try {
       await createTopicMutation.mutateAsync({
-        chatbotId: parseInt(botId),
+        chatbotId: botId,
         name: newTopicName.trim()
       });
       

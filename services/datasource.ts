@@ -31,7 +31,7 @@ export const useDeleteKnowledge = (chatbotId: string) => {
   const qc = useQueryClient();
   return useMutation({
     mutationKey: [QUERY_KEY.DATASOURCES_DELETE, chatbotId],
-    mutationFn: (vars: { chatbotId: number; datasourceId: number }) =>
+    mutationFn: (vars: { chatbotId: string; datasourceId: string }) =>
       deleteKnowledge(vars.chatbotId, vars.datasourceId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [QUERY_KEY.DATASOURCES, chatbotId] });

@@ -15,7 +15,7 @@ import {
 import { Settings, Plus, Edit, Trash2, MessageSquare } from "lucide-react";
 
 interface Topic {
-  id: number;
+  id: string;
   name: string;
   color?: string | null;
   createdAt?: string | Date | null;
@@ -33,10 +33,10 @@ interface TopicManagementProps {
   setIsDeleteDialogOpen: (open: boolean) => void;
   newTopicName: string;
   setNewTopicName: (name: string) => void;
-  editingTopic: { id: number; name: string } | null;
-  setEditingTopic: (topic: { id: number; name: string } | null) => void;
-  deletingTopicId: number | null;
-  setDeletingTopicId: (id: number | null) => void;
+  editingTopic: { id: string; name: string } | null;
+  setEditingTopic: (topic: { id: string; name: string } | null) => void;
+  deletingTopicId: string | null;
+  setDeletingTopicId: (id: string | null) => void;
   onCreateTopic: () => void;
   onUpdateTopic: () => void;
   onDeleteTopic: () => void;

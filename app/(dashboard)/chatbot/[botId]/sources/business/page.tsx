@@ -5,8 +5,12 @@ import { BusinessDataSources } from '@/components/chatbot/data-sources';
 import { SourcesSidebar } from '@/components/chatbot/SourcesSidebar';
 
 export default function BusinessPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+
+  if (!botId) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -20,7 +24,7 @@ export default function BusinessPage() {
               </p>
             </div>
 
-            <BusinessDataSources chatbotId={botId?.toString() ?? ''} />
+            <BusinessDataSources chatbotId={botId} />
 
           </div>
 

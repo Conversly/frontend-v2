@@ -70,7 +70,7 @@ export interface TopicSeriesPoint {
 }
 
 export interface TopicSeries {
-  topicId: number;
+  topicId: string;
   topicName: string;
   color: string | null;
   series: TopicSeriesPoint[];
@@ -87,7 +87,7 @@ export interface GetTopicBarChartResponse {
 }
 
 export interface TopicAggregate {
-  topicId: number;
+  topicId: string;
   topicName: string;
   color: string | null;
   messages: number;
@@ -107,25 +107,25 @@ export interface GetTopicPieChartResponse {
 
 // Topic CRUD types
 export interface CreateTopicInput {
-  chatbotId: number;
+  chatbotId: string;
   name: string;
 }
 
 export interface TopicResponse {
-  id: number;
-  chatbotId: number;
+  id: string;
+  chatbotId: string;
   name: string;
   color: string | null;
   createdAt: Date | null;
 }
 
 export interface UpdateTopicInput {
-  id: number;
+  id: string;
   name?: string;
 }
 
 export interface DeleteTopicInput {
-  id: number;
+  id: string;
 }
 
 export interface DeleteTopicResponse {

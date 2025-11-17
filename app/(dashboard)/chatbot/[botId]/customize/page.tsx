@@ -6,8 +6,13 @@ import { CustomizationTab } from "@/components/chatbot/customization/Customizati
 import { Loader2 } from "lucide-react";
 
 export default function CustomizePage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+
+  if (!botId) {
+    return null;
+  }
+
   const { data: chatbot, isLoading } = useChatbot(botId);
 
   if (isLoading) {

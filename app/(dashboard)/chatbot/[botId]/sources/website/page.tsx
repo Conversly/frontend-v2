@@ -16,8 +16,13 @@ import { urlSchema } from '@/utils/datasource-validation';
 import { fetchSitemap } from '@/lib/api/setup';
 
 export default function WebsiteSourcePage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  
+  if (!botId) {
+    return null;
+  }
+
   const [url, setUrl] = useState('');
   const [protocol, setProtocol] = useState('https://');
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);

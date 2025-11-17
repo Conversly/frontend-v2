@@ -25,7 +25,7 @@ export default function ChatbotsPage() {
     }
   }, [router]);
 
-  const handleDelete = (chatbotId: number) => {
+  const handleDelete = (chatbotId: string) => {
     if (confirm("Are you sure you want to delete this chatbot? This action cannot be undone.")) {
       deleteChatbot(
         { id: chatbotId },

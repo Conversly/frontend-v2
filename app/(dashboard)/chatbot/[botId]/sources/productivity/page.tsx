@@ -8,8 +8,8 @@ import { SourcesSidebar } from '@/components/chatbot/SourcesSidebar';
 import { toast } from 'sonner';
 
 export default function ProductivityPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   
   const { setShowQADialog, addPendingSource } = useDataSourcesStore();
   const showQADialog = useShowQADialog();
@@ -24,6 +24,10 @@ export default function ProductivityPage() {
     toast.success('Q&A pair added successfully');
   };
 
+  if (!botId) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
@@ -36,7 +40,7 @@ export default function ProductivityPage() {
               </p>
             </div>
 
-            <ProductivityDataSources chatbotId={botId?.toString() ?? ''} />
+            <ProductivityDataSources chatbotId={botId} />
 
             <QADialog
               isOpen={showQADialog}

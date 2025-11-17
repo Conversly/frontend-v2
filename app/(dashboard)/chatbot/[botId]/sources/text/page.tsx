@@ -12,8 +12,13 @@ import { useDataSourcesStore } from '@/store/chatbot/data-sources';
 import { SourcesSidebar } from '@/components/chatbot/SourcesSidebar';
 
 export default function TextSourcePage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  
+  if (!botId) {
+    return null;
+  }
+
   const [textContent, setTextContent] = useState('');
   const [title, setTitle] = useState('');
   const { addPendingSource } = useDataSourcesStore();

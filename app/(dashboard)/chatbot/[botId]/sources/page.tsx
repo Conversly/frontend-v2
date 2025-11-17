@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 export default function DataSourcesPage() {
-  const params = useParams();
-  const botId = params.botId as string;
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const router = useRouter();
 
   // Redirect to productivity page by default

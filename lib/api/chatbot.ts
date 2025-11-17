@@ -97,7 +97,7 @@ export const deleteChatbot = async (
 ): Promise<DeleteChatbotResponse> => {
   try {
     const res = await fetch(
-      API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_CHATBOT().replace(":chatbotId", input.id.toString()),
+      API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_CHATBOT().replace(":chatbotId", input.id),
       {
         method: "DELETE",
       },
@@ -148,7 +148,7 @@ export const updateTopic = async (input: UpdateTopicInput): Promise<TopicRespons
 
 export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicResponse> => {
   try {
-    const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() +  API.ENDPOINTS.CHATBOT.DELETE_TOPIC().replace(":id", input.id.toString());
+    const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() +  API.ENDPOINTS.CHATBOT.DELETE_TOPIC().replace(":id", input.id);
     const res = await fetch(
       endpoint,
       {
@@ -167,8 +167,8 @@ export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicR
   }
 };
 
-export const getTopic = async (id: number): Promise<TopicResponse[]> => {
-  const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_TOPIC().replace(":id", id.toString());
+export const getTopic = async (chatbotId: string): Promise<TopicResponse[]> => {
+  const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_TOPICS().replace(":chatbotId", chatbotId);
   const res = await fetch(
     endpoint,
     {

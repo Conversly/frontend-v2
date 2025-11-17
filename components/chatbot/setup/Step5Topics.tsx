@@ -13,7 +13,7 @@ interface Step5TopicsProps {
 }
 
 export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
-  const [topics, setTopics] = useState<Array<{ id: number; name: string }>>([]);
+  const [topics, setTopics] = useState<Array<{ id: string; name: string }>>([]);
   const [newTopic, setNewTopic] = useState("");
   const [isSavingTopic, setIsSavingTopic] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
       if (!chatbotId) return;
       setIsLoading(true);
       try {
-        const list = await getTopic(Number(chatbotId));
+        const list = await getTopic(chatbotId);
         if (cancelled) return;
         setTopics(list.map((t) => ({ id: t.id, name: t.name })));
       } catch (err: any) {
@@ -48,7 +48,7 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
     if (!name) return;
     setIsSavingTopic(true);
     try {
-      const t = await createTopic({ chatbotId: Number(chatbotId), name });
+      const t = await createTopic({ chatbotId: chatbotId, name });
       setTopics((prev) => [...prev, { id: t.id, name: t.name }]);
       setNewTopic("");
       toast.success("Topic added");
@@ -59,7 +59,7 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
     }
   };
 
-  const handleDeleteTopic = async (id: number) => {
+  const handleDeleteTopic = async (id: string) => {
     setIsSavingTopic(true);
     try {
       await deleteTopic({ id });

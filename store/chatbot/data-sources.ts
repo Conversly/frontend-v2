@@ -46,9 +46,9 @@ interface DataSourcesState {
   setIsLoading: (loading: boolean) => void;
   
   // Legacy methods (kept for compatibility)
-  fetchSources: (chatbotId: number) => Promise<void>;
-  addSource: (chatbotId: number, src: DataSource) => Promise<void>;
-  removeSource: (chatbotId: number, id: string) => Promise<void>;
+  fetchSources: (chatbotId: string) => Promise<void>;
+  addSource: (chatbotId: string, src: DataSource) => Promise<void>;
+  removeSource: (chatbotId: string, id: string) => Promise<void>;
   setSources: (sources: DataSource[]) => void;
   clear: () => void;
 }
@@ -131,15 +131,15 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
   setIsLoading: (loading) => set({ isLoading: loading }),
 
   // API methods
-  fetchSources: async (chatbotId: number) => {
+  fetchSources: async (chatbotId: string) => {
     set({ isLoading: true, error: null });
     try {
       const { fetchDataSources } = await import('@/lib/api/datasource');
-      const sources = await fetchDataSources(chatbotId.toString());
+      const sources = await fetchDataSources(chatbotId);
       
       // Transform API response to match DataSource interface
       const transformedSources: DataSource[] = sources.map((s) => ({
-        id: s.id.toString(),
+        id: s.id,
         type: s.type === 'Website' ? 'url' : s.type === 'Document' ? 'file' : 'text',
         name: s.name,
         createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : undefined,
@@ -150,15 +150,15 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
       set({ error: error as Error, isLoading: false });
     }
   },
-  addSource: async (_chatbotId: number, _src: DataSource) => {
+  addSource: async (_chatbotId: string, _src: DataSource) => {
     // This is handled by processDataSource via handleSaveAllSources
     // Keep for compatibility
   },
-  removeSource: async (chatbotId: number, id: string) => {
+  removeSource: async (chatbotId: string, id: string) => {
     set({ isLoading: true, error: null });
     try {
       const { deleteKnowledge } = await import('@/lib/api/datasource');
-      await deleteKnowledge(chatbotId, parseInt(id));
+      await deleteKnowledge(chatbotId, id);
       
       // Remove from local state
       set((state) => ({

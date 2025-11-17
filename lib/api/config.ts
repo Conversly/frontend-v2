@@ -22,7 +22,8 @@ export const API = {
       CREATE_TOPIC: () => "/topics",  // post
       UPDATE_TOPIC: () => "/topics",  // patch
       DELETE_TOPIC: () => "/topics/:id",  // delete
-      GET_TOPIC: () => "/topics/:id",  // get
+      GET_TOPIC: () => "/topics/:id",  // get (single topic by topic ID)
+      GET_TOPICS: () => "/:chatbotId/topics",  // get (all topics for a chatbot)
       
     },
     DATA_SOURCE: {
@@ -70,6 +71,19 @@ export const API = {
       INFER_PROMPT: () => "/infer-prompt",  // post
       SEARCH_SOURCES: () => "/search-sources",  // post
       TOPIC: () => "/topic",  // post
+    },
+    WHATSAPP: {
+      BASE_URL: () => "/whatsapp",
+      CREATE_INTEGRATION: () => "/integration",  // post
+      UPDATE_INTEGRATION: () => "/integration",  // patch
+      GET_INTEGRATION: () => "/integration",  // get
+      DELETE_INTEGRATION: () => "/integration",  // delete
+      SEND_MESSAGE: () => "/send",  // post
+      GET_CHATS: () => "/chats/:chatbotId/:whatsappId",  // get
+      GET_CONTACT_MESSAGES: () => "/chats/:chatbotId/:whatsappId/:contactId",  // get
+      ADD_CONTACT: () => "/contacts/:chatbotId/:whatsappId",  // post
+      GET_ANALYTICS: () => "/analytics/:chatbotId/:whatsappId",  // get
+      GET_ANALYTICS_PER_DAY: () => "/analytics/per-day/:chatbotId/:whatsappId",  // get
     }
   },
 };
