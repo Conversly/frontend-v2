@@ -23,12 +23,13 @@ import { SectionHeader } from './SectionHeader';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import type { UIConfigInput } from '@/types/customization';
+import { DomainInfo } from '@/lib/api/deploy';
 
 interface IntegrationTabProps {
   config: UIConfigInput;
   chatbotId: string;
   systemPrompt: string;
-  domains: Array<{ id: number; domain: string; createdAt: Date | null }>;
+  domains: DomainInfo[];
   isLoadingDomains: boolean;
   isSavingDomain: boolean;
   onAddDomain: (domain: string) => Promise<void>;
