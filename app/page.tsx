@@ -11,6 +11,7 @@ import ScalabilitySection from "@/components/landing/scalability";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
+import HighlightsSection from "@/components/landing/highlight";
 
 export default function Home() {
   const router = useRouter();
@@ -25,11 +26,11 @@ export default function Home() {
   }, [router]);
 
   return (
-    <main className="bg-background">
+    <main className="bg-background px-[100px]">
       <Navbar />
       <Hero />
+      <HighlightsSection />
       <FeaturesSection />
-      <ScalabilitySection />
       <HowItWorks />
       <PricingSection />
       <RelatedArticles />
