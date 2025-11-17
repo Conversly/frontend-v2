@@ -19,8 +19,6 @@ import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { LeftCanvas } from "@/components/chatbot/setup/LeftCanvas";
-import { QUERY_KEY } from "@/utils/query-key";
-import { useQueryClient } from "@tanstack/react-query";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning";
 
