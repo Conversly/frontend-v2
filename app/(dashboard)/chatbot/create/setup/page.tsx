@@ -8,19 +8,17 @@ import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useSystemPromptStore } from "@/store/chatbot/system-prompt";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { QUERY_KEY } from "@/utils/query-key";
-import { RightPanel } from "@/components/chatbot/setup/RightPanel";
-import { SourcesSummary } from "@/components/chatbot/setup/SourcesSummary";
-import { PreviewChatWidget } from "@/components/chatbot/preview/PreviewChatWidget";
 import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecase";
-import { Step2Processing } from "@/components/chatbot/setup/Step2Processing";
 import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
 import { Step4UIConfig } from "@/components/chatbot/setup/Step4UIConfig";
 import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
 import { useSetupStore } from "@/store/chatbot/setup";
-import { LeftCanvas } from "@/components/chatbot/setup/LeftCanvas";
+import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
+import { PreviewCornerWidget } from "@/components/chatbot/preview/PreviewCornerWidget";
+import type { Message } from "@/components/widget/helpers/chat-message";
 
-type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning";
+type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
 function useStagedProgress(active: boolean) {
   const [stage, setStage] = useState<Stage>("idle");
@@ -54,7 +52,28 @@ export default function SetupWizardPage() {
   const isSubmitting = useSetupStore((s) => s.isSubmitting);
   const startProcessing = useSetupStore((s) => s.startProcessing);
   const reset = useSetupStore((s) => s.reset);
-  const stage = useStagedProgress(isSubmitting && step === 2);
+
+  const progressStage = useStagedProgress(isSubmitting && step === 2);
+  const stage = step >= 3 ? "completed" : progressStage;
+
+  // Widget Preview State
+  const [isWidgetOpen, setIsWidgetOpen] = useState(true);
+  const [widgetInput, setWidgetInput] = useState("");
+  const [widgetMessages, setWidgetMessages] = useState<Message[]>([
+    { id: "1", role: "assistant", content: "Hi! How can I help you today?" }
+  ]);
+  const [isWidgetTyping, setIsWidgetTyping] = useState(false);
+
+  const handleWidgetSendMessage = (content: string) => {
+    const newMessage: Message = { id: Date.now().toString(), role: "user", content };
+    setWidgetMessages(prev => [...prev, newMessage]);
+    setWidgetInput("");
+    setIsWidgetTyping(true);
+    setTimeout(() => {
+      setIsWidgetTyping(false);
+      setWidgetMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: "assistant", content: "This is a preview message." }]);
+    }, 1000);
+  };
 
   // Only redirect on browser refresh (F5 or Ctrl+R)
   useEffect(() => {
@@ -75,7 +94,7 @@ export default function SetupWizardPage() {
 
     // Listen for page unload to detect refresh
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
@@ -121,15 +140,15 @@ export default function SetupWizardPage() {
     // This is more permissive than strict RFC validation but catches obvious errors
     const basicDomainCheck = /^[a-z0-9][a-z0-9.-]*[a-z0-9]$/i;
     const hasValidTld = /\.([a-z]{2,}|[a-z]{2,}\.[a-z]{2,})$/i; // At least 2 chars for TLD, or multi-part TLD like .co.uk
-    
+
     // Allow localhost or domains that pass basic checks
     if (v === "localhost") return true;
     if (!basicDomainCheck.test(v)) return false;
     if (!hasValidTld.test(v) && v !== "localhost") return false;
-    
+
     // Additional check: no consecutive dots or dots at start/end (already handled by basicDomainCheck)
     if (v.includes("..")) return false;
-    
+
     return true;
   };
 
@@ -156,10 +175,10 @@ export default function SetupWizardPage() {
   // Step 2: processing effect (create chatbot + initial setup), then advance to Step 3
   useEffect(() => {
     if (step !== 2) return;
-    
+
     const trimmedHost = host.trim();
     const trimmedUrl = `${protocol}${trimmedHost}`.trim();
-    
+
     // Validate URL before processing
     if (!trimmedHost || !isValidHost(trimmedHost)) {
       toast.error("Invalid URL. Please go back and enter a valid domain.");
@@ -170,18 +189,18 @@ export default function SetupWizardPage() {
     let cancelled = false;
     const run = async () => {
       try {
-        const result = await startProcessing({ 
-          websiteUrl: trimmedUrl, 
-          useCase, 
-          host: trimmedHost 
+        const result = await startProcessing({
+          websiteUrl: trimmedUrl,
+          useCase,
+          host: trimmedHost
         });
         if (cancelled) return;
-      Object.entries(result.errors).forEach(([k, v]) => {
-        if (v) toast.error(`${k}: ${v}`);
-      });
-      // Invalidate chatbots cache since a new chatbot was created
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
-      toast.success("Initial setup complete");
+        Object.entries(result.errors).forEach(([k, v]) => {
+          if (v) toast.error(`${k}: ${v}`);
+        });
+        // Invalidate chatbots cache since a new chatbot was created
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+        toast.success("Initial setup complete");
         setStep(3);
       } catch (err: any) {
         if (!cancelled) {
@@ -199,7 +218,7 @@ export default function SetupWizardPage() {
   // Ensure UI config is fetched from API when entering Step 4 (safety net)
   useEffect(() => {
     if (step === 4 && chatbotId && !draftConfig) {
-      loadCustomization(chatbotId).catch(() => {});
+      loadCustomization(chatbotId).catch(() => { });
     }
   }, [step, chatbotId, draftConfig, loadCustomization]);
 
@@ -244,16 +263,10 @@ export default function SetupWizardPage() {
   return (
     <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
       <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
-        {/* LEFT PANEL (fixed canvas/loading) */}
-        <section className="flex h-full w-full flex-col justify-center gap-8 p-6 lg:border-r lg:p-20">
-          <div className="hidden h-full w-full overflow-hidden lg:block">
-            <LeftCanvas />
-          </div>
-        </section>
 
-        {/* RIGHT PANEL (all steps & interactions) */}
-        <div className="flex h-full w-full overflow-hidden bg-dot-wide px-4 py-10 lg:flex lg:flex-col lg:items-center lg:justify-center lg:px-10 lg:pt-20">
-          {step === 1 && (
+        {/* LEFT PANEL (Inputs & Steps) */}
+        <div className="flex h-full w-full flex-col justify-center overflow-y-auto bg-background px-4 py-10 lg:px-20 lg:py-20">
+          {(step === 1 || step === 2) && (
             <Step1UrlAndUsecase
               protocol={protocol}
               setProtocol={setProtocol}
@@ -267,12 +280,33 @@ export default function SetupWizardPage() {
               onManualSetup={() => router.push("/chatbot/create")}
             />
           )}
-          {step === 2 && <RightPanel url={composedUrl} stage={stage} />}
           {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
           {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
           {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
           {step === 6 && <Step6PromptTuning onConfirm={onStep4Submit} />}
         </div>
+
+        {/* RIGHT PANEL (Visualization) */}
+        <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
+          <SetupVisualization url={composedUrl} stage={stage}>
+            {step === 4 && draftConfig && (
+              <PreviewCornerWidget
+                config={draftConfig}
+                isOpen={isWidgetOpen}
+                setIsOpen={setIsWidgetOpen}
+                messages={widgetMessages}
+                input={widgetInput}
+                setInput={setWidgetInput}
+                isTyping={isWidgetTyping}
+                handleSendMessage={handleWidgetSendMessage}
+                handleSuggestionClick={(s) => handleWidgetSendMessage(s)}
+                handleRegenerate={() => { }}
+                handleRating={() => { }}
+              />
+            )}
+          </SetupVisualization>
+        </section>
+
       </div>
     </div>
   );
