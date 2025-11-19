@@ -37,13 +37,6 @@ export default function RootLayout({
             src="//unpkg.com/react-scan/dist/auto.global.js"
           />
         )}
-        {/* <Script
-          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/local-conv/loader.min.js"
-          data-chatbot-id="5"
-          data-testing="false"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        /> */}
       </head>
       <body
         className={merge(
@@ -58,6 +51,12 @@ export default function RootLayout({
             <AppContextProvider>{children}</AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
+        <Script
+          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-sRNyhzUvzlVBnixhJK0bLNS4FwyhxX.js"
+          data-chatbot-id="s34qkifi608kgew21flmb5bl"
+          data-testing="true"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

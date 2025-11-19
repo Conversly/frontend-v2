@@ -112,6 +112,7 @@ export function ActualCornerWidget({
               input={input}
               setInput={setInput}
               handleSendMessage={handleSendMessage}
+              handleSuggestionClick={handleSuggestionClick}
             />
           </Card>
         </div>

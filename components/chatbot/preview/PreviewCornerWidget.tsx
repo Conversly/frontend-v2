@@ -114,8 +114,8 @@ export function PreviewCornerWidget({
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1">
+        <div className="p-4 space-y-4">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -180,7 +180,7 @@ export function PreviewCornerWidget({
 
       {/* Suggestions */}
       {config.starterQuestions && config.starterQuestions.filter((q) => q).length > 0 && (
-        <div className="px-4 pb-2 space-y-2">
+        <div className={cn("px-4 pt-3 pb-2 space-y-2 border-t", isDark ? "border-gray-800" : "border-gray-200")}>
           {config.starterQuestions
             .filter((q) => q)
             .map((question, idx) => (
@@ -201,7 +201,7 @@ export function PreviewCornerWidget({
       )}
 
       {/* Input */}
-      <div className={cn("p-4 border-t", isDark ? "border-gray-800" : "border-gray-200")}>
+      <div className={cn("px-4 py-4 space-y-3", config.starterQuestions && config.starterQuestions.filter((q) => q).length > 0 ? "" : "border-t", isDark ? "border-gray-800" : "border-gray-200")}>
         <div className="flex gap-2">
           <Input
             value={input}
@@ -230,7 +230,7 @@ export function PreviewCornerWidget({
           </Button>
         </div>
         {config.footerText && (
-          <p className={cn("text-xs text-center mt-2", isDark ? "text-gray-500" : "text-gray-400")}>
+          <p className={cn("text-xs text-center", isDark ? "text-gray-500" : "text-gray-400")}>
             {config.footerText}
           </p>
         )}

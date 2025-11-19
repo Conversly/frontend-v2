@@ -124,6 +124,7 @@ export function OverlayWidget({
               input={input}
               setInput={setInput}
               handleSendMessage={handleSendMessage}
+              handleSuggestionClick={handleSuggestionClick}
             />
           </div>
         </DialogContent>

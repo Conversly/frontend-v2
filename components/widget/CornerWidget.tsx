@@ -126,6 +126,7 @@ export function CornerWidget({
                 input={input}
                 setInput={setInput}
                 handleSendMessage={handleSendMessage}
+                handleSuggestionClick={handleSuggestionClick}
               />
             </Card>
           </motion.div>

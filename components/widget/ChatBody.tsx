@@ -7,7 +7,6 @@ import type { Message } from "@/components/widget/helpers/chat-message"
 import { ChatMessage } from "@/components/widget/helpers/chat-message"
 import { Button } from "@/components/ui/button"
 import { TypingIndicator } from "@/components/widget/helpers/typing-indicator"
-import { PromptSuggestions } from "@/components/widget/helpers/prompt-suggestions"
 import { MessageActions } from "@/components/widget/helpers/message-actions"
 import { useAutoScroll } from "@/hooks/use-auto-scroll"
 import { cn } from "@/lib/utils"
@@ -39,8 +38,6 @@ export function ChatBody({
   handleRating,
 }: ChatBodyProps) {
   const [dismissedNotice, setDismissedNotice] = useState(false)
-  const hasUserMessages = messages.some((m) => m.role === "user")
-  const showSuggestions = !hasUserMessages || config.keepShowingSuggested
 
   // Auto-scroll hook to automatically scroll to bottom when new messages arrive
   const { containerRef, handleScroll } = useAutoScroll([
@@ -119,52 +116,6 @@ export function ChatBody({
 
         {/* Typing Indicator */}
         {isTyping && <TypingIndicator />}
-
-        {/* Starter Questions using PromptSuggestions component */}
-        {showSuggestions && config.starterQuestions?.length > 0 && (
-          <div className={cn(
-            "pt-2",
-            config.keepShowingSuggested && hasUserMessages && "scale-90 origin-top"
-          )}>
-            {!hasUserMessages ? (
-              <PromptSuggestions
-                label="How can I help you today?"
-                suggestions={config.starterQuestions}
-                append={(message) => handleSuggestionClick(message.content)}
-              />
-            ) : (
-              // Smaller suggestions after conversation starts
-              <div className="space-y-2">
-                <p 
-                  className={cn(
-                    "text-xs font-medium text-center",
-                    config.appearance === "dark" ? "text-gray-400" : "text-gray-600"
-                  )}
-                >
-                  Try asking:
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {config.starterQuestions.map((question, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleSuggestionClick(question)}
-                      className={cn(
-                        "justify-start text-left h-auto py-2 px-3 text-xs whitespace-normal",
-                        config.appearance === "dark"
-                          ? "border-gray-700 hover:bg-gray-800"
-                          : "border-gray-200 hover:bg-gray-50"
-                      )}
-                    >
-                      {question}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
         </div>
       </div>
     </div>

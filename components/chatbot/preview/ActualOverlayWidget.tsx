@@ -100,6 +100,7 @@ export function ActualOverlayWidget({
             input={input}
             setInput={setInput}
             handleSendMessage={handleSendMessage}
+            handleSuggestionClick={handleSuggestionClick}
           />
         </div>
       )}
