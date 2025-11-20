@@ -24,10 +24,10 @@ export const API = {
       DELETE_TOPIC: () => "/topics/:id",  // delete
       GET_TOPIC: () => "/topics/:id",  // get (single topic by topic ID)
       GET_TOPICS: () => "/:chatbotId/topics",  // get (all topics for a chatbot)
-      
+
     },
     DATA_SOURCE: {
-      BASE_URL: () => "/datasource",  
+      BASE_URL: () => "/datasource",
       PROCESS: () => "/process",  // post
       ADD_CITATION: () => "/citation",   // put
       EMBEDDINGS: () => "/embeddings/:dataSourceId", // get
@@ -57,7 +57,7 @@ export const API = {
       GET_API_KEY: () => "/key",  // get
       CREATE_API_KEY: () => "/key",  // post
     },
-    
+
     RESPONSE: {
       BASE_URL: () => "/",
       RESPONSE: () => "/response",
@@ -84,6 +84,17 @@ export const API = {
       ADD_CONTACT: () => "/contacts/:chatbotId/:whatsappId",  // post
       GET_ANALYTICS: () => "/analytics/:chatbotId/:whatsappId",  // get
       GET_ANALYTICS_PER_DAY: () => "/analytics/per-day/:chatbotId/:whatsappId",  // get
+    },
+    ACTIONS: {
+      BASE_URL: () => "/actions",
+      CREATE: () => "/create", // post
+      LIST: () => "/list", // post
+      GET: () => "/get", // post
+      UPDATE: () => "/update", // post
+      DELETE: () => "/delete", // post
+      TOGGLE: () => "/toggle", // post
+      TEST: () => "/test", // post
+      TEMPLATES: () => "/templates", // get
     }
   },
 };

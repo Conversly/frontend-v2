@@ -10,7 +10,7 @@
 import { useTheme } from "@/hooks/use-theme"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ThemeToggle } from "./theme-toggle"
+import { ThemeToggle } from "./themeToggle"
 
 export function ThemeExample() {
   const { accentColor, primaryColor, isDark, theme } = useTheme()
@@ -43,7 +43,7 @@ export function ThemeExample() {
         <Button variant="outline" className="border-border">
           Outline Button
         </Button>
-        <Button 
+        <Button
           variant="secondary"
           className="bg-secondary text-secondary-foreground"
         >
