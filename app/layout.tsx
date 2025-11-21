@@ -41,7 +41,7 @@ export default function RootLayout({
       <body
         className={merge(
           inter.variable,
-          "font-sans antialiased",
+          "font-sans antialiased m-0 p-0",
         )}
       >
         <GoogleOAuthProvider

@@ -79,7 +79,7 @@ export default function ActionsPage() {
   }
 
   return (
-    <div className="container py-6 px-8 max-w-5xl">
+    <div className="h-full w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <div className="mb-8 px-4">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Custom Actions</h1>
         <p className="text-muted-foreground">

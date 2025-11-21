@@ -93,7 +93,6 @@ export default function ChatbotsPage() {
       <div className="container max-w-7xl px-4 py-6 md:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Chatbots</h1>
             <p className="text-muted-foreground">
               Manage and monitor all your chatbots
             </p>
