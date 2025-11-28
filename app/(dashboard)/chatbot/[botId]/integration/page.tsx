@@ -13,13 +13,11 @@ import {
 } from '@/lib/constants/integrations';
 import { IntegrationConfig, IntegrationPlatform } from '@/types/integration';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ botId: string }>();
   const router = useRouter();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
-  const { collapseSidebar, expandSidebar } = useSidebar();
 
   if (!botId) {
     return null;
@@ -76,19 +74,6 @@ export default function IntegrationPage() {
 
     checkWhatsAppIntegration();
   }, [botId]);
-
-  // Auto-collapse sidebar when integration is connected
-  useEffect(() => {
-    if (activeIntegration) {
-      collapseSidebar();
-    } else {
-      // Only expand if no integrations are connected
-      const hasConnected = integrations.some(i => i.status === 'connected');
-      if (!hasConnected) {
-        expandSidebar();
-      }
-    }
-  }, [activeIntegration, integrations, collapseSidebar, expandSidebar]);
 
   // Filter integrations by category
   const filteredIntegrations = useMemo(() => {
@@ -398,7 +383,6 @@ export default function IntegrationPage() {
             basePath={`/chatbot/${botId}/integration/${activeIntegration}`}
             onClose={() => {
               setActiveIntegration(null);
-              expandSidebar();
             }}
           />
         </div>
