@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 import { getWhatsAppIntegration, createWhatsAppIntegration } from '@/lib/api/whatsapp';
 import { Loader2, ArrowLeft, Copy, CheckCircle2, MessageCircle, ExternalLink, Check } from 'lucide-react';
 import Link from 'next/link';
-import { useSidebar } from '@/contexts/SidebarContext';
 import { WHATSAPP_SETUP_GUIDE } from '@/lib/constants/integrations';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +18,6 @@ export default function WhatsAppSetupPage() {
   const routeParams = useParams<{ botId: string }>();
   const router = useRouter();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
-  const { collapseSidebar } = useSidebar();
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,9 +34,6 @@ export default function WhatsAppSetupPage() {
   const setupSteps = WHATSAPP_SETUP_GUIDE.steps;
 
   useEffect(() => {
-    // Minimize sidebar when entering setup
-    collapseSidebar();
-    
     const checkExistingIntegration = async () => {
       if (!botId) return;
       
@@ -60,7 +55,7 @@ export default function WhatsAppSetupPage() {
     };
 
     checkExistingIntegration();
-  }, [botId, router, collapseSidebar]);
+  }, [botId, router]);
 
   const handleInputChange = (field: string, value: string) => {
     setCredentials(prev => ({ ...prev, [field]: value }));
