@@ -8,16 +8,59 @@ import { GoogleAuth } from "@/components/auth";
 import { useAuth } from "@/store/auth";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import Image from "next/image";
+import { emailLogin, emailRegister } from "@/lib/api/auth";
 
 export default function LoginPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (isRegistering) {
+        if (password !== confirmPassword) {
+          setError("Passwords do not match");
+          setLoading(false);
+          return;
+        }
+        if (password.length < 6) {
+          setError("Password must be at least 6 characters");
+          setLoading(false);
+          return;
+        }
+        const response = await emailRegister(email, password);
+        if (response.success) {
+          localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
+          router.push("/chatbot");
+        }
+      } else {
+        const response = await emailLogin(email, password);
+        if (response.success) {
+          localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
+          router.push("/chatbot");
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -64,15 +107,105 @@ export default function LoginPage() {
               {/* Header */}
               <div className="mb-8">
                 <h1 className="text-2xl font-bold text-gray-800 md:text-4xl text-center">
-                  Login
+                  {isRegistering ? "Register" : "Login"}
                 </h1>
                 <p className="mt-4 text-base text-gray-500 text-center">
-                  Hey, welcome back! 👋
+                  {isRegistering ? "Create your account 🚀" : "Hey, welcome back! 👋"}
                 </p>
               </div>
 
               {/* Login Form */}
               <div className="mx-auto w-full sm:w-96">
+                {/* Email/Password Form */}
+                <form onSubmit={handleEmailAuth} className="mb-6 space-y-4">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Enter your password"
+                    />
+                  </div>
+
+                  {isRegistering && (
+                    <div>
+                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm Password
+                      </label>
+                      <input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Confirm your password"
+                      />
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="text-sm text-red-500 text-center">
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  >
+                    {loading ? "Loading..." : isRegistering ? "Register" : "Login"}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsRegistering(!isRegistering);
+                        setError("");
+                        setEmail("");
+                        setPassword("");
+                        setConfirmPassword("");
+                      }}
+                      className="text-sm text-gray-600 hover:text-primary transition-colors"
+                    >
+                      {isRegistering ? "Already have an account? Login" : "Don't have an account? Register"}
+                    </button>
+                  </div>
+                </form>
+
+                {/* Divider */}
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                  </div>
+                </div>
+
                 {/* Google Sign In */}
                 <div className="mb-6">
                   <GoogleAuth className="w-full" />

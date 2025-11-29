@@ -41,6 +41,56 @@ export const googleOauth = async (
 
 
 
+export const emailRegister = async (
+  email: string,
+  password: string,
+  displayName?: string,
+) => {
+  const res = (await fetch(
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_REGISTER(),
+    {
+      method: "POST",
+      data: {
+        email,
+        password,
+        displayName,
+      },
+    },
+  ).then((res) => res.data)) as ApiResponse<GoogleOauthResponse>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res;
+};
+
+export const emailLogin = async (
+  email: string,
+  password: string,
+) => {
+  const res = (await fetch(
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_LOGIN(),
+    {
+      method: "POST",
+      data: {
+        email,
+        password,
+      },
+    },
+  ).then((res) => res.data)) as ApiResponse<GoogleOauthResponse>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res;
+};
+
+
+
+
+
 export const getSystemTime = async () => {
   const res = (await fetch(
     API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.SYSTEM_TIME(),

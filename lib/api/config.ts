@@ -11,6 +11,8 @@ export const API = {
       LOGOUT: () => "/logout",  // post
       GOOGLE_OAUTH: () => "/google-oauth",
       SYSTEM_TIME: () => "/system-time",
+      EMAIL_REGISTER: () => '/register',
+      EMAIL_LOGIN: () => '/login'
     },
     CHATBOT: {
       BASE_URL: () => "/chatbot",
