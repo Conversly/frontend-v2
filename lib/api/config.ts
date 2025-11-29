@@ -12,7 +12,8 @@ export const API = {
       GOOGLE_OAUTH: () => "/google-oauth",
       SYSTEM_TIME: () => "/system-time",
       EMAIL_REGISTER: () => '/register',
-      EMAIL_LOGIN: () => '/login'
+      EMAIL_LOGIN: () => '/login',
+      VERIFY_EMAIL: () => '/verify-email',
     },
     CHATBOT: {
       BASE_URL: () => "/chatbot",

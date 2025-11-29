@@ -102,3 +102,15 @@ export const getSystemTime = async () => {
 
   return res.data;
 };
+
+export const verifyEmail = async (token: string) => {
+  const res = (await fetch(
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.VERIFY_EMAIL() + `?token=${token}`,
+  ).then((res) => res.data)) as ApiResponse<{ success: boolean; message: string }>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res;
+};
