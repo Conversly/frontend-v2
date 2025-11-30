@@ -98,6 +98,14 @@ export const API = {
       TOGGLE: () => "/toggle", // post
       TEST: () => "/test", // post
       TEMPLATES: () => "/templates", // get
+    },
+    VOICE: {
+      BASE_URL: () => "/voice",
+      GET_CONFIG: () => "/:chatbotId/config",
+      UPDATE_CONFIG: () => "/:chatbotId/config",
+      DELETE_CONFIG: () => "/:chatbotId/config",
+      GET_WIDGET_CONFIG: () => "/:chatbotId/widget-config",
+      GET_SESSIONS: () => "/:chatbotId/sessions",
     }
   },
 };
