@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useVoiceConfig, useUpdateVoiceConfig } from "@/services/voice";
 import {
     Loader2,
@@ -16,15 +15,7 @@ import {
 import { toast } from "sonner";
 
 // Import sub-components
-import { ProviderIndicator } from "@/components/voice/types";
-import { ProviderLegend } from "@/components/voice/ProviderLegend";
-import { CostLatencyIndicator } from "@/components/voice/CostLatencyIndicator";
-import { ModelConfig } from "@/components/voice/ModelConfig";
 import { VoiceConfig } from "@/components/voice/VoiceConfig";
-import { TranscriberConfig } from "@/components/voice/TranscriberConfig";
-import { ToolsConfig } from "@/components/voice/ToolsConfig";
-import { AnalysisConfig } from "@/components/voice/AnalysisConfig";
-import { AdvancedConfig } from "@/components/voice/AdvancedConfig";
 import { VoicePreview } from "@/components/voice/VoicePreview";
 
 // ============================================================================
@@ -40,7 +31,6 @@ export default function VoiceConfigPage() {
 
     const [localConfig, setLocalConfig] = React.useState<any>(null);
     const [isDirty, setIsDirty] = React.useState(false);
-    const [activeTab, setActiveTab] = React.useState("model");
 
     React.useEffect(() => {
         if (config) {
@@ -77,23 +67,6 @@ export default function VoiceConfigPage() {
             </div>
         );
     }
-
-    // Calculate active providers for legend
-    const activeProviders: ProviderIndicator[] = [
-        { name: localConfig.ttsModel || "elevenlabs", color: "#22c55e" },
-        { name: localConfig.sttModel || "deepgram", color: "#ef4444" },
-        { name: localConfig.llmModel || "gpt-4o", color: "#eab308" },
-        { name: "vapi", color: "#3b82f6" },
-    ];
-
-    const tabs = [
-        { id: "model", label: "Model", icon: "⚙️" },
-        { id: "voice", label: "Voice", icon: "🎤" },
-        { id: "transcriber", label: "Transcriber", icon: "📝" },
-        { id: "tools", label: "Tools", icon: "🔧" },
-        { id: "analysis", label: "Analysis", icon: "📊" },
-        { id: "advanced", label: "Advanced", icon: "⚡" },
-    ];
 
     return (
         <div className="flex h-[calc(100vh-5rem)] flex-col overflow-hidden bg-background">
@@ -144,61 +117,10 @@ export default function VoiceConfigPage() {
                 </div>
             </header>
 
-            {/* Tab Navigation */}
-            <div className="border-b px-4 shrink-0">
-                <div className="flex items-center gap-1">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`
-                                flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium 
-                                border-b-2 transition-colors
-                                ${activeTab === tab.id
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-muted-foreground hover:text-foreground"
-                                }
-                            `}
-                        >
-                            <span>{tab.icon}</span>
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
             <div className="flex flex-1 overflow-hidden">
                 {/* Left Pane: Configuration */}
                 <div className="flex w-2/3 flex-col border-r h-full overflow-hidden">
-                    <ScrollArea className="flex-1">
-                        <div className="p-6 space-y-6">
-                            {/* Provider Legend + Cost/Latency */}
-                            <div className="space-y-4">
-                                <ProviderLegend providers={activeProviders} />
-                                <CostLatencyIndicator cost={0.15} latency={1050} />
-                            </div>
-
-                            {/* Tab Content */}
-                            {activeTab === "model" && (
-                                <ModelConfig config={localConfig} onChange={handleChange} />
-                            )}
-                            {activeTab === "voice" && (
-                                <VoiceConfig config={localConfig} onChange={handleChange} />
-                            )}
-                            {activeTab === "transcriber" && (
-                                <TranscriberConfig config={localConfig} onChange={handleChange} />
-                            )}
-                            {activeTab === "tools" && (
-                                <ToolsConfig config={localConfig} onChange={handleChange} />
-                            )}
-                            {activeTab === "analysis" && (
-                                <AnalysisConfig config={localConfig} onChange={handleChange} />
-                            )}
-                            {activeTab === "advanced" && (
-                                <AdvancedConfig config={localConfig} onChange={handleChange} />
-                            )}
-                        </div>
-                    </ScrollArea>
+                    <VoiceConfig config={localConfig} onChange={handleChange} />
                 </div>
 
                 {/* Right Pane: Preview */}

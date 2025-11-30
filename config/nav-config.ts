@@ -143,6 +143,11 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         icon: Zap,
     },
     {
+        title: "Voice",
+        url: `/chatbot/${botId}/voice`,
+        icon: Play,
+    },
+    {
         title: "Integration",
         url: `/chatbot/${botId}/integration`,
         icon: Plug,
