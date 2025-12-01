@@ -106,6 +106,19 @@ export const API = {
       DELETE_CONFIG: () => "/:chatbotId/config",
       GET_WIDGET_CONFIG: () => "/:chatbotId/widget-config",
       GET_SESSIONS: () => "/:chatbotId/sessions",
+    },
+    PROMOTE: {
+      BASE_URL: () => "/promote",
+      GET_PRODUCTS: () => "/", // get (all products)
+      CREATE_PRODUCT: () => "/", // post
+      GET_PRODUCT: () => "/:id", // get
+      UPDATE_PRODUCT: () => "/:id", // put
+      UPVOTE_PRODUCT: () => "/:id/upvote", // post
+      ADD_COMMENT: () => "/:id/comment", // post
+      REPLY_COMMENT: () => "/:id/comment/:commentId/reply", // post
+      UPVOTE_COMMENT: () => "/:id/comment/:commentId/upvote", // post
+      UPLOAD: () => "/upload", // post
+      MY_PRODUCTS: () => "/my-products", // get
     }
   },
 };

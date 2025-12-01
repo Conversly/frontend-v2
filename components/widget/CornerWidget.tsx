@@ -22,9 +22,9 @@ interface CornerWidgetProps {
   handleSuggestionClick: (suggestion: string) => void
   handleRegenerate: () => void
   handleRating: (
-    messageId: string, 
+    messageId: string,
     rating: "thumbs-up" | "thumbs-down",
-    feedback?: { 
+    feedback?: {
       issue?: string
       incorrect?: boolean
       irrelevant?: boolean
@@ -45,13 +45,50 @@ export function CornerWidget({
   handleSuggestionClick,
   handleRegenerate,
   handleRating,
-}: CornerWidgetProps) {
+  embedded = false,
+}: CornerWidgetProps & { embedded?: boolean }) {
   const isLeft = config.alignChatButton === "left"
 
+  if (embedded) {
+    return (
+      <div className="w-full h-full">
+        <Card
+          className={cn(
+            "w-full h-full flex flex-col shadow-none border-0 rounded-none",
+            config.appearance === "dark" ? "bg-gray-900" : "bg-white"
+          )}
+        >
+          <ChatHeader
+            config={config}
+            onClose={() => { }}
+            hideClose
+          />
+
+          <ChatBody
+            config={config}
+            messages={messages}
+            isTyping={isTyping}
+            handleSuggestionClick={handleSuggestionClick}
+            handleRegenerate={handleRegenerate}
+            handleRating={handleRating}
+          />
+
+          <ChatInput
+            config={config}
+            input={input}
+            setInput={setInput}
+            handleSendMessage={handleSendMessage}
+            handleSuggestionClick={handleSuggestionClick}
+          />
+        </Card>
+      </div>
+    )
+  }
+
   return (
-    <div className="fixed z-50" style={{ 
+    <div className="fixed z-50" style={{
       [isLeft ? "left" : "right"]: "20px",
-      bottom: "20px" 
+      bottom: "20px"
     }}>
       {/* Floating Button */}
       <AnimatePresence>
@@ -68,9 +105,9 @@ export function CornerWidget({
             style={{ backgroundColor: config.widgetBubbleColour }}
           >
             {config.widgeticon ? (
-              <img 
-                src={config.widgeticon} 
-                alt="Chat" 
+              <img
+                src={config.widgeticon}
+                alt="Chat"
                 className="w-8 h-8"
               />
             ) : (
@@ -101,17 +138,17 @@ export function CornerWidget({
               maxHeight: "calc(100vh - 40px)",
             }}
           >
-            <Card 
+            <Card
               className={cn(
                 "h-full flex flex-col shadow-2xl overflow-hidden",
                 config.appearance === "dark" ? "bg-gray-900 border-gray-800" : "bg-white"
               )}
             >
-              <ChatHeader 
+              <ChatHeader
                 config={config}
                 onClose={() => setIsOpen(false)}
               />
-              
+
               <ChatBody
                 config={config}
                 messages={messages}

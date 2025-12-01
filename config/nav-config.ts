@@ -26,6 +26,7 @@ import {
     Palette,
     Rocket,
     Home,
+    Megaphone,
 } from "lucide-react";
 
 export type NavItem = {
@@ -51,6 +52,11 @@ export const dashboardNavItems: NavItem[] = [
         title: "Settings",
         url: "/settings",
         icon: Settings,
+    },
+    {
+        title: "Promote",
+        url: "/promote-manager",
+        icon: Megaphone,
     },
 ];
 

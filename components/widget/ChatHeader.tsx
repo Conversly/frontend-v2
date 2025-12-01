@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils"
 interface ChatHeaderProps {
   config: UIConfigInput
   onClose: () => void
+  hideClose?: boolean
 }
 
-export function ChatHeader({ config, onClose }: ChatHeaderProps) {
+export function ChatHeader({ config, onClose, hideClose }: ChatHeaderProps) {
   return (
     <div
       className={cn(
@@ -21,8 +22,8 @@ export function ChatHeader({ config, onClose }: ChatHeaderProps) {
     >
       <div className="flex items-center gap-3">
         {config.PrimaryIcon && (
-          <img 
-            src={config.PrimaryIcon} 
+          <img
+            src={config.PrimaryIcon}
             alt={config.DisplayName}
             className="w-14 h-14 rounded-full"
           />
@@ -31,15 +32,17 @@ export function ChatHeader({ config, onClose }: ChatHeaderProps) {
           {config.DisplayName}
         </h2>
       </div>
-      
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={onClose}
-        className="text-white hover:bg-white/20 h-8 w-8"
-      >
-        <X className="h-5 w-5" />
-      </Button>
+
+      {!hideClose && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="text-white hover:bg-white/20 h-8 w-8"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   )
 }
