@@ -13,7 +13,7 @@ interface AdvancedConfigProps {
 export function AdvancedConfig({ config, onChange }: AdvancedConfigProps) {
     return (
         <div className="space-y-4">
-            <SectionDivider label="Advanced" icon={<span>⚡</span>} />
+
 
             <CollapsibleSection
                 id="metadata"

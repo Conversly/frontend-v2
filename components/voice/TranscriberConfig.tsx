@@ -20,7 +20,7 @@ interface TranscriberConfigProps {
 export function TranscriberConfig({ config, onChange }: TranscriberConfigProps) {
     return (
         <div className="space-y-4">
-            <SectionDivider label="Transcriber" icon={<span>📝</span>} />
+
 
             <CollapsibleSection
                 id="stt-config"
@@ -38,7 +38,7 @@ export function TranscriberConfig({ config, onChange }: TranscriberConfigProps) 
                                     onChange("sttModel", value)
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select STT provider" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -61,7 +61,7 @@ export function TranscriberConfig({ config, onChange }: TranscriberConfigProps) 
                                     onChange("sttLanguage", value)
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>

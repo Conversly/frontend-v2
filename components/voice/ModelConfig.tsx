@@ -23,7 +23,7 @@ interface ModelConfigProps {
 export function ModelConfig({ config, onChange }: ModelConfigProps) {
     return (
         <div className="space-y-4">
-            <SectionDivider label="Model" icon={<span>⚙️</span>} />
+
 
             <CollapsibleSection
                 id="model-config"
@@ -43,7 +43,7 @@ export function ModelConfig({ config, onChange }: ModelConfigProps) {
                                 onChange("llmProvider", value)
                             }
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select provider" />
                             </SelectTrigger>
                             <SelectContent>
@@ -81,7 +81,7 @@ export function ModelConfig({ config, onChange }: ModelConfigProps) {
                                 onChange("llmModel", value)
                             }
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select model" />
                             </SelectTrigger>
                             <SelectContent>
@@ -107,7 +107,7 @@ export function ModelConfig({ config, onChange }: ModelConfigProps) {
                             onChange("firstMessageMode", value)
                         }
                     >
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

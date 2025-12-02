@@ -34,7 +34,22 @@ export default function VoiceConfigPage() {
 
     React.useEffect(() => {
         if (config) {
-            setLocalConfig(config);
+            // Parse backend config to frontend state
+            const [llmProvider, llmModel] = config.llmModel ? config.llmModel.split(':') : ['openai', 'gpt-4o'];
+            const [sttProvider] = config.sttModel ? config.sttModel.split(':') : ['deepgram'];
+            const [ttsProvider] = config.ttsModel ? config.ttsModel.split(':') : ['elevenlabs'];
+
+            setLocalConfig({
+                ...config,
+                llmProvider,
+                llmModel: llmModel || config.llmModel,
+                sttModel: sttProvider,
+                ttsModel: ttsProvider,
+                sttLanguage: config.language,
+                voiceSpeed: config.voiceSettings?.speed,
+                voiceStability: config.voiceSettings?.stability,
+                firstMessageMode: config.voiceSettings?.firstMessageMode || 'assistant',
+            });
         }
     }, [config]);
 
@@ -44,9 +59,55 @@ export default function VoiceConfigPage() {
     };
 
     const handleSave = () => {
-        if (!localConfig) return;
+        if (!localConfig || !config) return;
+
+        // Format frontend state back to backend config
+        const {
+            llmProvider,
+            llmModel,
+            sttModel,
+            ttsModel,
+            sttLanguage,
+            voiceSpeed,
+            voiceStability,
+            firstMessageMode,
+            ...rest
+        } = localConfig;
+
+        // Helper to reconstruct full model string with defaults
+        const getFullSttModel = (provider: string) => {
+            if (config.sttModel && config.sttModel.startsWith(provider)) return config.sttModel;
+            if (provider === 'deepgram') return 'deepgram:nova-2';
+            if (provider === 'assemblyai') return 'assemblyai:assemblyai_default';
+            if (provider === 'cartesia') return 'cartesia:cartesia_default';
+            return provider;
+        };
+
+        const getFullTtsModel = (provider: string) => {
+            if (config.ttsModel && config.ttsModel.startsWith(provider)) return config.ttsModel;
+            if (provider === 'elevenlabs') return 'elevenlabs:eleven_turbo_v2_5';
+            if (provider === 'cartesia') return 'cartesia:sonic-english';
+            if (provider === 'rime') return 'rime:rime_default';
+            if (provider === 'inworld') return 'inworld:inworld_default';
+            return provider;
+        };
+
+        const payload = {
+            ...rest,
+            llmModel: `${llmProvider}:${llmModel}`,
+            sttModel: getFullSttModel(sttModel),
+            ttsModel: getFullTtsModel(ttsModel),
+            language: sttLanguage,
+            voiceSettings: {
+                ...rest.voiceSettings,
+                speed: voiceSpeed,
+                stability: voiceStability,
+                firstMessageMode: firstMessageMode,
+            },
+        };
+
         updateConfig.mutate(
-            { chatbotId: botId, data: localConfig },
+            { chatbotId: botId, data: payload },
             {
                 onSuccess: () => {
                     setIsDirty(false);
@@ -70,57 +131,18 @@ export default function VoiceConfigPage() {
 
     return (
         <div className="flex h-[calc(100vh-5rem)] flex-col overflow-hidden bg-background">
-            {/* Header */}
-            <header className="flex h-14 items-center justify-between border-b px-4 shrink-0">
-                <div className="flex items-center gap-3">
-                    <div>
-                        <h1 className="text-sm font-semibold">{localConfig.name || "Voice Agent"}</h1>
-                        <p className="text-xs text-muted-foreground font-mono">
-                            {botId.slice(0, 8)}...
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <Code className="h-3.5 w-3.5" />
-                        Code
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <Play className="h-3.5 w-3.5" />
-                        Test
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <MessageSquare className="h-3.5 w-3.5" />
-                        Chat
-                    </Button>
-                    <Button size="sm" variant="default" className="gap-2 bg-teal-600 hover:bg-teal-700">
-                        <Phone className="h-3.5 w-3.5" />
-                        Talk to Assistant
-                    </Button>
-                    <div className="h-6 w-px bg-border mx-1" />
-                    {isDirty && (
-                        <span className="text-xs text-muted-foreground">Unsaved</span>
-                    )}
-                    <Button
-                        size="sm"
-                        variant={isDirty ? "default" : "secondary"}
-                        onClick={handleSave}
-                        disabled={!isDirty || updateConfig.isPending}
-                    >
-                        {updateConfig.isPending ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Save className="mr-2 h-4 w-4" />
-                        )}
-                        Save
-                    </Button>
-                </div>
-            </header>
-
             <div className="flex flex-1 overflow-hidden">
                 {/* Left Pane: Configuration */}
                 <div className="flex w-2/3 flex-col border-r h-full overflow-hidden">
-                    <VoiceConfig config={localConfig} onChange={handleChange} />
+                    <VoiceConfig
+                        config={localConfig}
+                        onChange={handleChange}
+                        onSave={handleSave}
+                        isDirty={isDirty}
+                        isSaving={updateConfig.isPending}
+                        agentName={localConfig.name || "Voice Agent"}
+                        botId={botId}
+                    />
                 </div>
 
                 {/* Right Pane: Preview */}

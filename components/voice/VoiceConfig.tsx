@@ -1,5 +1,7 @@
 
 import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Save } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,19 +22,25 @@ import { InfoTooltip } from "./InfoTooltip";
 // Import other config sections
 import { ModelConfig } from "./ModelConfig";
 import { TranscriberConfig } from "./TranscriberConfig";
-import { ToolsConfig } from "./ToolsConfig";
 import { AnalysisConfig } from "./AnalysisConfig";
 import { AdvancedConfig } from "./AdvancedConfig";
 import { ProviderLegend } from "./ProviderLegend";
-import { CostLatencyIndicator } from "./CostLatencyIndicator";
 
-interface VoiceConfigProps {
+interface VoiceSectionProps {
     config: any;
     onChange: (field: string, value: any) => void;
 }
 
+interface VoiceConfigProps extends VoiceSectionProps {
+    onSave: () => void;
+    isDirty: boolean;
+    isSaving: boolean;
+    agentName: string;
+    botId: string;
+}
+
 // Renamed original VoiceConfig to VoiceSettings
-function VoiceSettings({ config, onChange }: VoiceConfigProps) {
+function VoiceSettings({ config, onChange }: VoiceSectionProps) {
     return (
         <div className="space-y-4">
             <CollapsibleSection
@@ -51,7 +59,7 @@ function VoiceSettings({ config, onChange }: VoiceConfigProps) {
                                     onChange("ttsModel", value)
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select TTS provider" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -74,7 +82,7 @@ function VoiceSettings({ config, onChange }: VoiceConfigProps) {
                                     onChange("voiceId", value)
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select voice" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -153,14 +161,21 @@ function VoiceSettings({ config, onChange }: VoiceConfigProps) {
 }
 
 // Main Container Component
-export function VoiceConfig({ config, onChange }: VoiceConfigProps) {
+export function VoiceConfig({
+    config,
+    onChange,
+    onSave,
+    isDirty,
+    isSaving,
+    agentName,
+    botId
+}: VoiceConfigProps) {
     const [activeSection, setActiveSection] = React.useState("model");
 
     const sections = [
         { id: "model", label: "Model", icon: "⚙️", component: ModelConfig },
         { id: "voice", label: "Voice", icon: "🎤", component: VoiceSettings },
         { id: "transcriber", label: "Transcriber", icon: "📝", component: TranscriberConfig },
-        { id: "tools", label: "Tools", icon: "🔧", component: ToolsConfig },
         { id: "analysis", label: "Analysis", icon: "📊", component: AnalysisConfig },
         { id: "advanced", label: "Advanced", icon: "⚡", component: AdvancedConfig },
     ];
@@ -184,23 +199,54 @@ export function VoiceConfig({ config, onChange }: VoiceConfigProps) {
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Horizontal Sticky Header */}
-            <div className="shrink-0 border-b bg-background z-10 sticky top-0">
-                <div className="flex items-center px-4 overflow-x-auto no-scrollbar">
-                    {sections.map((section) => (
-                        <button
-                            key={section.id}
-                            onClick={() => scrollToSection(section.id)}
-                            className={cn(
-                                "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                                activeSection === section.id
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/20"
-                            )}
-                        >
-                            <span className="text-base">{section.icon}</span>
-                            {section.label}
-                        </button>
-                    ))}
+            <div className="shrink-0 border-b bg-background z-10 sticky top-0 h-12 flex items-center justify-between px-4">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                    {/* Agent Name */}
+                    <div className="shrink-0 flex items-center gap-2">
+                        <span className="text-sm font-semibold truncate max-w-[150px]" title={agentName}>
+                            {agentName}
+                        </span>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="h-4 w-px bg-border shrink-0" />
+
+                    {/* Navigation Tabs */}
+                    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar mask-linear-fade">
+                        {sections.map((section) => (
+                            <button
+                                key={section.id}
+                                onClick={() => scrollToSection(section.id)}
+                                className={cn(
+                                    "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap",
+                                    activeSection === section.id
+                                        ? "bg-secondary text-secondary-foreground"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                )}
+                            >
+                                <span className="text-xs">{section.icon}</span>
+                                {section.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="flex items-center gap-2 shrink-0 ml-4">
+                    <Button
+                        size="sm"
+                        variant={isDirty ? "default" : "ghost"}
+                        className={cn("h-8 text-xs", !isDirty && "text-muted-foreground")}
+                        onClick={onSave}
+                        disabled={!isDirty || isSaving}
+                    >
+                        {isSaving ? (
+                            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                        ) : (
+                            <Save className="mr-2 h-3 w-3" />
+                        )}
+                        Save
+                    </Button>
                 </div>
             </div>
 
@@ -211,7 +257,6 @@ export function VoiceConfig({ config, onChange }: VoiceConfigProps) {
                     <div className="space-y-4 pb-4 border-b">
                         <div className="flex items-center justify-between">
                             <ProviderLegend providers={activeProviders} />
-                            <CostLatencyIndicator cost={0.15} latency={1050} />
                         </div>
                     </div>
 
@@ -225,12 +270,6 @@ export function VoiceConfig({ config, onChange }: VoiceConfigProps) {
                                     id={`section-${section.id}`}
                                     className="scroll-mt-14 space-y-4"
                                 >
-                                    <div className="flex items-center gap-2 pb-2 border-b">
-                                        <span className="text-xl">{section.icon}</span>
-                                        <h2 className="text-lg font-semibold">
-                                            {section.label}
-                                        </h2>
-                                    </div>
                                     <Component config={config} onChange={onChange} />
                                 </div>
                             );

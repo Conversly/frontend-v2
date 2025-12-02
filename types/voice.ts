@@ -72,7 +72,7 @@ export interface UpdateVoiceConfigInput {
     llmModel?: string;
     voiceId?: string;
     voiceSettings?: Record<string, any>;
-    systemPrompt?: string;
+    systemPrompt?: string | null;
     initialGreeting?: string;
     closingMessage?: string;
 }
@@ -80,6 +80,28 @@ export interface UpdateVoiceConfigInput {
 export interface VoiceConfig extends UpdateVoiceConfigInput {
     id: string;
     chatbotId: string;
+    status: 'ACTIVE' | 'INACTIVE' | 'TESTING';
+    turnDetection: 'stt' | 'vad' | 'realtime_llm' | 'manual';
+    sttModel: string;
+    ttsModel: string;
+    llmModel: string;
+    allowInterruptions: boolean;
+    discardAudioIfUninterruptible: boolean;
+    minInterruptionDuration: number;
+    minInterruptionWords: number;
+    minEndpointingDelay: number;
+    maxEndpointingDelay: number;
+    maxToolSteps: number;
+    preemptiveGeneration: boolean;
+    userAwayTimeout: number;
+    voiceId: string;
+    voiceGender: string;
+    language: string;
+    voiceSettings: Record<string, any>;
+    systemPrompt: string | null;
+    initialGreeting: string;
+    closingMessage: string;
+    maxCallDurationSec: number;
     createdAt: string;
     updatedAt: string;
 }

@@ -13,7 +13,7 @@ interface AnalysisConfigProps {
 export function AnalysisConfig({ config, onChange }: AnalysisConfigProps) {
     return (
         <div className="space-y-4">
-            <SectionDivider label="Analysis" icon={<span>📊</span>} />
+
 
             <CollapsibleSection
                 id="summary-config"
