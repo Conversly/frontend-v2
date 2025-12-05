@@ -106,6 +106,7 @@ export const API = {
       DELETE_CONFIG: () => "/:chatbotId/config",
       GET_WIDGET_CONFIG: () => "/:chatbotId/widget-config",
       GET_SESSIONS: () => "/:chatbotId/sessions",
+      GENERATE_TOKEN: () => "/:chatbotId/token",  // POST - Generate LiveKit room token
     },
     PROMOTE: {
       BASE_URL: () => "/promote",

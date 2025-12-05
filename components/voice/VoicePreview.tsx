@@ -1,61 +1,61 @@
+"use client";
+
 import * as React from "react";
-import { Mic } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { App } from "./livekit/app/app";
+import { APP_CONFIG_DEFAULTS, type AppConfig } from "./livekit/app-config";
+import { AgentConfigState } from "./livekit/agent-config";
 
-export function VoicePreview() {
+interface VoicePreviewProps {
+    botId: string;
+    config?: {
+        systemPrompt?: string | null;
+        voiceId?: string;
+        language?: string;
+    };
+    agentName?: string;
+}
+
+/**
+ * Voice preview panel with LiveKit integration
+ * Uses the full LiveKit frontend implementation from livekit/frontend-livekit
+ */
+export function VoicePreview({ botId, config, agentName = "Voice Agent" }: VoicePreviewProps) {
+    // Build app config
+    // Note: agentName in appConfig is for display, but we pass empty string to match Python agent registration
+    const appConfig: AppConfig = {
+        ...APP_CONFIG_DEFAULTS,
+        startButtonText: 'Start Call',
+        agentName: "", // Empty string to match Python agent registration (registered with empty agent_name)
+    };
+
+    // Build agent config from current voice settings
+    const agentConfig: AgentConfigState = React.useMemo(() => ({
+        instructions: config?.systemPrompt || "You are a helpful voice assistant.",
+        tts_voice: config?.voiceId || "21m00Tcm4TlvDq8ikWAM", // Default ElevenLabs voice
+        stt_language: config?.language || "en",
+        tts_language: config?.language || "en",
+    }), [config]);
+
+    const handleConfigChange = React.useCallback((newConfig: AgentConfigState) => {
+        // Optional: handle config changes if needed
+        console.log('Agent config changed:', newConfig);
+    }, []);
+
     return (
-        <div className="flex w-1/3 flex-col bg-muted/5">
-            <div className="flex h-12 items-center justify-between border-b px-4">
+        <div className="flex w-1/3 flex-col bg-muted/5 h-full overflow-hidden">
+            {/* Header */}
+            <div className="flex h-12 items-center justify-between border-b px-4 bg-background">
                 <span className="text-sm font-medium">Preview</span>
-                <Select defaultValue="web">
-                    <SelectTrigger className="w-24 h-7 text-xs">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="web">Web</SelectItem>
-                        <SelectItem value="phone">Phone</SelectItem>
-                    </SelectContent>
-                </Select>
             </div>
-            <div className="flex flex-1 flex-col items-center justify-center p-6">
-                <div className="flex flex-col items-center space-y-8 text-center max-w-xs">
-                    {/* Visualizer */}
-                    <div className="flex h-40 w-full items-center justify-center rounded-xl bg-gradient-to-b from-zinc-900 to-black p-8">
-                        <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="w-1 rounded-full bg-white/60 animate-pulse"
-                                    style={{
-                                        height: `${20 + Math.random() * 30}px`,
-                                        animationDelay: `${i * 100}ms`,
-                                        animationDuration: "1s",
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    </div>
 
-                    <div className="space-y-2">
-                        <h3 className="text-lg font-semibold">Preview your agent</h3>
-                        <p className="text-sm text-muted-foreground">
-                            Start a live test call to speak to your agent as you configure
-                            and iterate.
-                        </p>
-                    </div>
-
-                    <Button className="w-full" size="lg">
-                        <Mic className="mr-2 h-4 w-4" />
-                        Start Call
-                    </Button>
-                </div>
+            {/* LiveKit App */}
+            <div className="flex-1 overflow-hidden">
+                <App 
+                    appConfig={appConfig}
+                    botId={botId}
+                    agentConfig={agentConfig}
+                    onConfigChange={handleConfigChange}
+                />
             </div>
         </div>
     );

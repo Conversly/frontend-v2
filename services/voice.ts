@@ -5,8 +5,9 @@ import {
     deleteVoiceConfig,
     getVoiceWidgetConfig,
     getVoiceCallSessions,
+    generateVoiceToken,
 } from "@/lib/api/voice";
-import { UpdateVoiceConfigInput } from "@/types/voice";
+import { UpdateVoiceConfigInput, VoiceAgentConfig } from "@/types/voice";
 
 export const useVoiceConfig = (chatbotId: string) => {
     return useQuery({
@@ -57,5 +58,23 @@ export const useVoiceCallSessions = (chatbotId: string) => {
         queryKey: ["voiceCallSessions", chatbotId],
         queryFn: () => getVoiceCallSessions(chatbotId),
         enabled: !!chatbotId,
+    });
+};
+
+/**
+ * React Query mutation for generating a LiveKit voice token
+ * Used to initiate a voice call with the agent
+ */
+export const useGenerateVoiceToken = () => {
+    return useMutation({
+        mutationFn: ({
+            chatbotId,
+            agentConfig,
+            agentName,
+        }: {
+            chatbotId: string;
+            agentConfig: VoiceAgentConfig;
+            agentName?: string;
+        }) => generateVoiceToken(chatbotId, agentConfig, agentName),
     });
 };

@@ -5,6 +5,8 @@ import {
     UpdateVoiceConfigInput,
     VoiceWidgetConfig,
     VoiceCallSession,
+    VoiceAgentConfig,
+    LiveKitTokenResponse,
 } from "@/types/voice";
 
 export const getVoiceConfig = async (chatbotId: string): Promise<VoiceConfig> => {
@@ -73,3 +75,54 @@ export const getVoiceCallSessions = async (chatbotId: string): Promise<VoiceCall
 
     return res.data;
 };
+
+/**
+ * Generate a LiveKit room token with agent configuration
+ * This token is used to connect to a LiveKit room and dispatch a voice agent
+ * 
+ * z-terminal API: POST /voice/:chatbotId/token
+ * Request body: { agent_config: VoiceAgentConfig }
+ * Response: { success: true, data: LiveKitTokenResponse }
+ */
+export const generateVoiceToken = async (
+    chatbotId: string,
+    agentConfig: VoiceAgentConfig,
+    agentName?: string
+): Promise<LiveKitTokenResponse> => {
+    const endpoint = API.ENDPOINTS.VOICE.BASE_URL() +
+        API.ENDPOINTS.VOICE.GENERATE_TOKEN().replace(":chatbotId", chatbotId);
+
+    // Build request body matching z-terminal API structure
+    const requestBody: any = {
+        agent_config: agentConfig,
+    };
+
+    // Add room_config with agent_name if provided (including empty string "")
+    // Empty string is valid and matches Python agent registration: {"agent_name": ""}
+    if (agentName !== undefined) {
+        requestBody.room_config = {
+            agents: [{
+                agent_name: agentName, // Can be "" (empty string) to match registered agent
+            }],
+        };
+    }
+
+    console.log('[Voice API] Generating token with:', { 
+        chatbotId, 
+        agentName: agentName === '' ? '(empty string)' : agentName, 
+        agentConfig 
+    });
+
+    const res = await fetch(endpoint, {
+        method: "POST",
+        data: requestBody,
+    }).then((res) => res.data) as ApiResponse<LiveKitTokenResponse, Error>;
+
+    if (!res.success) {
+        throw new Error(res.message);
+    }
+
+    console.log('[Voice API] Token generated successfully:', res.data);
+    return res.data;
+};
+
