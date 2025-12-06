@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock, MessageCircle, MessageSquare, Mic, Users, Zap } from "lucide-react";
+import { FeatureCardProps } from "./types";
 
 import ChatWidget from "./cards/ChatWidget";
 import FeatureCard from "./cards/FeatureCard";
@@ -12,7 +13,7 @@ export default function HighlightsSection() {
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isChatWidgetOpen, setIsChatWidgetOpen] = useState(false);
 
-  const featureCards = [
+  const featureCards: FeatureCardProps[] = [
     {
       title: "AI Voice Agents",
       description:

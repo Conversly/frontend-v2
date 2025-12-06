@@ -13,6 +13,7 @@ import {
     Phone,
 } from "lucide-react";
 import { toast } from "sonner";
+import { type AgentConfigState } from "@/components/voice/livekit/agent-config";
 
 // Import sub-components
 import { VoiceConfig } from "@/components/voice/VoiceConfig";
@@ -129,6 +130,13 @@ export default function VoiceConfigPage() {
         );
     }
 
+    const previewAgentConfig: AgentConfigState = {
+        instructions: localConfig.systemPrompt || "You are a helpful voice assistant.",
+        tts_voice: localConfig.voiceId || "21m00Tcm4TlvDq8ikWAM",
+        stt_language: localConfig.sttLanguage || localConfig.language || "en",
+        tts_language: localConfig.language || "en",
+    };
+
     return (
         <div className="flex h-[calc(100vh-5rem)] flex-col overflow-hidden bg-background">
             <div className="flex flex-1 overflow-hidden">
@@ -148,11 +156,7 @@ export default function VoiceConfigPage() {
                 {/* Right Pane: Preview */}
                 <VoicePreview
                     botId={botId}
-                    config={{
-                        systemPrompt: localConfig.systemPrompt,
-                        voiceId: localConfig.voiceId,
-                        language: localConfig.sttLanguage || localConfig.language,
-                    }}
+                    agentConfig={previewAgentConfig}
                     agentName={localConfig.name || "Voice Agent"}
                 />
             </div>
