@@ -24,7 +24,7 @@ export default function HighlightsSection() {
       secondaryButtonText: "",
       tagLabel: "Easy Creation",
       tagIcon: <Zap size={14} />,
-      accentColor: "blue",
+      accentColor: "blue" as const,
     },
     {
       title: "WhatsApp Chatbots",
@@ -36,7 +36,7 @@ export default function HighlightsSection() {
       secondaryButtonText: "",
       tagLabel: "24/7 Availability",
       tagIcon: <Clock size={14} />,
-      accentColor: "green",
+      accentColor: "green" as const,
     },
     {
       title: "Website Widget Chatbots",
@@ -49,7 +49,7 @@ export default function HighlightsSection() {
       secondaryButtonText: "",
       tagLabel: "Lead Generation",
       tagIcon: <Users size={14} />,
-      accentColor: "purple",
+      accentColor: "purple" as const,
     },
   ];
 
