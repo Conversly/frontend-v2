@@ -129,3 +129,48 @@ export interface VoiceCallSession {
     createdAt: string;
     updatedAt: string;
 }
+
+// =============================================================================
+// LiveKit Voice Agent Types
+// =============================================================================
+
+/**
+ * Voice agent configuration passed to the Python agent via LiveKit metadata
+ */
+export interface VoiceAgentConfig {
+    instructions: string;
+    tts_voice: string;
+    stt_language: string;
+    tts_language: string;
+}
+
+/**
+ * Response from the voice token generation endpoint
+ */
+export interface LiveKitTokenResponse {
+    serverUrl: string;
+    participantToken: string;
+    roomName: string;
+    participantName: string;
+}
+
+/**
+ * LiveKit room connection state
+ */
+export type LiveKitConnectionState =
+    | 'disconnected'
+    | 'connecting'
+    | 'connected'
+    | 'reconnecting'
+    | 'failed';
+
+/**
+ * Voice call state for UI rendering
+ */
+export interface VoiceCallState {
+    connectionState: LiveKitConnectionState;
+    isMuted: boolean;
+    isAgentSpeaking: boolean;
+    callDuration: number;
+    transcript: ConversationTranscript[];
+}

@@ -146,7 +146,15 @@ export default function VoiceConfigPage() {
                 </div>
 
                 {/* Right Pane: Preview */}
-                <VoicePreview />
+                <VoicePreview
+                    botId={botId}
+                    config={{
+                        systemPrompt: localConfig.systemPrompt,
+                        voiceId: localConfig.voiceId,
+                        language: localConfig.sttLanguage || localConfig.language,
+                    }}
+                    agentName={localConfig.name || "Voice Agent"}
+                />
             </div>
         </div>
     );
