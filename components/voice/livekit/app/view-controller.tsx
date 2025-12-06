@@ -8,18 +8,8 @@ import type { AppConfig } from '@/components/voice/livekit/app-config';
 import { SessionView } from '@/components/voice/livekit/app/session-view';
 import { WelcomeView } from '@/components/voice/livekit/app/welcome-view';
 
-// Use forwardRef wrapper for motion components to avoid deprecation
-const MotionWelcomeView = React.forwardRef<any, React.ComponentProps<typeof WelcomeView>>((props, ref) => {
-  const MotionComponent = motion(WelcomeView);
-  return <MotionComponent {...props} ref={ref} />;
-});
-MotionWelcomeView.displayName = 'MotionWelcomeView';
-
-const MotionSessionView = React.forwardRef<any, React.ComponentProps<typeof SessionView>>((props, ref) => {
-  const MotionComponent = motion(SessionView);
-  return <MotionComponent {...props} ref={ref} />;
-});
-MotionSessionView.displayName = 'MotionSessionView';
+const MotionWelcomeView = motion(WelcomeView);
+const MotionSessionView = motion(SessionView);
 
 const VIEW_MOTION_PROPS = {
   variants: {
@@ -35,7 +25,7 @@ const VIEW_MOTION_PROPS = {
   exit: 'hidden',
   transition: {
     duration: 0.5,
-    ease: 'linear',
+    ease: [0, 0, 1, 1] as const,
   },
 };
 

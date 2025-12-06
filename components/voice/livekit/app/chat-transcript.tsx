@@ -2,25 +2,18 @@
 
 import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { HTMLMotionProps } from 'framer-motion';
 import { type ReceivedMessage } from '@livekit/components-react';
 import { ChatEntry } from '@/components/voice/livekit/chat-entry';
 import { cn } from '@/lib/utils';
 
 const MotionContainer = motion.div;
-// Use forwardRef wrapper for motion components
-const MotionChatEntry = React.forwardRef<any, React.ComponentProps<typeof ChatEntry>>((props, ref) => {
-  const MotionComponent = motion(ChatEntry);
-  return <MotionComponent {...props} ref={ref} />;
-});
-MotionChatEntry.displayName = 'MotionChatEntry';
 
 const CONTAINER_MOTION_PROPS = {
   variants: {
     hidden: {
       opacity: 0,
       transition: {
-        ease: 'easeOut',
+        ease: [0.4, 0, 0.2, 1] as const,
         duration: 0.3,
         staggerChildren: 0.1,
         staggerDirection: -1,
@@ -30,7 +23,7 @@ const CONTAINER_MOTION_PROPS = {
       opacity: 1,
       transition: {
         delay: 0.2,
-        ease: 'easeOut',
+        ease: [0.4, 0, 0.2, 1] as const,
         duration: 0.3,
         stagerDelay: 0.2,
         staggerChildren: 0.1,
@@ -65,7 +58,7 @@ export function ChatTranscript({
   hidden = false,
   messages = [],
   ...props
-}: ChatTranscriptProps & Omit<HTMLMotionProps<'div'>, 'ref'>) {
+}: ChatTranscriptProps & React.HTMLAttributes<HTMLDivElement>) {
   // Debug logging
   React.useEffect(() => {
     console.log('[ChatTranscript] Rendering with messages:', {
