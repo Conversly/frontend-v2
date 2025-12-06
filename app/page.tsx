@@ -26,16 +26,18 @@ export default function Home() {
   }, [router]);
 
   return (
-    <main className="bg-background px-[100px]">
-      <Navbar />
-      <Hero />
-      <HighlightsSection />
-      <FeaturesSection />
-      <HowItWorks />
-      <PricingSection />
-      <RelatedArticles />
-      <QuestionsSection />
-      <Footer />
+    <main className="bg-background">
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-16">
+        <Navbar />
+        <Hero />
+        <HighlightsSection />
+        <FeaturesSection />
+        <HowItWorks />
+        <PricingSection />
+        <RelatedArticles />
+        <QuestionsSection />
+        <Footer />
+      </div>
     </main>
   );
 }

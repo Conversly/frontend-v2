@@ -4,12 +4,21 @@ import { merge } from "@/utils/ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter } from "next/font/google";
+import { Roboto, Space_Grotesk } from "next/font/google";
+import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const roboto = Roboto({
+  variable: "--font-roboto",
+  weight: ["100", "300", "400", "500", "700", "900"],
+  preload: true,
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  weight: ["400", "500", "600", "700"],
   preload: true,
   subsets: ["latin"],
   display: "swap",
@@ -41,7 +50,8 @@ export default function RootLayout({
       </head>
       <body
         className={merge(
-          inter.variable,
+          spaceGrotesk.variable,
+          roboto.variable,
           "font-sans antialiased m-0 p-0",
         )}
       >

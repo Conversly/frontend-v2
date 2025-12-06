@@ -41,7 +41,7 @@ export default function RelatedArticles() {
         <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container mx-auto relative">
+      <div className="relative w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

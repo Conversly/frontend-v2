@@ -113,10 +113,7 @@ const bottomFeatures = [
 
 export default function FeaturesSection() {
   return (
-    <section
-      className="mx-auto flex w-full max-w-7xl px-6 py-12"
-      id="features"
-    >
+    <section className="mx-auto flex w-full max-w-7xl py-12" id="features">
       <div className="flex flex-col gap-4 w-full">
         {/* Header */}
         <motion.div
