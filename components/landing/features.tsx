@@ -101,7 +101,7 @@ const bottomFeatures = [
   {
     icon: Type,
     title: 'Whitelabel',
-    description: 'Remove any Conversly branding from the chat widget.',
+    description: 'Remove any VerlyAI branding from the chat widget.',
   },
   {
     icon: TrendingUp,
@@ -130,7 +130,7 @@ export default function FeaturesSection() {
             Build the perfect customer-facing AI agent
           </h2>
           <p className="max-w-[800px] text-lg text-muted-foreground">
-            Conversly gives you all the tools you need to train your perfect AI
+            VerlyAI gives you all the tools you need to train your perfect AI
             agent and connect it to your systems.
           </p>
         </motion.div>

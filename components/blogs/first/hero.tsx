@@ -6,12 +6,12 @@ const BlogHero = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center animate__animated animate__fadeIn">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            How to Create an Optimized and High-Performing Chatbot for Your Website Using Conversly.ai
+            How to Create an Optimized and High-Performing Chatbot for Your Website Using VerlyAI
           </h1>
           
           <div className="max-w-3xl mx-auto">
             <p className="text-lg md:text-xl text-neutral-300 leading-relaxed mb-8 animate__animated animate__fadeIn animate__delay-1s">
-              Chatbots have become an essential tool for modern websites, enhancing customer engagement, automating responses, and improving overall user experience. However, simply integrating a chatbot isn't enough; optimization is key to ensuring it works effectively. In this blog, we'll explore how to create an optimized and better-working chatbot using Conversly.ai.
+              Chatbots have become an essential tool for modern websites, enhancing customer engagement, automating responses, and improving overall user experience. However, simply integrating a chatbot isn't enough; optimization is key to ensuring it works effectively. In this blog, we'll explore how to create an optimized and better-working chatbot using VerlyAI.
             </p>
           </div>
 

@@ -25,9 +25,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "ConverslyAI",
+  title: "VerlyAI",
   description:
-    "ConverslyAI - Empowering Conversations with Intelligent Chatbots",
+    "VerlyAI - Empowering Conversations with Intelligent Chatbots",
 };
 
 export default function RootLayout({
