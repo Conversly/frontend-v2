@@ -1,8 +1,8 @@
-import { 
-  IntegrationConfig, 
+import {
+  IntegrationConfig,
   IntegrationSetupGuide,
   IntegrationSidebarItem,
-  IntegrationPlatform 
+  IntegrationPlatform
 } from '@/types/integration';
 
 // Available Integration Platforms
@@ -142,12 +142,20 @@ export const WHATSAPP_SETUP_GUIDE: IntegrationSetupGuide = {
 };
 
 // WhatsApp-specific sidebar items
+// WhatsApp-specific sidebar items
 export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
   {
-    id: 'chats',
-    label: 'Chats',
+    id: 'live-chat',
+    label: 'Live Chat',
     icon: 'MessageSquare',
-    path: '/chats',
+    path: '/live-chat',
+    badge: '3', // Example badge
+  },
+  {
+    id: 'contacts',
+    label: 'Contacts',
+    icon: 'Users', // You might need to add this to iconMap
+    path: '/contacts',
   },
   {
     id: 'analytics',
@@ -158,8 +166,26 @@ export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
   {
     id: 'profile',
     label: 'Profile',
-    icon: 'Settings',
+    icon: 'User',
     path: '/profile',
+  },
+  {
+    id: 'templates',
+    label: 'Templates',
+    icon: 'FileText',
+    path: '/templates',
+  },
+  {
+    id: 'campaigns',
+    label: 'Campaigns',
+    icon: 'Calendar',
+    path: '/campaigns',
+  },
+  {
+    id: 'manage',
+    label: 'Manage',
+    icon: 'Settings',
+    path: '/manage',
   },
 ];
 

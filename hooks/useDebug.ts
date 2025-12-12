@@ -26,3 +26,4 @@ export const useDebugMode = (options: { logLevel?: LogLevel; enabled?: boolean }
   }, [room, enabled, logLevel]);
 };
 
+

@@ -15,7 +15,7 @@ export default function WhatsAppIntegrationPage() {
   useEffect(() => {
     // Redirect to chats by default
     if (botId && integrationId) {
-      router.replace(`/chatbot/${botId}/integration/whatsapp/${integrationId}/chats`);
+      router.replace(`/chatbot/${botId}/integration/whatsapp/${integrationId}/live-chat`);
     }
   }, [botId, integrationId, router]);
 

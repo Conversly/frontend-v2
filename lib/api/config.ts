@@ -87,6 +87,18 @@ export const API = {
       ADD_CONTACT: () => "/contacts/:chatbotId/:whatsappId",  // post
       GET_ANALYTICS: () => "/analytics/:chatbotId/:whatsappId",  // get
       GET_ANALYTICS_PER_DAY: () => "/analytics/per-day/:chatbotId/:whatsappId",  // get
+      GET_TEMPLATES: () => "/templates", // get (query: chatbotId)
+      SYNC_TEMPLATES: () => "/templates/sync", // post (body: chatbotId)
+      CREATE_TEMPLATE: () => "/templates", // post (body: chatbotId, name, category, language, components)
+      DELETE_TEMPLATE: () => "/templates/:id", // delete (query: chatbotId, params: id)
+      SEND_TEMPLATE: () => "/send-template", // post
+      TOGGLE_INTERVENTION: () => "/intervene", // post
+      GET_CAMPAIGNS: () => "/campaigns", // get (query: chatbotId)
+      CREATE_CAMPAIGN: () => "/campaigns", // post (body: chatbotId)
+      LAUNCH_CAMPAIGN: () => "/campaigns/:id/launch", // post
+      GET_CAMPAIGN_STATS: () => "/campaigns/:id/stats", // get
+      GET_CONTACTS_LIST: () => "/contacts-list", // get (query: chatbotId)
+      MARK_MESSAGES_READ: () => "/messages/read", // post (query: chatbotId, body: messageIds)
     },
     ACTIONS: {
       BASE_URL: () => "/actions",
@@ -120,7 +132,7 @@ export const API = {
       UPVOTE_COMMENT: () => "/:id/comment/:commentId/upvote", // post
       UPLOAD: () => "/upload", // post
       MY_PRODUCTS: () => "/my-products", // get
-    }
+    },
   },
 };
 
