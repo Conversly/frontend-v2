@@ -7,9 +7,9 @@ import { HelpCircle, ExternalLink, Filter, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { IntegrationCard, IntegrationSetupModal, IntegrationSidebar } from '@/components/chatbot/integration';
 import {
-  INTEGRATION_PLATFORMS, 
+  INTEGRATION_PLATFORMS,
   getIntegrationSetupGuide,
-  getIntegrationSidebarItems 
+  getIntegrationSidebarItems
 } from '@/lib/constants/integrations';
 import { IntegrationConfig, IntegrationPlatform } from '@/types/integration';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -22,7 +22,7 @@ export default function IntegrationPage() {
   if (!botId) {
     return null;
   }
-  
+
   // State management
   const [integrations, setIntegrations] = useState<IntegrationConfig[]>(INTEGRATION_PLATFORMS);
   const [selectedPlatform, setSelectedPlatform] = useState<IntegrationPlatform | null>(null);
@@ -39,11 +39,11 @@ export default function IntegrationPage() {
   useEffect(() => {
     const checkWhatsAppIntegration = async () => {
       if (!botId) return;
-      
+
       try {
         const { getWhatsAppIntegration } = await import('@/lib/api/whatsapp');
         const whatsappIntegration = await getWhatsAppIntegration(botId);
-        
+
         if (whatsappIntegration) {
           // Update WhatsApp integration status to connected
           setIntegrations(prev =>
@@ -90,7 +90,7 @@ export default function IntegrationPage() {
   // Handle setup initiation
   const handleSetup = async (platformId: string) => {
     const integration = integrations.find(i => i.id === platformId);
-    
+
     if (!integration) return;
 
     if (integration.status === 'coming-soon') {
@@ -136,11 +136,11 @@ export default function IntegrationPage() {
 
     try {
       setIsSetupModalOpen(false);
-      
+
       if (selectedPlatform === 'whatsapp') {
         // Import WhatsApp API function
         const { createWhatsAppIntegration } = await import('@/lib/api/whatsapp');
-        
+
         const result = await createWhatsAppIntegration({
           chatbotId: botId, // UUID string
           phoneNumberId: credentials.phoneNumberId,
@@ -150,7 +150,7 @@ export default function IntegrationPage() {
           businessAccountId: credentials.businessAccountId,
           webhookUrl: credentials.webhookUrl || webhookUrl,
         });
-        
+
         // Redirect to WhatsApp integration page after successful setup
         if (result?.id) {
           router.push(`/chatbot/${botId}/integration/whatsapp/${result.id}`);
@@ -160,7 +160,7 @@ export default function IntegrationPage() {
       } else {
         // For other platforms, use placeholder
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
+
         // Update integration status
         setIntegrations(prev =>
           prev.map(integration =>
@@ -215,17 +215,31 @@ export default function IntegrationPage() {
 
   return (
     <div className="flex h-full relative">
+      {/* Integration Sidebar (appears after connection) */}
+      {activeIntegration && sidebarItems.length > 0 && (
+        <div className="animate-in slide-in-from-left duration-300">
+          <IntegrationSidebar
+            platform={activeIntegration}
+            items={sidebarItems}
+            basePath={`/chatbot/${botId}/integration/${activeIntegration}`}
+            onClose={() => {
+              setActiveIntegration(null);
+            }}
+          />
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="flex-1 min-h-screen bg-background overflow-y-auto">
         <div className="max-w-7xl mx-auto p-6 space-y-8">
-        {/* Header */}
+          {/* Header */}
           <div className="bg-gradient-to-br from-card via-card to-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 space-y-6 shadow-sm">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
                   <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
+                </div>
+                <div>
                   <h1 className="text-3xl font-heading font-bold text-foreground">
                     Integrations
                   </h1>
@@ -234,7 +248,7 @@ export default function IntegrationPage() {
                   </p>
                 </div>
               </div>
-          </div>
+            </div>
 
             {/* Category Filter */}
             <div className="flex items-center gap-3 flex-wrap">
@@ -245,8 +259,8 @@ export default function IntegrationPage() {
               <Tabs value={categoryFilter} onValueChange={setCategoryFilter}>
                 <TabsList className="bg-muted/50">
                   {categories.map(category => (
-                    <TabsTrigger 
-                      key={category} 
+                    <TabsTrigger
+                      key={category}
                       value={category}
                       className="capitalize data-[state=active]:bg-background data-[state=active]:shadow-sm"
                     >
@@ -255,8 +269,8 @@ export default function IntegrationPage() {
                   ))}
                 </TabsList>
               </Tabs>
-                  </div>
-                </div>
+            </div>
+          </div>
 
           {/* Connected Integrations Section */}
           {connectedIntegrations.length > 0 && (
@@ -268,23 +282,23 @@ export default function IntegrationPage() {
                 </h2>
                 <span className="px-2.5 py-0.5 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium rounded-full border border-green-500/20">
                   {connectedIntegrations.length}
-                        </span>
-                      </div>
+                </span>
+              </div>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {connectedIntegrations.map(integration => (
                   <IntegrationCard
                     key={integration.id}
                     integration={integration}
                     onSetup={handleSetup}
-                            />
-                          ))}
-                      </div>
-                    </div>
-                  )}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Available Integrations Section */}
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
-                      <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-foreground">
                 {connectedIntegrations.length > 0
                   ? 'Available Integrations'
@@ -293,9 +307,9 @@ export default function IntegrationPage() {
               {availableIntegrations.length > 0 && (
                 <span className="text-sm text-muted-foreground">
                   {availableIntegrations.length} available
-                        </span>
-                      )}
-                    </div>
+                </span>
+              )}
+            </div>
             {availableIntegrations.length > 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {availableIntegrations.map(integration => (
@@ -305,8 +319,8 @@ export default function IntegrationPage() {
                     onSetup={handleSetup}
                   />
                 ))}
-            </div>
-          ) : (
+              </div>
+            ) : (
               <div className="text-center py-12 px-4">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-muted-foreground" />
@@ -317,9 +331,9 @@ export default function IntegrationPage() {
                 <p className="text-sm text-muted-foreground">
                   You've connected all available integrations. More coming soon!
                 </p>
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
 
           {/* Help Section */}
           <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-blue-500/20 rounded-2xl p-6 shadow-sm">
@@ -337,23 +351,23 @@ export default function IntegrationPage() {
                   </p>
                 </div>
               </div>
-                <Button
-                variant="outline" 
+              <Button
+                variant="outline"
                 asChild
                 className="bg-background hover:bg-muted border-border shadow-sm"
               >
-                <a 
-                  href="https://docs.conversly.ai/integrations" 
-                  target="_blank" 
+                <a
+                  href="https://docs.conversly.ai/integrations"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2"
                 >
                   View Documentation
                   <ExternalLink className="w-4 h-4" />
                 </a>
-                </Button>
-              </div>
-        </div>
+              </Button>
+            </div>
+          </div>
 
           {/* Feature Request */}
           <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
@@ -373,20 +387,6 @@ export default function IntegrationPage() {
           </div>
         </div>
       </div>
-
-      {/* Integration Sidebar (appears after connection) */}
-      {activeIntegration && sidebarItems.length > 0 && (
-        <div className="animate-in slide-in-from-right duration-300">
-          <IntegrationSidebar
-            platform={activeIntegration}
-            items={sidebarItems}
-            basePath={`/chatbot/${botId}/integration/${activeIntegration}`}
-            onClose={() => {
-              setActiveIntegration(null);
-            }}
-          />
-        </div>
-      )}
 
       {/* Setup Modal */}
       {setupGuide && (

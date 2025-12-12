@@ -39,11 +39,11 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Settings,
 };
 
-export function IntegrationSidebar({ 
-  platform, 
-  items, 
+export function IntegrationSidebar({
+  platform,
+  items,
   basePath,
-  onClose 
+  onClose
 }: IntegrationSidebarProps) {
   const pathname = usePathname();
   const [isMinimized, setIsMinimized] = useState(false);
@@ -62,9 +62,9 @@ export function IntegrationSidebar({
   };
 
   return (
-    <div 
+    <div
       className={cn(
-        "h-full border-l bg-background/95 backdrop-blur-sm transition-all duration-300 flex flex-col",
+        "h-full border-r bg-background/95 backdrop-blur-sm transition-all duration-300 flex flex-col",
         isMinimized ? "w-16" : "w-64"
       )}
     >
@@ -146,7 +146,7 @@ export function IntegrationSidebar({
           {/* Add Template/Action Button (Example for WhatsApp) */}
           {platform === 'whatsapp' && !isMinimized && (
             <div className="pt-4 mt-4 border-t">
-              <Button 
+              <Button
                 className="w-full justify-start gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:opacity-90"
                 size="sm"
               >

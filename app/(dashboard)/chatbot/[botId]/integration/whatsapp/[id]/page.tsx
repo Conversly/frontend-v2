@@ -28,15 +28,15 @@ export default function WhatsAppIntegrationPage() {
 
   return (
     <div className="flex h-full">
-      <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
       <IntegrationSidebar
         platform="whatsapp"
         items={sidebarItems}
         basePath={basePath}
         onClose={() => router.push(`/chatbot/${botId}/integration`)}
       />
+      <div className="flex-1 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
     </div>
   );
 }
