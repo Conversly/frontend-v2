@@ -64,7 +64,7 @@ export default function PricingSection() {
         <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container mx-auto relative">
+      <div className="relative w-full">
         {/* Section Header */}
         <motion.div
           className="text-center mb-16"

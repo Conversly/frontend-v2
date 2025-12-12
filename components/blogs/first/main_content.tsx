@@ -39,7 +39,7 @@ export function BlogContent() {
           2. Choosing and Formatting the Right Knowledge Base
         </h2>
         <p className="mb-6">
-          A chatbot's accuracy depends on its knowledge base. Conversly.ai
+          A chatbot's accuracy depends on its knowledge base. VerlyAI
           allows integration with various data sources, so selecting and
           formatting information correctly is crucial.
         </p>
@@ -117,7 +117,7 @@ export function BlogContent() {
         <div className="border-t border-gray-200 pt-8 mt-12">
           <h2 className="text-3xl font-bold mb-6">Final Thoughts</h2>
           <p className="mb-8">
-            Creating an optimized chatbot with Conversly.ai is not just about
+            Creating an optimized chatbot with VerlyAI is not just about
             setting it up—it's about fine-tuning prompts, choosing the right
             knowledge base, following best practices, and ensuring reliability
             through citations. By implementing these strategies, you can build a
@@ -130,7 +130,7 @@ export function BlogContent() {
               href="/"
               className="inline-block bg-white text-neutral-900 px-8 py-3 rounded-full font-semibold hover:bg-neutral-100 transition-colors"
             >
-              Start with Conversly.ai today
+              Start with VerlyAI today
             </a>
             </div>
         </div>

@@ -59,7 +59,7 @@ export default function HowItWorks() {
         <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
-      <div className="container mx-auto relative">
+      <div className="relative w-full">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">How it works</h2>

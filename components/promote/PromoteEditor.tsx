@@ -62,7 +62,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                             primaryColor: "#FF6154",
                             backgroundColor: "#ffffff",
                             textColor: "#000000",
-                            fontFamily: "Inter",
+                            fontFamily: "Roboto",
                             layout: "modern",
                             cardStyle: "rounded"
                         },
@@ -1039,15 +1039,15 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                             <div className="grid gap-2 pt-4">
                                                 <Label>Font Family</Label>
                                                 <Select
-                                                    value={product.theme?.fontFamily || 'Inter'}
+                                                    value={product.theme?.fontFamily || 'Roboto'}
                                                     onValueChange={(value) => handleThemeChange('fontFamily', value)}
                                                 >
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select font" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="Inter">Inter (Default)</SelectItem>
-                                                        <SelectItem value="Roboto">Roboto</SelectItem>
+                                                        <SelectItem value="Roboto">Roboto (Default)</SelectItem>
+                                                        <SelectItem value="Inter">Inter</SelectItem>
                                                         <SelectItem value="Open Sans">Open Sans</SelectItem>
                                                         <SelectItem value="Lato">Lato</SelectItem>
                                                         <SelectItem value="Montserrat">Montserrat</SelectItem>

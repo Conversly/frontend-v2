@@ -77,7 +77,7 @@ export default function ScalabilitySection() {
         ))}
       </div>
 
-      <div className="container mx-auto relative">
+      <div className="relative w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

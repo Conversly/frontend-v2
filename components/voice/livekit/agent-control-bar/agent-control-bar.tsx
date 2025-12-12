@@ -9,8 +9,8 @@ import { Button } from '@/components/voice/livekit/button';
 import { Toggle } from '@/components/voice/livekit/toggle';
 import { cn } from '@/lib/utils';
 import { ChatInput } from './chat-input';
-import { UseInputControlsProps, useInputControls } from './hooks/use-input-controls';
-import { usePublishPermissions } from './hooks/use-publish-permissions';
+import { UseInputControlsProps, useInputControls } from '@/hooks/use-input-controls';
+import { usePublishPermissions } from '@/hooks/use-publish-permissions';
 import { TrackSelector } from './track-selector';
 
 export interface ControlBarControls {

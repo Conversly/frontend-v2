@@ -180,7 +180,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
             <Input
               value={config.footerText || ''}
               onChange={(e) => updateConfig({ footerText: e.target.value })}
-              placeholder="Powered by ConverslyAI"
+              placeholder="Powered by VerlyAI"
               className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>

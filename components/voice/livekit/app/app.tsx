@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { LiveKitRoom, RoomAudioRenderer, StartAudio } from '@livekit/components-react';
 import type { AppConfig } from '@/components/voice/livekit/app-config';
-import { AgentConfig, defaultAgentConfig, type AgentConfigState } from '@/components/voice/livekit/agent-config';
+import { type AgentConfigState } from '@/components/voice/livekit/agent-config';
 import { ViewController } from '@/components/voice/livekit/app/view-controller';
 import { Toaster } from '@/components/voice/livekit/toaster';
 import { useAgentErrors } from '@/hooks/useAgentErrors';
@@ -23,21 +23,16 @@ function AppSetup() {
 interface AppProps {
   appConfig: AppConfig;
   botId: string;
-  agentConfig?: AgentConfigState;
-  onConfigChange?: (config: AgentConfigState) => void;
+  agentConfig: AgentConfigState;
 }
 
-// Configuration Phase Component - shown before connection
-function ConfigurationPhase({
+// Simple start screen (no configuration UI)
+function StartCallScreen({
   appConfig,
-  agentConfig,
-  onConfigChange,
   onStartCall,
-  isLoading
+  isLoading,
 }: {
   appConfig: AppConfig;
-  agentConfig: AgentConfigState;
-  onConfigChange: (config: AgentConfigState) => void;
   onStartCall: () => void;
   isLoading: boolean;
 }) {
@@ -47,15 +42,8 @@ function ConfigurationPhase({
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-bold mb-1">Voice AI Assistant</h2>
-          <p className="text-muted-foreground text-xs">Configure settings and start the conversation</p>
+          <p className="text-muted-foreground text-xs">Press start to begin the call</p>
         </div>
-
-        {/* Configuration Panel */}
-        <AgentConfig
-          config={agentConfig}
-          onConfigChange={onConfigChange}
-          isConfigPhase={true}
-        />
 
         {/* Start Button */}
         <button
@@ -98,25 +86,7 @@ function ConnectedSession({
   );
 }
 
-export function App({ appConfig, botId, agentConfig: initialAgentConfig, onConfigChange }: AppProps) {
-  // Load saved config from localStorage on mount or use provided config
-  const [agentConfig, setAgentConfig] = React.useState<AgentConfigState>(() => {
-    if (initialAgentConfig) {
-      return initialAgentConfig;
-    }
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('agentConfig');
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch {
-          return defaultAgentConfig;
-        }
-      }
-    }
-    return defaultAgentConfig;
-  });
-
+export function App({ appConfig, botId, agentConfig }: AppProps) {
   const [connectionDetails, setConnectionDetails] = React.useState<{
     serverUrl: string;
     participantToken: string;
@@ -168,26 +138,12 @@ export function App({ appConfig, botId, agentConfig: initialAgentConfig, onConfi
     setIsLoading(false);
   }, []);
 
-  const handleConfigChange = React.useCallback((config: AgentConfigState) => {
-    setAgentConfig(config);
-    onConfigChange?.(config);
-  }, [onConfigChange]);
-
-  // Save config to localStorage when it changes
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('agentConfig', JSON.stringify(agentConfig));
-    }
-  }, [agentConfig]);
-
   // Configuration Phase - before connection
   if (!connectionDetails || !shouldConnect) {
     return (
       <>
-        <ConfigurationPhase
+        <StartCallScreen
           appConfig={appConfig}
-          agentConfig={agentConfig}
-          onConfigChange={handleConfigChange}
           onStartCall={handleStartCall}
           isLoading={isLoading}
         />

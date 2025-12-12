@@ -10,6 +10,8 @@
  * - Format: oklch(lightness chroma hue)
  */
 
+import { FONTS } from "./fonts";
+
 /**
  * Light Theme Configuration
  * Using shadcn OKLCH color format
@@ -142,10 +144,16 @@ export const darkTheme = {
 export const themeTokens = {
   light: lightTheme,
   dark: darkTheme,
-  // Typography scale - Inter font hierarchy
+  // Typography scale - Roboto font hierarchy
   typography: {
     fontFamily: {
-      sans: ['var(--font-inter)', 'Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      sans: [
+        FONTS.body.variable,
+        FONTS.body.name,
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif",
+      ],
       mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
     },
     fontSize: {

@@ -21,7 +21,7 @@ import {
   type ControlBarControls,
 } from '@/components/voice/livekit/agent-control-bar/agent-control-bar';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/voice/livekit/scroll-area/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const MotionBottom = motion.div;
 

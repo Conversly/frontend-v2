@@ -8,7 +8,7 @@ export function BlogContent() {
         <h2 className="text-3xl font-bold mb-8">How to Create and Deploy a Chatbot on Your Website in Minutes!</h2>
 
         <p className="mb-6">
-          Building a chatbot for your website has never been easier! With Conversly.ai, you can create and deploy a fully functional chatbot in just a few minutes. Follow this simple guide to get started:
+          Building a chatbot for your website has never been easier! With VerlyAI, you can create and deploy a fully functional chatbot in just a few minutes. Follow this simple guide to get started:
         </p>
 
         {/* Other Content */}
@@ -31,7 +31,7 @@ export function BlogContent() {
 
         <h2 className="text-3xl font-bold mb-8 mt-12">Congratulations! 🎉</h2>
         <p className="mb-6">
-          That’s it! Your website now has a fully functional chatbot powered by Conversly.ai. Engage with visitors, answer queries instantly, and enhance the user experience effortlessly.
+          That’s it! Your website now has a fully functional chatbot powered by VerlyAI. Engage with visitors, answer queries instantly, and enhance the user experience effortlessly.
         </p>
 
         <div className="bg-neutral-900 text-white p-8 rounded-lg text-center">
@@ -40,7 +40,7 @@ export function BlogContent() {
             href="https://dev.verclyai.xyz"
             className="inline-block bg-white text-neutral-900 px-8 py-3 rounded-full font-semibold hover:bg-neutral-100 transition-colors"
           >
-            Start with Conversly.ai today
+            Start with VerlyAI today
           </a>
         </div>
       </article>

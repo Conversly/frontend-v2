@@ -60,7 +60,7 @@ export default function Footer() {
       </div>
 
       {/* Main Footer */}
-      <div className="container mx-auto px-4 relative py-16">
+      <div className="relative mx-auto w-full py-16">
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12"
           variants={container}

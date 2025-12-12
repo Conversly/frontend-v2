@@ -7,39 +7,29 @@ import { AgentConfigState } from "./livekit/agent-config";
 
 interface VoicePreviewProps {
     botId: string;
-    config?: {
-        systemPrompt?: string | null;
-        voiceId?: string;
-        language?: string;
-    };
+    agentConfig: AgentConfigState;
     agentName?: string;
+    appConfigOverrides?: Partial<AppConfig>;
 }
 
 /**
  * Voice preview panel with LiveKit integration
  * Uses the full LiveKit frontend implementation from livekit/frontend-livekit
  */
-export function VoicePreview({ botId, config, agentName = "Voice Agent" }: VoicePreviewProps) {
-    // Build app config
-    // Note: agentName in appConfig is for display, but we pass empty string to match Python agent registration
-    const appConfig: AppConfig = {
+export function VoicePreview({
+    botId,
+    agentConfig,
+    agentName = "Voice Agent",
+    appConfigOverrides,
+}: VoicePreviewProps) {
+    // Build app config (display-only)
+    // agentName used for display; keep empty string for token to match Python agent registration
+    const appConfig: AppConfig = React.useMemo(() => ({
         ...APP_CONFIG_DEFAULTS,
         startButtonText: 'Start Call',
         agentName: "", // Empty string to match Python agent registration (registered with empty agent_name)
-    };
-
-    // Build agent config from current voice settings
-    const agentConfig: AgentConfigState = React.useMemo(() => ({
-        instructions: config?.systemPrompt || "You are a helpful voice assistant.",
-        tts_voice: config?.voiceId || "21m00Tcm4TlvDq8ikWAM", // Default ElevenLabs voice
-        stt_language: config?.language || "en",
-        tts_language: config?.language || "en",
-    }), [config]);
-
-    const handleConfigChange = React.useCallback((newConfig: AgentConfigState) => {
-        // Optional: handle config changes if needed
-        console.log('Agent config changed:', newConfig);
-    }, []);
+        ...appConfigOverrides,
+    }), [appConfigOverrides]);
 
     return (
         <div className="flex w-1/3 flex-col bg-muted/5 h-full overflow-hidden">
@@ -50,11 +40,10 @@ export function VoicePreview({ botId, config, agentName = "Voice Agent" }: Voice
 
             {/* LiveKit App */}
             <div className="flex-1 overflow-hidden">
-                <App 
+                <App
                     appConfig={appConfig}
                     botId={botId}
                     agentConfig={agentConfig}
-                    onConfigChange={handleConfigChange}
                 />
             </div>
         </div>

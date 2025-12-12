@@ -6,12 +6,12 @@ const BlogHero = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center animate__animated animate__fadeIn">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            🚀 Supercharge Your Website with a Chatbot in Minutes Using Conversly.ai!
+            🚀 Supercharge Your Website with a Chatbot in Minutes Using VerlyAI!
           </h1>
           
           <div className="max-w-3xl mx-auto">
             <p className="text-lg md:text-xl text-neutral-300 leading-relaxed mb-8 animate__animated animate__fadeIn animate__delay-1s">
-              Want to boost engagement, automate responses, and enhance customer support effortlessly? In this guide, we'll show you how to create and deploy a powerful chatbot on your website in just a few clicks with Conversly.ai. No coding required!
+              Want to boost engagement, automate responses, and enhance customer support effortlessly? In this guide, we'll show you how to create and deploy a powerful chatbot on your website in just a few clicks with VerlyAI. No coding required!
             </p>
           </div>
 

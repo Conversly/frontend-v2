@@ -128,7 +128,7 @@ export default function VerifyEmailPage() {
                                 Build the perfect customer-facing AI agent
                             </h3>
                             <p className="mt-4 text-base text-gray-600">
-                                Conversly gives you all the tools you need to train your perfect AI agent and connect it to your systems.
+                                 VerlyAI gives you all the tools you need to train your perfect AI agent and connect it to your systems.
                             </p>
                             <a
                                 href="https://docs.verlyai.com"

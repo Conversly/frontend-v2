@@ -13,9 +13,9 @@
  * OKLCH provides better perceptual uniformity than HSL.
  */
 
- :root {
-  /* Typography */
-  font-family: var(--font-inter), 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+:root {
+  /* Typography - Update fonts in lib/theme/fonts.ts */
+  font-family: var(--font-roboto), 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 
   /* Theme Variables */
   --radius: 0.65rem;
@@ -286,10 +286,12 @@
 }
 
 @theme inline {
-  /* Font families */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-inter: var(--font-inter);
+  /* Font families - Managed by lib/theme/fonts.ts */
+  --font-sans: var(--font-roboto);
+  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --font-roboto: var(--font-roboto);
+  --font-space-grotesk: var(--font-space-grotesk);
 
   /* Radius values */
   --radius-sm: calc(var(--radius) - 4px);
@@ -691,6 +693,20 @@
     transition: background-color 0.5s ease, color 0.5s ease;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Hero & Titles - Font defined in lib/theme/fonts.ts */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .hero-title,
+  .hero-heading {
+    font-family: var(--font-space-grotesk), "Space Grotesk",
+      var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    letter-spacing: -0.01em;
   }
 
   a:active,
