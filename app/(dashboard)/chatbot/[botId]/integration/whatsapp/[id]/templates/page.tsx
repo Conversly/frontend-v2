@@ -24,7 +24,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Search, Plus, MoreVertical, Filter } from 'lucide-react';
 import { useEffect } from 'react';
-import { getWhatsAppTemplates, syncWhatsAppTemplates } from '@/lib/api/whatsapp';
+import { getWhatsAppTemplates, syncWhatsAppTemplates, getDefaultWhatsAppTemplates } from '@/lib/api/whatsapp';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function WhatsAppTemplatesPage() {
     const params = useParams();
@@ -36,14 +37,20 @@ export default function WhatsAppTemplatesPage() {
     const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
 
     const [templates, setTemplates] = useState<any[]>([]);
+    const [defaultTemplates, setDefaultTemplates] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState("saved");
     const [isLoading, setIsLoading] = useState(true);
     const [isSyncing, setIsSyncing] = useState(false);
 
     const loadTemplates = async () => {
         setIsLoading(true);
         try {
-            const data = await getWhatsAppTemplates(botId);
-            setTemplates(data);
+            const [savedData, defaultsData] = await Promise.all([
+                getWhatsAppTemplates(botId),
+                getDefaultWhatsAppTemplates(botId)
+            ]);
+            setTemplates(savedData);
+            setDefaultTemplates(defaultsData.defaults || []);
         } catch (error) {
             console.error("Failed to load templates", error);
         } finally {
@@ -132,59 +139,131 @@ export default function WhatsAppTemplatesPage() {
 
                 {/* Table */}
                 <div className="flex-1 overflow-auto p-6">
-                    <div className="rounded-md border bg-card">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-muted/50">
-                                    <TableHead className="w-[300px]">Template name</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Language</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Messages sent</TableHead>
-                                    <TableHead className="text-right">Messages opened</TableHead>
-                                    <TableHead className="text-right">Last edited</TableHead>
-                                    <TableHead className="w-[50px]"></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Loading templates...</TableCell>
-                                    </TableRow>
-                                ) : templates.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No templates found. Sync from Meta to get started.</TableCell>
-                                    </TableRow>
-                                ) : (
-                                    templates.map((template) => (
-                                        <TableRow key={template.id} className="hover:bg-muted/50 cursor-pointer">
-                                            <TableCell className="font-medium">
-                                                <div className="flex items-center gap-3">
-                                                    {/* <FileText className="w-4 h-4 text-muted-foreground" /> */}
-                                                    {template.name}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>{template.category}</TableCell>
-                                            <TableCell>{template.language}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200 font-normal">
-                                                    {template.status}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">{new Date(template.updatedAt || template.createdAt).toLocaleDateString()}</TableCell>
-                                            <TableCell>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
-                                                </Button>
-                                            </TableCell>
+                    <Tabs defaultValue="saved" className="w-full" onValueChange={setActiveTab}>
+                        <TabsList className="mb-4">
+                            <TabsTrigger value="saved">Saved Templates ({templates.length})</TabsTrigger>
+                            <TabsTrigger value="meta">Meta Templates ({defaultTemplates.length})</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="saved">
+                            <div className="rounded-md border bg-card">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="bg-muted/50">
+                                            <TableHead className="w-[300px]">Template name</TableHead>
+                                            <TableHead>Category</TableHead>
+                                            <TableHead>Language</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="text-right">Last edited</TableHead>
+                                            <TableHead className="w-[50px]"></TableHead>
                                         </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {isLoading ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading templates...</TableCell>
+                                            </TableRow>
+                                        ) : templates.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No templates found. Sync from Meta to get started.</TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            templates.map((template) => (
+                                                <TableRow key={template.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => router.push(`${basePath}/templates/${template.id}/edit`)}>
+                                                    <TableCell className="font-medium">
+                                                        <div className="flex items-center gap-3">
+                                                            {template.name}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{template.category}</TableCell>
+                                                    <TableCell>{template.language}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline" className={`font-normal ${template.status === 'APPROVED' ? 'bg-green-500/10 text-green-600 border-green-200' :
+                                                            template.status === 'REJECTED' ? 'bg-red-500/10 text-red-600 border-red-200' :
+                                                                template.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-600 border-yellow-200' :
+                                                                    'bg-gray-500/10 text-gray-600 border-gray-200'
+                                                            }`}>
+                                                            {template.status}
+                                                        </Badge>
+                                                        {!template.metaTemplateId && <Badge variant="secondary" className="ml-2 text-[10px]">DRAFT</Badge>}
+                                                    </TableCell>
+                                                    <TableCell className="text-right">{new Date(template.updatedAt || template.createdAt).toLocaleDateString()}</TableCell>
+                                                    <TableCell>
+                                                        <Button variant="ghost" size="icon">
+                                                            <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="meta">
+                            <div className="rounded-md border bg-card">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="bg-muted/50">
+                                            <TableHead className="w-[300px]">Template name</TableHead>
+                                            <TableHead>Category</TableHead>
+                                            <TableHead>Language</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="w-[50px]"></TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {isLoading ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading templates...</TableCell>
+                                            </TableRow>
+                                        ) : defaultTemplates.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No default templates found.</TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            defaultTemplates.map((template) => (
+                                                <TableRow key={template.id} className="hover:bg-muted/50 cursor-pointer">
+                                                    <TableCell className="font-medium">
+                                                        <div className="flex items-center gap-3">
+                                                            {template.name}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{template.category}</TableCell>
+                                                    <TableCell>{template.language}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline" className={`font-normal ${template.status === 'APPROVED' ? 'bg-green-500/10 text-green-600 border-green-200' :
+                                                            'bg-gray-500/10 text-gray-600 border-gray-200'
+                                                            }`}>
+                                                            {template.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                const params = new URLSearchParams();
+                                                                params.set('source_template_name', template.name);
+                                                                params.set('source_template_category', template.category);
+                                                                params.set('source_template_language', template.language);
+                                                                params.set('source_template_components', JSON.stringify(template.components));
+                                                                router.push(`${basePath}/templates/new?${params.toString()}`);
+                                                            }}
+                                                        >
+                                                            Use Template
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
         </div>

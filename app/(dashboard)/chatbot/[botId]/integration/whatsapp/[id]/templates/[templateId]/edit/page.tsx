@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,33 +12,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { X, Plus, Image, Globe, ChevronLeft } from 'lucide-react';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
-import { createDefaultWhatsAppTemplate } from '@/lib/api/whatsapp';
+import { getWhatsAppTemplates, updateWhatsAppTemplate } from '@/lib/api/whatsapp';
 import { toast } from 'sonner';
 
-export default function CreateTemplatePage() {
+export default function EditTemplatePage() {
     const router = useRouter();
-    const params = useParams<{ botId: string; id: string }>();
-    const searchParams = useSearchParams();
-    const botId = Array.isArray(params.botId) ? params.botId[0] : params.botId;
-    const integrationId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const params = useParams();
+    const botId = params.botId as string;
+    const integrationId = params.id as string;
+    const templateId = params.templateId as string;
 
-    const [isLoading, setIsLoading] = useState(false);
     const [templateName, setTemplateName] = useState('');
-    const [category, setCategory] = useState<any>('UTILITY');
     const [language, setLanguage] = useState('en_US');
+    const [category, setCategory] = useState('UTILITY');
 
     const [headerType, setHeaderType] = useState('NONE'); // NONE, TEXT, MEDIA
     const [headerText, setHeaderText] = useState('');
@@ -46,42 +36,65 @@ export default function CreateTemplatePage() {
     const [footerText, setFooterText] = useState('');
 
     const [buttons, setButtons] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [template, setTemplate] = useState<any>(null);
 
     useEffect(() => {
-        const sourceName = searchParams.get('source_template_name');
-        if (sourceName) {
-            setTemplateName(`${sourceName}_copy`);
-            setCategory(searchParams.get('source_template_category') as any || 'UTILITY');
-            setLanguage(searchParams.get('source_template_language') || 'en_US');
+        loadTemplate();
+    }, [botId, templateId]);
 
-            const componentsStr = searchParams.get('source_template_components');
-            if (componentsStr) {
-                try {
-                    const components = JSON.parse(componentsStr);
+    const loadTemplate = async () => {
+        try {
+            const templates = await getWhatsAppTemplates(botId);
+            const found = templates.find((t: any) => t.id === templateId);
+            if (found) {
+                setTemplate(found);
+                setTemplateName(found.name);
+                setCategory(found.category);
+                setLanguage(found.language);
 
-                    const header = components.find((c: any) => c.type === 'HEADER');
-                    if (header) {
-                        setHeaderType(header.format);
-                        if (header.format === 'TEXT') setHeaderText(header.text || '');
+                // Parse components
+                const components = found.components || [];
+                const header = components.find((c: any) => c.type === 'HEADER');
+                if (header) {
+                    setHeaderType(header.format);
+                    if (header.format === 'TEXT') {
+                        setHeaderText(header.text || '');
                     }
-
-                    const body = components.find((c: any) => c.type === 'BODY');
-                    if (body) setBodyText(body.text || '');
-
-                    const footer = components.find((c: any) => c.type === 'FOOTER');
-                    if (footer) setFooterText(footer.text || '');
-
-                    const buttonsComp = components.find((c: any) => c.type === 'BUTTONS');
-                    if (buttonsComp) setButtons(buttonsComp.buttons || []);
-
-                } catch (e) {
-                    console.error("Failed to parse source template components", e);
                 }
-            }
-        }
-    }, [searchParams]);
 
-    const handleSubmit = async (saveAsDraft: boolean) => {
+                const body = components.find((c: any) => c.type === 'BODY');
+                if (body) {
+                    setBodyText(body.text || '');
+                }
+
+                const footer = components.find((c: any) => c.type === 'FOOTER');
+                if (footer) {
+                    setFooterText(footer.text || '');
+                }
+
+                const buttonsComp = components.find((c: any) => c.type === 'BUTTONS');
+                if (buttonsComp && buttonsComp.buttons) {
+                    setButtons(buttonsComp.buttons.map((b: any) => ({
+                        type: b.type,
+                        text: b.text,
+                        url: b.url,
+                        phoneNumber: b.phone_number
+                    })));
+                }
+            } else {
+                toast.error("Template not found");
+                router.push(`/chatbot/${botId}/integration/whatsapp/${integrationId}/templates`);
+            }
+        } catch (error) {
+            console.error("Failed to load template", error);
+            toast.error("Failed to load template");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async () => {
         if (!templateName) {
             toast.error("Template name is required");
             return;
@@ -124,27 +137,27 @@ export default function CreateTemplatePage() {
                     type: 'BUTTONS',
                     buttons: buttons.map(b => ({
                         type: b.type,
-                        text: b.text || 'Button', // ensuring text
+                        text: b.text || 'Button',
                         url: b.type === 'URL' ? (b.url || 'https://example.com') : undefined,
                         phone_number: b.type === 'PHONE' ? (b.phoneNumber || '15551234567') : undefined,
                     }))
                 });
             }
 
-            await createDefaultWhatsAppTemplate(botId, {
+            await updateWhatsAppTemplate(botId, {
+                templateId,
                 name: templateName,
                 category: category as any,
                 language,
                 components,
-                saveAsDraft,
                 allowCategoryChange: true,
             });
 
-            toast.success(saveAsDraft ? "Template saved as draft" : "Template submitted for approval");
-            router.push(basePath + '/templates');
+            toast.success("Template updated successfully");
+            router.push(`/chatbot/${botId}/integration/whatsapp/${integrationId}/templates`);
         } catch (error: any) {
-            console.error("Failed to create template", error);
-            toast.error(error.message || "Failed to create template");
+            console.error("Failed to update template", error);
+            toast.error(error.message || "Failed to update template");
         } finally {
             setIsLoading(false);
         }
@@ -152,7 +165,7 @@ export default function CreateTemplatePage() {
 
     // Preview Logic
     const getPreviewBody = () => {
-        let text = bodyText;
+        let text = bodyText || '';
         // Simple regex to bold variables for preview
         text = text.replace(/{{(\d+)}}/g, '{{$1}}');
         return text;
@@ -166,6 +179,10 @@ export default function CreateTemplatePage() {
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
     const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+
+    if (isLoading && !template) {
+        return <div className="p-8 text-center">Loading template...</div>;
+    }
 
     return (
         <div className="flex h-full">
@@ -184,16 +201,14 @@ export default function CreateTemplatePage() {
                             <ChevronLeft className="w-5 h-5" />
                         </Button>
                         <div>
-                            <h1 className="text-lg font-semibold">Create Message Template</h1>
-                            <p className="text-xs text-muted-foreground">Utility • English (US)</p>
+                            <h1 className="text-lg font-semibold">Edit Message Template</h1>
+                            <p className="text-xs text-muted-foreground">{category} • {language}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" onClick={() => handleSubmit(true)} disabled={isLoading}>
-                            {isLoading ? 'Saving...' : 'Save as Draft'}
-                        </Button>
-                        <Button onClick={() => handleSubmit(false)} disabled={isLoading}>
-                            {isLoading ? 'Submitting...' : 'Submit for Review'}
+                        <Button variant="outline" onClick={() => router.back()}>Discard</Button>
+                        <Button onClick={handleSubmit} disabled={isLoading}>
+                            {isLoading ? 'Updating...' : 'Update Template'}
                         </Button>
                     </div>
                 </div>
@@ -203,6 +218,12 @@ export default function CreateTemplatePage() {
                     {/* Left: Form */}
                     <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
                         <div className="max-w-3xl space-y-8">
+
+                            {template?.metaTemplateId && (
+                                <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-md text-sm">
+                                    This template has been submitted to Meta. Updating it will create a new version.
+                                </div>
+                            )}
 
                             {/* Template Details */}
                             <div className="space-y-4 bg-card p-6 rounded-lg border shadow-sm">
@@ -349,7 +370,7 @@ export default function CreateTemplatePage() {
                                     <div className="w-8 h-8 rounded-full bg-slate-300"></div>
                                     <div>
                                         <p className="text-xs font-semibold">Your Business</p>
-                                        <p className="text-[9px] opacity-80">Online</p>
+                                        <p className="text-xs opacity-80">Online</p>
                                     </div>
                                 </div>
                             </div>
@@ -373,7 +394,7 @@ export default function CreateTemplatePage() {
 
                                         {/* Body Text */}
                                         <p className="text-xs whitespace-pre-wrap leading-relaxed text-gray-800">
-                                            {bodyText || 'Start typing to preview...'}
+                                            {getPreviewBody() || 'Start typing to preview...'}
                                         </p>
 
                                         {/* Footer Text */}
@@ -393,7 +414,7 @@ export default function CreateTemplatePage() {
                                             {buttons.map((btn, idx) => (
                                                 <div key={idx} className="h-9 text-cyan-500 text-center flex items-center justify-center text-xs font-medium border-b last:border-b-0 cursor-pointer">
                                                     {btn.type === 'URL' && <Globe className="w-3 h-3 mr-2" />}
-                                                    Button Text
+                                                    {btn.text || 'Button'}
                                                 </div>
                                             ))}
                                         </div>

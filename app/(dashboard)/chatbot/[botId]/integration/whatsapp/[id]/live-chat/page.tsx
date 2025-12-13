@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from '@/lib/utils';
 import { getWhatsAppChats, getWhatsAppContactMessages, sendWhatsAppMessage, WhatsAppContact, WhatsAppMessage } from '@/lib/api/whatsapp';
+import { WhatsAppMessageSender } from '@/components/chatbot/integration/whatsapp/WhatsAppMessageSender';
 
 export default function LiveChatPage() {
     const routeParams = useParams<{ botId: string; id: string }>();
@@ -255,37 +256,12 @@ export default function LiveChatPage() {
                             </div>
                         </ScrollArea>
 
-                        {/* Input Area */}
                         <div className="p-4 border-t bg-card/30">
-                            <div className="bg-background border rounded-xl flex items-center p-2 shadow-sm">
-                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                                    <span className="text-lg">😊</span>
-                                </Button>
-                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                                    <span className="text-lg">📎</span>
-                                </Button>
-                                <Input
-                                    value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                    placeholder="Type a message..."
-                                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 flex-1 bg-transparent"
-                                />
-                                <Button
-                                    size="icon"
-                                    className="bg-primary text-primary-foreground rounded-lg ml-2"
-                                    onClick={handleSendMessage}
-                                >
-                                    <Send className="w-4 h-4" />
-                                </Button>
-                            </div>
-                            <div className="flex justify-between items-center mt-2 px-1">
-                                <p className="text-xs text-muted-foreground">Press Enter to send</p>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs text-muted-foreground">Intervention Mode:</span>
-                                    <Badge variant="outline" className="cursor-pointer hover:bg-muted">Off</Badge>
-                                </div>
-                            </div>
+                            <WhatsAppMessageSender
+                                chatbotId={botId}
+                                recipientPhone={selectedContact.phoneNumber}
+                                onMessageSent={(msg) => setMessages(prev => [...prev, msg])}
+                            />
                         </div>
                     </>
                 ) : (
@@ -300,61 +276,63 @@ export default function LiveChatPage() {
             </div>
 
             {/* 4. Smart Profile Panel (Right) */}
-            {selectedContact && (
-                <div className="w-72 bg-card/50 overflow-y-auto hidden xl:block flex-shrink-0">
-                    <div className="p-6 border-b text-center">
-                        <Avatar className="w-20 h-20 mx-auto mb-4">
-                            <AvatarFallback className="text-xl">{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
-                        </Avatar>
-                        <h3 className="font-semibold text-lg">{selectedContact.displayName || 'Unknown User'}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">{selectedContact.phoneNumber}</p>
+            {
+                selectedContact && (
+                    <div className="w-72 bg-card/50 overflow-y-auto hidden xl:block flex-shrink-0">
+                        <div className="p-6 border-b text-center">
+                            <Avatar className="w-20 h-20 mx-auto mb-4">
+                                <AvatarFallback className="text-xl">{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
+                            </Avatar>
+                            <h3 className="font-semibold text-lg">{selectedContact.displayName || 'Unknown User'}</h3>
+                            <p className="text-sm text-muted-foreground mt-1">{selectedContact.phoneNumber}</p>
 
-                        <div className="flex gap-2 justify-center mt-4">
-                            <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
-                                <Phone className="w-3.5 h-3.5 mr-1.5" /> Call
-                            </Button>
-                            <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
-                                <Mail className="w-3.5 h-3.5 mr-1.5" /> Email
-                            </Button>
+                            <div className="flex gap-2 justify-center mt-4">
+                                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
+                                    <Phone className="w-3.5 h-3.5 mr-1.5" /> Call
+                                </Button>
+                                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
+                                    <Mail className="w-3.5 h-3.5 mr-1.5" /> Email
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="p-4">
+                            <Accordion type="single" collapsible defaultValue="attributes" className="w-full">
+                                <AccordionItem value="tags">
+                                    <AccordionTrigger>Tags</AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="flex flex-wrap gap-2 pt-2">
+                                            {/* API NEEDED: Fetch tags for contact */}
+                                            {/* <Badge variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200">Hot Lead</Badge> */}
+                                            <Button variant="outline" size="sm" className="h-6 text-xs px-2 border-dashed">+ Add</Button>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                <AccordionItem value="attributes">
+                                    <AccordionTrigger>User Attributes</AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="space-y-3 pt-2">
+                                            {/* API NEEDED: Fetch user attributes (location, created at, etc) */}
+                                            <span className="text-sm text-muted-foreground">No attributes found.</span>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                <AccordionItem value="campaigns">
+                                    <AccordionTrigger>Campaign History</AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="space-y-3 pt-2">
+                                            {/* API NEEDED: Fetch campaign history */}
+                                            <span className="text-sm text-muted-foreground">No campaigns found.</span>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
                         </div>
                     </div>
-
-                    <div className="p-4">
-                        <Accordion type="single" collapsible defaultValue="attributes" className="w-full">
-                            <AccordionItem value="tags">
-                                <AccordionTrigger>Tags</AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="flex flex-wrap gap-2 pt-2">
-                                        {/* API NEEDED: Fetch tags for contact */}
-                                        {/* <Badge variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200">Hot Lead</Badge> */}
-                                        <Button variant="outline" size="sm" className="h-6 text-xs px-2 border-dashed">+ Add</Button>
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="attributes">
-                                <AccordionTrigger>User Attributes</AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="space-y-3 pt-2">
-                                        {/* API NEEDED: Fetch user attributes (location, created at, etc) */}
-                                        <span className="text-sm text-muted-foreground">No attributes found.</span>
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="campaigns">
-                                <AccordionTrigger>Campaign History</AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="space-y-3 pt-2">
-                                        {/* API NEEDED: Fetch campaign history */}
-                                        <span className="text-sm text-muted-foreground">No campaigns found.</span>
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

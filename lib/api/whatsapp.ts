@@ -23,7 +23,22 @@ export interface UpdateWhatsAppIntegrationInput {
 
 export interface SendWhatsAppMessageInput {
   to: string;
-  message: string;
+  type?: 'text' | 'template';
+  message?: string;
+  template?: {
+    name: string;
+    language: { code: string };
+    components?: Array<{
+      type: 'body' | 'header' | 'button';
+      parameters?: Array<{
+        type: 'text' | 'image' | 'video' | 'document';
+        text?: string;
+        image?: { link: string };
+        video?: { link: string };
+        document?: { link: string };
+      }>;
+    }>;
+  };
 }
 
 export interface SendWhatsAppMessageResponse {
@@ -194,6 +209,7 @@ export const getWhatsAppContactMessages = async (
 export interface AddWhatsAppContactInput {
   phoneNumber: string;
   displayName?: string;
+  email?: string;
 }
 
 export const addWhatsAppContact = async (
@@ -332,12 +348,12 @@ export const getWhatsAppTemplates = async (
       method: "GET",
       params: { chatbotId }
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppTemplate[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppTemplate[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export const syncWhatsAppTemplates = async (
@@ -349,12 +365,12 @@ export const syncWhatsAppTemplates = async (
       method: "POST",
       data: { chatbotId }
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; count: number; data: WhatsAppTemplate[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppTemplate[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export const getWhatsAppCampaigns = async (
@@ -366,12 +382,12 @@ export const getWhatsAppCampaigns = async (
       method: "GET",
       params: { chatbotId }
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppCampaign[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppCampaign[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export const createWhatsAppCampaign = async (
@@ -384,10 +400,10 @@ export const createWhatsAppCampaign = async (
       method: "POST",
       data: { chatbotId, ...data }
     }
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppCampaign }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppCampaign, Error>;
 
   if (!res.success) throw new Error(res.message);
-  return res.data.data;
+  return res.data;
 }
 
 export const launchWhatsAppCampaign = async (
@@ -420,12 +436,12 @@ export const getWhatsAppContactsList = async (
       method: "GET",
       params: { chatbotId }
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppContact[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppContact[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export const createWhatsAppTemplate = async (
@@ -438,10 +454,10 @@ export const createWhatsAppTemplate = async (
       method: "POST",
       data: { chatbotId, ...data }
     }
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppTemplate }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppTemplate, Error>;
 
   if (!res.success) throw new Error(res.message);
-  return res.data.data;
+  return res.data;
 };
 
 export const deleteWhatsAppTemplate = async (
@@ -473,6 +489,105 @@ export const markWhatsAppMessagesAsRead = async (
       data: { messageIds }
     }
   ).then((res) => res.data) as ApiResponse<{ success: boolean; message: string }, Error>;
+
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+export interface CreateDefaultTemplateParams {
+  name: string;
+  category: 'AUTHENTICATION' | 'MARKETING' | 'UTILITY' | 'TRANSACTIONAL';
+  language: string;
+  components: any[];
+  allowCategoryChange?: boolean;
+  saveAsDraft?: boolean;
+}
+
+export interface UpdateTemplateParams {
+  templateId: string;
+  name?: string;
+  category?: string;
+  language?: string;
+  components?: any[];
+  allowCategoryChange?: boolean;
+}
+
+export const getDefaultWhatsAppTemplates = async (
+  chatbotId: string
+): Promise<{ all: WhatsAppTemplate[], defaults: WhatsAppTemplate[] }> => {
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_DEFAULT_TEMPLATES(),
+    {
+      method: "GET",
+      params: { chatbotId }
+    },
+  ).then((res) => res.data) as ApiResponse<{ all: WhatsAppTemplate[], defaults: WhatsAppTemplate[] }, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  const { all, defaults } = res.data || { all: [], defaults: [] }; // Handle potential null data
+
+  // Ensure hello_world is present
+  const hasHelloWorld = defaults.some(t => t.name === 'hello_world');
+  if (!hasHelloWorld) {
+    const helloWorldTemplate: WhatsAppTemplate = {
+      id: 'hello_world_mock', // Mock ID
+      name: 'hello_world',
+      status: 'APPROVED',
+      category: 'UTILITY',
+      language: 'en_US',
+      metaTemplateId: 'mock_meta_id',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      components: [
+        { type: 'HEADER', format: 'TEXT', text: 'Hello World' },
+        { type: 'BODY', text: 'Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification from the Cloud API, hosted by Meta. Thank you for taking the time to test with us.' },
+        { type: 'FOOTER', text: 'Meta API Team' }
+      ]
+    };
+    defaults.push(helloWorldTemplate);
+  }
+
+  return { all, defaults };
+};
+
+export const createDefaultWhatsAppTemplate = async (
+  chatbotId: string,
+  data: CreateDefaultTemplateParams
+): Promise<WhatsAppTemplate> => {
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_DEFAULT_TEMPLATE(),
+    {
+      method: "POST",
+      data: { chatbotId, ...data }
+    }
+  ).then((res) => res.data) as ApiResponse<WhatsAppTemplate, Error>;
+
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+export const updateWhatsAppTemplate = async (
+  chatbotId: string,
+  params: UpdateTemplateParams
+): Promise<WhatsAppTemplate> => {
+  const endpoint = API.ENDPOINTS.WHATSAPP.UPDATE_TEMPLATE().replace(':id', params.templateId);
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + endpoint,
+    {
+      method: "PATCH",
+      params: { chatbotId },
+      data: {
+        name: params.name,
+        category: params.category,
+        language: params.language,
+        components: params.components,
+        allowCategoryChange: params.allowCategoryChange
+      }
+    }
+  ).then((res) => res.data) as ApiResponse<WhatsAppTemplate, Error>;
 
   if (!res.success) throw new Error(res.message);
   return res.data;

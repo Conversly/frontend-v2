@@ -26,6 +26,17 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { addWhatsAppContact } from '@/lib/api/whatsapp';
+import {
     Users,
     Upload,
     Plus,
@@ -50,6 +61,32 @@ export default function WhatsAppContactsPage() {
     // Mock Data
     const [contacts, setContacts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Add Contact State
+    const [isAddContactOpen, setIsAddContactOpen] = useState(false);
+    const [newContact, setNewContact] = useState({ name: '', phone: '', email: '' });
+    const [isAdding, setIsAdding] = useState(false);
+
+    const handleAddContact = async () => {
+        if (!newContact.phone) return;
+        setIsAdding(true);
+        try {
+            await addWhatsAppContact(botId, integrationId, {
+                phoneNumber: newContact.phone,
+                displayName: newContact.name,
+                email: newContact.email
+            });
+            // Refresh contacts
+            const data = await getWhatsAppContactsList(botId);
+            setContacts(data);
+            setIsAddContactOpen(false);
+            setNewContact({ name: '', phone: '', email: '' });
+        } catch (error) {
+            console.error("Failed to add contact", error);
+        } finally {
+            setIsAdding(false);
+        }
+    };
 
     useEffect(() => {
         const loadContacts = async () => {
@@ -134,9 +171,63 @@ export default function WhatsAppContactsPage() {
                                 <Button variant="default" className="bg-slate-800 text-white hover:bg-slate-700">
                                     Broadcast
                                 </Button>
-                                <Button variant="outline" className="gap-2">
-                                    <Plus className="w-4 h-4" /> Add Contact
-                                </Button>
+                                <Dialog open={isAddContactOpen} onOpenChange={setIsAddContactOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="gap-2">
+                                            <Plus className="w-4 h-4" /> Add Contact
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px]">
+                                        <DialogHeader>
+                                            <DialogTitle>Add Contact</DialogTitle>
+                                            <DialogDescription>
+                                                Add a new contact to your WhatsApp audience.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="name" className="text-right">
+                                                    Name
+                                                </Label>
+                                                <Input
+                                                    id="name"
+                                                    value={newContact.name}
+                                                    onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="phone" className="text-right">
+                                                    Phone <span className="text-red-500">*</span>
+                                                </Label>
+                                                <Input
+                                                    id="phone"
+                                                    value={newContact.phone}
+                                                    onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                                                    className="col-span-3"
+                                                    placeholder="e.g. 15551234567"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="email" className="text-right">
+                                                    Email
+                                                </Label>
+                                                <Input
+                                                    id="email"
+                                                    type="email"
+                                                    value={newContact.email}
+                                                    onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button onClick={handleAddContact} disabled={isAdding}>
+                                                {isAdding ? "Adding..." : "Add Contact"}
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" className="gap-2">
