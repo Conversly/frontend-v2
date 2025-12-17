@@ -74,7 +74,10 @@ export default function WhatsAppContactsPage() {
             await addWhatsAppContact(botId, integrationId, {
                 phoneNumber: newContact.phone,
                 displayName: newContact.name,
-                email: newContact.email
+                email: newContact.email,
+                channels: ['WHATSAPP'],
+                metadata: {},
+                whatsappUserMetadata: {}
             });
             // Refresh contacts
             const data = await getWhatsAppContactsList(botId);

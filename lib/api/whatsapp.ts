@@ -143,7 +143,13 @@ export interface WhatsAppContact {
   id: string;
   phoneNumber: string;
   displayName?: string;
-  userMetadata?: any;
+  email?: string;
+  channels: string[]; // ['WHATSAPP', etc.]
+  metadata: Record<string, any>;
+  whatsappUserMetadata: Record<string, any>;
+  createdAt?: string;
+  updatedAt?: string;
+  userMetadata?: any; // Keeping for backward compatibility if needed, but schema uses metadata/whatsappUserMetadata
 }
 
 export interface WhatsAppMessage {
@@ -210,6 +216,9 @@ export interface AddWhatsAppContactInput {
   phoneNumber: string;
   displayName?: string;
   email?: string;
+  channels?: string[];
+  metadata?: Record<string, any>;
+  whatsappUserMetadata?: Record<string, any>;
 }
 
 export const addWhatsAppContact = async (
@@ -236,6 +245,11 @@ export const addWhatsAppContact = async (
       data: {
         ...input,
         phoneNumber: cleanPhoneNumber, // Send cleaned phone number
+        displayName: input.displayName,
+        email: input.email,
+        channels: input.channels || ['WHATSAPP'],
+        metadata: input.metadata || {},
+        whatsappUserMetadata: input.whatsappUserMetadata || {},
       },
     },
   ).then((res) => res.data) as ApiResponse<WhatsAppContact, Error>;
