@@ -182,6 +182,12 @@ export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
     path: '/campaigns',
   },
   {
+    id: 'automation',
+    label: 'Automation',
+    icon: 'Bot',
+    path: '/automation',
+  },
+  {
     id: 'manage',
     label: 'Manage',
     icon: 'Settings',
