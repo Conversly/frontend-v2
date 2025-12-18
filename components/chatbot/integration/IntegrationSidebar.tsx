@@ -16,6 +16,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
+  LayoutDashboard,
+  Megaphone,
+  Users,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -37,6 +40,9 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   FileText,
   Zap,
   Settings,
+  LayoutDashboard,
+  Megaphone,
+  Users,
 };
 
 export function IntegrationSidebar({
@@ -93,7 +99,7 @@ export function IntegrationSidebar({
       <ScrollArea className="flex-1">
         <div className={cn("space-y-1 p-3", isMinimized && "flex flex-col items-center p-2")}>
           {items.map((item) => {
-            const IconComponent = iconMap[item.icon] || MessageSquare;
+            const IconComponent = iconMap[item.icon as keyof typeof iconMap] || MessageSquare;
             const fullPath = `${basePath}${item.path}`;
             const isActive = pathname === fullPath;
 
@@ -144,23 +150,13 @@ export function IntegrationSidebar({
           })}
 
           {/* Add Template/Action Button (Example for WhatsApp) */}
-          {platform === 'whatsapp' && !isMinimized && (
-            <div className="pt-4 mt-4 border-t">
-              <Button
-                className="w-full justify-start gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:opacity-90"
-                size="sm"
-              >
-                <Plus className="w-4 h-4" />
-                New Template
-              </Button>
-            </div>
-          )}
+
         </div>
       </ScrollArea>
 
       {/* Footer */}
       {!isMinimized && (
-        <div className="p-3 border-t">
+        <div className="p-3 border-t bg-background/95 backdrop-blur-sm sticky bottom-0 z-10">
           <div className={cn(
             "p-3 rounded-lg",
             getPlatformColor(platform)
