@@ -27,6 +27,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
+    DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import {
     Collapsible,
@@ -41,7 +45,11 @@ import {
     User,
     Bot,
     ChevronRight,
+    Moon,
+    Sun,
+    Laptop,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { dashboardNavItems, getChatbotNavItems, NavItem } from "@/config/nav-config";
@@ -52,6 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { user, logout } = useAuth();
     const queryClient = useQueryClient();
     const { isMobile } = useSidebar();
+    const { setTheme } = useTheme();
 
     // Determine if we are in a chatbot context
     const chatbotMatch = pathname?.match(/^\/chatbot\/([^/]+)/);
@@ -221,6 +230,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         Settings
                                     </Link>
                                 </DropdownMenuItem>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>
+                                        <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                                        <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                                        <span>Theme</span>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuItem onClick={() => setTheme("light")}>
+                                                <Sun className="mr-2 h-4 w-4" />
+                                                <span>Light</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                                <Moon className="mr-2 h-4 w-4" />
+                                                <span>Dark</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setTheme("system")}>
+                                                <Laptop className="mr-2 h-4 w-4" />
+                                                <span>System</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleLogout}>
                                     <LogOut className="mr-2 h-4 w-4" />
