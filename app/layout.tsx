@@ -65,7 +65,7 @@ export default function RootLayout({
         <Script
           src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-sRNyhzUvzlVBnixhJK0bLNS4FwyhxX.js"
           data-chatbot-id="s34qkifi608kgew21flmb5bl"
-          data-testing="true"
+          data-testing="false"
           strategy="afterInteractive"
         />
       </body>

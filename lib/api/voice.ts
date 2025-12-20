@@ -18,7 +18,6 @@ export const getVoiceConfig = async (chatbotId: string): Promise<VoiceConfig> =>
     if (!res.success) {
         throw new Error(res.message);
     }
-
     return res.data;
 };
 

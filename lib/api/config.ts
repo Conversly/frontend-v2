@@ -136,6 +136,16 @@ export const API = {
       UPLOAD: () => "/upload", // post
       MY_PRODUCTS: () => "/my-products", // get
     },
+    PROMPT: {
+      BASE_URL: () => "/prompt",
+      GENERATE: () => "/generate", // get - AI generate prompt
+      GENERATE_CHANNEL: () => "/generate/channel", // get - AI modify channel prompt
+      UPDATE_ALL: () => "/all", // put - update all channels at once
+      UPSERT_CHANNEL: () => "/channel", // post - create or update single channel
+      DELETE_CHANNEL: () => "/channel/:id", // delete
+      GET_ALL: () => "/:chatbotId", // get - all prompts for chatbot
+      GET_CHANNEL: () => "/:chatbotId/channel/:channel", // get - specific channel prompt
+    }
   },
 };
 
