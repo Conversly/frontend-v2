@@ -85,7 +85,7 @@ export function QADialog({ isOpen, onClose, onSubmit }: QADialogProps) {
           <Button
             onClick={handleSubmit}
             disabled={!question.trim() || !answer.trim()}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Add Q&A Pair
           </Button>

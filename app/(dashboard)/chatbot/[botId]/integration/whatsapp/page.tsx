@@ -395,7 +395,7 @@ export default function WhatsAppSetupPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:opacity-90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
+                className="flex-1 bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
               >
                 {isSubmitting ? (
                   <>

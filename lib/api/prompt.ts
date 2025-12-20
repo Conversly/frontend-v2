@@ -52,12 +52,16 @@ export const getChannelPrompt = async (
 };
 
 /**
- * Generate prompt using AI (returns prompt, doesn't save)
+ * Generate prompt from scratch using AI (returns prompt, doesn't save)
+ * Uses BASE_PROMPT_GENERATOR for fresh prompt generation
+ * chatbotId and channel are optional - only needed if you want channel-specific context
  */
 export const generatePrompt = async (
   input: GeneratePromptInput
 ): Promise<GeneratedPromptResponse> => {
   const params = new URLSearchParams();
+  if (input.chatbotId) params.append("chatbotId", input.chatbotId);
+  if (input.channel) params.append("channel", input.channel);
   params.append("businessDescription", input.businessDescription);
   if (input.tone) params.append("tone", input.tone);
   if (input.targetAudience) params.append("targetAudience", input.targetAudience);

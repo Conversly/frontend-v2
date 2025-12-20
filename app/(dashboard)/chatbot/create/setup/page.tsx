@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDataSourcesStore } from "@/store/chatbot/data-sources";
-import { useSystemPromptStore } from "@/store/chatbot/system-prompt";
 import { useCustomizationStore } from "@/store/chatbot/customization";
+import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
 import { QUERY_KEY } from "@/utils/query-key";
 import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecase";
 import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
@@ -117,10 +117,17 @@ export default function SetupWizardPage() {
   const saveCustomization = useCustomizationStore((s) => s.saveCustomization);
   const loadCustomization = useCustomizationStore((s) => s.loadCustomization);
 
-  // Step 4 state (personality)
-  const draftPrompt = useSystemPromptStore((s) => s.draftPrompt);
-  const setDraftPrompt = useSystemPromptStore((s) => s.setDraftPrompt);
-  const savePrompt = useSystemPromptStore((s) => s.savePrompt);
+  // Step 4 state (personality) - using prompt API
+  const { data: widgetPrompt } = useChannelPrompt(chatbotId || "", "WIDGET");
+  const { mutateAsync: savePrompt } = useUpsertChannelPrompt();
+  const [draftPrompt, setDraftPrompt] = useState("");
+
+  // Sync draft prompt with fetched widget prompt
+  useEffect(() => {
+    if (widgetPrompt?.systemPrompt) {
+      setDraftPrompt(widgetPrompt.systemPrompt);
+    }
+  }, [widgetPrompt]);
 
   const composedUrl = `${protocol}${host}`.trim();
 
@@ -249,7 +256,11 @@ export default function SetupWizardPage() {
       return;
     }
     try {
-      await savePrompt(chatbotId);
+      await savePrompt({
+        chatbotId,
+        channel: "WIDGET",
+        systemPrompt: draftPrompt,
+      });
       // Invalidate chatbots cache so the new chatbot appears in the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
 
@@ -283,7 +294,7 @@ export default function SetupWizardPage() {
           {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
           {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
           {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
-          {step === 6 && <Step6PromptTuning onConfirm={onStep4Submit} />}
+          {step === 6 && <Step6PromptTuning onConfirm={onStep4Submit} draftPrompt={draftPrompt} setDraftPrompt={setDraftPrompt} />}
         </div>
 
         {/* RIGHT PANEL (Visualization) */}

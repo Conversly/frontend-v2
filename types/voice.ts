@@ -72,7 +72,6 @@ export interface UpdateVoiceConfigInput {
     llmModel?: string;
     voiceId?: string;
     voiceSettings?: Record<string, any>;
-    systemPrompt?: string | null;
     initialGreeting?: string;
     closingMessage?: string;
 }
@@ -98,7 +97,6 @@ export interface VoiceConfig extends UpdateVoiceConfigInput {
     voiceGender: string;
     language: string;
     voiceSettings: Record<string, any>;
-    systemPrompt: string | null;
     initialGreeting: string;
     closingMessage: string;
     maxCallDurationSec: number;

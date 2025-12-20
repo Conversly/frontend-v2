@@ -177,7 +177,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                   toast.error(err?.message || 'Failed to save');
                 }
               }}
-              className="ml-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+              className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSaving ? 'Saving…' : 'Save'}
             </Button>
@@ -199,28 +199,28 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
               <TabsList className="bg-card/60 p-1 rounded-xl flex flex-wrap">
                 <TabsTrigger 
                   value="content" 
-                  className="font-sans text-base data-[state=active]:bg-gradient-to-r from-pink-500 to-purple-500 data-[state=active]:text-white"
+                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Settings2 className="w-4 h-4 mr-2" />
                   Content
                 </TabsTrigger>
                 <TabsTrigger 
                   value="appearance" 
-                  className="font-sans text-base data-[state=active]:bg-gradient-to-r from-pink-500 to-purple-500 data-[state=active]:text-white"
+                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Palette className="w-4 h-4 mr-2" />
                   Appearance
                 </TabsTrigger>
                 <TabsTrigger 
                   value="ai" 
-                  className="font-sans text-base data-[state=active]:bg-gradient-to-r from-pink-500 to-purple-500 data-[state=active]:text-white"
+                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <BrainCircuit className="w-4 h-4 mr-2" />
                   AI
                 </TabsTrigger>
                 <TabsTrigger 
                   value="integration" 
-                  className="font-sans text-base data-[state=active]:bg-gradient-to-r from-pink-500 to-purple-500 data-[state=active]:text-white"
+                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Code className="w-4 h-4 mr-2" />
                   Integration
@@ -273,8 +273,8 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
           </div>
 
           {/* Preview Right Column */}
-          <div className="sticky top-6 self-start max-h-[calc(100vh-3rem)] overflow-y-auto">
-            <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+          <div className="sticky top-6">
+            <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6 min-h-[600px]">
               <SectionHeader 
                 title="Live Preview" 
                 description="See how your chatbot will appear on your website"

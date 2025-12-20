@@ -64,16 +64,15 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
     try {
       const defaultName = `${host.trim()} Agent`;
       const defaultDescription = `${useCase} initialized via link setup for ${websiteUrl}`;
-      const defaultPrompt = `You are an AI assistant for ${host.trim()}. Answer helpfully and concisely using the organization's content.`;
 
       const created = await createChatBot({
         name: defaultName,
         description: defaultDescription,
-        systemPrompt: defaultPrompt,
       });
       const createdId = String(created.id);
       set({ chatbotId: createdId });
 
+      // runInitialSetup will infer and save the prompt via the prompt API
       const result = await runInitialSetup({
         chatbotId: createdId,
         websiteUrl,

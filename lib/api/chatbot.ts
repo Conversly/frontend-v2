@@ -3,7 +3,6 @@ import { API, ApiResponse } from "@/lib/api/config";
 import {
   ChatbotResponse,
   CreateChatbotInput,
-  InstructionResponse,
   GetChatbotsResponse,
   DeleteChatbotInput,
   DeleteChatbotResponse,
@@ -26,38 +25,6 @@ export const createChatBot = async (chatbot: CreateChatbotInput) => {
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data;
-};
-
-export const getInstructions = async (topic: string) => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GENERATE_INSTRUCTIONS(),
-    {
-      method: "GET",
-      params: { topic },
-    },
-  ).then((res) => res.data) as ApiResponse<InstructionResponse, Error>;
-
-  if (!res.success) {
-    throw new Error(res.message);
-  }
-
-  return res.data;
-};
-
-export const updateInstructions = async (chatbotId: string, systemPrompt: string) => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.EDIT_INSTRUCTIONS(),
-    {
-      method: "POST",
-      data: { chatbotId, systemPrompt },
-    },
-  ).then((res) => res.data) as ApiResponse<InstructionResponse, Error>;
-
-  if (!res.success) {
-    throw new Error(res.message);
-  }
-
   return res.data;
 };
 

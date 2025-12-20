@@ -142,7 +142,7 @@ export function IntegrationTab({
             <Button
               onClick={handleAddDomain}
               disabled={isSavingDomain || !newDomain.trim()}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSavingDomain ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -207,7 +207,7 @@ export function IntegrationTab({
               <Button
                 onClick={onGenerateApiKey}
                 disabled={isCreatingApiKey}
-                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 {isCreatingApiKey ? (
                   <>

@@ -184,7 +184,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               <Button
                 variant={config.displayStyle === 'corner' ? 'default' : 'outline'}
                 onClick={() => updateConfig({ displayStyle: 'corner' })}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 Corner
               </Button>
@@ -215,7 +215,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
                 variant={config.buttonAlignment === 'left' ? 'default' : 'outline'}
                 onClick={() => updateConfig({ buttonAlignment: 'left' })}
                 className={config.buttonAlignment === 'left' 
-                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
                   : "border-border text-foreground hover:bg-muted/50"
                 }
               >
@@ -225,7 +225,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
                 variant={config.buttonAlignment === 'right' ? 'default' : 'outline'}
                 onClick={() => updateConfig({ buttonAlignment: 'right' })}
                 className={config.buttonAlignment === 'right' 
-                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
                   : "border-border text-foreground hover:bg-muted/50"
                 }
               >

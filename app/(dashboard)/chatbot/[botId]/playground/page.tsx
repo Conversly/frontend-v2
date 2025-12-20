@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { ActualChatWidget } from "@/components/chatbot/preview/ActualChatWidget";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
-import { updateInstructions } from "@/lib/api/chatbot";
+import { upsertChannelPrompt } from "@/lib/api/prompt";
 import type { UIConfigInput } from "@/types/customization";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -89,7 +89,11 @@ export default function PlaygroundPage() {
     
     setIsSavingPrompt(true);
     try {
-      await updateInstructions(botId, systemPrompt);
+      await upsertChannelPrompt({
+        chatbotId: botId,
+        channel: "WIDGET",
+        systemPrompt,
+      });
       toast.success("System prompt saved successfully");
     } catch (error) {
       console.error("Failed to save prompt:", error);

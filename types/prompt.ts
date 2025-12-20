@@ -1,7 +1,10 @@
 export type ChannelType = 'WIDGET' | 'WHATSAPP' | 'VOICE';
 
 // Generate prompt input (AI generation)
+
 export interface GeneratePromptInput {
+  chatbotId?: string; // Optional for fresh generation (required for channel-specific generation)
+  channel?: ChannelType; // Optional for fresh generation
   businessDescription: string;
   tone?: string; // e.g., 'professional', 'friendly', 'casual'
   targetAudience?: string;

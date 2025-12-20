@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -12,15 +10,16 @@ import {
 } from "@/components/ui/select";
 import { LLM_MODELS } from "@/lib/constants/voice-options";
 import { CollapsibleSection } from "./CollapsibleSection";
-import { SectionDivider } from "./SectionDivider";
 import { InfoTooltip } from "./InfoTooltip";
+import { PromptAIHelper } from "@/components/shared/PromptAIHelper";
 
 interface ModelConfigProps {
     config: any;
     onChange: (field: string, value: any) => void;
+    chatbotId?: string;
 }
 
-export function ModelConfig({ config, onChange }: ModelConfigProps) {
+export function ModelConfig({ config, onChange, chatbotId }: ModelConfigProps) {
     return (
         <div className="space-y-4">
 
@@ -143,50 +142,29 @@ export function ModelConfig({ config, onChange }: ModelConfigProps) {
                 )}
 
                 {/* System Prompt */}
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label className="flex items-center gap-1.5">
-                            System Prompt
-                            <InfoTooltip content="Define your agent's personality, tone, and behavior guidelines" />
-                        </Label>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 gap-1.5 text-xs text-primary hover:text-primary"
-                        >
-                            <Sparkles className="h-3 w-3" />
-                            Generate
-                        </Button>
-                    </div>
-                    <div className="relative">
-                        <Textarea
-                            value={config.systemPrompt || ""}
-                            onChange={(e) =>
-                                onChange("systemPrompt", e.target.value)
-                            }
-                            className="min-h-[200px] font-mono text-sm pr-8"
-                            placeholder="# Assistant Instructions&#10;&#10;You are a friendly, professional assistant..."
+                <div className="space-y-3">
+                    <Label className="flex items-center gap-1.5">
+                        System Prompt
+                        <InfoTooltip content="Define your agent's personality, tone, and behavior guidelines" />
+                    </Label>
+                    <Textarea
+                        value={config.systemPrompt || ""}
+                        onChange={(e) =>
+                            onChange("systemPrompt", e.target.value)
+                        }
+                        className="min-h-[200px] font-mono text-sm"
+                        placeholder="# Assistant Instructions&#10;&#10;You are a friendly, professional assistant..."
+                    />
+                    
+                    {/* AI Prompt Helper - Compact Mode */}
+                    {chatbotId && (
+                        <PromptAIHelper
+                            chatbotId={chatbotId}
+                            channel="VOICE"
+                            onPromptGenerated={(prompt) => onChange("systemPrompt", prompt)}
+                            compact
                         />
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-2 bottom-2 h-6 w-6"
-                        >
-                            <svg
-                                className="h-4 w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                                />
-                            </svg>
-                        </Button>
-                    </div>
+                    )}
                 </div>
             </CollapsibleSection>
         </div>

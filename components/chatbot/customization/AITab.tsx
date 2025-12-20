@@ -2,12 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   BrainCircuit,
-  Sparkles,
   HelpCircle,
 } from 'lucide-react';
 import {
@@ -16,10 +13,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SectionHeader } from './SectionHeader';
-import { useGetInstructions } from '@/services/chatbot';
-import { updateInstructions } from '@/lib/api/chatbot';
+import { useUpsertChannelPrompt } from '@/services/prompt';
+import { PromptAIHelper } from '@/components/shared/PromptAIHelper';
 import { toast } from 'sonner';
-import { useState } from 'react';
 import type { UIConfigInput } from '@/types/customization';
 
 interface AITabProps {
@@ -31,43 +27,20 @@ interface AITabProps {
 }
 
 export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange, chatbotId }: AITabProps) {
-  const [promptTopic, setPromptTopic] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const { mutate: generatePrompt } = useGetInstructions();
+  const { mutate: upsertPrompt, isPending: isSaving } = useUpsertChannelPrompt();
 
-  const handleGeneratePrompt = () => {
-    if (!promptTopic.trim()) {
-      toast.error('Please enter a topic');
-      return;
-    }
-    setIsGenerating(true);
-    generatePrompt(
-      promptTopic,
-      {
-        onSuccess: (data) => {
-          onSystemPromptChange(data.systemPrompt);
-          toast.success('System prompt generated successfully');
-          setIsGenerating(false);
-        },
-        onError: (error: any) => {
-          toast.error(error?.message || 'Failed to generate prompt');
-          setIsGenerating(false);
-        },
-      }
-    );
-  };
-
-  const handleSavePrompt = async () => {
+  const handleSavePrompt = () => {
     if (!chatbotId) {
       toast.error('Chatbot ID is required');
       return;
     }
-    try {
-      await updateInstructions(chatbotId, systemPrompt);
-      toast.success('System prompt saved successfully');
-    } catch (error: any) {
-      toast.error(error?.message || 'Failed to save prompt');
-    }
+    upsertPrompt(
+      { chatbotId, channel: 'WIDGET', systemPrompt },
+      {
+        onSuccess: () => toast.success('System prompt saved successfully'),
+        onError: (error: any) => toast.error(error?.message || 'Failed to save prompt'),
+      }
+    );
   };
 
   return (
@@ -110,38 +83,22 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
             </p>
           </div>
 
-          {/* Generate Prompt */}
-          <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <label className="font-sans text-base text-foreground">Generate Prompt with AI</label>
-            </div>
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                value={promptTopic}
-                onChange={(e) => setPromptTopic(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !isGenerating && handleGeneratePrompt()}
-                className="flex-1 bg-muted/50 border-border/50 text-foreground"
-                placeholder="e.g., customer support, sales assistant, technical help"
-                disabled={isGenerating}
-              />
-              <Button 
-                onClick={handleGeneratePrompt}
-                disabled={isGenerating || !promptTopic.trim()}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
-              >
-                {isGenerating ? 'Generating...' : 'Generate'}
-              </Button>
-            </div>
-          </div>
+          {/* AI Prompt Helper */}
+          {chatbotId && (
+            <PromptAIHelper
+              chatbotId={chatbotId}
+              channel="WIDGET"
+              onPromptGenerated={onSystemPromptChange}
+            />
+          )}
 
           {chatbotId && (
             <Button 
-              onClick={handleSavePrompt} 
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"
+              onClick={handleSavePrompt}
+              disabled={isSaving}
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Save System Prompt
+              {isSaving ? 'Saving...' : 'Save System Prompt'}
             </Button>
           )}
         </div>

@@ -1,7 +1,6 @@
 export interface CreateChatbotInput {
     name: string;
     description: string;
-    systemPrompt: string;
   }
   
   export interface ChatbotResponse {
@@ -9,16 +8,11 @@ export interface CreateChatbotInput {
     userId: string;
     name: string;
     description: string;
-    systemPrompt: string;
+    systemPrompt: string;  // widget channel system prompt
     createdAt: Date | null;
     updatedAt: Date | null;
     apiKey: string | null;
   }
-
-export interface InstructionResponse {
-  chatbotId: string;
-  systemPrompt: string;
-}
 
 export interface GetChatbotsResponse {
   id: string;

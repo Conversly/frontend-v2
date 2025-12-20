@@ -4,6 +4,7 @@ import * as React from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useVoiceConfig, useUpdateVoiceConfig } from "@/services/voice";
+import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
 import {
     Loader2,
     Save,
@@ -28,9 +29,12 @@ export default function VoiceConfigPage() {
     const botId = params.botId as string;
 
     const { data: config, isLoading } = useVoiceConfig(botId);
+    const { data: voicePrompt, isLoading: isLoadingPrompt } = useChannelPrompt(botId, "VOICE");
     const updateConfig = useUpdateVoiceConfig();
+    const upsertPrompt = useUpsertChannelPrompt();
 
     const [localConfig, setLocalConfig] = React.useState<any>(null);
+    const [localPrompt, setLocalPrompt] = React.useState<string>("");
     const [isDirty, setIsDirty] = React.useState(false);
 
     React.useEffect(() => {
@@ -54,8 +58,19 @@ export default function VoiceConfigPage() {
         }
     }, [config]);
 
+    // Sync local prompt with fetched voice prompt
+    React.useEffect(() => {
+        if (voicePrompt?.systemPrompt) {
+            setLocalPrompt(voicePrompt.systemPrompt);
+        }
+    }, [voicePrompt]);
+
     const handleChange = (field: string, value: any) => {
-        setLocalConfig((prev: any) => ({ ...prev, [field]: value }));
+        if (field === "systemPrompt") {
+            setLocalPrompt(value);
+        } else {
+            setLocalConfig((prev: any) => ({ ...prev, [field]: value }));
+        }
         setIsDirty(true);
     };
 
@@ -107,19 +122,29 @@ export default function VoiceConfigPage() {
             },
         };
 
-        updateConfig.mutate(
-            { chatbotId: botId, data: payload },
-            {
-                onSuccess: () => {
-                    setIsDirty(false);
-                    toast.success("Configuration saved");
-                },
-                onError: (error) => {
-                    toast.error("Failed to save configuration");
-                    console.error(error);
-                },
-            }
-        );
+        // Save voice config and prompt in parallel
+        Promise.all([
+            new Promise<void>((resolve, reject) => {
+                updateConfig.mutate(
+                    { chatbotId: botId, data: payload },
+                    { onSuccess: () => resolve(), onError: reject }
+                );
+            }),
+            new Promise<void>((resolve, reject) => {
+                upsertPrompt.mutate(
+                    { chatbotId: botId, channel: "VOICE", systemPrompt: localPrompt },
+                    { onSuccess: () => resolve(), onError: reject }
+                );
+            }),
+        ])
+            .then(() => {
+                setIsDirty(false);
+                toast.success("Configuration saved");
+            })
+            .catch((error) => {
+                toast.error("Failed to save configuration");
+                console.error(error);
+            });
     };
 
     if (isLoading || !localConfig) {
@@ -131,7 +156,7 @@ export default function VoiceConfigPage() {
     }
 
     const previewAgentConfig: AgentConfigState = {
-        instructions: localConfig.systemPrompt || "You are a helpful voice assistant.",
+        instructions: localPrompt || "You are a helpful voice assistant.",
         tts_voice: localConfig.voiceId || "21m00Tcm4TlvDq8ikWAM",
         stt_language: localConfig.sttLanguage || localConfig.language || "en",
         tts_language: localConfig.language || "en",
@@ -143,11 +168,11 @@ export default function VoiceConfigPage() {
                 {/* Left Pane: Configuration */}
                 <div className="flex w-2/3 flex-col border-r h-full overflow-hidden">
                     <VoiceConfig
-                        config={localConfig}
+                        config={{ ...localConfig, systemPrompt: localPrompt }}
                         onChange={handleChange}
                         onSave={handleSave}
                         isDirty={isDirty}
-                        isSaving={updateConfig.isPending}
+                        isSaving={updateConfig.isPending || upsertPrompt.isPending}
                         agentName={localConfig.name || "Voice Agent"}
                         botId={botId}
                     />

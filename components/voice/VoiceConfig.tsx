@@ -270,7 +270,7 @@ export function VoiceConfig({
                                     id={`section-${section.id}`}
                                     className="scroll-mt-14 space-y-4"
                                 >
-                                    <Component config={config} onChange={onChange} />
+                                    <Component config={config} onChange={onChange} chatbotId={botId} />
                                 </div>
                             );
                         })}

@@ -171,7 +171,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                   <div>
                     <Button
                       variant="outline"
-                      className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                       onClick={() => document.getElementById(`file-upload-${source.id}`)?.click()}
                     >
                       <FileText className="w-4 h-4 mr-2" />
@@ -196,7 +196,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                 ) : source.id === 'qa' ? (
                   <Button
                     onClick={() => setShowQADialog(true)}
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                   >
                     Add Q&A Pairs
                     <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
@@ -204,7 +204,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                 ) : source.id === 'text' ? (
                   <Link href={`/chatbot/${chatbotId}/sources/text`}>
                     <Button
-                      className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                     >
                       Add Text Content
                       <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
@@ -295,7 +295,7 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
                       <Button
                         type="submit"
                         variant="outline"
-                        className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                       >
                         <Globe className="w-4 h-4 mr-2" />
                         Add URL

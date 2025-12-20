@@ -167,7 +167,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
           </div>
           <div className="w-full bg-muted rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full transition-all"
+              className="bg-primary h-2 rounded-full transition-all"
               style={{ width: `${Math.min((totalSize / maxSize) * 100, 100)}%` }}
             />
           </div>
@@ -177,7 +177,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
         <Button 
           onClick={handleProcessSources}
           disabled={isLoading || pendingSources.length === 0}
-          className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 rounded-xl group"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
         >
           {isLoading ? (
             <>

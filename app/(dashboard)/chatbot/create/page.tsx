@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Bot, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Bot, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useCreateChatbot, useGetInstructions } from "@/services/chatbot";
+import { useCreateChatbot } from "@/services/chatbot";
+import { useUpsertChannelPrompt } from "@/services/prompt";
+import { PromptAIHelper } from "@/components/shared/PromptAIHelper";
 import { toast } from "sonner";
 
 export default function CreateChatbotPage() {
@@ -17,31 +19,9 @@ export default function CreateChatbotPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
-  const [topic, setTopic] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const { mutate: createChatbot, isPending: isCreating } = useCreateChatbot();
-  const { mutate: getInstructions, isPending: isLoadingInstructions } = useGetInstructions();
-
-  const handleGenerateInstructions = () => {
-    if (!topic.trim()) {
-      toast.error("Please enter a topic first");
-      return;
-    }
-
-    setIsGenerating(true);
-    getInstructions(topic, {
-      onSuccess: (data) => {
-        setSystemPrompt(data.systemPrompt);
-        toast.success("Instructions generated successfully!");
-        setIsGenerating(false);
-      },
-      onError: (error: any) => {
-        toast.error(error.message || "Failed to generate instructions");
-        setIsGenerating(false);
-      },
-    });
-  };
+  const { mutate: upsertPrompt } = useUpsertChannelPrompt();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,12 +45,28 @@ export default function CreateChatbotPage() {
       {
         name: name.trim(),
         description: description.trim(),
-        systemPrompt: systemPrompt.trim(),
       },
       {
         onSuccess: (data) => {
-          toast.success("Chatbot created successfully!");
-          router.push(`/chatbot/${data.id}`);
+          // Create WIDGET prompt after chatbot is created
+          upsertPrompt(
+            {
+              chatbotId: data.id,
+              channel: "WIDGET",
+              systemPrompt: systemPrompt.trim(),
+            },
+            {
+              onSuccess: () => {
+                toast.success("Chatbot created successfully!");
+                router.push(`/chatbot/${data.id}`);
+              },
+              onError: (error: any) => {
+                // Chatbot created but prompt failed - still redirect
+                toast.warning("Chatbot created but prompt setup failed. You can configure it later.");
+                router.push(`/chatbot/${data.id}`);
+              },
+            }
+          );
         },
         onError: (error: any) => {
           toast.error(error.message || "Failed to create chatbot");
@@ -137,42 +133,8 @@ export default function CreateChatbotPage() {
               </p>
             </div>
 
-            {/* AI Instructions Generator */}
-            <div className="space-y-2">
-              <Label>AI Instructions Generator (Optional)</Label>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="e.g., customer support, sales, FAQ"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  disabled={isGenerating || isCreating}
-                />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={handleGenerateInstructions}
-                  disabled={isGenerating || isCreating || !topic.trim()}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Generate
-                    </>
-                  )}
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Enter a topic and we'll generate system instructions for you
-              </p>
-            </div>
-
             {/* System Instructions */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Label htmlFor="systemPrompt">
                 System Instructions <span className="text-destructive">*</span>
               </Label>
@@ -188,6 +150,13 @@ export default function CreateChatbotPage() {
               <p className="text-sm text-muted-foreground">
                 Define how your chatbot should respond and behave
               </p>
+              
+              {/* AI Prompt Helper - Generate only mode (no chatbotId yet) */}
+              <PromptAIHelper
+                channel="WIDGET"
+                onPromptGenerated={setSystemPrompt}
+                disabled={isCreating}
+              />
             </div>
 
             {/* Action Buttons */}

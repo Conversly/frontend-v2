@@ -18,8 +18,6 @@ export const API = {
     CHATBOT: {
       BASE_URL: () => "/chatbot",
       CREATE: () => "/create",  // post
-      GENERATE_INSTRUCTIONS: () => "/generate-prompt",
-      EDIT_INSTRUCTIONS: () => "/prompt",  // post
       GET_CHATBOT: () => "/:chatbotId",  // get
       GET_CHATBOTS: () => "/",  // get
       CREATE_TOPIC: () => "/topics",  // post
@@ -137,7 +135,7 @@ export const API = {
       MY_PRODUCTS: () => "/my-products", // get
     },
     PROMPT: {
-      BASE_URL: () => "/prompt",
+      BASE_URL: () => "/prompts",
       GENERATE: () => "/generate", // get - AI generate prompt
       GENERATE_CHANNEL: () => "/generate/channel", // get - AI modify channel prompt
       UPDATE_ALL: () => "/all", // put - update all channels at once

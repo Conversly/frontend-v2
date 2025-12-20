@@ -1,11 +1,11 @@
 'use client';
 
 import { analyzeImage, bootstrapAgentSetup } from '@/lib/api/setup';
+import { upsertChannelPrompt } from '@/lib/api/prompt';
 import type { BootstrapSetupInput, BootstrapSetupResult } from '@/types/setup';
 import type { DataSourceItem } from '@/types/datasource';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
 import type { DataSource } from '@/store/chatbot/data-sources';
-import { useSystemPromptStore } from '@/store/chatbot/system-prompt';
 import { useCustomizationStore } from '@/store/chatbot/customization';
 
 function mapDataSources(items: DataSourceItem[]): DataSource[] {
@@ -44,9 +44,17 @@ export async function runInitialSetup(
     useDataSourcesStore.getState().setSources(ds);
   }
 
-  // Hydrate system prompt
+  // Save inferred system prompt to WIDGET channel
   if (result.inferPrompt?.systemPrompt) {
-    useSystemPromptStore.getState().setSavedPrompt(result.inferPrompt.systemPrompt);
+    try {
+      await upsertChannelPrompt({
+        chatbotId: input.chatbotId,
+        channel: 'WIDGET',
+        systemPrompt: result.inferPrompt.systemPrompt,
+      });
+    } catch {
+      // Non-fatal; prompt can be set later
+    }
   }
 
   // Hydrate customization from server, then apply suggestions (name, color, logo if provided)

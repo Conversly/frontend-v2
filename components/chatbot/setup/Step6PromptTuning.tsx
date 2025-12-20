@@ -4,15 +4,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useSystemPromptStore } from "@/store/chatbot/system-prompt";
 
 interface Step6PromptTuningProps {
   onConfirm: () => void;
+  draftPrompt: string;
+  setDraftPrompt: (value: string) => void;
 }
 
-export function Step6PromptTuning({ onConfirm }: Step6PromptTuningProps) {
-  const draftPrompt = useSystemPromptStore((s) => s.draftPrompt);
-  const setDraftPrompt = useSystemPromptStore((s) => s.setDraftPrompt);
+export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt }: Step6PromptTuningProps) {
 
   return (
     <div className="flex flex-col gap-8">

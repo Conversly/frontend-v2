@@ -131,7 +131,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
               variant={isConnected ? 'outline' : 'default'}
               className={cn(
                 "flex-1 h-10 transition-all duration-300",
-                !isConnected && !isComingSoon && "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:opacity-90 hover:shadow-lg hover:shadow-primary/25",
+                !isConnected && !isComingSoon && "bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25",
                 isConnected && "border-green-500/30 hover:bg-green-500/10"
               )}
             >

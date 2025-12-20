@@ -1,6 +1,5 @@
 import {
   createChatBot,
-  getInstructions,
   getChatbots,
   getChatbot,
   deleteChatbot,
@@ -21,17 +20,6 @@ export const useCreateChatbot = () => {
     mutationFn: createChatBot,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
-    },
-  });
-};
-
-export const useGetInstructions = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: [QUERY_KEY.GET_INSTRUCTIONS],
-    mutationFn: getInstructions,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_INSTRUCTIONS] });
     },
   });
 };
