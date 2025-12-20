@@ -65,10 +65,10 @@ export const ActionExplainer: React.FC<Props> = ({ action }) => {
             </Card>
 
             {/* 3. Security (How) */}
-            <Card className="border-l-4 border-l-orange-500">
+            <Card className="border-l-4 border-l-primary">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <Lock className="h-4 w-4 text-orange-500" />
+                        <Lock className="h-4 w-4 text-primary" />
                         3. Security (How)
                     </CardTitle>
                 </CardHeader>

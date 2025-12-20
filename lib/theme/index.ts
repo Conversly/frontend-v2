@@ -37,9 +37,9 @@ export const lightTheme = {
   secondary: 'oklch(0.967 0.001 286.375)',
   secondaryForeground: 'oklch(0.21 0.006 285.885)',
   
-  // Accent colors
-  accent: 'oklch(0.967 0.001 286.375)',
-  accentForeground: 'oklch(0.21 0.006 285.885)',
+  // Accent colors - matches primary teal
+  accent: 'oklch(0.50 0.14 168)',
+  accentForeground: 'oklch(0.99 0 0)',
   
   // Muted colors
   muted: 'oklch(0.967 0.001 286.375)',
@@ -77,65 +77,65 @@ export const lightTheme = {
 
 /**
  * Dark Theme Configuration
- * Using shadcn OKLCH color format
+ * Using shadcn OKLCH color format - Balanced between ElevenLabs and Vapi
  */
 export const darkTheme = {
-  // Base colors
-  background: 'oklch(0.141 0.005 285.823)',
-  foreground: 'oklch(0.985 0 0)',
+  // Base colors - Medium dark grey (balanced)
+  background: '#121212',
+  foreground: 'oklch(0.98 0.005 250)',
   
-  // Card/Surface colors
-  card: 'oklch(0.21 0.006 285.885)',
-  cardForeground: 'oklch(0.985 0 0)',
+  // Card/Surface colors - Slightly lighter dark grey
+  card: '#1a1a1a',
+  cardForeground: 'oklch(0.98 0.005 250)',
   
   // Popover/Dropdown colors
-  popover: 'oklch(0.21 0.006 285.885)',
-  popoverForeground: 'oklch(0.985 0 0)',
+  popover: '#1a1a1a',
+  popoverForeground: 'oklch(0.98 0.005 250)',
   
-  // Primary/Accent colors
-  primary: 'oklch(0.606 0.25 292.717)',
-  primaryForeground: 'oklch(0.969 0.016 293.756)',
+  // Primary/Accent colors - Teal
+  primary: '#2dd4bf',
+  primaryForeground: '#000000',
   
-  // Secondary colors
-  secondary: 'oklch(0.274 0.006 286.033)',
-  secondaryForeground: 'oklch(0.985 0 0)',
+  // Secondary colors - Medium dark grey
+  secondary: '#1f1f1f',
+  secondaryForeground: 'oklch(0.98 0.005 250)',
   
-  // Accent colors
-  accent: 'oklch(0.274 0.006 286.033)',
-  accentForeground: 'oklch(0.985 0 0)',
+  // Accent colors - matches primary teal
+  accent: '#2dd4bf',
+  accentForeground: '#000000',
   
   // Muted colors
-  muted: 'oklch(0.274 0.006 286.033)',
-  mutedForeground: 'oklch(0.705 0.015 286.067)',
+  muted: '#1f1f1f',
+  mutedForeground: 'oklch(0.70 0.01 250)',
   
   // Destructive colors
   destructive: 'oklch(0.704 0.191 22.216)',
   destructiveForeground: 'oklch(0.969 0.016 293.756)',
   
-  // Border and input colors
-  border: 'oklch(1 0 0 / 10%)',
-  input: 'oklch(1 0 0 / 15%)',
-  ring: 'oklch(0.38 0.189 293.745)',
+  // Border and input colors - Medium dark grey
+  border: '#242424',
+  input: '#242424',
+  ring: '#2dd4bf',
   
   // Border radius (same as light)
   radius: '0.65rem',
   
-  // Chart colors
-  chart1: 'oklch(0.811 0.111 293.571)',
-  chart2: 'oklch(0.606 0.25 292.717)',
-  chart3: 'oklch(0.541 0.281 293.009)',
-  chart4: 'oklch(0.491 0.27 292.581)',
-  chart5: 'oklch(0.432 0.232 292.759)',
+  // Chart colors - Teal gradient
+  chart1: '#2dd4bf',
+  chart2: '#14b8a6',
+  chart3: '#0d9488',
+  chart4: '#0f766e',
+  chart5: '#115e59',
   
-  // Sidebar colors
-  sidebar: 'oklch(0.21 0.006 285.885)',
-  sidebarForeground: 'oklch(0.985 0 0)',
-  sidebarPrimary: 'oklch(0.606 0.25 292.717)',
-  sidebarPrimaryForeground: 'oklch(0.969 0.016 293.756)',
-  sidebarAccent: 'oklch(0.274 0.006 286.033)',
-  sidebarAccentForeground: 'oklch(0.985 0 0)',
-  sidebarBorder: 'oklch(1 0 0 / 10%)',
-  sidebarRing: 'oklch(0.38 0.189 293.745)',
+  // Sidebar colors - Medium dark grey (balanced)
+  sidebar: '#151515',
+  sidebarForeground: 'oklch(0.95 0.01 168)',
+  sidebarPrimary: '#2dd4bf',
+  sidebarPrimaryForeground: '#000000',
+  sidebarAccent: 'oklch(0.25 0.08 168)',
+  sidebarAccentForeground: 'oklch(0.98 0.01 168)',
+  sidebarBorder: '#242424',
+  sidebarRing: '#2dd4bf',
 } as const;
 
 /**

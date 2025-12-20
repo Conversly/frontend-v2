@@ -52,7 +52,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
       case 'scheduling':
         return 'text-purple-500 bg-purple-500/10 border-purple-500/20';
       case 'productivity':
-        return 'text-orange-500 bg-orange-500/10 border-orange-500/20';
+        return 'text-primary bg-primary/10 border-primary/20';
       case 'support':
         return 'text-teal-500 bg-teal-500/10 border-teal-500/20';
       default:

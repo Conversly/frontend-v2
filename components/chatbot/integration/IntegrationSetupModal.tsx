@@ -95,7 +95,7 @@ export function IntegrationSetupModal({
     const colors = [
       'text-blue-500 bg-blue-500/10',
       'text-green-500 bg-green-500/10',
-      'text-orange-500 bg-orange-500/10',
+      'text-primary bg-primary/10',
       'text-purple-500 bg-purple-500/10',
       'text-pink-500 bg-pink-500/10',
     ];

@@ -110,9 +110,9 @@ export default function FilesSourcePage() {
                 
                 <CollapsibleContent className="space-y-4">
                   {/* Warning Banner */}
-                  <div className="flex items-start gap-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-orange-600 dark:text-orange-400">
+                  <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-destructive">
                       If you are uploading a PDF, make sure you can select/highlight the text.
                     </p>
                   </div>

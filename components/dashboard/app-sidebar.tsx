@@ -60,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { user, logout } = useAuth();
     const queryClient = useQueryClient();
     const { isMobile } = useSidebar();
-    const { setTheme } = useTheme();
+    const { setTheme, theme } = useTheme();
 
     // Determine if we are in a chatbot context
     const chatbotMatch = pathname?.match(/^\/chatbot\/([^/]+)/);
@@ -238,15 +238,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     </DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>
                                         <DropdownMenuSubContent>
-                                            <DropdownMenuItem onClick={() => setTheme("light")}>
+                                            <DropdownMenuItem 
+                                                onClick={() => setTheme("light")}
+                                                className={theme === "light" ? "bg-primary/10 text-primary" : ""}
+                                            >
                                                 <Sun className="mr-2 h-4 w-4" />
                                                 <span>Light</span>
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                            <DropdownMenuItem 
+                                                onClick={() => setTheme("dark")}
+                                                className={theme === "dark" ? "bg-primary/10 text-primary" : ""}
+                                            >
                                                 <Moon className="mr-2 h-4 w-4" />
                                                 <span>Dark</span>
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setTheme("system")}>
+                                            <DropdownMenuItem 
+                                                onClick={() => setTheme("system")}
+                                                className={theme === "system" ? "bg-primary/10 text-primary" : ""}
+                                            >
                                                 <Laptop className="mr-2 h-4 w-4" />
                                                 <span>System</span>
                                             </DropdownMenuItem>
