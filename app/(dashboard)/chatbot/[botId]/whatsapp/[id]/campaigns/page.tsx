@@ -66,31 +66,33 @@ export default function CampaignsPage() {
             />
 
             <div className="flex-1 overflow-y-auto bg-background">
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                         <div>
                             <h1 className="text-2xl font-semibold">Campaigns</h1>
                             <p className="text-sm text-muted-foreground mt-1">Manage and track your WhatsApp marketing campaigns.</p>
                         </div>
-                        <Button onClick={() => router.push(`${basePath}/campaigns/new`)} className="gap-2">
+                        <Button onClick={() => router.push(`${basePath}/campaigns/new`)} className="gap-2 w-full sm:w-auto">
                             <Plus className="w-4 h-4" />
                             New Campaign
                         </Button>
                     </div>
 
                     {/* Filters */}
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="relative w-72">
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
+                        <div className="relative w-full md:w-72">
                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Search campaigns..." className="pl-9" />
                         </div>
-                        <Button variant="outline" className="gap-2">
-                            <Filter className="w-4 h-4" /> Filter
-                        </Button>
-                        <Button variant="outline" className="ml-auto gap-2">
-                            <Calendar className="w-4 h-4" /> This Month
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button variant="outline" className="gap-2 flex-1 md:flex-none">
+                                <Filter className="w-4 h-4" /> Filter
+                            </Button>
+                            <Button variant="outline" className="md:ml-auto gap-2 flex-1 md:flex-none">
+                                <Calendar className="w-4 h-4" /> This Month
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Table */}

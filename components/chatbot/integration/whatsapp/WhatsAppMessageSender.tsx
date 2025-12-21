@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { sendWhatsAppMessage, SendWhatsAppMessageInput, getWhatsAppTemplates } from '@/lib/api/whatsapp';
 
-import { Loader2, Send, FileText } from 'lucide-react';
+import { Loader2, Send, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -138,108 +139,127 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
     };
 
     return (
-        <div className="w-full bg-card border rounded-lg p-4 shadow-sm">
+        <div className="w-full bg-background relative">
             {!initialRecipientPhone && (
-                <div className="mb-4">
-                    <label className="text-sm font-medium mb-1 block">Recipient Phone</label>
+                <div className="mb-2 px-1">
                     <Input
                         type="text"
-                        placeholder="e.g. 15551234567"
+                        placeholder="Recipient Phone (e.g. 15551234567)"
                         value={recipientPhone}
                         onChange={(e) => setRecipientPhone(e.target.value)}
+                        className="text-sm"
                     />
                 </div>
             )}
 
-            <div className="flex items-center gap-4 mb-4">
-                <div className="flex bg-muted p-1 rounded-lg">
-                    <button
-                        className={`px-3 py-1 text-sm rounded-md transition-all ${messageType === 'text' ? 'bg-background shadow-sm font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => setMessageType('text')}
-                    >
-                        Text Message
-                    </button>
-                    <button
-                        className={`px-3 py-1 text-sm rounded-md transition-all ${messageType === 'template' ? 'bg-background shadow-sm font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => setMessageType('template')}
-                    >
-                        Template Message
-                    </button>
-                </div>
-            </div>
-
-            {messageType === 'text' ? (
-                <div className="flex gap-2">
-                    <Textarea
-                        placeholder="Type your message..."
-                        value={messageBody}
-                        onChange={(e) => setMessageBody(e.target.value)}
-                        className="min-h-[80px]"
-                    />
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <div>
-                        <label className="text-xs font-medium mb-1.5 block text-muted-foreground">Select Template</label>
-                        <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a template" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {templates.map((t) => (
-                                    <SelectItem key={t.id} value={t.id}>
-                                        {t.name} ({t.language})
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+            {/* Template Selection Area (Collapsible/Conditional) */}
+            {messageType === 'template' && (
+                <div className="mb-3 p-3 bg-muted/30 rounded-lg border space-y-3">
+                    <div className="flex items-center justify-between">
+                        <label className="text-xs font-medium text-muted-foreground">Select Template</label>
+                        <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setMessageType('text')}>
+                            <X className="w-3 h-3 mr-1" /> Cancel
+                        </Button>
                     </div>
+                    <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
+                        <SelectTrigger className="h-8 text-sm">
+                            <SelectValue placeholder="Choose a template..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {templates.map((t) => (
+                                <SelectItem key={t.id} value={t.id}>
+                                    {t.name} ({t.language})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
 
                     {selectedTemplate && (
-                        <div className="bg-muted/50 p-3 rounded-md text-sm">
-                            <p className="font-medium text-xs mb-2 text-muted-foreground">Preview:</p>
-                            <p className="whitespace-pre-wrap text-muted-foreground/80">
-                                {selectedTemplate.components?.find((c: any) => c.type === 'BODY')?.text || ''}
-                            </p>
+                        <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
+                            {selectedTemplate.components?.find((c: any) => c.type === 'BODY')?.text || ''}
                         </div>
                     )}
 
                     {Object.keys(templateParams).length > 0 && (
-                        <div className="space-y-3 border-t pt-3">
-                            <p className="text-xs font-medium">Variables</p>
-                            <div className="grid grid-cols-2 gap-3">
-                                {Object.keys(templateParams).map((key) => (
-                                    <div key={key}>
-                                        <label className="text-xs text-muted-foreground block mb-1">Variable {key}</label>
-                                        <Input
-                                            type="text"
-                                            placeholder={`Value for {{${key}}}`}
-                                            value={templateParams[key]}
-                                            onChange={(e) =>
-                                                setTemplateParams({ ...templateParams, [key]: e.target.value })
-                                            }
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="grid grid-cols-2 gap-2 pt-2 border-t">
+                            {Object.keys(templateParams).map((key) => (
+                                <Input
+                                    key={key}
+                                    className="h-7 text-xs"
+                                    placeholder={`{{${key}}}`}
+                                    value={templateParams[key]}
+                                    onChange={(e) => setTemplateParams({ ...templateParams, [key]: e.target.value })}
+                                />
+                            ))}
                         </div>
                     )}
                 </div>
             )}
 
-            {error && <div className="text-destructive text-sm mt-2">{error}</div>}
-            {success && <div className="text-green-500 text-sm mt-2">Message sent successfully!</div>}
+            <div className="flex items-end gap-2">
+                {/* Mode Toggle as Icon */}
+                {messageType === 'text' && (
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="mb-1 shrink-0 text-muted-foreground hover:text-primary"
+                        onClick={() => setMessageType('template')}
+                        title="Send Template"
+                    >
+                        <FileText className="w-5 h-5" />
+                    </Button>
+                )}
 
-            <div className="mt-4 flex justify-end">
-                <Button
-                    onClick={handleSend}
-                    disabled={loading || (messageType === 'template' && !selectedTemplate)}
-                    className="gap-2"
-                >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    Send Message
-                </Button>
+                {/* Input Area */}
+                <div className="flex-1 relative">
+                    {messageType === 'text' ? (
+                        <Textarea
+                            placeholder="Type a message..."
+                            value={messageBody}
+                            onChange={(e) => setMessageBody(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSend();
+                                }
+                            }}
+                            className="min-h-[44px] max-h-[120px] py-3 resize-none rounded-2xl bg-muted/30 border-muted-foreground/20 focus-visible:ring-1 pr-12"
+                            rows={1}
+                        />
+                    ) : (
+                        <div className="h-11 flex items-center px-4 rounded-2xl bg-primary/5 border border-primary/20 text-sm text-primary font-medium">
+                            Template: {selectedTemplate?.name || 'Select a template above'}
+                        </div>
+                    )}
+
+                    {/* Send Button Absolute in Input (for Text) or Inline */}
+                    <div className={cn(
+                        "absolute right-1 bottom-1",
+                        messageType === 'template' && "static ml-2"
+                    )}>
+                        <Button
+                            size="icon"
+                            onClick={handleSend}
+                            disabled={loading || (messageType === 'template' && !selectedTemplate) || (messageType === 'text' && !messageBody.trim())}
+                            className={cn(
+                                "h-9 w-9 rounded-full transition-all",
+                                (messageBody.trim() || (messageType === 'template' && selectedTemplate))
+                                    ? "bg-primary hover:bg-primary/90"
+                                    : "bg-muted text-muted-foreground hover:bg-muted"
+                            )}
+                        >
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
+                        </Button>
+                    </div>
+                </div>
             </div>
+
+            {(error || success) && (
+                <div className="text-xs mt-1 text-center">
+                    {error && <span className="text-destructive">{error}</span>}
+                    {success && <span className="text-green-500">Sent!</span>}
+                </div>
+            )}
         </div>
     );
 };

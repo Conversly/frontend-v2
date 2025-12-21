@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
@@ -11,6 +11,10 @@ import {
     Phone,
     Loader2,
     Mail,
+    ArrowLeft,
+    X,
+    PanelRight,
+    ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,9 +43,12 @@ export default function LiveChatPage() {
     const [isLoadingContacts, setIsLoadingContacts] = useState(true);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [showScrollButton, setShowScrollButton] = useState(false);
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
     const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     // Fetch contacts
     useEffect(() => {
@@ -78,31 +85,55 @@ export default function LiveChatPage() {
         fetchMessages();
     }, [selectedContact, botId, integrationId]);
 
+    // Auto-scroll to bottom when messages change
+    useEffect(() => {
+        if (messages.length > 0 && messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
+    // Handle scroll detection to show/hide scroll button
+    const handleScroll = () => {
+        if (scrollAreaRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+            const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+            setShowScrollButton(!isNearBottom);
+        }
+    };
+
+    // Scroll to bottom function
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
 
     return (
-        <div className="flex h-full bg-background overflow-hidden w-full">
-            {/* 1. Sidebar (Navigation) */}
-            <IntegrationSidebar
-                platform="whatsapp"
-                items={sidebarItems}
-                basePath={basePath}
-            />
+        <div className="flex h-full bg-background overflow-hidden w-full relative">
+            {/* 1. Sidebar (Navigation) - Hidden on mobile during chat focus, or use rail */}
+            <div className="hidden md:block">
+                <IntegrationSidebar
+                    platform="whatsapp"
+                    items={sidebarItems}
+                    basePath={basePath}
+                />
+            </div>
 
             {/* 2. Contact List Panel (Left) */}
-            <div className="w-80 border-r flex flex-col bg-card/50 flex-shrink-0">
+            <div className={cn(
+                "w-full md:w-80 border-r flex flex-col bg-card/50 flex-shrink-0 transition-all duration-300",
+                selectedContact ? "hidden md:flex" : "flex"
+            )}>
                 <div className="p-4 border-b space-y-4">
                     <div className="flex items-center justify-between">
                         <h2 className="font-semibold text-lg">Chats</h2>
-                        <Button variant="ghost" size="icon">
-                            <MoreVertical className="w-4 h-4" />
-                        </Button>
                     </div>
 
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="w-full grid grid-cols-3">
-                            <TabsTrigger value="active">Active</TabsTrigger>
-                            <TabsTrigger value="requesting">Waiting</TabsTrigger>
-                            <TabsTrigger value="intervened">Closed</TabsTrigger>
+                        <TabsList className="w-full grid grid-cols-2">
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="unread">Unread</TabsTrigger>
                         </TabsList>
                     </Tabs>
 
@@ -152,69 +183,132 @@ export default function LiveChatPage() {
             </div>
 
             {/* 3. Chat Area (Middle) */}
-            <div className="flex-1 flex flex-col min-w-0 bg-background border-r">
+            <div className={cn(
+                "flex-1 flex flex-col min-w-0 bg-background md:border-r transition-all duration-300",
+                !selectedContact ? "hidden md:flex" : "flex"
+            )}>
                 {selectedContact ? (
                     <>
                         {/* Header */}
-                        <div className="h-16 border-b px-6 flex items-center justify-between bg-card/30">
-                            <div
-                                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
-                                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                            >
-                                <Avatar>
-                                    <AvatarFallback>{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <h3 className="font-semibold">{selectedContact.displayName || selectedContact.phoneNumber}</h3>
-                                    {/* API NEEDED: Contact status (online/offline) */}
-                                    {/* <p className="text-xs text-green-500 flex items-center gap-1">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                        Online
-                                    </p> */}
+                        <div className="h-16 border-b px-4 md:px-6 flex items-center justify-between bg-card/30">
+                            <div className="flex items-center gap-3 overflow-hidden">
+                                {/* Back Button (Mobile Only) */}
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="md:hidden shrink-0 -ml-2"
+                                    onClick={() => setSelectedContact(null)}
+                                >
+                                    <ArrowLeft className="w-5 h-5" />
+                                </Button>
+
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <Avatar className="shrink-0">
+                                        <AvatarFallback>{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="min-w-0">
+                                        <h3 className="font-semibold truncate">{selectedContact.displayName || selectedContact.phoneNumber}</h3>
+                                        {/* API NEEDED: Contact status (online/offline) */}
+                                        {/* <p className="text-xs text-green-500 flex items-center gap-1">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                            Online
+                                        </p> */}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Button variant="outline" size="sm">Resolve</Button>
+                            <div className="flex items-center gap-1 md:gap-2 shrink-0">
+                                <Button variant="outline" size="sm" className="hidden sm:flex">Resolve</Button>
+                                <Button variant="ghost" size="icon" className="sm:hidden"><CheckCheck className="w-4 h-4" /></Button>
                                 <Button variant="ghost" size="icon"><Search className="w-4 h-4" /></Button>
-                                <Button variant="ghost" size="icon"><MoreVertical className="w-4 h-4" /></Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                    className={cn(isProfileOpen && "bg-muted")}
+                                >
+                                    <PanelRight className="w-4 h-4" />
+                                </Button>
                             </div>
                         </div>
 
-                        {/* Messages */}
-                        <ScrollArea className="flex-1 p-6">
-                            <div className="space-y-6 max-w-3xl mx-auto">
-                                {messages.map((msg) => (
-                                    <div
-                                        key={msg.id}
-                                        className={cn(
-                                            "flex gap-3",
-                                            msg.type === 'user' ? "justify-start" : "justify-end"
-                                        )}
-                                    >
-                                        {msg.type === 'user' && (
-                                            <Avatar className="w-8 h-8">
-                                                <AvatarFallback>U</AvatarFallback>
-                                            </Avatar>
-                                        )}
-                                        <div className={cn(
-                                            "max-w-[70%] rounded-2xl p-4 shadow-sm",
-                                            msg.type === 'user'
-                                                ? "bg-card border rounded-tl-sm"
-                                                : "bg-primary text-primary-foreground rounded-tr-sm"
-                                        )}>
-                                            <p className="text-sm leading-relaxed">{msg.content}</p>
-                                            <span className={cn(
-                                                "text-[10px] opacity-70 mt-1 block text-right",
-                                                msg.type !== 'user' && "text-primary-foreground/80"
-                                            )}>
-                                                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                {msg.type !== 'user' && <CheckCheck className="inline w-3 h-3 ml-1" />}
-                                            </span>
+                        {/* Messages Container */}
+                        <div className="flex-1 relative overflow-hidden flex flex-col">
+                            <div 
+                                ref={scrollAreaRef}
+                                className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth"
+                                onScroll={handleScroll}
+                            >
+                                <div className="space-y-6 max-w-3xl mx-auto pb-4">
+                                    {isLoadingMessages ? (
+                                        <div className="flex justify-center py-8">
+                                            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                                         </div>
-                                    </div>
-                                ))}
+                                    ) : messages.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center py-12 text-center min-h-[400px]">
+                                            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                                                <Mail className="w-8 h-8 text-muted-foreground" />
+                                            </div>
+                                            <h3 className="font-semibold text-lg mb-2">No messages yet</h3>
+                                            <p className="text-sm text-muted-foreground max-w-sm">
+                                                Start a conversation by sending a message below.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {messages.map((msg) => (
+                                                <div
+                                                    key={msg.id}
+                                                    className={cn(
+                                                        "flex gap-3",
+                                                        msg.type === 'user' ? "justify-start" : "justify-end"
+                                                    )}
+                                                >
+                                                    {msg.type === 'user' && (
+                                                        <Avatar className="w-8 h-8 hidden sm:block shrink-0">
+                                                            <AvatarFallback>U</AvatarFallback>
+                                                        </Avatar>
+                                                    )}
+                                                    <div className={cn(
+                                                        "max-w-[85%] sm:max-w-[70%] rounded-2xl p-3 sm:p-4 shadow-sm",
+                                                        msg.type === 'user'
+                                                            ? "bg-card border rounded-tl-sm"
+                                                            : "bg-primary text-primary-foreground rounded-tr-sm"
+                                                    )}>
+                                                        <p className="text-sm leading-relaxed break-words">{msg.content}</p>
+                                                        <span className={cn(
+                                                            "text-[10px] opacity-70 mt-1 block text-right",
+                                                            msg.type !== 'user' && "text-primary-foreground/80"
+                                                        )}>
+                                                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            {msg.type !== 'user' && <CheckCheck className="inline w-3 h-3 ml-1" />}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {/* Scroll anchor */}
+                                            <div ref={messagesEndRef} />
+                                        </>
+                                    )}
+                                </div>
                             </div>
-                        </ScrollArea>
+
+                            {/* Scroll to Bottom Button */}
+                            {showScrollButton && (
+                                <Button
+                                    onClick={scrollToBottom}
+                                    size="icon"
+                                    className={cn(
+                                        "absolute bottom-20 right-4 md:right-6 z-10",
+                                        "rounded-full shadow-lg bg-primary hover:bg-primary/90",
+                                        "animate-in fade-in slide-in-from-bottom-4 duration-200",
+                                        "h-10 w-10"
+                                    )}
+                                    aria-label="Scroll to bottom"
+                                >
+                                    <ChevronDown className="w-5 h-5" />
+                                </Button>
+                            )}
+                        </div>
 
                         <div className="p-4 border-t bg-card/30">
                             <WhatsAppMessageSender
@@ -225,21 +319,38 @@ export default function LiveChatPage() {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
+                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
                         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
                             <span className="text-2xl">👋</span>
                         </div>
                         <h3 className="font-semibold text-lg">Detailed Live Chat</h3>
-                        <p className="text-sm max-w-sm text-center mt-2">Select a conversation from the left to view details, history, and manage the customer profile.</p>
+                        <p className="text-sm max-w-sm mt-2">Select a conversation from the left to view details, history, and manage the customer profile.</p>
                     </div>
                 )}
             </div>
 
             {/* 4. Smart Profile Panel (Right) */}
-            {
-                selectedContact && isProfileOpen && (
-                    <div className="w-72 bg-card/50 overflow-y-auto flex-shrink-0 border-l animate-in slide-in-from-right duration-300">
-                        <div className="p-6 border-b text-center">
+            {selectedContact && isProfileOpen && (
+                <>
+                    {/* Backdrop for mobile */}
+                    <div
+                        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-20 xl:hidden"
+                        onClick={() => setIsProfileOpen(false)}
+                    />
+
+                    {/* Panel */}
+                    <div className="absolute right-0 top-0 h-full z-30 xl:static xl:z-0 w-[85%] sm:w-80 xl:w-72 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 border-l animate-in slide-in-from-right duration-300 shadow-2xl xl:shadow-none overflow-y-auto">
+                        {/* Mobile Close Button */}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-2 right-2 xl:hidden z-50"
+                            onClick={() => setIsProfileOpen(false)}
+                        >
+                            <X className="w-5 h-5" />
+                        </Button>
+
+                        <div className="p-6 border-b text-center relative">
                             <Avatar className="w-20 h-20 mx-auto mb-4">
                                 <AvatarFallback className="text-xl">{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
                             </Avatar>
@@ -291,8 +402,8 @@ export default function LiveChatPage() {
                             </Accordion>
                         </div>
                     </div>
-                )
-            }
+                </>
+            )}
         </div >
     );
 }

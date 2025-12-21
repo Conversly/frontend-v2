@@ -5,10 +5,11 @@ import { WhatsAppIntegrationResponse } from "@/types/integration";
 export interface CreateWhatsAppIntegrationInput {
   chatbotId: string; // UUID
   phoneNumberId: string;
+  phoneNumber: string; // Required - WhatsApp Business phone number in E.164 format
   accessToken: string;
   verifyToken: string;
   webhookSecret?: string; // Facebook App Secret for webhook verification
-  businessAccountId?: string;
+  businessAccountId: string; // Required - WhatsApp Business Account ID
   webhookUrl?: string;
 }
 
@@ -19,6 +20,7 @@ export interface UpdateWhatsAppIntegrationInput {
   webhookSecret?: string; // Facebook App Secret for webhook verification
   businessAccountId?: string;
   webhookUrl?: string;
+  phoneNumber?: string;
 }
 
 export interface SendWhatsAppMessageInput {
@@ -65,7 +67,7 @@ export const createWhatsAppIntegration = async (
 };
 
 export const updateWhatsAppIntegration = async (
-  chatbotId: string, // UUID
+  chatbotId: string, // cuid2
   input: UpdateWhatsAppIntegrationInput
 ): Promise<WhatsAppIntegrationResponse> => {
   const res = await fetch(
@@ -84,7 +86,7 @@ export const updateWhatsAppIntegration = async (
 };
 
 export const getWhatsAppIntegration = async (
-  chatbotId: string // UUID
+  chatbotId: string // cuid2
 ): Promise<WhatsAppIntegrationResponse | null> => {
   const res = await fetch(
     API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_INTEGRATION(),

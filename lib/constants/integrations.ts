@@ -153,12 +153,7 @@ export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
     icon: 'BarChart3',
     path: '/analytics',
   },
-  {
-    id: 'profile',
-    label: 'Profile',
-    icon: 'User',
-    path: '/profile',
-  },
+
   {
     id: 'templates',
     label: 'Templates',

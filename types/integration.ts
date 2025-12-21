@@ -1,10 +1,10 @@
 export type IntegrationStatus = 'connected' | 'not-connected' | 'coming-soon';
 
-export type IntegrationPlatform = 
-  | 'whatsapp' 
-  | 'slack' 
-  | 'stripe' 
-  | 'calendly' 
+export type IntegrationPlatform =
+  | 'whatsapp'
+  | 'slack'
+  | 'stripe'
+  | 'calendly'
   | 'notion'
   | 'zendesk'
   | 'telegram'
@@ -27,6 +27,7 @@ export interface WhatsAppCredentials {
   webhookSecret?: string; // Facebook App Secret for webhook verification
   businessAccountId?: string;
   webhookUrl?: string;
+  phoneNumber?: string;
 }
 
 export interface SlackCredentials {
@@ -46,10 +47,10 @@ export interface CalendlyCredentials {
   webhookSigningKey: string;
 }
 
-export type IntegrationCredentials = 
-  | WhatsAppCredentials 
-  | SlackCredentials 
-  | StripeCredentials 
+export type IntegrationCredentials =
+  | WhatsAppCredentials
+  | SlackCredentials
+  | StripeCredentials
   | CalendlyCredentials;
 
 export interface IntegrationSetupStep {
@@ -103,6 +104,10 @@ export interface WhatsAppIntegrationResponse {
   verifyToken: string;
   webhookSecret?: string | null; // Facebook App Secret for webhook verification
   businessAccountId?: string | null;
+  whatsappBusinessId?: string | null;  // Added from schema
+  phoneNumber?: string | null;         // Added from schema
+  verifiedName?: string | null;        // Added from schema
+  status?: 'active' | 'inactive';      // Added from schema
   webhookUrl?: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;

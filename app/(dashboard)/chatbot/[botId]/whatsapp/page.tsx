@@ -30,7 +30,7 @@ export default function WhatsAppSetupPage() {
     businessAccountId: '',
   });
 
-  const webhookUrl = process.env.NEXT_PUBLIC_WHATSAPP_WEBHOOK_URL || "https://webhook-wa-mcnp.onrender.com/webhook";
+  const webhookUrl = `https://response.apps.verlyai.xyz/whatsapp/webhook/${botId}`;
   const setupSteps = WHATSAPP_SETUP_GUIDE.steps;
 
   useEffect(() => {
@@ -76,8 +76,8 @@ export default function WhatsAppSetupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!credentials.phoneNumberId || !credentials.accessToken || !credentials.verifyToken) {
-      toast.error('Please fill in all required fields');
+    if (!credentials.phoneNumberId || !credentials.accessToken || !credentials.verifyToken || !credentials.businessAccountId || !(credentials as any).phoneNumber) {
+      toast.error('Please fill in all required fields (Phone Number ID, Access Token, Verify Token, Business Account ID, and Phone Number)');
       return;
     }
 
@@ -89,6 +89,7 @@ export default function WhatsAppSetupPage() {
         accessToken: credentials.accessToken,
         verifyToken: credentials.verifyToken,
         businessAccountId: credentials.businessAccountId,
+        phoneNumber: (credentials as any).phoneNumber,
         webhookUrl: webhookUrl,
       });
 
@@ -120,298 +121,181 @@ export default function WhatsAppSetupPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-screen flex flex-col bg-background overflow-hidden relative">
+      {/* Background Decor */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-500/5 via-background to-background pointer-events-none" />
+
       {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Link href={`/chatbot/${botId}`}>
-              <Button variant="ghost" size="icon" className="shrink-0">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-3 flex-1">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
-                <MessageCircle className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl md:text-2xl font-heading font-bold text-foreground">
-                  WhatsApp Integration Setup
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Connect your chatbot to WhatsApp Business API
-                </p>
-              </div>
+      <div className="border-b bg-background/80 backdrop-blur-sm z-10">
+        <div className="max-w-screen-xl mx-auto px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shadow-lg shadow-green-500/20">
+              <MessageCircle className="w-6 h-6 text-white text-fill-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-heading font-bold text-foreground">
+                Connect WhatsApp
+              </h1>
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                Add a WhatsApp Business number to your chatbot
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content - Split Layout */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Side - Setup Steps */}
-        <div className="w-80 border-r bg-muted/30 overflow-hidden flex flex-col">
-          <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-foreground mb-2">Setup Steps</h2>
-            <p className="text-sm text-muted-foreground">
-              Follow these steps to connect your WhatsApp account
-            </p>
-          </div>
-          <ScrollArea className="flex-1">
-            <div className="p-6 space-y-6">
-              {setupSteps.map((step, index) => {
-                const stepNumber = index + 1;
-                const isCompleted = stepNumber < currentStep;
-                const isCurrent = stepNumber === currentStep;
+      {/* Main Content - Centered */}
+      <div className="flex-1 w-full bg-muted/20 overflow-y-auto">
+        <div className="max-w-3xl mx-auto p-6 md:py-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32">
 
-                return (
-                  <div
-                    key={step.id}
-                    className={cn(
-                      "relative pl-8 pb-6",
-                      stepNumber < setupSteps.length && "border-l-2 border-border"
-                    )}
-                  >
-                    {/* Step Number Circle */}
-                    <div
-                      className={cn(
-                        "absolute left-0 top-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold transition-colors",
-                        isCompleted && "bg-green-500 text-white border-2 border-green-500",
-                        isCurrent && "bg-primary text-primary-foreground border-2 border-primary",
-                        !isCompleted && !isCurrent && "bg-muted text-muted-foreground border-2 border-border"
-                      )}
-                    >
-                      {isCompleted ? (
-                        <Check className="w-3 h-3" />
-                      ) : (
-                        stepNumber
-                      )}
+          {/* Quick Connect Option */}
+          <Button
+            type="button"
+            className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-semibold gap-2 w-full sm:max-w-xs mx-auto"
+            onClick={() => toast.info('Facebook Embedded Signup would launch here')}
+          >
+            <span className="font-bold">Connect with Facebook</span>
+          </Button>
+          <div className="relative pt-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or Connect Manually</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+
+            {/* 1. Webhook Configuration */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 px-1">
+                <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">1</div>
+                <h2 className="text-lg font-semibold">Webhook Configuration</h2>
+              </div>
+
+              <Card className="p-6 border-border shadow-sm bg-card/80 backdrop-blur-sm">
+                <div className="space-y-6">
+                  <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4">
+                    <h3 className="text-sm font-medium flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                      <ExternalLink className="w-4 h-4" />
+                      Meta Developer Console
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Go to your <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Meta App Dashboard</a> → WhatsApp → Configuration.
+                      Paste the values below into the "Webhook" section.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Webhook URL</Label>
+                      <div className="flex gap-2">
+                        <Input readOnly value={webhookUrl} className="bg-muted font-mono text-xs" />
+                        <Button type="button" size="icon" variant="outline" onClick={() => copyToClipboard(webhookUrl, 'Webhook URL')}>
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Verify Token</Label>
+                      <div className="flex gap-2">
+                        <Input readOnly value={credentials.verifyToken} className="bg-muted font-mono text-xs"
+                          placeholder="Generate a token..." />
+                        {credentials.verifyToken ? (
+                          <Button type="button" size="icon" variant="outline" onClick={() => copyToClipboard(credentials.verifyToken, 'Verify Token')}>
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        ) : (
+                          <Button type="button" variant="secondary" onClick={generateVerifyToken} className="whitespace-nowrap px-3">
+                            Generate
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* 2. Credentials */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 px-1">
+                <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">2</div>
+                <h2 className="text-lg font-semibold">API Credentials</h2>
+              </div>
+
+              <Card className="p-6 border-border shadow-sm bg-card/80 backdrop-blur-sm">
+                <div className="space-y-6">
+                  <p className="text-sm text-muted-foreground">
+                    Find these in <strong>WhatsApp → API Setup</strong> in your Meta App Dashboard.
+                  </p>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Phone Number ID <span className="text-destructive">*</span></Label>
+                      <Input
+                        placeholder="e.g. 1045923..."
+                        value={credentials.phoneNumberId}
+                        onChange={(e) => handleInputChange('phoneNumberId', e.target.value)}
+                      />
                     </div>
 
                     <div className="space-y-2">
-                      <h3 className={cn(
-                        "font-semibold text-sm",
-                        isCurrent && "text-primary",
-                        !isCurrent && "text-foreground"
-                      )}>
-                        {step.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {step.description}
+                      <Label>
+                        Access Token <span className="text-destructive">*</span>
+                        <span className="text-xs text-muted-foreground font-normal ml-2">(System User Token recommended)</span>
+                      </Label>
+                      <Input
+                        type="password"
+                        placeholder="EAAG..."
+                        value={credentials.accessToken}
+                        onChange={(e) => handleInputChange('accessToken', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>WhatsApp Business Account ID <span className="text-destructive">*</span></Label>
+                      <Input
+                        placeholder="e.g. 1002938..."
+                        value={credentials.businessAccountId}
+                        onChange={(e) => handleInputChange('businessAccountId', e.target.value)}
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Found in Meta Business Manager → WhatsApp → Phone Numbers
                       </p>
-                      {step.tip && (
-                        <div className="mt-2 p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
-                          <p className="text-xs text-blue-600 dark:text-blue-400">
-                            💡 {step.tip}
-                          </p>
-                        </div>
-                      )}
-                      {step.externalLink && (
-                        <a
-                          href={step.externalLink.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
-                        >
-                          {step.externalLink.label}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Phone Number <span className="text-destructive">*</span></Label>
+                      <Input
+                        placeholder="e.g. +1234567890"
+                        value={(credentials as any).phoneNumber || ''}
+                        onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        The WhatsApp Business phone number in E.164 format (e.g., +1234567890)
+                      </p>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              </Card>
             </div>
-          </ScrollArea>
-        </div>
 
-        {/* Right Side - Setup Form */}
-        <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-6 space-y-6">
-            <Card className="bg-card backdrop-blur-sm border border-border rounded-xl p-6 shadow-sm">
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-heading font-semibold text-foreground mb-1">
-                    Credentials
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Enter your WhatsApp Business API credentials from Meta Developer Console
-                  </p>
-                </div>
-
-                {/* Webhook URL (Read-only) */}
-                <div className="space-y-2">
-                  <Label htmlFor="webhookUrl" className="flex items-center gap-2 text-sm font-medium text-foreground">
-                    Webhook URL
-                    <span className="text-xs text-muted-foreground font-normal">(Copy this for Meta Console)</span>
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="webhookUrl"
-                      value={webhookUrl}
-                      readOnly
-                      className="flex-1 bg-muted/50 font-mono text-sm border-border"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => copyToClipboard(webhookUrl, 'Webhook URL')}
-                      className="shrink-0 border-border hover:bg-muted"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    This URL will be used to receive messages from WhatsApp. Copy it to Meta Developer Console → WhatsApp → Configuration → Webhook.
-                  </p>
-                </div>
-
-                {/* Phone Number ID */}
-                <div className="space-y-2">
-                  <Label htmlFor="phoneNumberId" className="text-sm font-medium text-foreground">
-                    Phone Number ID <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="phoneNumberId"
-                    value={credentials.phoneNumberId}
-                    onChange={(e) => handleInputChange('phoneNumberId', e.target.value)}
-                    placeholder="Enter your Phone Number ID (15-16 digits)"
-                    required
-                    className="border-border"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Found in Meta Developer Console → WhatsApp → API Setup
-                  </p>
-                </div>
-
-                {/* Access Token */}
-                <div className="space-y-2">
-                  <Label htmlFor="accessToken" className="text-sm font-medium text-foreground">
-                    Access Token <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="accessToken"
-                    type="password"
-                    value={credentials.accessToken}
-                    onChange={(e) => handleInputChange('accessToken', e.target.value)}
-                    placeholder="Enter your WhatsApp Access Token"
-                    required
-                    className="border-border"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Generate a permanent token from System User in Business Settings. Temporary tokens expire in 24 hours.
-                  </p>
-                </div>
-
-                {/* Verify Token */}
-                <div className="space-y-2">
-                  <Label htmlFor="verifyToken" className="text-sm font-medium text-foreground">
-                    Verify Token <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="verifyToken"
-                      value={credentials.verifyToken}
-                      onChange={(e) => handleInputChange('verifyToken', e.target.value)}
-                      placeholder="Enter or generate a verify token"
-                      required
-                      minLength={8}
-                      className="flex-1 border-border"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={generateVerifyToken}
-                      className="shrink-0 border-border hover:bg-muted"
-                    >
-                      Generate
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    A secure random string (min 8 characters). Use the same token in Meta Console webhook settings.
-                  </p>
-                </div>
-
-                {/* Business Account ID (Optional) */}
-                <div className="space-y-2">
-                  <Label htmlFor="businessAccountId" className="text-sm font-medium text-foreground">
-                    Business Account ID <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
-                  </Label>
-                  <Input
-                    id="businessAccountId"
-                    value={credentials.businessAccountId}
-                    onChange={(e) => handleInputChange('businessAccountId', e.target.value)}
-                    placeholder="Enter your Business Account ID"
-                    className="border-border"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Your WhatsApp Business Account ID (optional, but recommended for production)
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Instructions */}
-            <Card className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-blue-500/20 rounded-2xl p-6 shadow-sm">
-              <div className="space-y-4">
-                <h3 className="text-lg font-heading font-semibold flex items-center gap-2 text-foreground">
-                  <CheckCircle2 className="w-5 h-5 text-blue-500" />
-                  Next Steps
-                </h3>
-                <ol className="list-decimal list-inside space-y-3 text-sm text-muted-foreground ml-2">
-                  <li className="leading-relaxed">
-                    Copy the <strong className="text-foreground">Webhook URL</strong> above
-                  </li>
-                  <li className="leading-relaxed">
-                    Go to{' '}
-                    <a
-                      href="https://developers.facebook.com/apps"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline inline-flex items-center gap-1"
-                    >
-                      Meta Developer Console <ExternalLink className="w-3 h-3" />
-                    </a>{' '}
-                    → WhatsApp → Configuration
-                  </li>
-                  <li className="leading-relaxed">
-                    Paste the Webhook URL in the <strong className="text-foreground">Callback URL</strong> field
-                  </li>
-                  <li className="leading-relaxed">
-                    Enter your <strong className="text-foreground">Verify Token</strong> in the Verify Token field
-                  </li>
-                  <li className="leading-relaxed">Click <strong className="text-foreground">"Verify and Save"</strong></li>
-                  <li className="leading-relaxed">
-                    Subscribe to events: <strong className="text-foreground">messages</strong> and{' '}
-                    <strong className="text-foreground">message_template_status_update</strong>
-                  </li>
-                </ol>
-              </div>
-            </Card>
-
-            {/* Submit Button */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            {/* Actions */}
+            <div className="pt-8 pb-12 flex justify-end">
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
+                className="bg-[#25D366] hover:bg-[#25D366]/90 text-white min-w-[160px] shadow-md"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating Integration...
-                  </>
-                ) : (
-                  'Connect WhatsApp'
-                )}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Connect WhatsApp
               </Button>
-              <Link href={`/chatbot/${botId}`} className="sm:w-auto w-full">
-                <Button type="button" variant="outline" className="w-full sm:w-auto border-border hover:bg-muted">
-                  Cancel
-                </Button>
-              </Link>
             </div>
+
           </form>
         </div>
       </div>

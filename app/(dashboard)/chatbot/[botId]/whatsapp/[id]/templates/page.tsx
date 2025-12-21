@@ -84,17 +84,17 @@ export default function WhatsAppTemplatesPage() {
 
             <div className="flex-1 overflow-y-auto bg-background">
                 {/* Header */}
-                <div className="border-b p-6 flex items-center justify-between bg-card/30">
+                <div className="border-b p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-card/30">
                     <div>
                         <h1 className="text-2xl font-semibold">Message Templates</h1>
                         <p className="text-sm text-muted-foreground mt-1">Manage, create and edit your WhatsApp message templates.</p>
                     </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline" onClick={handleSync} disabled={isSyncing} className="gap-2">
+                    <div className="flex gap-2 w-full sm:w-auto">
+                        <Button variant="outline" onClick={handleSync} disabled={isSyncing} className="gap-2 flex-1 sm:flex-none">
                             <Plus className="w-4 h-4" />
                             {isSyncing ? 'Syncing...' : 'Sync from Meta'}
                         </Button>
-                        <Button onClick={() => router.push(`${basePath}/templates/new`)} className="gap-2">
+                        <Button onClick={() => router.push(`${basePath}/templates/new`)} className="gap-2 flex-1 sm:flex-none">
                             <Plus className="w-4 h-4" />
                             Create Template
                         </Button>
@@ -102,35 +102,37 @@ export default function WhatsAppTemplatesPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="p-4 border-b flex items-center gap-4 bg-card/10">
-                    <div className="relative w-64">
+                <div className="p-4 border-b flex flex-col md:flex-row items-stretch md:items-center gap-4 bg-card/10">
+                    <div className="relative w-full md:w-64">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input placeholder="Search templates..." className="pl-9 bg-background" />
                     </div>
 
-                    <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px] bg-background">
-                            <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Categories</SelectItem>
-                            <SelectItem value="marketing">Marketing</SelectItem>
-                            <SelectItem value="utility">Utility</SelectItem>
-                            <SelectItem value="auth">Authentication</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <div className="flex flex-col sm:flex-row gap-4 flex-1 md:flex-initial">
+                        <Select defaultValue="all">
+                            <SelectTrigger className="w-full sm:w-[180px] bg-background">
+                                <SelectValue placeholder="Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Categories</SelectItem>
+                                <SelectItem value="marketing">Marketing</SelectItem>
+                                <SelectItem value="utility">Utility</SelectItem>
+                                <SelectItem value="auth">Authentication</SelectItem>
+                            </SelectContent>
+                        </Select>
 
-                    <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px] bg-background">
-                            <SelectValue placeholder="Language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Languages</SelectItem>
-                            <SelectItem value="en">English (US)</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        <Select defaultValue="all">
+                            <SelectTrigger className="w-full sm:w-[180px] bg-background">
+                                <SelectValue placeholder="Language" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Languages</SelectItem>
+                                <SelectItem value="en">English (US)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                    <Button variant="outline" className="ml-auto gap-2">
+                    <Button variant="outline" className="md:ml-auto gap-2">
                         <Filter className="w-4 h-4" />
                         More Filters
                     </Button>
