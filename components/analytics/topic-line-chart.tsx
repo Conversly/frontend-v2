@@ -112,9 +112,7 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
                 margin={{ left: 30, right: 10, top: 10, bottom: 20 }}
                 slotProps={{
                   legend: {
-                    direction: 'row',
                     position: { vertical: 'bottom', horizontal: 'center' },
-                    padding: 0,
                   }
                 }}
               />

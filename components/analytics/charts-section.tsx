@@ -136,19 +136,16 @@ export function ChartsSection({
                     outerRadius: 100,
                     paddingAngle: 2,
                     cornerRadius: 4,
-                    highlightScope: { faded: 'global', highlighted: 'item' },
+                    highlightScope: { fade: 'global', highlight: 'item' },
                     faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                   },
                 ]}
                 slotProps={{
                   legend: {
-                    direction: 'row',
+
                     position: { vertical: 'bottom', horizontal: 'center' },
-                    padding: -5,
-                    labelStyle: {
-                      fontSize: 12,
-                      fill: '#64748b'
-                    }
+
+
                   }
                 }}
                 margin={{ top: 0, bottom: 40, left: 0, right: 0 }}
@@ -182,7 +179,7 @@ export function ChartsSection({
                 series={[{
                   dataKey: 'count',
                   color: '#0ea5e9', // sky-500
-                  borderRadius: 4
+
                 }]}
                 {...chartSetting}
                 borderRadius={6}

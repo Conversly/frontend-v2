@@ -56,13 +56,7 @@ export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
                 ]}
                 slotProps={{
                   legend: {
-                    direction: 'row',
                     position: { vertical: 'bottom', horizontal: 'center' },
-                    padding: 0,
-                    labelStyle: {
-                      fontSize: 12,
-                      fill: '#64748b'
-                    }
                   }
                 }}
                 margin={{ top: 0, bottom: 60, left: 0, right: 0 }}

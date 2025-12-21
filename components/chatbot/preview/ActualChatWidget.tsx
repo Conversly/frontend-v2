@@ -18,10 +18,20 @@ interface ActualChatWidgetProps {
     model: string
     temperature: number
   }
+  isOpen?: boolean
+  onOpenChange?: (isOpen: boolean) => void
 }
 
-export function ActualChatWidget({ config, className, playgroundConfig }: ActualChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(true)
+export function ActualChatWidget({ config, className, playgroundConfig, isOpen: controlledIsOpen, onOpenChange }: ActualChatWidgetProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState<boolean>(true)
+
+  const isControlled = controlledIsOpen !== undefined
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen
+  const setIsOpen = (val: boolean) => {
+    if (onOpenChange) onOpenChange(val)
+    if (!isControlled) setInternalIsOpen(val)
+  }
+
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
@@ -42,13 +52,13 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
   useEffect(() => {
     const initialMessages: Message[] = config.InitialMessage
       ? [
-          {
-            id: "initial-assistant",
-            role: "assistant",
-            content: config.InitialMessage,
-            createdAt: new Date(),
-          },
-        ]
+        {
+          id: "initial-assistant",
+          role: "assistant",
+          content: config.InitialMessage,
+          createdAt: new Date(),
+        },
+      ]
       : []
 
     if (typingTimeoutRef.current) {
@@ -61,10 +71,12 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
     setIsTyping(false)
   }, [config.InitialMessage])
 
-  // Always keep widget open in preview/playground mode
+  // Only force open if NOT controlled (default behavior for preview/playground)
   useEffect(() => {
-    setIsOpen(true)
-  }, [])
+    if (!isControlled) {
+      setInternalIsOpen(true)
+    }
+  }, [isControlled])
 
   useEffect(() => {
     return () => {
@@ -76,7 +88,7 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
 
   const sendToBackend = async (allMessages: Message[], mode: string = "default") => {
     const backendMessages = convertUIToBackendMessages(allMessages)
-    
+
     // Use playground API if playground config is provided
     if (playgroundConfig) {
       const res = await getPlaygroundResponse(
@@ -95,7 +107,7 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
       )
       return convertBackendToUIMessage(res, "assistant")
     }
-    
+
     // Otherwise use regular chatbot API
     const res = await getChatbotResponse(
       backendMessages,
@@ -168,13 +180,13 @@ export function ActualChatWidget({ config, className, playgroundConfig }: Actual
       ? typeof feedback.issue === "string"
         ? feedback.issue
         : [
-            feedback.incorrect && "Incorrect",
-            feedback.irrelevant && "Irrelevant",
-            feedback.unaddressed && "Unaddressed",
-            feedback.issue,
-          ]
-            .filter(Boolean)
-            .join(" | ")
+          feedback.incorrect && "Incorrect",
+          feedback.irrelevant && "Irrelevant",
+          feedback.unaddressed && "Unaddressed",
+          feedback.issue,
+        ]
+          .filter(Boolean)
+          .join(" | ")
       : undefined
     try {
       await submitFeedback(messageId, sentiment as "like" | "dislike", comment)
