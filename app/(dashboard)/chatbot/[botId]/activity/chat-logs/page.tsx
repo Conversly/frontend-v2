@@ -11,7 +11,9 @@ import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
 import type { MessageItem } from "@/types/activity";
 import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
 import { downloadJsonFile } from "@/lib/utils";
-import { Download, Filter } from "lucide-react";
+import { Download, Filter, Search, MessageCircle, MessageSquare, Phone, Mail, Globe, Hash } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 
 export default function ChatLogsPage() {
   const routeParams = useParams<{ botId: string }>();
@@ -45,6 +47,46 @@ export default function ChatLogsPage() {
     feedback: null,
   });
 
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredChatlogs = useMemo(() => {
+    if (!chatlogs) return [];
+
+    return chatlogs.filter((log) => {
+      // 1. Filter by Channel
+      if (activeTab !== "all") {
+        const logChannel = (log.channel || "WIDGET").toUpperCase();
+        if (activeTab === "whatsapp" && logChannel !== "WHATSAPP") return false;
+        if (activeTab === "widget" && logChannel !== "WIDGET") return false;
+        // 'other' could catch everything else
+        if (activeTab === "other" && (logChannel === "WHATSAPP" || logChannel === "WIDGET")) return false;
+      }
+
+      // 2. Filter by Search Query
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const idMatch = log.uniqueConvId.toLowerCase().includes(query);
+        const contentMatch = log.firstUserMessage?.toLowerCase().includes(query) ?? false;
+        return idMatch || contentMatch;
+      }
+
+      return true;
+    });
+  }, [chatlogs, activeTab, searchQuery]);
+
+  // Helper to get channel icon
+  const getChannelIcon = (channel?: string) => {
+    const c = (channel || "").toUpperCase();
+    switch (c) {
+      case "WHATSAPP": return <MessageSquare className="h-3.5 w-3.5 text-green-600" />;
+      case "WIDGET": return <MessageCircle className="h-3.5 w-3.5 text-blue-600" />;
+      case "SMS": return <Hash className="h-3.5 w-3.5 text-purple-600" />;
+      case "EMAIL": return <Mail className="h-3.5 w-3.5 text-orange-600" />;
+      default: return <Globe className="h-3.5 w-3.5 text-muted-foreground" />;
+    }
+  };
+
   const renderedMessages = useMemo(() => {
     if (!messages) return [];
     // Map API message shape to widget Message shape
@@ -60,45 +102,106 @@ export default function ChatLogsPage() {
   return (
     <div className="flex h-full bg-background">
       {/* Sidebar */}
-      <div className="w-72 shrink-0 border-r">
-        <div className="px-4 py-3 border-b">
-          <h2 className="text-sm font-semibold">Chat logs</h2>
-          <p className="text-xs text-muted-foreground">All conversations</p>
+      <div className="w-80 shrink-0 border-r flex flex-col bg-background/50">
+        <div className="px-4 py-3 border-b space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Chat logs</h2>
+            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+              {filteredChatlogs.length}
+            </span>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              placeholder="Search ID or message..."
+              className="pl-8 h-8 text-xs"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Filter Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 h-7 p-0.5">
+              <TabsTrigger value="all" className="text-[10px] h-6 px-1">All</TabsTrigger>
+              <TabsTrigger value="widget" className="text-[10px] h-6 px-1">Widget</TabsTrigger>
+              <TabsTrigger value="whatsapp" className="text-[10px] h-6 px-1">WA</TabsTrigger>
+              <TabsTrigger value="other" className="text-[10px] h-6 px-1">Other</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-        <ScrollArea className="h-[calc(100vh-60px)] px-2">
-          <div className="py-2 space-y-1">
+
+        <ScrollArea className="flex-1">
+          <div className="p-2 space-y-1">
             {isLoadingChatlogs ? (
               Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="px-2 py-2 rounded-md">
-                  <Skeleton className="h-4 w-44 mb-2" />
-                  <Skeleton className="h-3 w-24" />
+                <div key={i} className="px-2 py-3 rounded-md space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-3 w-1/2" />
                 </div>
               ))
-            ) : chatlogs && chatlogs.length > 0 ? (
-              chatlogs.map((c) => {
+            ) : filteredChatlogs.length > 0 ? (
+              filteredChatlogs.map((c) => {
                 const isActive = selectedConvId === c.uniqueConvId;
                 return (
                   <button
                     key={c.uniqueConvId}
                     onClick={() => setSelectedConvId(c.uniqueConvId)}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-md transition-colors",
-                      "hover:bg-muted",
-                      isActive && "bg-muted"
+                      "w-full text-left px-3 py-3 rounded-lg border border-transparent transition-all group",
+                      "hover:bg-muted/50 hover:border-border/50",
+                      isActive ? "bg-muted border-border shadow-sm" : "bg-transparent"
                     )}
                   >
-                    <div className="line-clamp-1 text-[13px] font-medium">
-                      {c.firstUserMessage || "New conversation"}
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {getChannelIcon(c.channel)}
+                        <span className={cn(
+                          "text-[10px] font-medium px-1.5 py-0.5 rounded uppercase tracking-wider",
+                          isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover:bg-background"
+                        )}>
+                          {c.channel || "WIDGET"}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                        {formatShortDateTime(c.lastActivity)}
+                      </span>
                     </div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground">
-                      {formatShortDateTime(c.lastActivity)}
+
+                    <div className="line-clamp-2 text-[13px] font-medium leading-relaxed text-foreground/90">
+                      {c.firstUserMessage || <span className="text-muted-foreground italic">No message content</span>}
+                    </div>
+
+                    <div className="mt-2 flex items-center justify-between">
+                      <code className="text-[10px] text-muted-foreground/70 truncate max-w-[120px]">
+                        {c.uniqueConvId}
+                      </code>
                     </div>
                   </button>
                 );
               })
             ) : (
-              <div className="px-3 py-4 text-xs text-muted-foreground">
-                No conversations yet.
+              <div className="flex flex-col items-center justify-center py-10 text-center px-4">
+                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center mb-3">
+                  <Search className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-medium">No results found</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Try adjusting your filters or search query
+                </p>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="mt-2 h-auto p-0 text-xs"
+                  onClick={() => {
+                    setActiveTab("all");
+                    setSearchQuery("");
+                  }}
+                >
+                  Clear all filters
+                </Button>
               </div>
             )}
           </div>
