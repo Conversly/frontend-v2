@@ -144,6 +144,11 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         icon: Palette,
     },
     {
+        title: "WhatsApp",
+        url: `/chatbot/${botId}/whatsapp`,
+        icon: MessageCircle,
+    },
+    {
         title: "Actions",
         url: `/chatbot/${botId}/actions`,
         icon: Zap,

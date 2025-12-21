@@ -34,7 +34,7 @@ export default function WhatsAppTemplatesPage() {
     const integrationId = params.id as string;
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     const [templates, setTemplates] = useState<any[]>([]);
     const [defaultTemplates, setDefaultTemplates] = useState<any[]>([]);
@@ -80,7 +80,6 @@ export default function WhatsAppTemplatesPage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 overflow-y-auto bg-background">

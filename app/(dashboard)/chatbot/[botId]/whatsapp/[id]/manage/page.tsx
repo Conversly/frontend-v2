@@ -16,7 +16,7 @@ export default function WhatsAppManagePage() {
     const integrationId = Array.isArray(routeParams.id) ? routeParams.id[0] : routeParams.id;
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     return (
         <div className="flex h-full">
@@ -24,7 +24,6 @@ export default function WhatsAppManagePage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 overflow-y-auto bg-background">

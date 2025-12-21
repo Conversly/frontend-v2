@@ -19,12 +19,12 @@ export default function WhatsAppAnalyticsPage() {
   const [analytics, setAnalytics] = useState<any>(null);
 
   const sidebarItems = getIntegrationSidebarItems('whatsapp');
-  const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+  const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       if (!botId || !integrationId) return;
-      
+
       setIsLoading(true);
       try {
         const analyticsData = await getWhatsAppAnalytics(botId, integrationId);
@@ -58,7 +58,6 @@ export default function WhatsAppAnalyticsPage() {
           platform="whatsapp"
           items={sidebarItems}
           basePath={basePath}
-          onClose={() => router.push(`/chatbot/${botId}/integration`)}
         />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin" />

@@ -75,10 +75,10 @@ export const API = {
     },
     WHATSAPP: {
       BASE_URL: () => "/whatsapp",
-      CREATE_INTEGRATION: () => "/integration",  // post
-      UPDATE_INTEGRATION: () => "/integration",  // patch
-      GET_INTEGRATION: () => "/integration",  // get
-      DELETE_INTEGRATION: () => "/integration",  // delete
+      CREATE_INTEGRATION: () => "/",  // post
+      UPDATE_INTEGRATION: () => "/",  // patch
+      GET_INTEGRATION: () => "/",  // get
+      DELETE_INTEGRATION: () => "/",  // delete
       GET_DEFAULT_TEMPLATES: () => "/templates/defaults", // get (query: chatbotId)
       CREATE_DEFAULT_TEMPLATE: () => "/templates/default", // post
       UPDATE_TEMPLATE: () => "/templates/:id", // patch

@@ -84,7 +84,7 @@ export default function EditTemplatePage() {
                 }
             } else {
                 toast.error("Template not found");
-                router.push(`/chatbot/${botId}/integration/whatsapp/${integrationId}/templates`);
+                router.push(`/chatbot/${botId}/whatsapp/${integrationId}/templates`);
             }
         } catch (error) {
             console.error("Failed to load template", error);
@@ -154,7 +154,7 @@ export default function EditTemplatePage() {
             });
 
             toast.success("Template updated successfully");
-            router.push(`/chatbot/${botId}/integration/whatsapp/${integrationId}/templates`);
+            router.push(`/chatbot/${botId}/whatsapp/${integrationId}/templates`);
         } catch (error: any) {
             console.error("Failed to update template", error);
             toast.error(error.message || "Failed to update template");
@@ -178,7 +178,7 @@ export default function EditTemplatePage() {
     };
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     if (isLoading && !template) {
         return <div className="p-8 text-center">Loading template...</div>;
@@ -190,7 +190,6 @@ export default function EditTemplatePage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 overflow-y-auto bg-background">

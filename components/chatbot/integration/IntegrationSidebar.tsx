@@ -153,31 +153,6 @@ export function IntegrationSidebar({
 
         </div>
       </ScrollArea>
-
-      {/* Footer */}
-      {!isMinimized && (
-        <div className="p-3 border-t bg-background/95 backdrop-blur-sm sticky bottom-0 z-10">
-          <div className={cn(
-            "p-3 rounded-lg",
-            getPlatformColor(platform)
-          )}>
-            <p className="text-xs font-medium mb-1">Integration Active</p>
-            <p className="text-xs text-muted-foreground">
-              Managing {platform} features
-            </p>
-          </div>
-          {onClose && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onClose}
-              className="w-full mt-2"
-            >
-              Back to Integrations
-            </Button>
-          )}
-        </div>
-      )}
     </div>
   );
 }

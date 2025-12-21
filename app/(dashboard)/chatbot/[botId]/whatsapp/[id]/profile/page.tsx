@@ -32,12 +32,12 @@ export default function WhatsAppProfilePage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const sidebarItems = getIntegrationSidebarItems('whatsapp');
-  const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+  const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
   useEffect(() => {
     const fetchIntegration = async () => {
       if (!botId) return;
-      
+
       setIsLoading(true);
       try {
         const data = await getWhatsAppIntegration(botId);
@@ -60,7 +60,7 @@ export default function WhatsAppProfilePage() {
     try {
       await deleteWhatsAppIntegration(botId);
       toast.success('WhatsApp integration removed successfully');
-      router.push(`/chatbot/${botId}/integration`);
+      router.push(`/chatbot/${botId}/whatsapp`);
     } catch (error: any) {
       toast.error('Failed to remove integration: ' + (error.message || 'Unknown error'));
       console.error('Error deleting integration:', error);
@@ -77,7 +77,6 @@ export default function WhatsAppProfilePage() {
           platform="whatsapp"
           items={sidebarItems}
           basePath={basePath}
-          onClose={() => router.push(`/chatbot/${botId}/integration`)}
         />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin" />

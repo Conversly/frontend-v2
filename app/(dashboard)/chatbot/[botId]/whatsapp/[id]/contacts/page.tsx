@@ -56,7 +56,7 @@ export default function WhatsAppContactsPage() {
     const integrationId = Array.isArray(routeParams.id) ? routeParams.id[0] : routeParams.id;
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     // Mock Data
     const [contacts, setContacts] = useState<any[]>([]);
@@ -113,7 +113,6 @@ export default function WhatsAppContactsPage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 overflow-y-auto bg-background">

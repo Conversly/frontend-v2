@@ -43,7 +43,7 @@ export default function NewCampaignPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     useEffect(() => {
         const loadloData = async () => {
@@ -135,7 +135,6 @@ export default function NewCampaignPage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 flex flex-col h-full bg-slate-50/50">

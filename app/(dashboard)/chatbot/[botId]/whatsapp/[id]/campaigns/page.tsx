@@ -26,7 +26,7 @@ export default function CampaignsPage() {
     const integrationId = params.id as string;
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     const [campaigns, setCampaigns] = useState<any[]>([]);
     const [templates, setTemplates] = useState<any[]>([]);
@@ -63,7 +63,6 @@ export default function CampaignsPage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             <div className="flex-1 overflow-y-auto bg-background">

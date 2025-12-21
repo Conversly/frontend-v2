@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useMemo } from 'react';
+import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { HelpCircle, ExternalLink, Filter, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,7 +16,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ botId: string }>();
-  const router = useRouter();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
 
   if (!botId) {
@@ -29,51 +28,7 @@ export default function IntegrationPage() {
   const [isSetupModalOpen, setIsSetupModalOpen] = useState(false);
   const [activeIntegration, setActiveIntegration] = useState<IntegrationPlatform | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [isLoadingIntegrations, setIsLoadingIntegrations] = useState(true);
-
-  // Get webhook URL for the current bot
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/v1';
-  const webhookUrl = process.env.NEXT_PUBLIC_WHATSAPP_WEBHOOK_URL || "https://webhook-wa-mcnp.onrender.com/webhook";
-
-  // Check WhatsApp integration status on mount
-  useEffect(() => {
-    const checkWhatsAppIntegration = async () => {
-      if (!botId) return;
-
-      try {
-        const { getWhatsAppIntegration } = await import('@/lib/api/whatsapp');
-        const whatsappIntegration = await getWhatsAppIntegration(botId);
-
-        if (whatsappIntegration) {
-          // Update WhatsApp integration status to connected
-          setIntegrations(prev =>
-            prev.map(integration =>
-              integration.id === 'whatsapp'
-                ? { ...integration, status: 'connected' as const }
-                : integration
-            )
-          );
-        }
-      } catch (error: any) {
-        // Integration doesn't exist or error occurred
-        if (!error.message?.includes('not found')) {
-          console.error('Error checking WhatsApp integration:', error);
-        }
-        // Ensure WhatsApp is marked as not-connected if no integration exists
-        setIntegrations(prev =>
-          prev.map(integration =>
-            integration.id === 'whatsapp'
-              ? { ...integration, status: 'not-connected' as const }
-              : integration
-          )
-        );
-      } finally {
-        setIsLoadingIntegrations(false);
-      }
-    };
-
-    checkWhatsAppIntegration();
-  }, [botId]);
+  const [isLoadingIntegrations] = useState(false);
 
   // Filter integrations by category
   const filteredIntegrations = useMemo(() => {
@@ -99,33 +54,12 @@ export default function IntegrationPage() {
     }
 
     if (integration.status === 'connected') {
-      // If already connected, redirect to integration page
-      if (platformId === 'whatsapp') {
-        // Get WhatsApp integration ID
-        try {
-          const { getWhatsAppIntegration } = await import('@/lib/api/whatsapp');
-          const whatsappIntegration = await getWhatsAppIntegration(botId);
-          if (whatsappIntegration?.id) {
-            router.push(`/chatbot/${botId}/integration/whatsapp/${whatsappIntegration.id}`);
-          } else {
-            router.push(`/chatbot/${botId}/integration/whatsapp`);
-          }
-        } catch (error) {
-          router.push(`/chatbot/${botId}/integration/whatsapp`);
-        }
-      } else {
-        setActiveIntegration(platformId as IntegrationPlatform);
-      }
+      // If already connected, show the integration sidebar
+      setActiveIntegration(platformId as IntegrationPlatform);
       return;
     }
 
-    // For WhatsApp, redirect to setup page instead of modal
-    if (platformId === 'whatsapp') {
-      router.push(`/chatbot/${botId}/integration/whatsapp`);
-      return;
-    }
-
-    // Open setup modal for other platforms
+    // Open setup modal for platforms
     setSelectedPlatform(platformId as IntegrationPlatform);
     setIsSetupModalOpen(true);
   };
@@ -137,43 +71,21 @@ export default function IntegrationPage() {
     try {
       setIsSetupModalOpen(false);
 
-      if (selectedPlatform === 'whatsapp') {
-        // Import WhatsApp API function
-        const { createWhatsAppIntegration } = await import('@/lib/api/whatsapp');
+      // For platforms, use placeholder implementation
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const result = await createWhatsAppIntegration({
-          chatbotId: botId, // UUID string
-          phoneNumberId: credentials.phoneNumberId,
-          accessToken: credentials.accessToken,
-          verifyToken: credentials.verifyToken,
-          webhookSecret: credentials.webhookSecret,
-          businessAccountId: credentials.businessAccountId,
-          webhookUrl: credentials.webhookUrl || webhookUrl,
-        });
+      // Update integration status
+      setIntegrations(prev =>
+        prev.map(integration =>
+          integration.id === selectedPlatform
+            ? { ...integration, status: 'connected' as const }
+            : integration
+        )
+      );
 
-        // Redirect to WhatsApp integration page after successful setup
-        if (result?.id) {
-          router.push(`/chatbot/${botId}/integration/whatsapp/${result.id}`);
-        } else {
-          router.push(`/chatbot/${botId}/integration/whatsapp`);
-        }
-      } else {
-        // For other platforms, use placeholder
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Update integration status
-        setIntegrations(prev =>
-          prev.map(integration =>
-            integration.id === selectedPlatform
-              ? { ...integration, status: 'connected' as const }
-              : integration
-          )
-        );
-
-        // Show the integration sidebar and collapse main sidebar
-        setActiveIntegration(selectedPlatform);
-        toast.success(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} connected successfully!`);
-      }
+      // Show the integration sidebar
+      setActiveIntegration(selectedPlatform);
+      toast.success(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} connected successfully!`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to connect integration');
       console.error('Connection error:', error);
@@ -398,7 +310,6 @@ export default function IntegrationPage() {
           }}
           setupGuide={setupGuide}
           onConnect={handleConnect}
-          webhookUrl={selectedPlatform === 'whatsapp' ? webhookUrl : undefined}
         />
       )}
     </div>

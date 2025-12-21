@@ -13,9 +13,9 @@ export default function WhatsAppIntegrationPage() {
   const integrationId = Array.isArray(routeParams.id) ? routeParams.id[0] : routeParams.id;
 
   useEffect(() => {
-    // Redirect to chats by default
+    // Redirect to live-chat by default
     if (botId && integrationId) {
-      router.replace(`/chatbot/${botId}/integration/whatsapp/${integrationId}/live-chat`);
+      router.replace(`/chatbot/${botId}/whatsapp/${integrationId}/live-chat`);
     }
   }, [botId, integrationId, router]);
 
@@ -24,7 +24,7 @@ export default function WhatsAppIntegrationPage() {
   }
 
   const sidebarItems = getIntegrationSidebarItems('whatsapp');
-  const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+  const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
   return (
     <div className="flex h-full">
@@ -32,7 +32,6 @@ export default function WhatsAppIntegrationPage() {
         platform="whatsapp"
         items={sidebarItems}
         basePath={basePath}
-        onClose={() => router.push(`/chatbot/${botId}/integration`)}
       />
       <div className="flex-1 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin" />

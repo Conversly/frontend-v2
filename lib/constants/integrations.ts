@@ -8,15 +8,6 @@ import {
 // Available Integration Platforms
 export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
   {
-    id: 'whatsapp',
-    name: 'WhatsApp',
-    description: 'Connect your chatbot to WhatsApp Business API',
-    icon: 'MessageCircle',
-    status: 'not-connected',
-    docsUrl: 'https://github.com/Conversly/frontend-v2/blob/main/docs/WHATSAPP_MANUAL_SETUP_GUIDE.md',
-    category: 'messaging',
-  },
-  {
     id: 'slack',
     name: 'Slack',
     description: 'Manage your Slack conversations and notifications',
@@ -149,7 +140,6 @@ export const WHATSAPP_SIDEBAR_ITEMS: IntegrationSidebarItem[] = [
     label: 'Live Chat',
     icon: 'MessageSquare',
     path: '/live-chat',
-    badge: '3', // Example badge
   },
   {
     id: 'contacts',

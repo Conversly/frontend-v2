@@ -1,33 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
 import {
     Search,
-    Filter,
     MoreVertical,
     CheckCheck,
     Phone,
-    Video,
-    Info,
-    Send,
     Loader2,
-    User,
-    Tag,
-    History,
-    MapPin,
     Mail,
-    Calendar,
-    Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
     Accordion,
     AccordionContent,
@@ -35,12 +24,11 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from '@/lib/utils';
-import { getWhatsAppChats, getWhatsAppContactMessages, sendWhatsAppMessage, WhatsAppContact, WhatsAppMessage } from '@/lib/api/whatsapp';
+import { getWhatsAppChats, getWhatsAppContactMessages, WhatsAppContact, WhatsAppMessage } from '@/lib/api/whatsapp';
 import { WhatsAppMessageSender } from '@/components/chatbot/integration/whatsapp/WhatsAppMessageSender';
 
 export default function LiveChatPage() {
     const routeParams = useParams<{ botId: string; id: string }>();
-    const router = useRouter();
     const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
     const integrationId = Array.isArray(routeParams.id) ? routeParams.id[0] : routeParams.id;
 
@@ -48,12 +36,12 @@ export default function LiveChatPage() {
     const [selectedContact, setSelectedContact] = useState<WhatsAppContact | null>(null);
     const [contacts, setContacts] = useState<WhatsAppContact[]>([]);
     const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
-    const [inputMessage, setInputMessage] = useState('');
     const [isLoadingContacts, setIsLoadingContacts] = useState(true);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
-    const basePath = `/chatbot/${botId}/integration/whatsapp/${integrationId}`;
+    const basePath = `/chatbot/${botId}/whatsapp/${integrationId}`;
 
     // Fetch contacts
     useEffect(() => {
@@ -90,36 +78,6 @@ export default function LiveChatPage() {
         fetchMessages();
     }, [selectedContact, botId, integrationId]);
 
-    // Send message handler
-    const handleSendMessage = async () => {
-        if (!inputMessage.trim() || !selectedContact || !botId) return;
-
-        const currentInput = inputMessage;
-        setInputMessage(''); // Optimistic clear
-
-        try {
-            // Optimistic update
-            const newMessage: WhatsAppMessage = {
-                id: `temp-${Date.now()}`,
-                content: currentInput,
-                type: 'agent',
-                timestamp: new Date().toISOString(),
-            };
-            setMessages((prev) => [...prev, newMessage]);
-
-            // API Call
-            await sendWhatsAppMessage(botId, {
-                to: selectedContact.phoneNumber,
-                message: currentInput,
-            });
-
-            // In a real app, you might refetch or wait for the socket/webhook to confirm
-        } catch (error) {
-            console.error('Failed to send message', error);
-            // Revert input on failure
-            setInputMessage(currentInput);
-        }
-    };
 
     return (
         <div className="flex h-full bg-background overflow-hidden w-full">
@@ -128,7 +86,6 @@ export default function LiveChatPage() {
                 platform="whatsapp"
                 items={sidebarItems}
                 basePath={basePath}
-                onClose={() => router.push(`/chatbot/${botId}/integration`)}
             />
 
             {/* 2. Contact List Panel (Left) */}
@@ -200,7 +157,10 @@ export default function LiveChatPage() {
                     <>
                         {/* Header */}
                         <div className="h-16 border-b px-6 flex items-center justify-between bg-card/30">
-                            <div className="flex items-center gap-3">
+                            <div
+                                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                            >
                                 <Avatar>
                                     <AvatarFallback>{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
                                 </Avatar>
@@ -277,8 +237,8 @@ export default function LiveChatPage() {
 
             {/* 4. Smart Profile Panel (Right) */}
             {
-                selectedContact && (
-                    <div className="w-72 bg-card/50 overflow-y-auto hidden xl:block flex-shrink-0">
+                selectedContact && isProfileOpen && (
+                    <div className="w-72 bg-card/50 overflow-y-auto flex-shrink-0 border-l animate-in slide-in-from-right duration-300">
                         <div className="p-6 border-b text-center">
                             <Avatar className="w-20 h-20 mx-auto mb-4">
                                 <AvatarFallback className="text-xl">{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>

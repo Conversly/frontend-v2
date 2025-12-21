@@ -1,6 +1,6 @@
 import { fetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
-import { WhatsAppCredentials, WhatsAppIntegrationResponse } from "@/types/integration";
+import { WhatsAppIntegrationResponse } from "@/types/integration";
 
 export interface CreateWhatsAppIntegrationInput {
   chatbotId: string; // UUID
@@ -181,12 +181,12 @@ export const getWhatsAppChats = async (
     {
       method: "GET",
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppContact[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppContact[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export const getWhatsAppContactMessages = async (
@@ -204,12 +204,12 @@ export const getWhatsAppContactMessages = async (
     {
       method: "GET",
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppMessage[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppMessage[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 export interface AddWhatsAppContactInput {
@@ -316,12 +316,12 @@ export const getWhatsAppAnalyticsPerDay = async (
       method: "GET",
       params: { days },
     },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; data: WhatsAppAnalyticsPerDay[] }, Error>;
+  ).then((res) => res.data) as ApiResponse<WhatsAppAnalyticsPerDay[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data.data || [];
+  return res.data || [];
 };
 
 
