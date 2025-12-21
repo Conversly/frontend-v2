@@ -14,61 +14,71 @@ interface SummaryCardsProps {
 
 export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
   return (
-    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="p-4">
-        <div className="flex items-center">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Total Messages This Month</p>
-            {isLoading ? (
-              <Skeleton className="h-6 w-12 mt-1.5" />
-            ) : (
-              <div className="text-xl font-bold mt-1">{summaryData?.totalMessagesThisMonth?.toLocaleString() || 0}</div>
-            )}
-          </div>
-          <MessageSquare className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Card className="p-6 relative overflow-hidden">
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <p className="text-sm font-medium text-muted-foreground">Total Messages This Month</p>
+          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex items-baseline space-x-2">
+          {isLoading ? (
+            <Skeleton className="h-8 w-20 mt-1" />
+          ) : (
+            <div className="text-2xl font-bold">{summaryData?.totalMessagesThisMonth?.toLocaleString() || 0}</div>
+          )}
+          {/* Placeholder for trend if available in future */}
+          {/* <span className="text-xs text-green-500 font-medium">+12%</span> */}
+        </div>
+        <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-primary w-[45%]" />
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Avg. Messages per Conversation</p>
-            {isLoading ? (
-              <Skeleton className="h-6 w-12 mt-1.5" />
-            ) : (
-              <div className="text-xl font-bold mt-1">{summaryData?.avgMessagesPerConversation?.toFixed(1) || '0.0'}</div>
-            )}
-          </div>
-          <BarChart3 className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+      <Card className="p-6 relative overflow-hidden">
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <p className="text-sm font-medium text-muted-foreground">Avg. Messages / Conv.</p>
+          <BarChart3 className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex items-baseline space-x-2">
+          {isLoading ? (
+            <Skeleton className="h-8 w-16 mt-1" />
+          ) : (
+            <div className="text-2xl font-bold">{summaryData?.avgMessagesPerConversation?.toFixed(1) || '0.0'}</div>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">Per active conversation</p>
+      </Card>
+
+      <Card className="p-6 relative overflow-hidden">
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <p className="text-sm font-medium text-muted-foreground">Like Rate</p>
+          <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex items-baseline space-x-2">
+          {isLoading ? (
+            <Skeleton className="h-8 w-16 mt-1" />
+          ) : (
+            <div className="text-2xl font-bold">{summaryData?.likeRatePercent?.toFixed(1) || '0.0'}%</div>
+          )}
+        </div>
+        <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-green-500" style={{ width: `${summaryData?.likeRatePercent || 0}%` }} />
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Like Rate (%)</p>
-            {isLoading ? (
-              <Skeleton className="h-6 w-12 mt-1.5" />
-            ) : (
-              <div className="text-xl font-bold mt-1">{summaryData?.likeRatePercent?.toFixed(1) || '0.0'}%</div>
-            )}
-          </div>
-          <ThumbsUp className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+      <Card className="p-6 relative overflow-hidden">
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <p className="text-sm font-medium text-muted-foreground">Active Conversations</p>
+          <Users className="h-4 w-4 text-muted-foreground" />
         </div>
-      </Card>
-
-      <Card className="p-4">
-        <div className="flex items-center">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Active Conversations Today</p>
-            {isLoading ? (
-              <Skeleton className="h-6 w-12 mt-1.5" />
-            ) : (
-              <div className="text-xl font-bold mt-1">{summaryData?.activeConversationsToday || 0}</div>
-            )}
-          </div>
-          <Users className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+        <div className="flex items-baseline space-x-2">
+          {isLoading ? (
+            <Skeleton className="h-8 w-12 mt-1" />
+          ) : (
+            <div className="text-2xl font-bold">{summaryData?.activeConversationsToday || 0}</div>
+          )}
         </div>
+        <p className="text-xs text-muted-foreground mt-1">Today</p>
       </Card>
     </div>
   );

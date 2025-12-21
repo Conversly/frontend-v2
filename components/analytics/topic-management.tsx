@@ -1,16 +1,17 @@
 import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Settings, Plus, Edit, Trash2, MessageSquare } from "lucide-react";
 
@@ -109,7 +110,7 @@ export function TopicManagement({
               <Button variant="outline" size="sm" onClick={() => setIsCreateDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 size="sm"
                 onClick={onCreateTopic}
                 disabled={createPending}
@@ -136,44 +137,46 @@ export function TopicManagement({
       ) : error ? (
         <p className="text-sm text-destructive text-center py-3">Error loading topics. Please try again.</p>
       ) : topics && topics.length > 0 ? (
-        <div className="space-y-2">
-          {topics.map((topic) => (
-            <div key={topic.id} className="flex items-center justify-between p-2.5 border rounded-lg hover:bg-muted/50">
-              <div className="flex items-center space-x-2">
-                <div 
-                  className="w-3 h-3 rounded-full shrink-0" 
-                  style={{ backgroundColor: topic.color || '#8884d8' }}
-                />
-                <div>
-                  <span className="text-sm font-medium">{topic.name}</span>
-                  <p className="text-xs text-muted-foreground">
-                    Created {new Date(topic.createdAt || '').toLocaleDateString()}
-                  </p>
+        <ScrollArea className="h-[350px] pr-4">
+          <div className="space-y-2">
+            {topics.map((topic) => (
+              <div key={topic.id} className="flex items-center justify-between p-2.5 border rounded-lg hover:bg-muted/50">
+                <div className="flex items-center space-x-2">
+                  <div
+                    className="w-3 h-3 rounded-full shrink-0"
+                    style={{ backgroundColor: topic.color || '#8884d8' }}
+                  />
+                  <div>
+                    <span className="text-sm font-medium">{topic.name}</span>
+                    <p className="text-xs text-muted-foreground">
+                      Created {new Date(topic.createdAt || '').toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex space-x-1.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditingTopic({ id: topic.id, name: topic.name })}
+                    className="h-7 text-xs"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDeletingTopicId(topic.id)}
+                    className="h-7 text-xs text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Delete
+                  </Button>
                 </div>
               </div>
-              <div className="flex space-x-1.5">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditingTopic({ id: topic.id, name: topic.name })}
-                  className="h-7 text-xs"
-                >
-                  <Edit className="h-3 w-3 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setDeletingTopicId(topic.id)}
-                  className="h-7 text-xs text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-3 w-3 mr-1" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </ScrollArea>
       ) : (
         <div className="text-center py-6">
           <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
@@ -217,7 +220,7 @@ export function TopicManagement({
             <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               size="sm"
               onClick={onUpdateTopic}
               disabled={updatePending}
@@ -241,7 +244,7 @@ export function TopicManagement({
             <Button variant="outline" size="sm" onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               variant="destructive"
               size="sm"
               onClick={onDeleteTopic}

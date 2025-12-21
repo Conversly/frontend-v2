@@ -1,12 +1,10 @@
 import {
-    LayoutDashboard,
     MessageSquare,
     Settings,
     Activity,
     BarChart3,
     Database,
     Zap,
-    Users,
     LogOut,
     User,
     Bot,
@@ -49,24 +47,19 @@ export const dashboardNavItems: NavItem[] = [
         icon: Bot,
     },
     {
-        title: "Settings",
-        url: "/settings",
-        icon: Settings,
-    },
-    {
         title: "Promote",
         url: "/promote-manager",
         icon: Megaphone,
+    },
+    {
+        title: "profile",
+        url: "/profile",
+        icon: User,
     },
 ];
 
 // Chatbot-specific Navigation (requires botId to be injected)
 export const getChatbotNavItems = (botId: string): NavItem[] => [
-    {
-        title: "Workspace",
-        url: `/chatbot`,
-        icon: LayoutDashboard,
-    },
     {
         title: "Playground",
         url: `/chatbot/${botId}/playground`,
@@ -164,18 +157,8 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         icon: Plug,
     },
     {
-        title: "Contacts",
-        url: `/chatbot/${botId}/contacts`,
-        icon: Users,
-    },
-    {
         title: "Deploy",
         url: `/chatbot/${botId}/deploy`,
         icon: Rocket,
-    },
-    {
-        title: "Settings",
-        url: `/chatbot/${botId}/settings`,
-        icon: Settings,
     },
 ];

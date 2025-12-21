@@ -1,23 +1,12 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, ThumbsUp, Calendar } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { LineChart } from '@mui/x-charts/LineChart';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { chartsGridClasses } from '@mui/x-charts/ChartsGrid';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 interface ChartsSectionProps {
   chartsData?: {
@@ -37,105 +26,172 @@ export function ChartsSection({
   feedbacksLoading,
   formatDate,
 }: ChartsSectionProps) {
+
+  // Prepare Data for MUI Charts
+  // MUI X Charts prefers a dataset array and keys for series
+  const messagesData = chartsData?.messagesPerDay?.map(item => ({
+    date: new Date(item.date),
+    dateStr: formatDate(item.date),
+    count: item.count
+  })) || [];
+
+  const conversationsData = chartsData?.conversationsPerDay?.map(item => ({
+    date: new Date(item.date),
+    dateStr: formatDate(item.date),
+    count: item.count
+  })) || [];
+
+  const pieData = [
+    { id: 0, value: feedbackDistribution.likes, label: 'Likes', color: '#22c55e' }, // green-500
+    { id: 1, value: feedbackDistribution.dislikes, label: 'Dislikes', color: '#ef4444' }, // red-500
+    { id: 2, value: feedbackDistribution.none, label: 'No Feedback', color: '#94a3b8' }, // slate-400
+  ].filter(item => item.value > 0); // Optional: hide empty segments
+
+  const chartSetting = {
+    yAxis: [
+      {
+        label: '',
+      },
+    ],
+    grid: { horizontal: true },
+    sx: {
+      [`.${axisClasses.left} .${axisClasses.label}`]: {
+        transform: 'translate(-20px, 0)',
+      },
+      [`.${chartsGridClasses.line}`]: { strokeDasharray: '3 3', stroke: '#e2e8f0' },
+      "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+        fill: "#64748b",
+        fontSize: "0.75rem"
+      },
+      "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+        fill: "#64748b",
+        fontSize: "0.75rem"
+      }
+    },
+  };
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {/* Messages per Day Chart */}
-      <Card className="p-4 lg:col-span-2">
-        <div className="flex items-center mb-3">
-          <TrendingUp className="h-4 w-4 mr-2" />
-          <h3 className="text-base font-semibold">Messages per Day</h3>
-        </div>
-        {chartsLoading ? (
-          <Skeleton className="h-[220px] w-full" />
-        ) : (
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart
-              data={
-                chartsData?.messagesPerDay?.map((item) => ({
-                  ...item,
-                  date: formatDate(item.date),
-                })) || []
-              }
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="count"
-                stroke="#8884d8"
-                strokeWidth={2}
-                dot={{ fill: '#8884d8' }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </Card>
-
-      {/* Feedback Distribution Chart */}
-      <Card className="p-4">
-        <div className="flex items-center mb-3">
-          <ThumbsUp className="h-4 w-4 mr-2" />
-          <h3 className="text-base font-semibold">Feedback Distribution</h3>
-        </div>
-        {feedbacksLoading ? (
-          <Skeleton className="h-[220px] w-full" />
-        ) : (
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={[
-                  { name: 'Likes', value: feedbackDistribution.likes },
-                  { name: 'Dislikes', value: feedbackDistribution.dislikes },
-                  { name: 'No Feedback', value: feedbackDistribution.none },
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+      {/* Messages per Day - Area Chart (LineChart with area) */}
+      <Card className="col-span-4 shadow-sm border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            Total Income
+          </CardTitle>
+          <CardDescription>
+            Weekly report overview
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {chartsLoading ? (
+            <Skeleton className="h-[300px] w-full" />
+          ) : (
+            <div className="w-full h-[300px]">
+              <LineChart
+                dataset={messagesData}
+                xAxis={[{
+                  scaleType: 'point',
+                  dataKey: 'dateStr',
+                  tickLabelStyle: {
+                    fontSize: 12,
+                  }
+                }]}
+                series={[
+                  {
+                    dataKey: 'count',
+                    area: true,
+                    showMark: false,
+                    color: '#0ea5e9', // sky-500
+                    connectNulls: true,
+                  },
                 ]}
-                cx="50%"
-                cy="50%"
-                outerRadius={70}
-                fill="#8884d8"
-                dataKey="value"
-                label={(entry: any) => (entry.value > 0 ? entry.value.toString() : '')}
-              >
-                {COLORS.map((color, index) => (
-                  <Cell key={`cell-${index}`} fill={color} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        )}
+                {...chartSetting}
+                margin={{ left: 30, right: 10, top: 10, bottom: 20 }}
+              />
+            </div>
+          )}
+        </CardContent>
       </Card>
 
-      {/* Conversations per Day Chart */}
-      <Card className="p-4 lg:col-span-3">
-        <div className="flex items-center mb-3">
-          <Calendar className="h-4 w-4 mr-2" />
-          <h3 className="text-base font-semibold">Conversations per Day</h3>
-        </div>
-        {chartsLoading ? (
-          <Skeleton className="h-[220px] w-full" />
-        ) : (
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart
-              data={
-                chartsData?.conversationsPerDay?.map((item) => ({
-                  ...item,
-                  date: formatDate(item.date),
-                })) || []
-              }
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="count" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
+      {/* Feedback Distribution - Pie Chart */}
+      <Card className="col-span-3 flex flex-col shadow-sm border-border/50">
+        <CardHeader className="items-center pb-0">
+          <CardTitle className="flex items-center gap-2">
+            <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+            Feedback
+          </CardTitle>
+          <CardDescription>User satisfaction overview</CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1 min-h-[300px] flex items-center justify-center">
+          {feedbacksLoading ? (
+            <Skeleton className="h-[200px] w-[200px] rounded-full" />
+          ) : (
+            <div className="w-full h-[250px] flex justify-center">
+              <PieChart
+                series={[
+                  {
+                    data: pieData,
+                    innerRadius: 60,
+                    outerRadius: 100,
+                    paddingAngle: 2,
+                    cornerRadius: 4,
+                    highlightScope: { faded: 'global', highlighted: 'item' },
+                    faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                  },
+                ]}
+                slotProps={{
+                  legend: {
+                    direction: 'row',
+                    position: { vertical: 'bottom', horizontal: 'center' },
+                    padding: -5,
+                    labelStyle: {
+                      fontSize: 12,
+                      fill: '#64748b'
+                    }
+                  }
+                }}
+                margin={{ top: 0, bottom: 40, left: 0, right: 0 }}
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Conversations - Bar Chart */}
+      <Card className="col-span-7 shadow-sm border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            Conversations
+          </CardTitle>
+          <CardDescription>Volume trend</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {chartsLoading ? (
+            <Skeleton className="h-[250px] w-full" />
+          ) : (
+            <div className="h-[300px] w-full">
+              <BarChart
+                dataset={conversationsData}
+                xAxis={[{
+                  scaleType: 'band',
+                  dataKey: 'dateStr',
+                  categoryGapRatio: 0.4
+                }]}
+                series={[{
+                  dataKey: 'count',
+                  color: '#0ea5e9', // sky-500
+                  borderRadius: 4
+                }]}
+                {...chartSetting}
+                borderRadius={6}
+                margin={{ left: 30, right: 10, top: 10, bottom: 20 }}
+              />
+            </div>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
 }
-

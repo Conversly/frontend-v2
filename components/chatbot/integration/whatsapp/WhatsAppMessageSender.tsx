@@ -196,17 +196,18 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                 </div>
             )}
 
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 pr-14">
                 {/* Mode Toggle as Icon */}
                 {messageType === 'text' && (
                     <Button
-                        variant="ghost"
-                        size="icon"
-                        className="mb-1 shrink-0 text-muted-foreground hover:text-primary"
+                        variant="outline"
+                        size="sm"
+                        className="mb-1 shrink-0 h-9 gap-2 text-muted-foreground hover:text-primary"
                         onClick={() => setMessageType('template')}
-                        title="Send Template"
+                        title="Use Template"
                     >
-                        <FileText className="w-5 h-5" />
+                        <FileText className="w-4 h-4" />
+                        <span className="sr-only sm:not-sr-only sm:inline-block">Templates</span>
                     </Button>
                 )}
 
@@ -223,7 +224,7 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                                     handleSend();
                                 }
                             }}
-                            className="min-h-[44px] max-h-[120px] py-3 resize-none rounded-2xl bg-muted/30 border-muted-foreground/20 focus-visible:ring-1 pr-12"
+                            className="min-h-[44px] max-h-[120px] py-3 resize-none rounded-2xl bg-muted/30 border-muted-foreground/20 focus-visible:ring-1"
                             rows={1}
                         />
                     ) : (
@@ -231,26 +232,23 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                             Template: {selectedTemplate?.name || 'Select a template above'}
                         </div>
                     )}
+                </div>
 
-                    {/* Send Button Absolute in Input (for Text) or Inline */}
-                    <div className={cn(
-                        "absolute right-1 bottom-1",
-                        messageType === 'template' && "static ml-2"
-                    )}>
-                        <Button
-                            size="icon"
-                            onClick={handleSend}
-                            disabled={loading || (messageType === 'template' && !selectedTemplate) || (messageType === 'text' && !messageBody.trim())}
-                            className={cn(
-                                "h-9 w-9 rounded-full transition-all",
-                                (messageBody.trim() || (messageType === 'template' && selectedTemplate))
-                                    ? "bg-primary hover:bg-primary/90"
-                                    : "bg-muted text-muted-foreground hover:bg-muted"
-                            )}
-                        >
-                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
-                        </Button>
-                    </div>
+                {/* Send Button Absolute in Input (for Text) or Inline */}
+                <div className="mb-1 shrink-0">
+                    <Button
+                        size="icon"
+                        onClick={handleSend}
+                        disabled={loading || (messageType === 'template' && !selectedTemplate) || (messageType === 'text' && !messageBody.trim())}
+                        className={cn(
+                            "h-9 w-9 rounded-full transition-all",
+                            (messageBody.trim() || (messageType === 'template' && selectedTemplate))
+                                ? "bg-primary hover:bg-primary/90"
+                                : "bg-muted text-muted-foreground hover:bg-muted"
+                        )}
+                    >
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
+                    </Button>
                 </div>
             </div>
 
