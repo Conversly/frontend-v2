@@ -23,8 +23,10 @@ import {
     Bell,
     Palette,
     Rocket,
-    Home,
+    Building2,
     Megaphone,
+    CreditCard,
+    ShieldCheck,
 } from "lucide-react";
 
 export type NavItem = {
@@ -37,11 +39,6 @@ export type NavItem = {
 // Main Dashboard Navigation
 export const dashboardNavItems: NavItem[] = [
     {
-        title: "Home",
-        url: "/",
-        icon: Home,
-    },
-    {
         title: "Chatbots",
         url: "/chatbot",
         icon: Bot,
@@ -50,6 +47,26 @@ export const dashboardNavItems: NavItem[] = [
         title: "Promote",
         url: "/promote-manager",
         icon: Megaphone,
+    },
+    {
+        title: "Billing",
+        url: "/billing",
+        icon: CreditCard,
+    },
+    {
+        title: "Analytics",
+        url: "/analytics",
+        icon: BarChart3,
+    },
+    {
+        title: "Audit Logs",
+        url: "/audit-logs",
+        icon: ShieldCheck,
+    },
+    {
+        title: "Manage",
+        url: "/manage",
+        icon: User,
     },
     {
         title: "profile",

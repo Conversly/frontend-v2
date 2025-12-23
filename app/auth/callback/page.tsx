@@ -5,10 +5,12 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { QUERY_KEY } from "@/utils/query-key";
+import { useWorkspaces } from "@/hooks/use-workspaces";
 
 export default function AuthCallback() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { setActiveWorkspace } = useWorkspaces();
 
   useEffect(() => {
     const run = async () => {
@@ -26,11 +28,27 @@ export default function AuthCallback() {
           queryKey: [QUERY_KEY.LOGGED_IN_USER] 
         });
         
-        // Small delay to ensure state is updated
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Wait for user data to be fetched
+        await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Redirect to dashboard
-        router.replace("/chatbot");
+        // Invalidate workspaces to refresh after auto-accepted invites
+        await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+        await queryClient.refetchQueries({ queryKey: ["workspaces"] });
+        
+        // Check if there's a redirect URL in the URL params (for invite flow)
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get("redirect");
+        
+        // Small delay to ensure state is updated
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Redirect to invite page if that's where they came from, otherwise chatbot page
+        if (redirectUrl) {
+          router.replace(redirectUrl);
+        } else {
+          // Redirect to chatbot page (workspace will be auto-selected by useWorkspaces hook)
+          router.replace("/chatbot");
+        }
       } catch (error) {
         console.error("Error during auth callback:", error);
         // On error, redirect to login
@@ -38,7 +56,7 @@ export default function AuthCallback() {
       }
     };
     run();
-  }, [router, queryClient]);
+  }, [router, queryClient, setActiveWorkspace]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

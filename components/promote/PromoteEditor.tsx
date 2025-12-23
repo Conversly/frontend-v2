@@ -25,6 +25,7 @@ import { Switch } from "@/components/ui/switch";
 import { useGetChatbots } from "@/services/chatbot";
 import { ProductLaunchCard } from "@/components/promote/ProductLaunchCard";
 import { useRouter } from "next/navigation";
+import { useWorkspaces } from "@/hooks/use-workspaces";
 
 interface PromoteEditorProps {
     productId?: string;
@@ -32,9 +33,10 @@ interface PromoteEditorProps {
 
 export function PromoteEditor({ productId }: PromoteEditorProps) {
     const router = useRouter();
+    const { activeWorkspaceId } = useWorkspaces();
     const [product, setProduct] = React.useState<ProductLaunchData | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
-    const { data: chatbots } = useGetChatbots();
+    const { data: chatbots } = useGetChatbots(activeWorkspaceId || undefined);
 
     React.useEffect(() => {
         const initProduct = async () => {

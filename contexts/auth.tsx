@@ -42,6 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else if (user) {
       setAuthStatus('authenticated');
       setUser(user);
+      // Clear activeAccountId on login to ensure fresh workspace selection
+      // The useWorkspaces hook will validate and set a valid workspace
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("activeAccountId");
+      }
     } else {
       setAuthStatus('unauthenticated');
       setUser(null);
