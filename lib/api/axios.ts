@@ -8,6 +8,13 @@ export const fetch = axios.create({
 
 fetch.interceptors.request.use(
   (config) => {
+    if (typeof window !== "undefined") {
+      const activeAccountId = localStorage.getItem("activeAccountId");
+      if (activeAccountId) {
+        config.headers = config.headers || {};
+        (config.headers as any)["x-account-id"] = activeAccountId;
+      }
+    }
     return config;
   },
   (error) => {

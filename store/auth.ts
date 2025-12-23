@@ -30,6 +30,9 @@ export const useAuth = create<AuthState>()(
 
         // Clear localStorage flag
         localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "false");
+        
+        // Clear active workspace ID to prevent cross-user workspace access
+        localStorage.removeItem("activeAccountId");
 
         set({
           user: null,

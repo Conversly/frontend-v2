@@ -121,6 +121,18 @@ export const API = {
       GET_SESSIONS: () => "/:chatbotId/sessions",
       GENERATE_TOKEN: () => "/:chatbotId/token",  // POST - Generate LiveKit room token
     },
+    BILLING: {
+      BASE_URL: () => "/billing",
+      OVERVIEW: () => "/overview", // get
+      DASHBOARD: () => "/dashboard", // get - main billing dashboard data
+      ANALYTICS: () => "/analytics", // get - per-chatbot analytics /:chatbotId
+      ALLOCATE: () => "/allocate", // post
+      LEDGER: () => "/ledger", // get
+      RATES: () => "/rates", // get
+      AUTO_RECHARGE_SETTINGS: () => "/auto-recharge/settings", // post
+      AUTO_RECHARGE_REQUESTS: () => "/auto-recharge/requests", // post
+      AUTO_RECHARGE_DECISION: () => "/auto-recharge/requests/:id/decision", // post
+    },
     PROMOTE: {
       BASE_URL: () => "/promote",
       GET_PRODUCTS: () => "/", // get (all products)
@@ -143,7 +155,20 @@ export const API = {
       DELETE_CHANNEL: () => "/channel/:id", // delete
       GET_ALL: () => "/:chatbotId", // get - all prompts for chatbot
       GET_CHANNEL: () => "/:chatbotId/channel/:channel", // get - specific channel prompt
-    }
+    },
+    ADMIN: {
+      BASE_URL: () => "/admin",
+      GET_PERMISSIONS: () => "/permissions", // get
+      GET_ACCOUNT_MEMBERS: () => "/account/members", // get
+      INVITE_ACCOUNT_MEMBER: () => "/account/members", // post
+      DELETE_ACCOUNT_MEMBER: () => "/account/members/:userId", // delete
+      GET_PENDING_INVITES: () => "/account/invites", // get
+      CANCEL_INVITE: () => "/account/invites/:inviteId", // delete
+      GET_CHATBOT_ADMINS: () => "/chatbot/:chatbotId/admins", // get
+      INVITE_CHATBOT_ADMIN: () => "/chatbot/:chatbotId/admins", // post
+      DELETE_CHATBOT_ADMIN: () => "/chatbot/:chatbotId/admins/:userId", // delete
+    },
+
   },
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, ChevronDown, Mail, ArrowLeft } from "lucide-react";
 import { GoogleAuth } from "@/components/auth";
@@ -12,6 +12,8 @@ import { emailLogin, emailRegister } from "@/lib/api/auth";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/chatbot";
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
@@ -52,7 +54,10 @@ export default function LoginPage() {
         const response = await emailLogin(email, password);
         if (response.success) {
           localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
-          router.push("/chatbot");
+          // Small delay to allow backend to process auto-accepted invites
+          setTimeout(() => {
+            router.push(redirectTo);
+          }, 500);
         }
       }
     } catch (err: any) {
@@ -71,10 +76,10 @@ export default function LoginPage() {
     if (mounted) {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
       if (isLoggedIn && user) {
-        router.push("/chatbot");
+        router.push(redirectTo);
       }
     }
-  }, [mounted, user, router]);
+  }, [mounted, user, router, redirectTo]);
 
   if (!mounted) {
     return (
