@@ -54,6 +54,11 @@ export const dashboardNavItems: NavItem[] = [
         icon: CreditCard,
     },
     {
+        title: "Plans",
+        url: "/plans",
+        icon: Rocket,
+    },
+    {
         title: "Analytics",
         url: "/analytics",
         icon: BarChart3,

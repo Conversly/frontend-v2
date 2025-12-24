@@ -7,16 +7,42 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Laptop, Moon, Sun, User, Mail, Shield } from "lucide-react";
+import { Laptop, Moon, Sun, User, Mail, Shield, CreditCard, Crown, Zap, Building2, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentSubscription, CurrentSubscription } from "@/lib/api/subscription";
+import { QUERY_KEY } from "@/utils/query-key";
+import { useRouter } from "next/navigation";
+
+const TIER_COLORS: Record<string, string> = {
+    FREE: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+    PERSONAL: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    PRO: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+    ENTERPRISE: "bg-gradient-to-r from-purple-600 to-pink-600 text-white",
+};
+
+const TIER_ICONS: Record<string, React.ReactNode> = {
+    FREE: <Sparkles className="w-4 h-4" />,
+    PERSONAL: <Zap className="w-4 h-4" />,
+    PRO: <Crown className="w-4 h-4" />,
+    ENTERPRISE: <Building2 className="w-4 h-4" />,
+};
 
 export default function ProfilePage() {
     const { user } = useAuth();
     const { theme, setTheme } = useTheme();
+    const router = useRouter();
     const [name, setName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const { data: currentSubscription, isLoading: subscriptionLoading } = useQuery<CurrentSubscription | null>({
+        queryKey: [QUERY_KEY.CURRENT_SUBSCRIPTION],
+        queryFn: getCurrentSubscription,
+        retry: false,
+    });
 
     useEffect(() => {
         if (user) {
@@ -119,6 +145,147 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-4">
+                    {/* Subscription Plan Card */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <CreditCard className="w-5 h-5" />
+                                Subscription Plan
+                            </CardTitle>
+                            <CardDescription>
+                                Your current plan and usage details.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {subscriptionLoading ? (
+                                <div className="flex items-center justify-center py-8">
+                                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                    <p className="ml-3 text-muted-foreground">Loading subscription...</p>
+                                </div>
+                            ) : currentSubscription ? (
+                                <>
+                                    <div className="flex items-center justify-between">
+                                        <div className="space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-lg font-semibold">{currentSubscription.planName}</h3>
+                                                <Badge 
+                                                    variant={currentSubscription.status === "active" ? "default" : "secondary"}
+                                                    className={TIER_COLORS[currentSubscription.planName.toUpperCase().split(' ')[0]] || TIER_COLORS.FREE}
+                                                >
+                                                    {currentSubscription.status}
+                                                </Badge>
+                                            </div>
+                                            {currentSubscription.currentPeriodEnd && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    {currentSubscription.status === "active" ? "Renews" : "Expires"}: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Usage Stats */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-sm text-muted-foreground">Chatbots</p>
+                                            <p className="text-lg font-semibold">
+                                                {currentSubscription.usage.chatbots} /{" "}
+                                                {currentSubscription.entitlements?.maxChatbots === -1
+                                                    ? "∞"
+                                                    : currentSubscription.entitlements?.maxChatbots || 0}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm text-muted-foreground">Team Members</p>
+                                            <p className="text-lg font-semibold">
+                                                {currentSubscription.usage.users} /{" "}
+                                                {currentSubscription.entitlements?.maxUsers === -1
+                                                    ? "∞"
+                                                    : currentSubscription.entitlements?.maxUsers || 0}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Features */}
+                                    {currentSubscription.entitlements && (
+                                        <>
+                                            <Separator />
+                                            <div className="space-y-2">
+                                                <p className="text-sm font-medium">Plan Features</p>
+                                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                                    {currentSubscription.entitlements.allowWhatsApp && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>WhatsApp</span>
+                                                        </div>
+                                                    )}
+                                                    {currentSubscription.entitlements.allowVoice && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>Voice</span>
+                                                        </div>
+                                                    )}
+                                                    {currentSubscription.entitlements.allowAPI && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>API Access</span>
+                                                        </div>
+                                                    )}
+                                                    {currentSubscription.entitlements.allowWebhooks && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>Webhooks</span>
+                                                        </div>
+                                                    )}
+                                                    {currentSubscription.entitlements.allowCustomBranding && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>Custom Branding</span>
+                                                        </div>
+                                                    )}
+                                                    {currentSubscription.entitlements.prioritySupport && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                            <span>Priority Support</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full" 
+                                        onClick={() => router.push("/plans")}
+                                    >
+                                        <CreditCard className="mr-2 h-4 w-4" />
+                                        Manage Subscription
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="text-center py-4">
+                                        <p className="text-muted-foreground mb-2">No active subscription found</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            You're currently on the free tier.
+                                        </p>
+                                    </div>
+                                    <Button 
+                                        className="w-full" 
+                                        onClick={() => router.push("/plans")}
+                                    >
+                                        <Crown className="mr-2 h-4 w-4" />
+                                        View Plans & Upgrade
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
                     <Card>
                         <CardHeader>
                             <CardTitle>Appearance</CardTitle>

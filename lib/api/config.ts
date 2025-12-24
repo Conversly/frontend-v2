@@ -168,6 +168,14 @@ export const API = {
       INVITE_CHATBOT_ADMIN: () => "/chatbot/:chatbotId/admins", // post
       DELETE_CHATBOT_ADMIN: () => "/chatbot/:chatbotId/admins/:userId", // delete
     },
+    SUBSCRIPTION: {
+      BASE_URL: () => "/subscription",
+      GET_PLANS: () => "/plans", // get
+      GET_CURRENT: () => "/current", // get
+      CHECK_ENTITLEMENTS: () => "/entitlements", // get (query: action)
+      UPGRADE: () => "/upgrade", // post (body: planId, billingPeriod)
+      PURCHASE: () => "/purchase", // post (body: planId, billingPeriod, cardDetails)
+    },
 
   },
 };

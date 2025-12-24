@@ -14,18 +14,41 @@ import {
 } from "@/types/chatbot";
 
 export const createChatBot = async (chatbot: CreateChatbotInput) => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.CREATE(),
-    {
-      method: "POST",
-      data: chatbot,
-    },
-  ).then((res) => res.data) as ApiResponse<ChatbotResponse, Error>;
+  try {
+    const res = await fetch(
+      API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.CREATE(),
+      {
+        method: "POST",
+        data: chatbot,
+      },
+    );
+    
+    const data = res.data as ApiResponse<ChatbotResponse, Error>;
 
-  if (!res.success) {
-    throw new Error(res.message);
+    if (!data.success) {
+      const error = new Error(data.message) as any;
+      error.response = {
+        data: {
+          message: data.message,
+          code: (data as any).code,
+          requiresUpgrade: (data as any).requiresUpgrade,
+        },
+        status: res.status,
+      };
+      throw error;
+    }
+    return data.data;
+  } catch (error: any) {
+    // Axios throws errors for non-2xx status codes
+    // The error.response contains the response data
+    if (error.response) {
+      // Preserve the original axios error structure
+      // This ensures React Query receives the error with response.data intact
+      throw error;
+    }
+    // Network error or other error without response
+    throw error;
   }
-  return res.data;
 };
 
 export const getChatbot = async (chatbotId: string): Promise<ChatbotResponse> => {

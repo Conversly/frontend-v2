@@ -8,6 +8,7 @@ import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
 import { QUERY_KEY } from "@/utils/query-key";
+import { PlanRestrictionModal } from "@/components/subscription/plan-restriction-modal";
 import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecase";
 import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
 import { Step4UIConfig } from "@/components/chatbot/setup/Step4UIConfig";
@@ -55,6 +56,10 @@ export default function SetupWizardPage() {
 
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
+
+  // Plan Restriction Modal State
+  const [showRestrictionModal, setShowRestrictionModal] = useState(false);
+  const [restrictionMessage, setRestrictionMessage] = useState<string>("");
 
   // Widget Preview State
   const [isWidgetOpen, setIsWidgetOpen] = useState(true);
@@ -211,8 +216,27 @@ export default function SetupWizardPage() {
         setStep(3);
       } catch (err: any) {
         if (!cancelled) {
-          toast.error(err?.message || "Setup failed");
-          setStep(1);
+          // Check for plan restriction
+          const status = err?.response?.status || err?.status;
+          const code = err?.response?.data?.code || err?.code;
+          const requiresUpgrade = err?.response?.data?.requiresUpgrade || err?.requiresUpgrade;
+
+          if (status === 403 || code === 'PLAN_RESTRICTION' || requiresUpgrade === true) {
+            const errorMessage =
+              err?.response?.data?.message ||
+              err?.message ||
+              "You've reached your plan limit. Please upgrade to create more chatbots.";
+
+            setRestrictionMessage(errorMessage);
+            setShowRestrictionModal(true);
+            // Stay on step 1 so they can try again or see the error
+            setStep(1);
+            // Refresh entitlement check
+            queryClient.invalidateQueries({ queryKey: ["entitlements"] });
+          } else {
+            toast.error(err?.message || "Setup failed");
+            setStep(1);
+          }
         }
       }
     };
@@ -319,6 +343,13 @@ export default function SetupWizardPage() {
         </section>
 
       </div>
+
+      <PlanRestrictionModal
+        open={showRestrictionModal}
+        onOpenChange={setShowRestrictionModal}
+        message={restrictionMessage}
+        code="PLAN_RESTRICTION"
+      />
     </div>
   );
 }
