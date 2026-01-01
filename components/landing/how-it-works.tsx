@@ -54,10 +54,13 @@ function FeatureSteps({
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-6 md:gap-8 cursor-pointer"
-                initial={{ opacity: 0.3 }}
+                className="flex items-center gap-6 md:gap-8 cursor-pointer group"
+                initial={{ opacity: 0.3, x: -20 }}
+                whileInView={{ opacity: index === currentFeature ? 1 : 0.3, x: 0 }}
+                viewport={{ once: true }}
                 animate={{ opacity: index === currentFeature ? 1 : 0.3 }}
                 transition={{ duration: 0.5 }}
+                whileHover={{ x: 5, opacity: index === currentFeature ? 1 : 0.5 }}
                 onClick={() => {
                   setCurrentFeature(index)
                   setProgress(0)
@@ -260,11 +263,29 @@ export default function HowItWorks() {
 
       <div className="relative w-full">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="text-4xl md:text-5xl font-bold text-foreground mb-6"
+          >
             How to get Started
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8"
+          >
             We transform your knowledge base into a{" "}
             <span className="text-foreground">reliable and production-ready</span>{" "}
             AI-powered{" "}
@@ -272,8 +293,8 @@ export default function HowItWorks() {
               answer engine optimized for accuracy
             </span>
             .
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <Tabs defaultValue={tabs[0].value} className="relative z-10 w-full">
           <div className="flex justify-center mb-8">
@@ -281,15 +302,20 @@ export default function HowItWorks() {
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-300"
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <Icon className="h-4 w-4 shrink-0 group-data-[state=active]:hidden" />
-                    <Check className="h-4 w-4 shrink-0 hidden group-data-[state=active]:block" />
-                    {tab.label}
-                  </TabsTrigger>
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className="group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-300 hover:bg-muted/50"
+                    >
+                      <Icon className="h-4 w-4 shrink-0 group-data-[state=active]:hidden transition-transform group-hover:scale-110" />
+                      <Check className="h-4 w-4 shrink-0 hidden group-data-[state=active]:block" />
+                      {tab.label}
+                    </TabsTrigger>
+                  </motion.div>
                 )
               })}
             </TabsList>

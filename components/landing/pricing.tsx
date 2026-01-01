@@ -87,14 +87,16 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
+              whileHover={{ y: -8, scale: 1.02 }}
               className="relative group"
             >
               {/* Card Background */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-2xl" />
-              <div
+              <motion.div
                 className={`
-                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8
+                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8 transition-all duration-300
                 ${plan.popular ? "ring-2 ring-primary/20" : ""}
+                group-hover:shadow-xl group-hover:border-primary/30
               `}
               >
                 {/* Popular Badge */}
@@ -136,6 +138,7 @@ export default function PricingSection() {
                 </ul>
 
                 {/* CTA Button */}
+                {/* 
                 <button
                   type="button"
                   onClick={() => {
@@ -159,14 +162,16 @@ export default function PricingSection() {
                         : "Start Free"}
                   </span>
                   <div className="absolute inset-0 -z-0 bg-gradient-to-r from-transparent via-foreground/10 to-transparent translate-x-[-100%] group-hover/button:translate-x-[100%] transition-transform duration-500" />
-                </button>
+                </button> 
+                */}
 
 
                 {/* Hover Effect */}
-                <div
+                <motion.div
                   className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl"
+                  whileHover={{ opacity: 0.1 }}
                 />
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>

@@ -25,7 +25,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // TODO: Comment out this redirect when launching properly - login is currently disabled
+    router.replace("/");
+  }, [router]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -292,7 +294,7 @@ export default function LoginPage() {
             </div>
             <div className="relative h-[280px] w-full bg-cover bg-center bg-no-repeat z-10">
               <Image
-                src="https://backend.chatbase.co/storage/v1/object/public/chatbase/landing/features/smart-escalation.png"
+                src="/login_page.png"
                 alt="AI Agent Dashboard"
                 fill
                 className="object-contain"

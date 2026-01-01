@@ -21,7 +21,9 @@ export default function ChatbotsPage() {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
     if (!isLoggedIn) {
-      router.push("/login");
+      // TODO: Change back to "/login" when launching properly
+      router.push("/");
+      // router.push("/login");
     }
   }, [router]);
 

@@ -8,8 +8,8 @@ const features = [
     title: 'Take actions on your systems',
     description:
       "Configure actions that your agent can perform within your systems or through one of our integrations, like updating a customer's subscription or changing their address.",
-    image: 
-    '/take_action.png',
+    image:
+      '/take_action.png',
     isLarge: true,
   },
   {
@@ -60,7 +60,7 @@ export default function FeaturesSection() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`bg-muted rounded-md h-full p-6 aspect-square lg:aspect-auto flex justify-between flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer overflow-hidden ${feature.isLarge ? 'lg:col-span-2' : ''
+                className={`bg-white rounded-md h-full p-6 aspect-square lg:aspect-auto flex justify-between flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer overflow-hidden ${feature.isLarge ? 'lg:col-span-2' : ''
                   }`}
               >
                 <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
@@ -73,7 +73,7 @@ export default function FeaturesSection() {
                 </div>
                 <div className="flex flex-col">
                   <h3 className="text-xl tracking-tight mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground max-w-xs text-base">
+                  <p className="text-muted-foreground text-base">
                     {feature.description}
                   </p>
                 </div>

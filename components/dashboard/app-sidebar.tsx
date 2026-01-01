@@ -72,7 +72,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const handleLogout = () => {
         logout(queryClient);
-        router.push("/login");
+        // TODO: Change back to "/login" when launching properly
+        router.push("/");
+        // router.push("/login");
     };
 
     const getUserInitials = () => {

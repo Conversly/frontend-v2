@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock, MessageCircle, MessageSquare, Mic, Users, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 import { FeatureCardProps } from "./types";
 
 import ChatWidget from "./cards/ChatWidget";
@@ -57,27 +58,75 @@ export default function HighlightsSection() {
   return (
     <section className="py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-6 space-y-12">
-        <div className="space-y-3">
-          <span className="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold border border-border bg-card text-foreground">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="space-y-3"
+        >
+          <motion.span
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold border border-border bg-card text-foreground"
+          >
             Highlights
-          </span>
+          </motion.span>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3 max-w-3xl">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground"
+              >
                 Launch AI on voice, WhatsApp, and web chat
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="text-lg text-muted-foreground max-w-2xl"
+              >
                 Three ready-to-ship experiences powered by the same builder. Try the demos and see how customers can reach you anywhere.
-              </p>
+              </motion.p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featureCards.map((card) => (
-            <FeatureCard key={card.title} {...card} />
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2
+              }
+            }
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {featureCards.map((card, index) => (
+            <motion.div
+              key={card.title}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+              }}
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <FeatureCard {...card} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       <VoiceAgentModal isOpen={isVoiceModalOpen} onClose={() => setIsVoiceModalOpen(false)} />

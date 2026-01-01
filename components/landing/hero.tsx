@@ -202,7 +202,7 @@ function ChatUI() {
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
@@ -222,37 +222,79 @@ export default function Hero() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Content */}
-          <div className="flex gap-6 flex-col lg:items-start text-left">
-            <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex gap-6 flex-col lg:items-start text-left"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
               <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">
                 We&apos;re live!
               </div>
-            </div>
+            </motion.div>
 
             {/* Heading */}
-            <h1 className="text-4xl md:text-6xl font-normal text-foreground leading-[1.1] tracking-tight max-w-2xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-4xl md:text-6xl font-normal text-foreground leading-[1.1] tracking-tight max-w-2xl"
+            >
               AI agents that handle{" "}
-              <span className="text-primary">customer support</span>{" "}
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="text-primary"
+              >
+                customer support
+              </motion.span>{" "}
               so you don&apos;t have to
-            </h1>
+            </motion.h1>
 
             {/* Description */}
-            <p className="text-xl text-muted-foreground max-w-lg leading-relaxed tracking-tight">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="text-xl text-muted-foreground max-w-lg leading-relaxed tracking-tight"
+            >
               Deploy on WhatsApp, voice, or your website. Answers questions, resolves issues, hands off to humans when needed.
-            </p>
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-8 pt-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="flex flex-col gap-8 pt-2"
+            >
+
               <div className="flex flex-row gap-4">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="gap-2 h-12 px-6 text-base"
-                  onClick={() => router.push("/login")}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group"
                 >
-                  Jump on a call
-                  <PhoneCall className="w-4 h-4" />
-                </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-lg hover:border-primary/50"
+                    onClick={() => router.push("/")}
+                  >
+                    Jump on a call
+                    <PhoneCall className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </motion.div>
+                {/* TODO: Re-enable when launching properly
                 <Button
                   size="lg"
                   className="gap-2 h-12 px-6 text-base"
@@ -261,7 +303,9 @@ export default function Hero() {
                   Sign up here
                   <MoveRight className="w-4 h-4" />
                 </Button>
+                */}
               </div>
+
 
               {/* Social / follow */}
               <div className="flex flex-wrap items-center gap-3 text-muted-foreground mt-4">
@@ -290,18 +334,27 @@ export default function Hero() {
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Visual Side */}
-          <div className="relative lg:ml-auto w-full max-w-md mx-auto lg:max-w-none flex justify-center lg:justify-end">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="relative lg:ml-auto w-full max-w-md mx-auto lg:max-w-none flex justify-center lg:justify-end"
+          >
             {/* Main Chat UI */}
-            <div className="relative w-full max-w-md">
+            <motion.div
+              className="relative w-full max-w-md"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
               <ChatUI />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }

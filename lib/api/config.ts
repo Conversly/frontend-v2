@@ -143,6 +143,10 @@ export const API = {
       DELETE_CHANNEL: () => "/channel/:id", // delete
       GET_ALL: () => "/:chatbotId", // get - all prompts for chatbot
       GET_CHANNEL: () => "/:chatbotId/channel/:channel", // get - specific channel prompt
+    },
+    WAITLIST: {
+      BASE_URL: () => "/waitlist",
+      JOIN: () => "/join", // post - join waitlist
     }
   },
 };
