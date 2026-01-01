@@ -126,9 +126,13 @@ export default function Navbar() {
       <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 text-gray-900">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">V</span>
-            </div>
+            <Image
+              src="/verly_logo.png"
+              alt="VerlyAI Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
+            />
             <span className="font-bold text-xl">VerlyAI</span>
           </Link>
           <div className="flex items-center gap-4">
