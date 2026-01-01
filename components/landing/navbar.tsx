@@ -165,16 +165,9 @@ export default function Navbar() {
               </DropdownMenu>
             ) : (
               <>
-                {/* 
                 <Link href="/login">
-                  <Button variant="ghost">Sign In</Button>
+                  <Button variant="outline">Sign up now!</Button>
                 </Link>
-                <Link href="/signup">
-                  <Button>
-                    Get Started Free
-                  </Button>
-                </Link> 
-                */}
                 <Dialog open={isWaitlistOpen} onOpenChange={(open) => {
                   setIsWaitlistOpen(open);
                   if (!open) {

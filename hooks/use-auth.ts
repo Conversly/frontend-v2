@@ -19,7 +19,7 @@ interface UseAuthReturn {
     idToken: string,
   ) => Promise<void>;
   isAuthenticated: () => boolean;
-  startGoogleRedirect: () => void;
+  startGoogleRedirect: (inviteCode?: string) => void;
 }
 
 export const useAuth = (config: AuthConfig = {}): UseAuthReturn => {
@@ -94,7 +94,11 @@ export const useAuth = (config: AuthConfig = {}): UseAuthReturn => {
     return localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
   }, []);
 
-  const startGoogleRedirect = useCallback((): void => {
+  const startGoogleRedirect = useCallback((inviteCode?: string): void => {
+    // Store invite code in localStorage before redirect
+    if (inviteCode) {
+      localStorage.setItem(LOCAL_STORAGE_KEY.INVITE_CODE, inviteCode);
+    }
     const origin = window.location.origin;
     const url = `${API.BASE_URL}${API.ENDPOINTS.AUTH.BASE_URL()}/google?origin=${encodeURIComponent(origin)}`;
     window.location.href = url;

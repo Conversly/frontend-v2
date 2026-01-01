@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { QUERY_KEY } from "@/utils/query-key";
+import { validateInviteCode } from "@/lib/api/invite";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -13,6 +14,19 @@ export default function AuthCallback() {
   useEffect(() => {
     const run = async () => {
       try {
+        // Validate invite code if present
+        const inviteCode = localStorage.getItem(LOCAL_STORAGE_KEY.INVITE_CODE);
+        if (inviteCode) {
+          try {
+            await validateInviteCode(inviteCode);
+          } catch (error) {
+            console.error("Invalid invite code:", error);
+          } finally {
+            // Clear invite code from storage after use
+            localStorage.removeItem(LOCAL_STORAGE_KEY.INVITE_CODE);
+          }
+        }
+
         // Mark user as logged in
         localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
         

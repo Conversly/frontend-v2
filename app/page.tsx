@@ -20,7 +20,7 @@ export default function Home() {
     try {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN);
       if (isLoggedIn === "true") {
-        router.replace("/chatbot");
+        router.replace("/chatbot"); 
       }
     } catch { }
   }, [router]);
