@@ -129,9 +129,9 @@ export default function Navbar() {
             <Image
               src="/verly_logo.png"
               alt="VerlyAI Logo"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain"
             />
             <span className="font-bold text-xl">VerlyAI</span>
           </Link>

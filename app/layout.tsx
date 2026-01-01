@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   title: "VerlyAI",
   description:
     "VerlyAI - Empowering Conversations with Intelligent Chatbots",
+  icons: {
+    icon: "/verly_logo.png",
+  },
 };
 
 export default function RootLayout({
