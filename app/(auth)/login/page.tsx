@@ -104,16 +104,21 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
       <nav className="flex h-[74px] w-full items-center justify-between px-4">
-        <Link href="/" className="z-10">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-md">
-            <span className="text-lg font-bold text-white">V</span>
-          </div>
+        <Link href="/" className="z-10 flex items-center gap-2">
+          <Image
+            src="/verly_logo.png"
+            alt="VerlyAI Logo"
+            width={40}
+            height={40}
+            className="w-10 h-10 object-contain"
+          />
+          <span className="font-bold text-lg text-gray-900">VerlyAI</span>
         </Link>
       </nav>
 
       {/* Main Content */}
       <div className="flex-1 mx-auto max-w-screen-lg w-full px-4 pb-24 sm:mt-12 md:px-8">
-        <div className="mx-auto flex w-full max-w-md flex-col space-y-24 lg:max-w-full lg:flex-row lg:items-start lg:space-x-24 lg:space-y-0">
+        <div className="mx-auto flex w-full max-w-md flex-col space-y-24 lg:max-w-full lg:flex-row lg:items-center lg:space-x-24 lg:space-y-0">
 
           {/* Left Side - Login Form */}
           <div className="mx-auto mt-6 w-full sm:w-96">
@@ -174,7 +179,7 @@ export default function LoginPage() {
                     {isRegistering && (
                       <div>
                         <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-1">
-                          Invite Code
+                          Invite Code <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="inviteCode"
@@ -185,6 +190,16 @@ export default function LoginPage() {
                           placeholder="Enter your invite code"
                           autoComplete="off"
                         />
+                        <p className="mt-2 text-sm text-gray-500">
+                          An invite code is required to sign up. Don't have one?{" "}
+                          <Link href="/" className="text-primary hover:underline font-medium">
+                            Join the waitlist
+                          </Link>{" "}
+                          or{" "}
+                          <Link href="/" className="text-primary hover:underline font-medium">
+                            schedule a call
+                          </Link>.
+                        </p>
                       </div>
                     )}
 

@@ -166,7 +166,12 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="outline">Sign up now!</Button>
+                  <Button className="group relative overflow-hidden bg-foreground text-background hover:bg-foreground/90 font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105">
+                    <span className="relative z-10 flex items-center gap-2">
+                      Sign up now!
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </Button>
                 </Link>
                 <Dialog open={isWaitlistOpen} onOpenChange={(open) => {
                   setIsWaitlistOpen(open);
@@ -179,8 +184,11 @@ export default function Navbar() {
                   }
                 }}>
                   <DialogTrigger asChild>
-                    <Button className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all shadow-md hover:shadow-lg hover:scale-105">
-                      Join Waitlist
+                    <Button className="group relative overflow-hidden bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_100%] animate-[shimmer_2s_linear_infinite] hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 hover:scale-105 font-semibold">
+                      <span className="relative z-10 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        Join Waitlist
+                      </span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-zinc-950">

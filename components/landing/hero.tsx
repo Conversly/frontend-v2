@@ -214,7 +214,7 @@ export default function Hero() {
   const router = useRouter();
 
   return (
-    <section className="pt-28 pb-20 lg:pt-36 lg:pb-32 relative overflow-hidden">
+    <section className="pt-16 pb-20 lg:pt-20 lg:pb-32 relative overflow-hidden">
       {/* Background Orb */}
       <div className="absolute inset-0 h-full w-full pointer-events-none">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 opacity-20 blur-[100px]"></div>
@@ -275,36 +275,22 @@ export default function Hero() {
               className="flex flex-col gap-8 pt-2"
             >
 
-              <div className="flex flex-row gap-4">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, duration: 0.5 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group"
-                >
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-lg hover:border-primary/50"
-                    onClick={() => router.push("/")}
-                  >
-                    Jump on a call
-                    <PhoneCall className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </motion.div>
-                {/* TODO: Re-enable when launching properly
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 <Button
                   size="lg"
-                  className="gap-2 h-12 px-6 text-base"
-                  onClick={() => router.push("/login")}
+                  className="group gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-lg"
+                  onClick={() => router.push("/")}
                 >
-                  Sign up here
-                  <MoveRight className="w-4 h-4" />
+                  Schedule a call
+                  <PhoneCall className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
-                */}
-              </div>
+              </motion.div>
 
 
               {/* Social / follow */}
