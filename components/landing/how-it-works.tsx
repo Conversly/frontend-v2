@@ -1,192 +1,311 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
+import { MessageSquare, MessageCircle, Mic, Check } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-const steps = [
-  {
-    title: "Connect Your Data",
-    description: "Upload documents or connect your website to train your AI assistant with your knowledge base.",
-    image: "https://images.unsplash.com/photo-1720371300677-ba4838fa0678?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "Deploy AI Assistant",
-    description: "Embed on your website, integrate via API, or use our hosted solution for instant deployment.",
-    image: "https://images.unsplash.com/photo-1720371300677-ba4838fa0678?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "Track & Optimize",
-    description: "Monitor usage, gather insights, and continuously improve your AI's performance.",
-    image: "https://images.unsplash.com/photo-1720371300677-ba4838fa0678?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-]
+interface Feature {
+  step: string
+  title?: string
+  content: string
+  image: string
+}
 
-const CYCLE_DURATION = 5000 // 5 seconds per step
+interface FeatureStepsProps {
+  features: Feature[]
+  className?: string
+  title?: string
+  autoPlayInterval?: number
+  imageHeight?: string
+}
 
-export default function HowItWorks() {
-  const [activeIndex, setActiveIndex] = useState(0)
+function FeatureSteps({
+  features,
+  className,
+
+  autoPlayInterval = 3000,
+  imageHeight = "h-[400px]",
+}: FeatureStepsProps) {
+  const [currentFeature, setCurrentFeature] = useState(0)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          return 0
-        }
-        return prev + (100 / (CYCLE_DURATION / 50))
-      })
-    }, 50)
+    const timer = setInterval(() => {
+      if (progress < 100) {
+        setProgress((prev) => prev + 100 / (autoPlayInterval / 100))
+      } else {
+        setCurrentFeature((prev) => (prev + 1) % features.length)
+        setProgress(0)
+      }
+    }, 100)
 
-    return () => clearInterval(progressInterval)
-  }, [])
-
-  useEffect(() => {
-    if (progress >= 100) {
-      setActiveIndex((prev) => (prev + 1) % steps.length)
-      setProgress(0)
-    }
-  }, [progress])
-
-  const handleAccordionClick = (index: number) => {
-    setActiveIndex(index)
-    setProgress(0)
-  }
+    return () => clearInterval(timer)
+  }, [progress, features.length, autoPlayInterval])
 
   return (
-    <section className="bg-background py-24 relative overflow-hidden">
+    <div className={cn("p-8 md:p-12", className)}>
+      <div className="max-w-7xl mx-auto w-full">
+
+
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10">
+          <div className="order-2 md:order-1 space-y-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="flex items-center gap-6 md:gap-8 cursor-pointer"
+                initial={{ opacity: 0.3 }}
+                animate={{ opacity: index === currentFeature ? 1 : 0.3 }}
+                transition={{ duration: 0.5 }}
+                onClick={() => {
+                  setCurrentFeature(index)
+                  setProgress(0)
+                }}
+              >
+                <motion.div
+                  className={cn(
+                    "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 transition-all",
+                    index === currentFeature
+                      ? "bg-primary border-primary text-primary-foreground scale-110"
+                      : "bg-muted border-muted-foreground",
+                  )}
+                >
+                  {index <= currentFeature ? (
+                    <span className="text-lg font-bold">✓</span>
+                  ) : (
+                    <span className="text-lg font-semibold">{index + 1}</span>
+                  )}
+                </motion.div>
+
+                <div className="flex-1">
+                  <h3 className="text-xl md:text-2xl font-semibold">
+                    {feature.title || feature.step}
+                  </h3>
+                  <p className="text-sm md:text-lg text-muted-foreground">
+                    {feature.content}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div
+            className={cn(
+              "order-1 md:order-2 relative h-[300px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg"
+            )}
+          >
+            <AnimatePresence mode="wait">
+              {features.map(
+                (feature, index) =>
+                  index === currentFeature && (
+                    <motion.div
+                      key={index}
+                      className="absolute inset-0 rounded-lg overflow-hidden"
+                      initial={{ y: 100, opacity: 0, rotateX: -20 }}
+                      animate={{ y: 0, opacity: 1, rotateX: 0 }}
+                      exit={{ y: -100, opacity: 0, rotateX: 20 }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                    >
+                      <img
+                        src={feature.image}
+                        alt={feature.step}
+                        className="w-full h-full object-contain transition-transform transform"
+                      />
+
+                    </motion.div>
+                  ),
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const chatbotFeatures: Feature[] = [
+  {
+    step: "Step 1",
+    title: "Create Your Chatbot",
+    content:
+      "Start by entering your website URL and selecting a use case. Our AI automatically analyzes your content and creates a personalized chatbot tailored to your business needs.",
+    image:
+      "/create_chatbot.png",
+  },
+  {
+    step: "Step 2",
+    title: "Add Your Data Sources",
+    content:
+      "Connect documents, PDFs, or additional websites to expand your chatbot's knowledge base. Upload files or integrate with your existing data sources for comprehensive coverage.",
+    image:
+      "/data_sources.png",
+  },
+  {
+    step: "Step 3",
+    title: "Customize Appearance",
+    content:
+      "Brand your chatbot with your colors, logo, and personality. Adjust the chat widget's design to match your website's aesthetic and set the tone of conversations.",
+    image:
+      "/customise_apperances.png",
+  },
+  {
+    step: "Step 4",
+    title: "Embed on Your Website",
+    content:
+      "Copy the embed code and paste it into your website. Your chatbot will be live instantly, ready to answer customer questions 24/7 and improve engagement.",
+    image:
+      "/embeded_web.png",
+  },
+]
+
+const whatsappFeatures: Feature[] = [
+  {
+    step: "Step 1",
+    title: "Create Meta App",
+    content:
+      "Go to Meta for Developers and create a new Business app. Choose 'Business' as app type and add WhatsApp product to get started.",
+    image:
+      "/create_meta_app.png",
+  },
+  {
+    step: "Step 2",
+    title: "Get Phone Number ID",
+    content:
+      "In your app dashboard, go to WhatsApp → API Setup. Copy the Phone Number ID (15-16 digits) which will be used to connect your WhatsApp account.",
+    image:
+      "/get_phone_id.png",
+  },
+  {
+    step: "Step 3",
+    title: "Generate Access Token",
+    content:
+      "Create a System User in Business Settings and generate a permanent token with whatsapp_business_messaging permission for production use.",
+    image:
+      "/generate_access_token.png",
+  },
+  {
+    step: "Step 4",
+    title: "Configure Webhook",
+    content:
+      "Add the webhook URL and verify token in WhatsApp → Configuration. Subscribe to messages and message_template_status_update events to start receiving messages.",
+    image:
+      "/embeed.png",
+  },
+]
+
+const voiceFeatures: Feature[] = [
+  {
+    step: "Step 1",
+    title: "Create Your Chatbot",
+    content:
+      "Start by creating your chatbot with your knowledge base. This serves as the foundation for your voice agent, providing the AI with context and information.",
+    image:
+      "/create_chatbot_voice.png",
+  },
+  {
+    step: "Step 2",
+    title: "Configure Voice Settings",
+    content:
+      "Choose your voice model, language, and voice characteristics. Select from various TTS providers and customize the voice to match your brand personality.",
+    image:
+      "/voice_config.png",
+  },
+  {
+    step: "Step 3",
+    title: "Set Up Voice Model",
+    content:
+      "Configure speech-to-text and text-to-speech models. Choose from Deepgram, AssemblyAI, or ElevenLabs to ensure natural conversations with optimal accuracy.",
+    image:
+      "/set_up_voice.png",
+  },
+  {
+    step: "Step 4",
+    title: "Deploy Voice Agent",
+    content:
+      "Your voice agent is ready! Integrate it into your phone system or use our hosted solution. Start handling calls 24/7 with natural, AI-powered conversations.",
+    image:
+      "/deploy_voice.png",
+  },
+]
+
+const tabs = [
+  {
+    value: "chatbot",
+    icon: MessageSquare,
+    label: "Chatbot",
+    features: chatbotFeatures,
+  },
+  {
+    value: "whatsapp",
+    icon: MessageCircle,
+    label: "WhatsApp",
+    features: whatsappFeatures,
+  },
+  {
+    value: "voice",
+    icon: Mic,
+    label: "Voice",
+    features: voiceFeatures,
+  },
+]
+
+export default function HowItWorks() {
+  return (
+    <section className="py-24 lg:py-32 relative overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
       <div className="relative w-full">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">How it works</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            We transform your knowledge base into an <span className="text-foreground">reliable and production-ready</span>{" "}
-            AI-powered <span className="text-primary">answer engine optimized for accuracy</span>.
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            How to get Started
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
+            We transform your knowledge base into a{" "}
+            <span className="text-foreground">reliable and production-ready</span>{" "}
+            AI-powered{" "}
+            <span className="text-primary">
+              answer engine optimized for accuracy
+            </span>
+            .
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="w-full h-full lg:h-[450px] flex items-center justify-center">
-          <div className="w-full">
-            <div className="flex w-full flex-col items-center justify-center max-w-7xl mx-auto">
-              <div className="grid h-full grid-cols-5 gap-x-10 px-10 md:px-20 items-center w-full">
-                {/* Accordion - Desktop Only */}
-                <div className="col-span-2 w-full h-full hidden lg:flex md:items-center justify-start">
-                  <div className="w-full h-full flex flex-col gap-8" data-orientation="vertical">
-                    {steps.map((step, index) => {
-                      const isOpen = activeIndex === index
-                      return (
-                        <div
-                          key={index}
-                          data-state={isOpen ? "open" : "closed"}
-                          data-orientation="vertical"
-                          className="mt-px overflow-hidden focus-within:relative focus-within:z-10 relative data-[state=open]:bg-white dark:data-[state=open]:bg-[#27272A] rounded-lg data-[state=closed]:rounded-none data-[state=closed]:border-0 dark:data-[state=open]:shadow-[0px_0px_0px_1px_rgba(249,250,251,0.06),0px_0px_0px_1px_var(--color-zinc-800,#27272A),0px_1px_2px_-0.5px_rgba(0,0,0,0.24),0px_2px_4px_-1px_rgba(0,0,0,0.24)] data-[state=open]:shadow-[0px_0px_1px_0px_rgba(0,0,0,0.16),0px_1px_2px_-0.5px_rgba(0,0,0,0.16)]"
-                        >
-                          {/* Progress Bar */}
-                          <div
-                            className="absolute overflow-hidden rounded-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100 bg-neutral-300/50 dark:bg-neutral-300/30 left-0 right-0 bottom-0 h-0.5 w-full"
-                            data-state={isOpen ? "open" : "closed"}
-                          >
-                            <div
-                              className="absolute transition-all ease-linear bg-primary left-0 top-0 h-full"
-                              style={{
-                                width: isOpen ? `${progress}%` : "0%",
-                                transitionDuration: "50ms",
-                              }}
-                            />
-                          </div>
-
-                          {/* Accordion Header */}
-                          <h3 data-orientation="vertical" data-state={isOpen ? "open" : "closed"} className="flex">
-                            <button
-                              type="button"
-                              aria-expanded={isOpen}
-                              data-state={isOpen ? "open" : "closed"}
-                              data-orientation="vertical"
-                              onClick={() => handleAccordionClick(index)}
-                              className="group flex h-[45px] flex-1 cursor-pointer items-center justify-between p-3 outline-none font-semibold text-lg tracking-tight text-left"
-                            >
-                              {step.title}
-                            </button>
-                          </h3>
-
-                          {/* Accordion Content */}
-                          {isOpen && (
-                            <div
-                              data-state="open"
-                              role="region"
-                              data-orientation="vertical"
-                              className="overflow-hidden text-sm font-medium"
-                            >
-                              <div className="p-3">{step.description}</div>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {/* Image Display */}
-                <div className="col-span-5 h-[350px] min-h-[200px] w-auto lg:col-span-3">
-                  <div className="relative h-full w-full overflow-hidden">
-                    <img
-                      alt={steps[activeIndex].title}
-                      className="aspect-auto h-full w-full rounded-xl border border-neutral-300/50 object-cover p-1 transition-all duration-300"
-                      loading="eager"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      src={steps[activeIndex].image}
-                      style={{ opacity: 1, filter: "blur(0px)" }}
-                    />
-                  </div>
-                </div>
-
-                {/* Mobile Horizontal Scroll */}
-                <ul
-                  className="col-span-5 flex snap-x flex-nowrap overflow-x-auto [-ms-overflow-style:none] [-webkit-mask-image:linear-gradient(90deg,transparent,black_10%,white_90%,transparent)] [mask-image:linear-gradient(90deg,transparent,black_10%,white_90%,transparent)] [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden snap-mandatory"
-                  style={{ padding: "50px calc(50%)" }}
-                >
-                  {steps.map((step, index) => {
-                    const isActive = activeIndex === index
-                    return (
-                      <a
-                        key={index}
-                        onClick={() => handleAccordionClick(index)}
-                        className="card relative grid h-full max-w-64 shrink-0 items-start justify-center p-3 bg-background border-l last:border-r border-t border-b first:rounded-tl-xl last:rounded-tr-xl cursor-pointer"
-                        style={{ scrollSnapAlign: "center" }}
-                      >
-                        <div
-                          className="absolute overflow-hidden rounded-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100 bg-neutral-300/50 dark:bg-neutral-300/30 left-0 right-0 bottom-0 h-0.5 w-full"
-                          data-state={isActive ? "open" : "closed"}
-                        >
-                          <div
-                            className="absolute transition-all ease-linear bg-primary left-0 top-0 h-full"
-                            style={{
-                              width: isActive ? `${progress}%` : "0%",
-                              transitionDuration: "50ms",
-                            }}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <h2 className="text-lg font-bold">{step.title}</h2>
-                          <p className="mx-0 max-w-sm text-balance text-sm font-medium leading-relaxed">
-                            {step.description}
-                          </p>
-                        </div>
-                      </a>
-                    )
-                  })}
-                </ul>
-              </div>
-            </div>
+        <Tabs defaultValue={tabs[0].value} className="relative z-10 w-full">
+          <div className="flex justify-center mb-8">
+            <TabsList className="flex flex-col sm:flex-row h-auto bg-muted/50 p-1 rounded-full gap-1 border border-border/50">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                return (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-300"
+                  >
+                    <Icon className="h-4 w-4 shrink-0 group-data-[state=active]:hidden" />
+                    <Check className="h-4 w-4 shrink-0 hidden group-data-[state=active]:block" />
+                    {tab.label}
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
           </div>
-        </div>
+
+          {tabs.map((tab) => (
+            <TabsContent key={tab.value} value={tab.value}>
+              <FeatureSteps
+                features={tab.features}
+                autoPlayInterval={4000}
+                className="relative z-10"
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
     </section>
   )
 }
-

@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  MessageSquare,
   Bot,
   Clock,
-  Mic,
   Play,
-  Phone,
+  PhoneCall,
+  MoveRight,
+  Linkedin,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -31,6 +31,15 @@ function useTypingEffect(text: string, speed = 30) {
   }, [displayedText, text, speed]);
 
   return { displayedText, isComplete };
+}
+
+// X (formerly Twitter) Icon
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+  );
 }
 
 // WhatsApp Icon
@@ -197,246 +206,100 @@ function ChatUI() {
   );
 }
 
-// Feature cards data
-const featureCards = [
-  {
-    icon: Mic,
-    title: "Voice Agents",
-    desc: "Handle calls 24/7. Reduce wait times to zero.",
-  },
-  {
-    icon: WhatsAppIcon,
-    title: "WhatsApp",
-    desc: "Meet customers where they already are.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Web Chat",
-    desc: "Embed on any site in under 2 minutes.",
-  },
-];
 
-// Fake company logos for social proof
-const companies = [
-  { name: "TechFlow", icon: "⚡" },
-  { name: "Nexus", icon: "◈" },
-  { name: "Pulse", icon: "●" },
-  { name: "Vertex", icon: "△" },
-];
+
+
 
 export default function Hero() {
   const router = useRouter();
 
   return (
-    <section className="bg-background pt-20 pb-20 lg:pb-28 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Gradient base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent" />
-        
-        {/* Network lines pattern */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.015]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="network" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-              <circle cx="50" cy="50" r="1" fill="currentColor" className="text-foreground" />
-              <line x1="50" y1="50" x2="100" y2="0" stroke="currentColor" strokeWidth="0.5" className="text-foreground" />
-              <line x1="50" y1="50" x2="0" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-foreground" />
-              <line x1="50" y1="50" x2="100" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-foreground" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#network)" />
-        </svg>
-
-        {/* Floating orbs */}
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-32 right-[15%] w-80 h-80 bg-primary/20 rounded-full blur-[100px]"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-20 left-[10%] w-96 h-96 bg-primary/15 rounded-full blur-[120px]"
-        />
+    <section className="pt-28 pb-20 lg:pt-36 lg:pb-32 relative overflow-hidden">
+      {/* Background Orb */}
+      <div className="absolute inset-0 h-full w-full pointer-events-none">
+        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 opacity-20 blur-[100px]"></div>
       </div>
-
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="font-sans"
-          >
-            {/* Heading - Direct, no fluff */}
-            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground mb-5 leading-[1.1] tracking-tight">
+          <div className="flex gap-6 flex-col lg:items-start text-left">
+            <div>
+              <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">
+                We&apos;re live!
+              </div>
+            </div>
+
+            {/* Heading */}
+            <h1 className="text-4xl md:text-6xl font-normal text-foreground leading-[1.1] tracking-tight max-w-2xl">
               AI agents that handle{" "}
               <span className="text-primary">customer support</span>{" "}
-              so you don't have to
+              so you don&apos;t have to
             </h1>
 
-            {/* Description - One clear sentence */}
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed">
+            {/* Description */}
+            <p className="text-xl text-muted-foreground max-w-lg leading-relaxed tracking-tight">
               Deploy on WhatsApp, voice, or your website. Answers questions, resolves issues, hands off to humans when needed.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 mb-8">
-              <Button
-                size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 shadow-lg shadow-primary/20"
-                onClick={() => router.push("/login")}
-              >
-                Start Free
-                <ArrowRight className="ml-1 w-4 h-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full px-6 border-border"
-                onClick={() => router.push("/login")}
-              >
-                Get a Demo
-              </Button>
-              <button
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors ml-2"
-                onClick={() => {}}
-              >
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Play className="w-3 h-3 text-primary fill-primary" />
-                </div>
-                Watch Video
-              </button>
-            </div>
-
-            {/* Trust line */}
-            <p className="text-sm text-muted-foreground mb-10">
-              Free 14-day trial · No credit card required
-            </p>
-
-            {/* Feature Cards */}
-            <div className="grid sm:grid-cols-3 gap-3 mb-10">
-              {featureCards.map(({ icon: Icon, title, desc }, i) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 + i * 0.1 }}
-                  className="p-4 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-colors group"
+            <div className="flex flex-col gap-8 pt-2">
+              <div className="flex flex-row gap-4">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 h-12 px-6 text-base"
+                  onClick={() => router.push("/login")}
                 >
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/15 transition-colors">
-                    <Icon className="w-4 h-4 text-primary" />
-                  </div>
-                  <div className="font-semibold text-foreground text-sm mb-1">{title}</div>
-                  <div className="text-xs text-muted-foreground leading-relaxed">{desc}</div>
-                </motion.div>
-              ))}
-            </div>
+                  Jump on a call
+                  <PhoneCall className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="lg"
+                  className="gap-2 h-12 px-6 text-base"
+                  onClick={() => router.push("/login")}
+                >
+                  Sign up here
+                  <MoveRight className="w-4 h-4" />
+                </Button>
+              </div>
 
-            {/* Social Proof */}
-            <div className="pt-8 border-t border-border/50">
-              <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider font-medium">
-                Trusted by teams at
-              </p>
-              <div className="flex flex-wrap items-center gap-6">
-                {companies.map((company, i) => (
-                  <motion.div
-                    key={company.name}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3, delay: 0.3 + i * 0.1 }}
-                    className="flex items-center gap-2 text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+              {/* Social / follow */}
+              <div className="flex flex-wrap items-center gap-3 text-muted-foreground mt-4">
+                <div className="flex items-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl px-3 py-1 shadow-[0_12px_35px_-18px_rgba(0,0,0,0.45)]">
+                  <span className="text-xs font-semibold tracking-[0.16em] text-foreground/80 uppercase">
+                    Follow us
+                  </span>
+                  <span className="h-1 w-8 rounded-full bg-gradient-to-r from-primary/70 via-primary/40 to-transparent" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://x.com/VerlyAI"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-white/50 dark:border-white/15 bg-gradient-to-br from-white/90 via-white/40 to-white/20 dark:from-white/10 dark:via-white/5 dark:to-white/0 shadow-lg shadow-primary/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-primary/30 before:absolute before:inset-0 before:rounded-xl before:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_55%)] before:opacity-80 before:transition-opacity before:duration-300 group-hover:before:opacity-100"
                   >
-                    <span className="text-lg">{company.icon}</span>
-                    <span className="text-sm font-medium">{company.name}</span>
-                  </motion.div>
-                ))}
+                    <XIcon className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:text-black" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/company/verlyai/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-white/50 dark:border-white/15 bg-gradient-to-br from-white/90 via-white/40 to-white/20 dark:from-white/10 dark:via-white/5 dark:to-white/0 shadow-lg shadow-primary/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-primary/30 before:absolute before:inset-0 before:rounded-xl before:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_55%)] before:opacity-80 before:transition-opacity before:duration-300 group-hover:before:opacity-100"
+                  >
+                    <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:text-[#0a66c2]" />
+                  </a>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Visual Side */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="relative lg:ml-auto"
-          >
-            {/* Glow behind chat */}
-            <div className="absolute inset-0 bg-primary/10 blur-[80px] rounded-full scale-125" />
-
-            {/* Decorative rings */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute -top-6 -right-6 w-24 h-24 border border-primary/10 rounded-full"
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute -bottom-4 -left-4 w-16 h-16 border border-primary/10 rounded-full"
-            />
-
-            {/* WhatsApp badge */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-              className="absolute -top-2 right-4 z-10 bg-card border border-border rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2"
-            >
-              <WhatsAppIcon className="w-4 h-4 text-green-500" />
-              <span className="text-xs font-medium text-foreground">WhatsApp Ready</span>
-            </motion.div>
-
-            {/* Voice badge */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-              className="absolute top-20 -left-4 z-10 bg-card border border-border rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2"
-            >
-              <Phone className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">Voice AI</span>
-            </motion.div>
-
+          <div className="relative lg:ml-auto w-full max-w-md mx-auto lg:max-w-none flex justify-center lg:justify-end">
             {/* Main Chat UI */}
-            <div className="relative">
+            <div className="relative w-full max-w-md">
               <ChatUI />
             </div>
-
-            {/* Response time badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.8 }}
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-card border border-border rounded-full px-4 py-2 shadow-lg flex items-center gap-2"
-            >
-              <Clock className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">
-                Avg. response: 1.2s
-              </span>
-            </motion.div>
-
-            {/* Floating CTA card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1 }}
-              className="absolute -right-8 bottom-16 hidden xl:block bg-card border border-border rounded-xl p-4 shadow-xl w-48"
-            >
-              <p className="text-sm font-semibold text-foreground leading-snug mb-3">
-                Ready to automate support?
-              </p>
-              <Button 
-                size="sm" 
-                className="w-full rounded-full text-xs"
-                onClick={() => router.push("/login")}
-              >
-                Sign Up Free
-              </Button>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

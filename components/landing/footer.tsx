@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Github, Twitter, Linkedin } from "lucide-react"
+import { Linkedin } from "lucide-react"
 
 const footerLinks = {
   product: [
@@ -30,9 +30,8 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { name: "GitHub", icon: Github, href: "#" },
-  { name: "Twitter", icon: Twitter, href: "#" },
-  { name: "LinkedIn", icon: Linkedin, href: "#" },
+  { name: "X", icon: XIcon, href: "https://x.com/VerlyAI" },
+  { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/verlyai/" },
 ]
 
 const container = {
@@ -50,6 +49,14 @@ const item = {
   show: { opacity: 1, y: 0 }
 }
 
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-background text-foreground relative overflow-hidden">
@@ -61,7 +68,7 @@ export default function Footer() {
 
       {/* Main Footer */}
       <div className="relative mx-auto w-full py-16">
-        <motion.div 
+        <motion.div
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12"
           variants={container}
           initial="hidden"
@@ -75,7 +82,7 @@ export default function Footer() {
         </motion.div>
 
         {/* Social Links & Copyright */}
-        <motion.div 
+        <motion.div
           className="pt-8 border-t border-border"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -88,6 +95,8 @@ export default function Footer() {
                   key={social.name}
                   href={social.href}
                   className="text-muted-foreground hover:text-primary transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <social.icon className="w-5 h-5" />
                 </Link>
@@ -98,7 +107,7 @@ export default function Footer() {
               <span className="text-muted-foreground">All systems operational</span>
             </div>
             <p className="text-muted-foreground">
-              © {new Date().getFullYear()} ConverslyAI. All rights reserved.
+              © {new Date().getFullYear()} VerlyAI. All rights reserved.
             </p>
           </div>
         </motion.div>
@@ -117,8 +126,8 @@ function FooterSection({ title, links }: { title: string; links: { name: string;
       <ul className="space-y-2">
         {links.map((link) => (
           <li key={link.name}>
-            <Link 
-              href={link.href} 
+            <Link
+              href={link.href}
               className="text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               {link.name}

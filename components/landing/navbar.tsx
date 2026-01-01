@@ -51,7 +51,7 @@ export default function Navbar() {
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">V</span>
             </div>
-            <span className="font-bold text-xl">VerlyAi</span>
+            <span className="font-bold text-xl">VerlyAI</span>
           </Link>
           <div className="flex items-center gap-4">
             {user ? (

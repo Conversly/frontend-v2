@@ -55,7 +55,7 @@ export default function HighlightsSection() {
   ];
 
   return (
-    <section className="bg-background py-24 lg:py-28">
+    <section className="py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         <div className="space-y-3">
           <span className="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold border border-border bg-card text-foreground">

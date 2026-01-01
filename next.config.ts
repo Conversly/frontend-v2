@@ -4,11 +4,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["lh3.googleusercontent.com", "backend.chatbase.co"],
+    domains: ["lh3.googleusercontent.com", "images.unsplash.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "my-store-id.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
         pathname: "/**",
       },
     ],
