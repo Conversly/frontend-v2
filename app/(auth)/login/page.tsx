@@ -291,11 +291,29 @@ export default function LoginPage() {
                     </div>
                   </div>
 
+                  {/* Invite Code for Google Auth (login mode) */}
+                  {!isRegistering && (
+                    <div className="mb-4">
+                      <label htmlFor="inviteCodeGoogle" className="block text-sm font-medium text-gray-700 mb-1">
+                        Invite Code <span className="text-gray-400">(new users only)</span>
+                      </label>
+                      <input
+                        id="inviteCodeGoogle"
+                        type="text"
+                        value={inviteCode}
+                        onChange={(e) => setInviteCode(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Enter invite code if you're a new user"
+                        autoComplete="off"
+                      />
+                    </div>
+                  )}
+
                   {/* Google Sign In */}
                   <div className="mb-6">
                     <GoogleAuth 
                       className="w-full" 
-                      inviteCode={inviteCode} 
+                      inviteCode={inviteCode}
                       disabled={isRegistering && !inviteCode.trim()}
                     />
                   </div>
