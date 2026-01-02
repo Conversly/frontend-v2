@@ -95,8 +95,9 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
   },
   {
     title: "Sources",
+    href: `/chatbot/${botId}/sources`,
     icon: Database,
-    description: "Manage knowledge base sources",
+    description: "View and manage all knowledge base sources",
     children: [
       {
         title: "Files",
