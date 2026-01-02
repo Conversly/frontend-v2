@@ -17,6 +17,7 @@ interface AuthConfig {
 interface UseAuthReturn {
   authenticateWithGoogle: (
     idToken: string,
+    inviteCode?: string,
   ) => Promise<void>;
   isAuthenticated: () => boolean;
   startGoogleRedirect: (inviteCode?: string) => void;
@@ -67,9 +68,9 @@ export const useAuth = (config: AuthConfig = {}): UseAuthReturn => {
   );
 
   const authenticateWithGoogle = useCallback(
-    async (idToken: string): Promise<void> => {
+    async (idToken: string, inviteCode?: string): Promise<void> => {
       try {
-        const response = await googleOauth(null, idToken);
+        const response = await googleOauth(null, idToken, inviteCode);
 
         if (!response.success || !response.data) {
           throw new Error(response.message || "Google authentication failed");
@@ -95,12 +96,11 @@ export const useAuth = (config: AuthConfig = {}): UseAuthReturn => {
   }, []);
 
   const startGoogleRedirect = useCallback((inviteCode?: string): void => {
-    // Store invite code in localStorage before redirect
-    if (inviteCode) {
-      localStorage.setItem(LOCAL_STORAGE_KEY.INVITE_CODE, inviteCode);
-    }
     const origin = window.location.origin;
-    const url = `${API.BASE_URL}${API.ENDPOINTS.AUTH.BASE_URL()}/google?origin=${encodeURIComponent(origin)}`;
+    let url = `${API.BASE_URL}${API.ENDPOINTS.AUTH.BASE_URL()}/google?origin=${encodeURIComponent(origin)}`;
+    if (inviteCode) {
+      url += `&inviteCode=${encodeURIComponent(inviteCode)}`;
+    }
     window.location.href = url;
   }, []);
 

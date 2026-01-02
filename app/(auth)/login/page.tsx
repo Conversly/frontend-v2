@@ -54,7 +54,7 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
-        const response = await emailRegister(email, password);
+        const response = await emailRegister(email, password, undefined, inviteCode || undefined);
         if (response.success) {
           setVerificationSent(true);
         }
