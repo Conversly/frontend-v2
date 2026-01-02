@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, ChevronDown, Mail, ArrowLeft, Sparkles, CheckCircle2, Loader2, ArrowRight, KeyRound, Users } from "lucide-react";
@@ -40,10 +40,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
+  const googleAuthButtonRef = useRef<HTMLDivElement>(null);
 
   // Dialog state
   const [dialogStep, setDialogStep] = useState<DialogStep>("initial");
   const [hasConfirmedInvite, setHasConfirmedInvite] = useState(false);
+  const [pendingGoogleAuth, setPendingGoogleAuth] = useState(false);
+  const [bypassedForLogin, setBypassedForLogin] = useState(false); // Track if user bypassed for login
 
   // Waitlist form state
   const [waitlistEmail, setWaitlistEmail] = useState("");
@@ -182,6 +185,14 @@ export default function LoginPage() {
     setInviteCode(inviteCodeInput.trim());
     setHasConfirmedInvite(true);
     setDialogStep(null);
+    
+    // If user was trying to use Google Auth, trigger it now
+    if (pendingGoogleAuth) {
+      setPendingGoogleAuth(false);
+      setTimeout(() => {
+        googleAuthButtonRef.current?.querySelector('button')?.click();
+      }, 100);
+    }
   };
 
   const resetDialog = () => {
@@ -192,6 +203,18 @@ export default function LoginPage() {
     setWaitlistComments("");
     setWaitlistEmailError("");
     setTouchedWaitlistEmail(false);
+    setPendingGoogleAuth(false);
+    setBypassedForLogin(false);
+  };
+
+  const handleGoogleAuthClick = () => {
+    // If user hasn't confirmed invite yet AND not just logging in, show dialog
+    if (!hasConfirmedInvite && !bypassedForLogin) {
+      setDialogStep("initial");
+      setPendingGoogleAuth(true);
+      return true; // Prevent default behavior
+    }
+    return false; // Allow normal behavior
   };
 
   if (!mounted) {
@@ -214,8 +237,14 @@ export default function LoginPage() {
       <Dialog 
         open={dialogStep !== null && !hasConfirmedInvite} 
         onOpenChange={(open) => {
-          if (!open && dialogStep === "waitlist-success") {
-            resetDialog();
+          if (!open) {
+            if (dialogStep === "waitlist-success") {
+              resetDialog();
+            } else {
+              // User closed dialog without completing
+              setPendingGoogleAuth(false);
+              setDialogStep(null);
+            }
           }
         }}
       >
@@ -231,24 +260,48 @@ export default function LoginPage() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="grid gap-4 py-4">
+                {/* Image */}
+                <div className="relative w-full h-48 mb-6 rounded-lg overflow-hidden">
+                  <Image
+                    src="/customise_apperances.png"
+                    alt="VerlyAI Platform"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                <div className="grid gap-3 py-2">
                   <Button
                     onClick={() => setDialogStep("invite-code")}
-                    className="w-full h-14 text-lg bg-primary hover:bg-primary/90 group"
+                    className="w-full h-11 text-base bg-primary hover:bg-primary/90 group"
                   >
-                    <KeyRound className="w-5 h-5 mr-2" />
+                    <KeyRound className="w-4 h-4 mr-2" />
                     Yes, I have an invite code
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
 
                   <Button
                     onClick={() => setDialogStep("waitlist")}
                     variant="outline"
-                    className="w-full h-14 text-lg border-2 group"
+                    className="w-full h-11 text-base border-2 group"
                   >
-                    <Users className="w-5 h-5 mr-2" />
+                    <Users className="w-4 h-4 mr-2" />
                     No, join the waitlist
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                      setDialogStep(null);
+                      setBypassedForLogin(true); // Track that they bypassed
+                      setIsRegistering(false);
+                      setPendingGoogleAuth(false);
+                    }}
+                    variant="ghost"
+                    className="w-full h-11 text-base group"
+                  >
+                    Already a user? Login
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </div>
               </div>
@@ -614,11 +667,18 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          setIsRegistering(!isRegistering);
+                          const switchingToRegister = !isRegistering;
+                          setIsRegistering(switchingToRegister);
                           setError("");
                           setEmail("");
                           setPassword("");
                           setConfirmPassword("");
+                          
+                          // If switching to register and no invite code confirmed, show dialog
+                          if (switchingToRegister && !hasConfirmedInvite) {
+                            setBypassedForLogin(false); // Reset bypass flag
+                            setDialogStep("initial");
+                          }
                         }}
                         className="text-sm text-gray-600 hover:text-primary transition-colors"
                       >
@@ -638,11 +698,20 @@ export default function LoginPage() {
                   </div>
 
                   {/* Google Sign In */}
-                  <div className="mb-6">
-                    <GoogleAuth 
-                      className="w-full" 
-                      inviteCode={inviteCode}
-                    />
+                  <div className="mb-6" ref={googleAuthButtonRef}>
+                    <div 
+                      onClick={(e) => {
+                        if (handleGoogleAuthClick()) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }
+                      }}
+                    >
+                      <GoogleAuth 
+                        className="w-full" 
+                        inviteCode={inviteCode}
+                      />
+                    </div>
                   </div>
 
                   {/* Register Link */}
