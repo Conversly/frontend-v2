@@ -64,7 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { setTheme, theme } = useTheme();
 
     // Determine if we are in a chatbot context
-    const chatbotMatch = pathname?.match(/^\/chatbot\/([^/]+)/);
+    const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
     const botId = chatbotMatch ? chatbotMatch[1] : null;
 
     // Select navigation items based on context

@@ -54,28 +54,28 @@ const getGradientFromName = (name: string): { gradient: string; baseColor: strin
       baseColor: 'rgb(14, 165, 233)'
     }, // Sky gradient
   ];
-  
+
   const hash = name.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
-  
+
   return gradients[Math.abs(hash) % gradients.length];
 };
 
 export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProps) {
   const { gradient, baseColor } = getGradientFromName(chatbot.name);
-  
+
   // Calculate time since last update
   const getTimeSinceUpdate = () => {
     if (!chatbot.createdAt) return "recently";
-    
+
     const now = new Date();
     const created = new Date(chatbot.createdAt);
     const diffMs = now.getTime() - created.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
     if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
     return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
@@ -84,23 +84,23 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
   return (
     <Card className="max-h-[300px] overflow-hidden rounded-xl border transition-all ease-in-out hover:border-primary/20">
       {/* Chatbot Preview Section */}
-      <Link 
+      <Link
         href={`/chatbot/${chatbot.id}/playground`}
         className="block h-[200px] w-full overflow-hidden border-b"
       >
-        <div 
+        <div
           className="relative flex h-full w-full select-none items-end justify-center overflow-hidden"
           style={{ background: gradient }}
         >
           {/* Mini Chat Interface */}
-          <div 
+          <div
             className="z-20 flex h-[90%] w-[min(230px,90%)] flex-col items-center justify-start overflow-hidden rounded-t-[14px]"
             style={{ maxWidth: 'min(230px, 90%)' }}
           >
             {/* Chat Header */}
-            <div 
+            <div
               className="flex h-10 w-full flex-row items-center justify-start gap-1 rounded-[15px] rounded-b-none px-3 py-2"
-              style={{ 
+              style={{
                 background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0.44%, rgba(0, 0, 0, 0) 49.5%), rgb(255, 255, 255)'
               }}
             >
@@ -108,30 +108,30 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
                 {chatbot.name}
               </p>
             </div>
-            
+
             {/* Chat Messages Area */}
             <div className="relative flex w-full flex-grow flex-col gap-2 overflow-clip border-x-[0.25px] bg-white p-2">
               {/* Bot Message Bubble */}
               <div className="z-10 w-1/2 max-w-full flex-col gap-2 rounded-xl px-4 py-3.5 bg-zinc-200/50" />
-              
+
               {/* User Message Bubble */}
-              <div 
+              <div
                 className="z-10 ml-auto w-1/2 max-w-full rounded-xl px-4 py-3.5 font-sans"
                 style={{ background: gradient }}
               />
             </div>
           </div>
-          
+
           {/* Blurred Background Effect */}
-          <div 
+          <div
             className="absolute inset-0 h-full w-full scale-110"
-            style={{ 
+            style={{
               filter: 'brightness(0.95)',
               background: gradient
             }}
           >
             {/* Placeholder gradient overlay for visual effect */}
-            <div 
+            <div
               className="h-full w-full"
               style={{
                 background: `linear-gradient(135deg, ${baseColor}dd 0%, ${baseColor}88 50%, ${baseColor}dd 100%)`,
@@ -143,7 +143,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
       </Link>
 
       {/* Card Footer */}
-      <Link 
+      <Link
         href={`/chatbot/${chatbot.id}`}
         className="flex flex-row justify-between gap-4 p-6"
       >
@@ -157,11 +157,11 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
             Last trained <span>{getTimeSinceUpdate()}</span>
           </span>
         </div>
-        
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="icon"
               className="h-9 w-9 shrink-0"
             >
@@ -169,13 +169,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/chatbot/${chatbot.id}/settings`}>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+
             <DropdownMenuItem
               className="text-destructive"
               onClick={(e) => {

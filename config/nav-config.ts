@@ -1,6 +1,6 @@
 import {
     MessageSquare,
-    Settings,
+
     Activity,
     BarChart3,
     Database,
@@ -100,7 +100,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         ],
     },
     {
-        title: "Sources",
+        title: "Knowledge Base",
         url: `/chatbot/${botId}/sources`,
         icon: Database,
         items: [

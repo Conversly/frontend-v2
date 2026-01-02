@@ -65,12 +65,12 @@ export function PromptAIHelper({
   // Default to 'generate' if no chatbotId (can't modify without existing prompt)
   const [mode, setMode] = useState<AIMode>(chatbotId ? 'modify' : 'generate');
   const canModify = !!chatbotId; // Can only modify if we have a chatbot with existing prompt
-  
+
   // Generate from scratch state
   const [businessDescription, setBusinessDescription] = useState('');
   const [tone, setTone] = useState<string>('');
   const [targetAudience, setTargetAudience] = useState('');
-  
+
   // Modify existing state
   const [modifyDescription, setModifyDescription] = useState('');
 
@@ -94,14 +94,20 @@ export function PromptAIHelper({
         targetAudience: targetAudience.trim() || undefined,
       },
       {
-        onSuccess: (data) => {
-          onPromptGenerated(data.systemPrompt);
-          toast.success('New prompt generated!');
-          setIsOpen(false);
-          // Reset form
-          setBusinessDescription('');
-          setTone('');
-          setTargetAudience('');
+        onSuccess: (data: any) => {
+          const prompt = data?.systemPrompt || (typeof data === 'string' ? data : '');
+
+          if (prompt) {
+            onPromptGenerated(prompt);
+            toast.success('New prompt generated!');
+            setIsOpen(false);
+            // Reset form
+            setBusinessDescription('');
+            setTone('');
+            setTargetAudience('');
+          } else {
+            toast.error('Generated prompt format was invalid');
+          }
         },
         onError: (error: any) => {
           toast.error(error?.message || 'Failed to generate prompt');

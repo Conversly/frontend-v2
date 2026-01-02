@@ -9,9 +9,10 @@ interface Step6PromptTuningProps {
   onConfirm: () => void;
   draftPrompt: string;
   setDraftPrompt: (value: string) => void;
+  isLoading?: boolean;
 }
 
-export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt }: Step6PromptTuningProps) {
+export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt, isLoading }: Step6PromptTuningProps) {
 
   return (
     <div className="flex flex-col gap-8">
@@ -47,12 +48,21 @@ export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt }: St
             onChange={(e) => setDraftPrompt(e.target.value)}
             rows={8}
             className="font-mono text-xs"
+            placeholder={isLoading ? "Generating..." : "Enter your instructions here..."}
+            disabled={isLoading}
           />
         </div>
       </div>
 
-      <Button className="w-full" onClick={onConfirm}>
-        Confirm settings
+      <Button className="w-full" onClick={onConfirm} disabled={isLoading}>
+        {isLoading ? (
+          <>
+            <span className="mr-2 animate-spin">⟳</span>
+            Processing...
+          </>
+        ) : (
+          "Confirm settings"
+        )}
       </Button>
     </div>
   );

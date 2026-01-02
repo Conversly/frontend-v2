@@ -58,7 +58,7 @@ export function Step1UrlAndUsecase({
             <div className="h-1/2 w-px shrink-0 bg-border" />
             <Input
               id="url"
-              placeholder="portfolio.shashankkk.site"
+              placeholder="verly.ai"
               className="h-10 w-full rounded-s-none border-none"
               value={host}
               onChange={(e) => {

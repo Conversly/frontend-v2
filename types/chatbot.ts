@@ -1,18 +1,18 @@
 export interface CreateChatbotInput {
-    name: string;
-    description: string;
-  }
-  
-  export interface ChatbotResponse {
-    id: string;
-    userId: string;
-    name: string;
-    description: string;
-    systemPrompt: string;  // widget channel system prompt
-    createdAt: Date | null;
-    updatedAt: Date | null;
-    apiKey: string | null;
-  }
+  name: string;
+  description: string;
+}
+
+export interface ChatbotResponse {
+  id: string;
+  userId: string;
+  name: string;
+  description: string;
+  systemPrompt: string;  // widget channel system prompt
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  apiKey: string | null;
+}
 
 export interface GetChatbotsResponse {
   id: string;
