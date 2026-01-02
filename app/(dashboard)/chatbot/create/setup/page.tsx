@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
 import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
@@ -255,11 +257,18 @@ export default function SetupWizardPage() {
       toast.error("Missing chatbot ID");
       return;
     }
+    
+    // Validate prompt before submitting
+    if (!draftPrompt || !draftPrompt.trim()) {
+      toast.error("System prompt is required. Please describe your agent's personality.");
+      return;
+    }
+    
     try {
       await savePrompt({
         chatbotId,
         channel: "WIDGET",
-        systemPrompt: draftPrompt,
+        systemPrompt: draftPrompt.trim(),
       });
       // Invalidate chatbots cache so the new chatbot appears in the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
@@ -267,13 +276,37 @@ export default function SetupWizardPage() {
       toast.success("Agent ready!");
       router.push(`/chatbot/${chatbotId}`);
     } catch (err: any) {
-      toast.error(err?.message || "Failed to save prompt");
+      // Handle API validation errors
+      const errorMsg = err?.message || err?.error || "Failed to save prompt";
+      if (errorMsg.includes("System prompt")) {
+        toast.error("Please provide a valid system prompt for your agent");
+      } else {
+        toast.error(errorMsg);
+      }
     }
   };
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
-      <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
+    <div className="flex h-screen w-full flex-col">
+      {/* Header with Logo */}
+      <header className="border-b bg-background">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4">
+          <Link href="/chatbot" className="flex items-center gap-3">
+            <Image
+              src="/verly_logo.png"
+              alt="VerlyAI Logo"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain"
+            />
+            <span className="font-bold text-xl">VerlyAI</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
+        <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
 
         {/* LEFT PANEL (Inputs & Steps) */}
         <div className="flex h-full w-full flex-col justify-center overflow-y-auto bg-background px-4 py-10 lg:px-20 lg:py-20">
@@ -318,6 +351,7 @@ export default function SetupWizardPage() {
           </SetupVisualization>
         </section>
 
+        </div>
       </div>
     </div>
   );
