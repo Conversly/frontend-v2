@@ -71,7 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Protect dashboard routes
     if (pathname.startsWith("/chatbot") || pathname.startsWith("/dashboard")) {
       if (!isAuthenticated) {
-        router.push("/login");
+        // TODO: Change back to "/login" when launching properly
+        router.push("/");
+        // router.push("/login");
       }
     }
   }, [router, pathname, isAuthenticated]);

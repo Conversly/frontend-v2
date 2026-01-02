@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
     Sidebar,
@@ -68,7 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { permissions } = usePermissions();
 
     // Determine if we are in a chatbot context
-    const chatbotMatch = pathname?.match(/^\/chatbot\/([^/]+)/);
+    const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
     const botId = chatbotMatch ? chatbotMatch[1] : null;
 
     // Select navigation items based on context and filter by role
@@ -78,7 +79,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const handleLogout = () => {
         logout(queryClient);
-        router.push("/login");
+        // TODO: Change back to "/login" when launching properly
+        router.push("/");
+        // router.push("/login");
     };
 
     const getUserInitials = () => {
@@ -113,8 +116,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                                <Bot className="size-4 text-white" />
+                            <div className="flex aspect-square size-8 items-center justify-center">
+                                <Image
+                                    src="/verly_logo.png"
+                                    alt="Verly"
+                                    width={32}
+                                    height={32}
+                                    className="rounded-lg"
+                                />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">Verly</span>

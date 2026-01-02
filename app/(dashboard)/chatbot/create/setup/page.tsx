@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
 import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
@@ -123,9 +125,19 @@ export default function SetupWizardPage() {
   const loadCustomization = useCustomizationStore((s) => s.loadCustomization);
 
   // Step 4 state (personality) - using prompt API
-  const { data: widgetPrompt } = useChannelPrompt(chatbotId || "", "WIDGET");
+  const { data: widgetPrompt, isLoading: isPromptLoading } = useChannelPrompt(chatbotId || "", "WIDGET");
   const { mutateAsync: savePrompt } = useUpsertChannelPrompt();
   const [draftPrompt, setDraftPrompt] = useState("");
+
+  // Polling for prompt if it's empty (async generation)
+  useEffect(() => {
+    if (step === 6 && (!widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === '')) {
+      const interval = setInterval(() => {
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROMPTS, chatbotId, "WIDGET"] });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [step, widgetPrompt, chatbotId, queryClient]);
 
   // Sync draft prompt with fetched widget prompt
   useEffect(() => {
@@ -173,7 +185,7 @@ export default function SetupWizardPage() {
       return;
     }
     if (!isValidHost(trimmedHost)) {
-      toast.error("Enter a valid domain (e.g., portfolio.shashankkk.site)");
+      toast.error("Enter a valid domain (e.g., verly.ai)");
       return;
     }
     // Prevent double submission
@@ -279,11 +291,18 @@ export default function SetupWizardPage() {
       toast.error("Missing chatbot ID");
       return;
     }
+
+    // Validate prompt before submitting
+    if (!draftPrompt || !draftPrompt.trim()) {
+      toast.error("System prompt is required. Please describe your agent's personality.");
+      return;
+    }
+
     try {
       await savePrompt({
         chatbotId,
         channel: "WIDGET",
-        systemPrompt: draftPrompt,
+        systemPrompt: draftPrompt.trim(),
       });
       // Invalidate chatbots cache so the new chatbot appears in the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
@@ -291,57 +310,73 @@ export default function SetupWizardPage() {
       toast.success("Agent ready!");
       router.push(`/chatbot/${chatbotId}`);
     } catch (err: any) {
-      toast.error(err?.message || "Failed to save prompt");
+      // Handle API validation errors
+      const errorMsg = err?.message || err?.error || "Failed to save prompt";
+      if (errorMsg.includes("System prompt")) {
+        toast.error("Please provide a valid system prompt for your agent");
+      } else {
+        toast.error(errorMsg);
+      }
     }
   };
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
-      <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
+    <div className="flex h-full w-full flex-col">
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
+        <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
 
-        {/* LEFT PANEL (Inputs & Steps) */}
-        <div className="flex h-full w-full flex-col justify-center overflow-y-auto bg-background px-4 py-10 lg:px-20 lg:py-20">
-          {(step === 1 || step === 2) && (
-            <Step1UrlAndUsecase
-              protocol={protocol}
-              setProtocol={setProtocol}
-              host={host}
-              setHost={setHost}
-              useCase={useCase}
-              setUseCase={setUseCase}
-              isSubmitting={isSubmitting}
-              isValidHost={isValidHost}
-              onSubmit={onStep1Submit}
-              onManualSetup={() => router.push("/chatbot/create")}
-            />
-          )}
-          {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
-          {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
-          {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
-          {step === 6 && <Step6PromptTuning onConfirm={onStep4Submit} draftPrompt={draftPrompt} setDraftPrompt={setDraftPrompt} />}
-        </div>
-
-        {/* RIGHT PANEL (Visualization) */}
-        <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
-          <SetupVisualization url={composedUrl} stage={stage}>
-            {step === 4 && draftConfig && (
-              <PreviewCornerWidget
-                config={draftConfig}
-                isOpen={isWidgetOpen}
-                setIsOpen={setIsWidgetOpen}
-                messages={widgetMessages}
-                input={widgetInput}
-                setInput={setWidgetInput}
-                isTyping={isWidgetTyping}
-                handleSendMessage={handleWidgetSendMessage}
-                handleSuggestionClick={(s) => handleWidgetSendMessage(s)}
-                handleRegenerate={() => { }}
-                handleRating={() => { }}
+          {/* LEFT PANEL (Inputs & Steps) */}
+          <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step === 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
+            {(step === 1 || step === 2) && (
+              <Step1UrlAndUsecase
+                protocol={protocol}
+                setProtocol={setProtocol}
+                host={host}
+                setHost={setHost}
+                useCase={useCase}
+                setUseCase={setUseCase}
+                isSubmitting={isSubmitting}
+                isValidHost={isValidHost}
+                onSubmit={onStep1Submit}
+                onManualSetup={() => router.push("/chatbot/create")}
               />
             )}
-          </SetupVisualization>
-        </section>
+            {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
+            {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
+            {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
+            {step === 6 && (
+              <Step6PromptTuning
+                onConfirm={onStep4Submit}
+                draftPrompt={draftPrompt}
+                setDraftPrompt={setDraftPrompt}
+                isLoading={isPromptLoading || !widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === ''}
+              />
+            )}
+          </div>
 
+          {/* RIGHT PANEL (Visualization) */}
+          <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
+            <SetupVisualization url={composedUrl} stage={stage}>
+              {step === 4 && draftConfig && (
+                <PreviewCornerWidget
+                  config={draftConfig}
+                  isOpen={isWidgetOpen}
+                  setIsOpen={setIsWidgetOpen}
+                  messages={widgetMessages}
+                  input={widgetInput}
+                  setInput={setWidgetInput}
+                  isTyping={isWidgetTyping}
+                  handleSendMessage={handleWidgetSendMessage}
+                  handleSuggestionClick={(s) => handleWidgetSendMessage(s)}
+                  handleRegenerate={() => { }}
+                  handleRating={() => { }}
+                />
+              )}
+            </SetupVisualization>
+          </section>
+
+        </div>
       </div>
 
       <PlanRestrictionModal

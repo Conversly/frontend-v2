@@ -2,7 +2,7 @@
 import { Check, Star } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 
 const pricingPlans = [
   {
@@ -57,11 +57,10 @@ const pricingPlans = [
 
 export default function PricingSection() {
   return (
-    <section className="bg-background py-24 relative overflow-hidden" id="pricing">
+    <section className="py-24 lg:py-32 relative overflow-hidden" id="pricing">
       {/* Background Effects */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-grid-foreground/5 [mask-image:radial-gradient(background,transparent_70%)]" />
       </div>
 
       <div className="relative w-full">
@@ -88,14 +87,16 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
+              whileHover={{ y: -8, scale: 1.02 }}
               className="relative group"
             >
               {/* Card Background */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-2xl" />
-              <div
+              <motion.div
                 className={`
-                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8
+                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8 transition-all duration-300
                 ${plan.popular ? "ring-2 ring-primary/20" : ""}
+                group-hover:shadow-xl group-hover:border-primary/30
               `}
               >
                 {/* Popular Badge */}
@@ -137,6 +138,7 @@ export default function PricingSection() {
                 </ul>
 
                 {/* CTA Button */}
+                {/* 
                 <button
                   type="button"
                   onClick={() => {
@@ -146,10 +148,9 @@ export default function PricingSection() {
                   className={`
                     w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium
                     transition-all duration-300 group/button relative overflow-hidden
-                    ${
-                      plan.popular
-                        ? "bg-primary text-primary-foreground hover:opacity-90"
-                        : "bg-card border border-border hover:bg-accent"
+                    ${plan.popular
+                      ? "bg-primary text-primary-foreground hover:opacity-90"
+                      : "bg-card border border-border hover:bg-accent"
                     }
                   `}
                 >
@@ -157,18 +158,20 @@ export default function PricingSection() {
                     {plan.popular
                       ? "Get Started"
                       : plan.priceMonthly === "Custom"
-                      ? "Contact Sales"
-                      : "Start Free"}
+                        ? "Contact Sales"
+                        : "Start Free"}
                   </span>
                   <div className="absolute inset-0 -z-0 bg-gradient-to-r from-transparent via-foreground/10 to-transparent translate-x-[-100%] group-hover/button:translate-x-[100%] transition-transform duration-500" />
-                </button>
+                </button> 
+                */}
 
 
                 {/* Hover Effect */}
-                <div
+                <motion.div
                   className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl"
+                  whileHover={{ opacity: 0.1 }}
                 />
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>

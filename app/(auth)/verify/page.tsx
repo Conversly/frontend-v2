@@ -98,21 +98,39 @@ export default function VerifyEmailPage() {
                             {/* Action Buttons */}
                             <div className="mx-auto w-full sm:w-96 space-y-4">
                                 {status === 'success' && (
-                                    <Link
-                                        href="/login"
-                                        className="w-full py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center"
-                                    >
-                                        LOGIN
-                                    </Link>
+                                    <>
+                                        {/* TODO: Change back to "/login" when launching properly */}
+                                        <Link
+                                            href="/"
+                                            className="w-full py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center"
+                                        >
+                                            Go to Home
+                                        </Link>
+                                        {/* <Link
+                                            href="/login"
+                                            className="w-full py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center"
+                                        >
+                                            LOGIN
+                                        </Link> */}
+                                    </>
                                 )}
 
                                 {status === 'error' && (
-                                    <Link
-                                        href="/login"
-                                        className="w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center"
-                                    >
-                                        Back to Login
-                                    </Link>
+                                    <>
+                                        {/* TODO: Change back to "/login" when launching properly */}
+                                        <Link
+                                            href="/"
+                                            className="w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center"
+                                        >
+                                            Back to Home
+                                        </Link>
+                                        {/* <Link
+                                            href="/login"
+                                            className="w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center"
+                                        >
+                                            Back to Login
+                                        </Link> */}
+                                    </>
                                 )}
                             </div>
                         </div>

@@ -139,13 +139,7 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
                             </div>
                         </div>
 
-                        {/* Connecting Line */}
-                        <div className="h-16 w-px border-l border-dashed border-slate-300 my-2" />
 
-                        {/* Logo Node */}
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white shadow-lg">
-                            <span className="font-bold">C</span>
-                        </div>
                     </>
                 )}
 

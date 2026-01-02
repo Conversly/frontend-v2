@@ -8,12 +8,16 @@ interface GoogleAuthProps {
   onLoadingChange?: (loading: boolean) => void;
   label?: string;
   className?: string;
+  inviteCode?: string;
+  disabled?: boolean;
 }
 
 export const GoogleAuth: React.FC<GoogleAuthProps> = ({
   onLoadingChange,
   label = "Continue with Google",
   className,
+  inviteCode,
+  disabled,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { startGoogleRedirect } = useAuth();
@@ -29,14 +33,14 @@ export const GoogleAuth: React.FC<GoogleAuthProps> = ({
   const handleLogin = useCallback((): void => {
     updateLoadingState(true);
     // Redirect-based flow; the page will navigate away
-    startGoogleRedirect();
-  }, [startGoogleRedirect, updateLoadingState]);
+    startGoogleRedirect(inviteCode);
+  }, [startGoogleRedirect, updateLoadingState, inviteCode]);
 
   return (
     <Button
       variant="outline"
       onClick={handleLogin}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className={`h-12 bg-background hover:bg-gradient-to-r hover:from-primary/5 hover:via-purple-500/5 hover:to-pink-500/5 border-2 border-input hover:border-primary/60 transition-all duration-300 flex items-center gap-3 justify-center text-sm font-semibold shadow-md hover:shadow-xl hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] group/btn ${className || ""}`}
     >
       {isLoading ? (

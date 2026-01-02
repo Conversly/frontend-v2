@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   title: "VerlyAI",
   description:
     "VerlyAI - Empowering Conversations with Intelligent Chatbots",
+  icons: {
+    icon: "/verly_logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -64,7 +67,7 @@ export default function RootLayout({
         </GoogleOAuthProvider>
         <Script
           src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-3EpIMWVWfZ7JgXgUQ8VMmyJYEMX08t.js"
-          data-chatbot-id="k56bbuvfjxxcwi1b4617wsr6"
+          data-chatbot-id="r733qwzcdbhxjtmvuvj9pzgs"
           data-testing="false"
           strategy="afterInteractive"
         />

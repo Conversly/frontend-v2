@@ -65,12 +65,12 @@ export function PromptAIHelper({
   // Default to 'generate' if no chatbotId (can't modify without existing prompt)
   const [mode, setMode] = useState<AIMode>(chatbotId ? 'modify' : 'generate');
   const canModify = !!chatbotId; // Can only modify if we have a chatbot with existing prompt
-  
+
   // Generate from scratch state
   const [businessDescription, setBusinessDescription] = useState('');
   const [tone, setTone] = useState<string>('');
   const [targetAudience, setTargetAudience] = useState('');
-  
+
   // Modify existing state
   const [modifyDescription, setModifyDescription] = useState('');
 
@@ -94,14 +94,20 @@ export function PromptAIHelper({
         targetAudience: targetAudience.trim() || undefined,
       },
       {
-        onSuccess: (data) => {
-          onPromptGenerated(data.systemPrompt);
-          toast.success('New prompt generated!');
-          setIsOpen(false);
-          // Reset form
-          setBusinessDescription('');
-          setTone('');
-          setTargetAudience('');
+        onSuccess: (data: any) => {
+          const prompt = data?.systemPrompt || (typeof data === 'string' ? data : '');
+
+          if (prompt) {
+            onPromptGenerated(prompt);
+            toast.success('New prompt generated!');
+            setIsOpen(false);
+            // Reset form
+            setBusinessDescription('');
+            setTone('');
+            setTargetAudience('');
+          } else {
+            toast.error('Generated prompt format was invalid');
+          }
         },
         onError: (error: any) => {
           toast.error(error?.message || 'Failed to generate prompt');
@@ -248,13 +254,13 @@ export function PromptAIHelper({
           type="button"
           variant="outline"
           className={cn(
-            'w-full justify-between bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-500/20 hover:border-violet-500/40',
-            isOpen && 'border-violet-500/40'
+            'w-full justify-between bg-muted/30 border-border hover:border-primary/50',
+            isOpen && 'border-primary'
           )}
           disabled={disabled}
         >
           <span className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-violet-500" />
+            <Sparkles className="h-4 w-4 text-primary" />
             <span className="font-medium">AI Prompt Assistant</span>
           </span>
           <ChevronDown className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')} />
@@ -341,7 +347,7 @@ export function PromptAIHelper({
                 <Button
                   onClick={handleModifyExisting}
                   disabled={disabled || isLoading || !modifyDescription.trim()}
-                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isModifying ? (
                     <>
@@ -407,7 +413,7 @@ export function PromptAIHelper({
                 <Button
                   onClick={handleGenerateFromScratch}
                   disabled={disabled || isLoading || !businessDescription.trim()}
-                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isGenerating ? (
                     <>

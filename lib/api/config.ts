@@ -177,6 +177,17 @@ export const API = {
       PURCHASE: () => "/purchase", // post (body: planId, billingPeriod, cardDetails)
     },
 
+    WAITLIST: {
+      BASE_URL: () => "/waitlist",
+      JOIN: () => "/join", // post - join waitlist
+    },
+    INVITES: {
+      BASE_URL: () => "/invites",
+      CREATE: () => "/create",
+      LIST_INVITES: () => "/list",
+      LIST_USERS: () => "/list/user",
+      CHECK_INVITE: () => "/check-invite",
+    },
   },
 };
 
