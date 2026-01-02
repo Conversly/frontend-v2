@@ -12,6 +12,7 @@ import {
     LineChart,
     Plug,
     Share2,
+    BrainCircuit,
     MessageCircle,
     UserPlus,
     Paintbrush,
@@ -101,9 +102,14 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     },
     {
         title: "Knowledge Base",
-        url: `/chatbot/${botId}/sources`,
+        url: ``,
         icon: Database,
         items: [
+            {
+                title: "Current Data",
+                url: `/chatbot/${botId}/sources`,
+                icon: BrainCircuit,
+            },
             {
                 title: "Files",
                 url: `/chatbot/${botId}/sources/files`,

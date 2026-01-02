@@ -38,29 +38,29 @@ const DATA_SOURCE_ICONS = {
 } as const;
 
 const DATA_SOURCE_COLORS = {
-  URL: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-400',
-  DOCUMENT: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20 text-purple-400',
-  QNA: 'from-pink-500/10 via-pink-500/5 to-transparent border-pink-500/20 text-pink-400',
-  TXT: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-400',
+  URL: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
+  DOCUMENT: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
+  QNA: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
+  TXT: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
 } as const;
 
 const DATA_SOURCE_BADGE_COLORS = {
-  URL: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  DOCUMENT: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  QNA: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
-  TXT: 'bg-green-500/10 text-green-400 border-green-500/20',
+  URL: 'bg-primary/10 text-primary border-primary/20',
+  DOCUMENT: 'bg-primary/10 text-primary border-primary/20',
+  QNA: 'bg-primary/10 text-primary border-primary/20',
+  TXT: 'bg-primary/10 text-primary border-primary/20',
 } as const;
 
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 flex items-center justify-center mb-6">
-        <Database className="w-10 h-10 text-gray-400" />
+      <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center mb-6">
+        <Database className="w-10 h-10 text-muted-foreground" />
       </div>
-      <h3 className="text-xl font-heading font-semibold text-white mb-2">
+      <h3 className="text-xl font-heading font-semibold text-foreground mb-2">
         No Data Sources Yet
       </h3>
-      <p className="text-gray-400 mb-6 max-w-sm">
+      <p className="text-muted-foreground mb-6 max-w-sm">
         Add your first data source to train your chatbot. Start with URLs, documents, Q&A pairs, or text content.
       </p>
       <Link href="./sources/productivity">
@@ -92,10 +92,10 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      className="group bg-gray-900/40 border border-gray-800/60 rounded-lg p-4 hover:border-pink-500/20 transition-all"
+      className="group bg-muted/50 border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
     >
       <div className="flex items-start justify-between gap-3 mb-2">
-        <span className="text-xs font-mono text-gray-500">Chunk #{index + 1}</span>
+        <span className="text-xs font-mono text-muted-foreground">Chunk #{index + 1}</span>
         <Button
           size="icon-sm"
           variant="ghost"
@@ -109,14 +109,14 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
           )}
         </Button>
       </div>
-      <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
         {displayText}
         {shouldTruncate && !expanded && '...'}
       </p>
       {shouldTruncate && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-xs text-pink-400 hover:text-pink-300 mt-2 font-medium"
+          className="text-xs text-primary hover:text-primary/80 mt-2 font-medium"
         >
           {expanded ? 'Show less' : 'Show more'}
         </button>
@@ -131,10 +131,10 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
   if (!dataSource) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <div className="w-16 h-16 rounded-xl bg-gray-800/50 flex items-center justify-center mb-4">
-          <ChevronRight className="w-8 h-8 text-gray-600" />
+        <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+          <ChevronRight className="w-8 h-8 text-muted-foreground" />
         </div>
-        <p className="text-gray-400">
+        <p className="text-muted-foreground">
           Select a data source to view its details
         </p>
       </div>
@@ -146,10 +146,10 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="border-b border-gray-800/60 p-6">
+      <div className="border-b border-border p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 flex items-center justify-center flex-shrink-0">
-            <Icon className="w-6 h-6 text-pink-500" />
+          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+            <Icon className="w-6 h-6 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -157,12 +157,12 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
                 {dataSource.type}
               </Badge>
               {dataSource.createdAt && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {new Date(dataSource.createdAt).toLocaleDateString()}
                 </span>
               )}
             </div>
-            <h3 className="text-lg font-heading font-semibold text-white mb-1 truncate">
+            <h3 className="text-lg font-heading font-semibold text-foreground mb-1 truncate">
               {dataSource.name}
             </h3>
             {dataSource.citation && (
@@ -170,7 +170,7 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
                 href={dataSource.citation}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-400 hover:text-blue-300 truncate block"
+                className="text-sm text-primary hover:text-primary/80 truncate block"
               >
                 {dataSource.citation}
               </a>
@@ -182,23 +182,23 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
       {/* Embeddings */}
       <div className="flex-1 overflow-y-auto p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Database className="w-4 h-4 text-pink-500" />
+          <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Database className="w-4 h-4 text-primary" />
             Embedding Chunks
             {embeddings && (
-              <span className="text-gray-500 font-normal">({embeddings.length})</span>
+              <span className="text-muted-foreground font-normal">({embeddings.length})</span>
             )}
           </h4>
         </div>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-pink-500" />
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : !embeddings || embeddings.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <AlertCircle className="w-8 h-8 text-gray-600 mb-3" />
-            <p className="text-sm text-gray-400">
+            <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+            <p className="text-sm text-muted-foreground">
               No embeddings found. They may still be processing.
             </p>
           </div>
@@ -239,8 +239,8 @@ function DataSourceCard({
       className={cn(
         'group relative cursor-pointer rounded-xl border transition-all',
         isSelected 
-          ? 'bg-gradient-to-br from-pink-500/10 via-purple-500/5 to-transparent border-pink-500/40' 
-          : 'bg-gray-900/40 border-gray-800/60 hover:border-pink-500/20'
+          ? 'bg-muted border-primary' 
+          : 'bg-card border-border hover:border-primary/20'
       )}
     >
       <div className="p-4">
@@ -254,16 +254,16 @@ function DataSourceCard({
                 {dataSource.type}
               </Badge>
             </div>
-            <h4 className="text-sm font-semibold text-white truncate mb-1">
+            <h4 className="text-sm font-semibold text-foreground truncate mb-1">
               {dataSource.name}
             </h4>
             {dataSource.citation && (
-              <p className="text-xs text-gray-500 truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {dataSource.citation}
               </p>
             )}
             {dataSource.createdAt && (
-              <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+              <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" />
                 {new Date(dataSource.createdAt).toLocaleDateString()}
               </div>
@@ -273,7 +273,7 @@ function DataSourceCard({
 
         {/* Quick Actions */}
         <div className={cn(
-          'flex items-center gap-1 mt-3 pt-3 border-t border-gray-800/60',
+          'flex items-center gap-1 mt-3 pt-3 border-t border-border',
           'opacity-0 group-hover:opacity-100 transition-opacity'
         )}>
           <Button
@@ -295,7 +295,7 @@ function DataSourceCard({
               e.stopPropagation();
               onDelete();
             }}
-            className="flex-1 h-7 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
+            className="flex-1 h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="w-3 h-3 mr-1" />
             Delete
@@ -330,9 +330,9 @@ function EditCitationDialog({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-gray-900 border border-gray-800 rounded-2xl p-6 max-w-md w-full"
+        className="bg-card border border-border rounded-2xl p-6 max-w-md w-full"
       >
-        <h3 className="text-lg font-heading font-semibold text-white mb-4">
+        <h3 className="text-lg font-heading font-semibold text-foreground mb-4">
           Edit Citation
         </h3>
         <Input
@@ -432,29 +432,23 @@ export default function DataSourcesPage() {
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <div className="border-b border-gray-800/60 bg-gray-900/40 backdrop-blur-sm">
+      <div className="border-b border-border bg-card backdrop-blur-sm">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-heading font-bold text-white mb-1">
+              <h1 className="text-2xl font-heading font-bold text-foreground mb-1">
                 Knowledge Base
               </h1>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Manage your data sources and embeddings
               </p>
             </div>
-            <Link href="./sources/productivity">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Source
-              </Button>
-            </Link>
           </div>
 
           {/* Search and Filter */}
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -465,7 +459,7 @@ export default function DataSourcesPage() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 bg-gray-900/60 border border-gray-800/60 rounded-lg text-sm text-white focus:outline-none focus:border-pink-500/40"
+              className="px-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary"
             >
               {typeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -480,17 +474,17 @@ export default function DataSourcesPage() {
       {/* Split View */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left: Data Sources List */}
-        <div className="w-[400px] border-r border-gray-800/60 overflow-y-auto">
+        <div className="w-[400px] border-r border-border overflow-y-auto">
           <div className="p-4">
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-pink-500" />
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : filteredSources.length === 0 ? (
               dataSources?.length === 0 ? (
                 <EmptyState />
               ) : (
-                <div className="text-center py-12 text-gray-400">
+                <div className="text-center py-12 text-muted-foreground">
                   No data sources match your filters
                 </div>
               )
@@ -512,7 +506,7 @@ export default function DataSourcesPage() {
         </div>
 
         {/* Right: Detail Panel */}
-        <div className="flex-1 bg-gray-900/20 overflow-hidden">
+        <div className="flex-1 bg-background overflow-hidden">
           <DetailPanel dataSource={selectedSource} />
         </div>
       </div>

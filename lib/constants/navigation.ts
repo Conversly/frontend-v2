@@ -94,11 +94,16 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     ],
   },
   {
-    title: "Sources",
-    href: `/chatbot/${botId}/sources`,
+    title: "Knowledge Base",
     icon: Database,
-    description: "View and manage all knowledge base sources",
+    description: "Manage knowledge base sources",
     children: [
+      {
+        title: "Knowledge Base",
+        href: `/chatbot/${botId}/sources`,
+        icon: Database,
+        description: "View and manage all your data sources and embeddings",
+      },
       {
         title: "Files",
         href: `/chatbot/${botId}/sources/files`,
@@ -122,13 +127,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         href: `/chatbot/${botId}/sources/text`,
         icon: FileText,
         description: "Add custom text content to train your chatbot",
-      },
-      {
-        title: "Notion",
-        href: `/chatbot/${botId}/sources/notion`,
-        icon: Bell,
-        description: "Connect your Notion workspace to sync content",
-      },
+      }
     ],
   },
   {
