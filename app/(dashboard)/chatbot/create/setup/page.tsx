@@ -303,7 +303,7 @@ export default function SetupWizardPage() {
         <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
 
           {/* LEFT PANEL (Inputs & Steps) */}
-          <div className="flex h-full w-full flex-col justify-center overflow-y-auto bg-background px-4 py-10 lg:px-20 lg:py-20">
+          <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step === 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
             {(step === 1 || step === 2) && (
               <Step1UrlAndUsecase
                 protocol={protocol}
