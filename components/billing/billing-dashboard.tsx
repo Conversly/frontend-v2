@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { getBillingDashboard, BillingDashboard as BillingDashboardType, TransactionStatus } from "@/lib/api/billing";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, TrendingDown, Minus, Download, MessageSquare, Phone, MessageCircle, MoreHorizontal, PlusCircle, ExternalLink, ChevronRight, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, MessageSquare, Phone, MessageCircle, MoreHorizontal, PlusCircle, ExternalLink, ChevronRight, ArrowUpRight, ArrowDownRight, DollarSign } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetChatbots } from "@/services/chatbot";
 import { CreditAllocationDialog } from "./credit-allocation-dialog";
+import { AddCreditsDialog } from "./add-credits-dialog";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -33,20 +35,6 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
     );
 };
 
-// Service icon component
-const ServiceIcon = ({ service }: { service: "CHATBOT" | "WHATSAPP" | "VOICE" }) => {
-    const configs = {
-        CHATBOT: { bg: "bg-emerald-100 dark:bg-emerald-500/20", icon: <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> },
-        WHATSAPP: { bg: "bg-green-100 dark:bg-green-500/20", icon: <MessageSquare className="w-3.5 h-3.5 text-green-700 dark:text-green-400" /> },
-        VOICE: { bg: "bg-blue-100 dark:bg-blue-500/20", icon: <Phone className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> },
-    };
-    const config = configs[service] || configs.CHATBOT;
-    return (
-        <div className={`w-7 h-7 rounded-md ${config.bg} flex items-center justify-center`}>
-            {config.icon}
-        </div>
-    );
-};
 
 export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot: (chatbotId: string) => void }) {
     const [data, setData] = useState<BillingDashboardType | null>(null);
@@ -58,11 +46,12 @@ export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot:
         chatbotName: "",
         currentBalance: 0,
     });
+    const [addCreditsDialog, setAddCreditsDialog] = useState(false);
 
     const { activeWorkspaceId } = useWorkspaces();
     const { data: chatbotsList } = useGetChatbots(activeWorkspaceId || undefined);
-    const { isOwner, isBillingAdmin } = usePermissions();
-    const showCost = isOwner || isBillingAdmin;
+    const { isOwner } = usePermissions();
+    const showCost = isOwner;
 
     useEffect(() => {
         // Reset data when workspace changes
@@ -73,7 +62,7 @@ export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot:
 
     useEffect(() => {
         if (!activeWorkspaceId) return;
-        
+
         (async () => {
             try {
                 const dashboard = await getBillingDashboard();
@@ -167,16 +156,38 @@ export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot:
                 accountBalance={credits.available}
             />
 
+            <AddCreditsDialog
+                open={addCreditsDialog}
+                onOpenChange={setAddCreditsDialog}
+                currentBalance={credits.available}
+            />
+
             {/* HEADER AREA */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Billing Dashboard</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Manage your credits, invoices and spending limits.</p>
                 </div>
-                <Button variant="outline" size="sm" className="gap-2">
-                    <Download className="w-4 h-4" />
-                    Export CSV
-                </Button>
+                <div className="flex gap-2">
+                    {isOwner && (
+                        <>
+                            <Link href="/billing/credit-requests">
+                                <Button variant="outline" size="sm" className="gap-2">
+                                    <DollarSign className="w-4 h-4" />
+                                    Credit Requests
+                                </Button>
+                            </Link>
+                            <Button variant="default" size="sm" className="gap-2" onClick={() => setAddCreditsDialog(true)}>
+                                <PlusCircle className="w-4 h-4" />
+                                Add Credits
+                            </Button>
+                        </>
+                    )}
+                    <Button variant="outline" size="sm" className="gap-2">
+                        <Download className="w-4 h-4" />
+                        Export CSV
+                    </Button>
+                </div>
             </div>
 
             {/* 1. Main Credits Card */}
@@ -463,7 +474,7 @@ export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot:
                             <thead className="bg-gray-50/50 dark:bg-gray-900/50 text-gray-500 font-medium">
                                 <tr>
                                     <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider">Date</th>
-                                    <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider">Service</th>
+                                    <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider">Chatbot</th>
                                     <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider">Details</th>
                                     {showCost && <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider text-right">Amount</th>}
                                     <th className="px-6 py-3 font-medium text-xs uppercase tracking-wider text-right">Status</th>
@@ -473,10 +484,16 @@ export function BillingDashboard({ onNavigateToChatbot }: { onNavigateToChatbot:
                                 {recentTransactions.slice(0, 5).map((tx) => (
                                     <tr key={tx.id} className="hover:bg-gray-50/80 dark:hover:bg-gray-900/50 transition-colors">
                                         <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">{formatDate(tx.date)}</td>
-                                        <td className="px-6 py-4"><ServiceIcon service={tx.service} /></td>
                                         <td className="px-6 py-4">
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{tx.chatbotName}</p>
-                                            <p className="text-xs text-gray-500 truncate max-w-[120px]">{tx.userEmail}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                                {tx.chatbotName !== 'N/A' ? tx.chatbotName : '—'}
+                                            </p>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <p className="text-sm text-gray-900 dark:text-white">{tx.details || 'Transaction'}</p>
+                                            {tx.userEmail && tx.userEmail !== 'system' && (
+                                                <p className="text-xs text-gray-500 mt-0.5">by {tx.userEmail}</p>
+                                            )}
                                         </td>
                                         {showCost && <td className="px-6 py-4 text-right font-mono font-medium text-gray-900 dark:text-white">₹{tx.amount}</td>}
                                         <td className="px-6 py-4 text-right"><StatusBadge status={tx.status} /></td>

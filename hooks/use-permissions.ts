@@ -8,7 +8,7 @@ export const usePermissions = () => {
   const { user } = useAuth();
   const { activeWorkspaceId } = useWorkspaces();
 
-  const { data: permissions, isLoading, error } = useQuery<UserPermissions>({
+  const { data: permissions, isLoading, error, isFetching } = useQuery<UserPermissions>({
     queryKey: [QUERY_KEY.PERMISSIONS, activeWorkspaceId],
     queryFn: getPermissions,
     enabled: !!user && !!activeWorkspaceId,
@@ -16,14 +16,23 @@ export const usePermissions = () => {
     retry: false,
   });
 
+  // Determine if we're actually loading (including initial fetch)
+  // isLoading is true during initial load, but can be false if query is disabled
+  // isFetching is true whenever a fetch is in progress
+  const isActuallyLoading = isLoading || (isFetching && !permissions);
+
   return {
     permissions: permissions || null,
-    isOwner: permissions?.isOwner ?? false,
-    isBillingAdmin: permissions?.isBillingAdmin ?? false,
-    isChatbotAdmin: permissions?.isChatbotAdmin ?? false,
+    // Only return true if permissions are loaded AND the value is true
+    // Never default to false when permissions haven't loaded yet
+    isOwner: permissions ? (permissions.isOwner ?? false) : false,
+    isAdmin: permissions ? (permissions.isAdmin ?? false) : false,
+    isChatbotAdmin: permissions ? (permissions.isChatbotAdmin ?? false) : false,
     role: permissions?.role ?? null,
-    isLoading,
+    isLoading: isActuallyLoading,
     error,
+    // Expose whether permissions have been loaded at least once
+    hasLoaded: !!permissions,
   };
 };
 

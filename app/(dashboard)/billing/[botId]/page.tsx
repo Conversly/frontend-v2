@@ -32,7 +32,7 @@ export default function ChatbotBillingPage() {
     // Show loading while validating
     if (!activeWorkspaceId || !chatbots) {
         return (
-            <RoleGuard requireBillingAdmin>
+            <RoleGuard requireOwner>
                 <div className="container mx-auto py-6 max-w-7xl">
                     <div className="flex items-center justify-center py-12">
                         <div className="text-center">
@@ -48,7 +48,7 @@ export default function ChatbotBillingPage() {
     const chatbotExists = chatbots.some(cb => cb.id === botId);
     if (!chatbotExists) {
         return (
-            <RoleGuard requireBillingAdmin>
+            <RoleGuard requireOwner>
                 <div className="container mx-auto py-6 max-w-7xl">
                     <div className="flex items-center justify-center py-12">
                         <div className="text-center">
@@ -67,7 +67,7 @@ export default function ChatbotBillingPage() {
     }
 
     return (
-        <RoleGuard requireBillingAdmin>
+        <RoleGuard requireOwner>
             <div className="container mx-auto py-6 max-w-7xl">
                 <ChatbotAnalyticsView chatbotId={botId} onBack={handleBack} />
             </div>

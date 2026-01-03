@@ -3,9 +3,9 @@ import { API, ApiResponse } from "./config";
 
 export interface UserPermissions {
   accountId: string;
-  role: 'OWNER' | 'BILLING_ADMIN' | 'MEMBER' | 'CHATBOT_ADMIN' | null;
+  role: 'OWNER' | 'ADMIN' | null;
   isOwner: boolean;
-  isBillingAdmin: boolean;
+  isAdmin: boolean;
   isChatbotAdmin: boolean;
   chatbotIds: string[];
 }
@@ -15,7 +15,7 @@ export interface AccountMember {
   email: string | null;
   displayName: string;
   avatarUrl: string | null;
-  role: 'OWNER' | 'BILLING_ADMIN' | 'MEMBER' | 'CHATBOT_ADMIN';
+  role: 'OWNER' | 'ADMIN';
   createdAt: string;
 }
 
@@ -26,7 +26,6 @@ export interface ChatbotAdmin {
   email: string | null;
   displayName: string;
   avatarUrl: string | null;
-  role: string;
   createdAt: string;
 }
 
@@ -54,7 +53,7 @@ export const getAccountMembers = async (): Promise<AccountMember[]> => {
   return res.data;
 };
 
-export const inviteAccountMember = async (email: string, role: 'OWNER' | 'BILLING_ADMIN' | 'MEMBER'): Promise<void> => {
+export const inviteAccountMember = async (email: string, role: 'OWNER' | 'ADMIN'): Promise<void> => {
   const res = (await fetch(API.ENDPOINTS.ADMIN.BASE_URL() + API.ENDPOINTS.ADMIN.INVITE_ACCOUNT_MEMBER(), {
     method: 'POST',
     data: { email, role },
@@ -124,7 +123,7 @@ export const deleteChatbotAdmin = async (chatbotId: string, userId: string): Pro
 export interface PendingInvite {
   id: string;
   email: string;
-  role: 'OWNER' | 'BILLING_ADMIN' | 'MEMBER' | 'CHATBOT_ADMIN';
+  role: 'OWNER' | 'ADMIN';
   inviteType: 'ACCOUNT' | 'CHATBOT';
   chatbotId?: string;
   chatbotName?: string;
@@ -171,7 +170,7 @@ export interface WorkspaceDetails {
   memberCount: number;
   chatbotCount: number;
   walletBalance: string;
-  role: 'OWNER' | 'BILLING_ADMIN' | 'MEMBER';
+  role: 'OWNER' | 'ADMIN';
 }
 
 export const getWorkspaces = async (): Promise<Workspace[]> => {

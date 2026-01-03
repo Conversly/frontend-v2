@@ -11,10 +11,16 @@ export const filterNavItemsByRole = (
   if (!permissions) return [];
 
   return items.filter((item) => {
-    // Billing - Owner or Billing Admin only
+    // Billing - Owner only
     if (item.url === "/billing") {
-      return permissions.isOwner || permissions.isBillingAdmin;
+      return permissions.isOwner;
     }
+
+    // Plans - Owner only
+    if (item.url === "/plans") {
+      return permissions.isOwner;
+    }
+
 
     // Analytics - All authenticated users (data filtered by role)
     if (item.url === "/analytics") {

@@ -48,9 +48,9 @@ export default function BillingPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-lg font-semibold">{currentSubscription.planName}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground flex items-center gap-2">
                     Status: <Badge variant={currentSubscription.status === "active" ? "default" : "secondary"}>{currentSubscription.status}</Badge>
-                  </p>
+                  </div>
                   {currentSubscription.currentPeriodEnd && (
                     <p className="text-sm text-muted-foreground mt-1">
                       Renews: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}

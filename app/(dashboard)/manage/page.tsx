@@ -43,14 +43,12 @@ const formatExpiresAt = (expiresAt: string) => {
 
 const ROLE_BADGE_COLORS: Record<string, string> = {
     OWNER: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-    BILLING_ADMIN: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    MEMBER: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+    ADMIN: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
     OWNER: <Crown className="w-3 h-3" />,
-    BILLING_ADMIN: <ShieldIcon className="w-3 h-3" />,
-    MEMBER: <User className="w-3 h-3" />,
+    ADMIN: <ShieldIcon className="w-3 h-3" />,
 };
 
 export default function ManagePage() {
@@ -59,9 +57,32 @@ export default function ManagePage() {
     const router = useRouter();
     const { setActiveWorkspace } = useWorkspaces();
     const [inviteEmail, setInviteEmail] = useState("");
-    const [inviteRole, setInviteRole] = useState<"OWNER" | "BILLING_ADMIN" | "MEMBER">("MEMBER");
+    const [inviteRole, setInviteRole] = useState<"OWNER" | "ADMIN">("ADMIN");
     const [isWorkspaceDialogOpen, setIsWorkspaceDialogOpen] = useState(false);
     const [workspaceName, setWorkspaceName] = useState("");
+    const [duplicateInviteEmail, setDuplicateInviteEmail] = useState("");
+    const [isDuplicateInviteDialogOpen, setIsDuplicateInviteDialogOpen] = useState(false);
+
+    // Invite mutation
+    const inviteMutation = useMutation({
+        mutationFn: (data: { email: string; role: "OWNER" | "ADMIN" }) =>
+            inviteAccountMember(data.email, data.role),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.ACCOUNT_MEMBERS] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PENDING_INVITES] });
+            setInviteEmail("");
+            toast.success("Invitation sent successfully");
+        },
+        onError: (err: any) => {
+            if (err?.message === "An active invite already exists for this email") {
+                setDuplicateInviteEmail(inviteEmail);
+                setIsDuplicateInviteDialogOpen(true);
+            } else {
+                toast.error(err?.message || "Failed to send invitation");
+            }
+        },
+    });
+
     const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
 
     // Fetch account members
@@ -83,21 +104,6 @@ export default function ManagePage() {
         queryKey: ["workspaces-details"],
         queryFn: getWorkspacesWithDetails,
         retry: false,
-    });
-
-    // Invite mutation
-    const inviteMutation = useMutation({
-        mutationFn: (data: { email: string; role: "OWNER" | "BILLING_ADMIN" | "MEMBER" }) =>
-            inviteAccountMember(data.email, data.role),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.ACCOUNT_MEMBERS] });
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PENDING_INVITES] });
-            setInviteEmail("");
-            toast.success("Invitation sent successfully");
-        },
-        onError: (err: any) => {
-            toast.error(err?.message || "Failed to send invitation");
-        },
     });
 
     // Remove member mutation
@@ -181,6 +187,34 @@ export default function ManagePage() {
     return (
         <RoleGuard requireOwner>
             <div className="container mx-auto py-6 max-w-7xl">
+                {/* ... (existing code) ... */}
+
+                {/* Duplicate Invite Dialog */}
+                <Dialog open={isDuplicateInviteDialogOpen} onOpenChange={setIsDuplicateInviteDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2 text-amber-600">
+                                <AlertCircle className="w-5 h-5" />
+                                Active Invite Exists
+                            </DialogTitle>
+                            <DialogDescription>
+                                An invitation has already been sent to <span className="font-semibold">{duplicateInviteEmail}</span>.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-2 text-sm text-muted-foreground">
+                            <p>To prevent spam, we don't allow sending multiple active invitations to the same email address.</p>
+                            <p className="mt-2">The recipient should check their inbox (including spam/junk folders).</p>
+                            <p className="mt-2 text-foreground font-medium">You can cancel the existing invitation in the "Pending Invitations" section below if you need to resend it.</p>
+                        </div>
+                        <DialogFooter>
+                            <Button onClick={() => setIsDuplicateInviteDialogOpen(false)}>
+                                Okay, I understand
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+
                 {/* Page Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold tracking-tight">Manage</h1>
@@ -305,14 +339,14 @@ export default function ManagePage() {
                                                 </div>
                                                 <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
                                                     <Bot className="w-4 h-4 text-muted-foreground" />
-                <div>
+                                                    <div>
                                                         <p className="text-xs text-muted-foreground">Chatbots</p>
                                                         <p className="text-sm font-semibold">{workspace.chatbotCount}</p>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {(workspace.role === "OWNER" || workspace.role === "BILLING_ADMIN") && (
+                                            {workspace.role === "OWNER" && (
                                                 <div className="mb-3 pt-3 border-t border-border">
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-2">
@@ -415,205 +449,204 @@ export default function ManagePage() {
                     <div>
                         <h2 className="text-2xl font-semibold tracking-tight mb-1">Team Management</h2>
                         <p className="text-muted-foreground">Invite team members and manage access to your workspace.</p>
-                </div>
+                    </div>
 
-                {error && (
-                    <Card className="border-destructive">
-                        <CardContent className="pt-6">
-                            <div className="flex items-center gap-2 text-destructive">
-                                <AlertCircle className="w-4 h-4" />
-                                <p>Failed to load members. Please try again.</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+                    {error && (
+                        <Card className="border-destructive">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center gap-2 text-destructive">
+                                    <AlertCircle className="w-4 h-4" />
+                                    <p>Failed to load members. Please try again.</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
-                {/* Invite Team Member Card */}
+                    {/* Invite Team Member Card */}
                     <Card>
-                    <CardHeader>
+                        <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <UserPlus className="w-5 h-5" />
                                 Invite Team Member
                             </CardTitle>
-                        <CardDescription>Add a team member to help manage your chatbots.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleInvite} className="space-y-4">
-                                <div className="space-y-2">
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input
-                                    type="email"
-                                    id="email"
-                                    placeholder="colleague@company.com"
-                                    value={inviteEmail}
-                                    onChange={(e) => setInviteEmail(e.target.value)}
-                                    required
-                                    disabled={inviteMutation.isPending}
-                                />
-                            </div>
-                                <div className="space-y-2">
-                                <Label htmlFor="role">Role</Label>
-                                        <select
-                                            id="role"
-                                            value={inviteRole}
-                                            onChange={(e) => setInviteRole(e.target.value as "OWNER" | "BILLING_ADMIN" | "MEMBER")}
-                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                            disabled={inviteMutation.isPending}
-                                        >
-                                            <option value="MEMBER">Member</option>
-                                            <option value="BILLING_ADMIN">Billing Admin</option>
-                                            <option value="OWNER">Owner</option>
-                                        </select>
-                            </div>
-                                <Button type="submit" disabled={inviteMutation.isPending} className="w-full sm:w-auto">
-                                {inviteMutation.isPending ? (
-                                    <>
-                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                        Sending...
-                                    </>
-                                ) : (
-                                    <>
-                                            <UserPlus className="w-4 h-4 mr-2" />
-                                        Send Invitation
-                                    </>
-                                )}
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
-
-                {/* Pending Invites Card */}
-                {(accountInvites.length > 0 || invitesLoading) && (
-                        <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Mail className="w-5 h-5" />
-                                Pending Invitations
-                            </CardTitle>
-                            <CardDescription>Invitations that haven't been accepted yet.</CardDescription>
+                            <CardDescription>Add a team member to help manage your chatbots.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {invitesLoading ? (
-                                <div className="flex items-center justify-center py-6">
-                                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                            <form onSubmit={handleInvite} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <Input
+                                        type="email"
+                                        id="email"
+                                        placeholder="colleague@company.com"
+                                        value={inviteEmail}
+                                        onChange={(e) => setInviteEmail(e.target.value)}
+                                        required
+                                        disabled={inviteMutation.isPending}
+                                    />
                                 </div>
-                            ) : accountInvites.length > 0 ? (
-                                <div className="space-y-3">
-                                    {accountInvites.map((invite) => (
-                                        <div
-                                            key={invite.id}
-                                                className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 border border-border"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                                                    <Mail className="w-4 h-4 text-muted-foreground" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium">{invite.email}</p>
-                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                                            <Badge variant="secondary" className="text-xs">
-                                                            {invite.role === "OWNER" ? "Owner" : "Admin"}
-                                                            </Badge>
-                                                        <span className="flex items-center gap-1">
-                                                            <Clock className="w-3 h-3" />
-                                                            {formatExpiresAt(invite.expiresAt)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="text-muted-foreground hover:text-destructive"
-                                                onClick={() => handleCancelInvite(invite.id)}
-                                                disabled={cancelInviteMutation.isPending}
-                                            >
-                                                <X className="w-4 h-4 mr-1" />
-                                                Cancel
-                                            </Button>
-                                        </div>
-                                    ))}
+                                <div className="space-y-2">
+                                    <Label htmlFor="role">Role</Label>
+                                    <select
+                                        id="role"
+                                        value={inviteRole}
+                                        onChange={(e) => setInviteRole(e.target.value as "OWNER" | "ADMIN")}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        disabled={inviteMutation.isPending}
+                                    >
+                                        <option value="ADMIN">Admin</option>
+                                        <option value="OWNER">Owner</option>
+                                    </select>
                                 </div>
-                            ) : null}
+                                <Button type="submit" disabled={inviteMutation.isPending} className="w-full sm:w-auto">
+                                    {inviteMutation.isPending ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UserPlus className="w-4 h-4 mr-2" />
+                                            Send Invitation
+                                        </>
+                                    )}
+                                </Button>
+                            </form>
                         </CardContent>
                     </Card>
-                )}
 
-                {/* Team Members Card */}
+                    {/* Pending Invites Card */}
+                    {(accountInvites.length > 0 || invitesLoading) && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Mail className="w-5 h-5" />
+                                    Pending Invitations
+                                </CardTitle>
+                                <CardDescription>Invitations that haven't been accepted yet.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {invitesLoading ? (
+                                    <div className="flex items-center justify-center py-6">
+                                        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : accountInvites.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {accountInvites.map((invite) => (
+                                            <div
+                                                key={invite.id}
+                                                className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 border border-border"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                                        <Mail className="w-4 h-4 text-muted-foreground" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium">{invite.email}</p>
+                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                                            <Badge variant="secondary" className="text-xs">
+                                                                {invite.role === "OWNER" ? "Owner" : "Admin"}
+                                                            </Badge>
+                                                            <span className="flex items-center gap-1">
+                                                                <Clock className="w-3 h-3" />
+                                                                {formatExpiresAt(invite.expiresAt)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-muted-foreground hover:text-destructive"
+                                                    onClick={() => handleCancelInvite(invite.id)}
+                                                    disabled={cancelInviteMutation.isPending}
+                                                >
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : null}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Team Members Card */}
                     <Card>
-                    <CardHeader>
+                        <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Users className="w-5 h-5" />
                                 Team Members
                             </CardTitle>
                             <CardDescription>Users with access to this workspace.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {isLoading ? (
-                            <div className="flex items-center justify-center py-8">
-                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-                            </div>
-                        ) : members && members.length > 0 ? (
+                        </CardHeader>
+                        <CardContent>
+                            {isLoading ? (
+                                <div className="flex items-center justify-center py-8">
+                                    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                                </div>
+                            ) : members && members.length > 0 ? (
                                 <div className="space-y-3">
-                                {members.map((member) => (
-                                    <div
-                                        key={member.userId}
+                                    {members.map((member) => (
+                                        <div
+                                            key={member.userId}
                                             className="flex items-center justify-between p-4 rounded-lg hover:bg-secondary/50 transition-colors border border-border"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <Avatar>
-                                                <AvatarImage src={member.avatarUrl || undefined} />
-                                                <AvatarFallback>
-                                                    {member.displayName?.charAt(0) || member.email?.charAt(0) || "U"}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <p className="font-medium flex items-center gap-2">
-                                                    {member.displayName || member.email || "Unknown User"}
-                                                    {member.role === "OWNER" && (
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <Avatar>
+                                                    <AvatarImage src={member.avatarUrl || undefined} />
+                                                    <AvatarFallback>
+                                                        {member.displayName?.charAt(0) || member.email?.charAt(0) || "U"}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <div className="font-medium flex items-center gap-2">
+                                                        {member.displayName || member.email || "Unknown User"}
+                                                        {member.role === "OWNER" && (
                                                             <Badge variant="secondary" className="text-xs">
                                                                 <Shield className="w-3 h-3 mr-1" />
                                                                 Owner
                                                             </Badge>
-                                                    )}
-                                                    {member.role === "BILLING_ADMIN" && (
+                                                        )}
+                                                        {member.role === "ADMIN" && (
                                                             <Badge variant="outline" className="text-xs">
                                                                 <ShieldIcon className="w-3 h-3 mr-1" />
-                                                                Billing Admin
+                                                                Admin
                                                             </Badge>
-                                                    )}
-                                                    {member.role === "MEMBER" && (
+                                                        )}
+                                                        {member.role !== "OWNER" && member.role !== "ADMIN" && (
                                                             <Badge variant="outline" className="text-xs">
                                                                 Member
                                                             </Badge>
-                                                    )}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">{member.email}</p>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground">{member.email}</p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {member.role !== "OWNER" && member.userId !== user?.id && (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-muted-foreground hover:text-destructive"
-                                                onClick={() => handleRemove(member.userId)}
-                                                disabled={removeMutation.isPending}
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-8 text-muted-foreground">
+                                            {member.role !== "OWNER" && member.userId !== user?.id && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-muted-foreground hover:text-destructive"
+                                                    onClick={() => handleRemove(member.userId)}
+                                                    disabled={removeMutation.isPending}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-8 text-muted-foreground">
                                     <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                                <p>No team members yet. Invite someone to get started!</p>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                                    <p>No team members yet. Invite someone to get started!</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </RoleGuard>

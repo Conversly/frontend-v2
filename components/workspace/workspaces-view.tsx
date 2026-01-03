@@ -30,14 +30,12 @@ import { toast } from "sonner";
 
 const ROLE_BADGE_COLORS: Record<string, string> = {
   OWNER: "bg-purple-100 text-purple-800",
-  BILLING_ADMIN: "bg-blue-100 text-blue-800",
-  MEMBER: "bg-gray-100 text-gray-800",
+  ADMIN: "bg-blue-100 text-blue-800",
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
   OWNER: <Crown className="w-3 h-3" />,
-  BILLING_ADMIN: <Shield className="w-3 h-3" />,
-  MEMBER: <User className="w-3 h-3" />,
+  ADMIN: <Shield className="w-3 h-3" />,
 };
 
 export const WorkspacesView = () => {
@@ -223,7 +221,7 @@ export const WorkspacesView = () => {
                     </div>
                   </div>
                 </div>
-                {(workspace.role === "OWNER" || workspace.role === "BILLING_ADMIN") && (
+                {workspace.role === "OWNER" && (
                   <div className="mt-4 pt-4 border-t">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">

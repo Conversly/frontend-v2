@@ -5,10 +5,11 @@ import { getChatbotAnalytics, ChatbotAnalytics, TransactionStatus } from "@/lib/
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Download, MessageCircle, MessageSquare, Phone, TrendingUp } from "lucide-react";
+import { ArrowLeft, Download, MessageCircle, MessageSquare, Phone, TrendingUp, DollarSign } from "lucide-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { usePermissions } from "@/hooks/use-permissions";
 import { useWorkspaces } from "@/hooks/use-workspaces";
+import { CreditRequestDialog } from "./credit-request-dialog";
 
 // Helper to format dates
 const formatDate = (dateStr: string) => {
@@ -35,9 +36,10 @@ export function ChatbotAnalyticsView({ chatbotId, onBack }: { chatbotId: string;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [period, setPeriod] = useState(30);
-    const { isOwner, isBillingAdmin } = usePermissions();
+    const [creditRequestDialog, setCreditRequestDialog] = useState(false);
+    const { isOwner } = usePermissions();
     const { activeWorkspaceId } = useWorkspaces();
-    const showCost = isOwner || isBillingAdmin;
+    const showCost = isOwner;
 
     useEffect(() => {
         // Reset data when workspace changes
@@ -112,6 +114,13 @@ export function ChatbotAnalyticsView({ chatbotId, onBack }: { chatbotId: string;
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
+            <CreditRequestDialog
+                open={creditRequestDialog}
+                onOpenChange={setCreditRequestDialog}
+                chatbotId={chatbotId}
+                chatbotName={chatbot.name}
+            />
+
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
@@ -124,6 +133,12 @@ export function ChatbotAnalyticsView({ chatbotId, onBack }: { chatbotId: string;
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    {!isOwner && (
+                        <Button variant="outline" size="sm" className="gap-2" onClick={() => setCreditRequestDialog(true)}>
+                            <DollarSign className="w-4 h-4" />
+                            Request Credits
+                        </Button>
+                    )}
                     <select
                         value={period}
                         onChange={(e) => setPeriod(Number(e.target.value))}

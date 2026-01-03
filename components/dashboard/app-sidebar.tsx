@@ -66,15 +66,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { setTheme, theme } = useTheme();
 
     // Get user permissions for role-based filtering
-    const { permissions } = usePermissions();
+    const { permissions, isLoading: isLoadingPermissions } = usePermissions();
 
     // Determine if we are in a chatbot context
     const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
     const botId = chatbotMatch ? chatbotMatch[1] : null;
 
     // Select navigation items based on context and filter by role
+    // During loading, show all items (they'll be filtered once permissions load)
+    // This prevents sidebar flicker
     const allNavItems = botId ? getChatbotNavItems(botId) : dashboardNavItems;
-    const navItems = filterNavItemsByRole(allNavItems, permissions);
+    const navItems = isLoadingPermissions ? allNavItems : filterNavItemsByRole(allNavItems, permissions);
     const sectionLabel = botId ? "Chatbot Management" : "Platform";
 
     const handleLogout = () => {

@@ -16,6 +16,27 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentSubscription, CurrentSubscription } from "@/lib/api/subscription";
 import { QUERY_KEY } from "@/utils/query-key";
 import { useRouter } from "next/navigation";
+import { usePermissions } from "@/hooks/use-permissions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getChatbots } from "@/lib/api/chatbot";
+import { createCreditRequest } from "@/lib/api/billing";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 const TIER_COLORS: Record<string, string> = {
     FREE: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
@@ -37,6 +58,48 @@ export default function ProfilePage() {
     const router = useRouter();
     const [name, setName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const { isOwner } = usePermissions();
+    const queryClient = useQueryClient();
+
+    // Credit Request State
+    const [isRequestCreditOpen, setIsRequestCreditOpen] = useState(false);
+    const [selectedChatbotId, setSelectedChatbotId] = useState("");
+    const [creditAmount, setCreditAmount] = useState("");
+    const [creditReason, setCreditReason] = useState("");
+
+    // Fetch chatbots for the dropdown
+    const { data: chatbots, isLoading: isChatbotsLoading } = useQuery({
+        queryKey: ['chatbots'],
+        queryFn: getChatbots,
+        enabled: isRequestCreditOpen, // Only fetch when dialog opens
+    });
+
+    const creditRequestMutation = useMutation({
+        mutationFn: createCreditRequest,
+        onSuccess: () => {
+            toast.success("Credit request submitted successfully");
+            setIsRequestCreditOpen(false);
+            setCreditAmount("");
+            setCreditReason("");
+            // Reset selected chatbot? Maybe keep it.
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to submit credit request");
+        }
+    });
+
+    const handleRequestCredits = () => {
+        if (!selectedChatbotId || !creditAmount) {
+            toast.error("Please select a chatbot and enter an amount");
+            return;
+        }
+
+        creditRequestMutation.mutate({
+            chatbotId: selectedChatbotId,
+            amount: Number(creditAmount),
+            reason: creditReason
+        });
+    };
 
     const { data: currentSubscription, isLoading: subscriptionLoading } = useQuery<CurrentSubscription | null>({
         queryKey: [QUERY_KEY.CURRENT_SUBSCRIPTION],
@@ -168,7 +231,7 @@ export default function ProfilePage() {
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="text-lg font-semibold">{currentSubscription.planName}</h3>
-                                                <Badge 
+                                                <Badge
                                                     variant={currentSubscription.status === "active" ? "default" : "secondary"}
                                                     className={TIER_COLORS[currentSubscription.planName.toUpperCase().split(' ')[0]] || TIER_COLORS.FREE}
                                                 >
@@ -255,15 +318,95 @@ export default function ProfilePage() {
                                         </>
                                     )}
 
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full" 
-                                        onClick={() => router.push("/plans")}
-                                    >
-                                        <CreditCard className="mr-2 h-4 w-4" />
-                                        Manage Subscription
-                                        <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Button>
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            onClick={() => router.push("/plans")}
+                                            disabled={!isOwner}
+                                        >
+                                            <CreditCard className="mr-2 h-4 w-4" />
+                                            Manage Subscription
+                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Button>
+
+                                        <Dialog open={isRequestCreditOpen} onOpenChange={setIsRequestCreditOpen}>
+                                            <DialogTrigger asChild>
+                                                <Button variant="secondary" className="w-full">
+                                                    <CreditCard className="mr-2 h-4 w-4" />
+                                                    Request Credits
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Request Credits</DialogTitle>
+                                                    <DialogDescription>
+                                                        Submit a request for additional credits. An admin will review your request.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="space-y-4 py-4">
+                                                    <div className="space-y-2">
+                                                        <Label>Select Chatbot</Label>
+                                                        <Select value={selectedChatbotId} onValueChange={setSelectedChatbotId}>
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Select a chatbot" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="z-[99999]">
+                                                                {isChatbotsLoading ? (
+                                                                    <div className="flex items-center justify-center p-2">
+                                                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                                                        Loading chatbots...
+                                                                    </div>
+                                                                ) : (
+                                                                    chatbots?.map((bot) => (
+                                                                        <SelectItem key={bot.id} value={bot.id}>
+                                                                            {bot.name}
+                                                                        </SelectItem>
+                                                                    ))
+                                                                )}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <p className="text-xs text-muted-foreground">Credits are requested on behalf of a chatbot context.</p>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Amount</Label>
+                                                        <Input
+                                                            type="number"
+                                                            placeholder="e.g. 1000"
+                                                            value={creditAmount}
+                                                            onChange={(e) => setCreditAmount(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Reason</Label>
+                                                        <Textarea
+                                                            placeholder="Why do you need more credits?"
+                                                            value={creditReason}
+                                                            onChange={(e) => setCreditReason(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button variant="outline" onClick={() => setIsRequestCreditOpen(false)}>
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        onClick={handleRequestCredits}
+                                                        disabled={creditRequestMutation.isPending || !selectedChatbotId || !creditAmount || !creditReason}
+                                                    >
+                                                        {creditRequestMutation.isPending ? (
+                                                            <>
+                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                Submitting...
+                                                            </>
+                                                        ) : (
+                                                            "Submit Request"
+                                                        )}
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
                                 </>
                             ) : (
                                 <div className="space-y-4">
@@ -273,9 +416,10 @@ export default function ProfilePage() {
                                             You're currently on the free tier.
                                         </p>
                                     </div>
-                                    <Button 
-                                        className="w-full" 
+                                    <Button
+                                        className="w-full"
                                         onClick={() => router.push("/plans")}
+                                        disabled={!isOwner}
                                     >
                                         <Crown className="mr-2 h-4 w-4" />
                                         View Plans & Upgrade

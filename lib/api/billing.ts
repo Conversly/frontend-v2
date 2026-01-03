@@ -77,13 +77,14 @@ export type BillingDashboard = {
   recentTransactions: Array<{
     id: string;
     date: string;
-    service: ServiceType;
+    service: ServiceType; // Kept for backward compatibility, not displayed
     chatbotId: string;
     chatbotName: string;
     userEmail: string;
     tokens: number;
     amount: number;
     status: TransactionStatus;
+    details: string; // Human-readable transaction description
   }>;
 };
 
@@ -292,6 +293,91 @@ export const saveAutoRechargeSettings = async (payload: {
   const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + API.ENDPOINTS.BILLING.AUTO_RECHARGE_SETTINGS(), {
     method: "POST",
     data: payload,
+  }).then((r) => r.data) as ApiResponse<unknown>;
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+// ============================================
+// CREDIT MANAGEMENT
+// ============================================
+
+export type CreditRequest = {
+  id: string;
+  chatbotId: string;
+  requestedByUserId: string;
+  amount: string;
+  reason?: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  createdAt: string;
+  updatedAt: string;
+};
+
+/**
+ * Add credits directly to account wallet (Owner only)
+ */
+export const addCreditsToAccount = async (payload: {
+  amount: number;
+  referenceType?: string;
+  referenceId?: string;
+  metadata?: Record<string, unknown>;
+}) => {
+  const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + "/credits/add", {
+    method: "POST",
+    data: payload,
+  }).then((r) => r.data) as ApiResponse<{ creditedAmount: number; newBalance: number }>;
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+/**
+ * Create a credit request (Admin/User can request)
+ */
+export const createCreditRequest = async (payload: {
+  chatbotId: string;
+  amount: number;
+  reason?: string;
+}) => {
+  const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + "/credit-requests", {
+    method: "POST",
+    data: payload,
+  }).then((r) => r.data) as ApiResponse<{ requestId: string }>;
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+/**
+ * List credit requests (Owner only)
+ */
+export const listCreditRequests = async (params?: {
+  chatbotId?: string;
+}): Promise<CreditRequest[]> => {
+  const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + "/credit-requests", {
+    method: "GET",
+    params,
+  }).then((r) => r.data) as ApiResponse<CreditRequest[]>;
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+/**
+ * Approve a credit request (Owner only)
+ */
+export const approveCreditRequest = async (requestId: string) => {
+  const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + `/credit-requests/${requestId}/approve`, {
+    method: "POST",
+  }).then((r) => r.data) as ApiResponse<unknown>;
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+};
+
+/**
+ * Reject a credit request (Owner only)
+ */
+export const rejectCreditRequest = async (requestId: string, reason: string) => {
+  const res = await fetch(API.ENDPOINTS.BILLING.BASE_URL() + `/credit-requests/${requestId}/reject`, {
+    method: "POST",
+    data: { reason },
   }).then((r) => r.data) as ApiResponse<unknown>;
   if (!res.success) throw new Error(res.message);
   return res.data;
