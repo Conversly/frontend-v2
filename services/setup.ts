@@ -1,7 +1,6 @@
 'use client';
 
-import { analyzeImage, bootstrapAgentSetup } from '@/lib/api/setup';
-import { upsertChannelPrompt } from '@/lib/api/prompt';
+import { bootstrapAgentSetup } from '@/lib/api/setup';
 import type { BootstrapSetupInput, BootstrapSetupResult } from '@/types/setup';
 import type { DataSourceItem } from '@/types/datasource';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
@@ -9,114 +8,101 @@ import type { DataSource } from '@/store/chatbot/data-sources';
 import { useCustomizationStore } from '@/store/chatbot/customization';
 
 function mapDataSources(items: DataSourceItem[]): DataSource[] {
-  return items.map((s) => ({
-    id: String(s.id),
-    type: (() => {
-      const t = String(s.type || '').toLowerCase();
-      if (t.includes('url') || t.includes('website') || t === 'web') return 'url';
-      if (t.includes('doc') || t.includes('file') || t === 'document') return 'file';
-      return 'text';
-    })(),
-    name: s.name,
-    createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : undefined,
-  }));
+  return items.map((s) => {
+    const t = String(s.type || '').toLowerCase();
+    const isUrl = t.includes('url') || t.includes('website') || t === 'web';
+    const isFile = t.includes('doc') || t.includes('file') || t === 'document';
+
+    return {
+      id: String(s.id),
+      type: isUrl ? 'url' : isFile ? 'file' : 'text',
+      // For URLs, use citation (actual URL) instead of name (just domain)
+      name: isUrl && s.citation ? s.citation : s.name,
+      createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : undefined,
+    };
+  });
 }
 
+/**
+ * Runs the initial setup flow sequentially:
+ * 1. inferPrompt → name, description, systemPrompt, logoUrl
+ * 2. generateTopics → topics
+ * 3. searchSources → dataSources
+ * 4. generateWidgetConfig → logo, color, widget styles, suggestions, domains
+ *
+ * The widget-config endpoint handles:
+ * - Logo detection & extraction
+ * - Primary color extraction from logo
+ * - Initial message & suggested messages generation
+ * - Widget configuration creation/update
+ * - Origin domain setup for API validation
+ */
 export async function runInitialSetup(
   input: BootstrapSetupInput
 ): Promise<BootstrapSetupResult> {
   const result = await bootstrapAgentSetup(input);
 
-  if (!result.analyzeImage && result.inferPrompt?.logoUrl) {
-    try {
-      const analysis = await analyzeImage({
-        chatbotId: input.chatbotId,
-        imageUrl: result.inferPrompt.logoUrl,
-      });
-      result.analyzeImage = analysis;
-    } catch {
-    }
-  }
-
-  // Hydrate data sources
+  // Hydrate data sources store
   if (result.searchSources?.data) {
     const ds = mapDataSources(result.searchSources.data);
     useDataSourcesStore.getState().setSources(ds);
   }
 
-  // Save inferred system prompt to WIDGET channel
-  if (result.inferPrompt?.systemPrompt) {
-    try {
-      await upsertChannelPrompt({
-        chatbotId: input.chatbotId,
-        channel: 'WIDGET',
-        systemPrompt: result.inferPrompt.systemPrompt,
+  // Hydrate customization store with widget config results
+  if (result.widgetConfig) {
+    const customization = useCustomizationStore.getState();
+    
+    // Load existing customization first (if any)
+    if (customization.loadCustomization) {
+      try {
+        await customization.loadCustomization(input.chatbotId);
+      } catch {
+        // Non-fatal; proceed with defaults
+      }
+    }
+
+    // Apply the widget config from setup
+    const draft = customization.draftConfig;
+    if (customization.setDraftConfig) {
+      customization.setDraftConfig({
+        ...(draft ?? {
+          DisplayName: 'Support Bot',
+          InitialMessage: 'Hi! How can I help you today? 👋',
+          starterQuestions: [],
+          messagePlaceholder: 'Message...',
+          keepShowingSuggested: false,
+          collectFeedback: false,
+          allowRegenerate: true,
+          dismissibleNoticeText: '',
+          footerText: '',
+          autoShowInitial: false,
+          autoShowDelaySec: 3,
+          widgetEnabled: true,
+          primaryColor: '#0e4b75',
+          widgetBubbleColour: '#0e4b75',
+          PrimaryIcon: '',
+          widgeticon: 'chat',
+          buttonAlignment: 'right',
+          showButtonText: false,
+          buttonText: 'Chat with us',
+          appearance: 'light',
+          widgetButtonText: 'Chat with us',
+          chatWidth: '350px',
+          chatHeight: '500px',
+          displayStyle: 'corner',
+          converslyWebId: '',
+          uniqueClientId: '',
+          testing: false,
+        }),
+        DisplayName: result.inferPrompt?.name || draft?.DisplayName || 'Support Bot',
+        PrimaryIcon: result.widgetConfig.logoUrl || draft?.PrimaryIcon || '',
+        primaryColor: result.widgetConfig.primaryColor || draft?.primaryColor || '#0e4b75',
+        widgetBubbleColour: result.widgetConfig.primaryColor || draft?.widgetBubbleColour || '#0e4b75',
+        InitialMessage: result.widgetConfig.initialMessage || draft?.InitialMessage || 'Hi! How can I help you today? 👋',
+        starterQuestions: result.widgetConfig.suggestedMessages || draft?.starterQuestions || [],
       });
-    } catch {
-      // Non-fatal; prompt can be set later
     }
-  }
-
-  // Hydrate customization from server, then apply suggestions (name, color, logo if provided)
-  const customization = useCustomizationStore.getState();
-  if (customization.loadCustomization) {
-    try {
-      await customization.loadCustomization(input.chatbotId);
-    } catch {
-      // Non-fatal; proceed with local defaults if remote load fails
-    }
-  }
-  const draft = customization.draftConfig ?? customization.savedPayload ? customization.draftConfig : null;
-  const primaryColor =
-    result.analyzeImage?.primaryColor ||
-    customization.draftConfig?.primaryColor ||
-    '#0e4b75';
-  const displayName =
-    result.inferPrompt?.name ||
-    customization.draftConfig?.DisplayName ||
-    'Support Bot';
-  const primaryIcon =
-    result.inferPrompt?.logoUrl || customization.draftConfig?.PrimaryIcon || '';
-
-  if (customization.setDraftConfig) {
-    customization.setDraftConfig({
-      ...(draft ?? {
-        DisplayName: 'Support Bot',
-        InitialMessage: 'Hi! How can I help you today? 👋',
-        starterQuestions: [],
-        messagePlaceholder: 'Message...',
-        keepShowingSuggested: false,
-        collectFeedback: false,
-        allowRegenerate: true,
-        dismissibleNoticeText: '',
-        footerText: '',
-        autoShowInitial: false,
-        autoShowDelaySec: 3,
-        widgetEnabled: true,
-        primaryColor: '#0e4b75',
-        widgetBubbleColour: '#0e4b75',
-        PrimaryIcon: '',
-        widgeticon: 'chat',
-        buttonAlignment: 'right',
-        showButtonText: false,
-        buttonText: 'Chat with us',
-        appearance: 'light',
-        widgetButtonText: 'Chat with us',
-        chatWidth: '350px',
-        chatHeight: '500px',
-        displayStyle: 'corner',
-        converslyWebId: '',
-        uniqueClientId: '',
-        testing: false,
-      }),
-      DisplayName: displayName,
-      PrimaryIcon: primaryIcon,
-      primaryColor,
-      widgetBubbleColour: primaryColor,
-    });
   }
 
   return result;
 }
-
-

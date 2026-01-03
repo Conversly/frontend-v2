@@ -67,11 +67,12 @@ export const API = {
     },
     SETUP: {
       BASE_URL: () => "/setup",
-      FETCH_SITEMAP: () => "/sitemap",  // get
+      FETCH_SITEMAP: () => "/sitemap",  // post
       ANALYZE_IMAGE: () => "/analyze-image",  // post
       INFER_PROMPT: () => "/infer-prompt",  // post
       SEARCH_SOURCES: () => "/search-sources",  // post
       TOPIC: () => "/topic",  // post
+      WIDGET_CONFIG: () => "/widget-config",  // post
     },
     WHATSAPP: {
       BASE_URL: () => "/whatsapp",

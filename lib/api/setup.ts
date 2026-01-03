@@ -13,6 +13,8 @@ import {
   BootstrapSetupResult,
   FetchSitemapInput,
   FetchSitemapResponse,
+  GenerateWidgetConfigInput,
+  GenerateWidgetConfigResponse,
 } from "@/types/setup";
 
 export const analyzeImage = async (
@@ -33,7 +35,6 @@ export const analyzeImage = async (
   return res.data;
 };
 
-
 export const fetchSitemap = async (
   input: FetchSitemapInput
 ): Promise<FetchSitemapResponse> => {
@@ -41,20 +42,18 @@ export const fetchSitemap = async (
     API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.FETCH_SITEMAP(),
     {
       method: "POST",
-      data : {
+      data: {
         chatbotId: input.chatbotId,
         websiteUrl: input.websiteUrl,
       },
     }).then((r) => r.data) as ApiResponse<FetchSitemapResponse>;
 
-    if (!res.success) {
-      throw new Error(res.message);
-    }
-  
-    return res.data;
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
 };
-
-
 
 export const inferPrompt = async (
   input: InferPromptInput
@@ -83,13 +82,13 @@ export const searchSources = async (
       method: "POST",
       data: input,
     },
-  ).then((r) => r.data) as ApiResponse<SearchSourcesResponse>;
+  ).then((r) => r.data) as SearchSourcesResponse;
 
   if (!res.success) {
-    throw new Error(res.message);
+    throw new Error("Failed to search sources");
   }
 
-  return res.data;
+  return res;
 };
 
 export const generateTopics = async (
@@ -110,62 +109,82 @@ export const generateTopics = async (
   return res.data;
 };
 
+export const generateWidgetConfig = async (
+  input: GenerateWidgetConfigInput
+): Promise<GenerateWidgetConfigResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.WIDGET_CONFIG(),
+    {
+      method: "POST",
+      data: input,
+    },
+  ).then((r) => r.data) as ApiResponse<GenerateWidgetConfigResponse>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
 /**
- * Runs the initial 4 setup calls in parallel and aggregates results.
- * Does not throw unless every call fails; individual errors are captured.
+ * Runs setup calls with optimal parallelization:
+ * 
+ * PARALLEL: inferPrompt + generateTopics + searchSources
+ * THEN: generateWidgetConfig (needs brandName from inferPrompt)
+ *
+ * Does not throw unless all calls fail; individual errors are captured.
  */
 export const bootstrapAgentSetup = async (
   input: BootstrapSetupInput
 ): Promise<BootstrapSetupResult> => {
-  const { chatbotId, websiteUrl, useCase, imageUrl } = input;
-
-  const analyzeImageInput: AnalyzeImageInput | null = imageUrl
-    ? { chatbotId, imageUrl }
-    : null;
-
-  const inferPromptInput: InferPromptInput = { chatbotId, websiteUrl, useCase };
-  const searchSourcesInput: SearchSourcesInput = { chatbotId, websiteUrl };
-  const generateTopicsInput: GenerateTopicsInput = { chatbotId, websiteUrl, useCase };
-
-  const [analyzeR, promptR, sourcesR, topicsR] = await Promise.allSettled([
-    analyzeImageInput ? analyzeImage(analyzeImageInput) : Promise.resolve(undefined),
-    inferPrompt(inferPromptInput),
-    searchSources(searchSourcesInput),
-    generateTopics(generateTopicsInput),
-  ]);
-
+  const { chatbotId, websiteUrl, useCase, brandName } = input;
   const result: BootstrapSetupResult = { errors: {} };
 
-  if (analyzeR.status === "fulfilled") {
-    result.analyzeImage = analyzeR.value as AnalyzeImageResponse | undefined;
-  } else if (analyzeR.status === "rejected") {
-    if (analyzeImageInput) result.errors.analyzeImage = analyzeR.reason?.message || "Failed to analyze image";
-  }
+  // Step 1: Fire independent calls in parallel
+  const [promptR, topicsR, sourcesR] = await Promise.allSettled([
+    inferPrompt({ chatbotId, websiteUrl, useCase }),
+    generateTopics({ chatbotId, websiteUrl, useCase }),
+    searchSources({ chatbotId, websiteUrl }),
+  ]);
 
   if (promptR.status === "fulfilled") {
     result.inferPrompt = promptR.value;
   } else {
-    result.errors.inferPrompt = (promptR as PromiseRejectedResult).reason?.message || "Failed to infer prompt";
-  }
-
-  if (sourcesR.status === "fulfilled") {
-    result.searchSources = sourcesR.value;
-  } else {
-    result.errors.searchSources = (sourcesR as PromiseRejectedResult).reason?.message || "Failed to search sources";
+    result.errors.inferPrompt = promptR.reason?.message || "Failed to infer prompt";
   }
 
   if (topicsR.status === "fulfilled") {
     result.generateTopics = topicsR.value;
   } else {
-    result.errors.generateTopics = (topicsR as PromiseRejectedResult).reason?.message || "Failed to generate topics";
+    result.errors.generateTopics = topicsR.reason?.message || "Failed to generate topics";
   }
 
-  // If everything failed, throw a consolidated error
+  if (sourcesR.status === "fulfilled") {
+    result.searchSources = sourcesR.value;
+  } else {
+    result.errors.searchSources = sourcesR.reason?.message || "Failed to search sources";
+  }
+
+  // Step 2: Generate widget config (depends on inferPrompt for brandName)
+  const finalBrandName = brandName || result.inferPrompt?.name || "Support Bot";
+  try {
+    result.widgetConfig = await generateWidgetConfig({
+      chatbotId,
+      websiteUrl,
+      brandName: finalBrandName,
+      useCase,
+    });
+  } catch (err: any) {
+    result.errors.widgetConfig = err?.message || "Failed to generate widget config";
+  }
+
+  // Check if all calls failed
   const allFailed =
-    (!result.analyzeImage && !!analyzeImageInput) &&
     !result.inferPrompt &&
+    !result.generateTopics &&
     !result.searchSources &&
-    !result.generateTopics;
+    !result.widgetConfig;
 
   if (allFailed) {
     throw new Error("All setup requests failed");
@@ -173,5 +192,3 @@ export const bootstrapAgentSetup = async (
 
   return result;
 };
-
-

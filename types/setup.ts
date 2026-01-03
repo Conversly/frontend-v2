@@ -28,6 +28,7 @@ export interface SearchSourcesInput {
 }
 
 export interface SearchSourcesResponse {
+  success: boolean;
   data: DataSourceItem[];
   totalUrls: number;
   totalPages: number;
@@ -42,8 +43,15 @@ export interface GenerateTopicsInput {
   useCase?: string;
 }
 
+export interface Topic {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface GenerateTopicsResponse {
-  topics: string[];
+  chatbotId: string;
+  topics: Topic[];
 }
 
 // Bootstrap Orchestration Types
@@ -51,19 +59,19 @@ export interface BootstrapSetupInput {
   chatbotId: string;
   websiteUrl: string;
   useCase?: string;
-  imageUrl?: string;
+  brandName?: string;
 }
 
 export interface BootstrapSetupResult {
-  analyzeImage?: AnalyzeImageResponse;
   inferPrompt?: InferPromptResponse;
-  searchSources?: SearchSourcesResponse;
   generateTopics?: GenerateTopicsResponse;
+  searchSources?: SearchSourcesResponse;
+  widgetConfig?: GenerateWidgetConfigResponse;
   errors: {
-    analyzeImage?: string;
     inferPrompt?: string;
-    searchSources?: string;
     generateTopics?: string;
+    searchSources?: string;
+    widgetConfig?: string;
   };
 }
 
@@ -81,4 +89,19 @@ export interface FetchSitemapResponse {
   totalCount: number;
 }
 
+export interface GenerateWidgetConfigInput {
+  chatbotId: string;
+  websiteUrl: string;
+  brandName: string;
+  useCase?: string;
+}
 
+export interface GenerateWidgetConfigResponse {
+  chatbotId: string;
+  logoUrl: string;
+  primaryColor: string;
+  initialMessage: string;
+  suggestedMessages: string[];
+  widgetConfigId: string;
+  originDomainAdded: boolean;
+}

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { useDataSourcesStore } from "@/store/chatbot/data-sources";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
 import { QUERY_KEY } from "@/utils/query-key";

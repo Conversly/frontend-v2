@@ -24,10 +24,18 @@ export interface PendingSource {
 interface DataSourcesState {
   sources: DataSource[];
   pendingSources: PendingSource[];
+  selectedSourceIds: Set<string>;
   isLoading: boolean;
   uploadLoading: boolean;
   showQADialog: boolean;
   error: Error | null;
+  
+  // Selection management
+  toggleSourceSelection: (id: string) => void;
+  selectAllSources: () => void;
+  deselectAllSources: () => void;
+  isSourceSelected: (id: string) => boolean;
+  getSelectedSources: () => DataSource[];
   
   // Pending sources management
   addPendingSource: (source: Omit<PendingSource, 'id'>) => void;
@@ -56,10 +64,41 @@ interface DataSourcesState {
 export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
   sources: [],
   pendingSources: [],
+  selectedSourceIds: new Set<string>(),
   isLoading: false,
   uploadLoading: false,
   showQADialog: false,
   error: null,
+
+  // Selection management
+  toggleSourceSelection: (id) => {
+    set((state) => {
+      const newSet = new Set(state.selectedSourceIds);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return { selectedSourceIds: newSet };
+    });
+  },
+
+  selectAllSources: () => {
+    set((state) => ({
+      selectedSourceIds: new Set(state.sources.map((s) => s.id)),
+    }));
+  },
+
+  deselectAllSources: () => {
+    set({ selectedSourceIds: new Set() });
+  },
+
+  isSourceSelected: (id) => get().selectedSourceIds.has(id),
+
+  getSelectedSources: () => {
+    const { sources, selectedSourceIds } = get();
+    return sources.filter((s) => selectedSourceIds.has(s.id));
+  },
 
   // Pending sources management
   addPendingSource: (source) => {
@@ -145,7 +184,11 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
         createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : undefined,
       }));
       
-      set({ sources: transformedSources, isLoading: false });
+      set({ 
+        sources: transformedSources, 
+        selectedSourceIds: new Set(transformedSources.map((s) => s.id)),
+        isLoading: false 
+      });
     } catch (error) {
       set({ error: error as Error, isLoading: false });
     }
@@ -170,10 +213,14 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
       throw error;
     }
   },
-  setSources: (sources) => set({ sources }),
+  setSources: (sources) => set({ 
+    sources, 
+    selectedSourceIds: new Set(sources.map((s) => s.id)) 
+  }),
   clear: () => set({ 
     sources: [], 
     pendingSources: [],
+    selectedSourceIds: new Set(),
     isLoading: false, 
     uploadLoading: false,
     showQADialog: false,
@@ -184,6 +231,7 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
 // Selectors
 export const useDataSources = () => useDataSourcesStore((s) => s.sources);
 export const usePendingSources = () => useDataSourcesStore((s) => s.pendingSources);
+export const useSelectedSourceIds = () => useDataSourcesStore((s) => s.selectedSourceIds);
 export const useIsLoading = () => useDataSourcesStore((s) => s.isLoading);
 export const useUploadLoading = () => useDataSourcesStore((s) => s.uploadLoading);
 export const useShowQADialog = () => useDataSourcesStore((s) => s.showQADialog);
