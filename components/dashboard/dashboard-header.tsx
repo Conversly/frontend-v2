@@ -12,6 +12,8 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { WorkspaceSwitcher } from "./workspace-switcher";
+import { ChatbotSwitcher } from "./chatbot-switcher";
 
 // Map route segments to readable labels
 const routeLabels: Record<string, string> = {
@@ -90,6 +92,12 @@ export function DashboardHeader() {
   // Get the current page name (last breadcrumb)
   const currentPageName = breadcrumbs[breadcrumbs.length - 1]?.label || "Dashboard";
 
+  // Check if we're on a chatbot-specific page (not the main chatbot list)
+  const isChatbotPage = pathname.includes("/chatbot/") && 
+                        !pathname.endsWith("/chatbot") && 
+                        pathname !== "/chatbot" &&
+                        !pathname.includes("/chatbot/create");
+
   return (
     <header className="h-[60px] shrink-0 flex items-center border-b bg-background">
       <div className="flex items-center gap-4 px-6 w-full">
@@ -120,7 +128,10 @@ export function DashboardHeader() {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <h1 className="text-lg font-semibold ml-auto">{currentPageName}</h1>
+        <div className="ml-auto flex items-center gap-4">
+          {isChatbotPage ? <ChatbotSwitcher /> : <WorkspaceSwitcher />}
+          <h1 className="text-lg font-semibold">{currentPageName}</h1>
+        </div>
       </div>
     </header>
   );

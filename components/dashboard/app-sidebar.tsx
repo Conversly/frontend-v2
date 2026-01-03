@@ -54,6 +54,8 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { dashboardNavItems, getChatbotNavItems, NavItem } from "@/config/nav-config";
+import { filterNavItemsByRole } from "@/utils/nav-filter";
+import { usePermissions } from "@/hooks/use-permissions";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
@@ -63,12 +65,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { isMobile } = useSidebar();
     const { setTheme, theme } = useTheme();
 
+    // Get user permissions for role-based filtering
+    const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
     // Determine if we are in a chatbot context
     const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
     const botId = chatbotMatch ? chatbotMatch[1] : null;
 
-    // Select navigation items based on context
-    const navItems = botId ? getChatbotNavItems(botId) : dashboardNavItems;
+    // Select navigation items based on context and filter by role
+    // During loading, show all items (they'll be filtered once permissions load)
+    // This prevents sidebar flicker
+    const allNavItems = botId ? getChatbotNavItems(botId) : dashboardNavItems;
+    const navItems = isLoadingPermissions ? allNavItems : filterNavItemsByRole(allNavItems, permissions);
     const sectionLabel = botId ? "Chatbot Management" : "Platform";
 
     const handleLogout = () => {

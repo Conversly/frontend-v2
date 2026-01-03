@@ -24,15 +24,15 @@ export const useCreateChatbot = () => {
   });
 };
 
-export const useGetChatbots = () => {
+export const useGetChatbots = (activeWorkspaceId?: string) => {
   const isAuthenticated = typeof window !== "undefined" 
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
   return useQuery({
-    queryKey: [QUERY_KEY.GET_CHATBOTS],
+    queryKey: [QUERY_KEY.GET_CHATBOTS, activeWorkspaceId], // Include activeWorkspaceId in queryKey
     queryFn: getChatbots,
-    enabled: isAuthenticated, // Only fetch when authenticated
+    enabled: isAuthenticated && !!activeWorkspaceId, // Only fetch when authenticated AND activeWorkspaceId is present
     staleTime: 60_000,
   });
 };

@@ -1,15 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Plus, Bot, Loader2, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Bot, Loader2, AlertTriangle } from "lucide-react";
-import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
-import { useGetChatbots, useDeleteChatbot } from "@/services/chatbot";
-import { useRouter } from "next/navigation";
-import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useSetupStore } from "@/store/chatbot/setup";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,21 +18,56 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
+import { useGetChatbots, useDeleteChatbot } from "@/services/chatbot";
+import { useSetupStore } from "@/store/chatbot/setup";
+import { useWorkspaces } from "@/hooks/use-workspaces";
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
+
 export default function ChatbotsPage() {
   const router = useRouter();
-  const { data: chatbots, isLoading, error } = useGetChatbots();
-  const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
   const resetSetup = useSetupStore((s) => s.reset);
+
+  // Workspace management
+  const { activeWorkspaceId, workspaces, isLoading: workspacesLoading } = useWorkspaces();
+
+  // Fetch chatbots for the active workspace
+  const {
+    data: chatbots,
+    isLoading: chatbotsLoading,
+    error
+  } = useGetChatbots(activeWorkspaceId || undefined);
+
+  const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
 
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // Check if user is authenticated
+  const isLoading = workspacesLoading || chatbotsLoading;
+
+  // Check authentication and workspace status
   useEffect(() => {
+    // Check auth
     const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
     if (!isLoggedIn) {
-      router.push("/");
+      router.push("/login");
+      return;
     }
-  }, [router]);
+
+    // Check workspace status only if workspaces have finished loading
+    if (!workspacesLoading) {
+      // If no workspaces at all, go to manage to create one
+      if (workspaces && workspaces.length === 0) {
+        router.push("/manage");
+        return;
+      }
+
+      // If workspaces exist but none selected, go to manage (or we could select first one, but manage is safer/explicit)
+      if (workspaces && workspaces.length > 0 && !activeWorkspaceId) {
+        router.push("/manage");
+        return;
+      }
+    }
+  }, [router, activeWorkspaceId, workspaces, workspacesLoading]);
 
   const handleDeleteClick = (chatbotId: string) => {
     setDeleteId(chatbotId);
@@ -66,6 +98,7 @@ export default function ChatbotsPage() {
     router.push("/chatbot/create/setup");
   };
 
+  // 1. Loading State
   if (isLoading) {
     return (
       <div className="w-full flex justify-center">
@@ -73,7 +106,9 @@ export default function ChatbotsPage() {
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Loading your chatbots...</p>
+              <p className="text-sm text-muted-foreground">
+                {workspacesLoading ? "Loading workspaces..." : "Loading chatbots..."}
+              </p>
             </div>
           </div>
         </div>
@@ -81,7 +116,18 @@ export default function ChatbotsPage() {
     );
   }
 
+  // 2. Error State
   if (error) {
+    // Only show error if it's not a workspace-related error (403 or specific message)
+    const errorMessage = error instanceof Error ? error.message : "Failed to load chatbots";
+    const isWorkspaceError = errorMessage.includes("workspace") || errorMessage.includes("403");
+
+    if (isWorkspaceError) {
+      // Redirect to manage page if workspace error
+      router.push("/manage");
+      return null;
+    }
+
     return (
       <div className="w-full flex justify-center">
         <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8">
@@ -92,9 +138,7 @@ export default function ChatbotsPage() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold">Error loading chatbots</h3>
-                <p className="text-sm text-muted-foreground">
-                  {error instanceof Error ? error.message : "Failed to load chatbots"}
-                </p>
+                <p className="text-sm text-muted-foreground">{errorMessage}</p>
               </div>
               <Button onClick={() => window.location.reload()} size="lg" className="mt-4">
                 Try Again
@@ -106,6 +150,7 @@ export default function ChatbotsPage() {
     );
   }
 
+  // 3. Main UI
   return (
     <>
       <div className="w-full flex justify-center">
