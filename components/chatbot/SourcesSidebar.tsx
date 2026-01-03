@@ -66,6 +66,10 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
         .filter(source => source.type === 'Document' && source.blobData)
         .map(source => source.blobData as DocumentData);
 
+      const textContent = pendingSources
+        .filter(source => source.type === 'Document' && !source.blobData && typeof source.content === 'string')
+        .map(source => source.content as string);
+
       const qandaData = pendingSources
         .filter(source => source.type === 'QandA')
         .map(source => ({
@@ -78,6 +82,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
         chatbotId: chatbotId,
         websiteUrls: websiteUrls.length > 0 ? websiteUrls : undefined,
         documents: documents.length > 0 ? documents : undefined,
+        textContent: textContent.length > 0 ? textContent : undefined,
         qandaData: qandaData.length > 0 ? qandaData : undefined,
       };
 
