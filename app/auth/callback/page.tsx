@@ -17,41 +17,30 @@ export default function AuthCallback() {
       try {
         // Mark user as logged in
         localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
-        
-        // Invalidate cached user data
-        await queryClient.invalidateQueries({ 
-          queryKey: [QUERY_KEY.LOGGED_IN_USER] 
-        });
-        
-        // Fetch fresh user data
-        await queryClient.refetchQueries({ 
-          queryKey: [QUERY_KEY.LOGGED_IN_USER] 
-        });
-        
-        // Wait for user data to be fetched
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Invalidate workspaces to refresh after auto-accepted invites
-        await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
-        await queryClient.refetchQueries({ queryKey: ["workspaces"] });
-        
-        // Check if there's a redirect URL in the URL params (for invite flow)
+
+        // Parallel data fetching for performance
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY.LOGGED_IN_USER] }),
+          queryClient.invalidateQueries({ queryKey: ["workspaces"] }),
+        ]);
+
+        const [userData, workspacesData] = await Promise.all([
+          queryClient.fetchQuery({ queryKey: [QUERY_KEY.LOGGED_IN_USER] }),
+          queryClient.fetchQuery({ queryKey: ["workspaces"] })
+        ]);
+
+        // Determine redirect destination
         const urlParams = new URLSearchParams(window.location.search);
         const redirectUrl = urlParams.get("redirect");
-        
-        // Small delay to ensure state is updated
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Redirect to invite page if that's where they came from, otherwise chatbot page
+
         if (redirectUrl) {
           router.replace(redirectUrl);
         } else {
-          // Redirect to chatbot page (workspace will be auto-selected by useWorkspaces hook)
+          // Redirect to chatbot page (workspace will be auto-selected by useWorkspaces hook or middleware)
           router.replace("/chatbot");
         }
       } catch (error) {
         console.error("Error during auth callback:", error);
-        // On error, redirect to login
         router.replace("/login");
       }
     };

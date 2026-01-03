@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { getWorkspaces, Workspace } from "@/lib/api/admin";
 
-const ACTIVE_KEY = "activeAccountId";
+const ACTIVE_KEY = LOCAL_STORAGE_KEY.ACTIVE_ACCOUNT_ID;
 
 export const useWorkspaces = () => {
   const queryClient = useQueryClient();
@@ -22,12 +23,12 @@ export const useWorkspaces = () => {
   // Sync state with localStorage and validate workspace
   useEffect(() => {
     if (!data || data.length === 0) return;
-    
+
     const current = typeof window !== "undefined" ? localStorage.getItem(ACTIVE_KEY) : null;
-    
+
     // Validate that the stored activeAccountId is valid for the current user
     const isValidWorkspace = current && data.some((ws) => ws.id === current);
-    
+
     if (!current || !isValidWorkspace) {
       // If no active workspace or invalid workspace, set to first available
       const firstWorkspaceId = data[0].id;
@@ -81,9 +82,9 @@ export const useWorkspaces = () => {
     if (!data || data.length === 0) {
       return activeWorkspaceId;
     }
-    
+
     const isValidWorkspace = activeWorkspaceId && data.some((ws) => ws.id === activeWorkspaceId);
-    
+
     // If state value is valid, use it; otherwise default to first workspace
     return isValidWorkspace ? activeWorkspaceId : data[0].id;
   }, [data, activeWorkspaceId]);

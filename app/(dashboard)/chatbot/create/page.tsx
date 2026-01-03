@@ -48,8 +48,8 @@ export default function CreateChatbotPage() {
   // Determine if user has reached limit
   const hasReachedLimit = currentSubscription
     ? currentSubscription.entitlements?.maxChatbots !== undefined &&
-      currentSubscription.entitlements.maxChatbots !== -1 &&
-      currentSubscription.usage.chatbots >= currentSubscription.entitlements.maxChatbots
+    currentSubscription.entitlements.maxChatbots !== -1 &&
+    currentSubscription.usage.chatbots >= currentSubscription.entitlements.maxChatbots
     : currentSubscription === null && entitlementCheck && !entitlementCheck.allowed;
 
   // Debug: Log when modal state changes
@@ -108,6 +108,10 @@ export default function CreateChatbotPage() {
                 // Invalidate entitlements to refresh the check
                 queryClient.invalidateQueries({ queryKey: ["entitlements"] });
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEY.CURRENT_SUBSCRIPTION] });
+                // Invalidate permissions and chatbot list to ensure sidebar/header updates
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PERMISSIONS] });
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+
                 router.push(`/chatbot/${data.id}`);
               },
               onError: (error: any) => {
@@ -115,6 +119,10 @@ export default function CreateChatbotPage() {
                 toast.warning("Chatbot created but prompt setup failed. You can configure it later.");
                 queryClient.invalidateQueries({ queryKey: ["entitlements"] });
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEY.CURRENT_SUBSCRIPTION] });
+                // Invalidate permissions and chatbot list to ensure sidebar/header updates
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PERMISSIONS] });
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+
                 router.push(`/chatbot/${data.id}`);
               },
             }
@@ -125,18 +133,18 @@ export default function CreateChatbotPage() {
           const status = error?.response?.status || error?.status;
           const code = error?.response?.data?.code || error?.code;
           const requiresUpgrade = error?.response?.data?.requiresUpgrade || error?.requiresUpgrade;
-          
-          const isPlanRestriction = 
-            status === 403 || 
+
+          const isPlanRestriction =
+            status === 403 ||
             code === 'PLAN_RESTRICTION' ||
             requiresUpgrade === true;
-          
+
           if (isPlanRestriction) {
-            const errorMessage = 
-              error?.response?.data?.message || 
-              error?.message || 
+            const errorMessage =
+              error?.response?.data?.message ||
+              error?.message ||
               "You've reached your plan limit. Please upgrade to create more chatbots.";
-            
+
             setRestrictionMessage(errorMessage);
             setShowRestrictionModal(true);
             // Refresh entitlement check
@@ -294,10 +302,10 @@ export default function CreateChatbotPage() {
               <AlertCircle className="h-4 w-4 text-amber-600" />
               <AlertTitle className="text-amber-900 dark:text-amber-200">Plan Limit Reached</AlertTitle>
               <AlertDescription className="text-amber-800 dark:text-amber-300 mt-2">
-                {entitlementCheck?.reason || 
-                 (currentSubscription 
-                   ? `You've reached your plan limit of ${currentSubscription.entitlements?.maxChatbots || 1} chatbot${(currentSubscription.entitlements?.maxChatbots || 1) > 1 ? 's' : ''}. Upgrade to create more.`
-                   : "You've reached your plan limit for chatbots. Upgrade to create more.")}
+                {entitlementCheck?.reason ||
+                  (currentSubscription
+                    ? `You've reached your plan limit of ${currentSubscription.entitlements?.maxChatbots || 1} chatbot${(currentSubscription.entitlements?.maxChatbots || 1) > 1 ? 's' : ''}. Upgrade to create more.`
+                    : "You've reached your plan limit for chatbots. Upgrade to create more.")}
               </AlertDescription>
               {currentSubscription && (
                 <AlertDescription className="text-amber-800 dark:text-amber-300 mt-1 text-sm">
@@ -313,95 +321,95 @@ export default function CreateChatbotPage() {
             </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Chatbot Name */}
-            <div className="space-y-2">
-              <Label htmlFor="name">
-                Chatbot Name <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="name"
-                placeholder="e.g., Customer Support Bot"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
-              />
-              <p className="text-sm text-muted-foreground">
-                Choose a descriptive name for your chatbot
-              </p>
-            </div>
+              {/* Chatbot Name */}
+              <div className="space-y-2">
+                <Label htmlFor="name">
+                  Chatbot Name <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="e.g., Customer Support Bot"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Choose a descriptive name for your chatbot
+                </p>
+              </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="description">
-                Description <span className="text-destructive">*</span>
-              </Label>
-              <Textarea
-                id="description"
-                placeholder="e.g., A helpful assistant for customer inquiries"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
-                rows={3}
-              />
-              <p className="text-sm text-muted-foreground">
-                Briefly describe what this chatbot does
-              </p>
-            </div>
+              {/* Description */}
+              <div className="space-y-2">
+                <Label htmlFor="description">
+                  Description <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  id="description"
+                  placeholder="e.g., A helpful assistant for customer inquiries"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
+                  rows={3}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Briefly describe what this chatbot does
+                </p>
+              </div>
 
-            {/* System Instructions */}
-            <div className="space-y-3">
-              <Label htmlFor="systemPrompt">
-                System Instructions <span className="text-destructive">*</span>
-              </Label>
-              <Textarea
-                id="systemPrompt"
-                placeholder="Enter detailed instructions for how the chatbot should behave..."
-                value={systemPrompt}
-                onChange={(e) => setSystemPrompt(e.target.value)}
-                disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
-                rows={10}
-                className="font-mono text-sm"
-              />
-              <p className="text-sm text-muted-foreground">
-                Define how your chatbot should respond and behave
-              </p>
-              
-              {/* AI Prompt Helper - Generate only mode (no chatbotId yet) */}
-              <PromptAIHelper
-                channel="WIDGET"
-                onPromptGenerated={setSystemPrompt}
-                disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
-              />
-            </div>
+              {/* System Instructions */}
+              <div className="space-y-3">
+                <Label htmlFor="systemPrompt">
+                  System Instructions <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  id="systemPrompt"
+                  placeholder="Enter detailed instructions for how the chatbot should behave..."
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
+                  rows={10}
+                  className="font-mono text-sm"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Define how your chatbot should respond and behave
+                </p>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-                disabled={isCreating}
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
-              >
-                {isCreating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Bot className="mr-2 h-4 w-4" />
-                    Create Chatbot
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
+                {/* AI Prompt Helper - Generate only mode (no chatbotId yet) */}
+                <PromptAIHelper
+                  channel="WIDGET"
+                  onPromptGenerated={setSystemPrompt}
+                  disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.back()}
+                  disabled={isCreating}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isCreating || hasReachedLimit || (entitlementCheck && !entitlementCheck.allowed)}
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Bot className="mr-2 h-4 w-4" />
+                      Create Chatbot
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
           )}
         </CardContent>
       </Card>

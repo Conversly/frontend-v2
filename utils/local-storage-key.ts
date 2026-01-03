@@ -5,4 +5,5 @@ export enum LOCAL_STORAGE_KEY {
   CHATBOT_DASHBOARD_UI = "chatbot-dashboard-ui",
   CHATBOT_DATA_MANAGEMENT = "chatbot-data-management",
   INVITE_CODE = "invite-code",
+  ACTIVE_ACCOUNT_ID = "activeAccountId",
 }
