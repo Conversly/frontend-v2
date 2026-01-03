@@ -28,7 +28,7 @@ export default function PlaygroundPage() {
   useEffect(() => {
     const loadData = async () => {
       if (!botId) return;
-      
+
       setIsLoading(true);
       try {
         // Fetch widget config and chatbot in parallel
@@ -40,7 +40,7 @@ export default function PlaygroundPage() {
         // Convert payload to UIConfigInput (similar to customization store)
         const partial = widgetData.partial;
         const styles = partial.styles || {};
-        
+
         const uiConfig: UIConfigInput = {
           DisplayName: styles.displayName || "Support Bot",
           InitialMessage: (partial.initialMessage as string) || "Hi! How can I help you today? 👋",
@@ -86,7 +86,7 @@ export default function PlaygroundPage() {
 
   const handleSavePrompt = async () => {
     if (!botId) return;
-    
+
     setIsSavingPrompt(true);
     try {
       await upsertChannelPrompt({
@@ -143,9 +143,9 @@ export default function PlaygroundPage() {
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
           <div className="w-full max-w-[600px]">
-            <ActualChatWidget 
+            <ActualChatWidget
               key={widgetKey}
-              config={config} 
+              config={config}
               playgroundConfig={{
                 chatbotId: botId,
                 systemPrompt,
@@ -162,7 +162,7 @@ export default function PlaygroundPage() {
           <div className="p-6 space-y-6">
             <div>
               <h3 className="mb-4 text-sm font-semibold">Configuration</h3>
-              
+
               <div className="space-y-5">
                 {/* System Prompt */}
                 <div>
@@ -201,13 +201,13 @@ export default function PlaygroundPage() {
                     onChange={(e) => setModel(e.target.value)}
                     className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <option value="gemini-2.0">Gemini 2.0</option>
+                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
                     <option value="gpt-4">GPT-4</option>
                     <option value="gpt-4-turbo">GPT-4 Turbo</option>
                     <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                   </select>
                 </div>
-                
+
                 {/* Temperature */}
                 <div>
                   <label className="mb-2 block text-xs font-medium text-foreground/70">

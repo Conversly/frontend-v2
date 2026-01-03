@@ -29,6 +29,16 @@ import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Helper to format relative time
 const formatExpiresAt = (expiresAt: string) => {
@@ -62,6 +72,8 @@ export default function ManagePage() {
     const [workspaceName, setWorkspaceName] = useState("");
     const [duplicateInviteEmail, setDuplicateInviteEmail] = useState("");
     const [isDuplicateInviteDialogOpen, setIsDuplicateInviteDialogOpen] = useState(false);
+    const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
+    const [inviteToCancel, setInviteToCancel] = useState<string | null>(null);
 
     // Invite mutation
     const inviteMutation = useMutation({
@@ -112,6 +124,7 @@ export default function ManagePage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEY.ACCOUNT_MEMBERS] });
             toast.success("Member removed successfully");
+            setMemberToRemove(null);
         },
         onError: (err: any) => {
             toast.error(err?.message || "Failed to remove member");
@@ -124,6 +137,7 @@ export default function ManagePage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PENDING_INVITES] });
             toast.success("Invitation cancelled");
+            setInviteToCancel(null);
         },
         onError: (err: any) => {
             toast.error(err?.message || "Failed to cancel invitation");
@@ -167,15 +181,23 @@ export default function ManagePage() {
         inviteMutation.mutate({ email: inviteEmail.trim(), role: inviteRole });
     };
 
-    const handleRemove = (userId: string) => {
-        if (confirm("Are you sure you want to remove this member?")) {
-            removeMutation.mutate(userId);
+    const handleRemoveIsClicked = (userId: string) => {
+        setMemberToRemove(userId);
+    };
+
+    const handleConfirmRemove = () => {
+        if (memberToRemove) {
+            removeMutation.mutate(memberToRemove);
         }
     };
 
-    const handleCancelInvite = (inviteId: string) => {
-        if (confirm("Are you sure you want to cancel this invitation?")) {
-            cancelInviteMutation.mutate(inviteId);
+    const handleCancelInviteIsClicked = (inviteId: string) => {
+        setInviteToCancel(inviteId);
+    };
+
+    const handleConfirmCancelInvite = () => {
+        if (inviteToCancel) {
+            cancelInviteMutation.mutate(inviteToCancel);
         }
     };
 
@@ -558,7 +580,7 @@ export default function ManagePage() {
                                                     variant="ghost"
                                                     size="sm"
                                                     className="text-muted-foreground hover:text-destructive"
-                                                    onClick={() => handleCancelInvite(invite.id)}
+                                                    onClick={() => handleCancelInviteIsClicked(invite.id)}
                                                     disabled={cancelInviteMutation.isPending}
                                                 >
                                                     <X className="w-4 h-4 mr-1" />
@@ -630,7 +652,7 @@ export default function ManagePage() {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="text-muted-foreground hover:text-destructive"
-                                                    onClick={() => handleRemove(member.userId)}
+                                                    onClick={() => handleRemoveIsClicked(member.userId)}
                                                     disabled={removeMutation.isPending}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -648,7 +670,58 @@ export default function ManagePage() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Alert Dialog for Removing Member */}
+                <AlertDialog open={!!memberToRemove} onOpenChange={(open) => !open && setMemberToRemove(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Remove Team Member?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to remove this member from your team? They will lose access to all workspaces and chatbots.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel disabled={removeMutation.isPending}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleConfirmRemove();
+                                }}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                disabled={removeMutation.isPending}
+                            >
+                                {removeMutation.isPending ? "Removing..." : "Remove Member"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Alert Dialog for Cancelling Invite */}
+                <AlertDialog open={!!inviteToCancel} onOpenChange={(open) => !open && setInviteToCancel(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel Invitation?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to cancel this invitation? The invite link will become invalid immediately.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel disabled={cancelInviteMutation.isPending}>Keep Invite</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleConfirmCancelInvite();
+                                }}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                disabled={cancelInviteMutation.isPending}
+                            >
+                                {cancelInviteMutation.isPending ? "Cancelling..." : "Yes, Cancel Invite"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
+
         </RoleGuard>
     );
 }
