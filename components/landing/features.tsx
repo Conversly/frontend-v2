@@ -43,7 +43,7 @@ const features = [
 export default function FeaturesSection() {
   return (
     <div className="w-full py-24 lg:py-32">
-      <div className="container mx-auto">
+      <div className="w-full">
         <div className="flex flex-col gap-10">
           <div className="flex gap-4 flex-col items-start">
 
@@ -60,7 +60,7 @@ export default function FeaturesSection() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-md h-full p-6 aspect-square lg:aspect-auto flex justify-between flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer overflow-hidden ${feature.isLarge ? 'lg:col-span-2' : ''
+                className={`bg-white rounded-xl h-full p-6 aspect-square lg:aspect-auto flex justify-between flex-col transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border border-gray-100 ${feature.isLarge ? 'lg:col-span-2' : ''
                   }`}
               >
                 <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">

@@ -36,21 +36,24 @@ export default function QuestionsSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden" id="faq">
+    <section className="py-24 lg:py-32 relative overflow-hidden" id="faq">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-50" />
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="w-full relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <p className="text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground">
+            FAQ
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             Got{' '}
             <motion.span
               initial={{ opacity: 0 }}
@@ -67,7 +70,7 @@ export default function QuestionsSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-xl text-muted-foreground"
+            className="text-lg text-muted-foreground"
           >
             Find answers to common questions about our platform.
           </motion.p>
@@ -82,7 +85,7 @@ export default function QuestionsSection() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.01 }}
-              className="bg-card rounded-2xl shadow-sm border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300"
+              className="bg-card rounded-2xl shadow-sm border border-border/50 overflow-hidden hover:shadow-md transition-all duration-300"
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}

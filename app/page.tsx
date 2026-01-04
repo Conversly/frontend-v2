@@ -1,17 +1,19 @@
 'use client';
 import Navbar from "@/components/landing/navbar";
 import Hero from "@/components/landing/hero";
-import FeaturesSection from "@/components/landing/features";
+import Testimonial from "@/components/landing/testimonial";
 import HowItWorks from "@/components/landing/how-it-works";
 import PricingSection from "@/components/landing/pricing";
 import QuestionsSection from "@/components/landing/questions";
 import Footer from "@/components/landing/footer";
+import UnifiedOfferings from "@/components/landing/unified-offerings";
 
-import ScalabilitySection from "@/components/landing/scalability";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
-import HighlightsSection from "@/components/landing/highlight";
+
+// Single source of truth for content width
+const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
 
 export default function Home() {
   const router = useRouter();
@@ -30,16 +32,18 @@ export default function Home() {
       {/* Global Grid Background */}
       <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
-      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-16 relative z-10">
+      <div className="relative z-10">
         <Navbar />
-        <Hero />
-        <HighlightsSection />
-        <FeaturesSection />
-        <HowItWorks />
-        <PricingSection />
-
-        <QuestionsSection />
-        <Footer />
+        
+        <div className={CONTENT_WIDTH}>
+          <Hero />
+          <Testimonial />
+          <UnifiedOfferings />
+          <HowItWorks />
+          <PricingSection />
+          <QuestionsSection />
+          <Footer />
+        </div>
       </div>
     </main>
   );

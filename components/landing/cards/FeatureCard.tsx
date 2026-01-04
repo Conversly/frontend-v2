@@ -23,7 +23,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full group">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className={`p-2 rounded-lg ${accentClasses[accentColor]}`}>

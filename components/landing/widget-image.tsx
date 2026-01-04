@@ -9,7 +9,7 @@ const ChatbotImage: React.FC = () => {
                 <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/10 rounded-full filter blur-3xl"></div>
                 
                 {/* Chat Interface Mockup */}
-                <div className="relative bg-neutral-800/50 backdrop-blur-sm p-6 rounded-2xl border border-neutral-700 shadow-2xl">
+                <div className="relative bg-neutral-800/50 backdrop-blur-sm p-6 rounded-2xl border border-neutral-700 shadow-md">
                     <div className="flex flex-col space-y-4">
                         <div className="flex items-center space-x-2">
                             <div className="w-2 h-2 bg-green-400 rounded-full"></div>

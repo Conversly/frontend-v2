@@ -16,7 +16,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+    <div className="fixed bottom-6 right-6 z-40 w-80 md:w-96 bg-white rounded-2xl shadow-md border border-gray-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
       {/* Header */}
       <div className="bg-indigo-600 p-4 flex items-center justify-between text-white">
         <div className="flex items-center gap-3">

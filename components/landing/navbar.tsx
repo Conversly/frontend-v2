@@ -123,8 +123,8 @@ export default function Navbar() {
 
   return (
     mounted && (
-      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 text-gray-900">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between py-4">
+      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 text-gray-900 px-4">
+        <div className="mx-auto flex w-[95%] md:w-[85%] lg:w-[70%] max-w-[1200px] items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/verly_logo.png"
@@ -166,7 +166,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button className="group relative overflow-hidden bg-foreground text-background hover:bg-foreground/90 font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105">
+                  <Button className="group relative overflow-hidden bg-foreground text-background hover:bg-foreground/90 font-semibold transition-all duration-300 hover:shadow-md">
                     <span className="relative z-10 flex items-center gap-2">
                       Sign up now!
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -184,14 +184,14 @@ export default function Navbar() {
                   }
                 }}>
                   <DialogTrigger asChild>
-                    <Button className="group relative overflow-hidden bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_100%] animate-[shimmer_2s_linear_infinite] hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 hover:scale-105 font-semibold">
+                    <Button className="group relative overflow-hidden bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_100%] animate-[shimmer_2s_linear_infinite] hover:shadow-md transition-all duration-300 font-semibold">
                       <span className="relative z-10 flex items-center gap-2">
                         <Sparkles className="w-4 h-4" />
                         Join Waitlist
                       </span>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-zinc-950">
+                  <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border border-border shadow-md bg-white dark:bg-zinc-950">
                     <AnimatePresence mode="wait">
                       {!isSubmitted ? (
                         <motion.div
@@ -207,7 +207,7 @@ export default function Navbar() {
                             <DialogTitle className="text-3xl font-bold flex items-center gap-3 mb-3">
                               <div className="relative">
                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/20 rounded-lg blur-md"></div>
-                                <div className="relative w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                                <div className="relative w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center shadow-sm">
                                   <Sparkles className="w-6 h-6 text-white" />
                                 </div>
                               </div>
@@ -293,7 +293,7 @@ export default function Navbar() {
                               type="submit"
                               onClick={handleWaitlistSubmit}
                               disabled={isLoading}
-                              className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-lg py-7 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group"
+                              className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-lg py-7 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group"
                             >
                               {isLoading ? (
                                 <>
@@ -326,7 +326,7 @@ export default function Navbar() {
                             className="relative mb-6"
                           >
                             <div className="absolute inset-0 bg-green-500/20 rounded-full blur-2xl animate-pulse"></div>
-                            <div className="relative w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-2xl">
+                            <div className="relative w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-md">
                               <CheckCircle2 className="w-12 h-12 text-white" />
                             </div>
                           </motion.div>

@@ -83,7 +83,7 @@ function ChatUI() {
   }, []);
 
   return (
-    <div className="w-full max-w-sm bg-card/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-border shadow-2xl font-sans">
+    <div className="w-full max-w-sm bg-card/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-border shadow-md font-sans">
       {/* Chat header */}
       <div className="px-4 py-3 flex items-center justify-between border-b border-border bg-card/60">
         <div className="flex items-center gap-3">
@@ -219,7 +219,7 @@ export default function Hero() {
       <div className="absolute inset-0 h-full w-full pointer-events-none">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 opacity-20 blur-[100px]"></div>
       </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Content */}
           <motion.div
@@ -243,7 +243,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-4xl md:text-6xl font-normal text-foreground leading-[1.1] tracking-tight max-w-2xl"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] tracking-tight max-w-2xl"
             >
               AI agents that handle{" "}
               <motion.span
@@ -284,7 +284,7 @@ export default function Hero() {
               >
                 <Button
                   size="lg"
-                  className="group gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-lg"
+                  className="group gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-md"
                   onClick={() => router.push("/")}
                 >
                   Schedule a call
@@ -295,7 +295,7 @@ export default function Hero() {
 
               {/* Social / follow */}
               <div className="flex flex-wrap items-center gap-3 text-muted-foreground mt-4">
-                <div className="flex items-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl px-3 py-1 shadow-[0_12px_35px_-18px_rgba(0,0,0,0.45)]">
+                <div className="flex items-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl px-3 py-1 shadow-sm">
                   <span className="text-xs font-semibold tracking-[0.16em] text-foreground/80 uppercase">
                     Follow us
                   </span>
@@ -306,17 +306,17 @@ export default function Hero() {
                     href="https://x.com/VerlyAI"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-white/50 dark:border-white/15 bg-gradient-to-br from-white/90 via-white/40 to-white/20 dark:from-white/10 dark:via-white/5 dark:to-white/0 shadow-lg shadow-primary/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-primary/30 before:absolute before:inset-0 before:rounded-xl before:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_55%)] before:opacity-80 before:transition-opacity before:duration-300 group-hover:before:opacity-100"
+                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                   >
-                    <XIcon className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:text-black" />
+                    <XIcon className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-black" />
                   </a>
                   <a
                     href="https://www.linkedin.com/company/verlyai/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-white/50 dark:border-white/15 bg-gradient-to-br from-white/90 via-white/40 to-white/20 dark:from-white/10 dark:via-white/5 dark:to-white/0 shadow-lg shadow-primary/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-primary/30 before:absolute before:inset-0 before:rounded-xl before:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_55%)] before:opacity-80 before:transition-opacity before:duration-300 group-hover:before:opacity-100"
+                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                   >
-                    <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:text-[#0a66c2]" />
+                    <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-[#0a66c2]" />
                   </a>
                 </div>
               </div>

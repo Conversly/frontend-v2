@@ -45,8 +45,8 @@ function FeatureSteps({
   }, [progress, features.length, autoPlayInterval])
 
   return (
-    <div className={cn("p-8 md:p-12", className)}>
-      <div className="max-w-7xl mx-auto w-full">
+    <div className={cn("py-8 md:py-12", className)}>
+      <div className="w-full">
 
 
         <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10">
@@ -268,14 +268,17 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-16 space-y-4"
         >
+          <p className="text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground">
+            Get started in minutes
+          </p>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1, duration: 0.6 }}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-6"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground"
           >
             How to get Started
           </motion.h2>
@@ -284,7 +287,7 @@ export default function HowItWorks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8"
+            className="text-lg text-muted-foreground max-w-3xl mx-auto"
           >
             We transform your knowledge base into a{" "}
             <span className="text-foreground">reliable and production-ready</span>{" "}

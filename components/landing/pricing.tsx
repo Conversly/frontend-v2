@@ -66,12 +66,15 @@ export default function PricingSection() {
       <div className="relative w-full">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-16 space-y-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Simple, Transparent Pricing</h2>
+          <p className="text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground">
+            Pricing
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">Simple, Transparent Pricing</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Start free and <span className="text-foreground">scale as you grow</span>.{" "}
             <span className="text-primary">No hidden fees or surprises</span>.
@@ -79,7 +82,7 @@ export default function PricingSection() {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 w-full">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={index}
@@ -94,9 +97,9 @@ export default function PricingSection() {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 rounded-2xl" />
               <motion.div
                 className={`
-                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8 transition-all duration-300
+                relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8 transition-all duration-300 shadow-sm
                 ${plan.popular ? "ring-2 ring-primary/20" : ""}
-                group-hover:shadow-xl group-hover:border-primary/30
+                group-hover:shadow-md group-hover:border-primary/30
               `}
               >
                 {/* Popular Badge */}
