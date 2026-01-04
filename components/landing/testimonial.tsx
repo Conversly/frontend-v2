@@ -30,6 +30,7 @@ export default function Testimonial() {
                 src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop"
                 alt="Customer support professional"
                 fill
+                sizes="(max-width: 768px) 128px, 160px"
                 className="object-cover"
               />
             </div>

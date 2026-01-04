@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { MessageSquare, MessageCircle, Mic, Check } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Image from "next/image"
 
 interface Feature {
   step: string
@@ -110,12 +111,13 @@ function FeatureSteps({
                       exit={{ y: -100, opacity: 0, rotateX: 20 }}
                       transition={{ duration: 0.5, ease: "easeInOut" }}
                     >
-                      <img
+                      <Image
                         src={feature.image}
                         alt={feature.step}
-                        className="w-full h-full object-contain transition-transform transform"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-contain"
                       />
-
                     </motion.div>
                   ),
               )}
