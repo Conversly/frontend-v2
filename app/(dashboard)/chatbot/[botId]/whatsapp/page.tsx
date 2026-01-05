@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,11 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { getWhatsAppIntegration, createWhatsAppIntegration } from '@/lib/api/whatsapp';
+import { getWhatsAppIntegration, createWhatsAppIntegration, exchangeWhatsAppToken, onboardWhatsAppClient } from '@/lib/api/whatsapp';
 import { Loader2, ArrowLeft, Copy, CheckCircle2, MessageCircle, ExternalLink, Check } from 'lucide-react';
 import Link from 'next/link';
 import { WHATSAPP_SETUP_GUIDE } from '@/lib/constants/integrations';
 import { cn } from '@/lib/utils';
+import { useFacebookSDK } from '@/hooks/use-facebook-sdk';
 
 export default function WhatsAppSetupPage() {
   const routeParams = useParams<{ botId: string }>();
@@ -21,6 +22,7 @@ export default function WhatsAppSetupPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEmbeddedSignupLoading, setIsEmbeddedSignupLoading] = useState(false);
   const [existingIntegration, setExistingIntegration] = useState<any>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [credentials, setCredentials] = useState({
@@ -32,6 +34,56 @@ export default function WhatsAppSetupPage() {
 
   const webhookUrl = `https://response.apps.verlyai.xyz/whatsapp/webhook/${botId}`;
   const setupSteps = WHATSAPP_SETUP_GUIDE.steps;
+
+  // Facebook App configuration
+  const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '';
+  const facebookConfigId = process.env.NEXT_PUBLIC_FACEBOOK_CONFIG_ID || '';
+
+  // Store signup data from message event
+  const [signupData, setSignupData] = useState<{
+    phoneNumberId: string;
+    wabaId: string;
+    businessId?: string;
+    adAccountIds?: string[];
+    pageIds?: string[];
+    datasetIds?: string[];
+  } | null>(null);
+  const [authCode, setAuthCode] = useState<string | null>(null);
+
+  // Facebook SDK hook
+  const { isSDKLoaded, isLoading: isSDKLoading, launchEmbeddedSignup } = useFacebookSDK({
+    appId: facebookAppId,
+    version: 'v24.0',
+    onSignupComplete: async (data) => {
+
+      // Store the WABA ID and Phone Number ID from the message event
+      // Also capture additional fields: business_id, ad_account_ids, page_ids, dataset_ids
+      const newSignupData = {
+        phoneNumberId: data.phone_number_id,
+        wabaId: data.waba_id,
+        businessId: data.business_id,
+        adAccountIds: data.ad_account_ids,
+        pageIds: data.page_ids,
+        datasetIds: data.dataset_ids,
+      };
+
+      setSignupData(newSignupData);
+      // The useEffect will handle processing when both authCode and signupData are available
+      // Note: Token code expires in 30 seconds, so processing must happen quickly
+    },
+    onSignupCancel: (step) => {
+      toast.error(`Signup cancelled at step: ${step}`);
+      setIsEmbeddedSignupLoading(false);
+      setSignupData(null);
+      setAuthCode(null);
+    },
+    onSignupError: (error) => {
+      toast.error(`Signup error: ${error}`);
+      setIsEmbeddedSignupLoading(false);
+      setSignupData(null);
+      setAuthCode(null);
+    },
+  });
 
   useEffect(() => {
     const checkExistingIntegration = async () => {
@@ -71,7 +123,172 @@ export default function WhatsAppSetupPage() {
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
     setCredentials(prev => ({ ...prev, verifyToken: token }));
+    return token;
   };
+
+  // Enhanced handler that processes the complete flow
+  // IMPORTANT: Token code expires in 30 seconds, so this must complete quickly
+  const processEmbeddedSignup = useCallback(async (phoneNumberId: string, wabaId: string, code: string) => {
+
+    setIsEmbeddedSignupLoading(true);
+
+    let tokenExchangeSucceeded = false;
+
+    try {
+      // Ensure we have a verify token
+      let verifyToken = credentials.verifyToken;
+      if (!verifyToken) {
+
+        verifyToken = generateVerifyToken();
+      }
+
+
+      // Step 1: Exchange code for access token (must happen within 30 seconds)
+
+      toast.info('Exchanging authorization code for access token...');
+      const tokenResponse = await exchangeWhatsAppToken({
+        code,
+        chatbotId: botId,
+        phoneNumberId,
+        wabaId,
+      });
+
+      if (!tokenResponse || !tokenResponse.accessToken) {
+        throw new Error('Failed to get access token from exchange');
+      }
+
+
+      tokenExchangeSucceeded = true; // Mark token exchange as successful
+
+      // Step 2: Onboard client (subscribe webhooks, get phone details, create integration)
+
+      toast.info('Completing onboarding...');
+      const onboardResponse = await onboardWhatsAppClient({
+        chatbotId: botId,
+        phoneNumberId,
+        wabaId,
+        accessToken: tokenResponse.accessToken,
+        webhookUrl,
+        verifyToken,
+      });
+
+
+
+      if (onboardResponse.success) {
+        toast.success('WhatsApp integration completed successfully!');
+        // Refresh to check for integration
+        const integration = await getWhatsAppIntegration(botId);
+        if (integration) {
+          router.push(`/chatbot/${botId}/whatsapp/${integration.id}/live-chat`);
+        } else {
+          router.push(`/chatbot/${botId}/whatsapp`);
+        }
+      } else {
+        // Check if integration was created despite webhook subscription failure
+        const integration = await getWhatsAppIntegration(botId);
+        if (integration) {
+          toast.success('WhatsApp integration created! Please configure webhooks manually in Meta Dashboard.');
+          router.push(`/chatbot/${botId}/whatsapp/${integration.id}/live-chat`);
+        } else {
+          throw new Error(onboardResponse.message || 'Onboarding failed');
+        }
+      }
+    } catch (error: any) {
+      console.error('Error processing embedded signup:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data,
+      });
+
+      // Check if error is due to authorization code already being used
+      const isCodeUsedError = error.message?.includes('authorization code has been used') ||
+        error.message?.includes('code has been used');
+
+      if (isCodeUsedError || tokenExchangeSucceeded) {
+        // Don't reset hasProcessed if:
+        // 1. Code was already used (can't retry)
+        // 2. Token exchange succeeded (code is now used, can't retry)
+        toast.error('Authorization code was already used. Please start the signup process again.');
+      } else {
+        // Check if integration was created despite error
+        try {
+          const integration = await getWhatsAppIntegration(botId);
+          if (integration) {
+            toast.warning('Integration created but some steps failed. Please configure webhooks manually in Meta Dashboard.');
+            router.push(`/chatbot/${botId}/whatsapp/${integration.id}/live-chat`);
+            return; // Don't reset hasProcessed if integration exists
+          }
+        } catch (checkError) {
+          // Integration doesn't exist, continue with error handling
+        }
+
+        toast.error(error.message || 'Failed to complete embedded signup');
+        // Only reset if token exchange failed (code is still valid for retry)
+        setHasProcessed(false);
+      }
+    } finally {
+      setIsEmbeddedSignupLoading(false);
+    }
+  }, [botId, webhookUrl, credentials.verifyToken, router]);
+
+  // Process embedded signup when both auth code and signup data are available
+  // Use a ref to prevent duplicate processing
+  const [hasProcessed, setHasProcessed] = useState(false);
+
+  useEffect(() => {
+    // Debug logging
+
+
+    // Process when we have both pieces of data and haven't processed yet
+    if (authCode && signupData && !hasProcessed) {
+
+      setHasProcessed(true);
+      processEmbeddedSignup(signupData.phoneNumberId, signupData.wabaId, authCode);
+    }
+  }, [authCode, signupData, hasProcessed, processEmbeddedSignup]);
+
+  const handleEmbeddedSignup = async () => {
+    if (!isSDKLoaded) {
+      toast.error('Facebook SDK is still loading. Please wait...');
+      return;
+    }
+
+    setIsEmbeddedSignupLoading(true);
+    setSignupData(null);
+    setAuthCode(null);
+    setHasProcessed(false); // Reset processed flag
+    generateVerifyToken(); // Generate verify token before starting
+
+    if (!facebookConfigId) {
+      toast.error('Facebook Config ID is not configured');
+      setIsEmbeddedSignupLoading(false);
+      return;
+    }
+
+    try {
+      launchEmbeddedSignup(facebookConfigId, async (response: any) => {
+
+        if (response.authResponse?.code) {
+          const code = response.authResponse.code;
+
+          setAuthCode(code);
+          // Token code expires in 30 seconds - we need to exchange it quickly
+          toast.info('Authorization code received. Processing signup...');
+          // The useEffect will handle processing when both authCode and signupData are available
+        } else {
+          console.error('No authorization code in response:', response);
+          toast.error('Failed to get authorization code');
+          setIsEmbeddedSignupLoading(false);
+        }
+      });
+    } catch (error: any) {
+      console.error('Error launching embedded signup:', error);
+      toast.error(error.message || 'Failed to launch embedded signup');
+      setIsEmbeddedSignupLoading(false);
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,10 +369,23 @@ export default function WhatsAppSetupPage() {
           <Button
             type="button"
             className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-semibold gap-2 w-full sm:max-w-xs mx-auto"
-            onClick={() => toast.info('Facebook Embedded Signup would launch here')}
+            onClick={handleEmbeddedSignup}
+            disabled={isEmbeddedSignupLoading || !isSDKLoaded || isSDKLoading}
           >
-            <span className="font-bold">Connect with Facebook</span>
+            {isEmbeddedSignupLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Connecting...</span>
+              </>
+            ) : (
+              <span className="font-bold">Connect with Facebook</span>
+            )}
           </Button>
+          {!isSDKLoaded && (
+            <p className="text-xs text-muted-foreground text-center">
+              Loading Facebook SDK...
+            </p>
+          )}
           <div className="relative pt-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />

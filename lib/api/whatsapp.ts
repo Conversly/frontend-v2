@@ -608,3 +608,84 @@ export const updateWhatsAppTemplate = async (
   if (!res.success) throw new Error(res.message);
   return res.data;
 };
+
+// Embedded Signup API functions
+export interface ExchangeTokenRequest {
+  code: string;
+  chatbotId: string;
+  phoneNumberId: string;
+  wabaId: string;
+}
+
+export interface ExchangeTokenResponse {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+}
+
+export const exchangeWhatsAppToken = async (
+  input: ExchangeTokenRequest
+): Promise<ExchangeTokenResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + '/exchange-token',
+    {
+      method: 'POST',
+      data: input,
+    },
+  ).then((res) => res.data) as ApiResponse<ExchangeTokenResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message || 'Token exchange failed');
+  }
+
+  return res.data;
+};
+
+export interface OnboardClientRequest {
+  chatbotId: string;
+  phoneNumberId: string;
+  wabaId: string;
+  accessToken: string;
+  webhookUrl: string;
+  verifyToken: string;
+}
+
+export interface OnboardClientResponse {
+  success: boolean;
+  phoneNumber?: string;
+  verifiedName?: string;
+  message?: string;
+}
+
+export const onboardWhatsAppClient = async (
+  input: OnboardClientRequest
+): Promise<OnboardClientResponse> => {
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + '/onboard-client',
+    {
+      method: 'POST',
+      data: input,
+    },
+  ).then((res) => res.data) as ApiResponse<{
+    phoneNumber?: string;
+    verifiedName?: string;
+    steps?: Array<{
+      step: number;
+      name: string;
+      success: boolean;
+      error?: string;
+    }>;
+  }, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message || 'Onboarding failed');
+  }
+
+  return {
+    success: res.success,
+    message: res.message,
+    phoneNumber: res.data?.phoneNumber,
+    verifiedName: res.data?.verifiedName,
+    steps: res.data?.steps,
+  };
+};

@@ -285,9 +285,15 @@ export default function Hero() {
                 <Button
                   size="lg"
                   className="group gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-md"
-                  onClick={() => router.push("/")}
+                  onClick={() => {
+                    // @ts-ignore
+                    if (window.Calendly) {
+                      // @ts-ignore
+                      window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
+                    }
+                  }}
                 >
-                  Schedule a call
+                  Schedule a meet
                   <PhoneCall className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </motion.div>

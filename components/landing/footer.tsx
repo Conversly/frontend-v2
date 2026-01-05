@@ -46,7 +46,7 @@ export default function Footer() {
       {/* Gradient transition section - White to Black */}
       <div className="relative bg-gradient-to-b from-white via-blue-50 via-30% via-blue-200 via-50% via-blue-400 via-70% to-black">
         <div className="relative pt-20 pb-16">
-          <motion.div 
+          <motion.div
             className="text-center max-w-3xl mx-auto px-4"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -70,14 +70,19 @@ export default function Footer() {
                 size="lg"
                 className="group gap-2 h-12 px-6 text-base bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 hover:shadow-md"
               >
-                <a
-                  href="https://calendly.com/verlyai"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    // @ts-ignore
+                    if (window.Calendly) {
+                      // @ts-ignore
+                      window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
+                    }
+                  }}
                 >
                   <Calendar className="w-5 h-5" />
-                  Schedule a call
-                </a>
+                  Schedule a meet
+                </button>
               </Button>
             </motion.div>
           </motion.div>
@@ -102,14 +107,14 @@ export default function Footer() {
                   <div key={contact.name} className="space-y-1">
                     <p className="text-white/80 font-medium">{contact.name}</p>
                     <p className="text-white/40 text-xs">{contact.title}</p>
-                    <a 
+                    <a
                       href={`mailto:${contact.email}`}
                       className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
                     >
                       <Mail className="w-4 h-4" />
                       {contact.email}
                     </a>
-                    <a 
+                    <a
                       href={`tel:${contact.phone.replace(/\s/g, '')}`}
                       className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
                     >
@@ -120,7 +125,7 @@ export default function Footer() {
                 ))}
                 <div className="pt-4 border-t border-white/10">
                   <p className="text-white/80 font-medium mb-1">Official Email</p>
-                  <a 
+                  <a
                     href="mailto:verlyai.workspace@gmail.com"
                     className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
                   >

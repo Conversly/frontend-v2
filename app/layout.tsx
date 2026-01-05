@@ -7,6 +7,7 @@ import Script from "next/script";
 import { Roboto, Space_Grotesk } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
+import { CalendlyWidget } from "@/components/landing/calendly-widget";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -71,6 +72,7 @@ export default function RootLayout({
           data-testing="false"
           strategy="afterInteractive"
         />
+        <CalendlyWidget />
       </body>
     </html>
   );
