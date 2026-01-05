@@ -45,7 +45,7 @@ export default function Footer() {
     <footer className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden">
       {/* Gradient transition section - White to Black */}
       <div className="relative bg-gradient-to-b from-white via-blue-50 via-30% via-blue-200 via-50% via-blue-400 via-70% to-black">
-        <div className="relative pt-32 pb-24">
+        <div className="relative pt-20 pb-16">
           <motion.div 
             className="text-center max-w-3xl mx-auto px-4"
             initial={{ opacity: 0, y: 30 }}

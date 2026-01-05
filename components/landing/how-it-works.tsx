@@ -257,7 +257,7 @@ const tabs = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden">
+    <section className="py-14 lg:py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
