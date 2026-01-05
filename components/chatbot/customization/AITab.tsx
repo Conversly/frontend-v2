@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Textarea } from '@/components/ui/textarea';
+import TextareaAutosize from 'react-textarea-autosize';
 import { Button } from '@/components/ui/button';
 import {
   BrainCircuit,
@@ -44,19 +44,19 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
       {/* System Prompt */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader 
-          title="System Prompt" 
+        <SectionHeader
+          title="System Prompt"
           description="Define how your AI assistant behaves and responds"
           icon={BrainCircuit}
         />
-        
+
         <div className="mt-4 space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -72,11 +72,13 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Textarea
+            <TextareaAutosize
               value={systemPrompt || ''}
-              onChange={(e) => onSystemPromptChange(e.target.value)}
-              className="bg-muted/50 border-border/50 text-foreground min-h-[200px] font-mono text-sm"
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onSystemPromptChange(e.target.value)}
+              className="flex w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono text-sm resize-none overflow-y-auto minimal-scrollbar text-foreground"
               placeholder="You are a helpful assistant..."
+              minRows={5}
+              maxRows={15}
             />
             <p className="mt-2 text-xs text-muted-foreground">
               {(systemPrompt || '').length} characters
@@ -93,7 +95,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
           )}
 
           {chatbotId && (
-            <Button 
+            <Button
               onClick={handleSavePrompt}
               disabled={isSaving}
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
@@ -106,11 +108,11 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
 
       {/* AI Behavior Settings */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader 
-          title="AI Behavior" 
+        <SectionHeader
+          title="AI Behavior"
           description="Configure how the AI interacts with users"
         />
-        
+
         <div className="mt-4 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

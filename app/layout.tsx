@@ -68,7 +68,7 @@ export default function RootLayout({
         </GoogleOAuthProvider>
         <Script
           src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-3EpIMWVWfZ7JgXgUQ8VMmyJYEMX08t.js"
-          data-chatbot-id="r733qwzcdbhxjtmvuvj9pzgs"
+          data-chatbot-id="qtiggf3l7ptqshvuqm8iktsn"
           data-testing="false"
           strategy="afterInteractive"
         />

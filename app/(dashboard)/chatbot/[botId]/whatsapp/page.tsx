@@ -36,8 +36,8 @@ export default function WhatsAppSetupPage() {
   const setupSteps = WHATSAPP_SETUP_GUIDE.steps;
 
   // Facebook App configuration
-  const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '';
-  const facebookConfigId = process.env.NEXT_PUBLIC_FACEBOOK_CONFIG_ID || '';
+  const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '1363495505416375';
+  const facebookConfigId = process.env.NEXT_PUBLIC_FACEBOOK_CONFIG_ID || '1916779739722901';
 
   // Store signup data from message event
   const [signupData, setSignupData] = useState<{
