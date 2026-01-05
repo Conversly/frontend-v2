@@ -227,7 +227,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex gap-6 flex-col lg:items-start text-left"
+            className="flex gap-6 flex-col lg:items-start text-left px-4 lg:px-0"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}

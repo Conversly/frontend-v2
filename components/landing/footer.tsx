@@ -111,7 +111,7 @@ export default function Footer() {
                     <p className="text-white/40 text-xs">{contact.title}</p>
                     <a
                       href={`mailto:${contact.email}`}
-                      className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors mb-2"
+                      className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors mb-2 break-all"
                     >
                       <Mail className="w-4 h-4" />
                       {contact.email}
@@ -180,7 +180,7 @@ export default function Footer() {
                   <Link
                     key={social.name}
                     href={social.href}
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-all duration-300"
+                    className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-all duration-300"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

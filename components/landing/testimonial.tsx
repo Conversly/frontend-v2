@@ -98,7 +98,7 @@ export default function Testimonial() {
                 </div>
 
                 {/* Quote */}
-                <blockquote className="text-base md:text-lg text-foreground font-medium leading-relaxed mb-6">
+                <blockquote className="text-sm md:text-lg text-foreground font-medium leading-relaxed mb-6">
                   &ldquo;{testimonials[currentIndex].quote}&rdquo;
                 </blockquote>
 
@@ -120,8 +120,8 @@ export default function Testimonial() {
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex
-                      ? "w-8 bg-primary"
-                      : "w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600"
+                    ? "w-8 bg-primary"
+                    : "w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600"
                     }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
