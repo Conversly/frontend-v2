@@ -72,8 +72,8 @@ export default function FeaturesSection() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="text-xl tracking-tight mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-base">
+                  <h3 className="text-xl font-semibold tracking-tight mb-2 text-foreground">{feature.title}</h3>
+                  <p className="text-foreground/70 text-base leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

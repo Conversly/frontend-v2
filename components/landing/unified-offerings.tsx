@@ -95,14 +95,14 @@ export default function UnifiedOfferings() {
       accent: "text-amber-600",
       bgAccent: "bg-amber-500/10 border-amber-500/20",
     },
-    {
-      title: "AI Training",
-      tagline: "Train on your docs, FAQs, and data",
-      icon: <Sparkles size={18} />,
-      image: "/data_sources.png",
-      accent: "text-violet-600",
-      bgAccent: "bg-violet-500/10 border-violet-500/20",
-    },
+    // {
+    //   title: "AI Training",
+    //   tagline: "Train on your docs, FAQs, and data",
+    //   icon: <Sparkles size={18} />,
+    //   image: "/data_sources.png",
+    //   accent: "text-violet-600",
+    //   bgAccent: "bg-violet-500/10 border-violet-500/20",
+    // },
   ];
 
   return (

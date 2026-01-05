@@ -56,12 +56,12 @@ function FeatureSteps({
               <motion.div
                 key={index}
                 className="flex items-center gap-6 md:gap-8 cursor-pointer group"
-                initial={{ opacity: 0.3, x: -20 }}
-                whileInView={{ opacity: index === currentFeature ? 1 : 0.3, x: 0 }}
+                initial={{ opacity: 0.6, x: -20 }}
+                whileInView={{ opacity: index === currentFeature ? 1 : 0.6, x: 0 }}
                 viewport={{ once: true }}
-                animate={{ opacity: index === currentFeature ? 1 : 0.3 }}
+                animate={{ opacity: index === currentFeature ? 1 : 0.6 }}
                 transition={{ duration: 0.5 }}
-                whileHover={{ x: 5, opacity: index === currentFeature ? 1 : 0.5 }}
+                whileHover={{ x: 5, opacity: index === currentFeature ? 1 : 0.8 }}
                 onClick={() => {
                   setCurrentFeature(index)
                   setProgress(0)

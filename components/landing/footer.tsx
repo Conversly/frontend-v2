@@ -58,7 +58,7 @@ export default function Footer() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
               if you have come this far : let&apos;s talk!
             </h2>
-            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8">
+            <p className="text-foreground/80 font-medium text-lg md:text-xl max-w-2xl mx-auto mb-8">
               schedule a call with us!
             </p>
             <motion.div

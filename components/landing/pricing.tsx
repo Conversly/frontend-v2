@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 const pricingPlans = [
   {
     name: "Free",
-    priceMonthly: "$4.9",
+    priceMonthly: "Free",
     description: "Perfect for trying out our platform",
     features: [
       "Up to 500 messages per month",
@@ -22,7 +22,7 @@ const pricingPlans = [
   {
     name: "Pro",
     popular: true,
-    priceMonthly: "$49",
+    priceMonthly: "$20",
     description: "Best for growing businesses",
     features: [
       "Up to 10,000 messages per month",
