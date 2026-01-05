@@ -7,6 +7,7 @@ import PricingSection from "@/components/landing/pricing";
 import QuestionsSection from "@/components/landing/questions";
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
+import BroadcastSection from "@/components/landing/broadcast-section";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,7 @@ export default function Home() {
           <Hero />
           <Testimonial />
           <UnifiedOfferings />
+          <BroadcastSection />
           <HowItWorks />
           <PricingSection />
           <QuestionsSection />
