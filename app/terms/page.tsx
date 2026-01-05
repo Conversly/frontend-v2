@@ -1,151 +1,102 @@
+'use client';
+
+import Navbar from "@/components/landing/navbar";
+import Footer from "@/components/landing/footer";
+
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-card rounded-lg shadow-lg p-8">
-          <h1 className="text-4xl font-bold text-foreground mb-6">Terms of Service</h1>
-          
-          <div className="space-y-6 text-muted-foreground">
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">1. Acceptance of Terms</h2>
-              <p>
-                By accessing and using Verlyai's WhatsApp chatbot service ("Service"), you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
-              </p>
-            </section>
+    <div className="min-h-screen bg-background relative selection:bg-primary/10 selection:text-primary">
+      {/* Global Grid Background */}
+      <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">2. Service Description</h2>
-              <p>
-                Verlyai provides a platform that enables businesses to connect their WhatsApp Business Accounts and create automated chatbot responses for customer communications. Our Service uses the WhatsApp Business Platform provided by Meta.
-              </p>
-            </section>
+      <div className="relative z-10 font-sans">
+        <Navbar />
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">3. User Obligations</h2>
-              <p className="mb-3">You agree to:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Provide accurate and complete information during registration</li>
-                <li>Maintain the security of your account credentials</li>
-                <li>Comply with WhatsApp's Terms of Service and Commerce Policy</li>
-                <li>Obtain proper consent before messaging customers</li>
-                <li>Not use the Service for spam, harassment, or illegal activities</li>
-                <li>Not violate any applicable laws or regulations</li>
-              </ul>
-            </section>
+        <main className="w-[95%] md:w-[85%] lg:w-[80%] max-w-[1000px] mx-auto py-20 md:py-32">
+          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm p-8 md:p-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Terms of Service</h1>
+            <p className="text-muted-foreground mb-12">Last Updated: January 6, 2026</p>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">4. WhatsApp Business Platform</h2>
-              <p>
-                Our Service relies on the WhatsApp Business Platform. You acknowledge that:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4 mt-2">
-                <li>You must comply with WhatsApp's Business Policy</li>
-                <li>WhatsApp may impose rate limits and restrictions</li>
-                <li>Service availability depends on WhatsApp's infrastructure</li>
-                <li>WhatsApp's terms and policies apply to your use</li>
-              </ul>
-            </section>
+            <div className="space-y-8 text-foreground/80 leading-relaxed text-lg">
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">1. Acceptance of Terms</h2>
+                <p>
+                  By accessing or using VerlyAI's platform ("Service"), including our WhatsApp, Voice, and Web AI agents, you agree to be bound by these Terms of Service. If you do not agree, please do not use our Service.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">5. Pricing and Payment</h2>
-              <p>
-                Pricing for our Service is subject to change. WhatsApp conversations are billed according to Meta's pricing structure. You are responsible for all charges incurred through your account.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">2. Service Description</h2>
+                <p>
+                  VerlyAI provides a no-code platform for creating, managing, and deploying AI agents across multiple channels. Our Service integrates with third-party providers (including Meta, OpenAI, Deepgram, etc.) to function.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">6. Data and Privacy</h2>
-              <p>
-                Your use of the Service is also governed by our Privacy Policy. We collect and process data as described in our Privacy Policy to provide and improve the Service.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">3. User Obligations</h2>
+                <p>You agree to use the Service responsibly and to:</p>
+                <ul className="list-disc list-inside space-y-2 ml-4 marker:text-primary">
+                  <li>Provide accurate account information.</li>
+                  <li>Comply with all applicable laws and regulations (including TCPA and GDPR).</li>
+                  <li>Obtain necessary consents before messaging or calling users.</li>
+                  <li>Not use the Service for spam, harassment, or illegal content.</li>
+                  <li>Respect the usage policies of underlying AI providers (e.g., no generation of harmful content).</li>
+                </ul>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">7. Intellectual Property</h2>
-              <p>
-                The Service and its original content, features, and functionality are owned by Verlyai and are protected by international copyright, trademark, and other intellectual property laws.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">4. Platform Dependencies</h2>
+                <p>
+                  You acknowledge that our Service relies on third-party platforms (like WhatsApp/Meta). VerlyAI is not responsible for service interruptions, suspensions, or bans imposed by these third-party platforms due to your usage.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">8. Service Availability</h2>
-              <p>
-                We strive to provide reliable service but do not guarantee uninterrupted or error-free operation. We may modify, suspend, or discontinue any part of the Service at any time.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">5. Payments & Subscription</h2>
+                <p>
+                  Access to certain features requires a subscription. You agree to pay all applicable fees. Message and call costs (e.g., WhatsApp conversation charges, Telephony usage) are billed according to our pricing schedule or directly by the provider, as applicable.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">9. Limitation of Liability</h2>
-              <p>
-                To the maximum extent permitted by law, Verlyai shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use or inability to use the Service.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">6. Intellectual Property</h2>
+                <p>
+                  The VerlyAI platform, code, and design are owned by VerlyAI. You retain ownership of the data and content you process through our Service, subject to the limited license we need to operate the Service.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">10. Account Termination</h2>
-              <p className="mb-3">We may terminate or suspend your account if you:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Violate these Terms of Service</li>
-                <li>Violate WhatsApp's policies</li>
-                <li>Engage in fraudulent or illegal activities</li>
-                <li>Fail to pay applicable fees</li>
-              </ul>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">7. Limitation of Liability</h2>
+                <p>
+                  To the maximum extent permitted by law, VerlyAI shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service, including loss of data, profits, or business interruption.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">11. Indemnification</h2>
-              <p>
-                You agree to indemnify and hold Verlyai harmless from any claims, damages, or expenses arising from your use of the Service or violation of these terms.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">8. Termination</h2>
+                <p>
+                  We reserve the right to suspend or terminate your account at our discretion if you violate these Terms or engage in abusive behavior. You may terminate your account at any time via the dashboard.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">12. Changes to Terms</h2>
-              <p>
-                We reserve the right to modify these terms at any time. We will notify you of significant changes. Continued use of the Service after changes constitutes acceptance of the new terms.
-              </p>
-            </section>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">9. Governing Law</h2>
+                <p>
+                  These Terms are governed by the laws of India, without regard to its conflict of law principles.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">13. Governing Law</h2>
-              <p>
-                These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict of law provisions.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">14. Contact Information</h2>
-              <p>
-                For questions about these Terms of Service, please contact us at:
-              </p>
-              <p className="mt-2">
-                Email: verlyai.workspace@gmail.com<br />
-                Website: dev.verlyai.xyz
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-3">15. Third-Party Services</h2>
-              <p>
-                Our Service integrates with third-party services including:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4 mt-2">
-                <li>WhatsApp Business Platform (Meta)</li>
-                <li>Cloud hosting providers</li>
-                <li>Analytics services</li>
-              </ul>
-              <p className="mt-2">
-                Your use of these services is subject to their respective terms and policies.
-              </p>
-            </section>
-
-            <div className="mt-8 pt-6 border-t border-border">
-              <p className="text-sm text-muted-foreground">
-                Last Updated: November 8, 2025
-              </p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">10. Contact</h2>
+                <p>
+                  For legal inquiries, please contact us at: <span className="text-primary">verlyai.workspace@gmail.com</span>
+                </p>
+              </section>
             </div>
           </div>
-        </div>
+        </main>
+
+        <Footer />
       </div>
     </div>
   );

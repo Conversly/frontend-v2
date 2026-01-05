@@ -655,6 +655,12 @@ export interface OnboardClientResponse {
   phoneNumber?: string;
   verifiedName?: string;
   message?: string;
+  steps?: Array<{
+    step: number;
+    name: string;
+    success: boolean;
+    error?: string;
+  }>;
 }
 
 export const onboardWhatsAppClient = async (

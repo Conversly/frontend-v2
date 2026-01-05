@@ -10,6 +10,17 @@ declare global {
 
 export function CalendlyWidget() {
     useEffect(() => {
+        // Optimize loading
+        const preconnect = document.createElement("link")
+        preconnect.rel = "preconnect"
+        preconnect.href = "https://assets.calendly.com"
+        document.head.appendChild(preconnect)
+
+        const prefetch = document.createElement("link")
+        prefetch.rel = "prefetch"
+        prefetch.href = "https://calendly.com/rdhakad2002/30min"
+        document.head.appendChild(prefetch)
+
         // Load CSS
         const link = document.createElement("link")
         link.href = "https://assets.calendly.com/assets/external/widget.css"
@@ -21,17 +32,6 @@ export function CalendlyWidget() {
         script.src = "https://assets.calendly.com/assets/external/widget.js"
         script.async = true
 
-        script.onload = () => {
-            if (window.Calendly) {
-                window.Calendly.initBadgeWidget({
-                    url: 'https://calendly.com/shashank-tyagi-verly-ai/30min', // Using a placeholder/likely URL based on context or requiring update
-                    text: 'Schedule time with me',
-                    color: '#0069ff',
-                    textColor: '#ffffff',
-                    branding: true
-                })
-            }
-        }
 
         document.body.appendChild(script)
 

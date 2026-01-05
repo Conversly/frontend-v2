@@ -11,6 +11,7 @@ import {
   PhoneCall,
   MoveRight,
   Linkedin,
+  Calendar,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -293,8 +294,8 @@ export default function Hero() {
                     }
                   }}
                 >
+                  <Calendar className="w-5 h-5" />
                   Schedule a meet
-                  <PhoneCall className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </motion.div>
 

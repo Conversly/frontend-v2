@@ -7,17 +7,19 @@ import { Button } from "@/components/ui/button"
 
 const teamContacts = [
   {
+    name: "Raghvendra Singh Dhakad",
+    title: "Co-founder & CEO",
+    email: "raghvendrasinghdhakar2@gmail.com",
+    twitter: "https://x.com/Raghvendra56595",
+    linkedin: "https://www.linkedin.com/in/raghvendra1853/",
+  },
+  {
     name: "Shashank Tyagi",
     title: "Co-founder & CTO",
     email: "tyagishashank118@gmail.com",
-    phone: "+91 9528921966",
-  },
-  {
-    name: "Raghvendra Singh Dhakad",
-    title: "Co-founder & CEO",
-    email: "raghvendra.dhakad@verlyai.com",
-    phone: "+91 9876543210",
-  },
+    twitter: "https://x.com/tyagi_Shashankk",
+    linkedin: "https://www.linkedin.com/in/shas007/",
+  }
 ]
 
 const legalLinks = [
@@ -109,18 +111,35 @@ export default function Footer() {
                     <p className="text-white/40 text-xs">{contact.title}</p>
                     <a
                       href={`mailto:${contact.email}`}
-                      className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
+                      className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors mb-2"
                     >
                       <Mail className="w-4 h-4" />
                       {contact.email}
                     </a>
-                    <a
-                      href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                      className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
-                    >
-                      <Phone className="w-4 h-4" />
-                      {contact.phone}
-                    </a>
+
+                    {/* Social Links */}
+                    <div className="flex items-center gap-2 mt-1">
+                      {contact.twitter && (
+                        <a
+                          href={contact.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-white/40 hover:text-white transition-colors"
+                        >
+                          <XIcon className="w-4 h-4" />
+                        </a>
+                      )}
+                      {contact.linkedin && (
+                        <a
+                          href={contact.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-white/40 hover:text-white transition-colors"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 ))}
                 <div className="pt-4 border-t border-white/10">
