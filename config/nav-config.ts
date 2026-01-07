@@ -26,6 +26,8 @@ import {
     Rocket,
     Home,
     Megaphone,
+    Phone,
+    Settings,
 } from "lucide-react";
 
 export type NavItem = {
@@ -155,7 +157,24 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     {
         title: "Voice",
         url: `/chatbot/${botId}/voice`,
-        icon: Play,
+        icon: Phone,
+        items: [
+            {
+                title: "Assistant",
+                url: `/chatbot/${botId}/voice/configuration`,
+                icon: Settings,
+            },
+            {
+                title: "Campaigns",
+                url: `/chatbot/${botId}/voice/campaigns`,
+                icon: Megaphone,
+            },
+            {
+                title: "Analytics",
+                url: `/chatbot/${botId}/voice/analytics`,
+                icon: BarChart3,
+            },
+        ]
     },
     {
         title: "Integration",

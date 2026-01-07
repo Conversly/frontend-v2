@@ -121,6 +121,7 @@ export const API = {
       GET_WIDGET_CONFIG: () => "/:chatbotId/widget-config",
       GET_SESSIONS: () => "/:chatbotId/sessions",
       GENERATE_TOKEN: () => "/:chatbotId/token",  // POST - Generate LiveKit room token
+      MAKE_CALL: () => "/:chatbotId/call", // POST - Initiate outbound call
     },
     PROMOTE: {
       BASE_URL: () => "/promote",

@@ -106,11 +106,6 @@ export const generateVoiceToken = async (
         };
     }
 
-    console.log('[Voice API] Generating token with:', { 
-        chatbotId, 
-        agentName: agentName === '' ? '(empty string)' : agentName, 
-        agentConfig 
-    });
 
     const res = await fetch(endpoint, {
         method: "POST",
@@ -122,6 +117,35 @@ export const generateVoiceToken = async (
     }
 
     console.log('[Voice API] Token generated successfully:', res.data);
+    return res.data;
+};
+
+/**
+ * Initiate an outbound call via LiveKit SIP
+ */
+export const makeOutboundCall = async (
+    chatbotId: string,
+    phoneNumber: string,
+    agentConfig: VoiceAgentConfig,
+    agentName?: string
+): Promise<LiveKitTokenResponse> => {
+    const endpoint = API.ENDPOINTS.VOICE.BASE_URL() +
+        API.ENDPOINTS.VOICE.MAKE_CALL().replace(":chatbotId", chatbotId);
+
+    const requestBody = {
+        phone_number: phoneNumber,
+        agent_config: agentConfig,
+        room_config: agentName ? { agents: [{ agent_name: agentName }] } : undefined
+    };
+
+    const res = await fetch(endpoint, {
+        method: "POST",
+        data: requestBody,
+    }).then((res) => res.data) as ApiResponse<LiveKitTokenResponse, Error>;
+
+    if (!res.success) {
+        throw new Error(res.message);
+    }
     return res.data;
 };
 

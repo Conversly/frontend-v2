@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ALL_VOICE_OPTIONS } from '@/lib/constants/voice-options';
 
 export interface AgentConfigState {
   instructions: string;
@@ -13,21 +14,11 @@ You eagerly assist users with their questions by providing information from your
 Your responses are concise, to the point, and without any complex formatting or punctuation including emojis, asterisks, or other symbols.
 You are curious, friendly, and have a sense of humor.`,
   stt_language: 'en',
-  tts_voice: '21m00Tcm4TlvDq8ikWAM', // Rachel
+  tts_voice: 'en-US-Neural2-F', // Google Neural2 Female US
   tts_language: 'en',
 };
 
-// Common ElevenLabs voice options
-const ELEVENLABS_VOICES = [
-  { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Rachel (Female, American)' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella (Female, American)' },
-  { id: 'AZnzlk1XvdvUeBnXmlld', name: 'Domi (Female, American)' },
-  { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam (Male, American)' },
-  { id: 'yoZ06aMxZJJ28mfd3POQ', name: 'Sam (Male, Narration)' },
-  { id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel (Female, Calm)' },
-  { id: 'MF3mGyEYCl7XYWbV9V6O', name: 'Emily (Female, British)' },
-  { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie (Male, Australian)' },
-];
+// Voices imported from voice-options.ts
 
 interface AgentConfigProps {
   config: AgentConfigState;
@@ -40,7 +31,7 @@ export function AgentConfig({ config, onConfigChange, isConfigPhase = false }: A
   const [customVoice, setCustomVoice] = React.useState('');
 
   // Check if current voice is a custom one (not in presets)
-  const isCustomVoice = !ELEVENLABS_VOICES.some(v => v.id === config.tts_voice);
+  const isCustomVoice = !ALL_VOICE_OPTIONS.some(v => v.value === config.tts_voice);
 
   const handleChange = (field: keyof AgentConfigState, value: string) => {
     onConfigChange({ ...config, [field]: value });
@@ -142,8 +133,8 @@ export function AgentConfig({ config, onConfigChange, isConfigPhase = false }: A
               onChange={(e) => handleVoiceChange(e.target.value)}
               className={inputClass}
             >
-              {ELEVENLABS_VOICES.map(voice => (
-                <option key={voice.id} value={voice.id}>{voice.name}</option>
+              {ALL_VOICE_OPTIONS.map(voice => (
+                <option key={voice.value} value={voice.value}>{voice.label}</option>
               ))}
               <option value="custom">Custom Voice ID...</option>
             </select>

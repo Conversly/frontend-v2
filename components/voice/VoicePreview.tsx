@@ -27,15 +27,16 @@ export function VoicePreview({
     const appConfig: AppConfig = React.useMemo(() => ({
         ...APP_CONFIG_DEFAULTS,
         startButtonText: 'Start Call',
-        agentName: "", // Empty string to match Python agent registration (registered with empty agent_name)
+        agentName: "voice-assistant", // Match backend and python agent
         ...appConfigOverrides,
     }), [appConfigOverrides]);
 
     return (
         <div className="flex w-1/3 flex-col bg-muted/5 h-full overflow-hidden">
             {/* Header */}
-            <div className="flex h-12 items-center justify-between border-b px-4 bg-background">
-                <span className="text-sm font-medium">Preview</span>
+            <div className="flex flex-col h-14 justify-center border-b px-4 bg-background">
+                <span className="text-sm font-medium">Sandbox Call Tester</span>
+                <span className="text-xs text-muted-foreground">Testing only – does not affect live calls</span>
             </div>
 
             {/* LiveKit App */}

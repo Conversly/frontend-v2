@@ -6,6 +6,7 @@ import {
     getVoiceWidgetConfig,
     getVoiceCallSessions,
     generateVoiceToken,
+    makeOutboundCall
 } from "@/lib/api/voice";
 import { UpdateVoiceConfigInput, VoiceAgentConfig } from "@/types/voice";
 
@@ -76,5 +77,24 @@ export const useGenerateVoiceToken = () => {
             agentConfig: VoiceAgentConfig;
             agentName?: string;
         }) => generateVoiceToken(chatbotId, agentConfig, agentName),
+    });
+};
+
+/**
+ * React Query mutation for initiating an outbound call
+ */
+export const useMakeOutboundCall = () => {
+    return useMutation({
+        mutationFn: ({
+            chatbotId,
+            phoneNumber,
+            agentConfig,
+            agentName,
+        }: {
+            chatbotId: string;
+            phoneNumber: string;
+            agentConfig: VoiceAgentConfig;
+            agentName?: string;
+        }) => makeOutboundCall(chatbotId, phoneNumber, agentConfig, agentName),
     });
 };

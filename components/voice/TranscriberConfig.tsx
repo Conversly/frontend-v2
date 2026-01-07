@@ -75,14 +75,42 @@ export function TranscriberConfig({ config, onChange }: TranscriberConfigProps) 
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-                        <Checkbox id="endpointing" defaultChecked />
-                        <Label
-                            htmlFor="endpointing"
-                            className="text-sm font-normal cursor-pointer"
-                        >
-                            Enable smart endpointing for natural turn-taking
-                        </Label>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
+                            <Checkbox
+                                id="endpointing"
+                                checked={config.endpointing !== false}
+                                onCheckedChange={(checked) => onChange("endpointing", checked)}
+                            />
+                            <Label
+                                htmlFor="endpointing"
+                                className="text-sm font-normal cursor-pointer"
+                            >
+                                Enable smart endpointing for natural turn-taking
+                            </Label>
+                        </div>
+
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
+                            <Checkbox
+                                id="punctuation"
+                                checked={config.punctuation !== false}
+                                onCheckedChange={(checked) => onChange("punctuation", checked)}
+                            />
+                            <Label htmlFor="punctuation" className="text-sm font-normal cursor-pointer">
+                                Enable Punctuation
+                            </Label>
+                        </div>
+
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
+                            <Checkbox
+                                id="profanityFilter"
+                                checked={config.profanityFilter || false}
+                                onCheckedChange={(checked) => onChange("profanityFilter", checked)}
+                            />
+                            <Label htmlFor="profanityFilter" className="text-sm font-normal cursor-pointer">
+                                Profanity Filter
+                            </Label>
+                        </div>
                     </div>
                 </div>
             </CollapsibleSection>
