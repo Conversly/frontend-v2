@@ -11,7 +11,8 @@ import { useDebugMode } from '@/hooks/useDebug';
 import { Phone, Mic } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PhoneCallInput } from './phone-call-input';
-import { useMakeOutboundCall, useGenerateVoiceToken } from '@/services/voice';
+import { useGenerateVoiceToken } from '@/services/voice';
+import { useGenerateAssistantToken, useMakeOutboundCall } from '@/services/voice-assistant-service';
 import { LiveKitTokenResponse } from '@/types/voice';
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== 'production';
@@ -26,6 +27,7 @@ function AppSetup() {
 interface AppProps {
   appConfig: AppConfig;
   botId: string;
+  assistantId?: string;
   agentConfig: AgentConfigState;
 }
 
@@ -109,7 +111,7 @@ function ConnectedSession({
   return (
     <>
       <AppSetup />
-      <main className="h-full w-full">
+      <main className="flex-1 w-full overflow-hidden flex flex-col relative">
         <ViewController appConfig={appConfig} onStart={() => { }} />
       </main>
       <StartAudio label="Start Audio" />
@@ -117,7 +119,7 @@ function ConnectedSession({
   );
 }
 
-export function App({ appConfig, botId, agentConfig }: AppProps) {
+export function App({ appConfig, botId, assistantId, agentConfig }: AppProps) {
   const [connectionDetails, setConnectionDetails] = React.useState<{
     serverUrl: string;
     participantToken: string;
@@ -127,6 +129,7 @@ export function App({ appConfig, botId, agentConfig }: AppProps) {
   const [isOutbound, setIsOutbound] = React.useState(false);
 
   const generateToken = useGenerateVoiceToken();
+  const generateAssistantToken = useGenerateAssistantToken();
   const makeOutboundCall = useMakeOutboundCall();
 
   const handleStartCall = React.useCallback(async () => {
@@ -134,20 +137,34 @@ export function App({ appConfig, botId, agentConfig }: AppProps) {
     setIsLoading(true);
     console.log('[App] Starting browser call with config:', {
       botId,
+      assistantId,
       agentConfig,
       agentName: appConfig.agentName,
     });
     try {
-      const token = await generateToken.mutateAsync({
-        chatbotId: botId,
-        agentConfig: {
-          instructions: agentConfig.instructions,
-          tts_voice: agentConfig.tts_voice,
-          stt_language: agentConfig.stt_language,
-          tts_language: agentConfig.tts_language,
-        },
-        agentName: appConfig.agentName,
-      });
+      let token: any;
+      if (assistantId) {
+        // Use new assistant-specific token generation
+        const res = await generateAssistantToken.mutateAsync(assistantId);
+        // Adapting response: generateAssistantToken returns { accessToken, url }
+        // LiveKitTokenResponse expects { serverUrl, participantToken }
+        token = {
+          serverUrl: res.url,
+          participantToken: res.accessToken,
+        };
+      } else {
+        // Legacy behavior
+        token = await generateToken.mutateAsync({
+          chatbotId: botId,
+          agentConfig: {
+            instructions: agentConfig.instructions,
+            tts_voice: agentConfig.tts_voice,
+            stt_language: agentConfig.stt_language,
+            tts_language: agentConfig.tts_language,
+          },
+          agentName: appConfig.agentName,
+        });
+      }
 
       const data: LiveKitTokenResponse = token;
       setConnectionDetails({
@@ -160,7 +177,7 @@ export function App({ appConfig, botId, agentConfig }: AppProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [agentConfig, botId, generateToken, appConfig.agentName]);
+  }, [agentConfig, botId, assistantId, generateToken, generateAssistantToken, appConfig.agentName]);
 
   const handleMakePhoneCall = React.useCallback(async (phoneNumber: string) => {
     setIsOutbound(true); // Phone call
@@ -173,32 +190,30 @@ export function App({ appConfig, botId, agentConfig }: AppProps) {
     });
 
     try {
-      const token = await makeOutboundCall.mutateAsync({
-        chatbotId: botId,
-        phoneNumber,
-        agentConfig: {
-          instructions: agentConfig.instructions,
-          tts_voice: agentConfig.tts_voice,
-          stt_language: agentConfig.stt_language,
-          tts_language: agentConfig.tts_language,
-        },
-        agentName: appConfig.agentName,
+      if (!assistantId) {
+        throw new Error("Assistant ID is required for outbound calls");
+      }
+
+      // New Outbound Call with Assistant ID
+      const res = await makeOutboundCall.mutateAsync({
+        assistantId,
+        phoneNumber
       });
 
-      const data: LiveKitTokenResponse = token;
-      setConnectionDetails({
-        serverUrl: data.serverUrl,
-        participantToken: data.participantToken,
-      });
-      setShouldConnect(true);
-
+      if (res.connectionDetails) {
+        setConnectionDetails({
+          serverUrl: res.connectionDetails.serverUrl,
+          participantToken: res.connectionDetails.participantToken,
+        });
+        setShouldConnect(true);
+      }
     } catch (e) {
       console.error('[App] Failed to make outbound call:', e);
     } finally {
       setIsLoading(false);
     }
 
-  }, [agentConfig, botId, makeOutboundCall, appConfig.agentName]);
+  }, [agentConfig, botId, assistantId, makeOutboundCall, appConfig.agentName]);
 
   const handleDisconnect = React.useCallback(() => {
     setShouldConnect(false);
@@ -224,17 +239,20 @@ export function App({ appConfig, botId, agentConfig }: AppProps) {
 
   // Connected Session - show the voice interface
   return (
-    <LiveKitRoom
-      token={connectionDetails.participantToken}
-      serverUrl={connectionDetails.serverUrl}
-      connect={shouldConnect}
-      video={false}
-      audio={!isOutbound}  // audio={true} for browser call 
-      onDisconnected={handleDisconnect}
-    >
-      <ConnectedSession appConfig={appConfig} />
-      {!isOutbound && <RoomAudioRenderer />}
-      <Toaster />
-    </LiveKitRoom>
+    <div className="h-full w-full flex flex-col overflow-hidden">
+      <LiveKitRoom
+        token={connectionDetails.participantToken}
+        serverUrl={connectionDetails.serverUrl}
+        connect={shouldConnect}
+        video={false}
+        audio={!isOutbound}  // audio={true} for browser call 
+        onDisconnected={handleDisconnect}
+        className="flex-1 flex flex-col min-h-0 overflow-hidden"
+      >
+        <ConnectedSession appConfig={appConfig} />
+        {!isOutbound && <RoomAudioRenderer />}
+        <Toaster />
+      </LiveKitRoom>
+    </div>
   );
 }

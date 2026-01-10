@@ -28,6 +28,7 @@ import {
     Megaphone,
     Phone,
     Settings,
+    Code,
 } from "lucide-react";
 
 export type NavItem = {
@@ -104,7 +105,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     },
     {
         title: "Knowledge Base",
-        url: ``,
+        url: `/chatbot/${botId}/sources`,
         icon: Database,
         items: [
             {
@@ -155,13 +156,13 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
         icon: Zap,
     },
     {
-        title: "Voice",
+        title: "Voice-Agent",
         url: `/chatbot/${botId}/voice`,
         icon: Phone,
         items: [
             {
                 title: "Assistant",
-                url: `/chatbot/${botId}/voice/configuration`,
+                url: `/chatbot/${botId}/voice`,
                 icon: Settings,
             },
             {
@@ -173,6 +174,16 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
                 title: "Analytics",
                 url: `/chatbot/${botId}/voice/analytics`,
                 icon: BarChart3,
+            },
+            {
+                title: "Phone Numbers",
+                url: `/chatbot/${botId}/voice/phone-numbers`,
+                icon: Phone,
+            },
+            {
+                title: "Widget",
+                url: `/chatbot/${botId}/voice/widget`,
+                icon: Code,
             },
         ]
     },

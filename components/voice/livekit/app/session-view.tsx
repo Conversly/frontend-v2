@@ -3,10 +3,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { ConnectionState } from 'livekit-client';
 import { motion } from 'framer-motion';
-import { 
-  useChat, 
-  useConnectionState, 
-  useRoomContext, 
+import {
+  useChat,
+  useConnectionState,
+  useRoomContext,
   useRemoteParticipants,
   useTranscriptions,
   type ReceivedChatMessage,
@@ -77,17 +77,17 @@ function transcriptionToChatMessage(
   // TextStreamData structure: { streamInfo: { id, timestamp }, text, participantInfo: { identity } }
   const participantIdentity = textStream.participantInfo?.identity || '';
   const isLocal = participantIdentity === room.localParticipant?.identity;
-  
+
   const from = isLocal
     ? room.localParticipant
     : Array.from(room.remoteParticipants.values()).find(
-        (p) => p.identity === participantIdentity
-      ) || {
-        identity: participantIdentity,
-        name: participantIdentity || 'Unknown',
-        isLocal: false,
-      };
-  
+      (p) => p.identity === participantIdentity
+    ) || {
+      identity: participantIdentity,
+      name: participantIdentity || 'Unknown',
+      isLocal: false,
+    };
+
   return {
     id: textStream.streamInfo?.id || `transcript-${Date.now()}-${Math.random()}`,
     timestamp: textStream.streamInfo?.timestamp || Date.now(),
@@ -108,7 +108,7 @@ export const SessionView = ({
   const remoteParticipants = useRemoteParticipants();
   const [chatOpen, setChatOpen] = useState(true); // Changed to true to show transcript by default
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
+
   // Check if agent participant has joined
   const hasAgent = remoteParticipants.some((p) => p.isAgent || p.metadata?.includes('"agent":true'));
 
@@ -119,7 +119,7 @@ export const SessionView = ({
       chatMessages: chatMessages.length,
       rawTranscriptions: transcriptions,
     });
-    
+
     const transcriptMessages: ReceivedChatMessage[] = transcriptions.map((transcription) => {
       const converted = transcriptionToChatMessage(transcription, room);
       console.log('[SessionView] Converted transcript:', {
@@ -128,12 +128,12 @@ export const SessionView = ({
       });
       return converted;
     });
-    
+
     const merged: ReceivedChatMessage[] = [
       ...transcriptMessages,
       ...chatMessages,
     ];
-    
+
     // Sort by timestamp
     const sorted = merged.sort((a, b) => a.timestamp - b.timestamp);
     console.log('[SessionView] Final merged messages:', sorted);
@@ -174,12 +174,12 @@ export const SessionView = ({
       {/* Chat Transcript - Now visible and properly positioned */}
       <div
         className={cn(
-          'flex-1 relative transition-opacity duration-300 overflow-hidden z-20',
+          'flex-1 min-h-0 relative transition-opacity duration-300 overflow-hidden z-20',
           !chatOpen && 'pointer-events-none opacity-0'
         )}
       >
         <Fade top className="absolute inset-x-0 top-0 h-8 z-10" />
-        <ScrollArea ref={scrollAreaRef} className="h-full px-4 pt-2 pb-20">
+        <div ref={scrollAreaRef} className="h-full overflow-y-auto px-4 pt-2 pb-20 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
           {/* Debug info */}
           {process.env.NODE_ENV === 'development' && (
             <div className="text-xs text-muted-foreground mb-2 p-2 bg-muted rounded">
@@ -191,7 +191,7 @@ export const SessionView = ({
             messages={messages}
             className="space-y-2"
           />
-        </ScrollArea>
+        </div>
         <Fade bottom className="absolute inset-x-0 bottom-0 h-8 z-10" />
       </div>
 

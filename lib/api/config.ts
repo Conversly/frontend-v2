@@ -115,13 +115,18 @@ export const API = {
     },
     VOICE: {
       BASE_URL: () => "/voice",
-      GET_CONFIG: () => "/:chatbotId/config",
-      UPDATE_CONFIG: () => "/:chatbotId/config",
-      DELETE_CONFIG: () => "/:chatbotId/config",
-      GET_WIDGET_CONFIG: () => "/:chatbotId/widget-config",
-      GET_SESSIONS: () => "/:chatbotId/sessions",
-      GENERATE_TOKEN: () => "/:chatbotId/token",  // POST - Generate LiveKit room token
-      MAKE_CALL: () => "/:chatbotId/call", // POST - Initiate outbound call
+      // Assistant Management
+      LIST_ASSISTANTS: () => "/:chatbotId/assistants",
+      CREATE_ASSISTANT: () => "/assistants",
+      GET_ASSISTANT: () => "/assistants/:assistantId",
+      UPDATE_ASSISTANT: () => "/assistants/:assistantId", // PATCH
+      UPDATE_BEHAVIOR: () => "/assistants/:assistantId/behavior", // PATCH
+      UPDATE_PROVIDER: () => "/assistants/:assistantId/provider", // PATCH
+
+      // Token Generation
+      GENERATE_TOKEN: () => "/assistants/:assistantId/token",  // POST
+
+      MAKE_CALL: () => "/:chatbotId/call",
     },
     PROMOTE: {
       BASE_URL: () => "/promote",

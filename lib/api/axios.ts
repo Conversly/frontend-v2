@@ -6,6 +6,8 @@ export const fetch = axios.create({
   withCredentials: true,
 });
 
+export const api = fetch;
+
 fetch.interceptors.request.use(
   (config) => {
     return config;

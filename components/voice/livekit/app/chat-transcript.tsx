@@ -59,12 +59,21 @@ export function ChatTranscript({
   messages = [],
   ...props
 }: ChatTranscriptProps & React.HTMLAttributes<HTMLDivElement>) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change
+  React.useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, hidden]);
+
   // Debug logging
   React.useEffect(() => {
     console.log('[ChatTranscript] Rendering with messages:', {
       hidden,
-      messageCount: messages.length,
-      messages: messages.map(m => ({
+      messageCount: messages?.length,
+      messages: messages?.map(m => ({
         id: m.id,
         message: m.message,
         from: m.from,
@@ -86,13 +95,12 @@ export function ChatTranscript({
   }
 
   return (
-    <div {...props} className={cn('space-y-2', props.className)}>
+    <div {...props} ref={scrollRef} className={cn('space-y-2 h-full overflow-y-auto px-2 scrollbar-thin scroll-smooth', props.className)}>
       {messages.map((receivedMessage) => {
         const { id, timestamp, from, message } = receivedMessage;
-        
+
         // Skip empty messages
         if (!message || message.trim() === '') {
-          console.warn('[ChatTranscript] Skipping empty message:', id);
           return null;
         }
 
@@ -100,14 +108,6 @@ export function ChatTranscript({
         const messageOrigin = from?.isLocal ? 'local' : 'remote';
         const hasBeenEdited =
           receivedMessage.type === 'chatMessage' && !!receivedMessage.editTimestamp;
-
-        console.log('[ChatTranscript] Rendering message:', {
-          id,
-          message,
-          from: from ? { identity: from.identity, isLocal: from.isLocal } : 'no from',
-          messageOrigin,
-          timestamp,
-        });
 
         return (
           <ChatEntry

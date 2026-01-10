@@ -59,7 +59,9 @@ export const ALL_VOICE_OPTIONS = [
 export const LLM_MODELS = [
     { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
     { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
-    { value: "gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite (Preview)" },
+    { value: "gpt-4o", label: "GPT-4o" },
+    { value: "gpt-4o-mini", label: "GPT-4o Mini" },
+    { value: "claude-3-5-sonnet-20240620", label: "Claude 3.5 Sonnet" },
 ];
 
 export const STT_PROVIDERS = [

@@ -7,6 +7,7 @@ import { AgentConfigState } from "./livekit/agent-config";
 
 interface VoicePreviewProps {
     botId: string;
+    assistantId?: string;
     agentConfig: AgentConfigState;
     agentName?: string;
     appConfigOverrides?: Partial<AppConfig>;
@@ -18,6 +19,7 @@ interface VoicePreviewProps {
  */
 export function VoicePreview({
     botId,
+    assistantId,
     agentConfig,
     agentName = "Voice Agent",
     appConfigOverrides,
@@ -32,18 +34,14 @@ export function VoicePreview({
     }), [appConfigOverrides]);
 
     return (
-        <div className="flex w-1/3 flex-col bg-muted/5 h-full overflow-hidden">
-            {/* Header */}
-            <div className="flex flex-col h-14 justify-center border-b px-4 bg-background">
-                <span className="text-sm font-medium">Sandbox Call Tester</span>
-                <span className="text-xs text-muted-foreground">Testing only – does not affect live calls</span>
-            </div>
+        <div className="flex w-full flex-col bg-muted/5 h-full overflow-hidden">
 
             {/* LiveKit App */}
             <div className="flex-1 overflow-hidden">
                 <App
                     appConfig={appConfig}
                     botId={botId}
+                    assistantId={assistantId}
                     agentConfig={agentConfig}
                 />
             </div>
