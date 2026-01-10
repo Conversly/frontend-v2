@@ -12,17 +12,18 @@ import {
   Sparkles,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRef } from "react";
 import Image from "next/image";
 
 import ChatWidget from "./cards/ChatWidget";
 import VoiceAgentModal from "./cards/VoiceAgentModal";
 import { VoiceAgentVisual, WhatsAppVisual, WebsiteWidgetVisual } from "./cards/FeatureVisuals";
-import { 
-  CustomActionsVisual, 
-  ModelComparisonVisual, 
-  SmartEscalationVisual, 
-  AnalyticsVisual, 
-  AITrainingVisual 
+import {
+  CustomActionsVisual,
+  ModelComparisonVisual,
+  SmartEscalationVisual,
+  AnalyticsVisual,
+  AITrainingVisual
 } from "./cards/FeatureVisuals2";
 
 interface Card {
@@ -67,6 +68,7 @@ export default function UnifiedOfferings() {
       visual: <WebsiteWidgetVisual />,
       accent: "text-purple-600",
       bgAccent: "bg-purple-500/10 border-purple-500/20",
+      colSpan: "md:col-span-1",
       action: () => setIsChatWidgetOpen(true),
     },
     // Row 2: Features
@@ -85,6 +87,7 @@ export default function UnifiedOfferings() {
       visual: <ModelComparisonVisual />,
       accent: "text-sky-600",
       bgAccent: "bg-sky-500/10 border-sky-500/20",
+      colSpan: "md:col-span-1",
     },
     {
       title: "Smart Escalation",
@@ -93,6 +96,7 @@ export default function UnifiedOfferings() {
       visual: <SmartEscalationVisual />,
       accent: "text-rose-600",
       bgAccent: "bg-rose-500/10 border-rose-500/20",
+      colSpan: "md:col-span-2",
     },
     {
       title: "Analytics",
@@ -101,6 +105,7 @@ export default function UnifiedOfferings() {
       visual: <AnalyticsVisual />,
       accent: "text-amber-600",
       bgAccent: "bg-amber-500/10 border-amber-500/20",
+      colSpan: "md:col-span-1",
     },
     // {
     //   title: "AI Training",
@@ -130,50 +135,10 @@ export default function UnifiedOfferings() {
           </h2>
         </motion.div>
 
-        {/* 8-card bento grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        {/* 6-card bento grid (4 columns) */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
           {cards.map((card, i) => (
-            <motion.div
-              key={card.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
-              whileHover={{ y: -2 }}
-              onClick={card.action}
-              className={`group relative rounded-xl border bg-card overflow-hidden transition-all hover:shadow-md ${
-                card.colSpan || ""
-              } ${card.action ? "cursor-pointer" : ""}`}
-            >
-              {/* Visual or Image */}
-              {card.visual && (
-                <div className={`${card.colSpan ? 'h-52' : 'h-44'} w-full overflow-hidden`}>{card.visual}</div>
-              )}
-              {card.image && !card.visual && (
-                <div className="relative h-44 w-full overflow-hidden bg-muted/30">
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    fill
-                    sizes="(max-width: 640px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-              )}
-
-              {/* Content */}
-              <div className={`px-5 py-4 ${!card.image && !card.visual ? "py-8" : ""}`}>
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border shrink-0 ${card.bgAccent} ${card.accent}`}
-                  >
-                    {card.icon}
-                    {card.title}
-                  </div>
-                  <p className="text-foreground/80 text-sm font-medium leading-snug">{card.tagline}</p>
-                </div>
-              </div>
-            </motion.div>
+            <OfferingCard key={card.title} card={card} index={i} />
           ))}
         </div>
       </div>
@@ -190,3 +155,98 @@ export default function UnifiedOfferings() {
   );
 }
 
+function OfferingCard({ card, index }: { card: Card; index: number }) {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!divRef.current) return;
+
+    const rect = divRef.current.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleMouseEnter = () => {
+    setIsFocused(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsFocused(false);
+  };
+
+  return (
+    <motion.div
+      ref={divRef}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.04 }}
+      whileHover={{ y: -2 }}
+      onMouseMove={handleMouseMove}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={card.action}
+      className={`group relative rounded-xl border bg-card overflow-hidden transition-all hover:shadow-md ${card.colSpan || ""
+        } ${card.action ? "cursor-pointer" : ""}`}
+    >
+      {/* Spotlight Overlay */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, color-mix(in srgb, var(--foreground), transparent 90%), transparent 40%)`,
+        }}
+      />
+
+      {/* Visual or Image */}
+      {card.visual && (
+        <div className={`${card.colSpan ? "h-52" : "h-44"} w-full overflow-hidden`}>
+          {card.visual}
+        </div>
+      )}
+      {card.image && !card.visual && (
+        <div className="relative h-44 w-full overflow-hidden bg-muted/30">
+          <Image
+            src={card.image}
+            alt={card.title}
+            fill
+            sizes="(max-width: 640px) 50vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      )}
+
+      {/* Content */}
+      <div
+        className={`px-5 py-4 ${!card.image && !card.visual ? "py-8" : ""} relative z-10`}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border shrink-0 ${card.bgAccent} ${card.accent}`}
+          >
+            {card.icon}
+            {card.title}
+          </div>
+          <p className="text-foreground/80 text-sm font-medium leading-snug">
+            {card.tagline}
+          </p>
+        </div>
+      </div>
+
+      {/* Border Glow */}
+      <div
+        className="absolute inset-0 rounded-xl ring-1 ring-inset ring-transparent group-hover:ring-foreground/10 pointer-events-none transition-all duration-300"
+      />
+    </motion.div>
+  );
+}
