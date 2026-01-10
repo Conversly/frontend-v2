@@ -193,6 +193,8 @@
   --animate-grid: grid 15s linear infinite;
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-marquee-left: marquee-infinite 20s linear infinite;
+  --animate-marquee-left-slow: marquee-infinite 35s linear infinite;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
   --animate-shiny-text: shiny-text 8s infinite;
   --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
@@ -290,6 +292,16 @@
 
   to {
     transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-infinite {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -622,15 +634,17 @@
 @layer base {
   :root {
     @apply overflow-x-hidden overscroll-none;
-    
+
     /* Hide scrollbar for Chrome, Safari and Opera */
     &::-webkit-scrollbar {
       display: none;
     }
-    
+
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   * {

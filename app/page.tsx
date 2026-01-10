@@ -12,6 +12,7 @@ import BroadcastSection from "@/components/landing/broadcast-section";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
+import TestimonialsSection from "@/components/landing/Testinomials";
 
 // Single source of truth for content width
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
@@ -44,6 +45,7 @@ export default function Home() {
           <HowItWorks />
           <PricingSection />
           <QuestionsSection />
+          <TestimonialsSection/>
           <Footer />
         </div>
       </div>
