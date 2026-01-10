@@ -17,6 +17,13 @@ import Image from "next/image";
 import ChatWidget from "./cards/ChatWidget";
 import VoiceAgentModal from "./cards/VoiceAgentModal";
 import { VoiceAgentVisual, WhatsAppVisual, WebsiteWidgetVisual } from "./cards/FeatureVisuals";
+import { 
+  CustomActionsVisual, 
+  ModelComparisonVisual, 
+  SmartEscalationVisual, 
+  AnalyticsVisual, 
+  AITrainingVisual 
+} from "./cards/FeatureVisuals2";
 
 interface Card {
   title: string;
@@ -63,19 +70,19 @@ export default function UnifiedOfferings() {
       action: () => setIsChatWidgetOpen(true),
     },
     // Row 2: Features
-    {
-      title: "Custom Actions",
-      tagline: "Trigger workflows in your existing systems",
-      icon: <Settings size={18} />,
-      image: "/take_action.png",
-      accent: "text-orange-600",
-      bgAccent: "bg-orange-500/10 border-orange-500/20",
-    },
+    // {
+    //   title: "Custom Actions",
+    //   tagline: "Trigger workflows in your existing systems",
+    //   icon: <Settings size={18} />,
+    //   visual: <CustomActionsVisual />,
+    //   accent: "text-orange-600",
+    //   bgAccent: "bg-orange-500/10 border-orange-500/20",
+    // },
     {
       title: "Model Comparison",
       tagline: "Test GPT, Claude, Llama side by side",
       icon: <GitCompare size={18} />,
-      image: "/compare_model.png",
+      visual: <ModelComparisonVisual />,
       accent: "text-sky-600",
       bgAccent: "bg-sky-500/10 border-sky-500/20",
     },
@@ -83,7 +90,7 @@ export default function UnifiedOfferings() {
       title: "Smart Escalation",
       tagline: "Hand off to humans when it matters",
       icon: <ArrowUpRight size={18} />,
-      image: "/escalation.png",
+      visual: <SmartEscalationVisual />,
       accent: "text-rose-600",
       bgAccent: "bg-rose-500/10 border-rose-500/20",
     },
@@ -91,7 +98,7 @@ export default function UnifiedOfferings() {
       title: "Analytics",
       tagline: "Track performance and optimize over time",
       icon: <BarChart3 size={18} />,
-      image: "/reporting.png",
+      visual: <AnalyticsVisual />,
       accent: "text-amber-600",
       bgAccent: "bg-amber-500/10 border-amber-500/20",
     },
@@ -140,7 +147,7 @@ export default function UnifiedOfferings() {
             >
               {/* Visual or Image */}
               {card.visual && (
-                <div className="h-52 w-full overflow-hidden">{card.visual}</div>
+                <div className={`${card.colSpan ? 'h-52' : 'h-44'} w-full overflow-hidden`}>{card.visual}</div>
               )}
               {card.image && !card.visual && (
                 <div className="relative h-44 w-full overflow-hidden bg-muted/30">
