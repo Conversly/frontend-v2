@@ -44,7 +44,7 @@ export default function Home() {
           <BroadcastSection />
           <HowItWorks />
           <PricingSection />
-          <QuestionsSection />
+          {/* <QuestionsSection /> */}
           <TestimonialsSection/>
           <Footer />
         </div>

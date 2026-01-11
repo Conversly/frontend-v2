@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useState, useRef } from "react";
 
 type SocialType = "twitter" | "linkedin" | "quote";
 
@@ -167,60 +168,92 @@ const TestimonialCard = ({ testimonial, className }: { testimonial: Testimonial;
   const isTwitter = testimonial.social === "twitter";
   const isLinkedIn = testimonial.social === "linkedin";
 
+
+  const divRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!divRef.current) return;
+
+    const rect = divRef.current.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleFocus = () => { setIsFocused(true); };
+  const handleBlur = () => { setIsFocused(false); };
+  const handleMouseEnter = () => { setIsFocused(true); };
+  const handleMouseLeave = () => { setIsFocused(false); };
+
   return (
     <Card
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn(
-        "flex-shrink-0 bg-card border border-border/50 transition-all duration-300 relative group",
+        "flex-shrink-0 bg-card border border-border/50 transition-all duration-300 relative group overflow-hidden",
         "hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 hover:shadow-primary/5",
         sizeClasses[testimonial.size || "md"],
         className
       )}
     >
-      {/* Social Icon */}
-      <div className="absolute top-4 right-4">
-        {isTwitter && <TwitterIcon className="text-muted-foreground/60" />}
-        {isLinkedIn && <LinkedInIcon className="text-muted-foreground/60" />}
-      </div>
+      {/* Spotlight Overlay */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+        style={{
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, color-mix(in srgb, var(--foreground), transparent 90%), transparent 40%)`,
+        }}
+      />
 
-      {/* Content */}
-      <p className={cn(
-        "text-foreground leading-relaxed mb-4 pr-6",
-        testimonial.size === "sm" ? "text-xs" : testimonial.size === "lg" ? "text-sm" : "text-[13px]"
-      )}>
-        {testimonial.text}
-      </p>
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header: Author & Social Icon */}
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <img
+              src={testimonial.image}
+              alt={testimonial.name}
+              className={cn(
+                "rounded-full object-cover ring-2 ring-border/30",
+                testimonial.size === "sm" ? "w-8 h-8" : testimonial.size === "lg" ? "w-11 h-11" : "w-9 h-9"
+              )}
+            />
+            <div className="min-w-0">
+              <p className={cn(
+                "font-semibold text-foreground truncate",
+                testimonial.size === "sm" ? "text-xs" : "text-sm"
+              )}>
+                {testimonial.name}
+              </p>
+              {isTwitter && testimonial.handle && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {testimonial.handle}
+                </p>
+              )}
+              {isLinkedIn && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {testimonial.role}{testimonial.company && `, ${testimonial.company}`}
+                </p>
+              )}
+            </div>
+          </div>
 
-      {/* Author */}
-      <div className="flex items-center gap-3">
-        <img
-          src={testimonial.image}
-          alt={testimonial.name}
-          className={cn(
-            "rounded-full object-cover ring-2 ring-border/30",
-            testimonial.size === "sm" ? "w-8 h-8" : testimonial.size === "lg" ? "w-11 h-11" : "w-9 h-9"
-          )}
-        />
-        <div className="min-w-0">
-          <p className={cn(
-            "font-semibold text-foreground truncate",
-            testimonial.size === "sm" ? "text-xs" : "text-sm"
-          )}>
-            {testimonial.name}
-          </p>
-          {isTwitter && testimonial.handle && (
-            <p className="text-xs text-muted-foreground truncate">
-              {testimonial.handle}
-            </p>
-          )}
-          {isLinkedIn && (
-            <p className="text-xs text-muted-foreground truncate">
-              {testimonial.role}{testimonial.company && `, ${testimonial.company}`}
-            </p>
-          )}
+          <div className="shrink-0 text-muted-foreground/60 mt-1">
+            {isTwitter && <TwitterIcon className="w-4 h-4" />}
+            {isLinkedIn && <LinkedInIcon className="w-4 h-4" />}
+          </div>
         </div>
-      </div>
 
-      {/* Click overlay for social links */}
+        {/* Content */}
+        <p className={cn(
+          "text-foreground leading-relaxed",
+          testimonial.size === "sm" ? "text-xs" : testimonial.size === "lg" ? "text-sm" : "text-[13px]"
+        )}>
+          {testimonial.text}
+        </p>
+      </div>   {/* Click overlay for social links */}
       {testimonial.link && (
         <a
           href={testimonial.link}
@@ -230,7 +263,8 @@ const TestimonialCard = ({ testimonial, className }: { testimonial: Testimonial;
           aria-label={`View ${testimonial.name}'s post`}
         />
       )}
-    </Card>
+
+    </Card >
   );
 };
 
@@ -248,9 +282,6 @@ const TestimonialsSection = () => {
       <div className="container max-w-5xl mx-auto px-4 mb-10">
         {/* Header */}
         <div className="text-center">
-          <Badge variant="outline" className="mb-4 px-4 py-1 text-sm font-medium">
-            Testimonials
-          </Badge>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             What people are saying
           </h2>

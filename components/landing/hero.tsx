@@ -137,26 +137,26 @@ function VoiceCallUI() {
   };
 
   return (
-    <div className="w-full max-w-sm bg-gradient-to-b from-slate-900 to-slate-950 rounded-2xl overflow-hidden border border-slate-700/50 shadow-xl font-sans">
+    <div className="w-full max-w-sm bg-gradient-to-b from-slate-50 to-white rounded-2xl overflow-hidden border border-slate-200 shadow-xl font-sans">
       {/* Call header */}
-      <div className="px-4 py-4 flex flex-col items-center gap-3 border-b border-slate-700/30">
+      <div className="px-4 py-4 flex flex-col items-center gap-3 border-b border-slate-100">
         <div className="relative">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <Bot className="w-8 h-8 text-white" />
           </div>
           {callState !== "ringing" && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-slate-900"
+              className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-white"
             >
               <Phone className="w-2.5 h-2.5 text-white" />
             </motion.div>
           )}
         </div>
         <div className="text-center">
-          <h3 className="text-white font-semibold">AI Support Agent</h3>
-          <p className="text-slate-400 text-sm">
+          <h3 className="text-slate-900 font-semibold text-lg">AI Support Agent</h3>
+          <div className="text-slate-500 text-sm font-medium mt-0.5">
             {callState === "ringing" ? (
               <span className="flex items-center gap-2 justify-center">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -165,12 +165,12 @@ function VoiceCallUI() {
             ) : (
               formatTime(callDuration)
             )}
-          </p>
+          </div>
         </div>
       </div>
 
       {/* Audio visualization area */}
-      <div className="px-4 py-6 min-h-[200px] flex flex-col">
+      <div className="px-4 py-6 min-h-[200px] flex flex-col bg-slate-50/50">
         {callState === "ringing" ? (
           <div className="flex-1 flex items-center justify-center">
             <motion.div
@@ -178,11 +178,11 @@ function VoiceCallUI() {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Phone className="w-8 h-8 text-emerald-400 animate-pulse" />
+              <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <Phone className="w-8 h-8 text-emerald-500 animate-pulse" />
               </div>
               <motion.div
-                className="absolute inset-0 rounded-full border-2 border-emerald-500/40"
+                className="absolute inset-0 rounded-full border-2 border-emerald-500/20"
                 animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
@@ -191,24 +191,25 @@ function VoiceCallUI() {
         ) : (
           <div className="flex-1 flex flex-col gap-4">
             {/* Waveform */}
-            <div className="flex justify-center py-2">
+            <div className="flex justify-center py-2 h-12 items-center">
               <AudioWaveform isActive={callState === "speaking"} />
             </div>
 
             {/* Live transcript */}
             <div className="flex-1 space-y-2 overflow-hidden">
-              <p className="text-slate-500 text-xs uppercase tracking-wider text-center mb-2">Live Transcript</p>
+              <p className="text-slate-400 text-[10px] uppercase tracking-wider text-center mb-3 font-semibold">Live Transcript</p>
               {transcripts.slice(0, transcriptIndex + 1).map((t, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`text-sm px-3 py-2 rounded-lg ${t.speaker === "ai"
-                      ? "bg-slate-800 text-slate-200"
-                      : "bg-emerald-600/20 text-emerald-300 ml-6"
-                    }`}
+                  className={`text-sm px-3.5 py-2.5 rounded-2xl ${t.speaker === "ai"
+                    ? "bg-white border border-slate-100 text-slate-700 shadow-sm rounded-tl-sm mr-auto"
+                    : "bg-emerald-50 border border-emerald-100 text-emerald-800 shadow-sm rounded-tr-sm ml-auto"
+                    } max-w-[90%] w-fit`}
                 >
-                  <span className="text-[10px] uppercase tracking-wider opacity-60 block mb-0.5">
+                  <span className={`text-[9px] uppercase tracking-wider block mb-1 font-bold ${t.speaker === "ai" ? "text-slate-400" : "text-emerald-600/70"
+                    }`}>
                     {t.speaker === "ai" ? "AI Agent" : "Caller"}
                   </span>
                   {t.text}
@@ -220,15 +221,15 @@ function VoiceCallUI() {
       </div>
 
       {/* Call controls */}
-      <div className="px-4 py-4 border-t border-slate-700/30 bg-slate-900/50">
-        <div className="flex items-center justify-center gap-4">
-          <button className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-colors">
+      <div className="px-6 py-5 border-t border-slate-100 bg-white">
+        <div className="flex items-center justify-center gap-6">
+          <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all shadow-sm">
             <MicOff className="w-5 h-5" />
           </button>
-          <button className="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-colors">
+          <button className="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-all shadow-lg shadow-red-500/30 hover:shadow-red-500/40 hover:scale-105 active:scale-95">
             <Phone className="w-6 h-6 rotate-[135deg]" />
           </button>
-          <button className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-colors">
+          <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all shadow-sm">
             <Volume2 className="w-5 h-5" />
           </button>
         </div>
@@ -272,7 +273,7 @@ function WhatsAppChatUI() {
   }, []);
 
   return (
-    <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-xl font-sans border border-[#1a472a]/30">
+    <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-xl font-sans border border-[#e9edef]">
       {/* WhatsApp header */}
       <div className="px-3 py-2.5 flex items-center gap-3 bg-[#075e54]">
         <button className="text-white/80 hover:text-white p-1">
@@ -280,7 +281,7 @@ function WhatsAppChatUI() {
         </button>
         <div className="flex items-center gap-3 flex-1">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-[#25d366] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
               <Bot className="w-5 h-5 text-white" />
             </div>
           </div>
@@ -306,8 +307,8 @@ function WhatsAppChatUI() {
       <div
         className="p-3 space-y-2 min-h-[280px] max-h-[280px] overflow-y-auto"
         style={{
-          backgroundColor: "#0b141a",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundColor: "#E5DDD5",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}
       >
         {/* Bot welcome message */}
@@ -318,11 +319,11 @@ function WhatsAppChatUI() {
             transition={{ duration: 0.3 }}
             className="flex items-start gap-2"
           >
-            <div className="bg-[#202c33] text-[#e9edef] rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
+            <div className="bg-white text-gray-800 rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
               <p className="text-[13px] leading-relaxed">
                 Welcome to Bella&apos;s Kitchen! 🍝 I can help with reservations, menu info, or order status.
               </p>
-              <p className="text-[11px] text-[#8696a0] text-right mt-1">10:42 AM</p>
+              <p className="text-[11px] text-gray-400 text-right mt-1">10:42 AM</p>
             </div>
           </motion.div>
         )}
@@ -335,13 +336,13 @@ function WhatsAppChatUI() {
             transition={{ duration: 0.3 }}
             className="flex items-start justify-end gap-2"
           >
-            <div className="bg-[#005c4b] text-[#e9edef] rounded-lg rounded-tr-none p-2.5 max-w-[85%] shadow-sm">
+            <div className="bg-[#DCF8C6] text-gray-800 rounded-lg rounded-tr-none p-2.5 max-w-[85%] shadow-sm">
               <p className="text-[13px] leading-relaxed">
                 Check my reservation for Sarah
               </p>
               <div className="flex items-center justify-end gap-1 mt-1">
-                <span className="text-[11px] text-[#8696a0]">10:43 AM</span>
-                <CheckCheck className="w-4 h-4 text-[#53bdeb]" />
+                <span className="text-[11px] text-gray-500">10:43 AM</span>
+                <CheckCheck className="w-4 h-4 text-blue-500" />
               </div>
             </div>
           </motion.div>
@@ -355,11 +356,11 @@ function WhatsAppChatUI() {
             transition={{ duration: 0.2 }}
             className="flex items-start gap-2"
           >
-            <div className="bg-[#202c33] rounded-lg rounded-tl-none p-3">
+            <div className="bg-white rounded-lg rounded-tl-none p-3 shadow-sm">
               <div className="flex gap-1">
-                <div className="w-2 h-2 bg-[#8696a0] rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-2 h-2 bg-[#8696a0] rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-2 h-2 bg-[#8696a0] rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
               </div>
             </div>
           </motion.div>
@@ -373,12 +374,12 @@ function WhatsAppChatUI() {
             transition={{ duration: 0.3 }}
             className="flex items-start gap-2"
           >
-            <div className="bg-[#202c33] text-[#e9edef] rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
+            <div className="bg-white text-gray-800 rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
               <p className="text-[13px] leading-relaxed">
                 {displayedText}
-                {!isComplete && <span className="inline-block w-0.5 h-3.5 bg-[#25d366] ml-0.5 animate-pulse" />}
+                {!isComplete && <span className="inline-block w-0.5 h-3.5 bg-gray-400 ml-0.5 animate-pulse" />}
               </p>
-              <p className="text-[11px] text-[#8696a0] text-right mt-1">10:43 AM</p>
+              <p className="text-[11px] text-gray-400 text-right mt-1">10:43 AM</p>
             </div>
           </motion.div>
         )}
@@ -394,7 +395,7 @@ function WhatsAppChatUI() {
             {["Change time", "Add guests", "Cancel booking"].map((text) => (
               <button
                 key={text}
-                className="px-3 py-1.5 bg-transparent border border-[#00a884] text-[#00a884] rounded-full text-xs font-medium hover:bg-[#00a884]/10 transition-colors"
+                className="px-3 py-1.5 bg-white border border-gray-200 text-[#00a884] rounded-full text-xs font-semibold shadow-sm hover:bg-gray-50 transition-colors"
               >
                 {text}
               </button>
@@ -404,20 +405,20 @@ function WhatsAppChatUI() {
       </div>
 
       {/* WhatsApp input */}
-      <div className="px-2 py-2 bg-[#1f2c34] flex items-center gap-2">
-        <button className="text-[#8696a0] p-2 hover:text-[#e9edef] transition-colors">
+      <div className="px-2 py-2 bg-[#f0f2f5] flex items-center gap-2 border-t border-gray-200">
+        <button className="text-gray-500 p-2 hover:text-gray-600 transition-colors">
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M9.153 11.603c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962zm-3.204 1.362c-.026-.307-.131 5.218 6.063 5.551 6.066-.25 6.066-5.551 6.066-5.551-6.078 1.416-12.129 0-12.129 0zm11.363 1.108s-.669 1.959-5.051 1.959c-3.505 0-5.388-1.164-5.607-1.959 0 0 5.912 1.055 10.658 0zM11.804 1.011C5.609 1.011.978 6.033.978 12.228s4.826 10.761 11.021 10.761S23.02 18.423 23.02 12.228c.001-6.195-5.021-11.217-11.216-11.217zM12 21.354c-5.273 0-9.381-3.886-9.381-9.159s3.942-9.548 9.215-9.548 9.548 4.275 9.548 9.548c-.001 5.272-4.109 9.159-9.382 9.159zm3.108-9.751c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962z" />
           </svg>
         </button>
-        <div className="flex-1 bg-[#2a3942] rounded-full px-4 py-2">
+        <div className="flex-1 bg-white rounded-full px-4 py-2 border border-white">
           <input
             type="text"
             placeholder="Type a message"
-            className="w-full bg-transparent text-[#e9edef] placeholder:text-[#8696a0] text-sm outline-none"
+            className="w-full bg-transparent text-gray-800 placeholder:text-gray-500 text-sm outline-none"
           />
         </div>
-        <button className="text-[#8696a0] p-2 hover:text-[#e9edef] transition-colors">
+        <button className="text-gray-500 p-2 hover:text-gray-600 transition-colors">
           <Mic className="w-6 h-6" />
         </button>
       </div>
@@ -602,8 +603,8 @@ function OfferingSwitcher({
           key={o.type}
           onClick={() => onSwitch(o.type)}
           className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${activeOffering === o.type
-              ? "bg-primary text-primary-foreground shadow-md"
-              : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            ? "bg-primary text-primary-foreground shadow-md"
+            : "bg-muted/50 text-muted-foreground hover:bg-muted"
             }`}
         >
           {o.icon}

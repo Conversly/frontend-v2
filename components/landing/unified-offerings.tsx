@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 
-import ChatWidget from "./cards/ChatWidget";
+
 import VoiceAgentModal from "./cards/VoiceAgentModal";
 import { VoiceAgentVisual, WhatsAppVisual, WebsiteWidgetVisual } from "./cards/FeatureVisuals";
 import {
@@ -40,7 +40,7 @@ interface Card {
 
 export default function UnifiedOfferings() {
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
-  const [isChatWidgetOpen, setIsChatWidgetOpen] = useState(false);
+
 
   const cards: Card[] = [
     // Row 1: Offerings (channels)
@@ -69,7 +69,6 @@ export default function UnifiedOfferings() {
       accent: "text-purple-600",
       bgAccent: "bg-purple-500/10 border-purple-500/20",
       colSpan: "md:col-span-1",
-      action: () => setIsChatWidgetOpen(true),
     },
     // Row 2: Features
     // {
@@ -147,10 +146,7 @@ export default function UnifiedOfferings() {
         isOpen={isVoiceModalOpen}
         onClose={() => setIsVoiceModalOpen(false)}
       />
-      <ChatWidget
-        isOpen={isChatWidgetOpen}
-        onClose={() => setIsChatWidgetOpen(false)}
-      />
+
     </section>
   );
 }
