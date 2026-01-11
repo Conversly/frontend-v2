@@ -17,6 +17,16 @@ import {
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import dynamic from 'next/dynamic';
 import type { UIConfigInput as PackageUIConfig } from '@conversly/chat-widget';
@@ -41,6 +51,7 @@ interface CustomizationTabProps {
 
 export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt }: CustomizationTabProps) {
   const [systemPrompt, setSystemPrompt] = useState(initialSystemPrompt);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   
   // Update systemPrompt when initialSystemPrompt changes
   useEffect(() => {
@@ -154,6 +165,42 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
   return (
     <TooltipProvider>
+      {/* Save Confirmation Dialog */}
+      <AlertDialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
+        <AlertDialogContent className="border-2 border-amber-500/50 bg-card">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <span className="text-amber-500">⚠</span>
+              Deploy Changes?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-muted-foreground pt-2">
+              <span className="block font-semibold text-foreground mb-2">
+                This will auto-deploy changes to your live chatbot.
+              </span>
+              If you have the widget deployed on your website, visitors will immediately see these updates.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-2 pt-4">
+            <AlertDialogCancel className="border-border">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                try {
+                  await saveCustomization(chatbotId);
+                  toast.success('Customization saved & deployed');
+                } catch (err: any) {
+                  toast.error(err?.message || 'Failed to save');
+                }
+              }}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Save & Deploy
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="space-y-8 pb-8">
         <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -174,14 +221,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
             />
             <Button
               disabled={isSaving}
-              onClick={async () => {
-                try {
-                  await saveCustomization(chatbotId);
-                  toast.success('Customization saved');
-                } catch (err: any) {
-                  toast.error(err?.message || 'Failed to save');
-                }
-              }}
+              onClick={() => setShowSaveConfirm(true)}
               className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSaving ? 'Saving…' : 'Save'}
