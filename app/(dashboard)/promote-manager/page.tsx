@@ -8,6 +8,7 @@ import { Plus, ExternalLink, Edit } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/shared";
 
 export default function PromoteManagerPage() {
     const [products, setProducts] = React.useState<ProductLaunchData[]>([]);
@@ -49,22 +50,17 @@ export default function PromoteManagerPage() {
             </div>
 
             {products.length === 0 ? (
-                <div className="flex flex-col items-center justify-center min-h-[400px] border rounded-2xl bg-card/50 border-dashed">
-                    <div className="text-center space-y-4 max-w-md">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Plus className="w-8 h-8 text-primary" />
-                        </div>
-                        <h2 className="text-xl font-semibold">No products yet</h2>
-                        <p className="text-muted-foreground">
-                            Create your first product launch page to showcase your AI agent to the world.
-                        </p>
-                        <Link href="/promote-manager/create">
-                            <Button size="lg" className="mt-4">
-                                Create your first launch page
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
+                <EmptyState
+                    title="No products yet"
+                    description="Create your first product launch page to showcase your AI agent to the world."
+                    icon={<Plus />}
+                    primaryAction={{
+                        label: "Create your first launch page",
+                        href: "/promote-manager/create",
+                        icon: <Plus />,
+                    }}
+                    className="min-h-[400px] border-dashed"
+                />
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map((product) => (

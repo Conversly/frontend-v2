@@ -29,6 +29,7 @@ import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCita
 import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import Link from 'next/link';
+import { EmptyState } from '@/components/shared';
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
@@ -50,28 +51,6 @@ const DATA_SOURCE_BADGE_COLORS = {
   QNA: 'bg-primary/10 text-primary border-primary/20',
   TXT: 'bg-primary/10 text-primary border-primary/20',
 } as const;
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center mb-6">
-        <Database className="w-10 h-10 text-muted-foreground" />
-      </div>
-      <h3 className="text-xl font-heading font-semibold text-foreground mb-2">
-        No Data Sources Yet
-      </h3>
-      <p className="text-muted-foreground mb-6 max-w-sm">
-        Add your first data source to train your chatbot. Start with URLs, documents, Q&A pairs, or text content.
-      </p>
-      <Link href="./sources/productivity">
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Data Source
-        </Button>
-      </Link>
-    </div>
-  );
-}
 
 function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
   const [copied, setCopied] = useState(false);
@@ -482,7 +461,17 @@ export default function DataSourcesPage() {
               </div>
             ) : filteredSources.length === 0 ? (
               dataSources?.length === 0 ? (
-                <EmptyState />
+                <EmptyState
+                  title="No data sources yet"
+                  description="Add URLs, documents, Q&A pairs, or text to train your chatbot."
+                  icon={<Database />}
+                  primaryAction={{
+                    label: "Add Data Source",
+                    href: "./sources/productivity",
+                    icon: <Plus />,
+                  }}
+                  className="border-dashed bg-card/30"
+                />
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
                   No data sources match your filters

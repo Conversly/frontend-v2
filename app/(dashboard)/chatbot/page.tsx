@@ -10,6 +10,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSetupStore } from "@/store/chatbot/setup";
+import { EmptyState } from "@/components/shared";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -133,23 +134,18 @@ export default function ChatbotsPage() {
               ))}
             </div>
           ) : (
-            <Card className="mx-auto max-w-md p-12">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="rounded-full bg-muted/50 p-4">
-                  <Bot className="h-12 w-12 text-muted-foreground" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold">No chatbots yet</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Get started by creating your first chatbot to begin engaging with your customers
-                  </p>
-                </div>
-                <Button onClick={handleCreateChatbot} size="lg" className="mt-4">
-                  <Plus className="mr-2 h-5 w-5" />
-                  Create Chatbot
-                </Button>
-              </div>
-            </Card>
+            <div className="mx-auto max-w-2xl">
+              <EmptyState
+                title="No chatbots yet"
+                description="Create your first chatbot to start engaging with your customers."
+                icon={<Bot />}
+                primaryAction={{
+                  label: "Create Chatbot",
+                  onClick: handleCreateChatbot,
+                  icon: <Plus />,
+                }}
+              />
+            </div>
           )}
         </div>
       </div>
