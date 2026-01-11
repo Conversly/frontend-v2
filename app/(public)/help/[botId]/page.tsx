@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search, ArrowRight, MessageSquare, Mail, Phone, Globe, Twitter, Linkedin, Instagram } from "lucide-react";
 import { getChatbot } from "@/lib/api/chatbot";
 import { getWidgetConfig } from "@/lib/api/deploy";
-import { ActualChatWidget } from "@/components/chatbot/preview/ActualChatWidget";
 import { UIConfigInput } from "@/types/customization";
 
 export default function HelpPage() {
@@ -72,7 +71,6 @@ export default function HelpPage() {
                     autoShowDelaySec: 2,
                     widgetEnabled: true,
                     primaryColor: styles.primaryColor || pageConfig.theme.primaryColor,
-                    displayStyle: "corner",
                     // Added missing required properties with default/mock values
                     widgetBubbleColour: styles.widgetBubbleColour || styles.primaryColor || "#000000",
                     PrimaryIcon: styles.PrimaryIcon || "",
@@ -265,17 +263,6 @@ export default function HelpPage() {
                     </div>
                 </div>
             </footer>
-
-            {/* Actual Chat Widget Integration */}
-            {chatConfig && pageConfig.channels.chatbot && (
-                <div className="fixed z-50">
-                    <ActualChatWidget
-                        config={chatConfig}
-                        isOpen={isWidgetOpen}
-                        onOpenChange={setIsWidgetOpen}
-                    />
-                </div>
-            )}
         </div>
     );
 }

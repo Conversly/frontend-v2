@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { ActualChatWidget } from "@/components/chatbot/preview/ActualChatWidget";
+import dynamic from "next/dynamic";
+import type { UIConfigInput } from "@conversly/chat-widget";
+
+const ActualWidget = dynamic(
+  () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
+  { ssr: false }
+);
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
 import { upsertChannelPrompt } from "@/lib/api/prompt";
-import type { UIConfigInput } from "@/types/customization";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -44,7 +49,7 @@ export default function PlaygroundPage() {
         const uiConfig: UIConfigInput = {
           DisplayName: styles.displayName || "Support Bot",
           InitialMessage: (partial.initialMessage as string) || "Hi! How can I help you today? 👋",
-          starterQuestions: partial.suggestedMessages || [],
+          suggestedMessages: partial.suggestedMessages || [],
           messagePlaceholder: styles.messagePlaceholder || "Message...",
           keepShowingSuggested: !!styles.continueShowingSuggestedMessages,
           collectFeedback: !!styles.collectUserFeedback,
@@ -53,19 +58,17 @@ export default function PlaygroundPage() {
           footerText: styles.footerText || "",
           autoShowInitial: styles.autoShowInitial ?? true,
           autoShowDelaySec: styles.autoShowDelaySec ?? 0,
-          widgetEnabled: true,
           primaryColor: styles.primaryColor || "#0e4b75",
           widgetBubbleColour: styles.widgetBubbleColour || "#0e4b75",
           PrimaryIcon: styles.PrimaryIcon || "",
-          widgeticon: styles.widgeticon || "chat",
-          buttonAlignment: styles.alignChatButton || "right",
+          widgeticon: styles.widgeticon || "",
+          alignChatButton: styles.alignChatButton || "right",
           showButtonText: styles.showButtonText ?? false,
           buttonText: styles.buttonText || "Chat with us",
           appearance: styles.appearance || "light",
           widgetButtonText: styles.buttonText || "Chat with us",
-          chatWidth: "420px", // Fixed default for playground, ignore config
-          chatHeight: "650px", // Fixed default for playground, ignore config
-          displayStyle: "overlay", // Force overlay for playground
+          chatWidth: "420px",
+          chatHeight: "620px",
           converslyWebId: chatbotData.apiKey || "",
           uniqueClientId: "",
           testing: true,
@@ -142,8 +145,8 @@ export default function PlaygroundPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
-          <div className="w-full max-w-[600px]">
-            <ActualChatWidget 
+          <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
+            <ActualWidget 
               key={widgetKey}
               config={config} 
               playgroundConfig={{
@@ -152,7 +155,7 @@ export default function PlaygroundPage() {
                 model,
                 temperature,
               }}
-              className="w-[420px] h-[620px] shadow-2xl"
+              contained
             />
           </div>
         </div>

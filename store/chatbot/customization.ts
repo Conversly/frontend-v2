@@ -71,7 +71,6 @@ function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput 
     widgetButtonText: s.buttonText || 'Chat with us',
     chatWidth: s.chatWidth || '350px',
     chatHeight: s.chatHeight || '500px',
-    displayStyle: s.displayStyle || 'corner',
     converslyWebId: '',
     uniqueClientId: '',
     testing: false,
@@ -127,7 +126,6 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
       const partial: ChatbotCustomizationPartial = {
         styles: {
           appearance: draft.appearance,
-          displayStyle: draft.displayStyle,
           displayName: draft.DisplayName,
           primaryColor: draft.primaryColor,
           widgetBubbleColour: draft.widgetBubbleColour,

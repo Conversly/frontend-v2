@@ -10,6 +10,7 @@
     "format": "prettier --write \"{src,components,pages}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
+    "@conversly/chat-widget": "file:../widget-ui",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@livekit/components-react": "^2.9.17",

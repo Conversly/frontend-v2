@@ -1,4 +1,4 @@
-import { Message } from "@/components/widget/helpers/chat-message";
+import type { Message } from "@conversly/chat-widget";
 
 export interface ChatMessage {
     role: "user" | "assistant";

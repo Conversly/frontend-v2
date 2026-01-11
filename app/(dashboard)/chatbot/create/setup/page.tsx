@@ -16,8 +16,13 @@ import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
-import { PreviewCornerWidget } from "@/components/chatbot/preview/PreviewCornerWidget";
-import type { Message } from "@/components/widget/helpers/chat-message";
+import dynamic from "next/dynamic";
+import type { UIConfigInput as PackageUIConfig } from "@conversly/chat-widget";
+
+const PreviewWidget = dynamic(
+  () => import("@conversly/chat-widget").then((mod) => mod.PreviewWidget),
+  { ssr: false }
+);
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -56,25 +61,6 @@ export default function SetupWizardPage() {
 
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
-
-  // Widget Preview State
-  const [isWidgetOpen, setIsWidgetOpen] = useState(true);
-  const [widgetInput, setWidgetInput] = useState("");
-  const [widgetMessages, setWidgetMessages] = useState<Message[]>([
-    { id: "1", role: "assistant", content: "Hi! How can I help you today?" }
-  ]);
-  const [isWidgetTyping, setIsWidgetTyping] = useState(false);
-
-  const handleWidgetSendMessage = (content: string) => {
-    const newMessage: Message = { id: Date.now().toString(), role: "user", content };
-    setWidgetMessages(prev => [...prev, newMessage]);
-    setWidgetInput("");
-    setIsWidgetTyping(true);
-    setTimeout(() => {
-      setIsWidgetTyping(false);
-      setWidgetMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: "assistant", content: "This is a preview message." }]);
-    }, 1000);
-  };
 
   // Only redirect on browser refresh (F5 or Ctrl+R)
   useEffect(() => {
@@ -334,19 +320,16 @@ export default function SetupWizardPage() {
           <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
             <SetupVisualization url={composedUrl} stage={stage}>
               {step === 4 && draftConfig && (
-                <PreviewCornerWidget
-                  config={draftConfig}
-                  isOpen={isWidgetOpen}
-                  setIsOpen={setIsWidgetOpen}
-                  messages={widgetMessages}
-                  input={widgetInput}
-                  setInput={setWidgetInput}
-                  isTyping={isWidgetTyping}
-                  handleSendMessage={handleWidgetSendMessage}
-                  handleSuggestionClick={(s) => handleWidgetSendMessage(s)}
-                  handleRegenerate={() => { }}
-                  handleRating={() => { }}
-                />
+                <div className="w-[380px] h-[500px] rounded-lg overflow-hidden shadow-lg">
+                  <PreviewWidget
+                    config={{
+                      ...draftConfig,
+                      suggestedMessages: draftConfig.starterQuestions,
+                      alignChatButton: draftConfig.buttonAlignment,
+                    } as PackageUIConfig}
+                    contained
+                  />
+                </div>
               )}
             </SetupVisualization>
           </section>

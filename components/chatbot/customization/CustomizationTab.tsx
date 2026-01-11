@@ -18,8 +18,14 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { toast } from 'sonner';
-import { PreviewChatWidget } from '@/components/chatbot/preview/PreviewChatWidget';
+import dynamic from 'next/dynamic';
+import type { UIConfigInput as PackageUIConfig } from '@conversly/chat-widget';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+const PreviewWidget = dynamic(
+  () => import('@conversly/chat-widget').then((mod) => mod.PreviewWidget),
+  { ssr: false }
+);
 import { useCustomizationDraft, useCustomizationStore } from '@/store/chatbot/customization';
 import type { UIConfigInput } from '@/types/customization';
 import { SectionHeader } from './SectionHeader';
@@ -97,7 +103,6 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     widgetButtonText: 'Chat with us',
     chatWidth: '350px',
     chatHeight: '500px',
-    displayStyle: 'corner',
     converslyWebId: '',
     uniqueClientId: '',
     testing: false,
@@ -281,7 +286,16 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 icon={Sparkles}
               />
               <div className="mt-6 flex justify-center">
-                <PreviewChatWidget config={config} />
+                <div className="w-[420px] h-[620px] rounded-lg overflow-hidden shadow-lg">
+                  <PreviewWidget 
+                    config={{
+                      ...config,
+                      suggestedMessages: config.starterQuestions,
+                      alignChatButton: config.buttonAlignment,
+                    } as PackageUIConfig} 
+                    contained 
+                  />
+                </div>
               </div>
             </div>
           </div>

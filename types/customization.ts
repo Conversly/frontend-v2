@@ -1,6 +1,5 @@
 export interface WidgetStyles {
     appearance?: 'light' | 'dark';  // renamed from 'theme'
-    displayStyle?: 'corner' | 'overlay';  // NEW: corner or overlay
     displayName?: string;  // keeping camelCase in DB
     
     // Colors
@@ -81,7 +80,6 @@ export interface UIConfigInput {
   widgetButtonText: string;
   chatWidth: string;
   chatHeight: string;
-  displayStyle: 'corner' | 'overlay';
   converslyWebId: string;
   uniqueClientId: string;
   testing?: boolean;

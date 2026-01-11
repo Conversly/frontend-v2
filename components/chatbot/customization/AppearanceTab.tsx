@@ -178,25 +178,6 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
             </div>
           </div>
           
-          <div className="space-y-4">
-            <label className="font-sans text-base text-foreground mb-2 block">Display Style</label>
-            <div className="flex items-center gap-4">
-              <Button
-                variant={config.displayStyle === 'corner' ? 'default' : 'outline'}
-                onClick={() => updateConfig({ displayStyle: 'corner' })}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                Corner
-              </Button>
-              <Button
-                variant={config.displayStyle === 'overlay' ? 'default' : 'outline'}
-                onClick={() => updateConfig({ displayStyle: 'overlay' })}
-                className="border-border text-foreground hover:bg-muted/50"
-              >
-                Overlay
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
       {/* Button Settings */}
