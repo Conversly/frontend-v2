@@ -14,6 +14,7 @@ import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
 import { Step4UIConfig } from "@/components/chatbot/setup/Step4UIConfig";
 import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
+import { Step7Completion } from "@/components/chatbot/setup/Step7Completion";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
 import dynamic from "next/dynamic";
@@ -268,8 +269,8 @@ export default function SetupWizardPage() {
       // Invalidate chatbots cache so the new chatbot appears in the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
 
-      toast.success("Agent ready!");
-      router.push(`/chatbot/${chatbotId}`);
+      // Go to completion step instead of redirecting
+      setStep(7);
     } catch (err: any) {
       // Handle API validation errors
       const errorMsg = err?.message || err?.error || "Failed to save prompt";
@@ -288,7 +289,7 @@ export default function SetupWizardPage() {
         <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
 
           {/* LEFT PANEL (Inputs & Steps) */}
-          <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step === 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
+          <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step >= 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
             {(step === 1 || step === 2) && (
               <Step1UrlAndUsecase
                 protocol={protocol}
@@ -314,6 +315,9 @@ export default function SetupWizardPage() {
                 isLoading={isPromptLoading || !widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === ''}
               />
             )}
+            {step === 7 && chatbotId && (
+              <Step7Completion chatbotId={chatbotId} />
+            )}
           </div>
 
           {/* RIGHT PANEL (Visualization) */}
@@ -329,6 +333,17 @@ export default function SetupWizardPage() {
                     } as PackageUIConfig}
                     contained
                   />
+                </div>
+              )}
+              {step === 7 && (
+                <div className="flex flex-col items-center gap-6 text-center">
+                  <div className="text-8xl animate-bounce">🚀</div>
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-2xl font-bold text-slate-800">Ready to Launch!</h2>
+                    <p className="text-sm text-slate-600 max-w-xs">
+                      Your AI chatbot is configured and waiting to help your visitors
+                    </p>
+                  </div>
                 </div>
               )}
             </SetupVisualization>
