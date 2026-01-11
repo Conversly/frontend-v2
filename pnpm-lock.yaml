@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@conversly/chat-widget':
-        specifier: file:../widget-ui
-        version: file:../widget-ui(@emotion/is-prop-valid@1.4.0)(@types/dom-mediacapture-record@1.0.22)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tslib@2.8.1)(vite@7.3.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2))
+        specifier: ^1.0.0
+        version: 1.0.0(@emotion/is-prop-valid@1.4.0)(@types/dom-mediacapture-record@1.0.22)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tslib@2.8.1)(vite@7.3.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2))
       '@emotion/react':
         specifier: ^11.14.0
         version: 11.14.0(@types/react@19.2.2)(react@19.2.1)
@@ -262,8 +262,8 @@ packages:
   '@bufbuild/protobuf@1.10.1':
     resolution: {integrity: sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ==}
 
-  '@conversly/chat-widget@file:../widget-ui':
-    resolution: {directory: ../widget-ui, type: directory}
+  '@conversly/chat-widget@1.0.0':
+    resolution: {integrity: sha512-8Z7QNiF+R2YZz8Q9tU/Dp1UCj87bGhRwAsdXH0yVhlbgHBMlAMGrdFzwW+Lxg20Zp/nrwUoYb1GrxAyIxpXJvA==, tarball: https://npm.pkg.github.com/download/@conversly/chat-widget/1.0.0/8afe2b3bc32e008b76c652d04878e8abf294565e}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -3528,7 +3528,7 @@ snapshots:
 
   '@bufbuild/protobuf@1.10.1': {}
 
-  '@conversly/chat-widget@file:../widget-ui(@emotion/is-prop-valid@1.4.0)(@types/dom-mediacapture-record@1.0.22)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tslib@2.8.1)(vite@7.3.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2))':
+  '@conversly/chat-widget@1.0.0(@emotion/is-prop-valid@1.4.0)(@types/dom-mediacapture-record@1.0.22)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tslib@2.8.1)(vite@7.3.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@livekit/components-react': 2.9.17(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(tslib@2.8.1)
       '@radix-ui/react-avatar': 1.1.10(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
