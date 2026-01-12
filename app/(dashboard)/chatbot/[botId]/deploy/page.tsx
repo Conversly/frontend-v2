@@ -54,7 +54,7 @@ export default function DeployPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
       {/* Sidebar Configuration */}
-      <div className="w-[400px] flex-none overflow-y-auto">
+      <div className="w-[400px] flex-none overflow-y-auto border-r">
         <DeploySidebar
           config={config}
           setConfig={setConfig}
@@ -63,17 +63,32 @@ export default function DeployPage() {
         />
       </div>
 
-      {/* Preview Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-secondary/20 relative">
-        <div className="absolute top-4 right-4 z-20">
-          <Link href={`/help/${botId}`} target="_blank">
-            <Button variant="outline" className="shadow-sm bg-background">
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Open Public Page
-            </Button>
-          </Link>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 bg-secondary/10 overflow-y-auto">
+        <div className="p-8 max-w-5xl mx-auto w-full space-y-8">
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Deployment</h1>
+              <p className="text-muted-foreground mt-2">
+                Choose how you want to share your agent with the world.
+              </p>
+            </div>
+            <Link href={`/deploy/${botId}`} target="_blank">
+              <Button variant="outline" className="shadow-sm bg-background">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                View Public Page
+              </Button>
+            </Link>
+          </div>
+
+          <div className="pt-4">
+            <div className="border rounded-xl overflow-hidden shadow-sm bg-background h-[600px] relative">
+              <DeployPreview config={config} />
+            </div>
+          </div>
+
         </div>
-        <DeployPreview config={config} />
       </div>
     </div>
   );

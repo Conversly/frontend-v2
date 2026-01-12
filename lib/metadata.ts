@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const siteConfig = {
   name: 'VerlyAI',
-  description: 'VerlyAI is an AI-powered customer support platform that deploys intelligent chatbots, voice assistants, and WhatsApp bots to handle customer inquiries, resolve issues, and escalate to human agents when needed.',
+  description: 'VerlyAI is an AI-powered customer support platform that helps businesses automate customer service using intelligent AI chatbots, voice assistants, and WhatsApp agents. It enables instant issue resolution, 24/7 availability, and seamless escalation to human support teams across web, voice, and messaging channels.',
   url: 'https://dev.verlyai.xyz',
   ogImage: 'https://dev.verlyai.xyz/verly_logo.png',
   links: {
@@ -13,10 +13,10 @@ export const siteConfig = {
 
 export const defaultMetadata: Metadata = {
   title: {
-    default: 'VerlyAI - AI Customer Support Automation Platform',
+    default: 'VerlyAI - AI Agent for Customer Support',
     template: '%s | VerlyAI',
   },
-  description: 'VerlyAI is the developer-first platform for building, testing, and deploying LLM-based agents. Automate customer support with reliable Voice, WhatsApp, and Web AI agents.',
+  description: 'VerlyAI is an AI-powered customer support platform that helps businesses automate customer service using intelligent AI chatbots, voice assistants, and WhatsApp agents. It enables instant issue resolution, 24/7 availability, and seamless escalation to human support teams across web, voice, and messaging channels.',
   keywords: [
     'AI customer support',
     'LLM agents',
@@ -64,7 +64,7 @@ export const defaultMetadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
-    title: 'VerlyAI - AI Customer Support Automation Platform',
+    title: 'VerlyAI - AI Agent for Customer Support',
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
@@ -72,13 +72,13 @@ export const defaultMetadata: Metadata = {
         url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: 'VerlyAI - AI Customer Support Platform',
+        alt: 'VerlyAI - AI Agent for Customer Support',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VerlyAI - AI Customer Support Automation Platform',
+    title: 'VerlyAI - AI Agent for Customer Support',
     description: siteConfig.description,
     images: [siteConfig.ogImage],
     creator: '@VerlyAI',

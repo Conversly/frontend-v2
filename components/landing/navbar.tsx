@@ -386,6 +386,10 @@ export default function Navbar() {
                 </div>
               </PopoverContent>
             </Popover>
+
+            <Link href="/help" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Help
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">

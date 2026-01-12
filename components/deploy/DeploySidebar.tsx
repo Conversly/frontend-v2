@@ -7,8 +7,9 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Palette, MessageSquare, Mail, Phone, Globe, Save, Megaphone } from "lucide-react";
+import { Palette, MessageSquare, Mail, Phone, Globe, Save, Megaphone, Code, Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 interface DeployConfig {
     title: string;
@@ -46,6 +47,10 @@ interface DeploySidebarProps {
 }
 
 export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySidebarProps) {
+    const params = useParams();
+    const botId = params.botId as string;
+    const [copiedIframe, setCopiedIframe] = useState(false);
+
     const handleChange = (field: string, value: any) => {
         setConfig({ ...config, [field]: value });
     };
@@ -75,6 +80,24 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
         });
     };
 
+    const iframeCode = `<iframe 
+  src="https://verlyai.xyz/deploy/${botId}" 
+  width="100%" 
+  height="700px" 
+  frameborder="0"
+></iframe>`;
+
+    const copyToClipboard = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopiedIframe(true);
+            setTimeout(() => setCopiedIframe(false), 2000);
+            toast.success("Copied to clipboard!");
+        } catch (err) {
+            toast.error("Failed to copy");
+        }
+    };
+
     // Helper to safely access nested properties if they start undefined (though initial state handles this)
     const socials = config.socials || { twitter: '', linkedin: '', website: '', instagram: '' };
     const announcement = config.announcement || { enabled: false, text: '', link: '' };
@@ -94,10 +117,11 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
             <div className="flex-1 overflow-y-auto">
                 <Tabs defaultValue="general" className="w-full">
                     <div className="p-4 bg-muted/20 border-b">
-                        <TabsList className="w-full grid grid-cols-3">
+                        <TabsList className="w-full grid grid-cols-4">
                             <TabsTrigger value="general">General</TabsTrigger>
                             <TabsTrigger value="channels">Channels</TabsTrigger>
                             <TabsTrigger value="style">Style</TabsTrigger>
+                            <TabsTrigger value="deploy">Deploy</TabsTrigger>
                         </TabsList>
                     </div>
 
@@ -311,6 +335,51 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                         </div>
                                     </div>
                                 )}
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="deploy" className="space-y-6 mt-0">
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <h3 className="font-medium text-sm flex items-center gap-2">
+                                        <Code className="w-4 h-4 text-primary" />
+                                        Iframe Embed
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground">
+                                        Embed the chatbot directly into your website.
+                                    </p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="relative group rounded-lg border border-border bg-muted/50 shadow-sm overflow-hidden">
+                                        <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-muted">
+                                            <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">HTML</span>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                onClick={() => copyToClipboard(iframeCode)}
+                                                className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-background/50"
+                                            >
+                                                {copiedIframe ? <Check className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3" />}
+                                            </Button>
+                                        </div>
+                                        <div className="overflow-x-auto custom-scrollbar">
+                                            <pre className="p-3 text-[11px] font-mono leading-relaxed text-foreground whitespace-pre">
+                                                {iframeCode}
+                                            </pre>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full text-xs h-8"
+                                        onClick={() => window.open(`https://verlyai.xyz/deploy/${botId}`, '_blank')}
+                                    >
+                                        <ExternalLink className="w-3 h-3 mr-2" />
+                                        Test Public URL
+                                    </Button>
+                                </div>
                             </div>
                         </TabsContent>
                     </div>
