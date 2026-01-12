@@ -32,15 +32,6 @@ export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt, isLo
           </select>
         </div>
 
-        <div className="flex flex-col gap-1 shrink-0">
-          <Label className="pl-0.5 text-sm font-medium">Instructions</Label>
-          <select className="h-10 w-full rounded-md border bg-transparent px-3 py-1 text-sm">
-            <option>General AI agent</option>
-            <option>Customer support agent</option>
-            <option>Sales agent</option>
-          </select>
-        </div>
-
         <div className="flex flex-col gap-1 relative">
           <TextareaAutosize
             value={draftPrompt}

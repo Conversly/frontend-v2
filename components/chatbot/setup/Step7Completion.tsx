@@ -21,7 +21,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
     // Dynamic import for canvas-confetti
     import('canvas-confetti').then((confettiModule) => {
       const confetti = confettiModule.default;
-      
+
       // Initial burst
       confetti({
         particleCount: 100,
@@ -52,20 +52,20 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
 
   const quickLinks = [
     {
-      href: `/chatbot/${chatbotId}/deploy`,
+      href: `/chatbot/${chatbotId}/customize`,
       icon: Globe,
       title: "Deploy to Website",
       description: "Get embed code for your site",
       primary: true,
     },
     {
-      href: `/chatbot/${chatbotId}/deploy`,
+      href: `/chatbot/${chatbotId}/whatsapp`,
       icon: MessageSquare,
       title: "Connect WhatsApp",
       description: "Deploy on WhatsApp Business",
     },
     {
-      href: `/chatbot/${chatbotId}`,
+      href: `/chatbot/${chatbotId}/playground`,
       icon: Zap,
       title: "Test Your Bot",
       description: "Try it in the playground",
@@ -76,18 +76,12 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
       title: "View Analytics",
       description: "Monitor conversations",
     },
-    {
-      href: `/chatbot/${chatbotId}/settings`,
-      icon: Settings,
-      title: "Advanced Settings",
-      description: "Fine-tune your agent",
-    },
   ];
 
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Success Header */}
-      <motion.div 
+      <motion.div
         className="flex flex-col items-center gap-4 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,7 +98,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
         </motion.div>
 
         <div className="flex flex-col gap-1">
-          <motion.h1 
+          <motion.h1
             className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -112,7 +106,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
           >
             🎉 Your chatbot is ready!
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -124,7 +118,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
       </motion.div>
 
       {/* Quick Links */}
-      <motion.div 
+      <motion.div
         className="flex flex-col gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -133,7 +127,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           What's next?
         </p>
-        
+
         <div className="grid gap-2">
           {quickLinks.map((link, index) => (
             <motion.div

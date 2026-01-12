@@ -13,6 +13,7 @@ import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecas
 import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
 import { Step4UIConfig } from "@/components/chatbot/setup/Step4UIConfig";
 import { Step5Topics } from "@/components/chatbot/setup/Step5Topics";
+import { TopicsVisualization } from "@/components/chatbot/setup/TopicsVisualization";
 import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning";
 import { Step7Completion } from "@/components/chatbot/setup/Step7Completion";
 import { useSetupStore } from "@/store/chatbot/setup";
@@ -333,6 +334,11 @@ export default function SetupWizardPage() {
                     } as PackageUIConfig}
                     contained
                   />
+                </div>
+              )}
+              {step === 5 && (
+                <div className="w-full h-full">
+                  <TopicsVisualization />
                 </div>
               )}
               {step === 7 && (
