@@ -93,7 +93,7 @@ export default function PrivacyPolicyPage() {
                   If you have questions about this policy, please contact us at:
                 </p>
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <p><strong>Email:</strong> verlyai.workspace@gmail.com</p>
+                  <p><strong>Email:</strong> team@verlyai.xyz</p>
                   <p><strong>Website:</strong> dev.verlyai.xyz</p>
                 </div>
               </section>

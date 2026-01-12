@@ -152,11 +152,11 @@ export default function Footer() {
                 <div className="pt-4 border-t border-white/10">
                   <p className="text-white/80 font-medium mb-1">Official Email</p>
                   <a
-                    href="mailto:verlyai.workspace@gmail.com"
+                    href="mailto:team@verlyai.xyz"
                     className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
                   >
                     <Mail className="w-4 h-4" />
-                    verlyai.workspace@gmail.com
+                    team@verlyai.xyz
                   </a>
                 </div>
               </div>
