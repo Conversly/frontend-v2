@@ -15,6 +15,9 @@ interface SetupVisualizationProps {
 export function SetupVisualization({ url, stage, children }: SetupVisualizationProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+    // Filter out false/null/undefined from conditional JSX children
+    const validChildren = React.Children.toArray(children).filter(Boolean);
+
     // Canvas background effect (reused/adapted from LeftCanvas)
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -91,7 +94,7 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
             {/* Content Container */}
             <div className="relative flex h-full w-full flex-col items-center justify-center p-8">
 
-                {children ? children : (
+                {validChildren.length > 0 ? validChildren : (
                     <>
                         {/* Main Card */}
                         <div className="relative w-full max-w-md">
