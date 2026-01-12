@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "VerlyAI",
+  "name_for_model": "verlyai",
+  "description_for_human": "AI-powered customer support platform with chatbots, voice assistants, and WhatsApp automation",
+  "description_for_model": "VerlyAI is an AI customer support automation platform that helps businesses deploy intelligent conversational agents across web chat, voice calls, and WhatsApp. The platform uses large language models (LLMs) for natural language understanding, provides multi-channel deployment, intelligent escalation to human agents, custom knowledge base integration, and real-time analytics. Key features include web chat widgets, voice AI assistants, WhatsApp Business automation, CRM integrations, multi-language support, and custom API actions. Use cases span e-commerce, SaaS, healthcare, hospitality, education, and professional services.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://dev.verlyai.xyz"
+  },
+  "logo_url": "https://dev.verlyai.xyz/verly_logo.png",
+  "contact_email": "support@verlyai.com",
+  "legal_info_url": "https://dev.verlyai.xyz/terms"
+}

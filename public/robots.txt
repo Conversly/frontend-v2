@@ -1,0 +1,15 @@
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow private routes
+Disallow: /api/
+Disallow: /chatbot/
+Disallow: /workspace/
+Disallow: /profile/
+Disallow: /promote-manager/
+Disallow: /auth/
+Disallow: /deletion/
+
+# Sitemap
+Sitemap: https://dev.verlyai.xyz/sitemap.xml

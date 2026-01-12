@@ -8,6 +8,7 @@ import { Roboto, Space_Grotesk } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
+import { defaultMetadata, organizationSchema } from "@/lib/metadata";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -25,14 +26,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "VerlyAI",
-  description:
-    "VerlyAI - Empowering Conversations with Intelligent Chatbots",
-  icons: {
-    icon: "/verly_logo.png",
-  },
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -46,6 +40,11 @@ export default function RootLayout({
       <head>
         <meta name="facebook-domain-verification" content="zq5gdmewsckb4auh452okb9sadoojz" />
         <meta name="google-site-verification" content="9XuDInfIUwvzXqkGdpiv9lcsQ0kIRvymv3wuCRlkQG0" />
+        {/* Structured Data for SEO and LLMs */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         {isTesting && (
           <script
             crossOrigin="anonymous"

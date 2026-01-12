@@ -42,6 +42,13 @@ function XIcon({ className }: { className?: string }) {
 }
 
 
+const quickLinks = [
+  { name: "Solutions", href: "/solutions" },
+  { name: "About Us", href: "/about" },
+  { name: "Blog", href: "/blog" },
+  { name: "Documentation", href: "/docs" },
+]
+
 export default function Footer() {
   return (
     <footer className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden">
@@ -170,6 +177,23 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
+
+              {/* Resources / Quick Links */}
+              <div className="mt-12">
+                <h3 className="text-white font-semibold mb-6 text-sm uppercase tracking-wider">Resources</h3>
+                <ul className="space-y-3">
+                  {quickLinks.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-white/50 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             {/* Connect */}

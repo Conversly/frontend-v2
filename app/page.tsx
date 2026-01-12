@@ -39,7 +39,7 @@ export default function Home() {
         
         <div className={CONTENT_WIDTH}>
           <Hero />
-          <Testimonial />
+          {/* <Testimonial /> */}
           <UnifiedOfferings />
           <BroadcastSection />
           <HowItWorks />

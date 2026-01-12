@@ -2,9 +2,19 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/store/auth";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckCircle2, Mail, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import {
+  CheckCircle2, Mail, Sparkles, Loader2, ArrowRight,
+  Headphones, Briefcase, Users, Building2, HeartPulse, ShoppingBag,
+  Book, HelpCircle, Newspaper, ChevronDown
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -135,6 +145,249 @@ export default function Navbar() {
             />
             <span className="font-bold text-xl">VerlyAI</span>
           </Link>
+
+          {/* Navigation Links */}
+          {/* Mega Menu Navigation */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/about" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </Link>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                  Solutions
+                  <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
+                <div className="grid grid-cols-[1fr_1fr_350px] gap-6 p-8 w-[1100px] bg-white dark:bg-slate-950 rounded-xl border border-border shadow-lg">
+
+                  {/* Column 1: Use Cases */}
+                  <div className="space-y-6">
+                    <h4 className="font-bold text-base leading-none mb-4 text-foreground flex items-center gap-2">
+                      By Use Cases
+                      <Badge variant="secondary" className="text-[10px] h-5 px-1.5 rounded-md font-normal">Popular</Badge>
+                    </h4>
+                    <ul className="space-y-4">
+                      <li>
+                        <Link href="/solutions?filter=support" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 group-hover:bg-blue-100 transition-colors shadow-sm selection:bg-blue-100">
+                              <Headphones className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                Customer Service
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Automate & personalize customer support with 24/7 AI agents.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/solutions?filter=internal" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-900/20 group-hover:bg-purple-100 transition-colors shadow-sm">
+                              <Briefcase className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                Employee Experience
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Enrich & elevate employee experience with internal helpdesk bots.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/solutions?filter=commerce" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 group-hover:bg-indigo-100 transition-colors shadow-sm">
+                              <Users className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                Marketing Automation
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Engage customers with personalized campaigns and proactive outreach.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Column 2: Industry */}
+                  <div className="space-y-6 h-full border-l border-border/50 pl-6">
+                    <h4 className="font-bold text-base leading-none mb-4 text-foreground">By Industry</h4>
+                    <ul className="space-y-4">
+                      <li>
+                        <Link href="/solutions?industry=bfsi" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 group-hover:bg-emerald-100 transition-colors shadow-sm">
+                              <Building2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                BFSI
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Banking, Financial Services & Insurance automation solutions.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/solutions?industry=healthcare" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 group-hover:bg-rose-100 transition-colors shadow-sm">
+                              <HeartPulse className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                Healthcare
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Patient engagement, appointment scheduling & support.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/solutions?industry=retail" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 p-2.5 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-900/20 group-hover:bg-amber-100 transition-colors shadow-sm">
+                              <ShoppingBag className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                                Retail & E-commerce
+                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Drive sales, recovery carts & support shoppers instantly.</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Column 3: Spotlight */}
+                  <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-1 flex flex-col h-full border border-border/50">
+                    <div className="flex-1 relative overflow-hidden rounded-xl group cursor-pointer">
+                      <Link href="/solutions" className="absolute inset-0 z-20"></Link>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 transition-opacity duration-300" />
+                      <Image
+                        src="/create_chatbot_voice.png"
+                        alt="Feature Spotlight"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute bottom-0 left-0 w-full p-6 z-20 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
+                        <div className="bg-blue-600/90 backdrop-blur-sm text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-3 border border-blue-400/30 shadow-lg">NEW FEATURE</div>
+                        <h4 className="font-bold text-xl mb-2 leading-tight">Voice AI Agents</h4>
+                        <p className="text-sm text-gray-200 mb-4 line-clamp-3">Deploy human-like voice assistants that can handle complex calls in minutes.</p>
+                        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-white/20 hover:bg-white/30 backdrop-blur-md px-4 py-2 rounded-lg transition-colors border border-white/10">
+                          Watch Demo <ArrowRight className="w-3 h-3" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                  Resources
+                  <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
+                <div className="bg-white dark:bg-slate-950 rounded-xl border border-border shadow-lg overflow-hidden">
+                  <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    <li className="row-span-3">
+                      <Link
+                        className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-b from-primary/50 to-primary p-6 no-underline outline-none focus:shadow-md relative overflow-hidden group border border-primary/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                        href="/about"
+                      >
+                        <div className="mb-2 mt-4 text-lg font-medium text-white relative z-10">
+                          About VerlyAI
+                        </div>
+                        <p className="text-sm leading-tight text-white/90 relative z-10">
+                          Building the intelligence layer for global customer support.
+                        </p>
+                        <div className="absolute right-[-20px] top-[-20px] opacity-20 group-hover:opacity-40 transition-opacity duration-300">
+                          <Sparkles className="w-32 h-32 text-white" />
+                        </div>
+                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/docs" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className="mt-1 p-2 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 group-hover:bg-blue-100 transition-colors shadow-sm">
+                            <Book className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                              Documentation
+                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                              Guides, API Reference, and SDKs.
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className="mt-1 p-2 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/20 group-hover:bg-purple-100 transition-colors shadow-sm">
+                            <HelpCircle className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                              Help Center
+                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                              FAQs and support for common issues.
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/blog" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className="mt-1 p-2 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 group-hover:bg-orange-100 transition-colors shadow-sm">
+                            <Newspaper className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                              Blog
+                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                              Latest updates and industry insights.
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
           <div className="flex items-center gap-4">
             {user ? (
               <DropdownMenu>

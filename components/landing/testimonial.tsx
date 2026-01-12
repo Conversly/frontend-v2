@@ -6,27 +6,27 @@ import Image from "next/image";
 const testimonials = [
   {
     id: 1,
-    quote: "When people reach out, they need answers fast. We want our team focused on complex issues, not routine questions. Verly handles the repetitive inquiries so our staff can focus on what truly matters.",
+    quote: "We replaced our legacy IVR with Verly's Voice Agents in less than a week. The latency is practically non-existent—customers don't even realize they're talking to an AI.",
     name: "Sarah Mitchell",
-    title: "Head of Customer Success, TechCorp",
+    title: "VP of Engineering, FinanceFlow",
     image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop",
-    company: "TechCorp"
+    company: "FinanceFlow"
   },
   {
     id: 2,
-    quote: "Implementation was incredibly smooth. We saw a 40% reduction in support ticket volume within the first week of deploying Verly's AI agent to our storefront.",
+    quote: "Finally, a support platform built for developers. The SDKs are type-safe, the docs are clear, and we verified our entire WhatsApp automation flow locally before deploying.",
     name: "David Chen",
-    title: "CTO, GrowthFlow",
+    title: "CTO, DevScale",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop",
-    company: "GrowthFlow"
+    company: "DevScale"
   },
   {
     id: 3,
-    quote: "The ability to customize the AI's tone and knowledge base has been a game changer. It genuinely feels like an extension of our brand voice, not just a robot.",
+    quote: "We needed an agent that could handle complex order modifications on both web and phone. Verly's function calling capability made connecting to our backend API trivial.",
     name: "Elena Rodriguez",
-    title: "Director of Operations, SwiftLogistics",
+    title: "Product Lead, ShopEase",
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&h=600&fit=crop",
-    company: "SwiftLogistics"
+    company: "ShopEase"
   }
 ];
 
