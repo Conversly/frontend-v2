@@ -1,87 +1,102 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowLeft, Book, Mail, MessageCircle, FileText } from 'lucide-react';
-import Navbar from '@/components/landing/navbar';
-import Footer from '@/components/landing/footer';
-
-export const metadata: Metadata = {
-    title: 'Help Center - VerlyAI',
-    description: 'Get support and documentation for VerlyAI.',
-};
+import React from "react";
+import { HelpChat } from "@/components/help/HelpChat";
+import { Mail, MessageCircle, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function HelpPage() {
     return (
-        <>
-            <Navbar />
-            <main className="min-h-screen pt-24 pb-16 px-4">
-                <div className="max-w-4xl mx-auto space-y-12">
+        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 animate-in fade-in duration-500">
+            <div className="container max-w-6xl mx-auto py-12 px-4 space-y-16">
 
-                    {/* Header */}
-                    <div className="text-center space-y-4">
-                        <h1 className="text-4xl font-bold tracking-tight">How can we help?</h1>
-                        <p className="text-lg text-muted-foreground">
-                            Documentation, support, and community for building with VerlyAI.
+                {/* Hero / Chat Section */}
+                <section className="space-y-6 text-center">
+                    <div className="space-y-2">
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+                            How can we help?
+                        </h1>
+                        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                            Ask our AI assistant below or browse our support channels for more personalized help.
                         </p>
                     </div>
 
-                    {/* Cards Grid */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <Link href="/docs" className="group">
-                            <div className="h-full p-8 border rounded-2xl bg-card hover:border-primary/50 transition-colors shadow-sm">
-                                <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary">
-                                    <Book className="w-6 h-6" />
-                                </div>
-                                <h2 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">Documentation</h2>
-                                <p className="text-muted-foreground">
-                                    Detailed guides, API references, and code examples to help you build.
-                                </p>
-                            </div>
-                        </Link>
+                    <div className="mt-8">
+                        <HelpChat />
+                    </div>
+                </section>
 
-                        <a href="mailto:team@verlyai.xyz" className="group">
-                            <div className="h-full p-8 border rounded-2xl bg-card hover:border-blue-500/50 transition-colors shadow-sm">
-                                <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500">
+                {/* Support Channels Section */}
+                <section className="space-y-8">
+                    <div className="text-center space-y-2">
+                        <h2 className="text-2xl font-semibold tracking-tight">Still need help?</h2>
+                        <p className="text-muted-foreground">
+                            Our team is available through these channels
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Email Channel */}
+                        <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardHeader>
+                                <div className="mb-4 w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
                                     <Mail className="w-6 h-6" />
                                 </div>
-                                <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-500 transition-colors">Email Support</h2>
-                                <p className="text-muted-foreground">
-                                    Direct line to our engineering team for account or technical issues.
-                                </p>
-                            </div>
-                        </a>
+                                <CardTitle>Email Support</CardTitle>
+                                <CardDescription>Get a response within 24 hours</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button className="w-full" variant="outline" asChild>
+                                    <Link href="mailto:support@conversly.ai">
+                                        Send an Email
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
 
-                        <Link href="/blog" className="group">
-                            <div className="h-full p-8 border rounded-2xl bg-card hover:border-purple-500/50 transition-colors shadow-sm">
-                                <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500">
-                                    <FileText className="w-6 h-6" />
+                        {/* Live Chat Channel */}
+                        <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardHeader>
+                                <div className="mb-4 w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                                    <MessageCircle className="w-6 h-6" />
                                 </div>
-                                <h2 className="text-xl font-semibold mb-2 group-hover:text-purple-500 transition-colors">Blog & Tutorials</h2>
-                                <p className="text-muted-foreground">
-                                    Read about the latest updates, tutorials, and best practices.
-                                </p>
-                            </div>
-                        </Link>
+                                <CardTitle>Live Chat</CardTitle>
+                                <CardDescription>Chat with our support team</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button className="w-full" variant="outline" asChild>
+                                    {/* Placeholder for live chat trigger - typically opens a widget */}
+                                    <Link href="#">
+                                        Start Chat
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
 
-                        <div className="h-full p-8 border rounded-2xl bg-card/50 border-dashed">
-                            <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-muted text-muted-foreground">
-                                <MessageCircle className="w-6 h-6" />
-                            </div>
-                            <h2 className="text-xl font-semibold mb-2 text-muted-foreground">Community</h2>
-                            <p className="text-muted-foreground/80">
-                                Join our Discord community coming soon.
-                            </p>
-                        </div>
+                        {/* WhatsApp Channel */}
+                        <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardHeader>
+                                <div className="mb-4 w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform duration-300">
+                                    <Phone className="w-6 h-6" />
+                                </div>
+                                <CardTitle>WhatsApp</CardTitle>
+                                <CardDescription>Instant answers on your phone</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button className="w-full" variant="outline" asChild>
+                                    <Link href="https://wa.me/1234567890" target="_blank">
+                                        Message us
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
                     </div>
+                </section>
 
-                    <div className="text-center pt-8">
-                        <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to Home
-                        </Link>
-                    </div>
-                </div>
-            </main>
-            <Footer />
-        </>
+            </div>
+        </div>
     );
 }

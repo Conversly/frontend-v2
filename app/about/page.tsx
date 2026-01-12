@@ -6,6 +6,9 @@ import { Bot, Cpu, Globe, Zap, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+import LeadGeneration from "./lead-generation";
+import CustomerSupport from "./customer-support";
+
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
 
 export default function AboutPage() {
@@ -119,6 +122,10 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        {/* Integrated Features */}
+        <LeadGeneration />
+        <CustomerSupport />
 
         {/* Team/Mission Values */}
         <section className="py-20 lg:py-32">
