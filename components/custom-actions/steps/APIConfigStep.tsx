@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { CustomAction } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import {
     Select,
     SelectContent,
@@ -14,13 +15,21 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Plus, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, X, Sparkles } from 'lucide-react';
 
 interface Props {
     formData: CustomAction;
     updateField: (path: string, value: any) => void;
     onNext: () => void;
     onBack: () => void;
+}
+
+/**
+ * Extract {{variable}} patterns from a string
+ */
+function extractVariables(str: string): string[] {
+    const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
+    return matches.map(m => m.replace(/\{\{|\}\}/g, '').trim());
 }
 
 export const APIConfigStep: React.FC<Props> = ({
@@ -32,6 +41,42 @@ export const APIConfigStep: React.FC<Props> = ({
     const [showAdvanced, setShowAdvanced] = useState(false);
     const config = formData.apiConfig;
 
+    // Combine baseUrl and endpoint for the unified URL input
+    const fullUrl = `${config.baseUrl}${config.endpoint}`;
+
+    // Parse full URL back into base and endpoint
+    const handleFullUrlChange = (value: string) => {
+        try {
+            const urlObj = new URL(value);
+            updateField('apiConfig.baseUrl', urlObj.origin);
+            updateField('apiConfig.endpoint', urlObj.pathname + urlObj.search);
+        } catch {
+            // If not a valid URL, just update the endpoint
+            if (value.startsWith('/')) {
+                updateField('apiConfig.endpoint', value);
+            } else if (value.includes('://')) {
+                // Partial URL, try to extract what we can
+                const match = value.match(/^(https?:\/\/[^\/]+)(.*)/);
+                if (match) {
+                    updateField('apiConfig.baseUrl', match[1]);
+                    updateField('apiConfig.endpoint', match[2] || '/');
+                }
+            }
+        }
+    };
+
+    // Detect variables from URL and body
+    const detectedVariables = useMemo(() => {
+        const vars: string[] = [];
+        if (config.endpoint) {
+            vars.push(...extractVariables(config.endpoint));
+        }
+        if (config.bodyTemplate) {
+            vars.push(...extractVariables(config.bodyTemplate));
+        }
+        return [...new Set(vars)];
+    }, [config.endpoint, config.bodyTemplate]);
+
     const isValid = () => {
         try {
             if (!config.baseUrl || !config.endpoint || !config.method) return false;
@@ -42,6 +87,8 @@ export const APIConfigStep: React.FC<Props> = ({
         }
     };
 
+    const headerCount = Object.keys(config.headers || {}).length;
+
     return (
         <div className="space-y-6">
             <div className="space-y-2">
@@ -51,76 +98,82 @@ export const APIConfigStep: React.FC<Props> = ({
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Endpoint Details</CardTitle>
+                    <CardTitle>Endpoint</CardTitle>
                     <CardDescription>
-                        Define the HTTP method and URL for your action.
+                        Enter the full URL for your API endpoint.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Method & Base URL */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="space-y-2">
-                            <Label>HTTP Method <span className="text-destructive">*</span></Label>
-                            <Select
-                                value={config.method}
-                                onValueChange={(value) => updateField('apiConfig.method', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Method" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
-                                        <SelectItem key={method} value={method}>
-                                            {method}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="md:col-span-3 space-y-2">
-                            <Label htmlFor="base_url">
-                                Base URL <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                                id="base_url"
-                                type="url"
-                                value={config.baseUrl}
-                                onChange={(e) => updateField('apiConfig.baseUrl', e.target.value)}
-                                placeholder="https://api.example.com"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {/* Endpoint */}
-                    <div className="space-y-2">
-                        <Label htmlFor="endpoint">
-                            Endpoint Path <span className="text-destructive">*</span>
-                        </Label>
+                <CardContent className="space-y-4">
+                    {/* Unified URL Input */}
+                    <div className="flex gap-2">
+                        <Select
+                            value={config.method}
+                            onValueChange={(value) => updateField('apiConfig.method', value)}
+                        >
+                            <SelectTrigger className="w-[100px]">
+                                <SelectValue placeholder="Method" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
+                                    <SelectItem key={method} value={method}>
+                                        {method}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                         <Input
-                            id="endpoint"
-                            value={config.endpoint}
-                            onChange={(e) => updateField('apiConfig.endpoint', e.target.value)}
-                            placeholder="/v1/products/{{product_id}}"
-                            required
+                            value={fullUrl}
+                            onChange={(e) => handleFullUrlChange(e.target.value)}
+                            placeholder="https://api.example.com/v1/products/{{product_id}}"
+                            className="flex-1 font-mono text-sm"
                         />
-                        <p className="text-xs text-muted-foreground">
-                            Use <code>{`{{variable_name}}`}</code> for dynamic values that will come from parameters.
-                        </p>
                     </div>
+
+                    <p className="text-xs text-muted-foreground">
+                        Use <code className="px-1 py-0.5 rounded bg-muted">{'{{variable_name}}'}</code> for dynamic values extracted from the conversation.
+                    </p>
+
+                    {/* Detected Variables */}
+                    {detectedVariables.length > 0 && (
+                        <div className="flex items-start gap-2 p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                            <Sparkles className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                                <div className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
+                                    Detected Variables
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {detectedVariables.map(v => (
+                                        <Badge key={v} variant="secondary" className="font-mono text-xs">
+                                            {`{{${v}}}`}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-green-700 dark:text-green-300 mt-2">
+                                    These will be auto-created as parameters in the next step.
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Full URL Preview */}
                     <div className="rounded-md bg-muted p-3 text-sm font-mono break-all">
                         <span className="font-semibold text-primary">{config.method}</span>{' '}
-                        {config.baseUrl}{config.endpoint}
+                        <span className="text-muted-foreground">{config.baseUrl}</span>
+                        <span className="text-foreground">{config.endpoint}</span>
                     </div>
                 </CardContent>
             </Card>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Authentication & Headers</CardTitle>
+                    <CardTitle className="flex items-center justify-between">
+                        <span>Authentication & Headers</span>
+                        {headerCount > 0 && (
+                            <Badge variant="secondary" className="ml-2">
+                                {headerCount} header{headerCount !== 1 ? 's' : ''}
+                            </Badge>
+                        )}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {/* Authentication */}
@@ -164,27 +217,26 @@ export const APIConfigStep: React.FC<Props> = ({
                     {/* Headers */}
                     <div className="space-y-2">
                         <Label>Custom Headers</Label>
-                        <KeyValueEditor
+                        <HeaderEditor
                             value={config.headers || {}}
                             onChange={(headers) => updateField('apiConfig.headers', headers)}
-                            placeholder={{ key: 'Header-Name', value: 'Header-Value' }}
                         />
                     </div>
 
                     {/* Request Body */}
                     {['POST', 'PUT', 'PATCH'].includes(config.method) && (
                         <div className="space-y-2">
-                            <Label htmlFor="body_template">Request Body Template</Label>
+                            <Label htmlFor="body_template">Request Body</Label>
                             <Textarea
                                 id="body_template"
                                 value={config.bodyTemplate || ''}
                                 onChange={(e) => updateField('apiConfig.bodyTemplate', e.target.value)}
                                 placeholder='{"product_id": "{{product_id}}", "quantity": {{quantity}}}'
                                 rows={4}
-                                className="font-mono"
+                                className="font-mono text-sm"
                             />
                             <p className="text-xs text-muted-foreground">
-                                JSON body template. Use <code>{`{{variable}}`}</code> for dynamic values.
+                                JSON body template. Use <code className="px-1 py-0.5 rounded bg-muted">{'{{variable}}'}</code> for dynamic values.
                             </p>
                         </div>
                     )}
@@ -194,7 +246,7 @@ export const APIConfigStep: React.FC<Props> = ({
             {/* Advanced Options */}
             <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2 w-full justify-start">
+                    <Button variant="ghost" className="flex items-center gap-2 w-full justify-start text-muted-foreground hover:text-foreground">
                         {showAdvanced ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                         Advanced Options
                     </Button>
@@ -303,7 +355,77 @@ export const APIConfigStep: React.FC<Props> = ({
     );
 };
 
-// Key-Value Editor Component
+// Improved Header Editor Component with better UX
+const HeaderEditor: React.FC<{
+    value: Record<string, string>;
+    onChange: (value: Record<string, string>) => void;
+}> = ({ value, onChange }) => {
+    const pairs = Object.entries(value);
+
+    const addPair = () => {
+        onChange({ ...value, '': '' });
+    };
+
+    const updatePair = (index: number, key: string, val: string) => {
+        const newPairs = [...pairs];
+        newPairs[index] = [key, val];
+        onChange(Object.fromEntries(newPairs));
+    };
+
+    const removePair = (index: number) => {
+        const newPairs = pairs.filter((_, i) => i !== index);
+        onChange(Object.fromEntries(newPairs));
+    };
+
+    if (pairs.length === 0) {
+        return (
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Custom Header
+            </Button>
+        );
+    }
+
+    return (
+        <div className="space-y-2">
+            {pairs.map(([key, val], index) => (
+                <div key={index} className="flex gap-2 items-start">
+                    <div className="flex-1 min-w-0">
+                        <Input
+                            value={key}
+                            onChange={(e) => updatePair(index, e.target.value, val)}
+                            placeholder="Header-Name"
+                            className="font-mono text-sm"
+                        />
+                    </div>
+                    <div className="flex-[2] min-w-0">
+                        <Input
+                            value={val}
+                            onChange={(e) => updatePair(index, key, e.target.value)}
+                            placeholder="Header-Value"
+                            className="font-mono text-sm"
+                        />
+                    </div>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removePair(index)}
+                        className="h-10 w-10 flex-shrink-0 text-muted-foreground hover:text-destructive"
+                    >
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Another Header
+            </Button>
+        </div>
+    );
+};
+
+// Simple Key-Value Editor (for query params)
 const KeyValueEditor: React.FC<{
     value: Record<string, string>;
     onChange: (value: Record<string, string>) => void;
@@ -353,9 +475,9 @@ const KeyValueEditor: React.FC<{
                     </Button>
                 </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={addPair} className="mt-2">
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
                 <Plus className="h-4 w-4 mr-2" />
-                Add {pairs.length === 0 ? 'Header' : 'Another'}
+                Add {pairs.length === 0 ? 'Parameter' : 'Another'}
             </Button>
         </div>
     );

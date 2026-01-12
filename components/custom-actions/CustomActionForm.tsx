@@ -7,6 +7,7 @@ import { ParametersStep } from './steps/ParametersStep';
 import { TestAndSaveStep } from './steps/TestAndSaveStep';
 import { ActionExplainer } from './ActionExplainer';
 import { CurlImportDialog } from './CurlImportDialog';
+import { ClassifiedHeader } from '@/utils/curlParser';
 import { cn } from '@/lib/utils';
 import { Check, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -62,6 +63,8 @@ export const CustomActionForm: React.FC<Props> = ({
     const [testing, setTesting] = useState(false);
     const [saving, setSaving] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
+    // Store classified headers for reference in API config step
+    const [classifiedHeaders, setClassifiedHeaders] = useState<ClassifiedHeader[]>([]);
 
     const updateField = (path: string, value: any) => {
         setFormData((prev) => {
@@ -81,7 +84,7 @@ export const CustomActionForm: React.FC<Props> = ({
         });
     };
 
-    const handleCurlImport = (config: Partial<CustomActionConfig>) => {
+    const handleCurlImport = (config: Partial<CustomActionConfig>, headers: ClassifiedHeader[]) => {
         setFormData(prev => ({
             ...prev,
             apiConfig: {
@@ -89,6 +92,8 @@ export const CustomActionForm: React.FC<Props> = ({
                 ...config
             }
         }));
+        // Store classified headers for reference
+        setClassifiedHeaders(headers);
         // Jump to API Config step to review
         setCurrentStep(2);
     };

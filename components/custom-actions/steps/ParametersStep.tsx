@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { CustomAction, ToolParameter } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     Select,
     SelectContent,
@@ -14,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Trash2, Plus, ChevronDown, ChevronRight } from 'lucide-react';
+import { Trash2, Plus, ChevronRight, Sparkles, Info } from 'lucide-react';
 
 interface Props {
     formData: CustomAction;
@@ -23,12 +25,47 @@ interface Props {
     onBack: () => void;
 }
 
+/**
+ * Extract {{variable}} patterns from a string
+ */
+function extractVariables(str: string): string[] {
+    const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
+    return matches.map(m => m.replace(/\{\{|\}\}/g, '').trim());
+}
+
 export const ParametersStep: React.FC<Props> = ({
     formData,
     updateField,
     onNext,
     onBack,
 }) => {
+    // Detect variables from URL and body
+    const detectedVariables = useMemo(() => {
+        const vars: string[] = [];
+        if (formData.apiConfig.endpoint) {
+            vars.push(...extractVariables(formData.apiConfig.endpoint));
+        }
+        if (formData.apiConfig.bodyTemplate) {
+            vars.push(...extractVariables(formData.apiConfig.bodyTemplate));
+        }
+        return [...new Set(vars)];
+    }, [formData.apiConfig.endpoint, formData.apiConfig.bodyTemplate]);
+
+    // Find which detected variables are missing from parameters
+    const existingParamNames = new Set(formData.parameters.map(p => p.name));
+    const missingVariables = detectedVariables.filter(v => !existingParamNames.has(v));
+
+    // Auto-add detected variables as parameters
+    const addDetectedParameters = () => {
+        const newParams: ToolParameter[] = missingVariables.map(name => ({
+            name,
+            type: 'string',
+            description: `The ${name.replace(/_/g, ' ')} to use for this request`,
+            required: true,
+        }));
+        updateField('parameters', [...formData.parameters, ...newParams]);
+    };
+
     const addParameter = () => {
         const newParam: ToolParameter = {
             name: '',
@@ -50,12 +87,14 @@ export const ParametersStep: React.FC<Props> = ({
         updateField('parameters', updated);
     };
 
+    // Parameters are now OPTIONAL - you can skip this step
     const isValid = () => {
-        return (
-            formData.parameters.length > 0 &&
-            formData.parameters.every(
-                (p) => p.name && p.type && p.description.length >= 10
-            )
+        // If there are no parameters, that's fine
+        if (formData.parameters.length === 0) return true;
+
+        // If there are parameters, each must have name, type, and description
+        return formData.parameters.every(
+            (p) => p.name && p.type && p.description.length >= 5
         );
     };
 
@@ -64,16 +103,47 @@ export const ParametersStep: React.FC<Props> = ({
             <div className="space-y-2">
                 <h2 className="text-2xl font-bold tracking-tight">Parameters</h2>
                 <p className="text-muted-foreground">
-                    Define what information the AI needs to provide when calling this action.
+                    Define what information the AI needs to extract from the conversation.
                 </p>
             </div>
 
-            {formData.parameters.length === 0 && (
+            {/* Auto-detected variables prompt */}
+            {missingVariables.length > 0 && (
+                <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
+                    <Sparkles className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <AlertDescription className="flex items-center justify-between">
+                        <div>
+                            <span className="font-medium text-green-800 dark:text-green-200">
+                                {missingVariables.length} variable{missingVariables.length !== 1 ? 's' : ''} detected
+                            </span>
+                            <span className="text-green-700 dark:text-green-300 ml-2">
+                                from your API configuration: {missingVariables.map(v => `{{${v}}}`).join(', ')}
+                            </span>
+                        </div>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={addDetectedParameters}
+                            className="ml-4 border-green-300 text-green-700 hover:bg-green-100 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900"
+                        >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add All
+                        </Button>
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {formData.parameters.length === 0 && missingVariables.length === 0 && (
                 <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/50">
-                    <p className="text-muted-foreground mb-4">No parameters defined yet.</p>
-                    <Button onClick={addParameter}>
+                    <Info className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground mb-2">No parameters needed?</p>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
+                        If your API doesn't require any dynamic values, you can skip this step.
+                        Otherwise, add parameters that the AI will extract from conversations.
+                    </p>
+                    <Button variant="outline" onClick={addParameter}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add First Parameter
+                        Add Parameter Manually
                     </Button>
                 </div>
             )}
@@ -91,7 +161,12 @@ export const ParametersStep: React.FC<Props> = ({
                         </Button>
 
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-lg">Parameter {index + 1}</CardTitle>
+                            <CardTitle className="text-lg flex items-center gap-2">
+                                <span>Parameter {index + 1}</span>
+                                {param.required && (
+                                    <Badge variant="secondary" className="text-xs">Required</Badge>
+                                )}
+                            </CardTitle>
                         </CardHeader>
 
                         <CardContent className="space-y-4">
@@ -102,11 +177,10 @@ export const ParametersStep: React.FC<Props> = ({
                                     <Input
                                         value={param.name}
                                         onChange={(e) =>
-                                            updateParameter(index, 'name', e.target.value.toLowerCase())
+                                            updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
                                         }
                                         placeholder="product_id"
-                                        pattern="^[a-z0-9_]+$"
-                                        required
+                                        className="font-mono"
                                     />
                                 </div>
 
@@ -140,13 +214,11 @@ export const ParametersStep: React.FC<Props> = ({
                                     onChange={(e) =>
                                         updateParameter(index, 'description', e.target.value)
                                     }
-                                    placeholder="Describe what this parameter is for. The AI uses this to understand what value to provide."
+                                    placeholder="The unique identifier for the product. The AI will extract this from phrases like 'product ABC123' or 'item #12345'."
                                     rows={2}
-                                    required
-                                    minLength={10}
                                 />
-                                <p className="text-xs text-muted-foreground text-right">
-                                    {param.description.length} / 500
+                                <p className="text-xs text-muted-foreground">
+                                    Help the AI understand what this parameter represents and how to find it.
                                 </p>
                             </div>
 
@@ -160,7 +232,7 @@ export const ParametersStep: React.FC<Props> = ({
                                             updateParameter(index, 'required', checked as boolean)
                                         }
                                     />
-                                    <Label htmlFor={`required-${index}`}>Required</Label>
+                                    <Label htmlFor={`required-${index}`} className="text-sm">Required</Label>
                                 </div>
 
                                 {/* Default Value */}
@@ -170,7 +242,8 @@ export const ParametersStep: React.FC<Props> = ({
                                         onChange={(e) =>
                                             updateParameter(index, 'default', e.target.value)
                                         }
-                                        placeholder="Default Value (Optional)"
+                                        placeholder="Default value (optional)"
+                                        className="h-9"
                                     />
                                 </div>
                             </div>
@@ -210,6 +283,7 @@ export const ParametersStep: React.FC<Props> = ({
                                                 value={param.pattern || ''}
                                                 onChange={(e) => updateParameter(index, 'pattern', e.target.value)}
                                                 placeholder="^[A-Z0-9-]+$"
+                                                className="font-mono"
                                             />
                                         </div>
                                     )}
@@ -280,7 +354,7 @@ export const ParametersStep: React.FC<Props> = ({
                     ← Back
                 </Button>
                 <Button onClick={onNext} disabled={!isValid()}>
-                    Next: Test & Save →
+                    {formData.parameters.length === 0 ? 'Skip to Test →' : 'Next: Test & Save →'}
                 </Button>
             </div>
         </div>
