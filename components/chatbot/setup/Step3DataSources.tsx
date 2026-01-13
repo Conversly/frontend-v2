@@ -10,7 +10,7 @@ import {
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
-import { FileText, MessageSquare, Globe, HelpCircle, Notebook, ExternalLink, File, Loader2 } from "lucide-react";
+import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -21,7 +21,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 
-type SourceType = "url" | "file" | "text" | "qa" | "notion";
+type SourceType = "url" | "file" | "text" | "qa";
 
 interface Step3DataSourcesProps {
   onContinue: () => void;
@@ -32,7 +32,6 @@ const SOURCE_CONFIG: Record<SourceType, { icon: React.ReactNode; label: string; 
   file: { icon: <FileText className="h-5 w-5" />, label: "File", plural: "Files" },
   text: { icon: <MessageSquare className="h-5 w-5" />, label: "Text", plural: "Text snippets" },
   qa: { icon: <HelpCircle className="h-5 w-5" />, label: "Q&A", plural: "Q&A pairs" },
-  notion: { icon: <Notebook className="h-5 w-5" />, label: "Notion", plural: "Notion pages" },
 };
 
 export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
@@ -123,12 +122,6 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             label="Q&A"
             count={0}
             onClick={() => setOpenType("qa")}
-          />
-          <SourceRow
-            icon={<Notebook className="h-5 w-5" />}
-            label="Notion"
-            count={0}
-            onClick={() => setOpenType("notion")}
           />
         </div>
 

@@ -295,7 +295,7 @@ export default function WhatsAppManagePage() {
                                     <div className="space-y-2">
                                         <Label>Verified Name</Label>
                                         <Input readOnly value={integration?.verifiedName || 'Not set'} className="bg-muted/50 cursor-not-allowed" disabled title="Cannot be edited here, update in Meta Business Manager" />
-                                        <p className="text-[10px] text-muted-foreground">Managed in Meta Business Manager</p>
+                                        <p className="text-xs text-muted-foreground">Managed in Meta Business Manager</p>
                                     </div>
                                 </div>
                             </CardContent>

@@ -37,13 +37,6 @@ const PRODUCTIVITY_SOURCES = [
     icon: FileText,
     available: true
   },
-  {
-    id: 'notion',
-    name: 'Notion',
-    description: 'Answer questions from the content of Notion pages',
-    icon: Database,
-    available: false
-  }
 ];
 
 const WEB_SOURCES = [

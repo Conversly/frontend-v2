@@ -12,21 +12,22 @@
 export const FONTS = {
   // Hero & Titles
   display: {
-    name: 'Space Grotesk',
-    variable: '--font-space-grotesk',
-    weights: ['400', '500', '600', '700'],
+    name: "Space Grotesk",
+    variable: "--font-space-grotesk",
+    weights: ["400", "500", "600", "700"],
   },
-  
+
   // Dashboard & Body Text
   body: {
-    name: 'Roboto',
-    variable: '--font-roboto',
-    weights: ['100', '300', '400', '500', '700', '900'],
+    name: "Roboto",
+    variable: "--font-roboto",
+    weights: ["100", "300", "400", "500", "700", "900"],
   },
-  
+
   // Monospace (code, technical content)
   mono: {
-    fallback: 'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fallback:
+      'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   },
 } as const;
 

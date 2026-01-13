@@ -121,7 +121,7 @@ export function ChatLogsFilterDialog({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
-                {["Any", "Website", "Files", "Notion", "Web"].map((opt) => (
+                {["Any", "Website", "Files", "Web"].map((opt) => (
                   <DropdownMenuItem
                     key={opt}
                     onClick={() => onChange({ ...value, source: opt === "Any" ? null : opt })}

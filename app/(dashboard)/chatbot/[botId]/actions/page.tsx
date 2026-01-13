@@ -11,6 +11,7 @@ import {
   useUpdateCustomAction,
   useDeleteCustomAction,
 } from '@/services/actions';
+import { Separator } from "@/components/ui/separator";
 import { Loader2 } from 'lucide-react';
 
 export default function ActionsPage() {
@@ -79,28 +80,38 @@ export default function ActionsPage() {
   }
 
   return (
-    <div className="h-full w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div className="mb-8 px-4">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Custom Actions</h1>
-        <p className="text-muted-foreground">
-          Connect your chatbot to external APIs and services. Define actions that the AI can call during conversations.
-        </p>
-      </div>
-
+    <div className="w-full h-full bg-background overflow-hidden flex flex-col">
       {view === 'list' ? (
-        <ActionList
-          actions={actions || []}
-          onCreate={handleCreate}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <div className="flex-1 overflow-y-auto">
+          <div className="container mx-auto px-6 py-6 max-w-[1920px]">
+            {/* Main Page Header */}
+            <div className="page-header">
+              <h1 className="page-title">Custom Actions</h1>
+              <p className="page-subtitle">
+                Connect your chatbot to external APIs and services. Define actions that the AI can call during conversations.
+              </p>
+              <Separator className="mt-2" />
+            </div>
+
+            <ActionList
+              actions={actions || []}
+              onCreate={handleCreate}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+        </div>
       ) : (
-        <CustomActionForm
-          chatbotId={chatbotId}
-          existingAction={selectedAction}
-          onSave={handleSave}
-          onCancel={() => setView('list')}
-        />
+        <div className="w-full h-full p-6">
+          <div className="container mx-auto h-full max-w-[1920px]">
+            <CustomActionForm
+              chatbotId={chatbotId}
+              existingAction={selectedAction}
+              onSave={handleSave}
+              onCancel={() => setView('list')}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

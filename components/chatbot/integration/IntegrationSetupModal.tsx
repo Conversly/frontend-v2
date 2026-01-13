@@ -109,10 +109,10 @@ export function IntegrationSetupModal({
           {/* Left Panel - Setup Instructions */}
           <div className="border-r bg-muted/30 flex flex-col h-full overflow-hidden">
             <div className="p-6 border-b shrink-0">
-              <h2 className="text-xl font-semibold">
+              <h2 className="type-section-title">
                 Setup {setupGuide.platform.charAt(0).toUpperCase() + setupGuide.platform.slice(1)}
               </h2>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="type-body-muted mt-2">
                 Follow these steps to set up your integration
               </p>
             </div>
@@ -127,7 +127,7 @@ export function IntegrationSetupModal({
                     : "bg-card border"
                 )}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium">
+                    <span className="type-body">
                       {completedSteps.length === setupGuide.steps.length ? (
                         <span className="flex items-center gap-2 text-green-600 dark:text-green-400">
                           🎉 All steps completed!
@@ -212,7 +212,7 @@ export function IntegrationSetupModal({
 
                           <CollapsibleContent>
                             <div className="pt-2 space-y-2">
-                              <p className="text-sm text-muted-foreground">
+                              <p className="type-body-muted">
                                 {step.description}
                               </p>
 

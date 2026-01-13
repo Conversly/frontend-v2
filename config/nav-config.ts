@@ -29,6 +29,13 @@ import {
     Phone,
     Settings,
     Code,
+    Sparkles,
+    LayoutDashboard,
+    PieChart,
+    Globe,
+    Headset,
+    Book,
+    Users,
 } from "lucide-react";
 
 export type NavItem = {
@@ -67,7 +74,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     {
         title: "Playground",
         url: `/chatbot/${botId}/playground`,
-        icon: MessageSquare,
+        icon: Sparkles,
     },
     {
         title: "Activity",
@@ -82,19 +89,19 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
             {
                 title: "Leads",
                 url: `/chatbot/${botId}/activity/leads`,
-                icon: UserPlus,
+                icon: Users,
             },
         ],
     },
     {
         title: "Analytics",
         url: `/chatbot/${botId}/analytics`,
-        icon: BarChart3,
+        icon: LayoutDashboard,
         items: [
             {
                 title: "Statistics",
                 url: `/chatbot/${botId}/analytics/statistic`,
-                icon: Paintbrush,
+                icon: PieChart,
             },
             {
                 title: "Topics",
@@ -106,7 +113,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     {
         title: "Knowledge Base",
         url: `/chatbot/${botId}/sources`,
-        icon: Database,
+        icon: Book,
         items: [
             {
                 title: "Current Data",
@@ -121,7 +128,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
             {
                 title: "Website",
                 url: `/chatbot/${botId}/sources/website`,
-                icon: LinkIcon,
+                icon: Globe,
             },
             {
                 title: "Q&A",
@@ -132,11 +139,6 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
                 title: "Text",
                 url: `/chatbot/${botId}/sources/text`,
                 icon: FileText,
-            },
-            {
-                title: "Notion",
-                url: `/chatbot/${botId}/sources/notion`,
-                icon: Bell,
             },
         ],
     },
@@ -158,7 +160,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     {
         title: "Voice-Agent",
         url: `/chatbot/${botId}/voice`,
-        icon: Phone,
+        icon: Headset,
         items: [
             {
                 title: "Assistant",

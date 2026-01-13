@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { Check, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '../ui/separator';
 
 interface Props {
     chatbotId: string;
@@ -140,120 +141,134 @@ export const CustomActionForm: React.FC<Props> = ({
     };
 
     return (
-        <div className="h-[calc(100vh-120px)] flex flex-col">
+        <div className="h-full flex flex-col space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6 px-1">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={onCancel}>
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                    <div>
-                        <h2 className="text-lg font-semibold">
-                            {existingAction ? 'Edit Action' : 'Create New Action'}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                            Configure how your chatbot interacts with external services
-                        </p>
-                    </div>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="page-title">
+                        {existingAction ? 'Edit Action' : 'Create New Action'}
+                    </h2>
+                    <p className="page-subtitle mt-1">
+                        Configure how your chatbot interacts with external services
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <CurlImportDialog onImport={handleCurlImport} />
                 </div>
             </div>
+            <Separator />
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-                {/* Left Panel - Form (Scrollable) */}
-                <div className="lg:col-span-7 flex flex-col min-h-0 border rounded-lg bg-background shadow-sm">
-                    {/* Progress Steps */}
-                    <div className="p-4 border-b bg-muted/30">
-                        <div className="flex items-center justify-between relative max-w-md mx-auto">
-                            <div className="absolute left-0 top-1/2 w-full h-0.5 bg-muted -z-10" />
-                            {[1, 2, 3, 4].map((step) => (
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0 pb-6">
+                {/* Left Panel - Form */}
+                <div className="lg:col-span-7 flex flex-col min-h-0">
+                    {/* Progress Steps - Clean Horizontal Design */}
+                    <div className="mb-6 flex items-center w-full max-w-2xl">
+                        {[1, 2, 3, 4].map((step, index) => (
+                            <div key={step} className="flex-1 flex items-center">
                                 <div
-                                    key={step}
                                     className={cn(
-                                        "flex flex-col items-center gap-2 bg-background px-2 cursor-pointer",
-                                        currentStep >= step ? "text-primary" : "text-muted-foreground"
+                                        "flex items-center gap-2 cursor-pointer group",
+                                        currentStep >= step ? "text-foreground" : "text-muted-foreground"
                                     )}
                                     onClick={() => step < currentStep && setCurrentStep(step)}
                                 >
                                     <div
                                         className={cn(
-                                            "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors text-sm font-medium",
-                                            currentStep >= step
-                                                ? "border-primary bg-primary text-primary-foreground"
-                                                : "border-muted-foreground bg-background"
+                                            "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200",
+                                            currentStep > step
+                                                ? "bg-primary text-primary-foreground shadow-sm"
+                                                : currentStep === step
+                                                    ? "bg-primary text-primary-foreground ring-4 ring-primary/20 shadow-sm"
+                                                    : "bg-muted border border-border group-hover:border-primary/50"
                                         )}
                                     >
                                         {currentStep > step ? <Check className="h-4 w-4" /> : step}
                                     </div>
-                                    <span className="text-[10px] font-medium uppercase tracking-wider">
+                                    <span className={cn(
+                                        "text-sm font-medium whitespace-nowrap hidden sm:block",
+                                        currentStep === step && "text-primary"
+                                    )}>
                                         {step === 1 && "Identity"}
                                         {step === 2 && "Connection"}
                                         {step === 3 && "Inputs"}
                                         {step === 4 && "Test"}
                                     </span>
                                 </div>
-                            ))}
-                        </div>
+                                {index < 3 && (
+                                    <div className={cn(
+                                        "h-[2px] w-full mx-4 rounded-full transition-colors duration-300",
+                                        currentStep > step + 1 ? "bg-primary" : "bg-muted"
+                                    )} />
+                                )}
+                            </div>
+                        ))}
                     </div>
 
                     {/* Form Content */}
-                    <ScrollArea className="flex-1">
-                        <div className="p-6">
-                            {currentStep === 1 && (
-                                <BasicInfoStep
-                                    formData={formData}
-                                    updateField={updateField}
-                                    onNext={() => setCurrentStep(2)}
-                                    onCancel={onCancel}
-                                />
-                            )}
+                    <div className="flex-1 border rounded-xl bg-background shadow-sm overflow-hidden flex flex-col">
+                        <ScrollArea className="flex-1">
+                            <div className="p-6">
+                                {currentStep === 1 && (
+                                    <BasicInfoStep
+                                        formData={formData}
+                                        updateField={updateField}
+                                        onNext={() => setCurrentStep(2)}
+                                        onCancel={onCancel}
+                                    />
+                                )}
 
-                            {currentStep === 2 && (
-                                <APIConfigStep
-                                    formData={formData}
-                                    updateField={updateField}
-                                    onNext={() => setCurrentStep(3)}
-                                    onBack={() => setCurrentStep(1)}
-                                />
-                            )}
+                                {currentStep === 2 && (
+                                    <APIConfigStep
+                                        formData={formData}
+                                        updateField={updateField}
+                                        onNext={() => setCurrentStep(3)}
+                                        onBack={() => setCurrentStep(1)}
+                                    />
+                                )}
 
-                            {currentStep === 3 && (
-                                <ParametersStep
-                                    formData={formData}
-                                    updateField={updateField}
-                                    onNext={() => setCurrentStep(4)}
-                                    onBack={() => setCurrentStep(2)}
-                                />
-                            )}
+                                {currentStep === 3 && (
+                                    <ParametersStep
+                                        formData={formData}
+                                        updateField={updateField}
+                                        onNext={() => setCurrentStep(4)}
+                                        onBack={() => setCurrentStep(2)}
+                                    />
+                                )}
 
-                            {currentStep === 4 && (
-                                <TestAndSaveStep
-                                    formData={formData}
-                                    testResult={testResult}
-                                    testing={testing}
-                                    saving={saving}
-                                    onTest={handleTest}
-                                    onSave={handleSave}
-                                    onBack={() => setCurrentStep(3)}
-                                />
-                            )}
-                        </div>
-                    </ScrollArea>
+                                {currentStep === 4 && (
+                                    <TestAndSaveStep
+                                        formData={formData}
+                                        testResult={testResult}
+                                        testing={testing}
+                                        saving={saving}
+                                        onTest={handleTest}
+                                        onSave={handleSave}
+                                        onBack={() => setCurrentStep(3)}
+                                    />
+                                )}
+                            </div>
+                        </ScrollArea>
+                    </div>
                 </div>
 
-                {/* Right Panel - Visual Explainer (Hidden on mobile) */}
-                <div className="hidden lg:block lg:col-span-5 flex flex-col min-h-0 border rounded-lg bg-muted/30">
-                    <div className="p-4 border-b bg-background/50 backdrop-blur">
-                        <h3 className="font-semibold flex items-center gap-2">
-                            <span className="text-xl">💡</span>
-                            Live Preview
-                        </h3>
+                {/* Right Panel - Visual Explainer */}
+                <div className="hidden lg:col-span-5 lg:flex flex-col min-h-0">
+                    <div className="sticky top-0 h-full max-h-[calc(100vh-200px)]">
+                        <div className="bg-muted/30 border rounded-xl overflow-hidden h-full flex flex-col">
+                            <div className="p-4 border-b bg-background/50 backdrop-blur">
+                                <h3 className="font-semibold flex items-center gap-2 text-foreground">
+                                    <span className="text-xl">💡</span>
+                                    Live Preview
+                                </h3>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Real-time preview of how the AI interprets this action
+                                </p>
+                            </div>
+                            <ScrollArea className="flex-1 p-6 overflow-y-auto">
+                                <ActionExplainer action={formData} />
+                            </ScrollArea>
+                        </div>
                     </div>
-                    <ScrollArea className="flex-1 p-4">
-                        <ActionExplainer action={formData} />
-                    </ScrollArea>
                 </div>
             </div>
         </div>

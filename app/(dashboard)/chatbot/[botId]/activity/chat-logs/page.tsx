@@ -105,7 +105,7 @@ export default function ChatLogsPage() {
       <div className="w-80 shrink-0 border-r flex flex-col bg-background/50">
         <div className="px-4 py-3 border-b space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Chat logs</h2>
+            <h2 className="type-subtitle font-semibold text-foreground">Chat logs</h2>
             <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
               {filteredChatlogs.length}
             </span>
@@ -125,19 +125,19 @@ export default function ChatLogsPage() {
           {/* Filter Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4 h-7 p-0.5">
-              <TabsTrigger value="all" className="text-[10px] h-6 px-1">All</TabsTrigger>
-              <TabsTrigger value="widget" className="text-[10px] h-6 px-1">Widget</TabsTrigger>
-              <TabsTrigger value="whatsapp" className="text-[10px] h-6 px-1">WA</TabsTrigger>
-              <TabsTrigger value="other" className="text-[10px] h-6 px-1">Other</TabsTrigger>
+              <TabsTrigger value="all" className="text-xs h-6 px-1">All</TabsTrigger>
+              <TabsTrigger value="widget" className="text-xs h-6 px-1">Widget</TabsTrigger>
+              <TabsTrigger value="whatsapp" className="text-xs h-6 px-1">WA</TabsTrigger>
+              <TabsTrigger value="other" className="text-xs h-6 px-1">Other</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-2 space-y-1">
+          <div className="p-3 space-y-1">
             {isLoadingChatlogs ? (
               Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="px-2 py-3 rounded-md space-y-2">
+                <div key={i} className="px-4 py-3 rounded-md space-y-2">
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-3 w-1/2" />
                 </div>
@@ -150,7 +150,7 @@ export default function ChatLogsPage() {
                     key={c.uniqueConvId}
                     onClick={() => setSelectedConvId(c.uniqueConvId)}
                     className={cn(
-                      "w-full text-left px-3 py-3 rounded-lg border border-transparent transition-all group",
+                      "w-full text-left px-4 py-3 rounded-lg border border-transparent transition-all group",
                       "hover:bg-muted/50 hover:border-border/50",
                       isActive ? "bg-muted border-border shadow-sm" : "bg-transparent"
                     )}
@@ -158,24 +158,26 @@ export default function ChatLogsPage() {
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div className="flex items-center gap-1.5 min-w-0">
                         {getChannelIcon(c.channel)}
-                        <span className={cn(
-                          "text-[10px] font-medium px-1.5 py-0.5 rounded uppercase tracking-wider",
-                          isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover:bg-background"
-                        )}>
+                        <span
+                          className={cn(
+                            "text-xs font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide",
+                            isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover:bg-background"
+                          )}
+                        >
                           {c.channel || "WIDGET"}
                         </span>
                       </div>
-                      <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                      <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
                         {formatShortDateTime(c.lastActivity)}
                       </span>
                     </div>
 
-                    <div className="line-clamp-2 text-[13px] font-medium leading-relaxed text-foreground/90">
+                    <div className="line-clamp-2 text-sm font-medium leading-relaxed text-foreground/90">
                       {c.firstUserMessage || <span className="text-muted-foreground italic">No message content</span>}
                     </div>
 
                     <div className="mt-2 flex items-center justify-between">
-                      <code className="text-[10px] text-muted-foreground/70 truncate max-w-[120px]">
+                      <code className="text-xs text-muted-foreground/70 truncate max-w-[120px]">
                         {c.uniqueConvId}
                       </code>
                     </div>
@@ -213,8 +215,8 @@ export default function ChatLogsPage() {
         <div className="border-b bg-background px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold">Playground</h1>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <h1 className="type-section-title tracking-tight">Conversation</h1>
+              <p className="type-body-muted mt-0.5">
                 {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
               </p>
             </div>
@@ -252,7 +254,7 @@ export default function ChatLogsPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 chat-logs-container">
           {isLoadingMessages ? (
             <div className="space-y-3">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -264,9 +266,9 @@ export default function ChatLogsPage() {
           ) : selectedConvId && renderedMessages.length > 0 ? (
             <MessageList messages={renderedMessages} showTimeStamps />
           ) : selectedConvId ? (
-            <p className="text-sm text-muted-foreground">No messages in this conversation yet.</p>
+            <p className="type-body-muted">No messages in this conversation yet.</p>
           ) : (
-            <p className="text-sm text-muted-foreground">Choose a conversation from the left.</p>
+            <p className="type-body-muted">Choose a conversation from the left.</p>
           )}
         </div>
       </div>

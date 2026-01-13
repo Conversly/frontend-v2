@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { WHATSAPP_SETUP_GUIDE } from '@/lib/constants/integrations';
 import { cn } from '@/lib/utils';
 import { useFacebookSDK } from '@/hooks/use-facebook-sdk';
+import { Separator } from "@/components/ui/separator";
 
 export default function WhatsAppSetupPage() {
   const routeParams = useParams<{ botId: string }>();
@@ -338,45 +339,32 @@ export default function WhatsAppSetupPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden relative">
-      {/* Background Decor */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-500/5 via-background to-background pointer-events-none" />
+    <div className="w-full h-full overflow-y-auto">
+      <div className="container mx-auto px-6 py-6 max-w-[1920px]">
 
-      {/* Header */}
-      <div className="border-b bg-background/80 backdrop-blur-sm z-10">
-        <div className="max-w-screen-xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shadow-lg shadow-green-500/20">
-              <MessageCircle className="w-6 h-6 text-white text-fill-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-heading font-bold text-foreground">
-                Connect WhatsApp
-              </h1>
-              <p className="text-sm text-muted-foreground hidden sm:block">
-                Add a WhatsApp Business number to your chatbot
-              </p>
-            </div>
-          </div>
+        {/* Standard Page Header */}
+        <div className="page-header">
+          <h1 className="page-title">Connect WhatsApp</h1>
+          <p className="page-subtitle">
+            Add a WhatsApp Business number to your chatbot
+          </p>
+          <Separator className="mt-2" />
         </div>
-      </div>
 
-      {/* Main Content - Centered */}
-      <div className="flex-1 w-full bg-muted/20 overflow-y-auto">
-        <div className="max-w-3xl mx-auto p-6 md:py-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32">
 
           {/* Quick Connect Option */}
           <Button
             type="button"
-            className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-semibold gap-2 w-full sm:max-w-xs mx-auto"
+            className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-semibold gap-2 w-full sm:max-w-xs mx-auto block"
             onClick={handleEmbeddedSignup}
             disabled={isEmbeddedSignupLoading || !isSDKLoaded || isSDKLoading}
           >
             {isEmbeddedSignupLoading ? (
-              <>
+              <span className="flex items-center gap-2 justify-center">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Connecting...</span>
-              </>
+              </span>
             ) : (
               <span className="font-bold">Connect with Facebook</span>
             )}
@@ -386,10 +374,7 @@ export default function WhatsAppSetupPage() {
               Loading Facebook SDK...
             </p>
           )}
-          <div className="relative pt-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
+          <div className="relative pt-2">
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">Or Connect Manually</span>
             </div>
@@ -532,4 +517,3 @@ export default function WhatsAppSetupPage() {
     </div>
   );
 }
-

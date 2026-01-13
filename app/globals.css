@@ -15,7 +15,27 @@
 
 :root {
   /* Typography - Update fonts in lib/theme/fonts.ts */
-  font-family: var(--font-roboto), 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
+  --font-roboto: var(--font-roboto);
+  --font-space-grotesk: var(--font-space-grotesk);
+
+  /* Typography tokens */
+  --font-h1: 20px;
+  --font-h2: 16px;
+  --font-h3: 14px;
+  --font-body: 14px;
+  --font-small: 13px;
+  --font-xsmall: 12px;
+  --line-h1: 28px;
+  --line-h2: 24px;
+  --line-h3: 20px;
+  --line-body: 22px;
+  --line-small: 20px;
+  --line-xsmall: 18px;
+  --content-max-width: 1280px;
+
+  /* Global Cursor Rules */
+  /* These will be applied via base layer or utility classes eventually, but defining here for reference if needed */
 
   /* Theme Variables */
   --radius: 0.625rem;
@@ -675,6 +695,7 @@
     transition: background-color 0.5s ease, color 0.5s ease;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
   }
 
   /* Hero & Titles - Font defined in lib/theme/fonts.ts */
@@ -701,9 +722,202 @@
     animation: none;
     mix-blend-mode: normal;
   }
+
+  /* Global Cursor Rules */
+  button,
+  a,
+  [role="button"],
+  .clickable {
+    cursor: pointer;
+  }
 }
 
 @layer components {
+
+  /* Typography utilities */
+  .type-page-title {
+    font-size: var(--font-h1);
+    line-height: var(--line-h1);
+    font-weight: 600;
+    color: var(--foreground);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .type-section-title {
+    font-size: var(--font-h2);
+    line-height: var(--line-h2);
+    font-weight: 600;
+    color: var(--foreground);
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+
+  .type-subtitle {
+    font-size: var(--font-h3);
+    line-height: var(--line-h3);
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .type-body {
+    font-size: var(--font-body);
+    line-height: var(--line-body);
+    font-weight: 400;
+    color: var(--foreground);
+  }
+
+  .type-body-muted {
+    font-size: var(--font-small);
+    line-height: var(--line-small);
+    font-weight: 400;
+    color: var(--muted-foreground);
+  }
+
+  .type-label {
+    font-size: var(--font-xsmall);
+    line-height: var(--line-xsmall);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+  }
+
+  .type-caption {
+    font-size: var(--font-xsmall);
+    line-height: var(--line-xsmall);
+    font-weight: 400;
+    color: var(--muted-foreground);
+  }
+
+  .type-micro-heading {
+    font-size: var(--font-small);
+    line-height: var(--line-small);
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  /* Layout & page structure */
+  .app-shell {
+    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
+  }
+
+  .page-container {
+    width: 100%;
+    /* padding removed to allow full-height layouts */
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-title {
+    font-size: var(--font-h1);
+    line-height: var(--line-h1);
+    font-weight: 600;
+    margin: 0;
+    color: var(--foreground);
+    letter-spacing: -0.01em;
+  }
+
+  .page-subtitle {
+    font-size: var(--font-small);
+    color: var(--muted-foreground);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  /* Override breadcrumb item text if needed to enforce color */
+  .breadcrumb-current {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  /* Chat Widget Override: Force user messages to be black/foreground color */
+  div[class*="group/message"] {
+    color: var(--foreground) !important;
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .page-title {
+    margin: 0;
+    font-size: var(--font-h1);
+    line-height: var(--line-h1);
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .page-subtitle {
+    margin: 0;
+    margin-top: 4px;
+    font-size: var(--font-small);
+    line-height: var(--line-small);
+    font-weight: 400;
+    color: #6b7280;
+  }
+
+  /* Breadcrumbs */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-xsmall);
+    line-height: var(--line-xsmall);
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #6b7280;
+  }
+
+  .breadcrumb .breadcrumb-current {
+    color: #4b5563;
+    font-weight: 500;
+  }
+
+  /* Sidebar item helper */
+  .sidebar-item {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    font-size: var(--font-body);
+    font-weight: 500;
+    gap: 10px;
+  }
+
+  /* Cursor rules */
+  button,
+  [role="button"],
+  a,
+  .clickable,
+  .sidebar-item {
+    cursor: pointer;
+  }
+
+  [disabled],
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  input,
+  textarea,
+  select {
+    cursor: text;
+  }
 
   /* Animation Classes */
   .animate-float {

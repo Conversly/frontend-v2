@@ -3,13 +3,13 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FileText, 
-  Globe, 
-  MessageSquare, 
+import {
+  FileText,
+  Globe,
+  MessageSquare,
   AlignLeft,
-  Search, 
-  Trash2, 
+  Search,
+  Trash2,
   Edit3,
   ChevronRight,
   Copy,
@@ -193,14 +193,14 @@ function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
   );
 }
 
-function DataSourceCard({ 
-  dataSource, 
-  isSelected, 
+function DataSourceCard({
+  dataSource,
+  isSelected,
   onClick,
   onDelete,
   onEditCitation
-}: { 
-  dataSource: DataSourceItem; 
+}: {
+  dataSource: DataSourceItem;
   isSelected: boolean;
   onClick: () => void;
   onDelete: () => void;
@@ -217,8 +217,8 @@ function DataSourceCard({
       onClick={onClick}
       className={cn(
         'group relative cursor-pointer rounded-xl border transition-all',
-        isSelected 
-          ? 'bg-muted border-primary' 
+        isSelected
+          ? 'bg-muted border-primary'
           : 'bg-card border-border hover:border-primary/20'
       )}
     >
@@ -285,11 +285,11 @@ function DataSourceCard({
   );
 }
 
-function EditCitationDialog({ 
-  dataSource, 
-  onClose, 
-  onSave 
-}: { 
+function EditCitationDialog({
+  dataSource,
+  onClose,
+  onSave
+}: {
   dataSource: DataSourceItem;
   onClose: () => void;
   onSave: (citation: string) => void;
@@ -356,7 +356,7 @@ export default function DataSourcesPage() {
   // Filter and search
   const filteredSources = useMemo(() => {
     if (!dataSources) return [];
-    
+
     return dataSources.filter((source) => {
       const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -415,10 +415,10 @@ export default function DataSourcesPage() {
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-heading font-bold text-foreground mb-1">
+              <h1 className="type-page-title mb-1">
                 Knowledge Base
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="type-body-muted">
                 Manage your data sources and embeddings
               </p>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Separator } from '@/components/ui/separator';
 import { useParams } from "next/navigation";
 import { useChatbot } from "@/services/chatbot";
 import { CustomizationTab } from "@/components/chatbot/customization/CustomizationTab";
@@ -37,9 +38,9 @@ export default function CustomizePage() {
   return (
     <div className="w-full h-full overflow-y-auto">
       <div className="container mx-auto px-6 py-6 max-w-[1920px]">
-        <CustomizationTab 
-          chatbotId={botId} 
-          systemPrompt={chatbot.systemPrompt || ""} 
+        <CustomizationTab
+          chatbotId={botId}
+          systemPrompt={chatbot.systemPrompt || ""}
         />
       </div>
     </div>

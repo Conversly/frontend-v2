@@ -245,7 +245,7 @@ function SolutionsContent() {
                     </div>
 
                     <div className="mb-4">
-                      <span className="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border border-border/50">
+                      <span className="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-muted-foreground uppercase tracking-wide border border-border/50">
                         {solution.category}
                       </span>
                     </div>
@@ -254,14 +254,14 @@ function SolutionsContent() {
                       {solution.title}
                     </h3>
 
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-8">
+                    <p className="type-body-muted leading-relaxed mb-8">
                       {solution.description}
                     </p>
 
                     <div className="mt-auto space-y-6">
                       <ul className="space-y-3">
                         {solution.features.slice(0, 3).map((feature, i) => (
-                          <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground/80">
+                          <li key={i} className="flex items-start gap-2.5 type-body-muted">
                             <div className={`mt-1 rounded-full p-0.5 ${solution.bg}`}>
                               <CheckCircle2 className={`w-3 h-3 ${solution.color}`} />
                             </div>

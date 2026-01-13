@@ -15,9 +15,11 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
-        <DashboardHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <SidebarInset className="app-shell">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b bg-background px-4 sticky top-0 z-10">
+          <DashboardHeader />
+        </header>
+        <div className="page-container flex flex-1 flex-col">
           {children}
         </div>
       </SidebarInset>

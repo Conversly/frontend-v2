@@ -13,6 +13,7 @@ import {
 } from '@/lib/constants/integrations';
 import { IntegrationConfig, IntegrationPlatform } from '@/types/integration';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ botId: string }>();
@@ -143,38 +144,31 @@ export default function IntegrationPage() {
 
       {/* Main Content */}
       <div className="flex-1 min-h-screen bg-background overflow-y-auto">
-        <div className="max-w-7xl mx-auto p-6 space-y-8">
-          {/* Header */}
-          <div className="bg-gradient-to-br from-card via-card to-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 space-y-6 shadow-sm">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-heading font-bold text-foreground">
-                    Integrations
-                  </h1>
-                  <p className="text-muted-foreground mt-1">
-                    Connect your Agent to external services and platforms to extend functionality
-                  </p>
-                </div>
-              </div>
+        <div className="container mx-auto px-6 py-6 max-w-[1920px] space-y-8">
+          {/* Header & Filters */}
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <div className="page-header mb-0">
+              <h1 className="page-title">
+                Integrations
+              </h1>
+              <p className="page-subtitle">
+                Connect your Agent to external services and platforms to extend functionality
+              </p>
             </div>
 
             {/* Category Filter */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground whitespace-nowrap">
                 <Filter className="w-4 h-4" />
                 <span>Filter by:</span>
               </div>
               <Tabs value={categoryFilter} onValueChange={setCategoryFilter}>
-                <TabsList className="bg-muted/50">
+                <TabsList className="bg-muted/50 h-9">
                   {categories.map(category => (
                     <TabsTrigger
                       key={category}
                       value={category}
-                      className="capitalize data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                      className="capitalize data-[state=active]:bg-background data-[state=active]:shadow-sm px-3 py-1 text-xs"
                     >
                       {category === 'all' ? 'All' : category}
                     </TabsTrigger>
@@ -183,13 +177,14 @@ export default function IntegrationPage() {
               </Tabs>
             </div>
           </div>
+          <Separator className="-mt-6 mb-8" />
 
           {/* Connected Integrations Section */}
           {connectedIntegrations.length > 0 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-top duration-500">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50" />
-                <h2 className="text-2xl font-semibold text-foreground">
+                <h2 className="type-section-title">
                   Active Integrations
                 </h2>
                 <span className="px-2.5 py-0.5 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium rounded-full border border-green-500/20">
@@ -211,7 +206,7 @@ export default function IntegrationPage() {
           {/* Available Integrations Section */}
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-foreground">
+              <h2 className="type-section-title">
                 {connectedIntegrations.length > 0
                   ? 'Available Integrations'
                   : 'Connect Your First Integration'}
@@ -237,58 +232,24 @@ export default function IntegrationPage() {
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="type-section-title mb-2">
                   All integrations connected!
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="type-body-muted">
                   You've connected all available integrations. More coming soon!
                 </p>
               </div>
             )}
           </div>
 
-          {/* Help Section */}
-          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-blue-500/20 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-                  <HelpCircle className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
-                    Need Help?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Check out our comprehensive integration guides and documentation
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                asChild
-                className="bg-background hover:bg-muted border-border shadow-sm"
-              >
-                <a
-                  href="https://docs.conversly.ai/integrations"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2"
-                >
-                  View Documentation
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </Button>
-            </div>
-          </div>
-
           {/* Feature Request */}
           <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">
+                <h4 className="type-subtitle mb-1">
                   Don't see your integration?
                 </h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="type-body-muted">
                   Request a new integration and we'll prioritize it for development
                 </p>
               </div>

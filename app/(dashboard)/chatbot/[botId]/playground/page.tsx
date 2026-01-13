@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { UIConfigInput } from "@conversly/chat-widget";
+import { Separator } from "@/components/ui/separator";
 
 const ActualWidget = dynamic(
   () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
@@ -33,7 +34,7 @@ export default function PlaygroundPage() {
   useEffect(() => {
     const loadData = async () => {
       if (!botId) return;
-      
+
       setIsLoading(true);
       try {
         // Fetch widget config and chatbot in parallel
@@ -45,7 +46,7 @@ export default function PlaygroundPage() {
         // Convert payload to UIConfigInput (similar to customization store)
         const partial = widgetData.partial;
         const styles = partial.styles || {};
-        
+
         const uiConfig: UIConfigInput = {
           DisplayName: styles.displayName || "Support Bot",
           InitialMessage: (partial.initialMessage as string) || "Hi! How can I help you today? 👋",
@@ -89,7 +90,7 @@ export default function PlaygroundPage() {
 
   const handleSavePrompt = async () => {
     if (!botId) return;
-    
+
     setIsSavingPrompt(true);
     try {
       await upsertChannelPrompt({
@@ -141,14 +142,19 @@ export default function PlaygroundPage() {
 
   return (
     <div className="flex h-full flex-col bg-background">
+      <div className="page-header px-6 pt-4 mb-0">
+        <h1 className="page-title">Playground</h1>
+        <p className="page-subtitle">Test your chatbot configuration</p>
+        <Separator className="mt-2" />
+      </div>
       {/* Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
           <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
-            <ActualWidget 
+            <ActualWidget
               key={widgetKey}
-              config={config} 
+              config={config}
               playgroundConfig={{
                 chatbotId: botId,
                 systemPrompt,
@@ -164,8 +170,8 @@ export default function PlaygroundPage() {
         <div className="w-[380px] border-l bg-background overflow-y-auto">
           <div className="p-6 space-y-6">
             <div>
-              <h3 className="mb-4 text-sm font-semibold">Configuration</h3>
-              
+              <h3 className="mb-4 type-section-title tracking-tight">Configuration</h3>
+
               <div className="space-y-5">
                 {/* System Prompt */}
                 <div>
@@ -187,7 +193,7 @@ export default function PlaygroundPage() {
                     value={systemPrompt}
                     onChange={(e) => setSystemPrompt(e.target.value)}
                     placeholder="You are a helpful assistant..."
-                    className="h-[200px] font-mono text-[11px] resize-none overflow-y-auto"
+                    className="h-[200px] font-mono text-sm resize-none overflow-y-auto"
                   />
                   <p className="mt-1.5 text-xs text-muted-foreground">
                     {systemPrompt.length} characters
@@ -210,7 +216,7 @@ export default function PlaygroundPage() {
                     <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                   </select>
                 </div>
-                
+
                 {/* Temperature */}
                 <div>
                   <label className="mb-2 block text-xs font-medium text-foreground/70">
@@ -259,8 +265,8 @@ export default function PlaygroundPage() {
 
             {/* Info Section */}
             <div className="pt-4 border-t">
-              <h3 className="mb-3 text-sm font-semibold">About</h3>
-              <div className="space-y-2 text-xs text-muted-foreground">
+              <h3 className="mb-3 type-subtitle">About</h3>
+              <div className="space-y-2 type-body-muted">
                 <p>
                   The playground allows you to test your chatbot with different configurations
                   without affecting the production settings.
