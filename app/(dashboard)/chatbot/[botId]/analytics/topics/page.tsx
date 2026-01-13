@@ -3,8 +3,8 @@
 import { Card } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { 
-  useTopicBarChartQuery, 
+import {
+  useTopicBarChartQuery,
   useTopicPieChartQuery
 } from "@/services/analytics";
 import {
@@ -27,7 +27,7 @@ export default function TopicsPage() {
   const routeParams = useParams<{ botId: string }>();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const [selectedDays, setSelectedDays] = useState<number>(7);
-  
+
   // Topic management state  
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -35,11 +35,11 @@ export default function TopicsPage() {
   const [newTopicName, setNewTopicName] = useState("");
   const [editingTopic, setEditingTopic] = useState<{ id: string; name: string } | null>(null);
   const [deletingTopicId, setDeletingTopicId] = useState<string | null>(null);
-  
+
   // Chart data queries
   const { data: barChartData, isLoading: barChartLoading, error: barChartError } = useTopicBarChartQuery(botId, selectedDays);
   const { data: pieChartData, isLoading: pieChartLoading, error: pieChartError } = useTopicPieChartQuery(botId, selectedDays);
-  
+
   // Topic CRUD queries and mutations
   const { data: topics, isLoading: topicsLoading, error: topicsError } = useTopicsQuery(botId);
   const createTopicMutation = useCreateTopicMutation();
@@ -67,7 +67,7 @@ export default function TopicsPage() {
         chatbotId: botId,
         name: newTopicName.trim()
       });
-      
+
       toast.success("Topic created successfully");
       setNewTopicName("");
       setIsCreateDialogOpen(false);
@@ -87,7 +87,7 @@ export default function TopicsPage() {
         id: editingTopic.id,
         name: editingTopic.name.trim()
       });
-      
+
       toast.success("Topic updated successfully");
       setEditingTopic(null);
       setIsEditDialogOpen(false);
@@ -101,7 +101,7 @@ export default function TopicsPage() {
 
     try {
       await deleteTopicMutation.mutateAsync({ id: deletingTopicId });
-      
+
       toast.success("Topic deleted successfully");
       setDeletingTopicId(null);
       setIsDeleteDialogOpen(false);
@@ -113,7 +113,7 @@ export default function TopicsPage() {
   // Transform pie chart data for recharts
   const transformPieChartData = () => {
     if (!pieChartData?.topics || pieChartData.topics.length === 0) return [];
-    
+
     return pieChartData.topics.map((topic, index) => ({
       name: topic.topicName,
       value: topic.messages,
@@ -144,8 +144,8 @@ export default function TopicsPage() {
   return (
     <div className="px-4 md:px-6 py-4 md:py-6 space-y-4">
       <div className="mb-4">
-        <h1 className="text-2xl font-bold tracking-tight">Topics</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="type-page-title">Topics</h1>
+        <p className="type-body-muted">
           Analyze conversation topics and trending themes
         </p>
       </div>

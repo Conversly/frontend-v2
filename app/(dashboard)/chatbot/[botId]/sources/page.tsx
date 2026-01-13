@@ -415,10 +415,10 @@ export default function DataSourcesPage() {
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight mb-1">
+              <h1 className="type-page-title mb-1">
                 Knowledge Base
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="type-body-muted">
                 Manage your data sources and embeddings
               </p>
             </div>

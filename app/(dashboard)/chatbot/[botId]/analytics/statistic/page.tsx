@@ -18,7 +18,7 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   const { botId } = use(params);
   const [selectedDays, setSelectedDays] = useState<number>(7);
   const [feedbackLimit, setFeedbackLimit] = useState<number>(10);
-  
+
   const { data: summaryData, isLoading: summaryLoading, error: summaryError } = useAnalyticsSummaryQuery(botId);
   const { data: chartsData, isLoading: chartsLoading, error: chartsError } = useAnalyticsChartsQuery(botId, selectedDays);
   const { data: feedbacksData, isLoading: feedbacksLoading, error: feedbacksError } = useAnalyticsFeedbacksQuery(botId, feedbackLimit);
@@ -35,10 +35,10 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   const formatFeedbackDate = (date: Date | string) => {
     try {
       const dateObj = typeof date === 'string' ? new Date(date) : date;
-      return dateObj.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+      return dateObj.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
       });
     } catch {
       return 'Invalid date';
@@ -50,10 +50,10 @@ export default function StatisticPage({ params }: StatisticPageProps) {
     if (!feedbacksData || feedbacksData.length === 0) {
       return { likes: 0, dislikes: 0, none: 0 };
     }
-    
+
     const likes = feedbacksData.filter(item => item.feedback === 'like').length;
     const dislikes = feedbacksData.filter(item => item.feedback === 'dislike').length;
-    
+
     return { likes, dislikes, none: 0 };
   };
 
@@ -78,8 +78,8 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   return (
     <div className="px-4 md:px-6 py-4 md:py-6 space-y-4">
       <div className="mb-4">
-        <h1 className="text-2xl font-bold tracking-tight">Statistics</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="type-page-title">Statistics</h1>
+        <p className="type-body-muted">
           Analyze conversation topics and trending themes
         </p>
       </div>
