@@ -107,7 +107,7 @@ export default function CreateChatbotPage() {
                   disabled={isCreating}
                   className="bg-background/50"
                 />
-                <p className="text-[13px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Choose a descriptive name for your chatbot
                 </p>
               </div>
@@ -126,7 +126,7 @@ export default function CreateChatbotPage() {
                   rows={3}
                   className="bg-background/50 resize-none"
                 />
-                <p className="text-[13px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Briefly describe what this chatbot does
                 </p>
               </div>
@@ -150,7 +150,7 @@ export default function CreateChatbotPage() {
                 />
 
                 <div className="flex items-center justify-between">
-                  <p className="text-[13px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Define how your chatbot should respond and behave
                   </p>
                 </div>

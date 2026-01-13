@@ -133,11 +133,6 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
                 url: `/chatbot/${botId}/sources/text`,
                 icon: FileText,
             },
-            {
-                title: "Notion",
-                url: `/chatbot/${botId}/sources/notion`,
-                icon: Bell,
-            },
         ],
     },
     {

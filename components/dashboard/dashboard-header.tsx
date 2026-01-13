@@ -98,7 +98,7 @@ export function DashboardHeader() {
           <Separator orientation="vertical" className="mr-2 h-4" />
         </div>
 
-        <Breadcrumb>
+        <Breadcrumb className="text-sm text-muted-foreground">
           <BreadcrumbList>
             {breadcrumbs.map((crumb, index) => (
               <React.Fragment key={index}>
@@ -120,7 +120,7 @@ export function DashboardHeader() {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <h1 className="text-lg font-semibold ml-auto">{currentPageName}</h1>
+        <h1 className="type-page-title ml-auto">{currentPageName}</h1>
       </div>
     </header>
   );

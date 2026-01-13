@@ -186,7 +186,7 @@ export default function WhatsAppTemplatesPage() {
                                                             }`}>
                                                             {template.status}
                                                         </Badge>
-                                                        {!template.metaTemplateId && <Badge variant="secondary" className="ml-2 text-[10px]">DRAFT</Badge>}
+                                                        {!template.metaTemplateId && <Badge variant="secondary" className="ml-2 text-xs">DRAFT</Badge>}
                                                     </TableCell>
                                                     <TableCell className="text-right">{new Date(template.updatedAt || template.createdAt).toLocaleDateString()}</TableCell>
                                                     <TableCell>

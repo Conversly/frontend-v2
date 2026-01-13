@@ -348,7 +348,7 @@ export default function CreateTemplatePage() {
                                     <div className="w-8 h-8 rounded-full bg-slate-300"></div>
                                     <div>
                                         <p className="text-xs font-semibold">Your Business</p>
-                                        <p className="text-[9px] opacity-80">Online</p>
+                                        <p className="text-xs opacity-80">Online</p>
                                     </div>
                                 </div>
                             </div>
@@ -377,13 +377,13 @@ export default function CreateTemplatePage() {
 
                                         {/* Footer Text */}
                                         {footerText && (
-                                            <p className="text-[10px] text-gray-500 mt-1">{footerText}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{footerText}</p>
                                         )}
                                     </div>
 
                                     {/* Time */}
                                     <div className="flex justify-end px-2 pb-1">
-                                        <span className="text-[9px] text-gray-400">12:00 PM</span>
+                                        <span className="text-xs text-gray-400">12:00 PM</span>
                                     </div>
 
                                     {/* Buttons (Native Look) */}

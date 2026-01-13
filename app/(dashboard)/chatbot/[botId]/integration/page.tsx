@@ -152,10 +152,10 @@ export default function IntegrationPage() {
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-heading font-bold text-foreground">
+                  <h1 className="type-page-title">
                     Integrations
                   </h1>
-                  <p className="text-muted-foreground mt-1">
+                  <p className="type-body-muted mt-1">
                     Connect your Agent to external services and platforms to extend functionality
                   </p>
                 </div>
@@ -164,7 +164,7 @@ export default function IntegrationPage() {
 
             {/* Category Filter */}
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 type-body-muted">
                 <Filter className="w-4 h-4" />
                 <span>Filter by:</span>
               </div>
@@ -189,7 +189,7 @@ export default function IntegrationPage() {
             <div className="space-y-4 animate-in fade-in slide-in-from-top duration-500">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50" />
-                <h2 className="text-2xl font-semibold text-foreground">
+                <h2 className="type-section-title">
                   Active Integrations
                 </h2>
                 <span className="px-2.5 py-0.5 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium rounded-full border border-green-500/20">
@@ -211,7 +211,7 @@ export default function IntegrationPage() {
           {/* Available Integrations Section */}
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-foreground">
+              <h2 className="type-section-title">
                 {connectedIntegrations.length > 0
                   ? 'Available Integrations'
                   : 'Connect Your First Integration'}
@@ -237,10 +237,10 @@ export default function IntegrationPage() {
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="type-section-title mb-2">
                   All integrations connected!
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="type-body-muted">
                   You've connected all available integrations. More coming soon!
                 </p>
               </div>
@@ -255,10 +255,10 @@ export default function IntegrationPage() {
                   <HelpCircle className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
+                  <h3 className="type-section-title mb-1">
                     Need Help?
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="type-body-muted">
                     Check out our comprehensive integration guides and documentation
                   </p>
                 </div>
@@ -285,10 +285,10 @@ export default function IntegrationPage() {
           <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">
+                <h4 className="type-subtitle mb-1">
                   Don't see your integration?
                 </h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="type-body-muted">
                   Request a new integration and we'll prioritize it for development
                 </p>
               </div>

@@ -110,10 +110,11 @@ export default function ChatbotsPage() {
   return (
     <>
       <div className="w-full flex justify-center">
-        <div className="container max-w-7xl px-4 py-6 md:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <p className="text-muted-foreground">
+        <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight">Chatbots</h1>
+              <p className="text-sm text-muted-foreground">
                 Manage and monitor all your chatbots
               </p>
             </div>

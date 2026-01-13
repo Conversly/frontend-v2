@@ -169,7 +169,7 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
 export const ROUTE_GROUPS = {
   ACTIVITY: ["chat-logs", "leads"],
   ANALYTICS: ["chats", "topics", "sentiment"],
-  SOURCES: ["files", "qa", "text", "notion"],
+  SOURCES: ["files", "qa", "text"],
 } as const;
 
 /**
@@ -189,7 +189,6 @@ export const BREADCRUMB_LABELS: Record<string, string> = {
   website: "Website",
   qa: "Q&A",
   text: "Text",
-  notion: "Notion",
   customize: "Customize",
   actions: "Actions",
   integration: "Integration",

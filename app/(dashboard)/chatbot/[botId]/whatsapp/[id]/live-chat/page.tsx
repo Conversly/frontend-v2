@@ -275,10 +275,12 @@ export default function LiveChatPage() {
                                                             : "bg-primary text-primary-foreground rounded-tr-sm"
                                                     )}>
                                                         <p className="text-sm leading-relaxed break-words">{msg.content}</p>
-                                                        <span className={cn(
-                                                            "text-[10px] opacity-70 mt-1 block text-right",
-                                                            msg.type !== 'user' && "text-primary-foreground/80"
-                                                        )}>
+                                                        <span
+                                                            className={cn(
+                                                                "text-xs opacity-70 mt-1 block text-right",
+                                                                msg.type !== 'user' && "text-primary-foreground/80"
+                                                            )}
+                                                        >
                                                             {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                             {msg.type !== 'user' && <CheckCheck className="inline w-3 h-3 ml-1" />}
                                                         </span>

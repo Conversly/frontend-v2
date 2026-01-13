@@ -115,10 +115,10 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
 
           {/* Content */}
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="type-section-title">
               {integration.name}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            <p className="type-body-muted line-clamp-2 leading-relaxed">
               {integration.description}
             </p>
           </div>
@@ -168,7 +168,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
 
           {/* Category Badge */}
           <div className="absolute top-3 right-3 px-2.5 py-1 bg-background/80 backdrop-blur-sm border border-border/50 rounded-md shadow-sm">
-            <span className="text-xs font-medium text-muted-foreground capitalize">
+            <span className="text-xs font-semibold text-muted-foreground capitalize">
               {integration.category}
             </span>
           </div>

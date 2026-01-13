@@ -398,13 +398,13 @@ export default function EditTemplatePage() {
 
                                         {/* Footer Text */}
                                         {footerText && (
-                                            <p className="text-[10px] text-gray-500 mt-1">{footerText}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{footerText}</p>
                                         )}
                                     </div>
 
                                     {/* Time */}
                                     <div className="flex justify-end px-2 pb-1">
-                                        <span className="text-[9px] text-gray-400">12:00 PM</span>
+                                        <span className="text-xs text-gray-400">12:00 PM</span>
                                     </div>
 
                                     {/* Buttons (Native Look) */}
