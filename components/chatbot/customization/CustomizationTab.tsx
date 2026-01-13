@@ -1,5 +1,6 @@
 "use client";
 
+import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from 'react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
@@ -52,12 +53,12 @@ interface CustomizationTabProps {
 export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt }: CustomizationTabProps) {
   const [systemPrompt, setSystemPrompt] = useState(initialSystemPrompt);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
-  
+
   // Update systemPrompt when initialSystemPrompt changes
   useEffect(() => {
     setSystemPrompt(initialSystemPrompt);
   }, [initialSystemPrompt]);
-  
+
   // Icons array for widget customization
   const icons = [
     { id: 'chat', component: <MessageCircle className="w-6 h-6" /> },
@@ -69,12 +70,12 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
   // Pull centralized draft + actions from the store
   const draft = useCustomizationDraft();
-  const { 
-    setDraftConfig, 
-    loadCustomization, 
-    saveCustomization, 
-    resetDraftFromSaved, 
-    isSaving, 
+  const {
+    setDraftConfig,
+    loadCustomization,
+    saveCustomization,
+    resetDraftFromSaved,
+    isSaving,
     // Domain management
     domains,
     isLoadingDomains,
@@ -122,9 +123,9 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
   // Load configuration on mount
   useEffect(() => {
     if (!draft) setDraftConfig(defaultConfig);
-    loadCustomization(chatbotId).catch(() => {});
-    loadDomains(chatbotId).catch(() => {});
-    loadApiKey(chatbotId).catch(() => {});
+    loadCustomization(chatbotId).catch(() => { });
+    loadDomains(chatbotId).catch(() => { });
+    loadApiKey(chatbotId).catch(() => { });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatbotId]);
 
@@ -201,40 +202,45 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="space-y-8 pb-8">
-        <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="font-heading text-2xl text-foreground mb-1">
-              Chat widget
-            </h2>
-            <p className="font-sans text-base text-muted-foreground">
-              Customize your chatbot's content, appearance and integrations.
+      <div className="space-y-6 pb-8">
+        {/* Header & Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="page-header mb-0">
+            <h1 className="page-title">Customize</h1>
+            <p className="page-subtitle">
+              Configure your chatbot's appearance, behavior, and integrations
             </p>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm text-muted-foreground">Widget status</span>
-            <input
-              type="checkbox"
-              checked={config.widgetEnabled}
-              onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
-            />
-            <Button
-              disabled={isSaving}
-              onClick={() => setShowSaveConfirm(true)}
-              className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {isSaving ? 'Saving…' : 'Save'}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => resetDraftFromSaved()}
-              className="ml-2 border-border text-foreground hover:bg-muted/50"
-            >
-              Reset
-            </Button>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mr-2">
+              <span className="text-sm text-muted-foreground">Widget status</span>
+              <input
+                type="checkbox"
+                checked={config.widgetEnabled}
+                onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
+                className="w-4 h-4 rounded border-border bg-muted/50 accent-primary"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => resetDraftFromSaved()}
+                className="border-border text-foreground hover:bg-muted/50"
+              >
+                Reset
+              </Button>
+              <Button
+                disabled={isSaving}
+                onClick={() => setShowSaveConfirm(true)}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[80px]"
+              >
+                {isSaving ? 'Saving…' : 'Save'}
+              </Button>
+            </div>
           </div>
         </div>
+        <Separator />
 
         {/* Two-column layout: settings left, preview right */}
         <div className="grid lg:grid-cols-[1fr_580px] gap-6 items-start">
@@ -242,29 +248,29 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
             {/* Main Settings Tabs */}
             <Tabs defaultValue="content" className="space-y-6">
               <TabsList className="bg-card/60 p-1 rounded-xl flex flex-wrap">
-                <TabsTrigger 
-                  value="content" 
+                <TabsTrigger
+                  value="content"
                   className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Settings2 className="w-4 h-4 mr-2" />
                   Content
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="appearance" 
+                <TabsTrigger
+                  value="appearance"
                   className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Palette className="w-4 h-4 mr-2" />
                   Appearance
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="ai" 
+                <TabsTrigger
+                  value="ai"
                   className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <BrainCircuit className="w-4 h-4 mr-2" />
                   AI
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="integration" 
+                <TabsTrigger
+                  value="integration"
                   className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Code className="w-4 h-4 mr-2" />
@@ -279,9 +285,9 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
               {/* Appearance Tab */}
               <TabsContent value="appearance">
-                <AppearanceTab 
-                  config={config} 
-                  updateConfig={updateConfig} 
+                <AppearanceTab
+                  config={config}
+                  updateConfig={updateConfig}
                   icons={icons}
                   onIconUpload={handleIconUpload}
                 />
@@ -289,9 +295,9 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
               {/* AI Tab */}
               <TabsContent value="ai">
-                <AITab 
-                  config={config} 
-                  updateConfig={updateConfig} 
+                <AITab
+                  config={config}
+                  updateConfig={updateConfig}
                   systemPrompt={systemPrompt}
                   onSystemPromptChange={setSystemPrompt}
                   chatbotId={chatbotId}
@@ -320,20 +326,20 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
           {/* Preview Right Column */}
           <div className="sticky top-6">
             <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6 min-h-[600px]">
-              <SectionHeader 
-                title="Live Preview" 
+              <SectionHeader
+                title="Live Preview"
                 description="See how your chatbot will appear on your website"
                 icon={Sparkles}
               />
               <div className="mt-6 flex justify-center">
                 <div className="w-[420px] h-[620px] rounded-lg overflow-hidden shadow-lg">
-                  <PreviewWidget 
+                  <PreviewWidget
                     config={{
                       ...config,
                       suggestedMessages: config.starterQuestions,
                       alignChatButton: config.buttonAlignment,
-                    } as PackageUIConfig} 
-                    contained 
+                    } as PackageUIConfig}
+                    contained
                   />
                 </div>
               </div>

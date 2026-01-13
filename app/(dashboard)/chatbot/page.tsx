@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { EmptyState } from "@/components/shared";
+import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,19 +110,22 @@ export default function ChatbotsPage() {
 
   return (
     <>
-      <div className="w-full flex justify-center">
-        <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-          <div className="mb-8 flex items-center justify-between">
-            <div className="space-y-1">
-              <h1 className="text-2xl font-bold tracking-tight">Chatbots</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage and monitor all your chatbots
-              </p>
+      <div className="w-full justify-center p-6">
+        <div className="container max-w-7xl px-0 md:px-0 lg:px-0">
+          <div className="page-header">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="page-title">Chatbots</h1>
+                <p className="page-subtitle">
+                  Manage and monitor all your chatbots
+                </p>
+              </div>
+              <Button onClick={handleCreateChatbot} size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Chatbot
+              </Button>
             </div>
-            <Button onClick={handleCreateChatbot}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Chatbot
-            </Button>
+            <Separator className="mt-2" />
           </div>
 
           {chatbots && chatbots.length > 0 ? (

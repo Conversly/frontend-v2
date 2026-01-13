@@ -91,37 +91,32 @@ export function DashboardHeader() {
   const currentPageName = breadcrumbs[breadcrumbs.length - 1]?.label || "Dashboard";
 
   return (
-    <header className="h-[60px] shrink-0 flex items-center border-b bg-background">
-      <div className="flex items-center gap-4 px-6 w-full">
-        <div className="flex items-center gap-2">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-        </div>
-
-        <Breadcrumb className="text-sm text-muted-foreground">
-          <BreadcrumbList>
-            {breadcrumbs.map((crumb, index) => (
-              <React.Fragment key={index}>
-                <BreadcrumbItem>
-                  {crumb.path ? (
-                    <BreadcrumbLink
-                      onClick={() => router.push(crumb.path!)}
-                      className="cursor-pointer"
-                    >
-                      {crumb.label}
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-                {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-              </React.Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        <h1 className="type-page-title ml-auto">{currentPageName}</h1>
-      </div>
-    </header>
+    <div className="flex items-center gap-2">
+      <SidebarTrigger className="-ml-1" />
+      <Separator orientation="vertical" className="mr-2 h-4" />
+      <Breadcrumb className="breadcrumb">
+        <BreadcrumbList>
+          {breadcrumbs.map((crumb, index) => (
+            <React.Fragment key={index}>
+              <BreadcrumbItem>
+                {crumb.path ? (
+                  <BreadcrumbLink
+                    onClick={() => router.push(crumb.path!)}
+                    className="cursor-pointer"
+                  >
+                    {crumb.label}
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage className="breadcrumb-current">
+                    {crumb.label}
+                  </BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   );
 }

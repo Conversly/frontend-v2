@@ -39,11 +39,14 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight">Profile & Settings</h2>
+        <div className="page-container flex-1 p-6">
+            <div className="page-header">
+                <h1 className="page-title">Profile & Settings</h1>
+                <p className="page-subtitle">
+                    Manage your account settings and preferences
+                </p>
+                <Separator className="mt-2" />
             </div>
-            <Separator />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-4">

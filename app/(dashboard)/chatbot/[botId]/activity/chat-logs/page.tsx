@@ -134,10 +134,10 @@ export default function ChatLogsPage() {
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-2 space-y-1">
+          <div className="p-3 space-y-1">
             {isLoadingChatlogs ? (
               Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="px-2 py-3 rounded-md space-y-2">
+                <div key={i} className="px-4 py-3 rounded-md space-y-2">
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-3 w-1/2" />
                 </div>
@@ -150,7 +150,7 @@ export default function ChatLogsPage() {
                     key={c.uniqueConvId}
                     onClick={() => setSelectedConvId(c.uniqueConvId)}
                     className={cn(
-                      "w-full text-left px-3 py-3 rounded-lg border border-transparent transition-all group",
+                      "w-full text-left px-4 py-3 rounded-lg border border-transparent transition-all group",
                       "hover:bg-muted/50 hover:border-border/50",
                       isActive ? "bg-muted border-border shadow-sm" : "bg-transparent"
                     )}
@@ -254,7 +254,7 @@ export default function ChatLogsPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 chat-logs-container">
           {isLoadingMessages ? (
             <div className="space-y-3">
               {Array.from({ length: 6 }).map((_, i) => (

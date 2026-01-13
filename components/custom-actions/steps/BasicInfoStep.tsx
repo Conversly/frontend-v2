@@ -30,8 +30,8 @@ export const BasicInfoStep: React.FC<Props> = ({
     return (
         <div className="space-y-6">
             <div className="space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight">Basic Information</h2>
-                <p className="text-muted-foreground">
+                <h2 className="text-xl font-bold tracking-tight">Basic Information</h2>
+                <p className="text-sm text-muted-foreground">
                     Provide a name and description for your custom action.
                 </p>
             </div>
