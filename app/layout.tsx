@@ -9,6 +9,7 @@ import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
 import { defaultMetadata, organizationSchema } from "@/lib/metadata";
+import GlobalChatWidget from "@/components/shared/GlobalChatWidget";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -66,12 +67,7 @@ export default function RootLayout({
             <AppContextProvider>{children}</AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
-        <Script
-          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-pf4u9XgaMufJykfap9O3WjmBK4rQVV.js"
-          data-chatbot-id="qtiggf3l7ptqshvuqm8iktsn"
-          data-testing="false"
-          strategy="afterInteractive"
-        />
+        <GlobalChatWidget />
         <CalendlyWidget />
       </body>
     </html>
