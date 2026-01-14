@@ -1,27 +1,18 @@
 import {
-    MessageSquare,
-
     Activity,
     BarChart3,
-    Database,
     Zap,
-    LogOut,
     User,
     Bot,
-    Play,
-    LineChart,
-    Plug,
-    Share2,
+    Sparkles,
+    LayoutDashboard,
+    PieChart,
+    Hash,
     BrainCircuit,
     MessageCircle,
-    UserPlus,
-    Paintbrush,
-    Hash,
     Upload,
-    Link as LinkIcon,
     HelpCircle,
     FileText,
-    Bell,
     Palette,
     Rocket,
     Home,
@@ -29,13 +20,11 @@ import {
     Phone,
     Settings,
     Code,
-    Sparkles,
-    LayoutDashboard,
-    PieChart,
     Globe,
     Headset,
     Book,
     Users,
+    Plug,
 } from "lucide-react";
 
 export type NavItem = {
@@ -197,6 +186,11 @@ export const getChatbotNavItems = (botId: string): NavItem[] => [
     {
         title: "Deploy",
         url: `/chatbot/${botId}/deploy`,
+        icon: Rocket,
+    },
+    {
+        title: "Deploy Live",
+        url: `/chatbot/${botId}/deploy-live`,
         icon: Rocket,
     },
 ];

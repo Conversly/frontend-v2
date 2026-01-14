@@ -99,7 +99,7 @@ export const getPlaygroundResponse = async (
 
   // Use responseFetch instead of base axios instance
   const res = await responseFetch(
-    API.ENDPOINTS.RESPONSE.PLAYGROUND(),
+    API.ENDPOINTS.RESPONSE.PLAYGROUND.path(),
     {
       method: "POST",
       data: requestBody,
@@ -135,7 +135,7 @@ export const submitFeedback = async (
   };
 
   const res = await responseFetch(
-    API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.FEEDBACK(),
+    API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.FEEDBACK.path(),
     {
       method: "POST",
       data: requestBody,
@@ -148,4 +148,3 @@ export const submitFeedback = async (
 
   return res.data;
 };
-

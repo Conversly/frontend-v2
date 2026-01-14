@@ -1,170 +1,247 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// API Mode Types
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * API access modes:
+ * - 'ALL': Available in both DEV and LIVE modes (read operations)
+ * - 'DEV_ONLY': Only available in DEV mode (mutating operations)
+ */
+export type ApiMode = 'ALL' | 'DEV_ONLY';
+
+/**
+ * Endpoint definition with mode metadata.
+ * Each endpoint specifies its path and which modes it's accessible in.
+ */
+export interface ApiEndpoint {
+  path: () => string;
+  mode: ApiMode;
+}
+
+/**
+ * Helper to create an endpoint that's available in all modes (read operations)
+ */
+const allMode = (path: () => string): ApiEndpoint => ({ path, mode: 'ALL' });
+
+/**
+ * Helper to create an endpoint that's only available in DEV mode (mutations)
+ */
+const devMode = (path: () => string): ApiEndpoint => ({ path, mode: 'DEV_ONLY' });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// API Configuration
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1",
   RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL,
   ENDPOINTS: {
     USER: {
       BASE_URL: () => "/user",
-      GET_USER: () => "/me",  // get
+      GET_USER: allMode(() => "/me"),
     },
     AUTH: {
       BASE_URL: () => "/auth",
-      LOGOUT: () => "/logout",  // post
-      GOOGLE_OAUTH: () => "/google-oauth",
-      SYSTEM_TIME: () => "/system-time",
-      EMAIL_REGISTER: () => '/register',
-      EMAIL_LOGIN: () => '/login',
-      VERIFY_EMAIL: () => '/verify-email',
+      LOGOUT: allMode(() => "/logout"),
+      GOOGLE_OAUTH: allMode(() => "/google-oauth"),
+      SYSTEM_TIME: allMode(() => "/system-time"),
+      EMAIL_REGISTER: allMode(() => '/register'),
+      EMAIL_LOGIN: allMode(() => '/login'),
+      VERIFY_EMAIL: allMode(() => '/verify-email'),
     },
     CHATBOT: {
       BASE_URL: () => "/chatbot",
-      CREATE: () => "/create",  // post
-      GET_CHATBOT: () => "/:chatbotId",  // get
-      GET_CHATBOTS: () => "/",  // get
-      CREATE_TOPIC: () => "/topics",  // post
-      UPDATE_TOPIC: () => "/topics",  // patch
-      DELETE_TOPIC: () => "/topics/:id",  // delete
-      GET_TOPIC: () => "/topics/:id",  // get (single topic by topic ID)
-      GET_TOPICS: () => "/:chatbotId/topics",  // get (all topics for a chatbot)
-
+      CREATE: allMode(() => "/create"),
+      GET_CHATBOT: allMode(() => "/:chatbotId"),
+      GET_CHATBOTS: allMode(() => "/"),
+      CREATE_TOPIC: allMode(() => "/topics"),
+      UPDATE_TOPIC: devMode(() => "/topics"),
+      DELETE_TOPIC: devMode(() => "/topics/:id"),
+      GET_TOPIC: allMode(() => "/topics/:id"),
+      GET_TOPICS: allMode(() => "/:chatbotId/topics")
     },
     DATA_SOURCE: {
       BASE_URL: () => "/datasource",
-      PROCESS: () => "/process",  // post
-      ADD_CITATION: () => "/citation",   // put
-      EMBEDDINGS: () => "/embeddings/:dataSourceId", // get
-      DELETE_KNOWLEDGE: () => "/knowledge",  // delete
-      GET_DATA_SOURCES: () => "/:chatbotId",  // get
+      PROCESS: devMode(() => "/process"),
+      ADD_CITATION: devMode(() => "/citation"),
+      EMBEDDINGS: allMode(() => "/embeddings/:dataSourceId"),
+      DELETE_KNOWLEDGE: devMode(() => "/knowledge"),
+      GET_DATA_SOURCES: allMode(() => "/:chatbotId"),
     },
     ANALYTICS: {
       BASE_URL: () => "/analytics",
-      GET_ANALYTICS: () => "/:chatbotId",
-      GET_SUMMARY: () => "/analytics/summary",
-      GET_CHARTS: () => "/analytics/charts",
-      GET_FEEDBACKS: () => "/analytics/feedbacks",
-      GET_TOPIC_BAR_CHART: () => "/analytics/topics/bar-chart",
-      GET_TOPIC_PIE_CHART: () => "/analytics/topics/pie-chart"
+      GET_ANALYTICS: allMode(() => "/:chatbotId"),
+      GET_SUMMARY: allMode(() => "/analytics/summary"),
+      GET_CHARTS: allMode(() => "/analytics/charts"),
+      GET_FEEDBACKS: allMode(() => "/analytics/feedbacks"),
+      GET_TOPIC_BAR_CHART: allMode(() => "/analytics/topics/bar-chart"),
+      GET_TOPIC_PIE_CHART: allMode(() => "/analytics/topics/pie-chart"),
     },
     ACTIVITY: {
       BASE_URL: () => "/activity",
-      GET_CHATLOGS: () => "/chatlogs",  // get
-      GET_MESSAGES: () => "/messages",  // get
+      GET_CHATLOGS: allMode(() => "/chatlogs"),
+      GET_MESSAGES: allMode(() => "/messages"),
     },
     DEPLOY: {
       BASE_URL: () => "/deploy",
-      WIDGET: () => "/widget/config",  // get
-      UPDATE_CHATBOT_WIDGET: () => "/widget",  // post
-      GET_DOMAIN_ALLOWLIST: () => "/widget/domains",  // get
-      UPDATE_DOMAIN_ALLOWLIST: () => "/widget/domains",  // post
-      GET_API_KEY: () => "/key",  // get
-      CREATE_API_KEY: () => "/key",  // post
+      WIDGET: allMode(() => "/widget/config"),
+      UPDATE_CHATBOT_WIDGET: devMode(() => "/widget"),
+      GET_DOMAIN_ALLOWLIST: allMode(() => "/widget/domains"),
+      UPDATE_DOMAIN_ALLOWLIST: devMode(() => "/widget/domains"),
+      GET_API_KEY: allMode(() => "/key"),
+      CREATE_API_KEY: devMode(() => "/key"),
+      DEPLOY: devMode(() => "/:chatbotId/deploy"),
+      ROLLBACK: devMode(() => "/:chatbotId/rollback-dev"),
+      DEPLOY_STATUS: allMode(() => "/:chatbotId/deploy-status"),
     },
 
     RESPONSE: {
       BASE_URL: () => "/",
-      RESPONSE: () => "/response",
-      PLAYGROUND: () => "/playground/response",  // get
-      FEEDBACK: () => "/feedback",  // post
+      RESPONSE: allMode(() => "/response"),
+      PLAYGROUND: allMode(() => "/playground/response"),
+      FEEDBACK: allMode(() => "/feedback"),
     },
     SETUP: {
       BASE_URL: () => "/setup",
-      FETCH_SITEMAP: () => "/sitemap",  // post
-      ANALYZE_IMAGE: () => "/analyze-image",  // post
-      INFER_PROMPT: () => "/infer-prompt",  // post
-      SEARCH_SOURCES: () => "/search-sources",  // post
-      TOPIC: () => "/topic",  // post
-      WIDGET_CONFIG: () => "/widget-config",  // post
+      FETCH_SITEMAP: allMode(() => "/sitemap"),
+      ANALYZE_IMAGE: allMode(() => "/analyze-image"),
+      INFER_PROMPT: allMode(() => "/infer-prompt"),
+      SEARCH_SOURCES: allMode(() => "/search-sources"),
+      TOPIC: allMode(() => "/topic"),
+      WIDGET_CONFIG: allMode(() => "/widget-config"),
     },
     WHATSAPP: {
       BASE_URL: () => "/whatsapp",
-      CREATE_INTEGRATION: () => "/",  // post
-      UPDATE_INTEGRATION: () => "/",  // patch
-      GET_INTEGRATION: () => "/",  // get
-      DELETE_INTEGRATION: () => "/",  // delete
-      GET_DEFAULT_TEMPLATES: () => "/templates/defaults", // get (query: chatbotId)
-      CREATE_DEFAULT_TEMPLATE: () => "/templates/default", // post
-      UPDATE_TEMPLATE: () => "/templates/:id", // patch
-      GET_TEMPLATES: () => "/templates", // get (query: chatbotId)
-      SYNC_TEMPLATES: () => "/templates/sync", // post (body: chatbotId)
-      CREATE_TEMPLATE: () => "/templates", // post (body: chatbotId, name, category, language, components)
-      DELETE_TEMPLATE: () => "/templates/:id", // delete (query: chatbotId, params: id)
-      SEND_MESSAGE: () => "/send",  // post
-      GET_CHATS: () => "/chats/:chatbotId/:whatsappId",  // get
-      GET_CONTACT_MESSAGES: () => "/chats/:chatbotId/:whatsappId/:contactId",  // get
-      ADD_CONTACT: () => "/contacts/:chatbotId/:whatsappId",  // post
-      GET_ANALYTICS: () => "/analytics/:chatbotId/:whatsappId",  // get
-      GET_ANALYTICS_PER_DAY: () => "/analytics/per-day/:chatbotId/:whatsappId",  // get
-      SEND_TEMPLATE: () => "/send-template", // post
-      TOGGLE_INTERVENTION: () => "/intervene", // post
-      GET_CAMPAIGNS: () => "/campaigns", // get (query: chatbotId)
-      CREATE_CAMPAIGN: () => "/campaigns", // post (body: chatbotId)
-      LAUNCH_CAMPAIGN: () => "/campaigns/:id/launch", // post
-      GET_CAMPAIGN_STATS: () => "/campaigns/:id/stats", // get
-      GET_CONTACTS_LIST: () => "/contacts-list", // get (query: chatbotId)
-      MARK_MESSAGES_READ: () => "/messages/read", // post (query: chatbotId, body: messageIds)
+      CREATE_INTEGRATION: devMode(() => "/"),
+      UPDATE_INTEGRATION: devMode(() => "/"),
+      GET_INTEGRATION: allMode(() => "/"),
+      DELETE_INTEGRATION: devMode(() => "/"),
+      GET_DEFAULT_TEMPLATES: allMode(() => "/templates/defaults"),
+      CREATE_DEFAULT_TEMPLATE: devMode(() => "/templates/default"),
+      UPDATE_TEMPLATE: devMode(() => "/templates/:id"),
+      GET_TEMPLATES: allMode(() => "/templates"),
+      SYNC_TEMPLATES: devMode(() => "/templates/sync"),
+      CREATE_TEMPLATE: devMode(() => "/templates"),
+      DELETE_TEMPLATE: devMode(() => "/templates/:id"),
+      SEND_MESSAGE: devMode(() => "/send"),
+      GET_CHATS: allMode(() => "/chats/:chatbotId/:whatsappId"),
+      GET_CONTACT_MESSAGES: allMode(() => "/chats/:chatbotId/:whatsappId/:contactId"),
+      ADD_CONTACT: devMode(() => "/contacts/:chatbotId/:whatsappId"),
+      GET_ANALYTICS: allMode(() => "/analytics/:chatbotId/:whatsappId"),
+      GET_ANALYTICS_PER_DAY: allMode(() => "/analytics/per-day/:chatbotId/:whatsappId"),
+      SEND_TEMPLATE: devMode(() => "/send-template"),
+      TOGGLE_INTERVENTION: devMode(() => "/intervene"),
+      GET_CAMPAIGNS: allMode(() => "/campaigns"),
+      CREATE_CAMPAIGN: devMode(() => "/campaigns"),
+      LAUNCH_CAMPAIGN: devMode(() => "/campaigns/:id/launch"),
+      GET_CAMPAIGN_STATS: allMode(() => "/campaigns/:id/stats"),
+      GET_CONTACTS_LIST: allMode(() => "/contacts-list"),
+      MARK_MESSAGES_READ: devMode(() => "/messages/read"),
     },
     ACTIONS: {
       BASE_URL: () => "/actions",
-      CREATE: () => "/create", // post
-      LIST: () => "/list", // post
-      GET: () => "/get", // post
-      UPDATE: () => "/update", // post
-      DELETE: () => "/delete", // post
-      TOGGLE: () => "/toggle", // post
-      TEST: () => "/test", // post
-      TEMPLATES: () => "/templates", // get
+      CREATE: devMode(() => "/create"),
+      LIST: allMode(() => "/list"),
+      GET: allMode(() => "/get"),
+      UPDATE: devMode(() => "/update"),
+      DELETE: devMode(() => "/delete"),
+      TOGGLE: devMode(() => "/toggle"),
+      TEST: allMode(() => "/test"),  // Testing is read-like, doesn't persist changes
+      TEMPLATES: allMode(() => "/templates"),
     },
     VOICE: {
       BASE_URL: () => "/voice",
       // Assistant Management
-      LIST_ASSISTANTS: () => "/:chatbotId/assistants",
-      CREATE_ASSISTANT: () => "/assistants",
-      GET_ASSISTANT: () => "/assistants/:assistantId",
-      UPDATE_ASSISTANT: () => "/assistants/:assistantId", // PATCH
-      UPDATE_BEHAVIOR: () => "/assistants/:assistantId/behavior", // PATCH
-      UPDATE_PROVIDER: () => "/assistants/:assistantId/provider", // PATCH
+      LIST_ASSISTANTS: allMode(() => "/:chatbotId/assistants"),
+      CREATE_ASSISTANT: devMode(() => "/assistants"),
+      GET_ASSISTANT: allMode(() => "/assistants/:assistantId"),
+      UPDATE_ASSISTANT: devMode(() => "/assistants/:assistantId"),
+      UPDATE_BEHAVIOR: devMode(() => "/assistants/:assistantId/behavior"),
+      UPDATE_PROVIDER: devMode(() => "/assistants/:assistantId/provider"),
 
       // Token Generation
-      GENERATE_TOKEN: () => "/assistants/:assistantId/token",  // POST
+      GENERATE_TOKEN: devMode(() => "/assistants/:assistantId/token"),
 
-      MAKE_CALL: () => "/:chatbotId/call",
+      MAKE_CALL: devMode(() => "/:chatbotId/call"),
     },
     PROMOTE: {
       BASE_URL: () => "/promote",
-      GET_PRODUCTS: () => "/", // get (all products)
-      CREATE_PRODUCT: () => "/", // post
-      GET_PRODUCT: () => "/:id", // get
-      UPDATE_PRODUCT: () => "/:id", // put
-      UPVOTE_PRODUCT: () => "/:id/upvote", // post
-      ADD_COMMENT: () => "/:id/comment", // post
-      REPLY_COMMENT: () => "/:id/comment/:commentId/reply", // post
-      UPVOTE_COMMENT: () => "/:id/comment/:commentId/upvote", // post
-      UPLOAD: () => "/upload", // post
-      MY_PRODUCTS: () => "/my-products", // get
+      GET_PRODUCTS: allMode(() => "/"),
+      CREATE_PRODUCT: devMode(() => "/"),
+      GET_PRODUCT: allMode(() => "/:id"),
+      UPDATE_PRODUCT: devMode(() => "/:id"),
+      UPVOTE_PRODUCT: devMode(() => "/:id/upvote"),
+      ADD_COMMENT: devMode(() => "/:id/comment"),
+      REPLY_COMMENT: devMode(() => "/:id/comment/:commentId/reply"),
+      UPVOTE_COMMENT: devMode(() => "/:id/comment/:commentId/upvote"),
+      UPLOAD: devMode(() => "/upload"),
+      MY_PRODUCTS: allMode(() => "/my-products"),
     },
     PROMPT: {
       BASE_URL: () => "/prompts",
-      GENERATE: () => "/generate", // get - AI generate prompt
-      GENERATE_CHANNEL: () => "/generate/channel", // get - AI modify channel prompt
-      UPDATE_ALL: () => "/all", // put - update all channels at once
-      UPSERT_CHANNEL: () => "/channel", // post - create or update single channel
-      DELETE_CHANNEL: () => "/channel/:id", // delete
-      GET_ALL: () => "/:chatbotId", // get - all prompts for chatbot
-      GET_CHANNEL: () => "/:chatbotId/channel/:channel", // get - specific channel prompt
+      GENERATE: allMode(() => "/generate"),
+      GENERATE_CHANNEL: allMode(() => "/generate/channel"),
+      UPDATE_ALL: devMode(() => "/all"),
+      UPSERT_CHANNEL: devMode(() => "/channel"),
+      DELETE_CHANNEL: devMode(() => "/channel/:id"),
+      GET_ALL: allMode(() => "/:chatbotId"),
+      GET_CHANNEL: allMode(() => "/:chatbotId/channel/:channel"),
     },
     WAITLIST: {
       BASE_URL: () => "/waitlist",
-      JOIN: () => "/join", // post - join waitlist
+      JOIN: devMode(() => "/join"),
     },
     INVITES: {
       BASE_URL: () => "/invites",
-      CREATE: () => "/create",
-      LIST_INVITES: () => "/list",
-      LIST_USERS: () => "/list/user",
-      CHECK_INVITE: () => "/check-invite",
+      CREATE: devMode(() => "/create"),
+      LIST_INVITES: allMode(() => "/list"),
+      LIST_USERS: allMode(() => "/list/user"),
+      CHECK_INVITE: allMode(() => "/check-invite"),
     },
   },
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Type Exports
+// ─────────────────────────────────────────────────────────────────────────────
+
 export type ApiResponse<T, U = never> =
   | { success: false; message: string; data: U }
   | { success: true; message: string; data: T };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// API Guard Utilities
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Check if an endpoint is accessible in the current mode.
+ * Import useBranchStore dynamically to avoid circular dependencies.
+ */
+export function isEndpointAccessible(endpoint: ApiEndpoint): boolean {
+  if (endpoint.mode === 'ALL') return true;
+
+  // Dynamic import to check branch state
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { useBranchStore } = require('@/store/branch');
+  const activeBranch = useBranchStore.getState().activeBranch;
+
+  return activeBranch === 'DEV';
+}
+
+/**
+ * Get the path from an endpoint (whether it's the new object format or legacy function).
+ * This provides backward compatibility during migration.
+ */
+export function getEndpointPath(endpoint: ApiEndpoint | (() => string)): string {
+  if (typeof endpoint === 'function') {
+    return endpoint();
+  }
+  return endpoint.path();
+}
+
+/**
+ * Check if an endpoint requires DEV mode.
+ */
+export function isDevOnly(endpoint: ApiEndpoint): boolean {
+  return endpoint.mode === 'DEV_ONLY';
+}

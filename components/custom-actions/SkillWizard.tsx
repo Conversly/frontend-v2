@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CustomAction, ToolParameter, CustomActionConfig } from '@/types/customActions';
 import { useTestCustomAction } from '@/services/actions';
-import { TriggerStep } from './steps/TriggerStep';
-import { ExtractDataStep } from './steps/ExtractDataStep';
-import { APIConfigStep } from './steps/APIConfigStep';
-import { TestAndSaveStep } from './steps/TestAndSaveStep';
+import { TriggerSection } from './steps/TriggerStep';
+import { DataExtractionSection } from './steps/ExtractDataStep';
+import { APIConfigSection } from './steps/APIConfigStep';
+import { TestSection } from './steps/TestAndSaveStep';
 import { cn } from '@/lib/utils';
-import { Check, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Zap, Database, Globe, Play, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 
 interface Props {
     chatbotId: string;
@@ -17,14 +18,14 @@ interface Props {
     onCancel: () => void;
 }
 
-type WizardStep = 'trigger' | 'extract' | 'api' | 'test';
+const SECTIONS = [
+    { id: 'trigger', label: 'Trigger', icon: Zap },
+    { id: 'data', label: 'Data', icon: Database },
+    { id: 'api', label: 'API', icon: Globe },
+    { id: 'test', label: 'Test', icon: Play },
+] as const;
 
-const STEP_CONFIG: { key: WizardStep; label: string; number: number }[] = [
-    { key: 'trigger', label: 'Trigger', number: 1 },
-    { key: 'extract', label: 'Variables', number: 2 },
-    { key: 'api', label: 'API', number: 3 },
-    { key: 'test', label: 'Test', number: 4 },
-];
+type SectionId = typeof SECTIONS[number]['id'];
 
 export const SkillWizard: React.FC<Props> = ({
     chatbotId,
@@ -66,11 +67,17 @@ export const SkillWizard: React.FC<Props> = ({
         }
     );
 
-    const [currentStep, setCurrentStep] = useState<WizardStep>('trigger');
-
+    const [activeSection, setActiveSection] = useState<SectionId>('trigger');
     const [testResult, setTestResult] = useState<any>(null);
     const [testing, setTesting] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    const sectionRefs = useRef<Record<SectionId, HTMLDivElement | null>>({
+        trigger: null,
+        data: null,
+        api: null,
+        test: null,
+    });
 
     const { mutateAsync: testAction } = useTestCustomAction();
 
@@ -91,8 +98,6 @@ export const SkillWizard: React.FC<Props> = ({
             return updated;
         });
     };
-
-
 
     const handleTest = async () => {
         setTesting(true);
@@ -133,161 +138,158 @@ export const SkillWizard: React.FC<Props> = ({
         }
     };
 
-    const getStepNumber = (step: WizardStep): number => {
-        const config = STEP_CONFIG.find(s => s.key === step);
-        return config?.number || 0;
+    const scrollToSection = (sectionId: SectionId) => {
+        const element = sectionRefs.current[sectionId];
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setActiveSection(sectionId);
+        }
     };
 
-    const currentStepNumber = getStepNumber(currentStep);
+    // Intersection Observer to track active section
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const sectionId = entry.target.getAttribute('data-section') as SectionId;
+                        if (sectionId) {
+                            setActiveSection(sectionId);
+                        }
+                    }
+                });
+            },
+            { threshold: 0.3, rootMargin: '-100px 0px -50% 0px' }
+        );
 
+        Object.values(sectionRefs.current).forEach((ref) => {
+            if (ref) observer.observe(ref);
+        });
 
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <div className="h-[calc(100vh-120px)] flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6 px-1">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={onCancel}>
+            <div className="flex items-center justify-between mb-4 px-1">
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h2 className="text-lg font-semibold">
-                            {existingAction ? 'Edit Skill' : 'Teach New Skill'}
+                        <h2 className="text-base font-semibold">
+                            {existingAction ? 'Edit Skill' : 'Create Custom Action'}
                         </h2>
-                        <p className="text-sm text-muted-foreground">
-                            Configure your bot to call external APIs
+                        <p className="text-xs text-muted-foreground">
+                            Configure how your bot calls external APIs
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-                {/* Left Panel - Form (Scrollable) */}
-                <div className="lg:col-span-8 flex flex-col min-h-0 border rounded-lg bg-background shadow-sm">
-                    {/* Progress Steps */}
-                    <div className="p-4 border-b bg-muted/30">
-                        <div className="flex items-center justify-between relative max-w-lg mx-auto">
-                            <div className="absolute left-0 top-1/2 w-full h-0.5 bg-muted -z-10" />
-                            {STEP_CONFIG.map((step) => (
-                                <div
-                                    key={step.key}
+            <div className="flex-1 flex gap-6 min-h-0">
+                {/* Left Sidebar */}
+                <div className="w-48 flex-shrink-0 flex flex-col">
+                    <div className="flex-1 space-y-1">
+                        {SECTIONS.map((section) => {
+                            const Icon = section.icon;
+                            const isActive = activeSection === section.id;
+                            return (
+                                <button
+                                    key={section.id}
+                                    onClick={() => scrollToSection(section.id)}
                                     className={cn(
-                                        "flex flex-col items-center gap-2 bg-background px-2 cursor-pointer",
-                                        currentStepNumber >= step.number ? "text-primary" : "text-muted-foreground"
+                                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left",
+                                        isActive
+                                            ? "bg-primary/10 text-primary"
+                                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
                                     )}
-                                    onClick={() => step.number < currentStepNumber && setCurrentStep(step.key)}
                                 >
-                                    <div
-                                        className={cn(
-                                            "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors text-sm font-medium",
-                                            currentStepNumber >= step.number
-                                                ? "border-primary bg-primary text-primary-foreground"
-                                                : "border-muted-foreground bg-background"
-                                        )}
-                                    >
-                                        {currentStepNumber > step.number ? <Check className="h-4 w-4" /> : step.number}
-                                    </div>
-                                    <span className="text-[10px] font-medium uppercase tracking-wider">
-                                        {step.label}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
+                                    <Icon className="h-4 w-4 flex-shrink-0" />
+                                    {section.label}
+                                </button>
+                            );
+                        })}
                     </div>
 
-                    {/* Form Content */}
-                    <ScrollArea className="flex-1">
-                        <div className="p-6">
-                            {currentStep === 'trigger' && (
-                                <TriggerStep
+                    <Separator className="my-4" />
+
+                    <Button
+                        onClick={handleSave}
+                        disabled={saving || !formData.apiConfig.baseUrl}
+                        className="w-full"
+                        size="sm"
+                    >
+                        {saving ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="mr-2 h-4 w-4" />
+                                Save Action
+                            </>
+                        )}
+                    </Button>
+                </div>
+
+                {/* Main Content */}
+                <div className="flex-1 border rounded-lg bg-background shadow-sm overflow-hidden">
+                    <ScrollArea className="h-full">
+                        <div className="p-6 space-y-8">
+                            {/* Trigger Section */}
+                            <div
+                                ref={(el) => { sectionRefs.current.trigger = el; }}
+                                data-section="trigger"
+                            >
+                                <TriggerSection
                                     formData={formData}
                                     updateField={updateField}
-                                    onNext={() => setCurrentStep('extract')}
-                                    onBack={onCancel}
                                 />
-                            )}
+                            </div>
 
-                            {currentStep === 'extract' && (
-                                <ExtractDataStep
+                            <Separator />
+
+                            {/* Data Extraction Section */}
+                            <div
+                                ref={(el) => { sectionRefs.current.data = el; }}
+                                data-section="data"
+                            >
+                                <DataExtractionSection
                                     formData={formData}
                                     updateField={updateField}
-                                    onNext={() => setCurrentStep('api')}
-                                    onBack={() => setCurrentStep('trigger')}
                                 />
-                            )}
+                            </div>
 
-                            {currentStep === 'api' && (
-                                <APIConfigStep
+                            <Separator />
+
+                            {/* API Config Section */}
+                            <div
+                                ref={(el) => { sectionRefs.current.api = el; }}
+                                data-section="api"
+                            >
+                                <APIConfigSection
                                     formData={formData}
                                     updateField={updateField}
-                                    onNext={() => setCurrentStep('test')}
-                                    onBack={() => setCurrentStep('extract')}
                                 />
-                            )}
+                            </div>
 
-                            {currentStep === 'test' && (
-                                <TestAndSaveStep
+                            <Separator />
+
+                            {/* Test Section */}
+                            <div
+                                ref={(el) => { sectionRefs.current.test = el; }}
+                                data-section="test"
+                            >
+                                <TestSection
                                     formData={formData}
                                     testResult={testResult}
                                     testing={testing}
-                                    saving={saving}
                                     onTest={handleTest}
-                                    onSave={handleSave}
-                                    onBack={() => setCurrentStep('api')}
                                 />
-                            )}
-                        </div>
-                    </ScrollArea>
-                </div>
-
-                {/* Right Panel - Preview */}
-                <div className="hidden lg:block lg:col-span-4 flex flex-col min-h-0 border rounded-lg bg-muted/30">
-                    <div className="p-4 border-b bg-background/50 backdrop-blur">
-                        <h3 className="font-semibold flex items-center gap-2">
-                            <span className="text-xl">💡</span>
-                            Skill Preview
-                        </h3>
-                    </div>
-                    <ScrollArea className="flex-1 p-4">
-                        <div className="space-y-4 text-sm">
-                            {/* Trigger Examples */}
-                            {formData.triggerExamples && formData.triggerExamples.length > 0 && (
-                                <div>
-                                    <h4 className="font-medium text-muted-foreground mb-2">Triggers when user says:</h4>
-                                    <div className="space-y-1">
-                                        {formData.triggerExamples.map((ex, i) => (
-                                            <div key={i} className="text-xs bg-background rounded px-2 py-1">
-                                                "{ex}"
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Variables */}
-                            {formData.parameters.length > 0 && (
-                                <div>
-                                    <h4 className="font-medium text-muted-foreground mb-2">Extracts:</h4>
-                                    <div className="flex flex-wrap gap-1">
-                                        {formData.parameters.map((p, i) => (
-                                            <span key={i} className="text-xs bg-primary/10 text-primary rounded px-2 py-0.5 font-mono">
-                                                {`{{${p.name}}}`}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* API */}
-                            {formData.apiConfig.baseUrl && (
-                                <div>
-                                    <h4 className="font-medium text-muted-foreground mb-2">Calls:</h4>
-                                    <div className="text-xs bg-background rounded px-2 py-1 font-mono break-all">
-                                        <span className="font-semibold text-primary">{formData.apiConfig.method}</span>{' '}
-                                        {formData.apiConfig.baseUrl}{formData.apiConfig.endpoint}
-                                    </div>
-                                </div>
-                            )}
+                            </div>
                         </div>
                     </ScrollArea>
                 </div>

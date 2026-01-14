@@ -13,7 +13,7 @@ export const getChatlogs = async (chatbotId: string): Promise<ChatlogItem[]> => 
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
-    const endpoint =  API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.GET_CHATLOGS();
+    const endpoint = API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.GET_CHATLOGS.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}`;
 
     const res = (await fetch(urlWithParams, {
@@ -43,7 +43,7 @@ export const getMessages = async (
       throw new Error("uniqueConvId is required");
     }
 
-    const endpoint = API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.GET_MESSAGES();
+    const endpoint = API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.GET_MESSAGES.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(
       chatbotId,
     )}&uniqueConvId=${encodeURIComponent(uniqueConvId)}`;
@@ -62,5 +62,3 @@ export const getMessages = async (
     throw new Error(error.message || "Failed to fetch messages");
   }
 };
-
-

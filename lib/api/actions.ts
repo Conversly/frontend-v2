@@ -1,4 +1,4 @@
-import { fetch } from "./axios";
+import { fetch, guardedFetch, getPath } from "./axios";
 import { API, ApiResponse } from "./config";
 import {
     CreateCustomActionInput,
@@ -13,9 +13,11 @@ import {
 } from "@/types/customActions";
 
 export const createCustomAction = async (data: CreateCustomActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.CREATE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.CREATE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -27,7 +29,7 @@ export const createCustomAction = async (data: CreateCustomActionInput) => {
 
 export const getCustomActions = async (data: GetActionsQuery) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.LIST(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.LIST.path(),
         data
     ).then((res) => res.data)) as ApiResponse<CustomAction[]>;
 
@@ -40,7 +42,7 @@ export const getCustomActions = async (data: GetActionsQuery) => {
 
 export const getCustomAction = async (chatbotId: string, actionId: string) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.GET(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.GET.path(),
         { chatbotId, actionId }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
@@ -52,9 +54,11 @@ export const getCustomAction = async (chatbotId: string, actionId: string) => {
 };
 
 export const updateCustomAction = async (data: UpdateCustomActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.UPDATE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.UPDATE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -65,9 +69,11 @@ export const updateCustomAction = async (data: UpdateCustomActionInput) => {
 };
 
 export const deleteCustomAction = async (chatbotId: string, actionId: string) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.DELETE(),
-        { chatbotId, actionId }
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.DELETE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data: { chatbotId, actionId } }
     ).then((res) => res.data)) as ApiResponse<null>;
 
     if (!res.success) {
@@ -78,9 +84,11 @@ export const deleteCustomAction = async (chatbotId: string, actionId: string) =>
 };
 
 export const toggleCustomAction = async (data: ToggleActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TOGGLE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.TOGGLE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -92,7 +100,7 @@ export const toggleCustomAction = async (data: ToggleActionInput) => {
 
 export const testCustomAction = async (data: TestActionInput) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEST(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEST.path(),
         data
     ).then((res) => res.data)) as ApiResponse<TestActionResponse>;
 
@@ -105,7 +113,7 @@ export const testCustomAction = async (data: TestActionInput) => {
 
 export const getActionTemplates = async (params?: GetTemplatesQuery) => {
     const res = (await fetch.get(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEMPLATES(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEMPLATES.path(),
         { params }
     ).then((res) => res.data)) as ApiResponse<ActionTemplate[]>;
 

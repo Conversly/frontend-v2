@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { useDataSourcesStore, usePendingSources, useIsLoading } from '@/store/chatbot/data-sources';
 import { useProcessDataSource } from '@/services/datasource';
 import { ProcessRequest, DocumentData } from '@/types/datasource';
+import { useEditGuard } from '@/store/branch';
 
 interface DataSourcesProps {
   chatbotId: string;
@@ -96,10 +97,14 @@ interface ProductivityDataSourcesProps {
 
 export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesProps) {
   const { addPendingSource, uploadFile, setShowQADialog } = useDataSourcesStore();
+  const { guardEdit, isLiveMode } = useEditGuard();
 
   const handleAddFile = async (files: FileList) => {
     const file = files[0];
     if (!file) return;
+
+    // Guard edit in LIVE mode
+    if (!guardEdit(() => true)) return;
 
     const parsed = documentSchema.safeParse({ name: file.name, size: file.size });
     if (!parsed.success) {
@@ -111,14 +116,14 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
 
     try {
       const blobData = await uploadFile(file);
-      addPendingSource({ 
-        type: 'Document', 
-        name: file.name, 
+      addPendingSource({
+        type: 'Document',
+        name: file.name,
         content: file,
-        blobData 
+        blobData
       });
       toast.success('File uploaded successfully');
-      
+
       const fileInput = document.getElementById(`file-upload-document`) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = '';
@@ -128,6 +133,10 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
         description: error instanceof Error ? error.message : 'Unknown error',
       });
     }
+  };
+
+  const handleQAClick = () => {
+    guardEdit(() => setShowQADialog(true));
   };
 
   return (
@@ -142,7 +151,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
             className="group relative"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-            
+
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
                 <Icon className="w-6 h-6 text-pink-500" />
@@ -164,8 +173,9 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                   <div>
                     <Button
                       variant="outline"
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
-                      onClick={() => document.getElementById(`file-upload-${source.id}`)?.click()}
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group disabled:opacity-50"
+                      onClick={() => !isLiveMode && document.getElementById(`file-upload-${source.id}`)?.click()}
+                      disabled={isLiveMode}
                     >
                       <FileText className="w-4 h-4 mr-2" />
                       Upload Document
@@ -174,6 +184,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                         type="file"
                         className="hidden"
                         accept=".pdf,.docx,.txt,.md"
+                        disabled={isLiveMode}
                         onChange={(e) => {
                           if (e.target.files?.length) {
                             handleAddFile(e.target.files);
@@ -188,8 +199,9 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                   </div>
                 ) : source.id === 'qa' ? (
                   <Button
-                    onClick={() => setShowQADialog(true)}
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
+                    onClick={handleQAClick}
+                    disabled={isLiveMode}
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group disabled:opacity-50"
                   >
                     Add Q&A Pairs
                     <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
@@ -205,8 +217,8 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                   </Link>
                 ) : null
               ) : (
-                <Button 
-                  disabled 
+                <Button
+                  disabled
                   className="w-full bg-gray-800 text-gray-400 cursor-not-allowed rounded-xl"
                 >
                   Coming Soon
@@ -222,9 +234,13 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
 
 export function WebDataSources({ chatbotId }: DataSourcesProps) {
   const { addPendingSource } = useDataSourcesStore();
+  const { guardEdit, isLiveMode } = useEditGuard();
 
   const handleAddURL = (url: string) => {
     if (url.trim()) {
+      // Guard edit in LIVE mode
+      if (!guardEdit(() => true)) return;
+
       const parsed = urlSchema.safeParse(url);
       if (!parsed.success) {
         toast.error('Invalid URL', {
@@ -252,7 +268,7 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
             className="group relative"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-            
+
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
                 <Icon className="w-6 h-6 text-pink-500" />
@@ -281,14 +297,16 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
                       }
                     }}>
                       <Input
-                        type="text" 
-                        placeholder="Enter URL"
-                        className="w-full mb-2 bg-gray-800/50 border-gray-700/50 text-white"
+                        type="text"
+                        placeholder={isLiveMode ? "Switch to DEV mode to add URLs" : "Enter URL"}
+                        className="w-full mb-2 bg-gray-800/50 border-gray-700/50 text-white disabled:opacity-50"
+                        disabled={isLiveMode}
                       />
                       <Button
                         type="submit"
                         variant="outline"
-                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group disabled:opacity-50"
+                        disabled={isLiveMode}
                       >
                         <Globe className="w-4 h-4 mr-2" />
                         Add URL
@@ -301,8 +319,8 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
                   </div>
                 ) : null
               ) : (
-                <Button 
-                  disabled 
+                <Button
+                  disabled
                   className="w-full bg-gray-800 text-gray-400 cursor-not-allowed rounded-xl"
                 >
                   Coming Soon
@@ -329,7 +347,7 @@ export function CloudDataSources({ chatbotId }: DataSourcesProps) {
             className="group relative"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-            
+
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
                 <Icon className="w-6 h-6 text-pink-500" />
@@ -345,8 +363,8 @@ export function CloudDataSources({ chatbotId }: DataSourcesProps) {
               <p className="font-sans text-base text-gray-400 mb-4">
                 {source.description}
               </p>
-              <Button 
-                disabled 
+              <Button
+                disabled
                 className="w-full bg-muted text-muted-foreground cursor-not-allowed rounded-xl"
               >
                 Coming Soon
@@ -372,7 +390,7 @@ export function BusinessDataSources({ chatbotId }: DataSourcesProps) {
             className="group relative"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-purple-500/10 rounded-2xl" />
-            
+
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
                 <Icon className="w-6 h-6 text-pink-500" />
@@ -388,8 +406,8 @@ export function BusinessDataSources({ chatbotId }: DataSourcesProps) {
               <p className="font-sans text-base text-gray-400 mb-4">
                 {source.description}
               </p>
-              <Button 
-                disabled 
+              <Button
+                disabled
                 className="w-full bg-muted text-muted-foreground cursor-not-allowed rounded-xl"
               >
                 Coming Soon
