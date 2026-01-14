@@ -83,24 +83,10 @@ export default function ActionsPage() {
 
   return (
     <div className="w-full h-full bg-background overflow-hidden flex flex-col">
-      <div className="mb-8 px-4">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Chatbot Actions and tools</h1>
-        <p className="text-muted-foreground">
-          Teach your bot new skills to fetch data, submit forms, or call your APIs during conversations.
-        </p>
-      </div>
 
       {view === 'list' ? (
         <div className="flex-1 overflow-y-auto">
           <div className="container mx-auto px-6 py-6 max-w-[1920px]">
-            {/* Main Page Header */}
-            <div className="page-header">
-              <h1 className="page-title">Custom Actions</h1>
-              <p className="page-subtitle">
-                Connect your chatbot to external APIs and services. Define actions that the AI can call during conversations.
-              </p>
-              <Separator className="mt-2" />
-            </div>
 
             <ActionList
               actions={actions || []}

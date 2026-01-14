@@ -142,11 +142,6 @@ export default function PlaygroundPage() {
 
   return (
     <div className="flex h-full flex-col bg-background">
-      <div className="page-header px-6 pt-4 mb-0">
-        <h1 className="page-title">Playground</h1>
-        <p className="page-subtitle">Test your chatbot configuration</p>
-        <Separator className="mt-2" />
-      </div>
       {/* Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
