@@ -10,6 +10,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSetupStore } from "@/store/chatbot/setup";
+import { useBranchStore } from "@/store/branch";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -28,6 +29,7 @@ export default function ChatbotsPage() {
   const { data: chatbots, isLoading, error } = useGetChatbots();
   const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
   const resetSetup = useSetupStore((s) => s.reset);
+  const switchBranch = useBranchStore((s) => s.switchBranch);
 
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -64,6 +66,8 @@ export default function ChatbotsPage() {
   const handleCreateChatbot = () => {
     // Reset any existing setup state to start fresh
     resetSetup();
+    // Ensure we are in DEV mode for setup
+    switchBranch('DEV');
     // Navigate to setup page
     router.push("/chatbot/create/setup");
   };

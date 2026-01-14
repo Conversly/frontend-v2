@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useCustomizationStore } from "@/store/chatbot/customization";
+import { useBranchStore } from "@/store/branch";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
 import { QUERY_KEY } from "@/utils/query-key";
 import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecase";
@@ -60,6 +61,12 @@ export default function SetupWizardPage() {
   const isSubmitting = useSetupStore((s) => s.isSubmitting);
   const startProcessing = useSetupStore((s) => s.startProcessing);
   const reset = useSetupStore((s) => s.reset);
+  const switchBranch = useBranchStore((s) => s.switchBranch);
+
+  // Ensure we are in DEV mode when entering setup
+  useEffect(() => {
+    switchBranch('DEV');
+  }, [switchBranch]);
 
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
