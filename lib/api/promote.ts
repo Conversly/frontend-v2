@@ -1,10 +1,10 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import { ProductLaunchData, Comment, CreateProductLaunchInput, UpdateProductLaunchInput } from "@/types/promote";
 
 export const getProducts = async (): Promise<ProductLaunchData[]> => {
     const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + API.ENDPOINTS.PROMOTE.GET_PRODUCTS(),
+        API.ENDPOINTS.PROMOTE.BASE_URL() + API.ENDPOINTS.PROMOTE.GET_PRODUCTS.path(),
         {
             method: "GET",
         }
@@ -19,7 +19,7 @@ export const getProducts = async (): Promise<ProductLaunchData[]> => {
 
 export const getMyProducts = async (): Promise<ProductLaunchData[]> => {
     const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + API.ENDPOINTS.PROMOTE.MY_PRODUCTS(),
+        API.ENDPOINTS.PROMOTE.BASE_URL() + API.ENDPOINTS.PROMOTE.MY_PRODUCTS.path(),
         {
             method: "GET",
         }
@@ -33,7 +33,7 @@ export const getMyProducts = async (): Promise<ProductLaunchData[]> => {
 };
 
 export const getProduct = async (id: string): Promise<ProductLaunchData> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.GET_PRODUCT().replace(":id", id);
+    const endpoint = API.ENDPOINTS.PROMOTE.GET_PRODUCT.path().replace(":id", id);
     const res = await fetch(
         API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
         {
@@ -49,8 +49,10 @@ export const getProduct = async (id: string): Promise<ProductLaunchData> => {
 };
 
 export const createProduct = async (data: CreateProductLaunchInput): Promise<ProductLaunchData> => {
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + API.ENDPOINTS.PROMOTE.CREATE_PRODUCT(),
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.CREATE_PRODUCT,
+        API.ENDPOINTS.PROMOTE.BASE_URL(),
         {
             method: "POST",
             data,
@@ -65,9 +67,11 @@ export const createProduct = async (data: CreateProductLaunchInput): Promise<Pro
 };
 
 export const updateProduct = async (id: string, data: UpdateProductLaunchInput): Promise<ProductLaunchData> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.UPDATE_PRODUCT().replace(":id", id);
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
+    const endpoint = API.ENDPOINTS.PROMOTE.UPDATE_PRODUCT.path().replace(":id", id);
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.UPDATE_PRODUCT,
+        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint.replace(API.ENDPOINTS.PROMOTE.UPDATE_PRODUCT.path(), ''),
         {
             method: "PUT",
             data,
@@ -82,9 +86,11 @@ export const updateProduct = async (id: string, data: UpdateProductLaunchInput):
 };
 
 export const upvoteProduct = async (id: string): Promise<{ likesCount: number }> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.UPVOTE_PRODUCT().replace(":id", id);
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
+    const endpoint = API.ENDPOINTS.PROMOTE.UPVOTE_PRODUCT.path().replace(":id", id);
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.UPVOTE_PRODUCT,
+        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint.replace(API.ENDPOINTS.PROMOTE.UPVOTE_PRODUCT.path(), ''),
         {
             method: "POST",
         }
@@ -98,9 +104,11 @@ export const upvoteProduct = async (id: string): Promise<{ likesCount: number }>
 };
 
 export const addComment = async (id: string, data: { content: string; author: Comment['author'] }): Promise<Comment> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.ADD_COMMENT().replace(":id", id);
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
+    const endpoint = API.ENDPOINTS.PROMOTE.ADD_COMMENT.path().replace(":id", id);
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.ADD_COMMENT,
+        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint.replace(API.ENDPOINTS.PROMOTE.ADD_COMMENT.path(), ''),
         {
             method: "POST",
             data,
@@ -115,11 +123,13 @@ export const addComment = async (id: string, data: { content: string; author: Co
 };
 
 export const replyToComment = async (id: string, commentId: string, data: { content: string; author: Comment['author'] }): Promise<Comment> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.REPLY_COMMENT()
+    const endpoint = API.ENDPOINTS.PROMOTE.REPLY_COMMENT.path()
         .replace(":id", id)
         .replace(":commentId", commentId);
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.REPLY_COMMENT,
+        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint.replace(API.ENDPOINTS.PROMOTE.REPLY_COMMENT.path(), ''),
         {
             method: "POST",
             data,
@@ -134,11 +144,13 @@ export const replyToComment = async (id: string, commentId: string, data: { cont
 };
 
 export const upvoteComment = async (id: string, commentId: string): Promise<{ upvotes: number }> => {
-    const endpoint = API.ENDPOINTS.PROMOTE.UPVOTE_COMMENT()
+    const endpoint = API.ENDPOINTS.PROMOTE.UPVOTE_COMMENT.path()
         .replace(":id", id)
         .replace(":commentId", commentId);
-    const res = await fetch(
-        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint,
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.PROMOTE.UPVOTE_COMMENT,
+        API.ENDPOINTS.PROMOTE.BASE_URL() + endpoint.replace(API.ENDPOINTS.PROMOTE.UPVOTE_COMMENT.path(), ''),
         {
             method: "POST",
         }
@@ -157,7 +169,7 @@ export const uploadFile = async (file: File): Promise<{ url: string; pathname: s
 
     const timestamp = Date.now();
     const uniqueFilename = `${timestamp}-${file.name}`;
-    const endpoint = `${API.ENDPOINTS.PROMOTE.BASE_URL()}${API.ENDPOINTS.PROMOTE.UPLOAD()}?filename=${encodeURIComponent(uniqueFilename)}`;
+    const endpoint = `${API.ENDPOINTS.PROMOTE.BASE_URL()}${API.ENDPOINTS.PROMOTE.UPLOAD.path()}?filename=${encodeURIComponent(uniqueFilename)}`;
 
     // We need to bypass the default axios wrapper if it forces JSON, or configure it to handle binary
     // But let's try using the wrapper first, or use fetch directly if needed.

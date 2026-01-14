@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { BranchSwitcher } from "@/components/shared/BranchSwitcher";
 import React from "react";
 
 // Map route segments to readable labels
@@ -91,32 +92,35 @@ export function DashboardHeader() {
   const currentPageName = breadcrumbs[breadcrumbs.length - 1]?.label || "Dashboard";
 
   return (
-    <div className="flex items-center gap-2">
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 h-4" />
-      <Breadcrumb className="breadcrumb">
-        <BreadcrumbList>
-          {breadcrumbs.map((crumb, index) => (
-            <React.Fragment key={index}>
-              <BreadcrumbItem>
-                {crumb.path ? (
-                  <BreadcrumbLink
-                    onClick={() => router.push(crumb.path!)}
-                    className="cursor-pointer"
-                  >
-                    {crumb.label}
-                  </BreadcrumbLink>
-                ) : (
-                  <BreadcrumbPage className="breadcrumb-current">
-                    {crumb.label}
-                  </BreadcrumbPage>
-                )}
-              </BreadcrumbItem>
-              {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-            </React.Fragment>
-          ))}
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="flex items-center justify-between w-full">
+      <div className="flex items-center gap-2">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumb className="breadcrumb">
+          <BreadcrumbList>
+            {breadcrumbs.map((crumb, index) => (
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
+                  {crumb.path ? (
+                    <BreadcrumbLink
+                      onClick={() => router.push(crumb.path!)}
+                      className="cursor-pointer"
+                    >
+                      {crumb.label}
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage className="breadcrumb-current">
+                      {crumb.label}
+                    </BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+                {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+              </React.Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <BranchSwitcher />
     </div>
   );
 }

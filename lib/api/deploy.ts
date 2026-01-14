@@ -1,10 +1,10 @@
-import { fetch } from '@/lib/api/axios';
+import { fetch, guardedFetch } from '@/lib/api/axios';
 import { API, ApiResponse } from '@/lib/api/config';
 import { ChatbotCustomizationPartial, ChatbotCustomizationPayload } from '@/types/customization';
 
 export type GetWidgetResponse = ChatbotCustomizationPayload;
 
-export interface UpdateWidgetRequest extends ChatbotCustomizationPartial {}
+export interface UpdateWidgetRequest extends ChatbotCustomizationPartial { }
 export type UpdateWidgetResponse = ChatbotCustomizationPayload;
 
 // Domain Types
@@ -39,7 +39,7 @@ export interface ApiKeyGetResponse {
 }
 
 export const getWidgetConfig = async (chatbotId: string): Promise<GetWidgetResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.WIDGET();
+	const endpoint = API.ENDPOINTS.DEPLOY.WIDGET.path();
 	const res = await fetch(
 		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
 		{
@@ -61,9 +61,10 @@ export const updateWidgetConfig = async (
 	chatbotId: string,
 	partial: UpdateWidgetRequest
 ): Promise<UpdateWidgetResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.UPDATE_CHATBOT_WIDGET();
-	const res = await fetch(
-		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+	// DEV_ONLY - Uses guardedFetch for automatic mode checking
+	const res = await guardedFetch(
+		API.ENDPOINTS.DEPLOY.UPDATE_CHATBOT_WIDGET,
+		API.ENDPOINTS.DEPLOY.BASE_URL(),
 		{
 			method: 'POST',
 			data: {
@@ -81,7 +82,7 @@ export const updateWidgetConfig = async (
 
 // Domain Management Functions
 export const getDomainAllowlist = async (chatbotId: string): Promise<AllowedDomainsResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.GET_DOMAIN_ALLOWLIST();
+	const endpoint = API.ENDPOINTS.DEPLOY.GET_DOMAIN_ALLOWLIST.path();
 	const res = await fetch(
 		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
 		{
@@ -102,9 +103,10 @@ export const addDomainToAllowlist = async (
 	chatbotId: string,
 	domain: string
 ): Promise<AddDomainResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.UPDATE_DOMAIN_ALLOWLIST();
-	const res = await fetch(
-		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+	// DEV_ONLY - Uses guardedFetch for automatic mode checking
+	const res = await guardedFetch(
+		API.ENDPOINTS.DEPLOY.UPDATE_DOMAIN_ALLOWLIST,
+		API.ENDPOINTS.DEPLOY.BASE_URL(),
 		{
 			method: 'POST',
 			data: { domain },
@@ -122,7 +124,7 @@ export const addDomainToAllowlist = async (
 
 // API Key Management Functions
 export const getApiKey = async (chatbotId: string): Promise<ApiKeyGetResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.GET_API_KEY();
+	const endpoint = API.ENDPOINTS.DEPLOY.GET_API_KEY.path();
 	const res = await fetch(
 		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
 		{
@@ -140,9 +142,10 @@ export const getApiKey = async (chatbotId: string): Promise<ApiKeyGetResponse> =
 };
 
 export const createApiKey = async (chatbotId: string): Promise<ApiKeyResponse> => {
-	const endpoint = API.ENDPOINTS.DEPLOY.CREATE_API_KEY();
-	const res = await fetch(
-		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+	// DEV_ONLY - Uses guardedFetch for automatic mode checking
+	const res = await guardedFetch(
+		API.ENDPOINTS.DEPLOY.CREATE_API_KEY,
+		API.ENDPOINTS.DEPLOY.BASE_URL(),
 		{
 			method: 'POST',
 			params: {
@@ -156,4 +159,3 @@ export const createApiKey = async (chatbotId: string): Promise<ApiKeyResponse> =
 	}
 	return res.data;
 };
-

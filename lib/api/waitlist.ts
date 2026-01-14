@@ -23,7 +23,7 @@ export const joinWaitlist = async (
   request: JoinWaitlistRequest
 ): Promise<ApiResponse<JoinWaitlistResponse>> => {
   const res = await fetch(
-    API.ENDPOINTS.WAITLIST.BASE_URL() + API.ENDPOINTS.WAITLIST.JOIN(),
+    API.ENDPOINTS.WAITLIST.BASE_URL() + API.ENDPOINTS.WAITLIST.JOIN.path(),
     {
       method: "POST",
       data: request,
@@ -36,4 +36,3 @@ export const joinWaitlist = async (
 
   return res;
 };
-

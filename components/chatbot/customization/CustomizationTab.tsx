@@ -44,6 +44,7 @@ import { ContentTab } from './ContentTab';
 import { AppearanceTab } from './AppearanceTab';
 import { AITab } from './AITab';
 import { IntegrationTab } from './IntegrationTab';
+import { useEditGuard } from '@/store/branch';
 
 interface CustomizationTabProps {
   chatbotId: string;
@@ -90,6 +91,9 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     generateApiKey,
   } = useCustomizationStore();
 
+  // Edit guarding for LIVE mode
+  const { guardEdit, isLiveMode } = useEditGuard();
+
   // Local default to seed the store on first mount
   const defaultConfig: UIConfigInput = {
     DisplayName: 'Support Bot',
@@ -131,15 +135,16 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
   const config: UIConfigInput = draft ?? defaultConfig;
 
-  // Helper to update draft
+  // Helper to update draft (guarded)
   const updateConfig = (updates: Partial<UIConfigInput>) => {
-    setDraftConfig({ ...config, ...updates });
+    guardEdit(() => setDraftConfig({ ...config, ...updates }));
   };
 
-  // Icon upload handler
+  // Icon upload handler (guarded)
   const handleIconUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!guardEdit(() => true)) return;
     try {
       const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
@@ -147,20 +152,22 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
       });
       if (!res.ok) throw new Error('Upload failed');
       const blob = await res.json();
-      updateConfig({ PrimaryIcon: blob.url as string, widgeticon: '' });
+      setDraftConfig({ ...config, PrimaryIcon: blob.url as string, widgeticon: '' });
       toast.success('Profile picture uploaded');
     } catch (e: any) {
       toast.error(e?.message || 'Upload failed');
     }
   };
 
-  // Domain management handler
+  // Domain management handler (guarded)
   const handleAddDomain = async (domain: string) => {
+    if (!guardEdit(() => true)) return;
     await addDomain(chatbotId, domain);
   };
 
-  // API key generation handler
+  // API key generation handler (guarded)
   const handleGenerateApiKey = async () => {
+    if (!guardEdit(() => true)) return;
     await generateApiKey(chatbotId);
   };
 
@@ -246,7 +253,8 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                   type="checkbox"
                   checked={config.widgetEnabled}
                   onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
-                  className="w-4 h-4 rounded border-border bg-muted/50 accent-primary"
+                  disabled={isLiveMode}
+                  className="w-4 h-4 rounded border-border bg-muted/50 accent-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
               <Separator orientation="vertical" className="h-6" />
@@ -254,16 +262,17 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => resetDraftFromSaved()}
-                  className="border-border text-foreground hover:bg-muted/50"
+                  onClick={() => guardEdit(() => resetDraftFromSaved())}
+                  disabled={isLiveMode}
+                  className="border-border text-foreground hover:bg-muted/50 disabled:opacity-50"
                 >
                   Reset
                 </Button>
                 <Button
                   size="sm"
-                  disabled={isSaving}
-                  onClick={() => setShowSaveConfirm(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[70px]"
+                  disabled={isSaving || isLiveMode}
+                  onClick={() => guardEdit(() => setShowSaveConfirm(true))}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[70px] disabled:opacity-50"
                 >
                   {isSaving ? 'Saving…' : 'Save'}
                 </Button>

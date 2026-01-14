@@ -1,10 +1,10 @@
 import { fetch } from "@/lib/api/axios";
 import { API } from "@/lib/api/config";
-import { 
-  GetAnalyticsResponse, 
-  AnalyticsData, 
-  GetSummaryResponse, 
-  GetFeedbacksResponse, 
+import {
+  GetAnalyticsResponse,
+  AnalyticsData,
+  GetSummaryResponse,
+  GetFeedbacksResponse,
   GetChartsResponse,
   TopicBarChartData,
   TopicPieChartData,
@@ -14,7 +14,7 @@ import {
 
 export const getAnalytics = async (chatbotId: string): Promise<AnalyticsData> => {
   try {
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_ANALYTICS().replace(
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_ANALYTICS.path().replace(
       ":chatbotId",
       chatbotId
     );
@@ -39,10 +39,10 @@ export const getAnalyticsSummary = async (chatbotId: string): Promise<any> => {
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_SUMMARY();
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_SUMMARY.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}`;
     console.log('Summary API - Final URL:', urlWithParams);
-    
+
     const res = await fetch(urlWithParams, {
       method: "GET"
     }).then((res) => res.data) as GetSummaryResponse;
@@ -63,13 +63,13 @@ export const getAnalyticsCharts = async (chatbotId: string, days: number = 7): P
     if (!chatbotId || chatbotId.trim() === '') {
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
-    
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_CHARTS();
+
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_CHARTS.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}&days=${days}`;
     console.log('Charts API - Final URL:', urlWithParams);
     const res = await fetch(urlWithParams, {
       method: "GET"
-    }).then((res) => res.data) as GetChartsResponse;   
+    }).then((res) => res.data) as GetChartsResponse;
     if (!res.success) {
       throw new Error("Failed to fetch analytics charts");
     }
@@ -77,7 +77,7 @@ export const getAnalyticsCharts = async (chatbotId: string, days: number = 7): P
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message || "Failed to fetch analytics charts");
-  }   
+  }
 };
 
 export const getAnalyticsFeedbacks = async (chatbotId: string, limit: number = 5): Promise<any> => {
@@ -85,13 +85,13 @@ export const getAnalyticsFeedbacks = async (chatbotId: string, limit: number = 5
     if (!chatbotId || chatbotId.trim() === '') {
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
-    
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_FEEDBACKS();
+
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_FEEDBACKS.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}&limit=${limit}`;
     console.log('Feedbacks API - Final URL:', urlWithParams);
     const res = await fetch(urlWithParams, {
       method: "GET"
-    }).then((res) => res.data) as GetFeedbacksResponse;   
+    }).then((res) => res.data) as GetFeedbacksResponse;
     if (!res.success) {
       throw new Error("Failed to fetch analytics feedbacks");
     }
@@ -109,18 +109,18 @@ export const getAnalyticsTopicBarChart = async (chatbotId: string, days: number 
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_BAR_CHART();
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_BAR_CHART.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}&days=${days}`;
     console.log('Topic Bar Chart API - Final URL:', urlWithParams);
-    
+
     const res = await fetch(urlWithParams, {
       method: "GET",
     }).then((res) => res.data) as GetTopicBarChartResponse;
-    
+
     if (!res.success) {
       throw new Error("Failed to fetch topic bar chart data");
     }
-    
+
     return res.data;
   } catch (error: any) {
     console.error(error);
@@ -134,18 +134,18 @@ export const getAnalyticsTopicPieChart = async (chatbotId: string, days: number 
       throw new Error(`Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`);
     }
 
-    const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_PIE_CHART();
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_TOPIC_PIE_CHART.path();
     const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}&days=${days}`;
     console.log('Topic Pie Chart API - Final URL:', urlWithParams);
-    
+
     const res = await fetch(urlWithParams, {
       method: "GET",
     }).then((res) => res.data) as GetTopicPieChartResponse;
-    
+
     if (!res.success) {
       throw new Error("Failed to fetch topic pie chart data");
     }
-    
+
     return res.data;
   } catch (error: any) {
     console.error(error);

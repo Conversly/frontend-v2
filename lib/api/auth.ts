@@ -4,7 +4,7 @@ import { GoogleOauthResponse } from "@/types/auth";
 
 export const logout = async () => {
   const res = await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.LOGOUT(),
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.LOGOUT.path(),
     {
       method: "POST",
     },
@@ -23,7 +23,7 @@ export const googleOauth = async (
   inviteCode?: string | null,
 ) => {
   const res = (await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.GOOGLE_OAUTH(),
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.GOOGLE_OAUTH.path(),
     {
       method: "POST",
       data: {
@@ -50,7 +50,7 @@ export const emailRegister = async (
   inviteCode?: string | null,
 ) => {
   const res = (await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_REGISTER(),
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_REGISTER.path(),
     {
       method: "POST",
       data: {
@@ -74,7 +74,7 @@ export const emailLogin = async (
   password: string,
 ) => {
   const res = (await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_LOGIN(),
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_LOGIN.path(),
     {
       method: "POST",
       data: {
@@ -94,10 +94,9 @@ export const emailLogin = async (
 
 
 
-
 export const getSystemTime = async () => {
   const res = (await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.SYSTEM_TIME(),
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.SYSTEM_TIME.path(),
   ).then((res) => res.data)) as ApiResponse<{ systemTime: number }>;
 
   if (!res.success) {
@@ -109,7 +108,7 @@ export const getSystemTime = async () => {
 
 export const verifyEmail = async (token: string) => {
   const res = (await fetch(
-    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.VERIFY_EMAIL() + `?token=${token}`,
+    API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.VERIFY_EMAIL.path() + `?token=${token}`,
   ).then((res) => res.data)) as ApiResponse<{ success: boolean; message: string }>;
 
   if (!res.success) {

@@ -30,6 +30,7 @@ import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import Link from 'next/link';
 import { EmptyState } from '@/components/shared';
+import { useEditGuard } from '@/store/branch';
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
@@ -198,13 +199,15 @@ function DataSourceCard({
   isSelected,
   onClick,
   onDelete,
-  onEditCitation
+  onEditCitation,
+  isLiveMode
 }: {
   dataSource: DataSourceItem;
   isSelected: boolean;
   onClick: () => void;
   onDelete: () => void;
   onEditCitation: () => void;
+  isLiveMode: boolean;
 }) {
   const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
   const colors = DATA_SOURCE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_COLORS];
@@ -253,7 +256,8 @@ function DataSourceCard({
         {/* Quick Actions */}
         <div className={cn(
           'flex items-center gap-1 mt-3 pt-3 border-t border-border',
-          'opacity-0 group-hover:opacity-100 transition-opacity'
+          isLiveMode ? 'opacity-50' : 'opacity-0 group-hover:opacity-100',
+          'transition-opacity'
         )}>
           <Button
             size="sm"
@@ -262,7 +266,8 @@ function DataSourceCard({
               e.stopPropagation();
               onEditCitation();
             }}
-            className="flex-1 h-7 text-xs"
+            disabled={isLiveMode}
+            className="flex-1 h-7 text-xs disabled:cursor-not-allowed"
           >
             <Edit3 className="w-3 h-3 mr-1" />
             Edit Citation
@@ -274,7 +279,8 @@ function DataSourceCard({
               e.stopPropagation();
               onDelete();
             }}
-            className="flex-1 h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+            disabled={isLiveMode}
+            className="flex-1 h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Trash2 className="w-3 h-3 mr-1" />
             Delete
@@ -352,6 +358,7 @@ export default function DataSourcesPage() {
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
+  const { guardEdit, isLiveMode } = useEditGuard();
 
   // Filter and search
   const filteredSources = useMemo(() => {
@@ -366,6 +373,9 @@ export default function DataSourcesPage() {
   }, [dataSources, searchQuery, filterType]);
 
   const handleDelete = async (dataSource: DataSourceItem) => {
+    // Guard edit in LIVE mode
+    if (!guardEdit(() => true)) return;
+
     if (!confirm(`Delete "${dataSource.name}"? This will remove all associated embeddings.`)) {
       return;
     }
@@ -387,6 +397,9 @@ export default function DataSourcesPage() {
   const handleSaveCitation = async (citation: string) => {
     if (!editingSource) return;
 
+    // Guard edit in LIVE mode
+    if (!guardEdit(() => true)) return;
+
     try {
       await addCitationMutation.mutateAsync({
         chatbotId: botId,
@@ -398,6 +411,11 @@ export default function DataSourcesPage() {
     } catch (error) {
       toast.error('Failed to update citation');
     }
+  };
+
+  const handleEditCitation = (source: DataSourceItem) => {
+    if (!guardEdit(() => true)) return;
+    setEditingSource(source);
   };
 
   const typeOptions = [
@@ -486,7 +504,8 @@ export default function DataSourcesPage() {
                     isSelected={selectedSource?.id === source.id}
                     onClick={() => setSelectedSource(source)}
                     onDelete={() => handleDelete(source)}
-                    onEditCitation={() => setEditingSource(source)}
+                    onEditCitation={() => handleEditCitation(source)}
+                    isLiveMode={isLiveMode}
                   />
                 ))}
               </div>
