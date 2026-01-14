@@ -179,13 +179,12 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl font-bold">
               <span className="text-amber-500">⚠</span>
-              Deploy Changes?
+              Save Changes?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-base text-muted-foreground pt-2">
               <span className="block font-semibold text-foreground mb-2">
-                This will auto-deploy changes to your live chatbot.
+                This will persist your changes in DRAFT mode.
               </span>
-              If you have the widget deployed on your website, visitors will immediately see these updates.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-2 pt-4">

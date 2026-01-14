@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { API, ApiEndpoint, isEndpointAccessible } from "./config";
+import { useBranchStore } from "@/store/branch";
 
 export const fetch = axios.create({
   baseURL: API.BASE_URL,
@@ -10,6 +11,30 @@ export const api = fetch;
 
 fetch.interceptors.request.use(
   (config) => {
+    // Get the current mode from the branch store
+    const activeBranch = useBranchStore.getState().activeBranch;
+    const mode = activeBranch.toLowerCase(); // 'dev' or 'live'
+
+    // Add mode to request based on method
+    if (config.method && ['post', 'put', 'patch'].includes(config.method.toLowerCase())) {
+      // For POST/PUT/PATCH, add to body
+      if (config.data) {
+        // If data is FormData, append to it
+        if (config.data instanceof FormData) {
+          config.data.append('mode', mode);
+        } else if (typeof config.data === 'object') {
+          // If data is an object, add mode property
+          config.data = { ...config.data, mode };
+        }
+      } else {
+        // If no data, create an object with mode
+        config.data = { mode };
+      }
+    } else {
+      // For GET/DELETE, add as query parameter
+      config.params = { ...config.params, mode };
+    }
+
     return config;
   },
   (error) => {
