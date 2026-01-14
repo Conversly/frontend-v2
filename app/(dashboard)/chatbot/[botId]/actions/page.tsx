@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { CustomAction } from '@/types/customActions';
 import { ActionList } from '@/components/custom-actions/ActionList';
-import { CustomActionForm } from '@/components/custom-actions/CustomActionForm';
+import { SkillWizard } from '@/components/custom-actions/SkillWizard';
 import { useParams } from 'next/navigation';
 import {
   useCustomActions,
@@ -52,6 +52,7 @@ export default function ActionsPage() {
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
+          triggerExamples: action.triggerExamples,
         });
       } else {
         if (!action.id) return;
@@ -63,6 +64,7 @@ export default function ActionsPage() {
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
+          triggerExamples: action.triggerExamples,
         });
       }
       setView('list');
@@ -81,6 +83,13 @@ export default function ActionsPage() {
 
   return (
     <div className="w-full h-full bg-background overflow-hidden flex flex-col">
+      <div className="mb-8 px-4">
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Chatbot Actions and tools</h1>
+        <p className="text-muted-foreground">
+          Teach your bot new skills to fetch data, submit forms, or call your APIs during conversations.
+        </p>
+      </div>
+
       {view === 'list' ? (
         <div className="flex-1 overflow-y-auto">
           <div className="container mx-auto px-6 py-6 max-w-[1920px]">
@@ -102,16 +111,12 @@ export default function ActionsPage() {
           </div>
         </div>
       ) : (
-        <div className="w-full h-full p-6">
-          <div className="container mx-auto h-full max-w-[1920px]">
-            <CustomActionForm
-              chatbotId={chatbotId}
-              existingAction={selectedAction}
-              onSave={handleSave}
-              onCancel={() => setView('list')}
-            />
-          </div>
-        </div>
+        <SkillWizard
+          chatbotId={chatbotId}
+          existingAction={selectedAction}
+          onSave={handleSave}
+          onCancel={() => setView('list')}
+        />
       )}
     </div>
   );

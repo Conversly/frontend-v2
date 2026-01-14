@@ -59,6 +59,7 @@ export interface CustomAction {
   isEnabled: boolean;
   apiConfig: CustomActionConfig;
   parameters: ToolParameter[];
+  triggerExamples?: string[]; // "get price of iPhone", "how much does {{product}} cost"
   toolSchema?: ToolSchema;
   version: number;
   createdAt: string | null;
@@ -89,6 +90,7 @@ export interface CreateCustomActionInput {
   description: string;
   apiConfig: CustomActionConfig;
   parameters: ToolParameter[];
+  triggerExamples?: string[];
 }
 
 export interface UpdateCustomActionInput {
@@ -99,6 +101,7 @@ export interface UpdateCustomActionInput {
   description?: string;
   apiConfig?: CustomActionConfig;
   parameters?: ToolParameter[];
+  triggerExamples?: string[];
 }
 
 export interface TestActionInput {
@@ -183,3 +186,6 @@ export interface GetLogsQuery {
 export interface GetTemplatesQuery {
   category?: string;
 }
+
+
+
