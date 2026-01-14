@@ -36,8 +36,8 @@ export default function CustomizePage() {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto">
-      <div className="container mx-auto px-6 py-6 max-w-[1920px]">
+    <div className="w-full h-full overflow-hidden">
+      <div className="container mx-auto px-6 py-6 max-w-[1920px] h-full">
         <CustomizationTab
           chatbotId={botId}
           systemPrompt={chatbot.systemPrompt || ""}
