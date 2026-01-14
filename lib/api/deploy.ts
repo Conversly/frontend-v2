@@ -1,5 +1,5 @@
-import { fetch, guardedFetch } from '@/lib/api/axios';
-import { API, ApiResponse } from '@/lib/api/config';
+import { fetch, guardedFetch, ApiModeError } from '@/lib/api/axios';
+import { API, ApiResponse, isEndpointAccessible } from '@/lib/api/config';
 import { ChatbotCustomizationPartial, ChatbotCustomizationPayload } from '@/types/customization';
 
 export type GetWidgetResponse = ChatbotCustomizationPayload;
@@ -36,6 +36,24 @@ export interface ApiKeyResponse {
 
 export interface ApiKeyGetResponse {
 	apiKey: string | null;
+}
+
+export interface DeployResult {
+	success: boolean;
+	liveVersion: number;
+	deployedAt: string | Date;
+}
+
+export interface RollbackResult {
+	success: boolean;
+	restoredToVersion: number;
+}
+
+export interface DeployStatus {
+	deployStatusField: 'SYNCED' | 'DEPLOYING' | 'LOCKED' | 'DEV_DIRTY';
+	devVersion: number;
+	liveVersion: number;
+	lastDeployedAt: string | Date | null;
 }
 
 export const getWidgetConfig = async (chatbotId: string): Promise<GetWidgetResponse> => {
@@ -153,6 +171,77 @@ export const createApiKey = async (chatbotId: string): Promise<ApiKeyResponse> =
 			}
 		}
 	).then((r) => r.data) as ApiResponse<ApiKeyResponse, Error>;
+
+	if (!res.success) {
+		throw new Error(res.message);
+	}
+	return res.data;
+};
+
+// Deployment Functions
+
+/**
+ * Push DEV configuration to LIVE.
+ */
+export const pushToLive = async (chatbotId: string): Promise<DeployResult> => {
+	const endpointObj = API.ENDPOINTS.DEPLOY.DEPLOY;
+	if (!isEndpointAccessible(endpointObj)) {
+		throw new ApiModeError(endpointObj.path());
+	}
+
+	const endpoint = endpointObj.path().replace(':chatbotId', chatbotId);
+	const res = await fetch(
+		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+		{
+			method: 'POST',
+		}
+	).then((r) => r.data) as ApiResponse<DeployResult, Error>;
+
+	if (!res.success) {
+		throw new Error(res.message);
+	}
+	return res.data;
+};
+
+/**
+ * Rollback DEV changes - discard draft and restore from LIVE.
+ */
+export const rollbackDev = async (chatbotId: string): Promise<RollbackResult> => {
+	const endpointObj = API.ENDPOINTS.DEPLOY.ROLLBACK;
+	if (!isEndpointAccessible(endpointObj)) {
+		throw new ApiModeError(endpointObj.path());
+	}
+
+	const endpoint = endpointObj.path().replace(':chatbotId', chatbotId);
+	const res = await fetch(
+		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+		{
+			method: 'POST',
+		}
+	).then((r) => r.data) as ApiResponse<RollbackResult, Error>;
+
+	if (!res.success) {
+		throw new Error(res.message);
+	}
+	return res.data;
+};
+
+/**
+ * Get deployment status info.
+ */
+export const getDeployStatus = async (chatbotId: string): Promise<DeployStatus> => {
+	const endpointObj = API.ENDPOINTS.DEPLOY.DEPLOY_STATUS;
+	if (!isEndpointAccessible(endpointObj)) {
+		throw new ApiModeError(endpointObj.path());
+	}
+
+	const endpoint = endpointObj.path().replace(':chatbotId', chatbotId);
+	const res = await fetch(
+		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+		{
+			method: 'GET',
+		}
+	).then((r) => r.data) as ApiResponse<DeployStatus, Error>;
 
 	if (!res.success) {
 		throw new Error(res.message);

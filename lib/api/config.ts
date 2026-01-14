@@ -58,7 +58,7 @@ export const API = {
       UPDATE_TOPIC: devMode(() => "/topics"),
       DELETE_TOPIC: devMode(() => "/topics/:id"),
       GET_TOPIC: allMode(() => "/topics/:id"),
-      GET_TOPICS: allMode(() => "/:chatbotId/topics"),
+      GET_TOPICS: allMode(() => "/:chatbotId/topics")
     },
     DATA_SOURCE: {
       BASE_URL: () => "/datasource",
@@ -90,6 +90,9 @@ export const API = {
       UPDATE_DOMAIN_ALLOWLIST: devMode(() => "/widget/domains"),
       GET_API_KEY: allMode(() => "/key"),
       CREATE_API_KEY: devMode(() => "/key"),
+      DEPLOY: devMode(() => "/:chatbotId/deploy"),
+      ROLLBACK: devMode(() => "/:chatbotId/rollback-dev"),
+      DEPLOY_STATUS: allMode(() => "/:chatbotId/deploy-status"),
     },
 
     RESPONSE: {
