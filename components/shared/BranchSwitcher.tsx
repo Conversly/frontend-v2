@@ -4,7 +4,7 @@ import { getDeployStatus } from "@/lib/api/deploy";
 import { toast } from 'sonner';
 import { useBranch, Branch } from '@/store/branch';
 import { cn } from '@/lib/utils';
-import { GitBranch, Circle } from 'lucide-react';
+import { GitBranch, Circle, Info } from 'lucide-react';
 import {
     Tooltip,
     TooltipContent,
@@ -113,7 +113,8 @@ export function BranchSwitcher({ className }: BranchSwitcherProps) {
                 <AlertDialog open={!!pendingBranch} onOpenChange={(open) => !open && setPendingBranch(null)}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>
+                            <AlertDialogTitle className="flex items-center gap-2">
+                                <Info className="h-5 w-5 text-primary" />
                                 Switch to {pendingBranch} mode?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
