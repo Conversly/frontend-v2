@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -34,6 +34,9 @@ const routeLabels: Record<string, string> = {
 export function DashboardHeader() {
   const pathname = usePathname();
   const router = useRouter();
+  const params = useParams();
+
+  const isChatbotDashboard = !!params?.botId;
 
 
   // Generate breadcrumbs based on current path
@@ -120,7 +123,7 @@ export function DashboardHeader() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <BranchSwitcher />
+      {isChatbotDashboard && <BranchSwitcher />}
     </div>
   );
 }
