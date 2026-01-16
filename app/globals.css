@@ -83,7 +83,7 @@
   --chart-5: oklch(0.30 0.20 260);
 
   /* Sidebar - White with subtle border */
-  --sidebar-background: #FFFFFF;
+  --sidebar-background: #F8F9FA;
   --sidebar-foreground: oklch(0.20 0.02 260);
   --sidebar-primary: oklch(0.55 0.25 260);
   --sidebar-primary-foreground: #FFFFFF;
@@ -91,7 +91,7 @@
   --sidebar-accent-foreground: oklch(0.20 0.02 260);
   --sidebar-border: #E4E4E7;
   --sidebar-ring: oklch(0.55 0.25 260);
-  --sidebar: #FFFFFF;
+  --sidebar: #F8F9FA;
 }
 
 /* Dark Theme - Balanced between ElevenLabs and Vapi */

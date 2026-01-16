@@ -20,52 +20,52 @@ export const lightTheme = {
   // Base colors
   background: 'oklch(1 0 0)',
   foreground: 'oklch(0.141 0.005 285.823)',
-  
+
   // Card/Surface colors
   card: 'oklch(1 0 0)',
   cardForeground: 'oklch(0.141 0.005 285.823)',
-  
+
   // Popover/Dropdown colors
   popover: 'oklch(1 0 0)',
   popoverForeground: 'oklch(0.141 0.005 285.823)',
-  
+
   // Primary/Accent colors
   primary: 'oklch(0.541 0.281 293.009)',
   primaryForeground: 'oklch(0.969 0.016 293.756)',
-  
+
   // Secondary colors
   secondary: 'oklch(0.967 0.001 286.375)',
   secondaryForeground: 'oklch(0.21 0.006 285.885)',
-  
+
   // Accent colors - matches primary teal
   accent: 'oklch(0.50 0.14 168)',
   accentForeground: 'oklch(0.99 0 0)',
-  
+
   // Muted colors
   muted: 'oklch(0.967 0.001 286.375)',
   mutedForeground: 'oklch(0.552 0.016 285.938)',
-  
+
   // Destructive colors
   destructive: 'oklch(0.577 0.245 27.325)',
   destructiveForeground: 'oklch(0.969 0.016 293.756)',
-  
+
   // Border and input colors
   border: 'oklch(0.92 0.004 286.32)',
   input: 'oklch(0.92 0.004 286.32)',
   ring: 'oklch(0.702 0.183 293.541)',
-  
+
   // Border radius
   radius: '0.65rem',
-  
+
   // Chart colors
   chart1: 'oklch(0.811 0.111 293.571)',
   chart2: 'oklch(0.606 0.25 292.717)',
   chart3: 'oklch(0.541 0.281 293.009)',
   chart4: 'oklch(0.491 0.27 292.581)',
   chart5: 'oklch(0.432 0.232 292.759)',
-  
+
   // Sidebar colors
-  sidebar: 'oklch(0.985 0 0)',
+  sidebar: 'oklch(0.98 0.005 285.823)',
   sidebarForeground: 'oklch(0.141 0.005 285.823)',
   sidebarPrimary: 'oklch(0.541 0.281 293.009)',
   sidebarPrimaryForeground: 'oklch(0.969 0.016 293.756)',
@@ -83,50 +83,50 @@ export const darkTheme = {
   // Base colors - Medium dark grey (balanced)
   background: '#121212',
   foreground: 'oklch(0.98 0.005 250)',
-  
+
   // Card/Surface colors - Slightly lighter dark grey
   card: '#1a1a1a',
   cardForeground: 'oklch(0.98 0.005 250)',
-  
+
   // Popover/Dropdown colors
   popover: '#1a1a1a',
   popoverForeground: 'oklch(0.98 0.005 250)',
-  
+
   // Primary/Accent colors - Teal
   primary: '#2dd4bf',
   primaryForeground: '#000000',
-  
+
   // Secondary colors - Medium dark grey
   secondary: '#1f1f1f',
   secondaryForeground: 'oklch(0.98 0.005 250)',
-  
+
   // Accent colors - matches primary teal
   accent: '#2dd4bf',
   accentForeground: '#000000',
-  
+
   // Muted colors
   muted: '#1f1f1f',
   mutedForeground: 'oklch(0.70 0.01 250)',
-  
+
   // Destructive colors
   destructive: 'oklch(0.704 0.191 22.216)',
   destructiveForeground: 'oklch(0.969 0.016 293.756)',
-  
+
   // Border and input colors - Medium dark grey
   border: '#242424',
   input: '#242424',
   ring: '#2dd4bf',
-  
+
   // Border radius (same as light)
   radius: '0.65rem',
-  
+
   // Chart colors - Teal gradient
   chart1: '#2dd4bf',
   chart2: '#14b8a6',
   chart3: '#0d9488',
   chart4: '#0f766e',
   chart5: '#115e59',
-  
+
   // Sidebar colors - Medium dark grey (balanced)
   sidebar: '#151515',
   sidebarForeground: 'oklch(0.95 0.01 168)',
