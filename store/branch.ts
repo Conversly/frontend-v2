@@ -23,6 +23,7 @@ interface BranchActions {
     setDeployState: (state: DeployState) => void;
     incrementDevVersion: () => void;
     syncVersions: () => void;
+    setVersions: (devVersion: number, liveVersion: number) => void;
 }
 
 interface BranchStore extends BranchState, BranchActions { }
@@ -81,6 +82,10 @@ export const useBranchStore = create<BranchStore>()(
                     liveVersion: state.devVersion,
                     deployState: 'SYNCED',
                 }));
+            },
+
+            setVersions: (devVersion, liveVersion) => {
+                set({ devVersion, liveVersion });
             },
         }),
         {
@@ -278,7 +283,9 @@ export function useBranch() {
         guardEdit,
         guardEditAsync,
         isDevMode: state.activeBranch === 'DEV',
-        isLiveMode: state.activeBranch === 'LIVE',
+        activeBranch: state.activeBranch,
+        deployState: state.deployState,
+        setVersions: state.setVersions,
         hasUnpublishedChanges: state.devVersion > state.liveVersion,
     };
 }

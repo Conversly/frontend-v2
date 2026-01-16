@@ -8,10 +8,15 @@ export interface ChatbotResponse {
   userId: string;
   name: string;
   description: string;
-  systemPrompt: string;  // widget channel system prompt
+  systemPrompt: string; // From WIDGET channel
+  status: string;
   createdAt: Date | null;
   updatedAt: Date | null;
-  apiKey: string | null;
+  apiKey?: string | null;
+  devVersion: number;
+  liveVersion: number;
+  deployStatusField: string | null;
+  lastDeployedAt: Date | null;
 }
 
 export interface GetChatbotsResponse {
@@ -19,8 +24,14 @@ export interface GetChatbotsResponse {
   name: string;
   description: string;
   createdAt: Date | null;
+  status: string;
   userId: string;
+  devVersion: number;
+  liveVersion: number;
+  deployStatusField: string | null;
+  lastDeployedAt: Date | null;
 }
+
 
 export interface DeleteChatbotInput {
   id: string;
