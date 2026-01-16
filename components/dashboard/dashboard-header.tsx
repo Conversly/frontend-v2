@@ -12,6 +12,8 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { BranchSwitcher } from "@/components/shared/BranchSwitcher";
+import { useBranch } from "@/store/branch";
+import { toast } from "sonner";
 import React from "react";
 
 // Map route segments to readable labels
@@ -37,6 +39,20 @@ export function DashboardHeader() {
   const params = useParams();
 
   const isChatbotDashboard = !!params?.botId;
+  const botId = params?.botId as string;
+  const { activeBranch, liveVersion } = useBranch();
+
+  // Global redirect check: if in LIVE mode but no live version exists, redirect to Deploy Live
+  React.useEffect(() => {
+    if (isChatbotDashboard && activeBranch === 'LIVE' && liveVersion === 0) {
+      if (!pathname.endsWith('/deploy-live')) {
+        toast.info("No live version exists", {
+          description: "Redirecting you to the deployment page."
+        });
+        router.push(`/chatbot/${botId}/deploy-live`);
+      }
+    }
+  }, [isChatbotDashboard, activeBranch, liveVersion, botId, pathname, router]);
 
 
   // Generate breadcrumbs based on current path

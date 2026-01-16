@@ -1,5 +1,7 @@
-'use client';
-
+import { useState, useEffect } from "react";
+import { useParams, useRouter, usePathname } from "next/navigation";
+import { getDeployStatus } from "@/lib/api/deploy";
+import { toast } from 'sonner';
 import { useBranch, Branch } from '@/store/branch';
 import { cn } from '@/lib/utils';
 import { GitBranch, Circle } from 'lucide-react';
@@ -19,15 +21,28 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
 
 interface BranchSwitcherProps {
     className?: string;
 }
 
 export function BranchSwitcher({ className }: BranchSwitcherProps) {
-    const { activeBranch, switchBranch, hasUnpublishedChanges, deployState } = useBranch();
+    const params = useParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const botId = params?.botId as string;
+
+    const { activeBranch, switchBranch, hasUnpublishedChanges, deployState, liveVersion, setVersions } = useBranch();
     const [pendingBranch, setPendingBranch] = useState<Branch | null>(null);
+
+    // Sync versions from backend
+    useEffect(() => {
+        if (botId) {
+            getDeployStatus(botId).then(status => {
+                setVersions(status.devVersion, status.liveVersion);
+            }).catch(console.error);
+        }
+    }, [botId, setVersions]);
 
     const isDeploying = deployState === 'DEPLOYING';
     const isLocked = deployState === 'LOCKED';
@@ -41,6 +56,14 @@ export function BranchSwitcher({ className }: BranchSwitcherProps) {
 
     const confirmSwitch = () => {
         if (pendingBranch) {
+            if (pendingBranch === 'LIVE' && liveVersion === 0) {
+                toast.info("No live version exists", {
+                    description: "You need to deploy your chatbot to live first."
+                });
+                router.push(`/chatbot/${botId}/deploy-live`);
+                setPendingBranch(null);
+                return;
+            }
             switchBranch(pendingBranch);
             setPendingBranch(null);
         }
