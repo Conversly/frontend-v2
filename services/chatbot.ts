@@ -24,28 +24,48 @@ export const useCreateChatbot = () => {
   });
 };
 
-export const useGetChatbots = () => {
+export const useGetChatbots = (workspaceId?: string) => {
   const isAuthenticated = typeof window !== "undefined" 
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
   return useQuery({
-    queryKey: [QUERY_KEY.GET_CHATBOTS],
-    queryFn: getChatbots,
-    enabled: isAuthenticated, // Only fetch when authenticated
+    queryKey: [QUERY_KEY.GET_CHATBOTS, workspaceId ?? "ALL"],
+    queryFn: () => {
+      if (!workspaceId) throw new Error("workspaceId is required");
+      return getChatbots(workspaceId);
+    },
+    enabled: isAuthenticated && !!workspaceId, // Only fetch when authenticated + workspace known
     staleTime: 60_000,
   });
 };
 
 export const useChatbot = (chatbotId: string) => {
+  // deprecated: keep signature but require callers to use useChatbotInWorkspace
   const isAuthenticated = typeof window !== "undefined" 
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
   return useQuery({
     queryKey: [QUERY_KEY.GET_CHATBOT, chatbotId],
-    queryFn: () => getChatbot(chatbotId),
-    enabled: isAuthenticated && !!chatbotId,
+    queryFn: () => {
+      throw new Error("useChatbot(chatbotId) is deprecated; use useChatbotInWorkspace(workspaceId, chatbotId)");
+    },
+    enabled: false,
+    staleTime: 60_000,
+  });
+};
+
+export const useChatbotInWorkspace = (workspaceId: string, chatbotId: string) => {
+  const isAuthenticated =
+    typeof window !== "undefined"
+      ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
+      : false;
+
+  return useQuery({
+    queryKey: [QUERY_KEY.GET_CHATBOT, workspaceId, chatbotId],
+    queryFn: () => getChatbot(workspaceId, chatbotId),
+    enabled: isAuthenticated && !!workspaceId && !!chatbotId,
     staleTime: 60_000,
   });
 };

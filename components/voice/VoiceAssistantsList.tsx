@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Plus, MoreVertical, Mic, Settings, Play } from "lucide-react";
 import { format } from "date-fns";
 
@@ -39,6 +39,8 @@ interface VoiceAssistantsListProps {
 
 export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
     const router = useRouter();
+    const params = useParams<{ workspaceId?: string }>();
+    const workspaceId = (params as any)?.workspaceId as string | undefined;
     const { data: assistants, isLoading } = useAssistants(botId);
 
     if (isLoading) {
@@ -93,7 +95,10 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
                                 <TableRow
                                     key={assistant.id}
                                     className="cursor-pointer hover:bg-muted/50"
-                                    onClick={() => router.push(`/chatbot/${botId}/voice/assistants/${assistant.id}/configuration`)}
+                                    onClick={() => {
+                                        if (!workspaceId) return;
+                                        router.push(`/${workspaceId}/chatbot/${botId}/voice/assistants/${assistant.id}/configuration`);
+                                    }}
                                 >
                                     <TableCell className="font-medium">
                                         <div className="flex flex-col">
@@ -126,7 +131,10 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => router.push(`/chatbot/${botId}/voice/assistants/${assistant.id}/configuration`)}>
+                                                <DropdownMenuItem onClick={() => {
+                                                    if (!workspaceId) return;
+                                                    router.push(`/${workspaceId}/chatbot/${botId}/voice/assistants/${assistant.id}/configuration`);
+                                                }}>
                                                     <Settings className="mr-2 h-4 w-4" />
                                                     Configure
                                                 </DropdownMenuItem>

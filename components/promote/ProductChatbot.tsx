@@ -2,14 +2,11 @@
 
 import dynamic from "next/dynamic";
 
-const ActualWidget = dynamic(
-  () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
-  { ssr: false }
-);
-import type { UIConfigInput } from "@conversly/chat-widget";
+// ActualWidget component missing
+type UIConfigInput = any;
 import { useEffect, useState } from "react";
 import { getWidgetConfig } from "@/lib/api/deploy";
-import { getChatbot } from "@/lib/api/chatbot";
+import { getChatbotPublic } from "@/lib/api/chatbot";
 
 interface ProductChatbotProps {
     chatbotId: string;
@@ -27,7 +24,7 @@ export function ProductChatbot({ chatbotId, embedded }: ProductChatbotProps) {
             try {
                 const [widgetData, chatbotData] = await Promise.all([
                     getWidgetConfig(chatbotId),
-                    getChatbot(chatbotId),
+                    getChatbotPublic(chatbotId),
                 ]);
 
                 const partial = widgetData.partial;
@@ -74,9 +71,8 @@ export function ProductChatbot({ chatbotId, embedded }: ProductChatbotProps) {
     if (isLoading || !config) return null;
 
     return (
-        <ActualWidget
-            config={config}
-            contained={embedded}
-        />
-    );
+
+        <div className="p-4 border rounded bg-muted text-center text-sm text-muted-foreground w-full">
+            Chat Widget Unavailable (Missing Dependency)
+        </div>);
 }

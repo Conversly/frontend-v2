@@ -33,10 +33,7 @@ import dynamic from 'next/dynamic';
 import type { UIConfigInput as PackageUIConfig } from '@conversly/chat-widget';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const PreviewWidget = dynamic(
-  () => import('@conversly/chat-widget').then((mod) => mod.PreviewWidget),
-  { ssr: false }
-);
+const PreviewWidget = (props: any) => <div className="p-4 text-center text-muted-foreground">Preview Unavailable</div>;
 import { useCustomizationDraft, useCustomizationStore } from '@/store/chatbot/customization';
 import type { UIConfigInput } from '@/types/customization';
 import { SectionHeader } from './SectionHeader';

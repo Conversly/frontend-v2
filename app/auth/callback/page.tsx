@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { QUERY_KEY } from "@/utils/query-key";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -28,9 +29,11 @@ export default function AuthCallback() {
         
         // Small delay to ensure state is updated
         await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Redirect to dashboard
-        router.replace("/chatbot");
+
+        const workspaces = await getUserWorkspaces();
+        const first = workspaces[0]?.workspaceId;
+        if (first) router.replace(`/${first}/chatbot`);
+        else router.replace("/"); // should not happen due to backend bootstrap, but safe
       } catch (error) {
         console.error("Error during auth callback:", error);
         // On error, redirect to login

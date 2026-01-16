@@ -1,17 +1,19 @@
 export interface CreateChatbotInput {
   name: string;
   description: string;
+  workspaceId?: string;
 }
 
 export interface ChatbotResponse {
   id: string;
-  userId: string;
+  workspaceId: string;
   name: string;
   description: string;
   systemPrompt: string;  // widget channel system prompt
   createdAt: Date | null;
   updatedAt: Date | null;
   apiKey: string | null;
+  createdBy?: string | null;
 }
 
 export interface GetChatbotsResponse {
@@ -19,11 +21,12 @@ export interface GetChatbotsResponse {
   name: string;
   description: string;
   createdAt: Date | null;
-  userId: string;
+  workspaceId: string;
 }
 
 export interface DeleteChatbotInput {
   id: string;
+  workspaceId?: string;
 }
 
 export interface DeleteChatbotResponse {

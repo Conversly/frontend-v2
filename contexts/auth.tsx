@@ -64,7 +64,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (publicRoutes.includes(pathname)) return;
 
     // Protect dashboard routes
-    if (pathname.startsWith("/chatbot") || pathname.startsWith("/dashboard")) {
+    const segs = pathname.split("/").filter(Boolean);
+    const isWorkspaceRoute =
+      segs.length >= 2 &&
+      [
+        "chatbot",
+        "promote-manager",
+        "profile",
+        "activity",
+        "analytics",
+        "billing",
+        "audit-logs",
+        "team",
+      ].includes(segs[1]);
+
+    if (isWorkspaceRoute) {
       if (!isAuthenticated) {
         // TODO: Change back to "/login" when launching properly
         router.push("/");

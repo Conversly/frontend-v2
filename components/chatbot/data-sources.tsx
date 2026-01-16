@@ -11,6 +11,7 @@ import { useDataSourcesStore, usePendingSources, useIsLoading } from '@/store/ch
 import { useProcessDataSource } from '@/services/datasource';
 import { ProcessRequest, DocumentData } from '@/types/datasource';
 import { useEditGuard } from '@/store/branch';
+import { useParams } from 'next/navigation';
 
 interface DataSourcesProps {
   chatbotId: string;
@@ -98,6 +99,8 @@ interface ProductivityDataSourcesProps {
 export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesProps) {
   const { addPendingSource, uploadFile, setShowQADialog } = useDataSourcesStore();
   const { guardEdit, isLiveMode } = useEditGuard();
+  const params = useParams<{ workspaceId?: string }>();
+  const workspaceId = (params as any)?.workspaceId as string | undefined;
 
   const handleAddFile = async (files: FileList) => {
     const file = files[0];
@@ -207,7 +210,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                     <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
                   </Button>
                 ) : source.id === 'text' ? (
-                  <Link href={`/chatbot/${chatbotId}/sources/text`}>
+                  <Link href={workspaceId ? `/${workspaceId}/chatbot/${chatbotId}/sources/text` : "#"}>
                     <Button
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                     >
