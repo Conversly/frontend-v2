@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface CreateVoiceAssistantDialogProps {
     botId: string;
@@ -39,6 +39,8 @@ export function CreateVoiceAssistantDialog({ botId, children, onSuccess }: Creat
     const [provider, setProvider] = useState("elevenlabs"); // Default to elevenlabs or similar
     const createAssistant = useCreateAssistant();
     const router = useRouter();
+    const params = useParams<{ workspaceId?: string }>();
+    const workspaceId = (params as any)?.workspaceId as string | undefined;
 
     const handleCreate = async () => {
         if (!name) {
@@ -69,7 +71,8 @@ export function CreateVoiceAssistantDialog({ botId, children, onSuccess }: Creat
             if (onSuccess) {
                 onSuccess(newAssistant.id);
             } else {
-                router.push(`/chatbot/${botId}/voice/assistants/${newAssistant.id}/configuration`);
+                if (!workspaceId) return;
+                router.push(`/${workspaceId}/chatbot/${botId}/voice/assistants/${newAssistant.id}/configuration`);
             }
         } catch (error) {
             console.error(error);

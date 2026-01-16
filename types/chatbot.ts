@@ -1,11 +1,12 @@
 export interface CreateChatbotInput {
   name: string;
   description: string;
+  workspaceId?: string;
 }
 
 export interface ChatbotResponse {
   id: string;
-  userId: string;
+  workspaceId: string;
   name: string;
   description: string;
   systemPrompt: string; // From WIDGET channel
@@ -17,6 +18,8 @@ export interface ChatbotResponse {
   liveVersion: number;
   deployStatusField: string | null;
   lastDeployedAt: Date | null;
+  apiKey: string | null;
+  createdBy?: string | null;
 }
 
 export interface GetChatbotsResponse {
@@ -30,11 +33,13 @@ export interface GetChatbotsResponse {
   liveVersion: number;
   deployStatusField: string | null;
   lastDeployedAt: Date | null;
+  workspaceId: string;
 }
 
 
 export interface DeleteChatbotInput {
   id: string;
+  workspaceId?: string;
 }
 
 export interface DeleteChatbotResponse {

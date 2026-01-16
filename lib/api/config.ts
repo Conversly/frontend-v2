@@ -36,6 +36,19 @@ export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1",
   RESPONSE_BASE_URL: process.env.NEXT_PUBLIC_RESPONSE_API_BASE_URL,
   ENDPOINTS: {
+    WORKSPACES: {
+      BASE_URL: () => "/workspaces",
+      LIST: allMode(() => "/"),
+      CREATE: allMode(() => "/"),
+      CONTEXT: allMode(() => "/:workspaceId/context"),
+      CHATBOTS: allMode(() => "/:workspaceId/chatbots"),
+      CHATBOT: allMode(() => "/:workspaceId/chatbots/:botId"),
+      INVITATIONS: allMode(() => "/:workspaceId/invitations"),
+      INVITATION: allMode(() => "/invitations/:token"),
+      ACCEPT_INVITATION: allMode(() => "/invitations/:token/accept"),
+      BILLING: allMode(() => "/:workspaceId/billing"),
+      INVOICES: allMode(() => "/:workspaceId/billing/invoices"),
+    },
     USER: {
       BASE_URL: () => "/user",
       GET_USER: allMode(() => "/me"),

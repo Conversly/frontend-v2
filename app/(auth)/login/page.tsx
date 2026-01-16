@@ -10,6 +10,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import Image from "next/image";
 import { emailLogin, emailRegister } from "@/lib/api/auth";
 import { joinWaitlist } from "@/lib/api/waitlist";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -98,7 +99,19 @@ export default function LoginPage() {
         const response = await emailLogin(email, password);
         if (response.success) {
           localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
-          router.push("/chatbot");
+          
+          // Check for pending invite token
+          const pendingInviteToken = localStorage.getItem("pending_invite_token");
+          if (pendingInviteToken) {
+            localStorage.removeItem("pending_invite_token");
+            router.push(`/invite/${pendingInviteToken}`);
+            return;
+          }
+          
+          const workspaces = await getUserWorkspaces();
+          const first = workspaces[0]?.workspaceId;
+          if (first) router.push(`/${first}/chatbot`);
+          else router.push("/");
         }
       }
     } catch (err: any) {
@@ -117,7 +130,12 @@ export default function LoginPage() {
     if (mounted) {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
       if (isLoggedIn && user) {
-        router.push("/chatbot");
+        getUserWorkspaces()
+          .then((ws) => {
+            const first = ws[0]?.workspaceId;
+            if (first) router.push(`/${first}/chatbot`);
+          })
+          .catch(() => {});
       }
     }
   }, [mounted, user, router]);

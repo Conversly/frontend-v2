@@ -12,6 +12,7 @@ import BroadcastSection from "@/components/landing/broadcast-section";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 import TestimonialsSection from "@/components/landing/Testinomials";
 
 // Single source of truth for content width
@@ -24,7 +25,12 @@ export default function Home() {
     try {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN);
       if (isLoggedIn === "true") {
-        router.replace("/chatbot"); 
+        getUserWorkspaces()
+          .then((ws) => {
+            const first = ws[0]?.workspaceId;
+            if (first) router.replace(`/${first}/chatbot`);
+          })
+          .catch(() => {});
       }
     } catch { }
   }, [router]);

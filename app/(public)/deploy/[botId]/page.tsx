@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, ArrowRight, MessageSquare, Mail, Phone, Globe, Twitter, Linkedin, Instagram } from "lucide-react";
-import { getChatbot } from "@/lib/api/chatbot";
+import { getChatbotPublic } from "@/lib/api/chatbot";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { UIConfigInput } from "@/types/customization";
 
@@ -51,7 +51,7 @@ export default function HelpPage() {
             try {
                 const [widgetData, chatbotData] = await Promise.all([
                     getWidgetConfig(botId),
-                    getChatbot(botId),
+                    getChatbotPublic(botId),
                 ]);
 
                 const partial = widgetData.partial;
