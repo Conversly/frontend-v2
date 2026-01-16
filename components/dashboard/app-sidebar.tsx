@@ -49,11 +49,15 @@ import {
     Moon,
     Sun,
     Laptop,
+    Megaphone,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import { dashboardNavItems, getChatbotNavItems, NavItem } from "@/config/nav-config";
+import type { NavItem } from "@/config/nav-config";
+import { getWorkspaceNavItems, getWorkspaceChatbotNavItems } from "@/config/nav-config";
+import { useMaybeWorkspace } from "@/contexts/workspace-context";
+import { useChatbotInWorkspace } from "@/services/chatbot";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
@@ -62,14 +66,72 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const queryClient = useQueryClient();
     const { isMobile } = useSidebar();
     const { setTheme, theme } = useTheme();
+    const workspaceCtx = useMaybeWorkspace();
 
-    // Determine if we are in a chatbot context
-    const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
-    const botId = chatbotMatch ? chatbotMatch[1] : null;
+    // Are we inside a specific chatbot route?
+    // /:workspaceId/chatbot/:botId/...
+    const segs = (pathname || "").split("/").filter(Boolean);
+    const isBotRoute =
+      !!workspaceCtx &&
+      segs[0] === workspaceCtx.workspaceId &&
+      segs[1] === "chatbot" &&
+      !!segs[2] &&
+      segs[2] !== "create";
+    const botId = isBotRoute ? segs[2] : null;
+
+    // Fetch chatbot data when in bot route (for name display)
+    const { data: chatbotData } = useChatbotInWorkspace(
+      workspaceCtx?.workspaceId || "",
+      botId || ""
+    );
+
+    // Get workspace navigation items and filter by capabilities
+    const allWorkspaceNavItems = workspaceCtx
+      ? getWorkspaceNavItems(workspaceCtx.workspaceId)
+      : [];
+
+    // Filter navigation items based on user capabilities
+    const filterNavItemsByCapability = (items: NavItem[]): NavItem[] => {
+      if (!workspaceCtx) return [];
+      
+      return items
+        .filter((item) => {
+          // If no capability required, show to everyone
+          if (!item.requiredCapability) return true;
+          // Check if user has the required capability
+          return workspaceCtx.capabilities[item.requiredCapability];
+        })
+        .map((item) => {
+          // Recursively filter nested items
+          if (item.items && item.items.length > 0) {
+            return {
+              ...item,
+              items: filterNavItemsByCapability(item.items),
+            };
+          }
+          return item;
+        })
+        .filter((item) => {
+          // Remove parent items if all their children were filtered out
+          if (item.items && item.items.length === 0) return false;
+          return true;
+        });
+    };
+
+    const workspaceNavItems = filterNavItemsByCapability(allWorkspaceNavItems);
 
     // Select navigation items based on context
-    const navItems = botId ? getChatbotNavItems(botId) : dashboardNavItems;
-    const sectionLabel = botId ? "Chatbot Management" : "Platform";
+    const navItems =
+      workspaceCtx && botId
+        ? getWorkspaceChatbotNavItems(workspaceCtx.workspaceId, botId)
+        : workspaceNavItems;
+    
+    // Section label: Use chatbot name if available, otherwise workspace name, otherwise "Platform"
+    const sectionLabel = workspaceCtx && botId && chatbotData
+      ? chatbotData.name
+      : workspaceNavItems
+      ? workspaceCtx!.workspaceName
+      : "Platform";
 
     const handleLogout = () => {
         logout(queryClient);
@@ -129,7 +191,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>{sectionLabel}</SidebarGroupLabel>
+                    {!isBotRoute && <SidebarGroupLabel>{sectionLabel}</SidebarGroupLabel>}
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {navItems.map((item) => {
@@ -228,7 +290,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link href="/profile">
+                                    <Link href={workspaceCtx ? `/${workspaceCtx.workspaceId}/profile` : "/"}>
                                         <User className="mr-2 h-4 w-4" />
                                         Profile
                                     </Link>
