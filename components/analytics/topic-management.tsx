@@ -13,7 +13,17 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { Settings, Plus, Edit, Trash2, MessageSquare } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Settings, Plus, Edit, Trash2, MessageSquare, AlertTriangle } from "lucide-react";
 
 interface Topic {
   id: string;
@@ -232,29 +242,34 @@ export function TopicManagement({
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-lg">Delete Topic</DialogTitle>
-            <DialogDescription className="text-sm">
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-lg">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Topic
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm">
               Are you sure you want to delete this topic? This action cannot be undone and will affect your analytics data.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setIsDeleteDialogOpen(false)}>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)} disabled={deletePending}>
               Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={onDeleteTopic}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={(e) => {
+                e.preventDefault();
+                onDeleteTopic();
+              }}
               disabled={deletePending}
             >
               {deletePending ? "Deleting..." : "Delete Topic"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

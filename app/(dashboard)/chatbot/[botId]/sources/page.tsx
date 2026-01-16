@@ -19,7 +19,8 @@ import {
   Calendar,
   Database,
   AlertCircle,
-  Plus
+  Plus,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,9 +29,25 @@ import { cn } from '@/lib/utils';
 import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
 import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
-import Link from 'next/link';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
@@ -303,46 +320,28 @@ function EditCitationDialog({
   const [citation, setCitation] = useState(dataSource.citation || '');
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-        className="bg-card border border-border rounded-2xl p-6 max-w-md w-full"
-      >
-        <h3 className="text-lg font-heading font-semibold text-foreground mb-4">
-          Edit Citation
-        </h3>
-        <Input
-          value={citation}
-          onChange={(e) => setCitation(e.target.value)}
-          placeholder="Enter citation URL..."
-          className="mb-4"
-        />
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="flex-1"
-          >
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit Citation</DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          <Input
+            value={citation}
+            onChange={(e) => setCitation(e.target.value)}
+            placeholder="Enter citation URL..."
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} className="flex-1">
             Cancel
           </Button>
-          <Button
-            onClick={() => onSave(citation)}
-            className="flex-1"
-          >
+          <Button onClick={() => onSave(citation)} className="flex-1">
             Save
           </Button>
-        </div>
-      </motion.div>
-    </motion.div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -354,6 +353,7 @@ export default function DataSourcesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
+  const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
 
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
@@ -372,26 +372,29 @@ export default function DataSourcesPage() {
     });
   }, [dataSources, searchQuery, filterType]);
 
-  const handleDelete = async (dataSource: DataSourceItem) => {
-    // Guard edit in LIVE mode
-    if (!guardEdit(() => true)) return;
-
-    if (!confirm(`Delete "${dataSource.name}"? This will remove all associated embeddings.`)) {
-      return;
-    }
+  const confirmDelete = async () => {
+    if (!sourceToDelete) return;
 
     try {
       await deleteMutation.mutateAsync({
         chatbotId: botId,
-        datasourceId: dataSource.id,
+        datasourceId: sourceToDelete.id,
       });
       toast.success('Data source deleted successfully');
-      if (selectedSource?.id === dataSource.id) {
+      if (selectedSource?.id === sourceToDelete.id) {
         setSelectedSource(null);
       }
+      setSourceToDelete(null);
     } catch (error) {
       toast.error('Failed to delete data source');
+      setSourceToDelete(null);
     }
+  };
+
+  const handleDelete = (dataSource: DataSourceItem) => {
+    // Guard edit in LIVE mode
+    if (!guardEdit(() => true)) return;
+    setSourceToDelete(dataSource);
   };
 
   const handleSaveCitation = async (citation: string) => {
@@ -520,15 +523,41 @@ export default function DataSourcesPage() {
       </div>
 
       {/* Edit Citation Dialog */}
-      <AnimatePresence>
-        {editingSource && (
-          <EditCitationDialog
-            dataSource={editingSource}
-            onClose={() => setEditingSource(null)}
-            onSave={handleSaveCitation}
-          />
-        )}
-      </AnimatePresence>
+      {editingSource && (
+        <EditCitationDialog
+          dataSource={editingSource}
+          onClose={() => setEditingSource(null)}
+          onSave={handleSaveCitation}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!sourceToDelete} onOpenChange={(open) => !open && setSourceToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Data Source
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{sourceToDelete?.name}"? This action cannot be undone and will permanently remove all associated embeddings.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDelete();
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
