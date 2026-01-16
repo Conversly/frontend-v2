@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect } from "react";
 
-interface AuthContextType {}
+interface AuthContextType { }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuthContext = () => {
   const ctx = useContext(AuthContext);
@@ -41,7 +41,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthStatus('loading');
     } else if (user) {
       setAuthStatus('authenticated');
-      setUser(user);
+      setUser({
+        ...user,
+        name: user.displayName || "",
+        username: user.username || "",
+        avatarUrl: user.avatarUrl || null,
+      });
     } else {
       setAuthStatus('unauthenticated');
       setUser(null);

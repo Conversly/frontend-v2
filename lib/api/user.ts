@@ -18,8 +18,7 @@ export async function getMe(): Promise<UserProfile> {
 
   if (!res.success) throw new Error(res.message);
   return res.data;
-  if (!res.success) throw new Error(res.message);
-  return res.data;
+
 }
 
 export const getLoggedInUser = getMe;

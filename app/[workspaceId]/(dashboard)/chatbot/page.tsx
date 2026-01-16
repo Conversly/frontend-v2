@@ -146,8 +146,11 @@ export default function WorkspaceChatbotsPage() {
             <EmptyState
               title="No chatbots yet"
               description="Create your first chatbot in this workspace."
-              actionLabel="Create chatbot"
-              onAction={handleCreateChatbot}
+              primaryAction={{
+                label: "Create chatbot",
+                onClick: handleCreateChatbot,
+                icon: <Plus />,
+              }}
             />
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

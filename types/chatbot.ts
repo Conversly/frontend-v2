@@ -13,7 +13,7 @@ export interface ChatbotResponse {
   status: string;
   createdAt: Date | null;
   updatedAt: Date | null;
-  apiKey?: string | null;
+
   devVersion: number;
   liveVersion: number;
   deployStatusField: string | null;

@@ -40,13 +40,13 @@ export default function VoiceWidgetPage() {
     // BUT since I am in a write tool, I will write specific valid code that Handles "Loading" state if ID is missing.
 
     return (
-        <VoiceWidgetLoader botId={botId} />
+        <VoiceWidgetLoader botId={botId} workspaceId={workspaceId} />
     );
 }
 
 import { useAssistants } from "@/services/voice-assistant-service";
 
-function VoiceWidgetLoader({ botId }: { botId: string }) {
+function VoiceWidgetLoader({ botId, workspaceId }: { botId: string, workspaceId: string }) {
     const { data: assistants, isLoading } = useAssistants(botId);
 
     if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;

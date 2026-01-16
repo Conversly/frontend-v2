@@ -69,7 +69,12 @@ export default function Navbar() {
 
   useEffect(() => {
     if (fetchedUser) {
-      setUser(fetchedUser);
+      setUser({
+        ...fetchedUser,
+        name: fetchedUser.displayName || "",
+        username: fetchedUser.username || "",
+        avatarUrl: fetchedUser.avatarUrl || null,
+      });
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
       } catch { }
