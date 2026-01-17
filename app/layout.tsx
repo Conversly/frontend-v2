@@ -4,23 +4,15 @@ import { merge } from "@/utils/ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Roboto, Space_Grotesk } from "next/font/google";
+import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
 import { defaultMetadata, organizationSchema } from "@/lib/metadata";
 
-const roboto = Roboto({
-  variable: "--font-roboto",
-  weight: ["100", "300", "400", "500", "700", "900"],
-  preload: true,
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
+const lato = Lato({
+  variable: "--font-lato",
+  weight: ["100", "300", "400", "700", "900"],
   preload: true,
   subsets: ["latin"],
   display: "swap",
@@ -54,8 +46,7 @@ export default function RootLayout({
       </head>
       <body
         className={merge(
-          spaceGrotesk.variable,
-          roboto.variable,
+          lato.variable,
           "font-sans antialiased m-0 p-0",
         )}
       >

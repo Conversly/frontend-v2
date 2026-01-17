@@ -683,7 +683,7 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="text-primary"
+                className="text-primary text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
               >
                 customer support
               </motion.span>{" "}

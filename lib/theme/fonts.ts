@@ -12,16 +12,16 @@
 export const FONTS = {
   // Hero & Titles
   display: {
-    name: "Space Grotesk",
-    variable: "--font-space-grotesk",
-    weights: ["400", "500", "600", "700"],
+    name: "Lato",
+    variable: "--font-lato",
+    weights: ["100", "300", "400", "700", "900"],
   },
 
   // Dashboard & Body Text
   body: {
-    name: "Roboto",
-    variable: "--font-roboto",
-    weights: ["100", "300", "400", "500", "700", "900"],
+    name: "Lato",
+    variable: "--font-lato",
+    weights: ["100", "300", "400", "700", "900"],
   },
 
   // Monospace (code, technical content)

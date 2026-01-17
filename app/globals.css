@@ -15,23 +15,29 @@
 
 :root {
   /* Typography - Update fonts in lib/theme/fonts.ts */
-  font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-  --font-roboto: var(--font-roboto);
-  --font-space-grotesk: var(--font-space-grotesk);
+  font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
+  --font-lato: var(--font-lato);
 
   /* Typography tokens */
-  --font-h1: 20px;
-  --font-h2: 16px;
-  --font-h3: 14px;
-  --font-body: 14px;
-  --font-small: 13px;
-  --font-xsmall: 12px;
-  --line-h1: 28px;
-  --line-h2: 24px;
-  --line-h3: 20px;
-  --line-body: 22px;
-  --line-small: 20px;
-  --line-xsmall: 18px;
+  --font-h1: 19.5899px;
+  --font-h2: 17.6316px;
+  --font-h3: 15px;
+  /* Interpolated/Default */
+  --font-h4: 13.7136px;
+  --font-h5: 11.7539px;
+  --font-body: 13px;
+  --font-small: 11.7539px;
+  --font-xsmall: 10px;
+
+  --line-h1: 23.5092px;
+  --line-h2: 21.5496px;
+  --line-h3: 18px;
+  /* Interpolated */
+  --line-h4: 15.6719px;
+  --line-h5: 13.7136px;
+  --line-body: 16px;
+  --line-small: 18.4713px;
+  --line-xsmall: 12px;
   --content-max-width: 1280px;
 
   /* Global Cursor Rules */
@@ -152,11 +158,10 @@
 
 @theme inline {
   /* Font families - Managed by lib/theme/fonts.ts */
-  --font-sans: var(--font-roboto);
+  --font-sans: var(--font-lato);
   --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
-  --font-roboto: var(--font-roboto);
-  --font-space-grotesk: var(--font-space-grotesk);
+  --font-lato: var(--font-lato);
 
   /* Radius values */
   --radius-sm: calc(var(--radius) - 4px);
@@ -695,21 +700,87 @@
     transition: background-color 0.5s ease, color 0.5s ease;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
-    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
+    font-size: var(--font-body);
+    font-weight: 400;
+    line-height: var(--line-body);
+    letter-spacing: 0.15px;
   }
 
   /* Hero & Titles - Font defined in lib/theme/fonts.ts */
   h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
   .hero-title,
   .hero-heading {
-    font-family: var(--font-space-grotesk), "Space Grotesk",
-      var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h1);
+    font-weight: 700;
+    line-height: var(--line-h1);
+    letter-spacing: 0.15px;
+  }
+
+  h2 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h2);
+    font-weight: 700;
+    line-height: var(--line-h2);
+    letter-spacing: 0.15px;
+  }
+
+  h4 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h4);
+    font-weight: 700;
+    line-height: var(--line-h4);
+    letter-spacing: 0.25px;
+  }
+
+  h5 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h5);
+    font-weight: 700;
+    line-height: var(--line-h5);
+    letter-spacing: 0.15px;
+  }
+
+  span {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 19.5899px;
+    letter-spacing: 0.15px;
+  }
+
+  div {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: 11.7539px;
+    font-weight: 400;
+    line-height: 18.4713px;
+    letter-spacing: normal;
+  }
+
+  /* Reset link default to inherit unless specified */
+  a {
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--font-lato), "Lato", sans-serif;
+  }
+
+  /* Specific A tag style requested - applied to class or default? Assuming default for now or specific context */
+  /*
+  {
+        "level": "A",
+        "font": "Lato, Helvetica, sans-serif",
+        "size": "10px",
+        "weight": "500",
+        "lineHeight": "28px",
+        "letterSpacing": "0.5px"
+    } 
+  */
+  a.small-link {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0.5px;
   }
 
   a:active,

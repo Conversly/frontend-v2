@@ -157,11 +157,11 @@ export const themeTokens = {
       mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
     },
     fontSize: {
-      xs: '0.75rem', // 12px - Subtext/secondary info
-      sm: '0.875rem', // 14px - Body text, buttons
-      base: '1rem', // 16px - Base body
-      lg: '1.125rem', // 18px - h2 Primary title
-      xl: '1.25rem', // 20px
+      xs: '0.75rem', // 12px -> Default tailwind, but our body is 13px now.
+      sm: '13px', // Updated base body size
+      base: '13px', // Updated base body size
+      lg: '17.6316px', // h2
+      xl: '19.5899px', // h1
       '2xl': '1.5rem', // 24px
       '3xl': '1.875rem', // 30px
     },
