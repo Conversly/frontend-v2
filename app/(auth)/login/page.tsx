@@ -74,6 +74,28 @@ export default function LoginPage() {
     }
   }, [searchParams]);
 
+  const validateAuthEmail = (value: string): string => {
+    const trimmed = value.trim();
+    if (!trimmed) return "Email is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) return "Invalid email format";
+    return "";
+  };
+
+  const getPasswordValidationErrors = (value: string): string[] => {
+    const errors: string[] = [];
+    if (!value) {
+      errors.push("Password is required");
+      return errors;
+    }
+    if (value.length < 8) errors.push("Password must be at least 8 characters");
+    if (!/[a-z]/.test(value)) errors.push("Password must contain at least one lowercase letter");
+    if (!/[A-Z]/.test(value)) errors.push("Password must contain at least one uppercase letter");
+    if (!/[0-9]/.test(value)) errors.push("Password must contain at least one number");
+    if (!/[@$!%*?&#]/.test(value)) errors.push("Password must contain at least one special character");
+    return errors;
+  };
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -81,17 +103,27 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
+        const emailError = validateAuthEmail(email);
+        if (emailError) {
+          setError(emailError);
+          setLoading(false);
+          return;
+        }
+
+        const passwordErrors = getPasswordValidationErrors(password);
+        if (passwordErrors.length > 0) {
+          setError(passwordErrors.join(", "));
+          setLoading(false);
+          return;
+        }
+
         if (password !== confirmPassword) {
           setError("Passwords do not match");
           setLoading(false);
           return;
         }
-        if (password.length < 6) {
-          setError("Password must be at least 6 characters");
-          setLoading(false);
-          return;
-        }
-        const response = await emailRegister(email, password, undefined, inviteCode || undefined);
+
+        const response = await emailRegister(email.trim(), password, undefined, inviteCode || undefined);
         if (response.success) {
           setVerificationSent(true);
         }
