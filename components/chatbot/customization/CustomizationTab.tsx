@@ -280,7 +280,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
           </div>
 
           {/* Two-column layout: form left, preview right - both start at same level */}
-          <div className="flex-1 grid lg:grid-cols-[1fr_420px] gap-6 items-start min-h-0">
+          <div className="flex-1 grid lg:grid-cols-[minmax(0,1fr)_460px] gap-6 items-start min-h-0">
             {/* Form content - scrollable */}
             <div className="flex-1 overflow-y-auto min-h-0 pr-2">
               {/* Content Tab */}
@@ -329,7 +329,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
             {/* Preview Right Column - aligned with form start */}
             <div className="sticky top-6">
-              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4 min-h-[600px]">
+              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl px-6 py-4 min-h-[600px]">
                 <SectionHeader
                   title="Live Preview"
                   description="See how your chatbot will appear on your website"

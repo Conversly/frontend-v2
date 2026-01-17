@@ -49,7 +49,8 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
     setIsSavingTopic(true);
     try {
       const t = await createTopic({ chatbotId: chatbotId, name });
-      setTopics((prev) => [...prev, { id: t.id, name: t.name }]);
+      // Prepend so the user immediately sees the newly-added topic.
+      setTopics((prev) => [{ id: t.id, name: t.name }, ...prev]);
       setNewTopic("");
       toast.success("Topic added");
     } catch (err: any) {
