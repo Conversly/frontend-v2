@@ -419,7 +419,7 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
                                                                 <span className="font-medium">{voice.name}</span>
                                                                 <span className="text-xs text-muted-foreground">{voice.description}</span>
                                                             </div>
-                                                            <div className="ml-auto px-2 py-0.5 rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground">
+                                                            <div className="ml-auto px-2 py-0.5 rounded-full bg-secondary text-2xs font-medium text-secondary-foreground">
                                                                 {voice.gender}
                                                             </div>
                                                         </div>

@@ -82,10 +82,10 @@ export function Step1UrlAndUsecase({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <div className="flex flex-col items-center justify-center gap-2 lg:items-start lg:justify-start">
-        <h1 className="text-pretty text-center text-[28px] font-semibold leading-[130%] tracking-[-1.12px] lg:text-left">
+        <h1 className="text-pretty text-center text-2xl font-semibold lg:text-left">
           Let&apos;s start with a link
         </h1>
-        <p className="text-center text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground lg:text-left">
+        <p className="text-center text-sm text-muted-foreground lg:text-left">
           Share your website link, and we&apos;ll automatically build an AI agent trained on your content.
         </p>
       </div>
@@ -162,7 +162,7 @@ export function Step1UrlAndUsecase({
                   </div>
                   <div className="flex flex-col gap-0 min-w-0">
                     <span className="text-xs font-semibold text-foreground truncate">{item.title}</span>
-                    <span className="text-[10px] text-muted-foreground leading-tight truncate">{item.description}</span>
+                    <span className="text-2xs text-muted-foreground leading-tight truncate">{item.description}</span>
                   </div>
                 </button>
               );

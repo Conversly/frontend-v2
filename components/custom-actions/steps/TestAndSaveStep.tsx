@@ -40,7 +40,7 @@ export const TestSection: React.FC<Props> = ({
                     <span className="font-medium">{formData.displayName || formData.name || '—'}</span>
 
                     <span className="text-muted-foreground">Method:</span>
-                    <Badge variant="outline" className="w-fit text-[10px] h-5">{formData.apiConfig.method}</Badge>
+                    <Badge variant="outline" className="w-fit text-2xs h-5">{formData.apiConfig.method}</Badge>
 
                     <span className="text-muted-foreground">Auth:</span>
                     <span className="capitalize">{formData.apiConfig.authType}</span>
@@ -118,7 +118,7 @@ export const TestSection: React.FC<Props> = ({
 
                         <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Response</Label>
-                            <div className="rounded-md bg-muted p-2 font-mono text-[11px] overflow-auto max-h-48 whitespace-pre-wrap">
+                            <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap">
                                 {typeof testResult.responseBody === 'string'
                                     ? testResult.responseBody
                                     : JSON.stringify(testResult.responseBody, null, 2)}
@@ -128,7 +128,7 @@ export const TestSection: React.FC<Props> = ({
                         {testResult.extractedData && (
                             <div className="space-y-1">
                                 <Label className="text-xs text-muted-foreground">Extracted Data</Label>
-                                <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-2 font-mono text-[11px] overflow-auto">
+                                <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-2 font-mono text-xs overflow-auto">
                                     {JSON.stringify(testResult.extractedData, null, 2)}
                                 </div>
                             </div>

@@ -103,7 +103,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
 
         <div className="flex flex-col gap-1">
           <motion.h1
-            className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]"
+            className="text-2xl font-semibold"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -111,7 +111,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
             🎉 Your chatbot is ready!
           </motion.h1>
           <motion.p
-            className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground"
+            className="text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}

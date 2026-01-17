@@ -151,7 +151,7 @@ export function SourcesCategorySidebar({
                   >
                     <Icon />
                     <span className="flex-1 text-left">{integration.label}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    <span className="text-2xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                       Soon
                     </span>
                   </button>

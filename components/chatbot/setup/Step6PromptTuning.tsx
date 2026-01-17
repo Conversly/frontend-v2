@@ -16,8 +16,8 @@ export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt, isLo
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-2 shrink-0">
-        <h1 className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]">Agent&apos;s personality</h1>
-        <p className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground">
+        <h1 className="text-2xl font-semibold">Agent&apos;s personality</h1>
+        <p className="text-sm text-muted-foreground">
           Select a prompt, customize the instructions, and choose your model.
         </p>
       </div>

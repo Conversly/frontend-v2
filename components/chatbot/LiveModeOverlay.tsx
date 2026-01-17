@@ -71,7 +71,7 @@ export function LiveModeOverlay() {
                             <Lock className="w-8 h-8 text-primary animate-pulse" />
                         </div>
 
-                        <h2 className="text-2xl font-heading font-semibold text-foreground mb-3">
+                        <h2 className="text-2xl font-semibold text-foreground mb-3">
                             Live Mode Active
                         </h2>
                         <p className="text-muted-foreground mb-8 leading-relaxed">
@@ -85,7 +85,7 @@ export function LiveModeOverlay() {
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-foreground">Protected State</div>
-                                <div className="text-[10px] text-muted-foreground">Changes automatically sync to production in DEV mode.</div>
+                                <div className="text-2xs text-muted-foreground">Changes automatically sync to production in DEV mode.</div>
                             </div>
                         </div>
                     </motion.div>

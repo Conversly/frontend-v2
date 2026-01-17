@@ -119,8 +119,8 @@ export const APIConfigSection: React.FC<Props> = ({
                             className="flex-1 font-mono text-xs h-9"
                         />
                     </div>
-                    <p className="text-[11px] text-muted-foreground">
-                        Use <code className="px-1 py-0.5 rounded bg-muted text-[10px]">{'{{variable}}'}</code> for dynamic values
+                    <p className="text-xs text-muted-foreground">
+                        Use <code className="px-1 py-0.5 rounded bg-muted text-2xs">{'{{variable}}'}</code> for dynamic values
                     </p>
                 </div>
 
@@ -177,7 +177,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     <div className="flex items-center gap-2">
                         <Label className="text-xs">Custom Headers</Label>
                         {headerCount > 0 && (
-                            <Badge variant="secondary" className="text-[10px] h-5">
+                            <Badge variant="secondary" className="text-2xs h-5">
                                 {headerCount}
                             </Badge>
                         )}

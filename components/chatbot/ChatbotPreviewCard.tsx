@@ -105,8 +105,8 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
                 background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0.44%, rgba(0, 0, 0, 0) 49.5%), rgb(255, 255, 255)'
               }}
             >
-              <p className="line-clamp-1 w-full origin-left font-medium text-[7.85px] leading-normal tracking-tight text-black">
-                {chatbot.name}
+              <p className="line-clamp-1 w-full font-medium text-2xs leading-tight tracking-tight text-black">
+                <span className="inline-block origin-left scale-75">{chatbot.name}</span>
               </p>
             </div>
 

@@ -16,7 +16,7 @@
 :root {
   /* Typography - Update fonts in lib/theme/fonts.ts */
   font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
-  --font-lato: var(--font-lato);
+  /* `--font-lato` is provided by next/font in app/layout.tsx */
 
   /* Typography tokens */
   --font-h1: 19.5899px;
@@ -28,6 +28,7 @@
   --font-body: 13px;
   --font-small: 11.7539px;
   --font-xsmall: 10px;
+  --font-ui: 14px;
 
   --line-h1: 23.5092px;
   --line-h2: 21.5496px;
@@ -38,6 +39,7 @@
   --line-body: 16px;
   --line-small: 18.4713px;
   --line-xsmall: 12px;
+  --line-ui: 19.5899px;
   --content-max-width: 1280px;
 
   /* Global Cursor Rules */
@@ -162,6 +164,28 @@
   --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
   --font-lato: var(--font-lato);
+
+  /* Typography (Tailwind v4) */
+  /* Font sizes */
+  --text-2xs: var(--font-xsmall);
+  --text-2xs--line-height: var(--line-xsmall);
+  --text-xs: var(--font-small);
+  --text-xs--line-height: var(--line-small);
+  --text-sm: var(--font-body);
+  --text-sm--line-height: var(--line-body);
+  --text-base: var(--font-ui);
+  --text-base--line-height: var(--line-ui);
+  --text-lg: var(--font-h4);
+  --text-lg--line-height: var(--line-h4);
+  --text-xl: var(--font-h2);
+  --text-xl--line-height: var(--line-h2);
+  --text-2xl: var(--font-h1);
+  --text-2xl--line-height: var(--line-h1);
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
 
   /* Radius values */
   --radius-sm: calc(var(--radius) - 4px);
@@ -742,22 +766,6 @@
     letter-spacing: 0.15px;
   }
 
-  span {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 19.5899px;
-    letter-spacing: 0.15px;
-  }
-
-  div {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: 11.7539px;
-    font-weight: 400;
-    line-height: 18.4713px;
-    letter-spacing: normal;
-  }
-
   /* Reset link default to inherit unless specified */
   a {
     color: inherit;
@@ -869,10 +877,6 @@
   }
 
   /* Layout & page structure */
-  .app-shell {
-    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-  }
-
   .page-container {
     width: 100%;
     /* padding removed to allow full-height layouts */

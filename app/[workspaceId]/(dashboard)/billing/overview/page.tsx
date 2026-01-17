@@ -178,7 +178,7 @@ export default function BillingPage() {
                           <tr key={invoice.id} className="border-b transition-colors hover:bg-muted/50">
                             <td className="p-4 align-middle">{formatDate(invoice.createdAt)}</td>
                             <td className="p-4 align-middle">
-                              <Badge variant={invoice.type === 'CREDIT' ? 'default' : 'destructive'} className="uppercase text-[10px]">
+                              <Badge variant={invoice.type === 'CREDIT' ? 'default' : 'destructive'} className="uppercase text-2xs">
                                 {invoice.type === 'CREDIT' ? <ArrowDownLeft className="h-3 w-3 mr-1" /> : <ArrowUpRight className="h-3 w-3 mr-1" />}
                                 {invoice.type}
                               </Badge>

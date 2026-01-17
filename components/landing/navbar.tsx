@@ -172,7 +172,7 @@ export default function Navbar() {
                   <div className="space-y-6">
                     <h4 className="font-bold text-base leading-none mb-4 text-foreground flex items-center gap-2">
                       By Use Cases
-                      <Badge variant="secondary" className="text-[10px] h-5 px-1.5 rounded-md font-normal">Popular</Badge>
+                      <Badge variant="secondary" className="text-2xs h-5 px-1.5 rounded-md font-normal">Popular</Badge>
                     </h4>
                     <ul className="space-y-4">
                       <li>
@@ -293,7 +293,7 @@ export default function Navbar() {
                         className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                       <div className="absolute bottom-0 left-0 w-full p-6 z-20 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
-                        <div className="bg-blue-600/90 backdrop-blur-sm text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-3 border border-blue-400/30 shadow-lg">NEW FEATURE</div>
+                        <div className="bg-blue-600/90 backdrop-blur-sm text-2xs font-bold px-2.5 py-1 rounded-full w-fit mb-3 border border-blue-400/30 shadow-lg">NEW FEATURE</div>
                         <h4 className="font-bold text-xl mb-2 leading-tight">Voice AI Agents</h4>
                         <p className="text-sm text-gray-200 mb-4 line-clamp-3">Deploy human-like voice assistants that can handle complex calls in minutes.</p>
                         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-white/20 hover:bg-white/30 backdrop-blur-md px-4 py-2 rounded-lg transition-colors border border-white/10">

@@ -166,7 +166,7 @@ const ToolNode = ({
             >
                 <Icon className={`w-5 h-5 ${tool.textColor}`} />
             </motion.div>
-            <span className="text-[10px] font-medium text-slate-600 whitespace-nowrap">
+            <span className="text-2xs font-medium text-slate-600 whitespace-nowrap">
                 {tool.name}
             </span>
 

@@ -197,7 +197,7 @@ function VoiceCallUI() {
 
             {/* Live transcript */}
             <div className="flex-1 space-y-2 overflow-hidden">
-              <p className="text-slate-400 text-[10px] uppercase tracking-wider text-center mb-3 font-semibold">Live Transcript</p>
+              <p className="text-slate-400 text-2xs uppercase tracking-wider text-center mb-3 font-semibold">Live Transcript</p>
               {transcripts.slice(0, transcriptIndex + 1).map((t, i) => (
                 <motion.div
                   key={i}
@@ -208,7 +208,7 @@ function VoiceCallUI() {
                     : "bg-emerald-50 border border-emerald-100 text-emerald-800 shadow-sm rounded-tr-sm ml-auto"
                     } max-w-[90%] w-fit`}
                 >
-                  <span className={`text-[9px] uppercase tracking-wider block mb-1 font-bold ${t.speaker === "ai" ? "text-slate-400" : "text-emerald-600/70"
+                  <span className={`text-2xs uppercase tracking-wider block mb-1 font-bold ${t.speaker === "ai" ? "text-slate-400" : "text-emerald-600/70"
                     }`}>
                     {t.speaker === "ai" ? "AI Agent" : "Caller"}
                   </span>
@@ -320,10 +320,10 @@ function WhatsAppChatUI() {
             className="flex items-start gap-2"
           >
             <div className="bg-white text-gray-800 rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
-              <p className="text-[13px] leading-relaxed">
+              <p className="text-sm leading-relaxed">
                 Welcome to Bella&apos;s Kitchen! 🍝 I can help with reservations, menu info, or order status.
               </p>
-              <p className="text-[11px] text-gray-400 text-right mt-1">10:42 AM</p>
+              <p className="text-xs text-gray-400 text-right mt-1">10:42 AM</p>
             </div>
           </motion.div>
         )}
@@ -337,11 +337,11 @@ function WhatsAppChatUI() {
             className="flex items-start justify-end gap-2"
           >
             <div className="bg-[#DCF8C6] text-gray-800 rounded-lg rounded-tr-none p-2.5 max-w-[85%] shadow-sm">
-              <p className="text-[13px] leading-relaxed">
+              <p className="text-sm leading-relaxed">
                 Check my reservation for Sarah
               </p>
               <div className="flex items-center justify-end gap-1 mt-1">
-                <span className="text-[11px] text-gray-500">10:43 AM</span>
+                <span className="text-xs text-gray-500">10:43 AM</span>
                 <CheckCheck className="w-4 h-4 text-blue-500" />
               </div>
             </div>
@@ -375,11 +375,11 @@ function WhatsAppChatUI() {
             className="flex items-start gap-2"
           >
             <div className="bg-white text-gray-800 rounded-lg rounded-tl-none p-2.5 max-w-[85%] shadow-sm">
-              <p className="text-[13px] leading-relaxed">
+              <p className="text-sm leading-relaxed">
                 {displayedText}
                 {!isComplete && <span className="inline-block w-0.5 h-3.5 bg-gray-400 ml-0.5 animate-pulse" />}
               </p>
-              <p className="text-[11px] text-gray-400 text-right mt-1">10:43 AM</p>
+              <p className="text-xs text-gray-400 text-right mt-1">10:43 AM</p>
             </div>
           </motion.div>
         )}

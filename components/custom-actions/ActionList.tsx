@@ -131,7 +131,7 @@ export const ActionList: React.FC<Props> = ({
                                 </p>
 
                                 <div className="flex items-center gap-2 text-xs font-mono bg-muted p-2 rounded">
-                                    <Badge variant="outline" className="text-[10px] px-1 py-0 h-5">
+                                    <Badge variant="outline" className="text-2xs px-1 py-0 h-5">
                                         {action.apiConfig.method}
                                     </Badge>
                                     <span className="truncate" title={action.apiConfig.endpoint}>

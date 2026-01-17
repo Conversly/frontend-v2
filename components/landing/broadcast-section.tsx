@@ -169,7 +169,7 @@ export default function BroadcastSection() {
                   <div className="w-3 h-3 rounded-full bg-amber-400/80" />
                   <div className="w-3 h-3 rounded-full bg-emerald-400/80" />
                 </div>
-                <div className="mx-auto bg-slate-100/50 h-5 w-40 rounded-full text-[10px] text-center flex items-center justify-center text-slate-400">
+                <div className="mx-auto bg-slate-100/50 h-5 w-40 rounded-full text-2xs text-center flex items-center justify-center text-slate-400">
                   VerlyAI
                 </div>
               </div>
