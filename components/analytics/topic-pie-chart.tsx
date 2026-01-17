@@ -94,7 +94,6 @@ export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
                 slotProps={{
                   legend: {
                     position: { vertical: 'bottom', horizontal: 'center' },
-                    itemGap: 10,
                   }
                 }}
                 margin={{ top: 0, bottom: 60, left: 0, right: 0 }}

@@ -165,7 +165,6 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
                 slotProps={{
                   legend: {
                     position: { vertical: 'bottom', horizontal: 'center' },
-                    itemGap: 10,
                   }
                 }}
               />
