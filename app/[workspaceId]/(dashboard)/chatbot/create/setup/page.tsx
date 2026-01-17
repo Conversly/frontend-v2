@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
-import Link from "next/link";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useBranchStore } from "@/store/branch";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
@@ -48,10 +46,15 @@ function useStagedProgress(active: boolean) {
 
 export default function SetupWizardPage() {
   const router = useRouter();
+  const params = useParams<{ workspaceId: string }>();
+  const workspaceId = Array.isArray(params.workspaceId)
+    ? params.workspaceId[0]
+    : params.workspaceId;
   const queryClient = useQueryClient();
   const step = useSetupStore((s) => s.step);
   const setStep = useSetupStore((s) => s.setStep);
   const chatbotId = useSetupStore((s) => s.chatbotId);
+  const setWorkspaceId = useSetupStore((s) => s.setWorkspaceId);
   const protocol = useSetupStore((s) => s.protocol);
   const setProtocol = useSetupStore((s) => s.setProtocol);
   const host = useSetupStore((s) => s.host);
@@ -67,6 +70,12 @@ export default function SetupWizardPage() {
   useEffect(() => {
     switchBranch('DEV');
   }, [switchBranch]);
+
+  // Ensure workspaceId is always present for createChatBot()
+  useEffect(() => {
+    if (!workspaceId) return;
+    setWorkspaceId(workspaceId);
+  }, [setWorkspaceId, workspaceId]);
 
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
@@ -84,7 +93,7 @@ export default function SetupWizardPage() {
       sessionStorage.removeItem('was-refreshed');
       console.warn("Page refresh detected. Redirecting to chatbots list.");
       reset();
-      router.replace("/chatbot");
+      router.replace(`/${workspaceId}/chatbot`);
       return;
     }
 
@@ -94,7 +103,7 @@ export default function SetupWizardPage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [reset, router]);
+  }, [reset, router, workspaceId]);
 
 
 
@@ -103,9 +112,9 @@ export default function SetupWizardPage() {
     if (step > 2 && !chatbotId) {
       console.warn("Runtime check: Invalid state detected. Redirecting to chatbots list.");
       reset();
-      router.replace("/chatbot");
+      router.replace(`/${workspaceId}/chatbot`);
     }
-  }, [step, chatbotId, reset, router]);
+  }, [step, chatbotId, reset, router, workspaceId]);
 
   // Step 3 state (UI customization)
   const draftConfig = useCustomizationStore((s) => s.draftConfig);
@@ -168,6 +177,11 @@ export default function SetupWizardPage() {
   // Step 1 submit
   const onStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!workspaceId) {
+      toast.error("Missing workspace ID");
+      return;
+    }
+    setWorkspaceId(workspaceId);
     const trimmedHost = host.trim();
     if (!trimmedHost) {
       toast.error("Please enter a website URL");
@@ -309,7 +323,7 @@ export default function SetupWizardPage() {
                 isSubmitting={isSubmitting}
                 isValidHost={isValidHost}
                 onSubmit={onStep1Submit}
-                onManualSetup={() => router.push("/chatbot/create")}
+                onManualSetup={() => router.push(`/${workspaceId}/chatbot/create`)}
               />
             )}
             {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
