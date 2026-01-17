@@ -15,6 +15,8 @@ import { BranchSwitcher } from "@/components/shared/BranchSwitcher";
 import { useBranch } from "@/store/branch";
 import { toast } from "sonner";
 import React from "react";
+import { useMaybeWorkspace } from "@/contexts/workspace-context";
+import { useChatbotInWorkspace } from "@/services/chatbot";
 
 // Map route segments to readable labels
 const routeLabels: Record<string, string> = {
@@ -37,10 +39,18 @@ export function DashboardHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams();
+  const workspaceCtx = useMaybeWorkspace();
 
-  const isChatbotDashboard = !!params?.botId;
-  const botId = params?.botId as string;
+  const workspaceIdParam = (params as any)?.workspaceId as string | string[] | undefined;
+  const botIdParam = (params as any)?.botId as string | string[] | undefined;
+  const workspaceId = Array.isArray(workspaceIdParam) ? workspaceIdParam[0] : workspaceIdParam;
+  const botId = Array.isArray(botIdParam) ? botIdParam[0] : botIdParam;
+
+  const isChatbotDashboard = !!workspaceId && !!botId;
   const { activeBranch, liveVersion } = useBranch();
+
+  // Fetch chatbot data when in a bot route (for name display in breadcrumb)
+  const { data: chatbotData } = useChatbotInWorkspace(workspaceId || "", botId || "");
 
   // Global redirect check: if in LIVE mode but no live version exists, redirect to Deploy Live
   React.useEffect(() => {
@@ -49,10 +59,10 @@ export function DashboardHeader() {
         toast.info("No live version exists", {
           description: "Redirecting you to the deployment page."
         });
-        router.push(`/chatbot/${botId}/deploy-live`);
+        router.push(`/${workspaceId}/chatbot/${botId}/deploy-live`);
       }
     }
-  }, [isChatbotDashboard, activeBranch, liveVersion, botId, pathname, router]);
+  }, [isChatbotDashboard, activeBranch, liveVersion, botId, workspaceId, pathname, router]);
 
 
   // Generate breadcrumbs based on current path
@@ -60,13 +70,22 @@ export function DashboardHeader() {
     label: string;
     path: string | null;
   }> => {
-    const pathSegments = pathname.split("/").filter(Boolean);
+    const pathSegments = (pathname || "").split("/").filter(Boolean);
     const breadcrumbs: Array<{ label: string; path: string | null }> = [];
 
-    let currentPath = "";
     pathSegments.forEach((segment, index) => {
-      currentPath += `/${segment}`;
       const isLast = index === pathSegments.length - 1;
+      const pathUpTo = `/${pathSegments.slice(0, index + 1).join("/")}`;
+
+      // Workspace segment (/:workspaceId/...)
+      if (index === 0) {
+        breadcrumbs.push({
+          label: workspaceCtx?.workspaceName || segment,
+          // Workspace "home" in this app is the chatbot list
+          path: isLast ? null : `/${segment}/chatbot`,
+        });
+        return;
+      }
 
       // Handle dynamic routes (UUIDs or bot IDs)
       if (
@@ -80,14 +99,14 @@ export function DashboardHeader() {
         const parentSegment = pathSegments[index - 1];
 
         if (parentSegment === "chatbot") {
-          detailLabel = "Bot Details";
+          detailLabel = chatbotData?.name || "Bot Details";
         } else if (parentSegment === "whatsapp") {
           detailLabel = "WhatsApp Instance";
         }
 
         breadcrumbs.push({
           label: detailLabel,
-          path: isLast ? null : currentPath,
+          path: isLast ? null : pathUpTo,
         });
       } else {
         // Use routeLabels for known routes
@@ -97,7 +116,7 @@ export function DashboardHeader() {
 
         breadcrumbs.push({
           label,
-          path: isLast ? null : currentPath,
+          path: isLast ? null : pathUpTo,
         });
       }
     });
