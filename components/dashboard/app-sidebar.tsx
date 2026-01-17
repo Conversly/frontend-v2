@@ -15,9 +15,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarRail,
     useSidebar,
 } from "@/components/ui/sidebar";
@@ -33,11 +30,6 @@ import {
     DropdownMenuSubContent,
     DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     ChevronsUpDown,
@@ -45,7 +37,6 @@ import {
     Settings,
     User,
     Bot,
-    ChevronRight,
     Moon,
     Sun,
     Laptop,
@@ -54,8 +45,8 @@ import {
 import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import type { NavItem } from "@/config/nav-config";
-import { getWorkspaceNavItems, getWorkspaceChatbotNavItems } from "@/config/nav-config";
+import type { NavItem, NavSection } from "@/config/nav-config";
+import { getWorkspaceNavSections, getWorkspaceChatbotNavSections } from "@/config/nav-config";
 import { useMaybeWorkspace } from "@/contexts/workspace-context";
 import { useChatbotInWorkspace } from "@/services/chatbot";
 
@@ -85,53 +76,45 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       botId || ""
     );
 
-    // Get workspace navigation items and filter by capabilities
-    const allWorkspaceNavItems = workspaceCtx
-      ? getWorkspaceNavItems(workspaceCtx.workspaceId)
+    // Get workspace navigation sections and filter by capabilities
+    const allWorkspaceNavSections = workspaceCtx
+      ? getWorkspaceNavSections(workspaceCtx.workspaceId)
       : [];
 
-    // Filter navigation items based on user capabilities
-    const filterNavItemsByCapability = (items: NavItem[]): NavItem[] => {
+    // Filter navigation sections based on user capabilities
+    const filterNavSectionsByCapability = (sections: NavSection[]): NavSection[] => {
       if (!workspaceCtx) return [];
       
-      return items
-        .filter((item) => {
-          // If no capability required, show to everyone
-          if (!item.requiredCapability) return true;
-          // Check if user has the required capability
-          return workspaceCtx.capabilities[item.requiredCapability];
-        })
-        .map((item) => {
-          // Recursively filter nested items
-          if (item.items && item.items.length > 0) {
-            return {
-              ...item,
-              items: filterNavItemsByCapability(item.items),
-            };
+      return sections
+        .filter((section) => {
+          // If section has a required capability, check it
+          if (section.requiredCapability) {
+            return workspaceCtx.capabilities[section.requiredCapability];
           }
-          return item;
-        })
-        .filter((item) => {
-          // Remove parent items if all their children were filtered out
-          if (item.items && item.items.length === 0) return false;
           return true;
-        });
+        })
+        .map((section) => ({
+          ...section,
+          items: section.items.filter((item) => {
+            if (!item.requiredCapability) return true;
+            return workspaceCtx.capabilities[item.requiredCapability];
+          }),
+        }))
+        .filter((section) => section.items.length > 0);
     };
 
-    const workspaceNavItems = filterNavItemsByCapability(allWorkspaceNavItems);
+    const workspaceNavSections = filterNavSectionsByCapability(allWorkspaceNavSections);
 
-    // Select navigation items based on context
-    const navItems =
+    // Select navigation sections based on context
+    const navSections =
       workspaceCtx && botId
-        ? getWorkspaceChatbotNavItems(workspaceCtx.workspaceId, botId)
-        : workspaceNavItems;
+        ? getWorkspaceChatbotNavSections(workspaceCtx.workspaceId, botId)
+        : workspaceNavSections;
     
-    // Section label: Use chatbot name if available, otherwise workspace name, otherwise "Platform"
-    const sectionLabel = workspaceCtx && botId && chatbotData
+    // Header label: Use chatbot name if available, otherwise workspace name
+    const headerLabel = workspaceCtx && botId && chatbotData
       ? chatbotData.name
-      : workspaceNavItems
-      ? workspaceCtx!.workspaceName
-      : "Platform";
+      : workspaceCtx?.workspaceName || "Platform";
 
     const handleLogout = () => {
         logout(queryClient);
@@ -190,65 +173,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    {!isBotRoute && <SidebarGroupLabel>{sectionLabel}</SidebarGroupLabel>}
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.url || pathname?.startsWith(item.url + "/");
-
-                                if (item.items && item.items.length > 0) {
+                {navSections.map((section) => (
+                    <SidebarGroup key={section.label}>
+                        <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {section.items.map((item) => {
+                                    const isActive = pathname === item.url || pathname?.startsWith(item.url + "/");
                                     return (
-                                        <Collapsible
-                                            key={item.title}
-                                            asChild
-                                            defaultOpen={isActive}
-                                            className="group/collapsible"
-                                        >
-                                            <SidebarMenuItem>
-                                                <CollapsibleTrigger asChild>
-                                                    <SidebarMenuButton tooltip={item.title} isActive={isActive}>
-                                                        <item.icon />
-                                                        <span>{item.title}</span>
-                                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                                                    </SidebarMenuButton>
-                                                </CollapsibleTrigger>
-                                                <CollapsibleContent>
-                                                    <SidebarMenuSub>
-                                                        {item.items.map((subItem) => {
-                                                            const isSubActive = pathname === subItem.url;
-                                                            return (
-                                                                <SidebarMenuSubItem key={subItem.title}>
-                                                                    <SidebarMenuSubButton asChild isActive={isSubActive}>
-                                                                        <Link href={subItem.url}>
-                                                                            <subItem.icon className="size-4" />
-                                                                            <span>{subItem.title}</span>
-                                                                        </Link>
-                                                                    </SidebarMenuSubButton>
-                                                                </SidebarMenuSubItem>
-                                                            )
-                                                        })}
-                                                    </SidebarMenuSub>
-                                                </CollapsibleContent>
-                                            </SidebarMenuItem>
-                                        </Collapsible>
+                                        <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+                                                <Link href={item.url}>
+                                                    <item.icon />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
                                     );
-                                }
-
-                                return (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                                            <Link href={item.url}>
-                                                <item.icon />
-                                                <span>{item.title}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                );
-                            })}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                                })}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                ))}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>

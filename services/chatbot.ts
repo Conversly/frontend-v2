@@ -25,7 +25,7 @@ export const useCreateChatbot = () => {
 };
 
 export const useGetChatbots = (workspaceId?: string) => {
-  const isAuthenticated = typeof window !== "undefined" 
+  const isAuthenticated = typeof window !== "undefined"
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
@@ -42,7 +42,7 @@ export const useGetChatbots = (workspaceId?: string) => {
 
 export const useChatbot = (chatbotId: string) => {
   // deprecated: keep signature but require callers to use useChatbotInWorkspace
-  const isAuthenticated = typeof window !== "undefined" 
+  const isAuthenticated = typeof window !== "undefined"
     ? localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true"
     : false;
 
@@ -92,19 +92,19 @@ export const useTopicsQuery = (chatbotId: string) =>
 
 export const useCreateTopicMutation = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: createTopic,
     onSuccess: (data, variables) => {
       // Invalidate topics query to refetch data
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPICS, variables.chatbotId]
       });
       // Also invalidate topic charts as they might have changed
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_BAR_CHART, variables.chatbotId]
       });
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_PIE_CHART, variables.chatbotId]
       });
     },
@@ -113,19 +113,19 @@ export const useCreateTopicMutation = () => {
 
 export const useUpdateTopicMutation = (chatbotId: string) => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: updateTopic,
     onSuccess: () => {
       // Invalidate topics query to refetch data
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPICS, chatbotId]
       });
       // Also invalidate topic charts as they might have changed
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_BAR_CHART, chatbotId]
       });
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_PIE_CHART, chatbotId]
       });
     },
@@ -134,22 +134,22 @@ export const useUpdateTopicMutation = (chatbotId: string) => {
 
 export const useDeleteTopicMutation = (chatbotId: string) => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: deleteTopic,
     onSuccess: () => {
       // Invalidate topics query to refetch data
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPICS, chatbotId]
       });
       // Also invalidate topic charts as they might have changed
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_BAR_CHART, chatbotId]
       });
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.TOPIC_PIE_CHART, chatbotId]
       });
     },
   });
 };
-  
+

@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp } from "lucide-react";
@@ -6,6 +8,7 @@ import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { chartsGridClasses } from '@mui/x-charts/ChartsGrid';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7c7c'];
+const MAX_TOPICS = 5;
 
 interface TopicSeries {
   topicId: string;
@@ -22,13 +25,63 @@ interface TopicLineChartProps {
 
 export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChartProps) {
 
-  // Transform data for MUI X Charts (dataset format)
-  const chartDataset = (() => {
+  // Process data to filter Top N + Other
+  const processedTopics = (() => {
     if (!topics || topics.length === 0) return [];
 
-    // Get all unique dates
+    // Calculate total messages per topic to sort
+    const topicTotals = topics.map(t => ({
+      ...t,
+      totalMessages: t.series.reduce((sum, s) => sum + s.messages, 0)
+    }));
+
+    // Sort by total messages descending
+    topicTotals.sort((a, b) => b.totalMessages - a.totalMessages);
+
+    // If we have few topics, return as is
+    if (topicTotals.length <= MAX_TOPICS) {
+      return topicTotals;
+    }
+
+    // Split into Top N and Rest
+    const topTopics = topicTotals.slice(0, MAX_TOPICS);
+    const otherTopics = topicTotals.slice(MAX_TOPICS);
+
+    // Create "Other" topic
+    // We need to merge all series from otherTopics
+    // First, find all unique dates involved in "Other"
+    const otherSeriesMap = new Map<string, number>();
+
+    otherTopics.forEach(topic => {
+      topic.series.forEach(point => {
+        const current = otherSeriesMap.get(point.date) || 0;
+        otherSeriesMap.set(point.date, current + point.messages);
+      });
+    });
+
+    // Convert map to array
+    const otherSeries = Array.from(otherSeriesMap.entries()).map(([date, messages]) => ({
+      date,
+      messages
+    }));
+
+    const otherTopic: TopicSeries = {
+      topicId: 'other',
+      topicName: 'Other',
+      color: '#94a3b8', // Gray for Other
+      series: otherSeries
+    };
+
+    return [...topTopics, otherTopic];
+  })();
+
+  // Transform data for MUI X Charts (dataset format)
+  const chartDataset = (() => {
+    if (processedTopics.length === 0) return [];
+
+    // Get all unique dates from the processed topics (including Other)
     const allDates = new Set<string>();
-    topics.forEach(topic => {
+    processedTopics.forEach(topic => {
       topic.series.forEach(point => allDates.add(point.date));
     });
 
@@ -41,7 +94,7 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
         dateStr: formatDate(date)
       };
 
-      topics.forEach(topic => {
+      processedTopics.forEach(topic => {
         const point = topic.series.find(p => p.date === date);
         dataPoint[topic.topicName] = point?.messages || 0;
       });
@@ -51,14 +104,14 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
   })();
 
   // Generate series config dynamically
-  const chartSeries = topics?.map((topic, index) => ({
+  const chartSeries = processedTopics.map((topic, index) => ({
     dataKey: topic.topicName,
     label: topic.topicName,
-    color: topic.color || COLORS[index % COLORS.length],
+    color: topic.topicName === 'Other' ? '#94a3b8' : (topic.color || COLORS[index % COLORS.length]),
     showMark: false,
     connectNulls: true,
     curve: "linear" as const,
-  })) || [];
+  }));
 
   const chartSetting = {
     grid: { horizontal: true },
@@ -75,7 +128,6 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
         fill: "#64748b",
         fontSize: "0.75rem"
       },
-      // Hide legend if too many items or rely on default
       "& .MuiChartsLegend-series text": {
         fontSize: "0.75rem !important",
         fill: "#64748b !important"
@@ -91,7 +143,7 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
           Topic Messages Over Time
         </CardTitle>
         <CardDescription>
-          Trend analysis of conversation topics
+          Trend analysis of conversation topics (Top 5)
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -113,6 +165,7 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
                 slotProps={{
                   legend: {
                     position: { vertical: 'bottom', horizontal: 'center' },
+                    itemGap: 10,
                   }
                 }}
               />
@@ -127,4 +180,3 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
     </Card>
   );
 }
-

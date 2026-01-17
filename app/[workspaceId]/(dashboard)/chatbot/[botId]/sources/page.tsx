@@ -11,16 +11,16 @@ import {
   Search,
   Trash2,
   Edit3,
-  ChevronRight,
   Copy,
   Check,
   Loader2,
-  Filter,
   Calendar,
   Database,
   AlertCircle,
-  Plus,
-  AlertTriangle
+  AlertTriangle,
+  Eye,
+  MoreVertical,
+  Filter
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,18 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  SourcesCategorySidebar,
+  AddKnowledgeDialog,
+  PendingSourcesPanel,
+  type SourceCategory,
+} from '@/components/chatbot/sources';
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
@@ -57,17 +69,17 @@ const DATA_SOURCE_ICONS = {
 } as const;
 
 const DATA_SOURCE_COLORS = {
-  URL: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
-  DOCUMENT: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
-  QNA: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
-  TXT: 'from-primary/10 via-primary/5 to-transparent border-primary/20 text-primary',
+  URL: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
+  DOCUMENT: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
+  QNA: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20 text-purple-600',
+  TXT: 'from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 text-orange-600',
 } as const;
 
 const DATA_SOURCE_BADGE_COLORS = {
-  URL: 'bg-primary/10 text-primary border-primary/20',
-  DOCUMENT: 'bg-primary/10 text-primary border-primary/20',
-  QNA: 'bg-primary/10 text-primary border-primary/20',
-  TXT: 'bg-primary/10 text-primary border-primary/20',
+  URL: 'bg-green-500/10 text-green-600 border-green-500/20',
+  DOCUMENT: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  QNA: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+  TXT: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
 } as const;
 
 function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
@@ -122,189 +134,76 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
   );
 }
 
-function DetailPanel({ dataSource }: { dataSource: DataSourceItem | null }) {
-  const { data: embeddings, isLoading } = useEmbeddingsQuery(dataSource?.id || '');
-
-  if (!dataSource) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
-          <ChevronRight className="w-8 h-8 text-muted-foreground" />
-        </div>
-        <p className="text-muted-foreground">
-          Select a data source to view its details
-        </p>
-      </div>
-    );
-  }
-
+function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem; onClose: () => void }) {
+  const { data: embeddings, isLoading } = useEmbeddingsQuery(dataSource.id);
   const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="border-b border-border p-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-            <Icon className="w-6 h-6 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <Badge className={cn('text-xs', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}>
-                {dataSource.type}
-              </Badge>
-              {dataSource.createdAt && (
-                <span className="text-xs text-muted-foreground">
-                  {new Date(dataSource.createdAt).toLocaleDateString()}
-                </span>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4 border-b border-border">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+              <Icon className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge className={cn('text-xs', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}>
+                  {dataSource.type}
+                </Badge>
+                {dataSource.createdAt && (
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(dataSource.createdAt).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
+              <DialogTitle className="truncate">{dataSource.name}</DialogTitle>
+              {dataSource.citation && (
+                <a
+                  href={dataSource.citation}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:text-primary/80 truncate block mt-1"
+                >
+                  {dataSource.citation}
+                </a>
               )}
             </div>
-            <h3 className="text-lg font-heading font-semibold text-foreground mb-1 truncate">
-              {dataSource.name}
-            </h3>
-            {dataSource.citation && (
-              <a
-                href={dataSource.citation}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-primary hover:text-primary/80 truncate block"
-              >
-                {dataSource.citation}
-              </a>
-            )}
           </div>
-        </div>
-      </div>
+        </DialogHeader>
 
-      {/* Embeddings */}
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex items-center gap-2 mb-4">
             <Database className="w-4 h-4 text-primary" />
-            Embedding Chunks
-            {embeddings && (
-              <span className="text-muted-foreground font-normal">({embeddings.length})</span>
-            )}
-          </h4>
-        </div>
-
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
-        ) : !embeddings || embeddings.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
-            <p className="text-sm text-muted-foreground">
-              No embeddings found. They may still be processing.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {embeddings.map((embedding, index) => (
-              <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function DataSourceCard({
-  dataSource,
-  isSelected,
-  onClick,
-  onDelete,
-  onEditCitation,
-  isLiveMode
-}: {
-  dataSource: DataSourceItem;
-  isSelected: boolean;
-  onClick: () => void;
-  onDelete: () => void;
-  onEditCitation: () => void;
-  isLiveMode: boolean;
-}) {
-  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
-  const colors = DATA_SOURCE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_COLORS];
-  const badgeColor = DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      onClick={onClick}
-      className={cn(
-        'group relative cursor-pointer rounded-xl border transition-all',
-        isSelected
-          ? 'bg-muted border-primary'
-          : 'bg-card border-border hover:border-primary/20'
-      )}
-    >
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className={cn('w-10 h-10 rounded-lg bg-gradient-to-br flex items-center justify-center flex-shrink-0 border', colors)}>
-            <Icon className="w-5 h-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <Badge className={cn('text-xs', badgeColor)}>
-                {dataSource.type}
-              </Badge>
-            </div>
-            <h4 className="text-sm font-semibold text-foreground truncate mb-1">
-              {dataSource.name}
+            <h4 className="text-sm font-semibold text-foreground">
+              Embedding Chunks
+              {embeddings && (
+                <span className="text-muted-foreground font-normal ml-1">({embeddings.length})</span>
+              )}
             </h4>
-            {dataSource.citation && (
-              <p className="text-xs text-muted-foreground truncate">
-                {dataSource.citation}
-              </p>
-            )}
-            {dataSource.createdAt && (
-              <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                <Calendar className="w-3 h-3" />
-                {new Date(dataSource.createdAt).toLocaleDateString()}
-              </div>
-            )}
           </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className={cn(
-          'flex items-center gap-1 mt-3 pt-3 border-t border-border',
-          isLiveMode ? 'opacity-50' : 'opacity-0 group-hover:opacity-100',
-          'transition-opacity'
-        )}>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEditCitation();
-            }}
-            disabled={isLiveMode}
-            className="flex-1 h-7 text-xs disabled:cursor-not-allowed"
-          >
-            <Edit3 className="w-3 h-3 mr-1" />
-            Edit Citation
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            disabled={isLiveMode}
-            className="flex-1 h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Trash2 className="w-3 h-3 mr-1" />
-            Delete
-          </Button>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          ) : !embeddings || embeddings.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">
+                No embeddings found. They may still be processing.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {embeddings.map((embedding, index) => (
+                <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </motion.div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -345,32 +244,135 @@ function EditCitationDialog({
   );
 }
 
+function DataSourceRow({
+  dataSource,
+  onDelete,
+  onEditCitation,
+  onViewChunks,
+  isLiveMode
+}: {
+  dataSource: DataSourceItem;
+  onDelete: () => void;
+  onEditCitation: () => void;
+  onViewChunks: () => void;
+  isLiveMode: boolean;
+}) {
+  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
+  const badgeColor = DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS];
+
+  return (
+    <motion.tr
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="group border-b border-border hover:bg-muted/30 transition-colors"
+    >
+      <td className="py-4 px-4">
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            'w-9 h-9 rounded-lg bg-gradient-to-br flex items-center justify-center border',
+            DATA_SOURCE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_COLORS]
+          )}>
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-foreground truncate max-w-[300px]">
+              {dataSource.name}
+            </p>
+            {dataSource.citation && (
+              <p className="text-xs text-muted-foreground truncate max-w-[300px]">
+                {dataSource.citation}
+              </p>
+            )}
+          </div>
+        </div>
+      </td>
+      <td className="py-4 px-4">
+        {dataSource.createdAt && (
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Calendar className="w-3.5 h-3.5" />
+            {new Date(dataSource.createdAt).toLocaleDateString()}
+          </div>
+        )}
+      </td>
+      <td className="py-4 px-4">
+        <Badge className={cn('text-xs', badgeColor)}>
+          {dataSource.type}
+        </Badge>
+      </td>
+      <td className="py-4 px-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onViewChunks}>
+              <Eye className="w-4 h-4 mr-2" />
+              View chunks
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={onEditCitation}
+              disabled={isLiveMode}
+            >
+              <Edit3 className="w-4 h-4 mr-2" />
+              Edit citation
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={onDelete}
+              disabled={isLiveMode}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </td>
+    </motion.tr>
+  );
+}
+
 export default function DataSourcesPage() {
   const routeParams = useParams<{ botId: string }>();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
 
-  const [selectedSource, setSelectedSource] = useState<DataSourceItem | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<string>('all');
   const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
+  const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
   const { guardEdit, isLiveMode } = useEditGuard();
 
-  // Filter and search
+  // Calculate source counts by type
+  const sourceCounts = useMemo(() => {
+    if (!dataSources) return { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 };
+    
+    return {
+      all: dataSources.length,
+      URL: dataSources.filter(s => s.type === 'URL').length,
+      DOCUMENT: dataSources.filter(s => s.type === 'DOCUMENT').length,
+      QNA: dataSources.filter(s => s.type === 'QNA').length,
+      TXT: dataSources.filter(s => s.type === 'TXT').length,
+    };
+  }, [dataSources]);
+
+  // Filter sources by category and search
   const filteredSources = useMemo(() => {
     if (!dataSources) return [];
 
     return dataSources.filter((source) => {
       const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = filterType === 'all' || source.type === filterType;
-      return matchesSearch && matchesFilter;
+      const matchesCategory = selectedCategory === 'all' || source.type === selectedCategory;
+      return matchesSearch && matchesCategory;
     });
-  }, [dataSources, searchQuery, filterType]);
+  }, [dataSources, searchQuery, selectedCategory]);
 
   const confirmDelete = async () => {
     if (!sourceToDelete) return;
@@ -381,9 +383,6 @@ export default function DataSourcesPage() {
         datasourceId: sourceToDelete.id,
       });
       toast.success('Data source deleted successfully');
-      if (selectedSource?.id === sourceToDelete.id) {
-        setSelectedSource(null);
-      }
       setSourceToDelete(null);
     } catch (error) {
       toast.error('Failed to delete data source');
@@ -392,15 +391,12 @@ export default function DataSourcesPage() {
   };
 
   const handleDelete = (dataSource: DataSourceItem) => {
-    // Guard edit in LIVE mode
     if (!guardEdit(() => true)) return;
     setSourceToDelete(dataSource);
   };
 
   const handleSaveCitation = async (citation: string) => {
     if (!editingSource) return;
-
-    // Guard edit in LIVE mode
     if (!guardEdit(() => true)) return;
 
     try {
@@ -421,106 +417,131 @@ export default function DataSourcesPage() {
     setEditingSource(source);
   };
 
-  const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'URL', label: 'URLs' },
-    { value: 'DOCUMENT', label: 'Documents' },
-    { value: 'QNA', label: 'Q&A' },
-    { value: 'TXT', label: 'Text' },
-  ];
+  const getCategoryTitle = () => {
+    switch (selectedCategory) {
+      case 'URL': return 'Websites';
+      case 'DOCUMENT': return 'Documents';
+      case 'QNA': return 'Q&A';
+      case 'TXT': return 'Text';
+      default: return 'All Sources';
+    }
+  };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* Header */}
-      <div className="border-b border-border bg-card backdrop-blur-sm">
-        <div className="p-6">
+    <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">
+      {/* Left Sidebar - Categories (Fixed) */}
+      <div className="flex-shrink-0 h-full">
+        <SourcesCategorySidebar
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          onAddKnowledge={() => setIsAddDialogOpen(true)}
+          sourceCounts={sourceCounts}
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header (Fixed) */}
+        <div className="flex-shrink-0 border-b border-border bg-card p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="type-page-title mb-1">
-                Knowledge Base
+              <h1 className="text-2xl font-heading font-semibold text-foreground">
+                {getCategoryTitle()}
               </h1>
-              <p className="type-body-muted">
-                Manage your data sources and embeddings
+              <p className="text-muted-foreground mt-1">
+                {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
               </p>
             </div>
           </div>
 
-          {/* Search and Filter */}
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name or citation..."
-                className="pl-9"
-              />
-            </div>
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary"
-            >
-              {typeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          {/* Search */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name or citation..."
+              className="pl-9"
+            />
           </div>
         </div>
-      </div>
 
-      {/* Split View */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left: Data Sources List */}
-        <div className="w-[400px] border-r border-border overflow-y-auto">
-          <div className="p-4">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              </div>
-            ) : filteredSources.length === 0 ? (
-              dataSources?.length === 0 ? (
+        {/* Table (Scrollable) */}
+        <div className="flex-1 overflow-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : filteredSources.length === 0 ? (
+            <div className="p-6">
+              {dataSources?.length === 0 ? (
                 <EmptyState
-                  title="No data sources yet"
-                  description="Add URLs, documents, Q&A pairs, or text to train your chatbot."
+                  title="No knowledge sources yet"
+                  description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
                   icon={<Database />}
                   primaryAction={{
-                    label: "Add Data Source",
-                    href: "./sources/productivity",
-                    icon: <Plus />,
+                    label: "Add Knowledge",
+                    onClick: () => setIsAddDialogOpen(true),
                   }}
                   className="border-dashed bg-card/30"
                 />
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
-                  No data sources match your filters
+                  No sources match your search
                 </div>
-              )
-            ) : (
-              <div className="space-y-3">
-                {filteredSources.map((source) => (
-                  <DataSourceCard
-                    key={source.id}
-                    dataSource={source}
-                    isSelected={selectedSource?.id === source.id}
-                    onClick={() => setSelectedSource(source)}
-                    onDelete={() => handleDelete(source)}
-                    onEditCitation={() => handleEditCitation(source)}
-                    isLiveMode={isLiveMode}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right: Detail Panel */}
-        <div className="flex-1 bg-background overflow-hidden">
-          <DetailPanel dataSource={selectedSource} />
+              )}
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-muted/50 sticky top-0">
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Last update
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-[80px]">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <AnimatePresence>
+                  {filteredSources.map((source) => (
+                    <DataSourceRow
+                      key={source.id}
+                      dataSource={source}
+                      onDelete={() => handleDelete(source)}
+                      onEditCitation={() => handleEditCitation(source)}
+                      onViewChunks={() => setViewingSource(source)}
+                      isLiveMode={isLiveMode}
+                    />
+                  ))}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
+
+      {/* Add Knowledge Dialog */}
+      <AddKnowledgeDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        chatbotId={botId}
+      />
+
+      {/* View Chunks Dialog */}
+      {viewingSource && (
+        <ViewChunksDialog
+          dataSource={viewingSource}
+          onClose={() => setViewingSource(null)}
+        />
+      )}
 
       {/* Edit Citation Dialog */}
       {editingSource && (
@@ -558,7 +579,9 @@ export default function DataSourcesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Pending Sources Panel */}
+      <PendingSourcesPanel chatbotId={botId} />
     </div>
   );
 }
-

@@ -69,7 +69,7 @@ export const API = {
       GET_CHATBOTS: allMode(() => "/"),
       CREATE_TOPIC: allMode(() => "/topics"),
       UPDATE_TOPIC: devMode(() => "/topics"),
-      DELETE_TOPIC: devMode(() => "/topics/:id"),
+      DELETE_TOPIC: devMode(() => "/topics"),
       GET_TOPIC: allMode(() => "/topics/:id"),
       GET_TOPICS: allMode(() => "/:chatbotId/topics")
     },

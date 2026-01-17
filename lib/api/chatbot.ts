@@ -155,12 +155,12 @@ export const updateTopic = async (input: UpdateTopicInput): Promise<TopicRespons
 export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicResponse> => {
   try {
     // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const endpointPath = API.ENDPOINTS.CHATBOT.DELETE_TOPIC.path().replace(":id", input.id);
     const res = await guardedFetch(
       API.ENDPOINTS.CHATBOT.DELETE_TOPIC,
-      API.ENDPOINTS.CHATBOT.BASE_URL().slice(0, -API.ENDPOINTS.CHATBOT.DELETE_TOPIC.path().length) + endpointPath,
+      API.ENDPOINTS.CHATBOT.BASE_URL(),
       {
         method: "DELETE",
+        params: { id: input.id },
       },
     ).then((res) => res.data) as DeleteTopicResponse;
 
