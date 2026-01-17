@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
-// import type { UIConfigInput } from "@conversly/chat-widget";
+import type { UIConfigInput } from "@conversly/chat-widget";
 import { Separator } from "@/components/ui/separator";
 
-// const ActualWidget = dynamic(
-//   () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
-//   { ssr: false }
-// );
+const ActualWidget = dynamic(
+  () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
+  { ssr: false }
+);
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
 import { upsertChannelPrompt } from "@/lib/api/prompt";
@@ -150,7 +150,7 @@ export default function PlaygroundPage() {
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
           <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
-            {/* <ActualWidget
+            <ActualWidget
               key={widgetKey}
               config={config as any}
               playgroundConfig={{
@@ -160,13 +160,13 @@ export default function PlaygroundPage() {
                 temperature,
               }}
               contained
-            /> */}
+            />
             <div className="flex h-full items-center justify-center p-6 text-center text-muted-foreground bg-muted/20">
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <p className="font-semibold">Widget Unavailable</p>
                 <p className="text-sm">The chat widget package is required to preview the bot.</p>
                 <p className="text-xs">Please fix the private package authentication to enable the preview.</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -18,12 +18,25 @@ import {
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import dynamic from 'next/dynamic';
 import type { UIConfigInput as PackageUIConfig } from '@conversly/chat-widget';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const PreviewWidget = (props: any) => <div className="p-4 text-center text-muted-foreground">Preview Unavailable</div>;
+const PreviewWidget = dynamic(
+  () => import('@conversly/chat-widget').then((mod) => mod.PreviewWidget),
+  { ssr: false }
+);
 import { useCustomizationDraft, useCustomizationStore } from '@/store/chatbot/customization';
 import type { UIConfigInput } from '@/types/customization';
 import { SectionHeader } from './SectionHeader';
@@ -40,6 +53,7 @@ interface CustomizationTabProps {
 
 export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt }: CustomizationTabProps) {
   const [systemPrompt, setSystemPrompt] = useState(initialSystemPrompt);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
 
   // Update systemPrompt when initialSystemPrompt changes
   useEffect(() => {
@@ -157,17 +171,42 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     await generateApiKey(chatbotId);
   };
 
-  const handleSave = async () => {
-    try {
-      await saveCustomization(chatbotId);
-      toast.success('Customization saved & deployed');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to save');
-    }
-  };
-
   return (
     <TooltipProvider>
+      {/* Save Confirmation Dialog */}
+      <AlertDialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
+        <AlertDialogContent className="border-2 border-amber-500/50 bg-card">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <span className="text-amber-500">⚠</span>
+              Save Changes?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-muted-foreground pt-2">
+              <span className="block font-semibold text-foreground mb-2">
+                This will persist your changes in DRAFT mode.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-2 pt-4">
+            <AlertDialogCancel className="border-border">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                try {
+                  await saveCustomization(chatbotId);
+                  toast.success('Customization saved & deployed');
+                } catch (err: any) {
+                  toast.error(err?.message || 'Failed to save');
+                }
+              }}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Save & Deploy
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="h-full flex flex-col">
         {/* Main Settings Tabs - Full width row at top */}
@@ -231,7 +270,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 <Button
                   size="sm"
                   disabled={isSaving || isLiveMode}
-                  onClick={() => guardEdit(() => handleSave())}
+                  onClick={() => guardEdit(() => setShowSaveConfirm(true))}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[70px] disabled:opacity-50"
                 >
                   {isSaving ? 'Saving…' : 'Save'}
@@ -316,4 +355,3 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     </TooltipProvider>
   );
 }
-

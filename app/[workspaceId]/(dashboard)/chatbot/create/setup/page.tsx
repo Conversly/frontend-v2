@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -22,8 +22,10 @@ import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualizatio
 import dynamic from "next/dynamic";
 import type { UIConfigInput as PackageUIConfig } from "@conversly/chat-widget";
 
-// PreviewWidget component missing
-
+const PreviewWidget = dynamic(
+  () => import("@conversly/chat-widget").then((mod) => mod.PreviewWidget),
+  { ssr: false }
+);
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -46,8 +48,6 @@ function useStagedProgress(active: boolean) {
 
 export default function SetupWizardPage() {
   const router = useRouter();
-  const params = useParams<{ workspaceId: string }>();
-  const workspaceId = Array.isArray(params.workspaceId) ? params.workspaceId[0] : params.workspaceId;
   const queryClient = useQueryClient();
   const step = useSetupStore((s) => s.step);
   const setStep = useSetupStore((s) => s.setStep);
@@ -84,7 +84,7 @@ export default function SetupWizardPage() {
       sessionStorage.removeItem('was-refreshed');
       console.warn("Page refresh detected. Redirecting to chatbots list.");
       reset();
-      router.replace(`/${workspaceId}/chatbot`);
+      router.replace("/chatbot");
       return;
     }
 
@@ -103,7 +103,7 @@ export default function SetupWizardPage() {
     if (step > 2 && !chatbotId) {
       console.warn("Runtime check: Invalid state detected. Redirecting to chatbots list.");
       reset();
-      router.replace(`/${workspaceId}/chatbot`);
+      router.replace("/chatbot");
     }
   }, [step, chatbotId, reset, router]);
 
@@ -309,7 +309,7 @@ export default function SetupWizardPage() {
                 isSubmitting={isSubmitting}
                 isValidHost={isValidHost}
                 onSubmit={onStep1Submit}
-                onManualSetup={() => router.push(`/${workspaceId}/chatbot/create`)}
+                onManualSetup={() => router.push("/chatbot/create")}
               />
             )}
             {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
@@ -333,10 +333,14 @@ export default function SetupWizardPage() {
             <SetupVisualization url={composedUrl} stage={stage}>
               {step === 4 && draftConfig && (
                 <div className="w-[380px] h-[500px] rounded-lg overflow-hidden shadow-lg">
-
-                  <div className="flex h-full items-center justify-center text-muted-foreground bg-muted/20">
-                    Chat Widget Preview Unavailable
-                  </div>
+                  <PreviewWidget
+                    config={{
+                      ...draftConfig,
+                      suggestedMessages: draftConfig.starterQuestions,
+                      alignChatButton: draftConfig.buttonAlignment,
+                    } as PackageUIConfig}
+                    contained
+                  />
                 </div>
               )}
               {step === 5 && (
