@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { CustomAction, ToolParameter } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,17 +44,22 @@ export const DataExtractionSection: React.FC<Props> = ({
     const missingVariables = detectedVariables.filter(v => !existingParamNames.has(v));
 
     // Auto-add detected variables on mount if no parameters exist
+    const didAutoAddRef = useRef(false);
     useEffect(() => {
+        if (didAutoAddRef.current) return;
         if (formData.parameters.length === 0 && detectedVariables.length > 0) {
+            didAutoAddRef.current = true;
             const newParams: ToolParameter[] = detectedVariables.map(name => ({
                 name,
                 type: 'string',
                 description: `The ${name.replace(/_/g, ' ')} extracted from the user's message`,
                 required: true,
+                location: 'query',
+                key: name,
             }));
             updateField('parameters', newParams);
         }
-    }, []); // Only on mount
+    }, [detectedVariables, formData.parameters.length, updateField]);
 
     const addMissingVariables = () => {
         const newParams: ToolParameter[] = missingVariables.map(name => ({
@@ -62,6 +67,8 @@ export const DataExtractionSection: React.FC<Props> = ({
             type: 'string',
             description: `The ${name.replace(/_/g, ' ')} extracted from the user's message`,
             required: true,
+            location: 'query',
+            key: name,
         }));
         updateField('parameters', [...formData.parameters, ...newParams]);
     };
@@ -72,6 +79,8 @@ export const DataExtractionSection: React.FC<Props> = ({
             type: 'string',
             description: '',
             required: false,
+            location: 'query',
+            key: '',
         };
         updateField('parameters', [...formData.parameters, newParam]);
     };
@@ -79,6 +88,13 @@ export const DataExtractionSection: React.FC<Props> = ({
     const updateParameter = (index: number, field: string, value: any) => {
         const updated = [...formData.parameters];
         updated[index] = { ...updated[index], [field]: value };
+        // This step doesn't expose `key`, so keep query/header keys in sync with name edits.
+        if (field === 'name') {
+            const nextName = (value ?? '').toString();
+            if (updated[index].location === 'query' || updated[index].location === 'header') {
+                updated[index].key = nextName;
+            }
+        }
         updateField('parameters', updated);
     };
 

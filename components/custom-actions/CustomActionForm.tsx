@@ -6,7 +6,6 @@ import { APIConfigStep } from './steps/APIConfigStep';
 import { ParametersStep } from './steps/ParametersStep';
 import { TestAndSaveStep } from './steps/TestAndSaveStep';
 import { DataAccessStep } from './steps/DataAccessStep';
-import { ActionExplainer } from './ActionExplainer';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
