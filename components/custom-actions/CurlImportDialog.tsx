@@ -20,11 +20,11 @@ import {
     ParsedCurlResult,
     headersToRecord
 } from '@/utils/curlParser';
-import { CustomActionConfig } from '@/types/customActions';
+import { ApiConfig } from '@/types/customActions';
 import { Terminal, AlertTriangle, Check, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Props {
-    onImport: (config: Partial<CustomActionConfig>, classifiedHeaders: ClassifiedHeader[]) => void;
+    onImport: (config: Partial<ApiConfig>, classifiedHeaders: ClassifiedHeader[]) => void;
     trigger?: React.ReactNode;
 }
 
@@ -69,9 +69,9 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
         );
         const headers = headersToRecord(selectedHeadersList);
 
-        const config: Partial<CustomActionConfig> = {
+        const config: Partial<ApiConfig> = {
             ...parseResult.config,
-            headers,
+            staticHeaders: headers,
         };
 
         onImport(config, parseResult.classifiedHeaders);

@@ -13,6 +13,12 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { toast } from 'sonner';
+import {
+    ActionFormErrors,
+    formatValidationErrors,
+    validateActionForSave,
+    validateActionForTest,
+} from '@/utils/customActionValidation';
 
 interface Props {
     chatbotId: string;
@@ -33,12 +39,7 @@ const buildDefaultAction = (chatbotId: string): CustomAction => ({
         baseUrl: '',
         endpoint: '',
         staticHeaders: {},
-        staticQueryParams: {},
         staticBody: undefined,
-        // legacy mirrors (keep populated for backwards compatibility)
-        headers: {},
-        queryParams: {},
-        bodyTemplate: '',
         responseMapping: '',
         successCodes: [200],
         timeoutSeconds: 30,
@@ -90,6 +91,7 @@ export const CustomActionForm: React.FC<Props> = ({
     const [saving, setSaving] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [maxStepUnlocked, setMaxStepUnlocked] = useState(() => (existingAction ? 5 : 1));
+    const [errors, setErrors] = useState<ActionFormErrors>({});
     const [testValues, setTestValues] = useState<Record<string, string>>(() => {
         const initial: Record<string, string> = {};
         (existingAction?.parameters || []).forEach((p) => {
@@ -108,6 +110,7 @@ export const CustomActionForm: React.FC<Props> = ({
         setCurrentStep(1);
         setTestResult(null);
         setTesting(false);
+        setErrors({});
 
         const initial: Record<string, string> = {};
         (existingAction?.parameters || []).forEach((p) => {
@@ -140,19 +143,61 @@ export const CustomActionForm: React.FC<Props> = ({
             current[keys[keys.length - 1]] = value;
             return updated;
         });
+
+        // Best-effort: clear errors for this field (and its children).
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const next: ActionFormErrors = {};
+            const prefix = `${path}.`;
+            for (const [k, v] of Object.entries(prev)) {
+                if (k === path) continue;
+                if (k.startsWith(prefix)) continue;
+                next[k] = v;
+            }
+            return next;
+        });
     };
 
     const { mutateAsync: testAction } = useTestCustomAction();
 
+    const getParameterValidationError = (): string | null => {
+        for (const p of formData.parameters) {
+            if (!p.name || !p.name.trim()) return 'Parameter name is required.';
+            if (!p.type) return `Parameter type is required for ${p.name}.`;
+            if (!p.description || p.description.trim().length < 10) {
+                return `Parameter description must be at least 10 chars (${p.name}).`;
+            }
+            if (!p.location) return `Parameter destination is required (${p.name}).`;
+            if (p.location === 'body' && !(p.bodyPath || '').trim()) {
+                return `bodyPath is required for body parameter (${p.name}).`;
+            }
+            if ((p.location === 'query' || p.location === 'header') && !((p.key ?? p.name ?? '').trim().length)) {
+                return `key is required for ${p.location} parameter (${p.name}).`;
+            }
+        }
+        return null;
+    };
+
     const handleTest = async () => {
+        const validation = validateActionForTest(formData, testValues);
+        if (!validation.ok) {
+            setErrors(validation.errors);
+            toast.error('Fix required fields before testing.', {
+                description: formatValidationErrors(validation.errors),
+            });
+            setCurrentStep(validation.step);
+            return;
+        }
+
         setTesting(true);
         setTestResult(null);
 
         try {
             const result = await testAction({
                 chatbotId,
-                config: formData.apiConfig,
-                testParameters: formData.parameters.reduce((acc, param) => {
+                apiConfig: formData.apiConfig,
+                parameters: formData.parameters,
+                testArgs: formData.parameters.reduce((acc, param) => {
                     const raw = testValues[param.name];
                     acc[param.name] =
                         (raw ?? '').toString().length > 0
@@ -179,9 +224,13 @@ export const CustomActionForm: React.FC<Props> = ({
     };
 
     const handleSave = async () => {
-        if (!isStep1Valid) {
-            toast.error('Action name + description are required before saving.');
-            setCurrentStep(1);
+        const validation = validateActionForSave(formData);
+        if (!validation.ok) {
+            setErrors(validation.errors);
+            toast.error('Fix required fields before saving.', {
+                description: formatValidationErrors(validation.errors),
+            });
+            setCurrentStep(validation.step);
             return;
         }
 
@@ -293,6 +342,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                     <BasicInfoStep
                                         formData={formData}
                                         updateField={updateField}
+                                        errors={errors}
                                         onNext={() => {
                                             setMaxStepUnlocked((prev) => Math.max(prev, 2));
                                             setCurrentStep(2);
@@ -305,6 +355,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                     <APIConfigStep
                                         formData={formData}
                                         updateField={updateField}
+                                        errors={errors}
                                         onNext={() => {
                                             setMaxStepUnlocked((prev) => Math.max(prev, 3));
                                             setCurrentStep(3);
@@ -332,6 +383,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                         testing={testing}
                                         saving={saving}
                                         onTest={handleTest}
+                                        errors={errors}
                                         onBack={() => setCurrentStep(3)}
                                         onNext={() => {
                                             setMaxStepUnlocked((prev) => Math.max(prev, 5));

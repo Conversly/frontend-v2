@@ -1,6 +1,17 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { API, ApiEndpoint, isEndpointAccessible } from "./config";
-import { useBranchStore } from "@/store/branch";
+
+async function getActiveBranch(): Promise<"DEV" | "LIVE"> {
+  // Never import client-only branch store during SSR.
+  if (typeof window === "undefined") return "DEV";
+
+  try {
+    const mod = await import("@/store/branch");
+    return mod.useBranchStore.getState().activeBranch;
+  } catch {
+    return "DEV";
+  }
+}
 
 export const fetch = axios.create({
   baseURL: API.BASE_URL,
@@ -10,9 +21,8 @@ export const fetch = axios.create({
 export const api = fetch;
 
 fetch.interceptors.request.use(
-  (config) => {
-    // Get the current mode from the branch store
-    const activeBranch = useBranchStore.getState().activeBranch;
+  async (config) => {
+    const activeBranch = await getActiveBranch();
     const mode = activeBranch.toLowerCase(); // 'dev' or 'live'
 
     // Add mode to request based on method
@@ -75,7 +85,7 @@ export async function guardedFetch<T = unknown>(
   config: AxiosRequestConfig
 ): Promise<AxiosResponse<T>> {
   // Check if endpoint is accessible in current mode
-  if (!isEndpointAccessible(endpoint)) {
+  if (!(await isEndpointAccessible(endpoint))) {
     throw new ApiModeError(endpoint.path());
   }
 

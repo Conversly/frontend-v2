@@ -1,4 +1,4 @@
-import { CustomActionConfig, HttpMethod } from '@/types/customActions';
+import { ApiConfig, HttpMethod } from '@/types/customActions';
 
 /**
  * Header classification for smart filtering
@@ -12,7 +12,7 @@ export interface ClassifiedHeader {
 }
 
 export interface ParsedCurlResult {
-    config: Partial<CustomActionConfig>;
+    config: Partial<ApiConfig>;
     classifiedHeaders: ClassifiedHeader[];
     detectedVariables: string[];
 }
@@ -197,15 +197,10 @@ function normalizeCurlDataPayload(raw: string): string {
     return raw;
 }
 
-export function parseCurlCommand(curlString: string): Partial<CustomActionConfig> {
+export function parseCurlCommand(curlString: string): Partial<ApiConfig> {
     const headers: Record<string, string> = {};
-    const queryParams: Record<string, string> = {};
-    const config: Partial<CustomActionConfig> = {
-        headers,
-        queryParams,
-        // New UI fields (keep in sync with legacy fields)
+    const config: Partial<ApiConfig> = {
         staticHeaders: headers,
-        staticQueryParams: queryParams,
     };
 
     const tokens = tokenizeCurlCommand(curlString);
@@ -240,8 +235,8 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                     if (i + 1 < tokens.length) {
                         const headerStr = tokens[++i];
                         const parsed = parseHeader(headerStr);
-                        if (parsed && config.headers) {
-                            config.headers[parsed.key] = parsed.value;
+                        if (parsed) {
+                            headers[parsed.key] = parsed.value;
 
                             // Check for Auth headers
                             if (parsed.key.toLowerCase() === 'authorization') {
@@ -262,9 +257,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                     if (i + 1 < tokens.length) {
                         const cookieStr = tokens[++i];
                         // Add cookies as Cookie header
-                        if (config.headers) {
-                            config.headers['Cookie'] = cookieStr;
-                        }
+                        headers['Cookie'] = cookieStr;
                     }
                     break;
 
@@ -292,9 +285,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                 case '--user-agent':
                     if (i + 1 < tokens.length) {
                         const userAgent = tokens[++i];
-                        if (config.headers) {
-                            config.headers['User-Agent'] = userAgent;
-                        }
+                        headers['User-Agent'] = userAgent;
                     }
                     break;
 
@@ -302,9 +293,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                 case '--referer':
                     if (i + 1 < tokens.length) {
                         const referer = tokens[++i];
-                        if (config.headers) {
-                            config.headers['Referer'] = referer;
-                        }
+                        headers['Referer'] = referer;
                     }
                     break;
 
@@ -334,8 +323,8 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
 
                             if (flag === '--header' || flag === '-H') {
                                 const parsed = parseHeader(value);
-                                if (parsed && config.headers) {
-                                    config.headers[parsed.key] = parsed.value;
+                                if (parsed) {
+                                    headers[parsed.key] = parsed.value;
                                 }
                             }
                         }
@@ -354,17 +343,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
         try {
             const urlObj = new URL(url);
             config.baseUrl = urlObj.origin;
-            config.endpoint = urlObj.pathname;
-
-            // Extract query params
-            urlObj.searchParams.forEach((value, key) => {
-                if (config.queryParams) {
-                    config.queryParams[key] = value;
-                }
-                if (config.staticQueryParams) {
-                    config.staticQueryParams[key] = value;
-                }
-            });
+            config.endpoint = `${urlObj.pathname}${urlObj.search || ''}`;
         } catch (e) {
             // If URL parsing fails, just set what we found as endpoint
             config.endpoint = url;
@@ -382,16 +361,12 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
     // Set body
     if (body) {
         const normalized = normalizeCurlDataPayload(body);
-        // Keep legacy for backend compatibility
-        config.bodyTemplate = normalized;
-
-        // If JSON, also populate staticBody
         try {
             const parsed = JSON.parse(normalized);
             config.staticBody = parsed;
-            config.bodyTemplate = JSON.stringify(parsed, null, 2);
         } catch {
-            // Not JSON, leave as legacy bodyTemplate only
+            // Not JSON; store as a JSON string (still valid JSON)
+            config.staticBody = normalized;
         }
     }
 
@@ -410,8 +385,8 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
     const classifiedHeaders: ClassifiedHeader[] = [];
     const essentialHeaders: Record<string, string> = {};
 
-    if (config.headers) {
-        for (const [key, value] of Object.entries(config.headers)) {
+    const headerSource = config.staticHeaders ?? {};
+    for (const [key, value] of Object.entries(headerSource)) {
             const category = classifyHeader(key);
             classifiedHeaders.push({ key, value, category });
 
@@ -420,7 +395,6 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
             if (category === 'essential' || category === 'optional') {
                 essentialHeaders[key] = value;
             }
-        }
     }
 
     // Sort headers: essential first, then optional, then browser
@@ -436,8 +410,8 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
         detectedVariables.push(...extractVariables(config.endpoint));
     }
 
-    if (config.bodyTemplate) {
-        detectedVariables.push(...extractVariables(config.bodyTemplate));
+    if (typeof config.staticBody === 'string') {
+        detectedVariables.push(...extractVariables(config.staticBody));
     }
 
     // Remove duplicates
@@ -446,7 +420,6 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
     // Update config headers to only include non-browser headers
     const cleanConfig = {
         ...config,
-        headers: essentialHeaders,
         staticHeaders: essentialHeaders,
     };
 

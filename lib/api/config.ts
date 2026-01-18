@@ -228,17 +228,29 @@ export type ApiResponse<T, U = never> =
 
 /**
  * Check if an endpoint is accessible in the current mode.
- * Import useBranchStore dynamically to avoid circular dependencies.
+ *
+ * IMPORTANT:
+ * - This file must be safe to import in SSR.
+ * - `@/store/branch` is a `'use client'` module that touches `localStorage`, so it
+ *   must never be imported on the server.
+ *
+ * We therefore lazily read branch state only in the browser via `import()`.
  */
-export function isEndpointAccessible(endpoint: ApiEndpoint): boolean {
-  if (endpoint.mode === 'ALL') return true;
+export async function isEndpointAccessible(endpoint: ApiEndpoint): Promise<boolean> {
+  if (endpoint.mode === "ALL") return true;
 
-  // Dynamic import to check branch state
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { useBranchStore } = require('@/store/branch');
-  const activeBranch = useBranchStore.getState().activeBranch;
+  // On the server, never attempt to import client-only state. Default to allowing.
+  // (Server shouldn't be using these UI guards anyway.)
+  if (typeof window === "undefined") return true;
 
-  return activeBranch === 'DEV';
+  try {
+    const mod = await import("@/store/branch");
+    const activeBranch = mod.useBranchStore.getState().activeBranch;
+    return activeBranch === "DEV";
+  } catch {
+    // Fail-open: don't break the app if branch store can't be loaded for any reason.
+    return true;
+  }
 }
 
 /**

@@ -93,13 +93,12 @@ export const ParametersStep: React.FC<Props> = ({
     onBack,
 }) => {
     const endpoint = formData.apiConfig.endpoint || '';
-    const legacyBodyTemplate = formData.apiConfig.bodyTemplate || '';
+    const legacyBodyTemplate = '';
 
     const detectedPathParams = useMemo(() => extractPathParams(endpoint), [endpoint]);
     const detectedLegacyVariables = useMemo(() => {
         const vars = [
             ...extractLegacyVariables(endpoint),
-            ...extractLegacyVariables(legacyBodyTemplate),
         ];
         return [...new Set(vars)];
     }, [endpoint, legacyBodyTemplate]);
@@ -109,18 +108,12 @@ export const ParametersStep: React.FC<Props> = ({
     const detectedBodyBindings = useMemo(() => {
         // Prefer structured staticBody; fallback to parsing legacy bodyTemplate.
         let bodyObj: any = staticBody;
-        if (bodyObj === undefined && legacyBodyTemplate) {
-            try {
-                bodyObj = JSON.parse(legacyBodyTemplate);
-            } catch {
-                bodyObj = undefined;
-            }
-        }
+        // legacyBodyTemplate intentionally not supported (backend contract is staticBody only)
         if (!bodyObj || typeof bodyObj !== 'object' || Array.isArray(bodyObj)) return [];
         return collectBodyTemplateBindings(bodyObj);
     }, [staticBody, legacyBodyTemplate]);
-    const staticHeaders = formData.apiConfig.staticHeaders ?? formData.apiConfig.headers ?? {};
-    const staticQueryParams = formData.apiConfig.staticQueryParams ?? formData.apiConfig.queryParams ?? {};
+    const staticHeaders = formData.apiConfig.staticHeaders ?? {};
+    const staticQueryParams: Record<string, string> = {};
 
     const hasLegacyTemplates = useMemo(() => {
         if (detectedLegacyVariables.length > 0) return true;
@@ -188,13 +181,14 @@ export const ParametersStep: React.FC<Props> = ({
                 type: 'string' as const,
                 description: `Path parameter for {${name}} in the endpoint`,
                 required: true,
-                location: 'path',
+                location: 'path' as const,
             })),
             ...missingLegacyVariables.map((name) => ({
                 name,
                 type: 'string' as const,
                 description: `Legacy template variable {{${name}}} detected in endpoint/body template`,
                 required: true,
+                location: 'path' as const,
             })),
             ...missingBodyBindings.map(({ name, bodyPath }) => ({
                 name,
@@ -221,31 +215,25 @@ export const ParametersStep: React.FC<Props> = ({
         for (const [key, value] of Object.entries(staticQueryParams)) {
             const name = extractExactTemplateVar(value);
             if (!name) continue;
-            patchesByName.set(name, { location: 'query', key });
+            patchesByName.set(name, { location: 'query' as const, key });
         }
 
         for (const [key, value] of Object.entries(staticHeaders)) {
             const name = extractExactTemplateVar(value);
             if (!name) continue;
-            patchesByName.set(name, { location: 'header', key });
+            patchesByName.set(name, { location: 'header' as const, key });
         }
 
         // Body: use staticBody if present, otherwise try parsing legacy bodyTemplate JSON
         let bodyObj: any = staticBody;
-        if (bodyObj === undefined && legacyBodyTemplate) {
-            try {
-                bodyObj = JSON.parse(legacyBodyTemplate);
-            } catch {
-                bodyObj = undefined;
-            }
-        }
+        // legacy bodyTemplate not supported
 
         if (bodyObj && typeof bodyObj === 'object' && !Array.isArray(bodyObj)) {
             const bindings = collectBodyTemplateBindings(bodyObj);
             for (const b of bindings) {
                 const existing = patchesByName.get(b.name) || {};
                 // Prefer body binding if we found an exact marker in body
-                patchesByName.set(b.name, { ...existing, location: 'body', bodyPath: b.bodyPath });
+                patchesByName.set(b.name, { ...existing, location: 'body' as const, bodyPath: b.bodyPath });
             }
         }
 
@@ -256,12 +244,18 @@ export const ParametersStep: React.FC<Props> = ({
         for (const [name, patch] of patchesByName.entries()) {
             const idx = byName.get(name);
             if (idx === undefined) {
+                if (!patch.location) continue;
                 nextParams.push({
                     name,
                     type: 'string' as const,
                     description: `Auto-generated from legacy template marker for ${name}`,
                     required: true,
-                    ...patch,
+                    location: patch.location,
+                    key:
+                        patch.location === 'query' || patch.location === 'header'
+                            ? ((patch.key ?? name) || name)
+                            : undefined,
+                    bodyPath: patch.location === 'body' ? patch.bodyPath : undefined,
                 });
             } else {
                 nextParams[idx] = {
@@ -284,6 +278,8 @@ export const ParametersStep: React.FC<Props> = ({
             type: 'string' as const,
             description: '',
             required: false,
+            location: 'query',
+            key: '',
         };
         updateField('parameters', [...formData.parameters, newParam]);
     };
@@ -310,10 +306,10 @@ export const ParametersStep: React.FC<Props> = ({
         // If there are no parameters, that's fine
         if (formData.parameters.length === 0) return true;
 
-        // If there are parameters, each must have name, type, and description
+        // If there are parameters, each must satisfy backend schema requirements.
         return formData.parameters.every(
             (p) => {
-                const baseOk = p.name && p.type && p.description.length >= 5;
+                const baseOk = p.name && p.type && p.description.length >= 10 && !!p.location;
                 if (!baseOk) return false;
 
                 if (p.location === 'body') {
@@ -487,7 +483,7 @@ export const ParametersStep: React.FC<Props> = ({
                                 <div className="flex items-center space-x-2">
                                     <Checkbox
                                         id={`required-${index}`}
-                                        checked={param.required}
+                                        checked={!!param.required}
                                         onCheckedChange={(checked) =>
                                             updateParameter(index, 'required', checked as boolean)
                                         }
@@ -529,12 +525,8 @@ export const ParametersStep: React.FC<Props> = ({
                                     <div className="space-y-2">
                                         <Label>Destination</Label>
                                         <Select
-                                            value={param.location ?? 'unbound'}
+                                            value={param.location}
                                             onValueChange={(value) => {
-                                                if (value === 'unbound') {
-                                                    patchParameter(index, { location: undefined, key: undefined, bodyPath: undefined });
-                                                    return;
-                                                }
                                                 if (value === 'query' || value === 'header') {
                                                     patchParameter(index, {
                                                         location: value as any,
@@ -558,7 +550,6 @@ export const ParametersStep: React.FC<Props> = ({
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="unbound">Unbound (no request mapping)</SelectItem>
                                                 <SelectItem value="path">Path</SelectItem>
                                                 <SelectItem value="query">Query</SelectItem>
                                                 <SelectItem value="header">Header</SelectItem>

@@ -3,49 +3,59 @@
 // ============================================
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type AuthType = 'none' | 'bearer' | 'api_key' | 'basic';
-export type TestStatus = 'passed' | 'failed' | 'not_tested';
+export type TestStatus = 'passed' | 'failed' | 'not_tested' | 'error';
 
-export interface CustomActionConfig {
+/**
+ * Matches backend yup schema keys (camelCase).
+ *
+ * Note: static query params are stored in `endpoint` querystring.
+ */
+export interface ApiConfig {
   method: HttpMethod;
   baseUrl: string;
-  endpoint: string;
-  /**
-   * Static request pieces configured by the action designer.
-   * These should NOT require `{{}}` templating.
-   */
+  endpoint: string; // may include querystring, e.g. "/users?limit=10"
+
+  // Static values (never change per request)
   staticHeaders?: Record<string, string>;
-  staticQueryParams?: Record<string, string>;
   staticBody?: any;
 
-  /**
-   * Legacy fields (backwards compatible with existing UI/backends).
-   * Prefer using static* fields in new UI.
-   */
-  headers?: Record<string, string>;
-  queryParams?: Record<string, string>;
-  bodyTemplate?: string;
-  responseMapping?: string;
-  dataAccess?: 'full' | 'limited';
-  successCodes?: number[];
-  timeoutSeconds?: number;
-  retryCount?: number;
+  // Authentication
   authType?: AuthType;
   authValue?: string;
+  authHeader?: string;
+
+  // Response handling
+  responseMapping?: string;
+  successCodes?: number[];
+
+  // Timeouts & retries
+  timeoutSeconds?: number;
+  retryCount?: number;
+  retryOnCodes?: number[];
+
+  // SSL/Redirects
   followRedirects?: boolean;
   verifySsl?: boolean;
 }
 
+// Backwards-compatible alias (older UI code uses CustomActionConfig)
+export type CustomActionConfig = ApiConfig;
+
 // ============================================
 // Tool Parameter Types
 // ============================================
-export type ParameterType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
-export type ParameterLocation = 'path' | 'query' | 'header' | 'body';
+export type ParamType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
+export type ParamLocation = 'path' | 'query' | 'header' | 'body';
+
+// Backwards-compatible aliases (older UI code uses ParameterType/ParameterLocation)
+export type ParameterType = ParamType;
+export type ParameterLocation = ParamLocation;
 
 export interface ToolParameter {
   name: string;
-  type: ParameterType;
+  type: ParamType;
   description: string;
-  required?: boolean;
+  required: boolean;
   default?: any;
   enum?: string[];
   pattern?: string;
@@ -54,20 +64,22 @@ export interface ToolParameter {
   minLength?: number;
   maxLength?: number;
 
-  /**
-   * Binding layer (where this parameter goes in the request).
-   * If unset, it is treated as "unbound" (legacy/unknown) and will not affect request construction.
-   */
-  location?: ParameterLocation;
-  /**
-   * For query/header params: the actual key name (defaults to `name`).
-   */
+  // Binding (required by backend schema)
+  location: ParamLocation;
+
+  // For query/header params
   key?: string;
-  /**
-   * For body params: dot path like "partial.styles.primaryColor".
-   */
+
+  // For body params only
   bodyPath?: string;
+
+  // For array/object types
+  items?: { type: ParamType };
+  properties?: Record<string, { type: ParamType; description?: string }>;
 }
+
+// Canonical name (matches backend)
+export type ActionParameter = ToolParameter;
 
 export interface ToolSchema {
   type: 'object';
@@ -85,9 +97,9 @@ export interface CustomAction {
   displayName: string;
   description: string;
   isEnabled: boolean;
-  apiConfig: CustomActionConfig;
+  apiConfig: ApiConfig;
   parameters: ToolParameter[];
-  triggerExamples?: string[]; // "get price of iPhone", "how much does {{product}} cost"
+  triggerExamples?: string[]; // UI-only (not sent to backend create/update)
   toolSchema?: ToolSchema;
   version: number;
   createdAt: string | null;
@@ -114,28 +126,25 @@ export interface TestResult {
 export interface CreateCustomActionInput {
   chatbotId: string;
   name: string;
-  displayName: string;
   description: string;
-  apiConfig: CustomActionConfig;
+  apiConfig: ApiConfig;
   parameters: ToolParameter[];
-  triggerExamples?: string[];
 }
 
 export interface UpdateCustomActionInput {
   chatbotId: string;
   actionId: string;
   name?: string;
-  displayName?: string;
   description?: string;
-  apiConfig?: CustomActionConfig;
+  apiConfig?: ApiConfig;
   parameters?: ToolParameter[];
-  triggerExamples?: string[];
 }
 
 export interface TestActionInput {
   chatbotId: string;
-  config: CustomActionConfig;
-  testParameters?: Record<string, any>;
+  apiConfig: ApiConfig;
+  parameters: ToolParameter[];
+  testArgs?: Record<string, any>;
 }
 
 export interface TestActionResponse {
@@ -155,7 +164,7 @@ export interface CustomActionResponse {
   displayName: string;
   description: string;
   isEnabled: boolean;
-  apiConfig: CustomActionConfig;
+  apiConfig: ApiConfig;
   parameters: ToolParameter[];
   version: number;
   createdAt: string | null;

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { CustomAction, ToolParameter, CustomActionConfig } from '@/types/customActions';
+import { CustomAction } from '@/types/customActions';
 import { useTestCustomAction } from '@/services/actions';
 import { TriggerSection } from './steps/TriggerStep';
 import { DataExtractionSection } from './steps/ExtractDataStep';
@@ -45,9 +45,6 @@ export const SkillWizard: React.FC<Props> = ({
                 method: 'GET',
                 baseUrl: '',
                 endpoint: '',
-                headers: {},
-                queryParams: {},
-                bodyTemplate: '',
                 responseMapping: '',
                 successCodes: [200],
                 timeoutSeconds: 30,
@@ -106,9 +103,10 @@ export const SkillWizard: React.FC<Props> = ({
         try {
             const result = await testAction({
                 chatbotId,
-                config: formData.apiConfig,
-                testParameters: formData.parameters.reduce((acc, param) => {
-                    acc[param.name] = param.default || "test_value";
+                apiConfig: formData.apiConfig,
+                parameters: formData.parameters,
+                testArgs: formData.parameters.reduce((acc, param) => {
+                    acc[param.name] = param.default ?? "test_value";
                     return acc;
                 }, {} as Record<string, any>),
             });

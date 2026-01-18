@@ -74,8 +74,7 @@ export const DataAccessStep: React.FC<Props> = ({
   onBack,
   onSave,
 }) => {
-  const dataAccess: DataAccess = ((formData.apiConfig as any).dataAccess ||
-    (formData.apiConfig.responseMapping ? "limited" : "full")) as DataAccess;
+  const dataAccess: DataAccess = (formData.apiConfig.responseMapping ? "limited" : "full") as DataAccess;
 
   const rawResponse = useMemo(() => {
     if (!testResult?.responseBody) return null;
@@ -116,7 +115,6 @@ export const DataAccessStep: React.FC<Props> = ({
   }, [dataAccess, formData.apiConfig.responseMapping, parsed, rawResponse]);
 
   const setDataAccess = (value: DataAccess) => {
-    updateField("apiConfig.dataAccess", value);
     if (value === "full") {
       // Reduce surprises: full access ignores mapping; clear it.
       updateField("apiConfig.responseMapping", "");

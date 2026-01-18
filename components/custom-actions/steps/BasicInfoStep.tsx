@@ -6,12 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, X } from 'lucide-react';
+import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 interface Props {
     formData: CustomAction;
     updateField: (path: string, value: any) => void;
     onNext: () => void;
     onCancel: () => void;
+    errors?: ActionFormErrors;
 }
 
 export const BasicInfoStep: React.FC<Props> = ({
@@ -19,6 +21,7 @@ export const BasicInfoStep: React.FC<Props> = ({
     updateField,
     onNext,
     onCancel,
+    errors,
 }) => {
     const [newExample, setNewExample] = useState('');
     const triggerExamples = formData.triggerExamples || [];
@@ -93,7 +96,9 @@ export const BasicInfoStep: React.FC<Props> = ({
                             placeholder="e.g., get_product_price"
                             pattern="^[a-z0-9_]+$"
                             required
+                            className={errors?.name ? 'border-destructive focus-visible:ring-destructive' : undefined}
                         />
+                        {errors?.name && <p className="text-xs text-destructive">{errors.name}</p>}
                         <p className="text-xs text-muted-foreground">
                             Lowercase letters, numbers, and underscores only. This is the internal identifier.
                         </p>
@@ -112,7 +117,9 @@ export const BasicInfoStep: React.FC<Props> = ({
                             rows={4}
                             required
                             minLength={20}
+                            className={errors?.description ? 'border-destructive focus-visible:ring-destructive' : undefined}
                         />
+                        {errors?.description && <p className="text-xs text-destructive">{errors.description}</p>}
                         <div className="flex justify-between text-xs text-muted-foreground">
                             <span>The AI uses this to understand when to use this action.</span>
                             <span>{formData.description.length} / 1000</span>

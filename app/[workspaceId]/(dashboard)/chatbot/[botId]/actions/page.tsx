@@ -47,11 +47,9 @@ export default function ActionsPage() {
         await createAction.mutateAsync({
           chatbotId,
           name: action.name,
-          displayName: action.displayName || action.name,
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
-          triggerExamples: action.triggerExamples,
         });
       } else {
         if (!action.id) return;
@@ -59,11 +57,9 @@ export default function ActionsPage() {
           chatbotId,
           actionId: action.id,
           name: action.name,
-          displayName: action.displayName || action.name,
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
-          triggerExamples: action.triggerExamples,
         });
       }
       setView('list');

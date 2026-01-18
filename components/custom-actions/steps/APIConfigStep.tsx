@@ -19,12 +19,42 @@ import { CurlImportDialog } from '../CurlImportDialog';
 import CodeMirror from '@uiw/react-codemirror';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view';
+import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 interface Props {
     formData: CustomAction;
     updateField: (path: string, value: any) => void;
     onNext?: () => void;
     onBack?: () => void;
+    errors?: ActionFormErrors;
+}
+
+function splitEndpoint(endpoint: string): { pathname: string; query: Record<string, string> } {
+    const raw = (endpoint || '').trim();
+    const qIndex = raw.indexOf('?');
+    const pathname = (qIndex === -1 ? raw : raw.slice(0, qIndex)) || '';
+    const search = qIndex === -1 ? '' : raw.slice(qIndex + 1);
+    const query: Record<string, string> = {};
+    if (search.trim().length) {
+        const sp = new URLSearchParams(search);
+        sp.forEach((v, k) => {
+            if (!k.trim()) return;
+            query[k] = v;
+        });
+    }
+    return {
+        pathname: pathname.startsWith('/') || pathname.length === 0 ? pathname : `/${pathname}`,
+        query,
+    };
+}
+
+function buildEndpoint(pathname: string, query: Record<string, string>): string {
+    const p = (pathname || '').trim();
+    const path = p.length ? (p.startsWith('/') ? p : `/${p}`) : '';
+    const search = new URLSearchParams(
+        Object.entries(query).filter(([k]) => (k || '').trim().length > 0)
+    ).toString();
+    return `${path}${search ? `?${search}` : ''}`;
 }
 
 function extractPathParams(endpoint: string): string[] {
@@ -52,6 +82,7 @@ export const APIConfigSection: React.FC<Props> = ({
     updateField,
     onNext,
     onBack,
+    errors,
 }) => {
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [staticBodyDraft, setStaticBodyDraft] = useState('');
@@ -59,30 +90,21 @@ export const APIConfigSection: React.FC<Props> = ({
     const [isBodyDirty, setIsBodyDirty] = useState(false);
     const config = formData.apiConfig;
 
-    // Combine baseUrl + endpoint + static query for the unified URL input
+    const endpointParts = useMemo(() => splitEndpoint(config.endpoint || ''), [config.endpoint]);
+
+    // Combine baseUrl + endpoint (endpoint includes querystring)
     const fullUrl = useMemo(() => {
-        const qp = config.staticQueryParams ?? config.queryParams ?? {};
-        const search = new URLSearchParams(
-            Object.entries(qp).filter(([k]) => (k || '').trim().length > 0)
-        ).toString();
-        return `${config.baseUrl}${config.endpoint}${search ? `?${search}` : ''}`;
-    }, [config.baseUrl, config.endpoint, config.queryParams, config.staticQueryParams]);
+        return `${config.baseUrl}${config.endpoint || ''}`;
+    }, [config.baseUrl, config.endpoint]);
 
     // Parse full URL back into base and endpoint
     const handleFullUrlChange = (value: string) => {
         try {
             const urlObj = new URL(value);
-            const qp: Record<string, string> = {};
-            urlObj.searchParams.forEach((v, k) => {
-                qp[k] = v;
-            });
             updateField('apiConfig', {
                 ...config,
                 baseUrl: urlObj.origin,
-                endpoint: urlObj.pathname,
-                staticQueryParams: qp,
-                // legacy mirror for backend compatibility
-                queryParams: qp,
+                endpoint: `${urlObj.pathname}${urlObj.search || ''}`,
             });
         } catch {
             // If not a valid URL, just update the endpoint
@@ -99,8 +121,8 @@ export const APIConfigSection: React.FC<Props> = ({
         }
     };
 
-    const staticHeaders = config.staticHeaders ?? config.headers ?? {};
-    const staticQueryParams = config.staticQueryParams ?? config.queryParams ?? {};
+    const staticHeaders = config.staticHeaders ?? {};
+    const staticQueryParams = endpointParts.query;
     const headerCount = Object.keys(staticHeaders).length;
     const queryParamCount = Object.keys(staticQueryParams).length;
 
@@ -112,51 +134,24 @@ export const APIConfigSection: React.FC<Props> = ({
         // While the user is typing, don't clobber their draft (especially mid-edit when JSON is invalid).
         if (isBodyDirty) return;
 
-        // If we have a bodyTemplate but it isn't valid JSON, prefer showing that draft (so we don't "revert").
-        const bodyTemplate = config.bodyTemplate || '';
-        if (bodyTemplate.trim().length > 0) {
-            try {
-                JSON.parse(bodyTemplate);
-            } catch {
-                setStaticBodyDraft(bodyTemplate);
-                setStaticBodyError('Invalid JSON');
-                return;
-            }
-        }
-
         const next =
             config.staticBody !== undefined
                 ? JSON.stringify(config.staticBody, null, 2)
-                : bodyTemplate;
+                : '';
         setStaticBodyDraft(next);
         setStaticBodyError(null);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formData.id, config.staticBody, config.bodyTemplate, config.method, isBodyDirty]);
+    }, [formData.id, config.staticBody, config.method, isBodyDirty]);
 
     const handleCurlImport = (imported: Partial<CustomActionConfig>) => {
-        const nextStaticHeaders = imported.staticHeaders ?? imported.headers ?? staticHeaders;
-        const nextStaticQueryParams = imported.staticQueryParams ?? imported.queryParams ?? staticQueryParams;
-
-        let nextStaticBody: any = imported.staticBody ?? config.staticBody;
-        const legacyBodyTemplate = imported.bodyTemplate ?? config.bodyTemplate;
-        if (nextStaticBody === undefined && legacyBodyTemplate) {
-            try {
-                nextStaticBody = JSON.parse(legacyBodyTemplate);
-            } catch {
-                // keep undefined; legacy template can still be used in expert mode
-            }
-        }
+        const nextStaticHeaders = imported.staticHeaders ?? staticHeaders;
+        const nextStaticBody: any = imported.staticBody ?? config.staticBody;
 
         updateField('apiConfig', {
             ...config,
             ...imported,
             staticHeaders: nextStaticHeaders,
-            staticQueryParams: nextStaticQueryParams,
             staticBody: nextStaticBody,
-            // legacy mirrors for backend compatibility
-            headers: nextStaticHeaders,
-            queryParams: nextStaticQueryParams,
-            bodyTemplate: nextStaticBody !== undefined ? JSON.stringify(nextStaticBody, null, 2) : legacyBodyTemplate,
         });
     };
 
@@ -247,6 +242,11 @@ export const APIConfigSection: React.FC<Props> = ({
                 <p className="text-xs text-muted-foreground">
                     Put dynamic values in the request via the <strong>Inputs</strong> step (destination = Path / Query / Header / Body).
                 </p>
+                {(errors?.['apiConfig.baseUrl'] || errors?.['apiConfig.endpoint']) && (
+                    <p className="text-xs text-destructive">
+                        {errors?.['apiConfig.baseUrl'] ?? errors?.['apiConfig.endpoint']}
+                    </p>
+                )}
                 {legacyEndpointVars.length > 0 && (
                     <div className="flex items-center justify-between gap-3 rounded-md border border-yellow-200 bg-yellow-50 px-3 py-2 text-xs dark:border-yellow-800 dark:bg-yellow-900/20">
                         <div className="text-yellow-900 dark:text-yellow-200">
@@ -322,6 +322,9 @@ export const APIConfigSection: React.FC<Props> = ({
                                         placeholder="Enter token/key (or secret ref)"
                                         className="h-9 text-xs font-mono"
                                     />
+                                    {errors?.['apiConfig.authValue'] && (
+                                        <p className="text-xs text-destructive">{errors['apiConfig.authValue']}</p>
+                                    )}
                                     <p className="text-xs text-muted-foreground">
                                         Tip: store a secret reference like <code className="px-1 py-0.5 rounded bg-muted">secrets.MY_API_KEY</code> and resolve it server-side.
                                     </p>
@@ -338,12 +341,7 @@ export const APIConfigSection: React.FC<Props> = ({
                             variant="outline"
                             className="w-full justify-start h-10"
                             onClick={() =>
-                                updateField('apiConfig', {
-                                    ...config,
-                                    staticQueryParams: { ...staticQueryParams, '': '' },
-                                    // legacy mirror for backend compatibility
-                                    queryParams: { ...staticQueryParams, '': '' },
-                                })
+                                updateField('apiConfig.endpoint', buildEndpoint(endpointParts.pathname, { ...staticQueryParams, '': '' }))
                             }
                         >
                             <Plus className="h-4 w-4 mr-2" />
@@ -352,12 +350,7 @@ export const APIConfigSection: React.FC<Props> = ({
                         <KeyValueEditor
                             value={staticQueryParams}
                             onChange={(params) =>
-                                updateField('apiConfig', {
-                                    ...config,
-                                    staticQueryParams: params,
-                                    // legacy mirror for backend compatibility
-                                    queryParams: params,
-                                })
+                                updateField('apiConfig.endpoint', buildEndpoint(endpointParts.pathname, params))
                             }
                             placeholder={{ key: 'key', value: 'value' }}
                             addLabel="Add key value pair"
@@ -378,8 +371,6 @@ export const APIConfigSection: React.FC<Props> = ({
                                 updateField('apiConfig', {
                                     ...config,
                                     staticHeaders: { ...staticHeaders, '': '' },
-                                    // legacy mirror for backend compatibility
-                                    headers: { ...staticHeaders, '': '' },
                                 })
                             }
                         >
@@ -392,8 +383,6 @@ export const APIConfigSection: React.FC<Props> = ({
                                 updateField('apiConfig', {
                                     ...config,
                                     staticHeaders: headers,
-                                    // legacy mirror for backend compatibility
-                                    headers,
                                 })
                             }
                             addLabel="Add key value pair"
@@ -423,8 +412,6 @@ export const APIConfigSection: React.FC<Props> = ({
                                             updateField('apiConfig', {
                                                 ...config,
                                                 staticBody: parsed,
-                                                // legacy mirror for backend compatibility
-                                                bodyTemplate: formatted,
                                             });
                                         } catch (e) {
                                             // Not valid JSON, ignore
@@ -449,13 +436,10 @@ export const APIConfigSection: React.FC<Props> = ({
                                             updateField('apiConfig', {
                                                 ...config,
                                                 staticBody: parsed,
-                                                // legacy mirror for backend compatibility
-                                                bodyTemplate: value,
                                             });
                                         } catch (e: any) {
                                             setStaticBodyError('Invalid JSON');
                                             // keep draft; don't clobber staticBody with invalid data
-                                            updateField('apiConfig.bodyTemplate', value);
                                         }
                                     }}
                                     extensions={[
@@ -573,7 +557,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     ) : <div />}
 
                     {onNext && (
-                        <Button onClick={onNext} disabled={!config.baseUrl}>
+                        <Button onClick={onNext} disabled={!config.baseUrl || !(config.endpoint || '').trim()}>
                             Next: Inputs →
                         </Button>
                     )}

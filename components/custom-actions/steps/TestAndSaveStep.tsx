@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Play } from 'lucide-react';
+import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 function coerceValue(param: ToolParameter, raw: any): any {
     if (raw === undefined || raw === null) return raw;
@@ -64,7 +65,20 @@ function buildRequestPreview(
 ): { url: string; headers: Record<string, string>; body?: any } {
     const cfg = action.apiConfig;
     const baseUrl = cfg.baseUrl || '';
-    let endpoint = cfg.endpoint || '';
+    const rawEndpoint = cfg.endpoint || '';
+    let endpointPath = rawEndpoint;
+    let endpointQuery: Record<string, string> = {};
+
+    const qIndex = rawEndpoint.indexOf('?');
+    if (qIndex !== -1) {
+        endpointPath = rawEndpoint.slice(0, qIndex);
+        const search = rawEndpoint.slice(qIndex + 1);
+        const sp = new URLSearchParams(search);
+        sp.forEach((v, k) => {
+            if (!k.trim()) return;
+            endpointQuery[k] = v;
+        });
+    }
 
     const paramsByName = new Map<string, ToolParameter>();
     for (const p of action.parameters) paramsByName.set(p.name, p);
@@ -87,15 +101,13 @@ function buildRequestPreview(
         if (p.location !== 'path') continue;
         const v = resolvedArgs[p.name];
         if (v === undefined) continue;
-        endpoint = endpoint
+        endpointPath = endpointPath
             .replaceAll(`{${p.name}}`, encodeURIComponent(String(v)))
             .replaceAll(`:${p.name}`, encodeURIComponent(String(v)));
     }
 
     // Query
-    const qp: Record<string, string> = {
-        ...(cfg.staticQueryParams ?? cfg.queryParams ?? {}),
-    };
+    const qp: Record<string, string> = { ...endpointQuery };
     for (const p of action.parameters) {
         if (p.location !== 'query') continue;
         const key = (p.key ?? p.name ?? '').trim();
@@ -108,11 +120,11 @@ function buildRequestPreview(
         Object.entries(qp).filter(([k]) => (k || '').trim().length > 0)
     ).toString();
 
-    const url = `${baseUrl}${endpoint}${search ? `?${search}` : ''}`;
+    const url = `${baseUrl}${endpointPath}${search ? `?${search}` : ''}`;
 
     // Headers
     const headers: Record<string, string> = {
-        ...(cfg.staticHeaders ?? cfg.headers ?? {}),
+        ...(cfg.staticHeaders ?? {}),
     };
     for (const p of action.parameters) {
         if (p.location !== 'header') continue;
@@ -144,12 +156,6 @@ function buildRequestPreview(
         } catch {
             body = cfg.staticBody;
         }
-    } else if (cfg.bodyTemplate) {
-        try {
-            body = JSON.parse(cfg.bodyTemplate);
-        } catch {
-            body = undefined;
-        }
     } else if (hasAnyBodyBindings) {
         body = {};
     }
@@ -173,6 +179,7 @@ interface Props {
     onTest: () => void;
     testValues?: Record<string, string>;
     onChangeTestValue?: (name: string, value: string) => void;
+    errors?: ActionFormErrors;
 }
 
 export const TestSection: React.FC<Props> = ({
@@ -182,6 +189,7 @@ export const TestSection: React.FC<Props> = ({
     onTest,
     testValues,
     onChangeTestValue,
+    errors,
 }) => {
     const preview = buildRequestPreview(formData, testValues);
 
@@ -227,18 +235,29 @@ export const TestSection: React.FC<Props> = ({
                         <Label className="text-xs text-muted-foreground">Test Values</Label>
                         <div className="grid grid-cols-2 gap-2">
                             {formData.parameters.map((param) => (
-                                <div key={param.name} className="flex items-center gap-2">
+                                <div key={param.name} className="flex items-start gap-2">
                                     <Label className="text-xs font-mono w-24 truncate">{param.name}</Label>
-                                    <Input
-                                        value={
-                                            testValues && Object.prototype.hasOwnProperty.call(testValues, param.name)
-                                                ? testValues[param.name] ?? ''
-                                                : ''
-                                        }
-                                        onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
-                                        placeholder={param.default !== undefined ? String(param.default) : 'test_value'}
-                                        className="h-8 text-xs flex-1"
-                                    />
+                                    <div className="flex-1">
+                                        <Input
+                                            value={
+                                                testValues && Object.prototype.hasOwnProperty.call(testValues, param.name)
+                                                    ? testValues[param.name] ?? ''
+                                                    : ''
+                                            }
+                                            onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
+                                            placeholder={param.default !== undefined ? String(param.default) : 'test_value'}
+                                            className={
+                                                errors?.[`testArgs.${param.name}`]
+                                                    ? "h-8 text-xs border-destructive focus-visible:ring-destructive"
+                                                    : "h-8 text-xs"
+                                            }
+                                        />
+                                        {errors?.[`testArgs.${param.name}`] && (
+                                            <p className="text-[11px] text-destructive mt-1">
+                                                {errors[`testArgs.${param.name}`]}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -277,7 +296,7 @@ export const TestSection: React.FC<Props> = ({
                 {/* Test Button */}
                 <Button
                     onClick={onTest}
-                    disabled={testing || !formData.apiConfig.baseUrl}
+                    disabled={testing || !formData.apiConfig.baseUrl || !(formData.apiConfig.endpoint || '').trim()}
                     size="sm"
                     variant="outline"
                     className="w-full"
@@ -353,6 +372,7 @@ interface OldProps {
     onSave?: () => void;
     testValues?: Record<string, string>;
     onChangeTestValue?: (name: string, value: string) => void;
+    errors?: ActionFormErrors;
 }
 
 export const TestAndSaveStep: React.FC<OldProps> = (props) => {
@@ -365,6 +385,7 @@ export const TestAndSaveStep: React.FC<OldProps> = (props) => {
                 onTest={props.onTest}
                 testValues={props.testValues}
                 onChangeTestValue={props.onChangeTestValue}
+                errors={props.errors}
             />
 
             <div className="flex justify-between">
