@@ -678,16 +678,16 @@ export default function Hero() {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] tracking-tight max-w-2xl"
             >
-              AI agents that handle{" "}
+              Handle{" "}
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
                 className="text-primary text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
               >
-                customer support
+                10X More Customers
               </motion.span>{" "}
-              so you don&apos;t have to
+              Without Hiring Anyone
             </motion.h1>
 
             {/* Description */}
@@ -697,7 +697,7 @@ export default function Hero() {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl text-muted-foreground max-w-lg leading-relaxed tracking-tight"
             >
-              Deploy on WhatsApp, voice, or your website. Answers questions, resolves issues, hands off to humans when needed.
+              Deploy AI agents across voice, chat & WhatsApp in minutes. Answer unlimited conversations simultaneously while your team focuses on complex issues. Scale support without scaling costs.
             </motion.p>
 
             {/* CTA Buttons */}

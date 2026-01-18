@@ -8,6 +8,8 @@ import QuestionsSection from "@/components/landing/questions";
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
 import BroadcastSection from "@/components/landing/broadcast-section";
+import ComparisonSection from "@/components/landing/comparison-section";
+import EnhancedTestimonials from "@/components/landing/enhanced-testimonials";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -47,8 +49,10 @@ export default function Home() {
           <Hero />
           {/* <Testimonial /> */}
           <UnifiedOfferings />
-          <BroadcastSection />
+          <ComparisonSection />
           <HowItWorks />
+          <BroadcastSection />
+          <EnhancedTestimonials />
           <PricingSection />
           {/* <QuestionsSection /> */}
           <TestimonialsSection />
