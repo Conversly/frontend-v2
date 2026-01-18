@@ -179,6 +179,24 @@ function parseHeader(headerStr: string): { key: string; value: string } | null {
     return { key, value };
 }
 
+/**
+ * Normalize curl -d/--data payload tokens.
+ *
+ * Chrome/Firefox "Copy as cURL" sometimes uses Bash ANSI-C quoting: $'{"json":"..."}'
+ * Our tokenizer removes the quotes but keeps the leading '$', producing strings like:
+ *   ${"json":"..."}
+ * which is not valid JSON and breaks downstream JSON parsing/formatting.
+ *
+ * We only strip the leading '$' when it directly prefixes a JSON object/array.
+ */
+function normalizeCurlDataPayload(raw: string): string {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('$') && (trimmed[1] === '{' || trimmed[1] === '[')) {
+        return trimmed.slice(1);
+    }
+    return raw;
+}
+
 export function parseCurlCommand(curlString: string): Partial<CustomActionConfig> {
     const config: Partial<CustomActionConfig> = {
         headers: {},
@@ -355,7 +373,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
 
     // Set body
     if (body) {
-        config.bodyTemplate = body;
+        config.bodyTemplate = normalizeCurlDataPayload(body);
     }
 
     return config;

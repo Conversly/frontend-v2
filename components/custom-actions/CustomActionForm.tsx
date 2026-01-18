@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { CustomAction, ToolParameter, TestResult, CustomActionConfig } from '@/types/customActions';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CustomAction, TestResult } from '@/types/customActions';
 import { useTestCustomAction } from '@/services/actions';
 import { BasicInfoStep } from './steps/BasicInfoStep';
 import { APIConfigStep } from './steps/APIConfigStep';
 import { ParametersStep } from './steps/ParametersStep';
 import { TestAndSaveStep } from './steps/TestAndSaveStep';
+import { DataAccessStep } from './steps/DataAccessStep';
 import { ActionExplainer } from './ActionExplainer';
-import { CurlImportDialog } from './CurlImportDialog';
-import { ClassifiedHeader } from '@/utils/curlParser';
 import { cn } from '@/lib/utils';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
+import { toast } from 'sonner';
 
 interface Props {
     chatbotId: string;
@@ -21,51 +21,98 @@ interface Props {
     onCancel: () => void;
 }
 
+const buildDefaultAction = (chatbotId: string): CustomAction => ({
+    id: '',
+    chatbotId,
+    name: '',
+    displayName: '',
+    description: '',
+    isEnabled: true,
+    apiConfig: {
+        method: 'GET',
+        baseUrl: '',
+        endpoint: '',
+        headers: {},
+        queryParams: {},
+        bodyTemplate: '',
+        responseMapping: '',
+        successCodes: [200],
+        timeoutSeconds: 30,
+        retryCount: 0,
+        authType: 'none',
+        authValue: '',
+        followRedirects: true,
+        verifySsl: true,
+    },
+    parameters: [],
+    triggerExamples: [],
+    version: 1,
+    createdAt: null,
+    updatedAt: null,
+    lastTestedAt: null,
+    testStatus: null,
+});
+
+const buildInitialAction = (chatbotId: string, existingAction?: CustomAction): CustomAction => {
+    const base = buildDefaultAction(chatbotId);
+    if (!existingAction) return base;
+
+    // Deep-merge apiConfig so optional keys (method/authType/etc) never go undefined.
+    return {
+        ...base,
+        ...existingAction,
+        chatbotId,
+        apiConfig: {
+            ...base.apiConfig,
+            ...(existingAction.apiConfig || {}),
+        },
+        parameters: existingAction.parameters || [],
+        triggerExamples: existingAction.triggerExamples || [],
+    };
+};
+
 export const CustomActionForm: React.FC<Props> = ({
     chatbotId,
     existingAction,
     onSave,
     onCancel,
 }) => {
-    const [formData, setFormData] = useState<CustomAction>(
-        existingAction || {
-            id: '',
-            chatbotId: chatbotId,
-            name: '',
-            displayName: '',
-            description: '',
-            isEnabled: true,
-            apiConfig: {
-                method: 'GET',
-                baseUrl: '',
-                endpoint: '',
-                headers: {},
-                queryParams: {},
-                bodyTemplate: '',
-                responseMapping: '',
-                successCodes: [200],
-                timeoutSeconds: 30,
-                retryCount: 0,
-                authType: 'none',
-                authValue: '',
-                followRedirects: true,
-                verifySsl: true,
-            },
-            parameters: [],
-            version: 1,
-            createdAt: null,
-            updatedAt: null,
-            lastTestedAt: null,
-            testStatus: null,
-        }
+    const [formData, setFormData] = useState<CustomAction>(() =>
+        buildInitialAction(chatbotId, existingAction)
     );
 
     const [testResult, setTestResult] = useState<TestResult | null>(null);
     const [testing, setTesting] = useState(false);
     const [saving, setSaving] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
-    // Store classified headers for reference in API config step
-    const [classifiedHeaders, setClassifiedHeaders] = useState<ClassifiedHeader[]>([]);
+    const [maxStepUnlocked, setMaxStepUnlocked] = useState(() => (existingAction ? 5 : 1));
+    const [testValues, setTestValues] = useState<Record<string, string>>(() => {
+        const initial: Record<string, string> = {};
+        (existingAction?.parameters || []).forEach((p) => {
+            initial[p.name] = p.default || '';
+        });
+        return initial;
+    });
+
+    // If `existingAction` is loaded async, keep local state in sync.
+    useEffect(() => {
+        setFormData(buildInitialAction(chatbotId, existingAction));
+        setMaxStepUnlocked(existingAction ? 5 : 1);
+        setCurrentStep(1);
+        setTestResult(null);
+        setTesting(false);
+
+        const initial: Record<string, string> = {};
+        (existingAction?.parameters || []).forEach((p) => {
+            initial[p.name] = p.default || '';
+        });
+        setTestValues(initial);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatbotId, existingAction?.id]);
+
+    const isStep1Valid = useMemo(() => {
+        return formData.name.trim().length >= 3 && formData.description.trim().length >= 20;
+    }, [formData.name, formData.description]);
 
     const updateField = (path: string, value: any) => {
         setFormData((prev) => {
@@ -85,20 +132,6 @@ export const CustomActionForm: React.FC<Props> = ({
         });
     };
 
-    const handleCurlImport = (config: Partial<CustomActionConfig>, headers: ClassifiedHeader[]) => {
-        setFormData(prev => ({
-            ...prev,
-            apiConfig: {
-                ...prev.apiConfig,
-                ...config
-            }
-        }));
-        // Store classified headers for reference
-        setClassifiedHeaders(headers);
-        // Jump to API Config step to review
-        setCurrentStep(2);
-    };
-
     const { mutateAsync: testAction } = useTestCustomAction();
 
     const handleTest = async () => {
@@ -110,7 +143,8 @@ export const CustomActionForm: React.FC<Props> = ({
                 chatbotId,
                 config: formData.apiConfig,
                 testParameters: formData.parameters.reduce((acc, param) => {
-                    acc[param.name] = param.default || "test_value";
+                    const raw = testValues[param.name];
+                    acc[param.name] = (raw ?? '').toString().length > 0 ? raw : (param.default || "test_value");
                     return acc;
                 }, {} as Record<string, any>),
             });
@@ -132,6 +166,12 @@ export const CustomActionForm: React.FC<Props> = ({
     };
 
     const handleSave = async () => {
+        if (!isStep1Valid) {
+            toast.error('Action name + description are required before saving.');
+            setCurrentStep(1);
+            return;
+        }
+
         setSaving(true);
         try {
             await onSave(formData);
@@ -140,8 +180,28 @@ export const CustomActionForm: React.FC<Props> = ({
         }
     };
 
+    const handleChangeTestValue = (name: string, value: string) => {
+        setTestValues((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // Keep test values stable as parameters are added/removed.
+    useEffect(() => {
+        setTestValues((prev) => {
+            const next: Record<string, string> = {};
+            for (const p of formData.parameters) {
+                if (Object.prototype.hasOwnProperty.call(prev, p.name)) {
+                    next[p.name] = prev[p.name] ?? '';
+                } else {
+                    next[p.name] = p.default || '';
+                }
+            }
+            return next;
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData.parameters]);
+
     return (
-        <div className="h-full flex flex-col space-y-6">
+        <div className="h-full w-full max-w-6xl mx-auto flex flex-col space-y-6 min-w-0">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -152,25 +212,27 @@ export const CustomActionForm: React.FC<Props> = ({
                         Configure how your chatbot interacts with external services
                     </p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <CurlImportDialog onImport={handleCurlImport} />
-                </div>
             </div>
             <Separator />
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0 pb-6">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0 pb-6 w-full min-w-0">
                 {/* Left Panel - Form */}
-                <div className="lg:col-span-7 flex flex-col min-h-0">
+                <div className="lg:col-span-7 flex flex-col min-h-0 min-w-0">
                     {/* Progress Steps - Clean Horizontal Design */}
                     <div className="mb-6 flex items-center w-full max-w-2xl">
-                        {[1, 2, 3, 4].map((step, index) => (
+                        {[1, 2, 3, 4, 5].map((step, index) => (
                             <div key={step} className="flex-1 flex items-center">
+                                {(() => {
+                                    const isUnlocked = step <= maxStepUnlocked;
+                                    const isCurrentOrPast = currentStep >= step;
+                                    return (
                                 <div
                                     className={cn(
-                                        "flex items-center gap-2 cursor-pointer group",
-                                        currentStep >= step ? "text-foreground" : "text-muted-foreground"
+                                        "flex items-center gap-2 group",
+                                        isUnlocked ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                                        isCurrentOrPast ? "text-foreground" : "text-muted-foreground"
                                     )}
-                                    onClick={() => step < currentStep && setCurrentStep(step)}
+                                    onClick={() => isUnlocked && setCurrentStep(step)}
                                 >
                                     <div
                                         className={cn(
@@ -188,16 +250,19 @@ export const CustomActionForm: React.FC<Props> = ({
                                         "text-sm font-medium whitespace-nowrap hidden sm:block",
                                         currentStep === step && "text-primary"
                                     )}>
-                                        {step === 1 && "Identity"}
-                                        {step === 2 && "Connection"}
+                                        {step === 1 && "General"}
+                                        {step === 2 && "API"}
                                         {step === 3 && "Inputs"}
-                                        {step === 4 && "Test"}
+                                        {step === 4 && "Test response"}
+                                        {step === 5 && "Data access"}
                                     </span>
                                 </div>
-                                {index < 3 && (
+                                    );
+                                })()}
+                                {index < 4 && (
                                     <div className={cn(
                                         "h-[2px] w-full mx-4 rounded-full transition-colors duration-300",
-                                        currentStep > step + 1 ? "bg-primary" : "bg-muted"
+                                        maxStepUnlocked > step ? "bg-primary" : "bg-muted"
                                     )} />
                                 )}
                             </div>
@@ -205,14 +270,17 @@ export const CustomActionForm: React.FC<Props> = ({
                     </div>
 
                     {/* Form Content */}
-                    <div className="flex-1 border rounded-xl bg-background shadow-sm overflow-hidden flex flex-col">
-                        <ScrollArea className="flex-1">
-                            <div className="p-6">
+                    <div className="flex-1 border rounded-xl bg-background shadow-sm overflow-hidden flex flex-col min-w-0">
+                        <ScrollArea className="flex-1 min-w-0">
+                            <div className="p-6 min-w-0">
                                 {currentStep === 1 && (
                                     <BasicInfoStep
                                         formData={formData}
                                         updateField={updateField}
-                                        onNext={() => setCurrentStep(2)}
+                                        onNext={() => {
+                                            setMaxStepUnlocked((prev) => Math.max(prev, 2));
+                                            setCurrentStep(2);
+                                        }}
                                         onCancel={onCancel}
                                     />
                                 )}
@@ -221,7 +289,10 @@ export const CustomActionForm: React.FC<Props> = ({
                                     <APIConfigStep
                                         formData={formData}
                                         updateField={updateField}
-                                        onNext={() => setCurrentStep(3)}
+                                        onNext={() => {
+                                            setMaxStepUnlocked((prev) => Math.max(prev, 3));
+                                            setCurrentStep(3);
+                                        }}
                                         onBack={() => setCurrentStep(1)}
                                     />
                                 )}
@@ -230,7 +301,10 @@ export const CustomActionForm: React.FC<Props> = ({
                                     <ParametersStep
                                         formData={formData}
                                         updateField={updateField}
-                                        onNext={() => setCurrentStep(4)}
+                                        onNext={() => {
+                                            setMaxStepUnlocked((prev) => Math.max(prev, 4));
+                                            setCurrentStep(4);
+                                        }}
                                         onBack={() => setCurrentStep(2)}
                                     />
                                 )}
@@ -242,32 +316,28 @@ export const CustomActionForm: React.FC<Props> = ({
                                         testing={testing}
                                         saving={saving}
                                         onTest={handleTest}
-                                        onSave={handleSave}
                                         onBack={() => setCurrentStep(3)}
+                                        onNext={() => {
+                                            setMaxStepUnlocked((prev) => Math.max(prev, 5));
+                                            setCurrentStep(5);
+                                        }}
+                                        testValues={testValues}
+                                        onChangeTestValue={handleChangeTestValue}
+                                    />
+                                )}
+
+                                {currentStep === 5 && (
+                                    <DataAccessStep
+                                        formData={formData}
+                                        updateField={updateField}
+                                        testResult={testResult}
+                                        saving={saving}
+                                        onBack={() => setCurrentStep(4)}
+                                        onSave={handleSave}
                                     />
                                 )}
                             </div>
                         </ScrollArea>
-                    </div>
-                </div>
-
-                {/* Right Panel - Visual Explainer */}
-                <div className="hidden lg:col-span-5 lg:flex flex-col min-h-0">
-                    <div className="sticky top-0 h-full max-h-[calc(100vh-200px)]">
-                        <div className="bg-muted/30 border rounded-xl overflow-hidden h-full flex flex-col">
-                            <div className="p-4 border-b bg-background/50 backdrop-blur">
-                                <h3 className="font-semibold flex items-center gap-2 text-foreground">
-                                    <span className="text-xl">💡</span>
-                                    Live Preview
-                                </h3>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Real-time preview of how the AI interprets this action
-                                </p>
-                            </div>
-                            <ScrollArea className="flex-1 p-6 overflow-y-auto">
-                                <ActionExplainer action={formData} />
-                            </ScrollArea>
-                        </div>
                     </div>
                 </div>
             </div>

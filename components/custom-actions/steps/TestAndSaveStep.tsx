@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Play, Loader2 } from 'lucide-react';
+import { Loader2, Play } from 'lucide-react';
 
 interface Props {
     formData: CustomAction;
     testResult: TestResult | null;
     testing: boolean;
     onTest: () => void;
+    testValues?: Record<string, string>;
+    onChangeTestValue?: (name: string, value: string) => void;
 }
 
 export const TestSection: React.FC<Props> = ({
@@ -18,6 +20,8 @@ export const TestSection: React.FC<Props> = ({
     testResult,
     testing,
     onTest,
+    testValues,
+    onChangeTestValue,
 }) => {
     return (
         <div className="space-y-4">
@@ -48,7 +52,7 @@ export const TestSection: React.FC<Props> = ({
 
                 {/* Full URL Preview */}
                 {formData.apiConfig.baseUrl && (
-                    <div className="rounded-md bg-muted p-2 font-mono text-xs break-all">
+                    <div className="rounded-md bg-muted p-2 font-mono text-xs break-all max-w-full">
                         <span className="text-primary font-semibold">{formData.apiConfig.method}</span>{' '}
                         <span className="text-muted-foreground">{formData.apiConfig.baseUrl}</span>
                         <span>{formData.apiConfig.endpoint}</span>
@@ -64,6 +68,12 @@ export const TestSection: React.FC<Props> = ({
                                 <div key={param.name} className="flex items-center gap-2">
                                     <Label className="text-xs font-mono w-24 truncate">{param.name}</Label>
                                     <Input
+                                        value={
+                                            testValues && Object.prototype.hasOwnProperty.call(testValues, param.name)
+                                                ? testValues[param.name] ?? ''
+                                                : ''
+                                        }
+                                        onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
                                         placeholder={param.default || 'test_value'}
                                         className="h-8 text-xs flex-1"
                                     />
@@ -118,7 +128,7 @@ export const TestSection: React.FC<Props> = ({
 
                         <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Response</Label>
-                            <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap">
+                            <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap break-all max-w-full">
                                 {typeof testResult.responseBody === 'string'
                                     ? testResult.responseBody
                                     : JSON.stringify(testResult.responseBody, null, 2)}
@@ -128,7 +138,7 @@ export const TestSection: React.FC<Props> = ({
                         {testResult.extractedData && (
                             <div className="space-y-1">
                                 <Label className="text-xs text-muted-foreground">Extracted Data</Label>
-                                <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-2 font-mono text-xs overflow-auto">
+                                <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap break-all max-w-full">
                                     {JSON.stringify(testResult.extractedData, null, 2)}
                                 </div>
                             </div>
@@ -147,10 +157,53 @@ interface OldProps {
     testing: boolean;
     saving: boolean;
     onTest: () => void;
-    onSave: () => void;
     onBack: () => void;
+    onNext?: () => void;
+    onSave?: () => void;
+    testValues?: Record<string, string>;
+    onChangeTestValue?: (name: string, value: string) => void;
 }
 
 export const TestAndSaveStep: React.FC<OldProps> = (props) => {
-    return <TestSection {...props} />;
+    return (
+        <div className="space-y-6">
+            <TestSection
+                formData={props.formData}
+                testResult={props.testResult}
+                testing={props.testing}
+                onTest={props.onTest}
+                testValues={props.testValues}
+                onChangeTestValue={props.onChangeTestValue}
+            />
+
+            <div className="flex justify-between">
+                <Button variant="outline" onClick={props.onBack}>
+                    ← Back
+                </Button>
+
+                {props.onSave ? (
+                    <Button
+                        onClick={props.onSave}
+                        disabled={props.saving || (props.testResult !== null && !props.testResult.success)}
+                    >
+                        {props.saving ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            'Save Action'
+                        )}
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={props.onNext}
+                        disabled={!props.onNext || props.testing || !props.formData.apiConfig.baseUrl}
+                    >
+                        Next: Data access →
+                    </Button>
+                )}
+            </div>
+        </div>
+    );
 };

@@ -25,9 +25,10 @@ import { Terminal, AlertTriangle, Check, X, ChevronDown, ChevronUp } from 'lucid
 
 interface Props {
     onImport: (config: Partial<CustomActionConfig>, classifiedHeaders: ClassifiedHeader[]) => void;
+    trigger?: React.ReactNode;
 }
 
-export const CurlImportDialog: React.FC<Props> = ({ onImport }) => {
+export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
     const [open, setOpen] = useState(false);
     const [curlString, setCurlString] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -105,10 +106,14 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport }) => {
     return (
         <Dialog open={open} onOpenChange={(isOpen) => isOpen ? setOpen(true) : handleClose()}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                    <Terminal className="h-4 w-4" />
-                    Import from cURL
-                </Button>
+                {trigger ? (
+                    trigger
+                ) : (
+                    <Button variant="outline" className="gap-2">
+                        <Terminal className="h-4 w-4" />
+                        Import from cURL
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col">
                 <DialogHeader>

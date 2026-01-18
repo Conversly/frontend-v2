@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { CustomAction } from '@/types/customActions';
 import { ActionList } from '@/components/custom-actions/ActionList';
-import { SkillWizard } from '@/components/custom-actions/SkillWizard';
+import { CustomActionForm } from '@/components/custom-actions/CustomActionForm';
 import { useParams } from 'next/navigation';
 import {
   useCustomActions,
@@ -11,7 +11,6 @@ import {
   useUpdateCustomAction,
   useDeleteCustomAction,
 } from '@/services/actions';
-import { Separator } from "@/components/ui/separator";
 import { Loader2 } from 'lucide-react';
 
 export default function ActionsPage() {
@@ -48,7 +47,7 @@ export default function ActionsPage() {
         await createAction.mutateAsync({
           chatbotId,
           name: action.name,
-          displayName: action.displayName,
+          displayName: action.displayName || action.name,
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
@@ -60,7 +59,7 @@ export default function ActionsPage() {
           chatbotId,
           actionId: action.id,
           name: action.name,
-          displayName: action.displayName,
+          displayName: action.displayName || action.name,
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
@@ -97,12 +96,16 @@ export default function ActionsPage() {
           </div>
         </div>
       ) : (
-        <SkillWizard
-          chatbotId={chatbotId}
-          existingAction={selectedAction}
-          onSave={handleSave}
-          onCancel={() => setView('list')}
-        />
+        <div className="flex-1 overflow-y-auto">
+          <div className="container mx-auto px-6 py-6 max-w-[1920px]">
+            <CustomActionForm
+              chatbotId={chatbotId}
+              existingAction={selectedAction}
+              onSave={handleSave}
+              onCancel={() => setView('list')}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

@@ -13,6 +13,7 @@ export interface CustomActionConfig {
   queryParams?: Record<string, string>;
   bodyTemplate?: string;
   responseMapping?: string;
+  dataAccess?: 'full' | 'limited';
   successCodes?: number[];
   timeoutSeconds?: number;
   retryCount?: number;
