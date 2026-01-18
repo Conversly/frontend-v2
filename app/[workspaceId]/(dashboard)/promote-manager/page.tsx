@@ -6,11 +6,14 @@ import { ProductLaunchData } from "@/types/promote";
 import { Button } from "@/components/ui/button";
 import { Plus, ExternalLink, Edit } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared";
 
 export default function PromoteManagerPage() {
+    const params = useParams();
+    const workspaceId = params.workspaceId as string;
     const [products, setProducts] = React.useState<ProductLaunchData[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -41,7 +44,7 @@ export default function PromoteManagerPage() {
                     <p className="text-muted-foreground mt-1">Manage your product launch pages.</p>
                 </div>
                 {products.length > 0 && (
-                    <Link href="/promote-manager/create">
+                    <Link href={`/${workspaceId}/promote-manager/create`}>
                         <Button>
                             <Plus className="w-4 h-4 mr-2" /> Create New
                         </Button>
@@ -56,7 +59,7 @@ export default function PromoteManagerPage() {
                     icon={<Plus />}
                     primaryAction={{
                         label: "Create your first launch page",
-                        href: "/promote-manager/create",
+                        href: `/${workspaceId}/promote-manager/create`,
                         icon: <Plus />,
                     }}
                     className="min-h-[400px] border-dashed"
@@ -89,12 +92,12 @@ export default function PromoteManagerPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="flex gap-2">
-                                    <Link href={`/promote-manager/${product.id}`} className="flex-1">
+                                    <Link href={`/${workspaceId}/promote-manager/${product.id}`} className="flex-1">
                                         <Button variant="outline" className="w-full">
                                             <Edit className="w-4 h-4 mr-2" /> Edit
                                         </Button>
                                     </Link>
-                                    <Link href={`/promote/${product.id}`} className="flex-1">
+                                    <Link href={`/${workspaceId}/promote/${product.id}`} className="flex-1">
                                         <Button variant="secondary" className="w-full">
                                             <ExternalLink className="w-4 h-4 mr-2" /> View
                                         </Button>

@@ -158,21 +158,14 @@ export default function DeployLivePage() {
     }
 
     return (
-        <div className="p-8 max-w-6xl mx-auto space-y-8">
+        <div className="p-6 h-full w-full space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href={`/${workspaceId}/chatbot/${botId}/deploy`}>
-                        <Button variant="ghost" size="icon" className="rounded-full">
-                            <ArrowLeft className="w-5 h-5" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Deploy to Live</h1>
-                        <p className="text-muted-foreground mt-1">
-                            Move your draft changes from the development environment to your public live chatbot.
-                        </p>
-                    </div>
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Deploy to Live</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Move your draft changes from the development environment to your public live chatbot.
+                    </p>
                 </div>
 
                 {activeBranch === 'LIVE' && (

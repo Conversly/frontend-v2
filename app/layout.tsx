@@ -47,14 +47,18 @@ export default function RootLayout({
       <body
         className={merge(
           lato.variable,
-          "font-sans antialiased m-0 p-0",
+          "font-sans antialiased m-0 p-0 h-full w-full flex flex-col overflow-hidden",
         )}
       >
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
         >
           <ThemeProvider attribute="class" enableSystem>
-            <AppContextProvider>{children}</AppContextProvider>
+            <AppContextProvider>
+              <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
+                {children}
+              </div>
+            </AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
         <Script

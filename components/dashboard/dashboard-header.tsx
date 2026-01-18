@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import React from "react";
 import { useMaybeWorkspace } from "@/contexts/workspace-context";
 import { useChatbotInWorkspace } from "@/services/chatbot";
+import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 
 // Map route segments to readable labels
 const routeLabels: Record<string, string> = {
@@ -158,7 +159,14 @@ export function DashboardHeader() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      {isChatbotDashboard && <BranchSwitcher />}
+      <div className="flex items-center gap-2">
+        {!isChatbotDashboard && (
+          <div className="w-56 mr-32">
+            <WorkspaceSwitcher />
+          </div>
+        )}
+        {isChatbotDashboard && <BranchSwitcher />}
+      </div>
     </div>
   );
 }

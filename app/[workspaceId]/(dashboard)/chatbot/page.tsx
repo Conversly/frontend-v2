@@ -13,7 +13,6 @@ import { Bot, Loader2, Plus } from "lucide-react";
 import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
-import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -129,9 +128,6 @@ export default function WorkspaceChatbotsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-56">
-                  <WorkspaceSwitcher />
-                </div>
                 <Button onClick={handleCreateChatbot}>
                   <Plus className="mr-2 h-4 w-4" />
                   Create chatbot

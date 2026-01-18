@@ -60,7 +60,7 @@ const pricingPlans = [
 
 export default function PricingSection() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden px-4" id="pricing">
+    <section className="pt-6 lg:pt-6 pb-24 lg:pb-32 relative overflow-hidden px-4" id="pricing">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-transparent opacity-50" />
@@ -94,7 +94,7 @@ export default function PricingSection() {
       <div className="relative w-full max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16 space-y-4"
+          className="text-center mb-8 space-y-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

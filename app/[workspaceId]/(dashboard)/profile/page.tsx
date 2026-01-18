@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Laptop, Moon, Sun, User, Mail, Shield, CreditCard, Crown, Zap, Building2, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { Laptop, Moon, Sun, User, Mail, Shield, CreditCard, Crown, Zap, Building2, Sparkles, Loader2, ArrowRight, Briefcase, UserCog, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ import { useRouter, useParams } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
 import { getChatbots } from "@/lib/api/chatbot";
 import { createCreditRequest } from "@/lib/api/billing";
+import { useGetWorkspaces } from "@/services/workspace";
 import {
     Dialog,
     DialogContent,
@@ -57,6 +58,7 @@ export default function ProfilePage() {
     const router = useRouter();
     const params = useParams();
     const workspaceId = params.workspaceId as string;
+    const { data: workspaces = [] } = useGetWorkspaces();
     const [name, setName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { isOwner } = usePermissions();
@@ -209,6 +211,46 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-4">
+                    {/* Workspaces Card */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Briefcase className="w-5 h-5" />
+                                My Workspaces
+                            </CardTitle>
+                            <CardDescription>
+                                Workspaces you are a member of and your role in them.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                {workspaces.map((ws) => (
+                                    <div
+                                        key={ws.workspaceId}
+                                        className="relative flex flex-col space-y-2 rounded-lg border p-4 hover:bg-accent/50 cursor-pointer transition-colors"
+                                        onClick={() => router.push(`/${ws.workspaceId}/chatbot`)}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="font-semibold truncate pr-4">{ws.workspaceName}</div>
+                                            {ws.workspaceId === workspaceId && (
+                                                <Badge variant="secondary" className="text-xs">
+                                                    Current
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-1.5">
+                                                <UserCog className="w-3.5 h-3.5" />
+                                                <span className="capitalize">{ws.role.toLowerCase()}</span>
+                                            </div>
+                                            <ArrowUpRight className="w-4 h-4 opacity-50" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Subscription Plan Card */}
                     <Card>
                         <CardHeader>

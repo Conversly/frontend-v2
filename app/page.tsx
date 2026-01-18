@@ -30,19 +30,19 @@ export default function Home() {
             const first = ws[0]?.workspaceId;
             if (first) router.replace(`/${first}/chatbot`);
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     } catch { }
   }, [router]);
 
   return (
-    <main className="bg-background relative min-h-screen">
+    <main className="bg-background relative w-full">
       {/* Global Grid Background */}
       <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
       <div className="relative z-10">
         <Navbar />
-        
+
         <div className={CONTENT_WIDTH}>
           <Hero />
           {/* <Testimonial /> */}
@@ -51,7 +51,7 @@ export default function Home() {
           <HowItWorks />
           <PricingSection />
           {/* <QuestionsSection /> */}
-          <TestimonialsSection/>
+          <TestimonialsSection />
           <Footer />
         </div>
       </div>

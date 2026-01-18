@@ -40,48 +40,51 @@ export const ActionList: React.FC<Props> = ({
 }) => {
     if (actions.length === 0) {
         return (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-white overflow-hidden min-h-[400px]">
-                {/* Left side - Content */}
-                <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
-                        <Zap className="h-7 w-7 text-white" />
+            <div className="flex items-center justify-center p-6 h-full">
+                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-white overflow-hidden min-h-[600px] shadow-sm">
+                    {/* Left side - Content */}
+                    <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+                            <Zap className="h-7 w-7 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-3">
+                            Your bot doesn't have any skills yet
+                        </h3>
+                        <p className="text-muted-foreground mb-8 max-w-md leading-relaxed">
+                            Teach your bot new skills to fetch data, submit forms, or call your APIs during conversations.
+                        </p>
+
+                        {/* Feature highlights */}
+                        <div className="flex flex-wrap justify-center gap-3 mb-8">
+                            {[
+                                { icon: Globe, label: "Call APIs" },
+                                { icon: Database, label: "Query Databases" },
+                                { icon: Zap, label: "Trigger Actions" },
+                            ].map((feature, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm"
+                                >
+                                    <feature.icon className="h-3.5 w-3.5" />
+                                    {feature.label}
+                                </div>
+                            ))}
+                        </div>
+
+                        <Button size="lg" onClick={onCreate} className="shadow-lg">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Teach Your First Skill
+                        </Button>
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-800 mb-3">
-                        Your bot doesn't have any skills yet
-                    </h3>
-                    <p className="text-muted-foreground mb-8 max-w-md leading-relaxed">
-                        Teach your bot new skills to fetch data, submit forms, or call your APIs during conversations.
-                    </p>
 
-                    {/* Feature highlights */}
-                    <div className="flex flex-wrap justify-center gap-3 mb-8">
-                        {[
-                            { icon: Globe, label: "Call APIs" },
-                            { icon: Database, label: "Query Databases" },
-                            { icon: Zap, label: "Trigger Actions" },
-                        ].map((feature, idx) => (
-                            <div
-                                key={idx}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm"
-                            >
-                                <feature.icon className="h-3.5 w-3.5" />
-                                {feature.label}
-                            </div>
-                        ))}
+                    {/* Right side - Visualization */}
+                    <div className="hidden lg:block border-l border-slate-100 bg-gradient-to-br from-slate-50 to-white">
+                        <ActionsVisual />
                     </div>
-
-                    <Button size="lg" onClick={onCreate} className="shadow-lg">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Teach Your First Skill
-                    </Button>
-                </div>
-
-                {/* Right side - Visualization */}
-                <div className="hidden lg:block border-l border-slate-100 bg-gradient-to-br from-slate-50 to-white">
-                    <ActionsVisual />
                 </div>
             </div>
         );
+
     }
 
     return (
