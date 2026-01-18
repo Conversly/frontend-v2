@@ -9,6 +9,18 @@ export interface CustomActionConfig {
   method: HttpMethod;
   baseUrl: string;
   endpoint: string;
+  /**
+   * Static request pieces configured by the action designer.
+   * These should NOT require `{{}}` templating.
+   */
+  staticHeaders?: Record<string, string>;
+  staticQueryParams?: Record<string, string>;
+  staticBody?: any;
+
+  /**
+   * Legacy fields (backwards compatible with existing UI/backends).
+   * Prefer using static* fields in new UI.
+   */
   headers?: Record<string, string>;
   queryParams?: Record<string, string>;
   bodyTemplate?: string;
@@ -27,19 +39,34 @@ export interface CustomActionConfig {
 // Tool Parameter Types
 // ============================================
 export type ParameterType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
+export type ParameterLocation = 'path' | 'query' | 'header' | 'body';
 
 export interface ToolParameter {
   name: string;
   type: ParameterType;
   description: string;
   required?: boolean;
-  default?: string;
+  default?: any;
   enum?: string[];
   pattern?: string;
   minimum?: number;
   maximum?: number;
   minLength?: number;
   maxLength?: number;
+
+  /**
+   * Binding layer (where this parameter goes in the request).
+   * If unset, it is treated as "unbound" (legacy/unknown) and will not affect request construction.
+   */
+  location?: ParameterLocation;
+  /**
+   * For query/header params: the actual key name (defaults to `name`).
+   */
+  key?: string;
+  /**
+   * For body params: dot path like "partial.styles.primaryColor".
+   */
+  bodyPath?: string;
 }
 
 export interface ToolSchema {

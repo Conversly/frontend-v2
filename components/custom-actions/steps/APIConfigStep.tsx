@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CustomAction, CustomActionConfig } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -28,12 +27,24 @@ interface Props {
     onBack?: () => void;
 }
 
-/**
- * Extract {{variable}} patterns from a string
- */
-function extractVariables(str: string): string[] {
+function extractPathParams(endpoint: string): string[] {
+    const found: string[] = [];
+    const curly = endpoint.match(/\{([^}]+)\}/g) || [];
+    for (const m of curly) {
+        const name = m.replace(/[{}]/g, '').trim();
+        if (name) found.push(name);
+    }
+    const colon = endpoint.match(/:([A-Za-z0-9_]+)/g) || [];
+    for (const m of colon) {
+        const name = m.slice(1).trim();
+        if (name) found.push(name);
+    }
+    return [...new Set(found)];
+}
+
+function extractLegacyVariables(str: string): string[] {
     const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
-    return matches.map(m => m.replace(/\{\{|\}\}/g, '').trim());
+    return [...new Set(matches.map((m) => m.replace(/\{\{|\}\}/g, '').trim()).filter(Boolean))];
 }
 
 export const APIConfigSection: React.FC<Props> = ({
@@ -43,17 +54,36 @@ export const APIConfigSection: React.FC<Props> = ({
     onBack,
 }) => {
     const [showAdvanced, setShowAdvanced] = useState(false);
+    const [staticBodyDraft, setStaticBodyDraft] = useState('');
+    const [staticBodyError, setStaticBodyError] = useState<string | null>(null);
+    const [isBodyDirty, setIsBodyDirty] = useState(false);
     const config = formData.apiConfig;
 
-    // Combine baseUrl and endpoint for the unified URL input
-    const fullUrl = `${config.baseUrl}${config.endpoint}`;
+    // Combine baseUrl + endpoint + static query for the unified URL input
+    const fullUrl = useMemo(() => {
+        const qp = config.staticQueryParams ?? config.queryParams ?? {};
+        const search = new URLSearchParams(
+            Object.entries(qp).filter(([k]) => (k || '').trim().length > 0)
+        ).toString();
+        return `${config.baseUrl}${config.endpoint}${search ? `?${search}` : ''}`;
+    }, [config.baseUrl, config.endpoint, config.queryParams, config.staticQueryParams]);
 
     // Parse full URL back into base and endpoint
     const handleFullUrlChange = (value: string) => {
         try {
             const urlObj = new URL(value);
-            updateField('apiConfig.baseUrl', urlObj.origin);
-            updateField('apiConfig.endpoint', urlObj.pathname + urlObj.search);
+            const qp: Record<string, string> = {};
+            urlObj.searchParams.forEach((v, k) => {
+                qp[k] = v;
+            });
+            updateField('apiConfig', {
+                ...config,
+                baseUrl: urlObj.origin,
+                endpoint: urlObj.pathname,
+                staticQueryParams: qp,
+                // legacy mirror for backend compatibility
+                queryParams: qp,
+            });
         } catch {
             // If not a valid URL, just update the endpoint
             if (value.startsWith('/')) {
@@ -69,37 +99,73 @@ export const APIConfigSection: React.FC<Props> = ({
         }
     };
 
-    // Detect variables from URL and body
-    const detectedVariables = useMemo(() => {
-        const vars: string[] = [];
-        if (config.endpoint) {
-            vars.push(...extractVariables(config.endpoint));
-        }
-        if (config.bodyTemplate) {
-            vars.push(...extractVariables(config.bodyTemplate));
-        }
-        return [...new Set(vars)];
-    }, [config.endpoint, config.bodyTemplate]);
+    const staticHeaders = config.staticHeaders ?? config.headers ?? {};
+    const staticQueryParams = config.staticQueryParams ?? config.queryParams ?? {};
+    const headerCount = Object.keys(staticHeaders).length;
+    const queryParamCount = Object.keys(staticQueryParams).length;
 
-    const headerCount = Object.keys(config.headers || {}).length;
-    const queryParamCount = Object.keys(config.queryParams || {}).length;
+    const detectedPathParams = useMemo(() => extractPathParams(config.endpoint || ''), [config.endpoint]);
+    const legacyEndpointVars = useMemo(() => extractLegacyVariables(config.endpoint || ''), [config.endpoint]);
+
+    // Keep the static body editor in sync with config changes.
+    useEffect(() => {
+        // While the user is typing, don't clobber their draft (especially mid-edit when JSON is invalid).
+        if (isBodyDirty) return;
+
+        // If we have a bodyTemplate but it isn't valid JSON, prefer showing that draft (so we don't "revert").
+        const bodyTemplate = config.bodyTemplate || '';
+        if (bodyTemplate.trim().length > 0) {
+            try {
+                JSON.parse(bodyTemplate);
+            } catch {
+                setStaticBodyDraft(bodyTemplate);
+                setStaticBodyError('Invalid JSON');
+                return;
+            }
+        }
+
+        const next =
+            config.staticBody !== undefined
+                ? JSON.stringify(config.staticBody, null, 2)
+                : bodyTemplate;
+        setStaticBodyDraft(next);
+        setStaticBodyError(null);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData.id, config.staticBody, config.bodyTemplate, config.method, isBodyDirty]);
 
     const handleCurlImport = (imported: Partial<CustomActionConfig>) => {
+        const nextStaticHeaders = imported.staticHeaders ?? imported.headers ?? staticHeaders;
+        const nextStaticQueryParams = imported.staticQueryParams ?? imported.queryParams ?? staticQueryParams;
+
+        let nextStaticBody: any = imported.staticBody ?? config.staticBody;
+        const legacyBodyTemplate = imported.bodyTemplate ?? config.bodyTemplate;
+        if (nextStaticBody === undefined && legacyBodyTemplate) {
+            try {
+                nextStaticBody = JSON.parse(legacyBodyTemplate);
+            } catch {
+                // keep undefined; legacy template can still be used in expert mode
+            }
+        }
+
         updateField('apiConfig', {
             ...config,
             ...imported,
-            // Ensure nested objects stay objects after merge
-            headers: imported.headers ?? config.headers ?? {},
-            queryParams: imported.queryParams ?? config.queryParams ?? {},
+            staticHeaders: nextStaticHeaders,
+            staticQueryParams: nextStaticQueryParams,
+            staticBody: nextStaticBody,
+            // legacy mirrors for backend compatibility
+            headers: nextStaticHeaders,
+            queryParams: nextStaticQueryParams,
+            bodyTemplate: nextStaticBody !== undefined ? JSON.stringify(nextStaticBody, null, 2) : legacyBodyTemplate,
         });
     };
 
-    const handleAddVariable = () => {
-        const raw = window.prompt('Variable name (example: user_id)');
+    const handleAddPathParam = () => {
+        const raw = window.prompt('Path param name (example: userId)');
         const name = (raw || '').trim().replace(/\s+/g, '_');
         if (!name) return;
 
-        const token = `{{${name}}}`;
+        const token = `{${name}}`;
         const cur = fullUrl || '';
         const qIndex = cur.indexOf('?');
         const before = qIndex === -1 ? cur : cur.slice(0, qIndex);
@@ -134,10 +200,10 @@ export const APIConfigSection: React.FC<Props> = ({
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">HTTPS URL</Label>
-                    {detectedVariables.length > 0 && (
+                    {detectedPathParams.length > 0 && (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Sparkles className="h-3.5 w-3.5" />
-                            <span>Detected: {detectedVariables.map(v => `{{${v}}}`).join(', ')}</span>
+                            <span>Path params: {detectedPathParams.map((v) => `{${v}}`).join(', ')}</span>
                         </div>
                     )}
                 </div>
@@ -167,33 +233,53 @@ export const APIConfigSection: React.FC<Props> = ({
                         <Input
                             value={fullUrl}
                             onChange={(e) => handleFullUrlChange(e.target.value)}
-                            placeholder="https://api.example.com/v1/resource/{{id}}"
+                            placeholder="https://api.example.com/v1/resource/{id}"
                             className="h-10 font-mono text-sm"
                         />
                     </div>
 
-                    <Button type="button" variant="outline" className="h-10 shrink-0" onClick={handleAddVariable}>
+                    <Button type="button" variant="outline" className="h-10 shrink-0" onClick={handleAddPathParam}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add variable
+                        Add path param
                     </Button>
                 </div>
 
                 <p className="text-xs text-muted-foreground">
-                    Use <code className="px-1 py-0.5 rounded bg-muted">{'{{variable}}'}</code> for dynamic values in the URL or body.
+                    Put dynamic values in the request via the <strong>Inputs</strong> step (destination = Path / Query / Header / Body).
                 </p>
+                {legacyEndpointVars.length > 0 && (
+                    <div className="flex items-center justify-between gap-3 rounded-md border border-yellow-200 bg-yellow-50 px-3 py-2 text-xs dark:border-yellow-800 dark:bg-yellow-900/20">
+                        <div className="text-yellow-900 dark:text-yellow-200">
+                            Legacy endpoint templates detected: {legacyEndpointVars.map((v) => `{{${v}}}`).join(', ')}. Prefer <code className="px-1 py-0.5 rounded bg-muted">{'{var}'}</code>.
+                        </div>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            onClick={() => {
+                                const next = (config.endpoint || '').replace(/\{\{([^}]+)\}\}/g, (_m, name) => `{${String(name).trim()}}`);
+                                updateField('apiConfig.endpoint', next);
+                            }}
+                        >
+                            Convert
+                        </Button>
+                    </div>
+                )}
             </div>
 
             {/* Tabs */}
-            <Tabs defaultValue="parameters">
+            <Tabs defaultValue="auth">
                 <TabsList className="w-full justify-start">
-                    <TabsTrigger value="parameters" className="gap-2">
-                        Parameters
+                    <TabsTrigger value="auth">Auth</TabsTrigger>
+                    <TabsTrigger value="query" className="gap-2">
+                        Query (static)
                         <Badge variant="secondary" className="h-5 px-2 text-xs">
                             {queryParamCount}
                         </Badge>
                     </TabsTrigger>
                     <TabsTrigger value="headers" className="gap-2">
-                        Headers
+                        Headers (static)
                         <Badge variant="secondary" className="h-5 px-2 text-xs">
                             {headerCount}
                         </Badge>
@@ -201,25 +287,84 @@ export const APIConfigSection: React.FC<Props> = ({
                     <TabsTrigger value="body">Body</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="parameters" className="mt-4">
+                <TabsContent value="auth" className="mt-4">
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="space-y-2">
+                                <Label className="text-xs">Auth Type</Label>
+                                <Select
+                                    value={config.authType || 'none'}
+                                    onValueChange={(value) => updateField('apiConfig.authType', value)}
+                                >
+                                    <SelectTrigger className="h-9 text-xs">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">None</SelectItem>
+                                        <SelectItem value="bearer">Bearer Token</SelectItem>
+                                        <SelectItem value="api_key">API Key</SelectItem>
+                                        <SelectItem value="basic">Basic Auth</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {(config.authType || 'none') !== 'none' && (
+                                <div className="col-span-2 space-y-2">
+                                    <Label className="text-xs">
+                                        {config.authType === 'bearer' && 'Bearer Token'}
+                                        {config.authType === 'api_key' && 'API Key'}
+                                        {config.authType === 'basic' && 'Base64 Credentials'}
+                                    </Label>
+                                    <Input
+                                        type="password"
+                                        value={config.authValue || ''}
+                                        onChange={(e) => updateField('apiConfig.authValue', e.target.value)}
+                                        placeholder="Enter token/key (or secret ref)"
+                                        className="h-9 text-xs font-mono"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Tip: store a secret reference like <code className="px-1 py-0.5 rounded bg-muted">secrets.MY_API_KEY</code> and resolve it server-side.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="query" className="mt-4">
                     <div className="space-y-3">
                         <Button
                             type="button"
                             variant="outline"
                             className="w-full justify-start h-10"
                             onClick={() =>
-                                updateField('apiConfig.queryParams', { ...(config.queryParams || {}), '': '' })
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticQueryParams: { ...staticQueryParams, '': '' },
+                                    // legacy mirror for backend compatibility
+                                    queryParams: { ...staticQueryParams, '': '' },
+                                })
                             }
                         >
                             <Plus className="h-4 w-4 mr-2" />
                             Add key value pair
                         </Button>
                         <KeyValueEditor
-                            value={config.queryParams || {}}
-                            onChange={(params) => updateField('apiConfig.queryParams', params)}
+                            value={staticQueryParams}
+                            onChange={(params) =>
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticQueryParams: params,
+                                    // legacy mirror for backend compatibility
+                                    queryParams: params,
+                                })
+                            }
                             placeholder={{ key: 'key', value: 'value' }}
                             addLabel="Add key value pair"
                         />
+                        <p className="text-xs text-muted-foreground">
+                            Dynamic query params belong in <strong>Inputs</strong> (destination = Query).
+                        </p>
                     </div>
                 </TabsContent>
 
@@ -230,17 +375,32 @@ export const APIConfigSection: React.FC<Props> = ({
                             variant="outline"
                             className="w-full justify-start h-10"
                             onClick={() =>
-                                updateField('apiConfig.headers', { ...(config.headers || {}), '': '' })
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticHeaders: { ...staticHeaders, '': '' },
+                                    // legacy mirror for backend compatibility
+                                    headers: { ...staticHeaders, '': '' },
+                                })
                             }
                         >
                             <Plus className="h-4 w-4 mr-2" />
                             Add key value pair
                         </Button>
                         <HeaderEditor
-                            value={config.headers || {}}
-                            onChange={(headers) => updateField('apiConfig.headers', headers)}
+                            value={staticHeaders}
+                            onChange={(headers) =>
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticHeaders: headers,
+                                    // legacy mirror for backend compatibility
+                                    headers,
+                                })
+                            }
                             addLabel="Add key value pair"
                         />
+                        <p className="text-xs text-muted-foreground">
+                            Dynamic headers belong in <strong>Inputs</strong> (destination = Header).
+                        </p>
                     </div>
                 </TabsContent>
 
@@ -248,7 +408,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
                             <Label>Body</Label>
-                            {['POST', 'PUT', 'PATCH'].includes(config.method) && config.bodyTemplate && (
+                            {['POST', 'PUT', 'PATCH'].includes(config.method) && staticBodyDraft && (
                                 <Button
                                     type="button"
                                     variant="ghost"
@@ -256,9 +416,16 @@ export const APIConfigSection: React.FC<Props> = ({
                                     className="h-7 text-xs"
                                     onClick={() => {
                                         try {
-                                            const parsed = JSON.parse(config.bodyTemplate);
+                                            const parsed = JSON.parse(staticBodyDraft);
                                             const formatted = JSON.stringify(parsed, null, 2);
-                                            updateField('apiConfig.bodyTemplate', formatted);
+                                            setStaticBodyDraft(formatted);
+                                            setStaticBodyError(null);
+                                            updateField('apiConfig', {
+                                                ...config,
+                                                staticBody: parsed,
+                                                // legacy mirror for backend compatibility
+                                                bodyTemplate: formatted,
+                                            });
                                         } catch (e) {
                                             // Not valid JSON, ignore
                                         }
@@ -271,13 +438,31 @@ export const APIConfigSection: React.FC<Props> = ({
                         {['POST', 'PUT', 'PATCH'].includes(config.method) ? (
                             <div className="border rounded-lg overflow-hidden">
                                 <CodeMirror
-                                    value={config.bodyTemplate || ''}
-                                    onChange={(value) => updateField('apiConfig.bodyTemplate', value)}
+                                    value={staticBodyDraft}
+                                    onChange={(value) => {
+                                        setIsBodyDirty(true);
+                                        setStaticBodyDraft(value);
+                                        try {
+                                            const parsed = value.trim().length ? JSON.parse(value) : undefined;
+                                            setStaticBodyError(null);
+                                            setIsBodyDirty(false);
+                                            updateField('apiConfig', {
+                                                ...config,
+                                                staticBody: parsed,
+                                                // legacy mirror for backend compatibility
+                                                bodyTemplate: value,
+                                            });
+                                        } catch (e: any) {
+                                            setStaticBodyError('Invalid JSON');
+                                            // keep draft; don't clobber staticBody with invalid data
+                                            updateField('apiConfig.bodyTemplate', value);
+                                        }
+                                    }}
                                     extensions={[
                                         json(),
                                         EditorView.lineWrapping
                                     ]}
-                                    placeholder='{\n  "key": "value",\n  "user_id": "{{user_id}}"\n}'
+                                    placeholder='{\n  "mode": "dev",\n  "partial": { "styles": { "appearance": "light" } }\n}'
                                     minHeight="300px"
                                     maxHeight="500px"
                                     theme="light"
@@ -294,6 +479,14 @@ export const APIConfigSection: React.FC<Props> = ({
                                 Body is only sent for POST/PUT/PATCH requests.
                             </div>
                         )}
+                        {staticBodyError && (
+                            <p className="text-xs text-destructive">{staticBodyError}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                            This is the <strong>static JSON body</strong>. To mark a field as dynamic, set its value to an <strong>exact placeholder string</strong> like{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">{"\"{{appearance}}\""}</code> (must be valid JSON). In the next step we’ll detect these placeholders and pre-create Inputs with the correct{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">bodyPath</code>.
+                        </p>
                     </div>
                 </TabsContent>
             </Tabs>
@@ -315,44 +508,6 @@ export const APIConfigSection: React.FC<Props> = ({
                     </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-4 pt-4">
-                    {/* Authentication */}
-                    <div className="grid grid-cols-3 gap-3">
-                        <div className="space-y-2">
-                            <Label className="text-xs">Auth Type</Label>
-                            <Select
-                                value={config.authType}
-                                onValueChange={(value) => updateField('apiConfig.authType', value)}
-                            >
-                                <SelectTrigger className="h-9 text-xs">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">None</SelectItem>
-                                    <SelectItem value="bearer">Bearer Token</SelectItem>
-                                    <SelectItem value="api_key">API Key</SelectItem>
-                                    <SelectItem value="basic">Basic Auth</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {config.authType !== 'none' && (
-                            <div className="col-span-2 space-y-2">
-                                <Label className="text-xs">
-                                    {config.authType === 'bearer' && 'Bearer Token'}
-                                    {config.authType === 'api_key' && 'API Key'}
-                                    {config.authType === 'basic' && 'Base64 Credentials'}
-                                </Label>
-                                <Input
-                                    type="password"
-                                    value={config.authValue || ''}
-                                    onChange={(e) => updateField('apiConfig.authValue', e.target.value)}
-                                    placeholder="Enter your token/key"
-                                    className="h-9 text-xs"
-                                />
-                            </div>
-                        )}
-                    </div>
-
                     <div className="grid grid-cols-3 gap-3">
                         <div className="space-y-2">
                             <Label className="text-xs">Success Codes</Label>

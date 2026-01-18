@@ -32,6 +32,10 @@ const buildDefaultAction = (chatbotId: string): CustomAction => ({
         method: 'GET',
         baseUrl: '',
         endpoint: '',
+        staticHeaders: {},
+        staticQueryParams: {},
+        staticBody: undefined,
+        // legacy mirrors (keep populated for backwards compatibility)
         headers: {},
         queryParams: {},
         bodyTemplate: '',
@@ -89,7 +93,10 @@ export const CustomActionForm: React.FC<Props> = ({
     const [testValues, setTestValues] = useState<Record<string, string>>(() => {
         const initial: Record<string, string> = {};
         (existingAction?.parameters || []).forEach((p) => {
-            initial[p.name] = p.default || '';
+            initial[p.name] =
+                p.default !== undefined
+                    ? (typeof p.default === 'string' ? p.default : JSON.stringify(p.default))
+                    : '';
         });
         return initial;
     });
@@ -104,7 +111,10 @@ export const CustomActionForm: React.FC<Props> = ({
 
         const initial: Record<string, string> = {};
         (existingAction?.parameters || []).forEach((p) => {
-            initial[p.name] = p.default || '';
+            initial[p.name] =
+                p.default !== undefined
+                    ? (typeof p.default === 'string' ? p.default : JSON.stringify(p.default))
+                    : '';
         });
         setTestValues(initial);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,7 +154,10 @@ export const CustomActionForm: React.FC<Props> = ({
                 config: formData.apiConfig,
                 testParameters: formData.parameters.reduce((acc, param) => {
                     const raw = testValues[param.name];
-                    acc[param.name] = (raw ?? '').toString().length > 0 ? raw : (param.default || "test_value");
+                    acc[param.name] =
+                        (raw ?? '').toString().length > 0
+                            ? raw
+                            : (param.default !== undefined && param.default !== '' ? param.default : 'test_value');
                     return acc;
                 }, {} as Record<string, any>),
             });
@@ -192,7 +205,10 @@ export const CustomActionForm: React.FC<Props> = ({
                 if (Object.prototype.hasOwnProperty.call(prev, p.name)) {
                     next[p.name] = prev[p.name] ?? '';
                 } else {
-                    next[p.name] = p.default || '';
+                    next[p.name] =
+                        p.default !== undefined
+                            ? (typeof p.default === 'string' ? p.default : JSON.stringify(p.default))
+                            : '';
                 }
             }
             return next;

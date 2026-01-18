@@ -198,9 +198,14 @@ function normalizeCurlDataPayload(raw: string): string {
 }
 
 export function parseCurlCommand(curlString: string): Partial<CustomActionConfig> {
+    const headers: Record<string, string> = {};
+    const queryParams: Record<string, string> = {};
     const config: Partial<CustomActionConfig> = {
-        headers: {},
-        queryParams: {},
+        headers,
+        queryParams,
+        // New UI fields (keep in sync with legacy fields)
+        staticHeaders: headers,
+        staticQueryParams: queryParams,
     };
 
     const tokens = tokenizeCurlCommand(curlString);
@@ -356,6 +361,9 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                 if (config.queryParams) {
                     config.queryParams[key] = value;
                 }
+                if (config.staticQueryParams) {
+                    config.staticQueryParams[key] = value;
+                }
             });
         } catch (e) {
             // If URL parsing fails, just set what we found as endpoint
@@ -373,7 +381,18 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
 
     // Set body
     if (body) {
-        config.bodyTemplate = normalizeCurlDataPayload(body);
+        const normalized = normalizeCurlDataPayload(body);
+        // Keep legacy for backend compatibility
+        config.bodyTemplate = normalized;
+
+        // If JSON, also populate staticBody
+        try {
+            const parsed = JSON.parse(normalized);
+            config.staticBody = parsed;
+            config.bodyTemplate = JSON.stringify(parsed, null, 2);
+        } catch {
+            // Not JSON, leave as legacy bodyTemplate only
+        }
     }
 
     return config;
@@ -428,6 +447,7 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
     const cleanConfig = {
         ...config,
         headers: essentialHeaders,
+        staticHeaders: essentialHeaders,
     };
 
     return {

@@ -1,10 +1,170 @@
 import React from 'react';
-import { CustomAction, TestResult } from '@/types/customActions';
+import { CustomAction, TestResult, ToolParameter } from '@/types/customActions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Play } from 'lucide-react';
+
+function coerceValue(param: ToolParameter, raw: any): any {
+    if (raw === undefined || raw === null) return raw;
+    if (typeof raw !== 'string') return raw;
+
+    const s = raw.trim();
+    if (!s.length) return raw;
+
+    if (param.type === 'number') {
+        const n = Number(s);
+        return Number.isFinite(n) ? n : raw;
+    }
+    if (param.type === 'integer') {
+        const n = Number.parseInt(s, 10);
+        return Number.isFinite(n) ? n : raw;
+    }
+    if (param.type === 'boolean') {
+        if (s === 'true') return true;
+        if (s === 'false') return false;
+        return raw;
+    }
+    if (param.type === 'object' || param.type === 'array') {
+        try {
+            return JSON.parse(s);
+        } catch {
+            return raw;
+        }
+    }
+    return raw;
+}
+
+function setNestedValue(obj: any, path: string, value: any) {
+    const p = (path || '').trim();
+    if (!p.length) return;
+
+    const parts = p.split('.').map((x) => x.trim()).filter(Boolean);
+    if (!parts.length) return;
+
+    let cur = obj;
+    for (let i = 0; i < parts.length; i++) {
+        const key = parts[i];
+        const last = i === parts.length - 1;
+        if (last) {
+            cur[key] = value;
+            return;
+        }
+        if (!cur[key] || typeof cur[key] !== 'object' || Array.isArray(cur[key])) {
+            cur[key] = {};
+        }
+        cur = cur[key];
+    }
+}
+
+function buildRequestPreview(
+    action: CustomAction,
+    testValues?: Record<string, string>
+): { url: string; headers: Record<string, string>; body?: any } {
+    const cfg = action.apiConfig;
+    const baseUrl = cfg.baseUrl || '';
+    let endpoint = cfg.endpoint || '';
+
+    const paramsByName = new Map<string, ToolParameter>();
+    for (const p of action.parameters) paramsByName.set(p.name, p);
+
+    const resolvedArgs: Record<string, any> = {};
+    for (const p of action.parameters) {
+        const raw =
+            testValues && Object.prototype.hasOwnProperty.call(testValues, p.name)
+                ? testValues[p.name]
+                : undefined;
+        const withDefault =
+            raw !== undefined && raw !== ''
+                ? raw
+                : (p.default ?? 'test_value');
+        resolvedArgs[p.name] = coerceValue(p, withDefault);
+    }
+
+    // Path params
+    for (const p of action.parameters) {
+        if (p.location !== 'path') continue;
+        const v = resolvedArgs[p.name];
+        if (v === undefined) continue;
+        endpoint = endpoint
+            .replaceAll(`{${p.name}}`, encodeURIComponent(String(v)))
+            .replaceAll(`:${p.name}`, encodeURIComponent(String(v)));
+    }
+
+    // Query
+    const qp: Record<string, string> = {
+        ...(cfg.staticQueryParams ?? cfg.queryParams ?? {}),
+    };
+    for (const p of action.parameters) {
+        if (p.location !== 'query') continue;
+        const key = (p.key ?? p.name ?? '').trim();
+        if (!key) continue;
+        const v = resolvedArgs[p.name];
+        if (v === undefined) continue;
+        qp[key] = String(v);
+    }
+    const search = new URLSearchParams(
+        Object.entries(qp).filter(([k]) => (k || '').trim().length > 0)
+    ).toString();
+
+    const url = `${baseUrl}${endpoint}${search ? `?${search}` : ''}`;
+
+    // Headers
+    const headers: Record<string, string> = {
+        ...(cfg.staticHeaders ?? cfg.headers ?? {}),
+    };
+    for (const p of action.parameters) {
+        if (p.location !== 'header') continue;
+        const key = (p.key ?? p.name ?? '').trim();
+        if (!key) continue;
+        const v = resolvedArgs[p.name];
+        if (v === undefined) continue;
+        headers[key] = String(v);
+    }
+
+    const authType = cfg.authType || 'none';
+    if (authType === 'bearer' && cfg.authValue) {
+        headers['Authorization'] = `Bearer ${cfg.authValue}`;
+    }
+    if (authType === 'basic' && cfg.authValue) {
+        headers['Authorization'] = `Basic ${cfg.authValue}`;
+    }
+    if (authType === 'api_key' && cfg.authValue) {
+        headers['X-API-Key'] = cfg.authValue;
+    }
+
+    // Body (static + dynamic via bodyPath)
+    let body: any = undefined;
+    const hasAnyBodyBindings = action.parameters.some((p) => p.location === 'body');
+
+    if (cfg.staticBody !== undefined) {
+        try {
+            body = JSON.parse(JSON.stringify(cfg.staticBody));
+        } catch {
+            body = cfg.staticBody;
+        }
+    } else if (cfg.bodyTemplate) {
+        try {
+            body = JSON.parse(cfg.bodyTemplate);
+        } catch {
+            body = undefined;
+        }
+    } else if (hasAnyBodyBindings) {
+        body = {};
+    }
+
+    if (body && typeof body === 'object' && !Array.isArray(body)) {
+        for (const p of action.parameters) {
+            if (p.location !== 'body') continue;
+            const path = (p.bodyPath ?? '').trim();
+            if (!path) continue;
+            setNestedValue(body, path, resolvedArgs[p.name]);
+        }
+    }
+
+    return { url, headers, body };
+}
 
 interface Props {
     formData: CustomAction;
@@ -23,6 +183,8 @@ export const TestSection: React.FC<Props> = ({
     testValues,
     onChangeTestValue,
 }) => {
+    const preview = buildRequestPreview(formData, testValues);
+
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -74,11 +236,40 @@ export const TestSection: React.FC<Props> = ({
                                                 : ''
                                         }
                                         onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
-                                        placeholder={param.default || 'test_value'}
+                                        placeholder={param.default !== undefined ? String(param.default) : 'test_value'}
                                         className="h-8 text-xs flex-1"
                                     />
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Request Preview */}
+                {formData.apiConfig.baseUrl && (
+                    <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Request Preview (computed from bindings)</Label>
+                        <div className="space-y-2">
+                            <div className="rounded-md bg-muted p-2 font-mono text-xs break-all max-w-full">
+                                <span className="text-primary font-semibold">{formData.apiConfig.method}</span>{' '}
+                                {preview.url}
+                            </div>
+
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Headers</Label>
+                                <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-40 whitespace-pre-wrap break-all max-w-full">
+                                    {JSON.stringify(preview.headers, null, 2)}
+                                </div>
+                            </div>
+
+                            {['POST', 'PUT', 'PATCH'].includes(formData.apiConfig.method) && (
+                                <div className="space-y-1">
+                                    <Label className="text-xs text-muted-foreground">Body</Label>
+                                    <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap break-all max-w-full">
+                                        {preview.body !== undefined ? JSON.stringify(preview.body, null, 2) : '—'}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
