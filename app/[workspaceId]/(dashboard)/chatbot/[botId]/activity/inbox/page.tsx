@@ -157,7 +157,8 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
           typeof data.sentAtUnix === "number" ? new Date(data.sentAtUnix * 1000) : new Date();
 
         const m: ChatMessage = {
-          id: data.messageId || "",
+          // Backend currently sends dbMessageId (not messageId). Use any provided id to allow dedupe/upgrades.
+          id: (data as any).dbMessageId || (data as any).messageId || "",
           conversationId: data.conversationId,
           senderType: normalizeSenderType(data.senderType),
           text: data.text || "",
