@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 import { useAuth } from "@/store/auth";
@@ -43,6 +42,9 @@ import {
   Mail,
   Globe,
   Hash,
+  Check,
+  Info,
+  Copy,
   X,
   Send,
 } from "lucide-react";
@@ -81,12 +83,28 @@ function getChannelIcon(channel?: string) {
   }
 }
 
-function statusBadgeVariant(status: string): "secondary" | "default" | "destructive" | "outline" {
+function statusUi(status?: string) {
   const s = (status || "").toUpperCase();
-  if (s === "WAITING_FOR_AGENT" || s === "REQUESTED") return "secondary";
-  if (s === "ASSIGNED" || s === "HUMAN_ACTIVE") return "default";
-  if (s === "CANCELLED" || s === "TIMED_OUT") return "destructive";
-  return "outline";
+  if (s === "WAITING_FOR_AGENT" || s === "REQUESTED") {
+    return { label: "Waiting", dotClass: "bg-blue-500" };
+  }
+  if (s === "ASSIGNED" || s === "HUMAN_ACTIVE") {
+    return { label: "Active", dotClass: "bg-green-500" };
+  }
+  if (s === "CANCELLED" || s === "TIMED_OUT") {
+    return { label: "Closed", dotClass: "bg-muted-foreground/50" };
+  }
+  if (!s) return { label: "—", dotClass: "bg-muted-foreground/30" };
+  return { label: "Other", dotClass: "bg-muted-foreground/40" };
+}
+
+async function copyText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success("Copied");
+  } catch {
+    toast.error("Copy failed");
+  }
 }
 
 function conversationRoomId(conversationId: string) {
@@ -217,6 +235,7 @@ export default function InboxPage() {
 
   const [activeTab, setActiveTab] = useState<"all" | "waiting" | "mine">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const { data: conversations, isLoading: isLoadingConversations } = useConversationsQuery(botId);
   const { data: escalations, isLoading: isLoadingEscalations } = useEscalationsQuery(botId);
@@ -304,6 +323,7 @@ export default function InboxPage() {
   const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
   const activeConversation = activeConversationId ? conversationsById[activeConversationId] : undefined;
   const activeState = activeConversationId ? stateByConversationId[activeConversationId] : undefined;
+  const activeHeaderStatus = statusUi(String(activeEscalation?.status ?? activeState?.status ?? ""));
 
   const canSendInActiveConversation = useMemo(() => {
     if (!activeConversationId) return false;
@@ -408,7 +428,7 @@ export default function InboxPage() {
       <OpenConversationSubscribers />
 
       {/* Left: Inbox */}
-      <div className="w-96 shrink-0 border-r flex flex-col bg-background/50">
+      <div className="w-96 shrink-0 border-r flex flex-col bg-background/50 min-h-0">
         <div className="px-4 py-3 border-b space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="type-subtitle font-semibold text-foreground">Inbox</h2>
@@ -459,7 +479,7 @@ export default function InboxPage() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
           <div className="p-3 space-y-1">
             {isLoadingInbox ? (
               Array.from({ length: 10 }).map((_, i) => (
@@ -474,6 +494,7 @@ export default function InboxPage() {
                 const isActive = activeConversationId === e.conversationId;
                 const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
                 const isAssigned = Boolean(e.agentUserId);
+                const ui = statusUi(String(e.status));
                 const waitingForAgent =
                   (e.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
                   (e.status || "").toUpperCase() === "REQUESTED";
@@ -485,74 +506,91 @@ export default function InboxPage() {
                     key={e.escalationId}
                     onClick={() => onSelectRow(e.conversationId)}
                     className={cn(
-                      "w-full text-left px-4 py-3 rounded-lg border border-transparent transition-all group",
+                      "w-full text-left px-3 py-2 rounded-lg border border-transparent transition-all group",
                       "hover:bg-muted/50 hover:border-border/50",
                       isActive ? "bg-muted border-border shadow-sm" : "bg-transparent",
+                      isMine && !isActive ? "border-l-2 border-l-primary/70" : "",
                     )}
                   >
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        {getChannelIcon(conversation?.channel)}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2 min-w-0">
                         <span
-                          className={cn(
-                            "text-xs font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide",
-                            isActive
-                              ? "bg-background text-foreground"
-                              : "bg-muted text-muted-foreground group-hover:bg-background",
-                          )}
+                          className="mt-0.5 shrink-0"
+                          title={String(conversation?.channel || "WIDGET").toUpperCase()}
                         >
-                          {conversation?.channel || "WIDGET"}
+                          {getChannelIcon(conversation?.channel)}
                         </span>
+
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span
+                              className={cn(
+                                "mt-[1px] h-2 w-2 rounded-full shrink-0",
+                                ui.dotClass,
+                              )}
+                              aria-hidden="true"
+                            />
+                            <span className="text-[11px] text-muted-foreground shrink-0">{ui.label}</span>
+                            <div className="text-sm font-medium truncate">
+                              <span className="text-muted-foreground">#</span>
+                              {shortId(e.conversationId)}
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                            {e.reason ? e.reason : "—"}
+                          </div>
+                        </div>
                       </div>
+
                       <div className="flex items-center gap-2 shrink-0">
                         {unread > 0 && (
                           <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
                             {unread}
                           </span>
                         )}
-                        <span className="text-xs text-muted-foreground tabular-nums">
+                        <span className="text-[11px] text-muted-foreground tabular-nums">
                           {formatRelative(e.requestedAt)}
                         </span>
-                      </div>
-                    </div>
 
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium truncate">
-                          <span className="text-muted-foreground">Conv:</span> {shortId(e.conversationId)}
-                        </div>
-                        <div className="text-xs text-muted-foreground line-clamp-1">
-                          {e.reason ? e.reason : "—"}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2 shrink-0">
-                        <Badge variant={statusBadgeVariant(String(e.status))} className="text-[10px]">
-                          {e.status}
-                        </Badge>
-                        <Button
-                          variant={isMine ? "default" : "outline"}
-                          size="sm"
-                          className="h-7 text-xs"
-                          disabled={!canClaim}
-                          onClick={(evt) => {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                            onClaim(e);
-                          }}
-                        >
-                          {isMine ? "Assigned" : canClaim ? "Claim" : isAssigned ? "Claimed" : "Claim"}
-                        </Button>
+                        {canClaim ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs px-2"
+                            onClick={(evt) => {
+                              evt.preventDefault();
+                              evt.stopPropagation();
+                              onClaim(e);
+                            }}
+                          >
+                            Claim
+                          </Button>
+                        ) : isMine ? (
+                          <span
+                            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
+                            title="Assigned to you"
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </span>
+                        ) : isAssigned ? (
+                          <span
+                            className="text-[11px] text-muted-foreground"
+                            title={`Claimed by ${shortId(e.agentUserId || "")}`}
+                          >
+                            Taken
+                          </span>
+                        ) : null}
                       </div>
                     </div>
 
                     {!isMine && isAssigned && (
-                      <div className="mt-2 text-xs text-muted-foreground">
+                      <div className="mt-1 text-[11px] text-muted-foreground">
                         Claimed by <code className="text-xs">{shortId(e.agentUserId || "")}</code>
                       </div>
                     )}
 
                     {lastClaimErrorByConversationId[e.conversationId] && (
-                      <div className="mt-2 text-xs text-destructive">
+                      <div className="mt-1 text-[11px] text-destructive">
                         Claim failed: {lastClaimErrorByConversationId[e.conversationId]}
                       </div>
                     )}
@@ -568,44 +606,53 @@ export default function InboxPage() {
               </div>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </div>
 
       {/* Right: Chat */}
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="border-b bg-background px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="min-w-0">
-              <h1 className="type-section-title tracking-tight">Live chat</h1>
-              <p className="type-body-muted mt-0.5 truncate">
-                {activeConversationId
-                  ? `Conversation • ${activeConversationId}`
-                  : "Select an escalation from the inbox"}
-              </p>
-              {activeEscalation && (
-                <div className="mt-2 flex items-center gap-2">
-                  <Badge variant={statusBadgeVariant(String(activeEscalation.status))}>
-                    {activeEscalation.status}
-                  </Badge>
-                  {activeState?.status && (
-                    <Badge variant="outline" className="text-xs">
-                      state: {activeState.status}
-                    </Badge>
-                  )}
-                  {activeEscalation.reason && (
+        <div className="border-b bg-background px-6 py-2.5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex items-center gap-2">
+              {activeConversationId ? (
+                <>
+                  <span
+                    className={cn(
+                      "h-2 w-2 rounded-full shrink-0",
+                      activeHeaderStatus.dotClass,
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="text-xs text-muted-foreground shrink-0">{activeHeaderStatus.label}</span>
+                  <span className="shrink-0" title={String(activeConversation?.channel || "WIDGET").toUpperCase()}>
+                    {getChannelIcon(activeConversation?.channel)}
+                  </span>
+                  {activeEscalation?.reason ? (
                     <span className="text-xs text-muted-foreground truncate">
                       {activeEscalation.reason}
                     </span>
+                  ) : (
+                    <span className="text-xs text-muted-foreground truncate">—</span>
                   )}
-                </div>
+                </>
+              ) : (
+                <span className="text-xs text-muted-foreground">Select an escalation from the inbox</span>
               )}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               {activeConversationId && (
                 <>
-                  <Button variant="outline" size="sm" onClick={onCloseChat}>
-                    Close chat
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={infoOpen ? "Hide info" : "Show info"}
+                    onClick={() => setInfoOpen((v) => !v)}
+                  >
+                    <Info className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-7 text-xs" onClick={onCloseChat}>
+                    Close
                   </Button>
                   <Button
                     variant="ghost"
@@ -622,7 +669,7 @@ export default function InboxPage() {
 
           {/* Tabs for open chats */}
           {openConversationIds.length > 0 && (
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
               {openConversationIds.map((id) => {
                 const unread = unreadCountByConversationId[id] ?? 0;
                 const isActive = id === activeConversationId;
@@ -661,62 +708,200 @@ export default function InboxPage() {
           )}
         </div>
 
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full">
-            <div className="p-6 space-y-4">
-              {!activeConversationId ? (
-                <p className="type-body-muted">Choose an escalation from the left.</p>
-              ) : isLoadingHistory ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
-                      <Skeleton className="h-6 w-80 rounded-2xl" />
-                    </div>
-                  ))}
-                </div>
-              ) : activeMessages.length === 0 ? (
-                <p className="type-body-muted">No messages yet.</p>
-              ) : (
-                activeMessages.map((m) => {
-                  const isUser = m.senderType === "USER";
-                  const isAgent = m.senderType === "AGENT";
-                  const isAssistant = m.senderType === "ASSISTANT";
-                  const isSystem = m.senderType === "SYSTEM";
+        <div className="flex-1 overflow-hidden flex min-w-0">
+          <div className="flex-1 overflow-hidden min-w-0">
+            <ScrollArea className="h-full">
+              <div className="p-6 space-y-4">
+                {!activeConversationId ? (
+                  <p className="type-body-muted">Choose an escalation from the left.</p>
+                ) : isLoadingHistory ? (
+                  <div className="space-y-3">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
+                        <Skeleton className="h-6 w-80 rounded-2xl" />
+                      </div>
+                    ))}
+                  </div>
+                ) : activeMessages.length === 0 ? (
+                  <p className="type-body-muted">No messages yet.</p>
+                ) : (
+                  activeMessages.map((m, idx) => {
+                    const isUser = m.senderType === "USER";
+                    const isAgent = m.senderType === "AGENT";
+                    const isAssistant = m.senderType === "ASSISTANT";
+                    const isSystem = m.senderType === "SYSTEM";
 
-                  return (
-                    <div
-                      key={m.id}
-                      className={cn(
-                        "flex",
-                        isUser ? "justify-start" : isAgent ? "justify-end" : "justify-center",
-                      )}
-                    >
+                    return (
                       <div
+                        key={m.id || `${m.conversationId}-${m.sentAt.getTime()}-${idx}`}
                         className={cn(
-                          "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm",
-                          isUser && "bg-card border rounded-tl-sm",
-                          isAgent && "bg-primary text-primary-foreground rounded-tr-sm",
-                          isAssistant && "bg-muted text-foreground border",
-                          isSystem && "bg-background text-muted-foreground border border-dashed",
+                          "flex",
+                          isUser ? "justify-start" : "justify-end",
                         )}
                       >
-                        <div className="whitespace-pre-wrap break-words">{m.text}</div>
                         <div
                           className={cn(
-                            "mt-1 text-[10px] opacity-70 tabular-nums",
-                            isAgent ? "text-primary-foreground/80 text-right" : "text-muted-foreground",
+                            "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm",
+                            isUser && "bg-card border rounded-tl-sm",
+                            isAgent && "bg-primary text-primary-foreground rounded-tr-sm",
+                            isAssistant && "bg-muted text-foreground border",
+                            isSystem && "bg-background text-muted-foreground border border-dashed text-xs",
                           )}
                         >
-                          {m.senderType} •{" "}
-                          {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          <div className="whitespace-pre-wrap break-words">{m.text}</div>
+                          <div
+                            className={cn(
+                              "mt-1 text-[10px] opacity-70 tabular-nums",
+                              isAgent ? "text-primary-foreground/80 text-right" : "text-muted-foreground",
+                            )}
+                          >
+                            {m.senderType} •{" "}
+                            {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
-              )}
+                    );
+                  })
+                )}
+              </div>
+            </ScrollArea>
+          </div>
+
+          <div
+            className={cn(
+              "shrink-0 overflow-hidden transition-all duration-200",
+              infoOpen && activeConversationId ? "w-80 border-l" : "w-0",
+            )}
+            aria-hidden={!infoOpen}
+          >
+            <div className="h-full bg-background">
+              <div className="px-4 py-3 border-b flex items-center justify-between">
+                <div className="text-sm font-medium">Info</div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close info"
+                  onClick={() => setInfoOpen(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <ScrollArea className="h-full">
+                <div className="p-4 space-y-4 text-sm">
+                  {!activeConversationId ? (
+                    <div className="text-xs text-muted-foreground">No conversation selected.</div>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Conversation</div>
+                        <div className="flex items-center justify-between gap-2">
+                          <code className="text-xs break-all">{activeConversationId}</code>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Copy conversation id"
+                            onClick={() => copyText(activeConversationId)}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {activeEscalationId && (
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground">Escalation</div>
+                          <div className="flex items-center justify-between gap-2">
+                            <code className="text-xs break-all">{activeEscalationId}</code>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Copy escalation id"
+                              onClick={() => copyText(activeEscalationId)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Channel</div>
+                          <div className="mt-1 flex items-center gap-2">
+                            {getChannelIcon(activeConversation?.channel)}
+                            <span className="text-xs">
+                              {String(activeConversation?.channel || "WIDGET").toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Status</div>
+                          <div className="mt-1 text-xs">
+                            {String(activeEscalation?.status ?? activeState?.status ?? "—")}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Assigned agent</div>
+                          <div className="mt-1 text-xs">
+                            {activeEscalation?.agentUserId
+                              ? shortId(activeEscalation.agentUserId)
+                              : activeState?.assignedAgentUserId
+                                ? shortId(activeState.assignedAgentUserId)
+                                : "—"}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">WS</div>
+                          <div className="mt-1 text-xs">{connectionState}</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Reason</div>
+                        <div className="text-xs whitespace-pre-wrap break-words">
+                          {activeEscalation?.reason || activeState?.reason || "—"}
+                        </div>
+                      </div>
+
+                      {activeEscalation && (
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground">Timestamps</div>
+                          <div className="text-xs space-y-1">
+                            <div>
+                              Requested:{" "}
+                              <span className="text-muted-foreground">
+                                {activeEscalation.requestedAt ? new Date(activeEscalation.requestedAt).toLocaleString() : "—"}
+                              </span>
+                            </div>
+                            <div>
+                              Accepted:{" "}
+                              <span className="text-muted-foreground">
+                                {(activeEscalation as any).acceptedAt
+                                  ? new Date((activeEscalation as any).acceptedAt).toLocaleString()
+                                  : "—"}
+                              </span>
+                            </div>
+                            <div>
+                              Resolved:{" "}
+                              <span className="text-muted-foreground">
+                                {(activeEscalation as any).resolvedAt
+                                  ? new Date((activeEscalation as any).resolvedAt).toLocaleString()
+                                  : "—"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </ScrollArea>
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         <div className="border-t bg-background px-6 py-4">

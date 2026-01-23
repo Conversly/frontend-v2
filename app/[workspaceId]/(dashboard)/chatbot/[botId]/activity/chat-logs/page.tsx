@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 // MessageList component missing
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -99,9 +98,9 @@ export default function ChatLogsPage() {
   }, [messages]);
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex h-full bg-background min-h-0">
       {/* Sidebar */}
-      <div className="w-80 shrink-0 border-r flex flex-col bg-background/50">
+      <div className="w-80 shrink-0 border-r flex flex-col bg-background/50 min-h-0">
         <div className="px-4 py-3 border-b space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="type-subtitle font-semibold text-foreground">Chat logs</h2>
@@ -132,7 +131,7 @@ export default function ChatLogsPage() {
           </Tabs>
         </div>
 
-        <ScrollArea className="flex-1">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
           <div className="p-3 space-y-1">
             {isLoadingChatlogs ? (
               Array.from({ length: 8 }).map((_, i) => (
@@ -206,7 +205,7 @@ export default function ChatLogsPage() {
               </div>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </div>
 
       {/* Chat panel */}

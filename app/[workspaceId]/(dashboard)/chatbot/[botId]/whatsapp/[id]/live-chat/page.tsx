@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -123,7 +122,7 @@ export default function LiveChatPage() {
 
             {/* 2. Contact List Panel (Left) */}
             <div className={cn(
-                "w-full md:w-80 border-r flex flex-col bg-card/50 flex-shrink-0 transition-all duration-300",
+                "w-full md:w-80 border-r flex flex-col bg-card/50 flex-shrink-0 transition-all duration-300 min-h-0",
                 selectedContact ? "hidden md:flex" : "flex"
             )}>
                 <div className="p-4 border-b space-y-4">
@@ -144,7 +143,7 @@ export default function LiveChatPage() {
                     </div>
                 </div>
 
-                <ScrollArea className="flex-1">
+                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
                     {isLoadingContacts ? (
                         <div className="flex justify-center p-4">
                             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -180,7 +179,7 @@ export default function LiveChatPage() {
                             ))}
                         </div>
                     )}
-                </ScrollArea>
+                </div>
             </div>
 
             {/* 3. Chat Area (Middle) */}
