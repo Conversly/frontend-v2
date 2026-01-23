@@ -237,8 +237,19 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
   },
 
   handleClaimResponse: (conversationId, res) => {
+    const code = String(res.code ?? "").toLowerCase();
+    const message = String(res.message ?? "").toLowerCase();
+    const looksLikeClaimResponse =
+      code.includes("claim") ||
+      message.includes("claim") ||
+      typeof res.escalationId === "string" ||
+      typeof res.agentUserId === "string" ||
+      typeof res.existingAgentUserId === "string" ||
+      typeof (res as any).assignedAgentUserId === "string";
+
     // Expected error example: { status:"error", code:"already_claimed", existingAgentUserId:"agent_9" }
     if (res.status === "error") {
+      if (!looksLikeClaimResponse) return;
       set((state) => ({
         lastClaimErrorByConversationId: {
           ...state.lastClaimErrorByConversationId,
@@ -248,9 +259,45 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
       return;
     }
 
+    if (!looksLikeClaimResponse) return;
+
     set((state) => ({
-      lastClaimErrorByConversationId: { ...state.lastClaimErrorByConversationId, [conversationId]: null },
+      lastClaimErrorByConversationId: {
+        ...state.lastClaimErrorByConversationId,
+        [conversationId]: null,
+      },
     }));
+
+    // On successful claim, immediately reflect assignment locally so the input enables
+    // even if a broadcast delta arrives later (or with a different field name).
+    const escalationId =
+      (typeof res.escalationId === "string" && res.escalationId) ||
+      get().escalationIdByConversationId[conversationId] ||
+      "";
+    const agentUserId =
+      (typeof res.agentUserId === "string" && res.agentUserId) ||
+      (typeof (res as any).assignedAgentUserId === "string" && ((res as any).assignedAgentUserId as string)) ||
+      (typeof res.existingAgentUserId === "string" && res.existingAgentUserId) ||
+      "";
+
+    if (escalationId) {
+      get().upsertEscalationDelta({
+        escalationId,
+        conversationId,
+        status: "ASSIGNED" as any,
+        agentUserId: agentUserId || null,
+        assignedAt: new Date().toISOString(),
+      } as any);
+    }
+
+    if (escalationId && agentUserId) {
+      get().upsertStateUpdate({
+        conversationId,
+        escalationId,
+        status: "ASSIGNED",
+        assignedAgentUserId: agentUserId,
+      });
+    }
   },
 
   upsertEscalationDelta: (delta) => {

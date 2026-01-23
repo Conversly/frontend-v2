@@ -91,7 +91,7 @@ function statusUi(status?: string) {
   if (s === "ASSIGNED" || s === "HUMAN_ACTIVE") {
     return { label: "Active", dotClass: "bg-green-500" };
   }
-  if (s === "CANCELLED" || s === "TIMED_OUT") {
+  if (s === "CANCELLED" || s === "TIMED_OUT" || s === "RESOLVED" || s === "CLOSED") {
     return { label: "Closed", dotClass: "bg-muted-foreground/50" };
   }
   if (!s) return { label: "—", dotClass: "bg-muted-foreground/30" };
@@ -148,13 +148,15 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
       if (msg.eventType === WebSocketEventType.STATE_UPDATE) {
         const data = msg.data as WsStateUpdatePayload;
         if (!data?.conversationId) return;
+        const assignedAgentUserId =
+          data.assignedAgentUserId ?? ((data as any).agentUserId as string | null | undefined) ?? null;
         upsertStateUpdate({
           conversationId: data.conversationId,
           escalationId: data.escalationId,
           status: data.status,
           requestedAt: data.requestedAt,
           reason: data.reason ?? null,
-          assignedAgentUserId: data.assignedAgentUserId ?? null,
+          assignedAgentUserId,
         });
 
         if (data.escalationId) {
@@ -162,7 +164,7 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
             escalationId: data.escalationId,
             conversationId: data.conversationId,
             status: data.status as any,
-            agentUserId: data.assignedAgentUserId ?? null,
+            agentUserId: assignedAgentUserId,
           } as any);
         }
         return;
@@ -220,6 +222,8 @@ export default function InboxPage() {
   const closeConversationTab = useAgentInboxStore((s) => s.closeConversationTab);
   const setActiveConversation = useAgentInboxStore((s) => s.setActiveConversation);
   const clearUnread = useAgentInboxStore((s) => s.clearUnread);
+  const upsertEscalationDelta = useAgentInboxStore((s) => s.upsertEscalationDelta);
+  const upsertStateUpdate = useAgentInboxStore((s) => s.upsertStateUpdate);
 
   const openConversationIds = useAgentInboxStore((s) => s.openConversationIds);
   const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
@@ -294,6 +298,15 @@ export default function InboxPage() {
       const status = (e.status || "").toUpperCase();
       const isWaiting = status === "WAITING_FOR_AGENT" || status === "REQUESTED";
       const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
+      const conversationStatus = conversationsById[e.conversationId]?.status;
+      const isClosed =
+        conversationStatus === "CLOSED" ||
+        status === "CANCELLED" ||
+        status === "TIMED_OUT" ||
+        status === "RESOLVED";
+
+      // Closed chats shouldn't stay in the active inbox list.
+      if (isClosed) return false;
 
       if (activeTab === "waiting" && !isWaiting) return false;
       if (activeTab === "mine" && !isMine) return false;
@@ -317,7 +330,7 @@ export default function InboxPage() {
     });
 
     return filtered;
-  }, [escalationsById, activeTab, searchQuery, agentUserId]);
+  }, [escalationsById, conversationsById, activeTab, searchQuery, agentUserId]);
 
   const activeEscalationId = activeConversationId ? escalationIdByConversationId[activeConversationId] : undefined;
   const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
@@ -413,13 +426,37 @@ export default function InboxPage() {
     if (!activeConversationId) return;
     try {
       await closeConversation(activeConversationId);
+
+      // Immediately reflect closure locally so the inbox + header update deterministically.
+      const escalationId = escalationIdByConversationId[activeConversationId] || "";
+      if (escalationId) {
+        upsertEscalationDelta({
+          escalationId,
+          conversationId: activeConversationId,
+          status: "RESOLVED" as any,
+          resolvedAt: new Date().toISOString(),
+        } as any);
+        upsertStateUpdate({
+          conversationId: activeConversationId,
+          escalationId,
+          status: "RESOLVED",
+        });
+      }
+
       toast.success("Conversation closed");
       queryClient.invalidateQueries();
       closeConversationTab(activeConversationId);
     } catch (err: any) {
       toast.error(err?.message || "Failed to close conversation");
     }
-  }, [activeConversationId, closeConversationTab, queryClient]);
+  }, [
+    activeConversationId,
+    closeConversationTab,
+    escalationIdByConversationId,
+    queryClient,
+    upsertEscalationDelta,
+    upsertStateUpdate,
+  ]);
 
   const isLoadingInbox = isLoadingConversations || isLoadingEscalations;
 
