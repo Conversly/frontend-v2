@@ -10,6 +10,7 @@ import {
     Hash,
     BrainCircuit,
     MessageCircle,
+    Inbox,
     Upload,
     HelpCircle,
     FileText,
@@ -161,6 +162,11 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 title: "Chat Logs",
                 url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
                 icon: MessageCircle,
+            },
+            {
+                title: "Inbox",
+                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
+                icon: Inbox,
             },
             {
                 title: "Leads",

@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
-import type { MessageItem } from "@/types/activity";
+import type { ConversationMessageItem } from "@/types/activity";
 import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
 import { downloadJsonFile } from "@/lib/utils";
 import { Download, Filter, Search, MessageCircle, MessageSquare, Phone, Mail, Globe, Hash } from "lucide-react";
@@ -30,7 +30,7 @@ export default function ChatLogsPage() {
   // Select first conversation by default once chatlogs load
   useEffect(() => {
     if (!selectedConvId && chatlogs && chatlogs.length > 0) {
-      setSelectedConvId(chatlogs[0].uniqueConvId);
+      setSelectedConvId(chatlogs[0].conversationId);
     }
   }, [chatlogs, selectedConvId]);
 
@@ -67,9 +67,7 @@ export default function ChatLogsPage() {
       // 2. Filter by Search Query
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        const idMatch = log.uniqueConvId.toLowerCase().includes(query);
-        const contentMatch = log.firstUserMessage?.toLowerCase().includes(query) ?? false;
-        return idMatch || contentMatch;
+        return log.conversationId.toLowerCase().includes(query);
       }
 
       return true;
@@ -91,7 +89,7 @@ export default function ChatLogsPage() {
   const renderedMessages = useMemo(() => {
     if (!messages) return [];
     // Map API message shape to widget Message shape
-    return messages.map((m: MessageItem) => ({
+    return messages.map((m: ConversationMessageItem) => ({
       id: m.id,
       role: m.type === "user" ? "user" : "assistant",
       content: m.content,
@@ -145,11 +143,11 @@ export default function ChatLogsPage() {
               ))
             ) : filteredChatlogs.length > 0 ? (
               filteredChatlogs.map((c) => {
-                const isActive = selectedConvId === c.uniqueConvId;
+                const isActive = selectedConvId === c.conversationId;
                 return (
                   <button
-                    key={c.uniqueConvId}
-                    onClick={() => setSelectedConvId(c.uniqueConvId)}
+                    key={c.conversationId}
+                    onClick={() => setSelectedConvId(c.conversationId)}
                     className={cn(
                       "w-full text-left px-4 py-3 rounded-lg border border-transparent transition-all group",
                       "hover:bg-muted/50 hover:border-border/50",
@@ -169,17 +167,17 @@ export default function ChatLogsPage() {
                         </span>
                       </div>
                       <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                        {formatShortDateTime(c.lastActivity)}
+                        {formatShortDateTime(c.lastMessageAt ?? c.updatedAt ?? c.createdAt)}
                       </span>
                     </div>
 
                     <div className="line-clamp-2 text-sm font-medium leading-relaxed text-foreground/90">
-                      {c.firstUserMessage || <span className="text-muted-foreground italic">No message content</span>}
+                      <span className="text-muted-foreground">Status:</span> {c.status}
                     </div>
 
                     <div className="mt-2 flex items-center justify-between">
                       <code className="text-xs text-muted-foreground/70 truncate max-w-[120px]">
-                        {c.uniqueConvId}
+                        {c.conversationId}
                       </code>
                     </div>
                   </button>

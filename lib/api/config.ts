@@ -92,8 +92,13 @@ export const API = {
     },
     ACTIVITY: {
       BASE_URL: () => "/activity",
-      GET_CHATLOGS: allMode(() => "/chatlogs"),
-      GET_MESSAGES: allMode(() => "/messages"),
+      // New conversationId-based Activity API (agent dashboard)
+      LIST_CONVERSATIONS: allMode(() => "/conversations"),
+      GET_CONVERSATION_MESSAGES: allMode(() => "/conversations/:conversationId/messages"),
+      CLOSE_CONVERSATION: allMode(() => "/conversations/:conversationId/close"),
+
+      LIST_ESCALATIONS: allMode(() => "/escalations"),
+      GET_ESCALATION: allMode(() => "/escalations/:escalationId"),
     },
     DEPLOY: {
       BASE_URL: () => "/deploy",
@@ -213,6 +218,34 @@ export const API = {
     },
   },
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WebSocket Configuration
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Backend expects: ws(s)://<SOCKET_SERVER_HOST>/terminal?client_type=<widget|agent>
+//
+// We treat NEXT_PUBLIC_WS_URL as the base host (no trailing slash), e.g.
+// - wss://terminal.apps.verlyai.xyz
+// - ws://localhost:3002
+//
+// If you instead set NEXT_PUBLIC_WS_URL to include "/terminal", this also works.
+export const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || "";
+
+export function buildWsUrl(clientType: "widget" | "agent"): string {
+  const base = WS_BASE_URL.replace(/\/$/, "");
+  if (!base) return "";
+
+  const hasTerminal = /\/terminal$/.test(base);
+  const terminalUrl = hasTerminal ? base : `${base}/terminal`;
+
+  // NOTE: server currently expects only client_type in querystring.
+  return `${terminalUrl}?client_type=${encodeURIComponent(clientType)}`;
+}
+
+// Back-compat export used by the existing socket store.
+// Default is `agent` since this is the dashboard app.
+export const WS_URL = buildWsUrl("agent");
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Type Exports
