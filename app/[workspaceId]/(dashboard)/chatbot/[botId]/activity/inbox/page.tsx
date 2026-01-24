@@ -150,6 +150,16 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
         if (!data?.conversationId) return;
         const assignedAgentUserId =
           data.assignedAgentUserId ?? ((data as any).agentUserId as string | null | undefined) ?? null;
+        const assignedAgentDisplayName =
+          data.assignedAgentDisplayName ??
+          ((data as any).assignedAgentDisplayName as string | null | undefined) ??
+          ((data as any).agentDisplayName as string | null | undefined) ??
+          null;
+        const assignedAgentAvatarUrl =
+          data.assignedAgentAvatarUrl ??
+          ((data as any).assignedAgentAvatarUrl as string | null | undefined) ??
+          ((data as any).agentAvatarUrl as string | null | undefined) ??
+          null;
         upsertStateUpdate({
           conversationId: data.conversationId,
           escalationId: data.escalationId,
@@ -157,6 +167,8 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
           requestedAt: data.requestedAt,
           reason: data.reason ?? null,
           assignedAgentUserId,
+          assignedAgentDisplayName,
+          assignedAgentAvatarUrl,
         });
 
         if (data.escalationId) {
@@ -165,6 +177,8 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
             conversationId: data.conversationId,
             status: data.status as any,
             agentUserId: assignedAgentUserId,
+            agentDisplayName: assignedAgentDisplayName,
+            agentAvatarUrl: assignedAgentAvatarUrl,
           } as any);
         }
         return;
@@ -284,6 +298,8 @@ export default function InboxPage() {
             firstNotifiedAt: data.firstNotifiedAt,
             lastNotifiedAt: data.lastNotifiedAt,
             agentUserId: data.assignedAgentUserId ?? data.agentUserId ?? null,
+            agentDisplayName: data.assignedAgentDisplayName ?? data.agentDisplayName ?? null,
+            agentAvatarUrl: data.assignedAgentAvatarUrl ?? data.agentAvatarUrl ?? null,
             assignedAt: data.assignedAt,
           } as any);
         }
@@ -531,6 +547,7 @@ export default function InboxPage() {
                 const isActive = activeConversationId === e.conversationId;
                 const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
                 const isAssigned = Boolean(e.agentUserId);
+                const claimedByLabel = (e.agentDisplayName || e.agentUserId || "").trim();
                 const ui = statusUi(String(e.status));
                 const waitingForAgent =
                   (e.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
@@ -612,9 +629,9 @@ export default function InboxPage() {
                         ) : isAssigned ? (
                           <span
                             className="text-[11px] text-muted-foreground"
-                            title={`Claimed by ${shortId(e.agentUserId || "")}`}
+                            title={claimedByLabel ? `Claimed by ${claimedByLabel}` : "Claimed"}
                           >
-                            Taken
+                            {e.agentDisplayName ? "Taken" : "Taken"}
                           </span>
                         ) : null}
                       </div>
@@ -622,7 +639,10 @@ export default function InboxPage() {
 
                     {!isMine && isAssigned && (
                       <div className="mt-1 text-[11px] text-muted-foreground">
-                        Claimed by <code className="text-xs">{shortId(e.agentUserId || "")}</code>
+                        Claimed by{" "}
+                        <code className="text-xs">
+                          {e.agentDisplayName ? e.agentDisplayName : shortId(e.agentUserId || "")}
+                        </code>
                       </div>
                     )}
 

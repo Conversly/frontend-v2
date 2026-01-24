@@ -91,6 +91,8 @@ export interface EscalationItem {
   firstNotifiedAt: string | null;
   lastNotifiedAt: string | null;
   agentUserId: string | null;
+  agentDisplayName?: string | null;
+  agentAvatarUrl?: string | null;
   assignedAt: string | null;
 }
 

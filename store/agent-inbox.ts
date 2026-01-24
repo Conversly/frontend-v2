@@ -20,6 +20,8 @@ export type ConversationStateSnapshot = {
   requestedAt?: string;
   reason?: string | null;
   assignedAgentUserId?: string | null;
+  assignedAgentDisplayName?: string | null;
+  assignedAgentAvatarUrl?: string | null;
 };
 
 export type AgentInboxNotificationEvent =
@@ -30,7 +32,11 @@ export type AgentInboxNotificationEvent =
       reason?: string | null;
       requestedAt?: string;
       assignedAgentUserId?: string | null;
+      assignedAgentDisplayName?: string | null;
+      assignedAgentAvatarUrl?: string | null;
       agentUserId?: string | null;
+      agentDisplayName?: string | null;
+      agentAvatarUrl?: string | null;
     }>
   | WebSocketCommandResponse;
 
@@ -279,6 +285,18 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
       (typeof (res as any).assignedAgentUserId === "string" && ((res as any).assignedAgentUserId as string)) ||
       (typeof res.existingAgentUserId === "string" && res.existingAgentUserId) ||
       "";
+    const agentDisplayName =
+      typeof res.agentDisplayName === "string"
+        ? res.agentDisplayName
+        : typeof (res as any).assignedAgentDisplayName === "string"
+          ? ((res as any).assignedAgentDisplayName as string)
+          : null;
+    const agentAvatarUrl =
+      typeof res.agentAvatarUrl === "string"
+        ? res.agentAvatarUrl
+        : typeof (res as any).assignedAgentAvatarUrl === "string"
+          ? ((res as any).assignedAgentAvatarUrl as string)
+          : null;
 
     if (escalationId) {
       get().upsertEscalationDelta({
@@ -286,6 +304,8 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
         conversationId,
         status: "ASSIGNED" as any,
         agentUserId: agentUserId || null,
+        agentDisplayName,
+        agentAvatarUrl,
         assignedAt: new Date().toISOString(),
       } as any);
     }
@@ -296,6 +316,8 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
         escalationId,
         status: "ASSIGNED",
         assignedAgentUserId: agentUserId,
+        assignedAgentDisplayName: agentDisplayName,
+        assignedAgentAvatarUrl: agentAvatarUrl,
       });
     }
   },

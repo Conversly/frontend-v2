@@ -47,6 +47,8 @@ export type WsStateUpdatePayload = {
   requestedAt?: string;
   reason?: string | null;
   assignedAgentUserId?: string | null;
+  assignedAgentDisplayName?: string | null;
+  assignedAgentAvatarUrl?: string | null;
 };
 
 export type WsChatMessagePayload = {
@@ -72,6 +74,8 @@ export type WebSocketCommandResponse = {
   message?: string;
   escalationId?: string;
   agentUserId?: string;
+  agentDisplayName?: string | null;
+  agentAvatarUrl?: string | null;
   existingAgentUserId?: string;
   [key: string]: unknown;
 };
