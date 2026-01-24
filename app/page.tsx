@@ -7,6 +7,7 @@ import PricingSection from "@/components/landing/pricing";
 import QuestionsSection from "@/components/landing/questions";
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
+import HumanEscalationSection from "@/components/landing/human-escalation";
 import BroadcastSection from "@/components/landing/broadcast-section";
 import ComparisonSection from "@/components/landing/comparison-section";
 import EnhancedTestimonials from "@/components/landing/enhanced-testimonials";
@@ -51,7 +52,8 @@ export default function Home() {
           <UnifiedOfferings />
           <ComparisonSection />
           <HowItWorks />
-          <BroadcastSection />
+          <HumanEscalationSection />
+          {/* <BroadcastSection /> */}
           <EnhancedTestimonials />
           <PricingSection />
           {/* <QuestionsSection /> */}
