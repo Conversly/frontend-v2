@@ -54,9 +54,9 @@ export default function Home() {
           <Hero />
           {/* <Testimonial /> */}
           <UnifiedOfferings />
+          <HumanEscalationSection />
           <ComparisonSection />
           <HowItWorks />
-          <HumanEscalationSection />
           {/* <BroadcastSection /> */}
           <EnhancedTestimonials />
           <PricingSection />
