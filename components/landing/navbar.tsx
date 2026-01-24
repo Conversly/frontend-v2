@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -135,18 +135,60 @@ export default function Navbar() {
       setIsLoading(false);
     }
   };
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const scrollContainer = document.getElementById('main-scroll-container') || window;
+
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        const currentScrollY = scrollContainer === window
+          ? window.scrollY
+          : (scrollContainer as HTMLElement).scrollTop;
+
+        if (currentScrollY < 10) {
+          setIsVisible(true);
+        } else {
+          // Check if scrolling down
+          if (currentScrollY > lastScrollY.current) {
+            setIsVisible(false);
+          } else {
+            // Check if scrolling up
+            setIsVisible(true);
+          }
+        }
+
+        lastScrollY.current = currentScrollY;
+      }
+    };
+
+    scrollContainer.addEventListener('scroll', controlNavbar);
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', controlNavbar);
+    };
+  }, []);
 
   return (
     mounted && (
-      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 text-gray-900 px-4">
-        <div className="mx-auto flex w-[95%] md:w-[85%] lg:w-[70%] max-w-[1200px] items-center justify-between py-4">
+      <nav
+        className={`fixed left-0 right-0 mx-auto z-50 transition-transform duration-300
+        h-[74px] flex items-center
+        top-0 w-full rounded-none
+        lg:top-6 lg:max-w-7xl lg:rounded-[47px]
+        border border-white/20 shadow-lg bg-white/60 backdrop-blur-md text-gray-900 
+        ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'
+          }`}
+      >
+        <div className="mx-auto flex w-full h-full items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/verly_logo.png"
               alt="VerlyAI Logo"
-              width={64}
-              height={64}
-              className="w-16 h-16 object-contain"
+              width={139}
+              height={33}
+              className="h-10 w-auto object-contain"
             />
             <span className="font-bold text-xl">VerlyAI</span>
           </Link>
@@ -166,7 +208,7 @@ export default function Navbar() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
-                <div className="grid grid-cols-[1fr_1fr_350px] gap-6 p-8 w-[1100px] bg-white dark:bg-slate-950 rounded-xl border border-border shadow-lg">
+                <div className="grid grid-cols-[1fr_1fr_350px] gap-6 p-8 w-[1100px] bg-white dark:bg-slate-950 rounded-[20px] border border-border shadow-lg">
 
                   {/* Column 1: Use Cases */}
                   <div className="space-y-6">
@@ -314,7 +356,7 @@ export default function Navbar() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
-                <div className="bg-white dark:bg-slate-950 rounded-xl border border-border shadow-lg overflow-hidden">
+                <div className="bg-white dark:bg-slate-950 rounded-[20px] border border-border shadow-lg overflow-hidden">
                   <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <Link

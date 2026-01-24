@@ -647,7 +647,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="pt-12 pb-12 lg:pt-16 lg:pb-20 relative overflow-hidden">
+    <section className="pt-28 pb-12 lg:pt-40 lg:pb-20 relative overflow-hidden">
       {/* Background Orb */}
       <div className="absolute inset-0 h-full w-full pointer-events-none">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 opacity-20 blur-[100px]"></div>
