@@ -1,0 +1,587 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import { useParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FileText,
+  Globe,
+  MessageSquare,
+  AlignLeft,
+  Search,
+  Trash2,
+  Edit3,
+  Copy,
+  Check,
+  Loader2,
+  Calendar,
+  Database,
+  AlertCircle,
+  AlertTriangle,
+  Eye,
+  MoreVertical,
+  Filter
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
+import { toast } from 'sonner';
+import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
+import { EmptyState } from '@/components/shared';
+import { useEditGuard } from '@/store/branch';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  SourcesCategorySidebar,
+  AddKnowledgeDialog,
+  PendingSourcesPanel,
+  type SourceCategory,
+} from '@/components/chatbot/sources';
+
+const DATA_SOURCE_ICONS = {
+  URL: Globe,
+  DOCUMENT: FileText,
+  QNA: MessageSquare,
+  TXT: AlignLeft,
+} as const;
+
+const DATA_SOURCE_COLORS = {
+  URL: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
+  DOCUMENT: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
+  QNA: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20 text-purple-600',
+  TXT: 'from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 text-orange-600',
+} as const;
+
+const DATA_SOURCE_BADGE_COLORS = {
+  URL: 'bg-green-500/10 text-green-600 border-green-500/20',
+  DOCUMENT: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  QNA: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+  TXT: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+} as const;
+
+function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
+  const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(embedding.text);
+    setCopied(true);
+    toast.success('Copied to clipboard');
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shouldTruncate = embedding.text.length > 200;
+  const displayText = expanded ? embedding.text : embedding.text.slice(0, 200);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.02 }}
+      className="group bg-muted/50 border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
+    >
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <span className="text-xs font-mono text-muted-foreground">Chunk #{index + 1}</span>
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          onClick={handleCopy}
+          className="opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          {copied ? (
+            <Check className="w-3 h-3 text-green-400" />
+          ) : (
+            <Copy className="w-3 h-3" />
+          )}
+        </Button>
+      </div>
+      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+        {displayText}
+        {shouldTruncate && !expanded && '...'}
+      </p>
+      {shouldTruncate && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-xs text-primary hover:text-primary/80 mt-2 font-medium"
+        >
+          {expanded ? 'Show less' : 'Show more'}
+        </button>
+      )}
+    </motion.div>
+  );
+}
+
+function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem; onClose: () => void }) {
+  const { data: embeddings, isLoading } = useEmbeddingsQuery(dataSource.id);
+  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4 border-b border-border">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+              <Icon className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge className={cn('text-xs', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}>
+                  {dataSource.type}
+                </Badge>
+                {dataSource.createdAt && (
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(dataSource.createdAt).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
+              <DialogTitle className="truncate">{dataSource.name}</DialogTitle>
+              {dataSource.citation && (
+                <a
+                  href={dataSource.citation}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:text-primary/80 truncate block mt-1"
+                >
+                  {dataSource.citation}
+                </a>
+              )}
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Database className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">
+              Embedding Chunks
+              {embeddings && (
+                <span className="text-muted-foreground font-normal ml-1">({embeddings.length})</span>
+              )}
+            </h4>
+          </div>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          ) : !embeddings || embeddings.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">
+                No embeddings found. They may still be processing.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {embeddings.map((embedding, index) => (
+                <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
+              ))}
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function EditCitationDialog({
+  dataSource,
+  onClose,
+  onSave
+}: {
+  dataSource: DataSourceItem;
+  onClose: () => void;
+  onSave: (citation: string) => void;
+}) {
+  const [citation, setCitation] = useState(dataSource.citation || '');
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit Citation</DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          <Input
+            value={citation}
+            onChange={(e) => setCitation(e.target.value)}
+            placeholder="Enter citation URL..."
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} className="flex-1">
+            Cancel
+          </Button>
+          <Button onClick={() => onSave(citation)} className="flex-1">
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DataSourceRow({
+  dataSource,
+  onDelete,
+  onEditCitation,
+  onViewChunks,
+  isLiveMode
+}: {
+  dataSource: DataSourceItem;
+  onDelete: () => void;
+  onEditCitation: () => void;
+  onViewChunks: () => void;
+  isLiveMode: boolean;
+}) {
+  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
+  const badgeColor = DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS];
+
+  return (
+    <motion.tr
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="group border-b border-border hover:bg-muted/30 transition-colors"
+    >
+      <td className="py-4 px-4">
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            'w-9 h-9 rounded-lg bg-gradient-to-br flex items-center justify-center border',
+            DATA_SOURCE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_COLORS]
+          )}>
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-foreground truncate max-w-[300px]">
+              {dataSource.name}
+            </p>
+            {dataSource.citation && (
+              <p className="text-xs text-muted-foreground truncate max-w-[300px]">
+                {dataSource.citation}
+              </p>
+            )}
+          </div>
+        </div>
+      </td>
+      <td className="py-4 px-4">
+        {dataSource.createdAt && (
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Calendar className="w-3.5 h-3.5" />
+            {new Date(dataSource.createdAt).toLocaleDateString()}
+          </div>
+        )}
+      </td>
+      <td className="py-4 px-4">
+        <Badge className={cn('text-xs', badgeColor)}>
+          {dataSource.type}
+        </Badge>
+      </td>
+      <td className="py-4 px-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onViewChunks}>
+              <Eye className="w-4 h-4 mr-2" />
+              View chunks
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={onEditCitation}
+              disabled={isLiveMode}
+            >
+              <Edit3 className="w-4 h-4 mr-2" />
+              Edit citation
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={onDelete}
+              disabled={isLiveMode}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </td>
+    </motion.tr>
+  );
+}
+
+export default function DataSourcesPage() {
+  const routeParams = useParams<{ botId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+
+  const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
+  const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
+  const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
+  const deleteMutation = useDeleteKnowledge(botId);
+  const addCitationMutation = useAddCitation(botId);
+  const { guardEdit, isLiveMode } = useEditGuard();
+
+  // Calculate source counts by type
+  const sourceCounts = useMemo(() => {
+    if (!dataSources) return { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 };
+    
+    return {
+      all: dataSources.length,
+      URL: dataSources.filter(s => s.type === 'URL').length,
+      DOCUMENT: dataSources.filter(s => s.type === 'DOCUMENT').length,
+      QNA: dataSources.filter(s => s.type === 'QNA').length,
+      TXT: dataSources.filter(s => s.type === 'TXT').length,
+    };
+  }, [dataSources]);
+
+  // Filter sources by category and search
+  const filteredSources = useMemo(() => {
+    if (!dataSources) return [];
+
+    return dataSources.filter((source) => {
+      const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || source.type === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [dataSources, searchQuery, selectedCategory]);
+
+  const confirmDelete = async () => {
+    if (!sourceToDelete) return;
+
+    try {
+      await deleteMutation.mutateAsync({
+        chatbotId: botId,
+        datasourceId: sourceToDelete.id,
+      });
+      toast.success('Data source deleted successfully');
+      setSourceToDelete(null);
+    } catch (error) {
+      toast.error('Failed to delete data source');
+      setSourceToDelete(null);
+    }
+  };
+
+  const handleDelete = (dataSource: DataSourceItem) => {
+    if (!guardEdit(() => true)) return;
+    setSourceToDelete(dataSource);
+  };
+
+  const handleSaveCitation = async (citation: string) => {
+    if (!editingSource) return;
+    if (!guardEdit(() => true)) return;
+
+    try {
+      await addCitationMutation.mutateAsync({
+        chatbotId: botId,
+        dataSourceId: editingSource.id,
+        citation: citation.trim(),
+      });
+      toast.success('Citation updated successfully');
+      setEditingSource(null);
+    } catch (error) {
+      toast.error('Failed to update citation');
+    }
+  };
+
+  const handleEditCitation = (source: DataSourceItem) => {
+    if (!guardEdit(() => true)) return;
+    setEditingSource(source);
+  };
+
+  const getCategoryTitle = () => {
+    switch (selectedCategory) {
+      case 'URL': return 'Websites';
+      case 'DOCUMENT': return 'Documents';
+      case 'QNA': return 'Q&A';
+      case 'TXT': return 'Text';
+      default: return 'All Sources';
+    }
+  };
+
+  return (
+    <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">
+      {/* Left Sidebar - Categories (Fixed) */}
+      <div className="flex-shrink-0 h-full">
+        <SourcesCategorySidebar
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          onAddKnowledge={() => setIsAddDialogOpen(true)}
+          sourceCounts={sourceCounts}
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header (Fixed) */}
+        <div className="flex-shrink-0 border-b border-border bg-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-heading font-semibold text-foreground">
+                {getCategoryTitle()}
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
+              </p>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name or citation..."
+              className="pl-9"
+            />
+          </div>
+        </div>
+
+        {/* Table (Scrollable) */}
+        <div className="flex-1 overflow-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : filteredSources.length === 0 ? (
+            <div className="p-6">
+              {dataSources?.length === 0 ? (
+                <EmptyState
+                  title="No knowledge sources yet"
+                  description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
+                  icon={<Database />}
+                  primaryAction={{
+                    label: "Add Knowledge",
+                    onClick: () => setIsAddDialogOpen(true),
+                  }}
+                  className="border-dashed bg-card/30"
+                />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  No sources match your search
+                </div>
+              )}
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-muted/50 sticky top-0">
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Last update
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-[80px]">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <AnimatePresence>
+                  {filteredSources.map((source) => (
+                    <DataSourceRow
+                      key={source.id}
+                      dataSource={source}
+                      onDelete={() => handleDelete(source)}
+                      onEditCitation={() => handleEditCitation(source)}
+                      onViewChunks={() => setViewingSource(source)}
+                      isLiveMode={isLiveMode}
+                    />
+                  ))}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Add Knowledge Dialog */}
+      <AddKnowledgeDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        chatbotId={botId}
+      />
+
+      {/* View Chunks Dialog */}
+      {viewingSource && (
+        <ViewChunksDialog
+          dataSource={viewingSource}
+          onClose={() => setViewingSource(null)}
+        />
+      )}
+
+      {/* Edit Citation Dialog */}
+      {editingSource && (
+        <EditCitationDialog
+          dataSource={editingSource}
+          onClose={() => setEditingSource(null)}
+          onSave={handleSaveCitation}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!sourceToDelete} onOpenChange={(open) => !open && setSourceToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Data Source
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{sourceToDelete?.name}"? This action cannot be undone and will permanently remove all associated embeddings.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDelete();
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Pending Sources Panel */}
+      <PendingSourcesPanel chatbotId={botId} />
+    </div>
+  );
+}

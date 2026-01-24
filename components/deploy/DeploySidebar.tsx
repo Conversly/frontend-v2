@@ -353,7 +353,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                 <div className="space-y-3">
                                     <div className="relative group rounded-lg border border-border bg-muted/50 shadow-sm overflow-hidden">
                                         <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-muted">
-                                            <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">HTML</span>
+                                            <span className="text-2xs uppercase font-semibold tracking-wider text-muted-foreground">HTML</span>
                                             <Button
                                                 size="icon"
                                                 variant="ghost"
@@ -364,7 +364,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                             </Button>
                                         </div>
                                         <div className="overflow-x-auto custom-scrollbar">
-                                            <pre className="p-3 text-[11px] font-mono leading-relaxed text-foreground whitespace-pre">
+                                            <pre className="p-3 text-xs font-mono leading-relaxed text-foreground whitespace-pre">
                                                 {iframeCode}
                                             </pre>
                                         </div>

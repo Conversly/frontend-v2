@@ -15,9 +15,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarRail,
     useSidebar,
 } from "@/components/ui/sidebar";
@@ -33,11 +30,6 @@ import {
     DropdownMenuSubContent,
     DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     ChevronsUpDown,
@@ -45,15 +37,18 @@ import {
     Settings,
     User,
     Bot,
-    ChevronRight,
     Moon,
     Sun,
     Laptop,
+    Megaphone,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import { dashboardNavItems, getChatbotNavItems, NavItem } from "@/config/nav-config";
+import type { NavItem, NavSection } from "@/config/nav-config";
+import { getWorkspaceNavSections, getWorkspaceChatbotNavSections } from "@/config/nav-config";
+import { useMaybeWorkspace } from "@/contexts/workspace-context";
+import { useChatbotInWorkspace } from "@/services/chatbot";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
@@ -62,14 +57,64 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const queryClient = useQueryClient();
     const { isMobile } = useSidebar();
     const { setTheme, theme } = useTheme();
+    const workspaceCtx = useMaybeWorkspace();
 
-    // Determine if we are in a chatbot context
-    const chatbotMatch = pathname?.match(/^\/chatbot\/(?!create)([^/]+)/);
-    const botId = chatbotMatch ? chatbotMatch[1] : null;
+    // Are we inside a specific chatbot route?
+    // /:workspaceId/chatbot/:botId/...
+    const segs = (pathname || "").split("/").filter(Boolean);
+    const isBotRoute =
+      !!workspaceCtx &&
+      segs[0] === workspaceCtx.workspaceId &&
+      segs[1] === "chatbot" &&
+      !!segs[2] &&
+      segs[2] !== "create";
+    const botId = isBotRoute ? segs[2] : null;
 
-    // Select navigation items based on context
-    const navItems = botId ? getChatbotNavItems(botId) : dashboardNavItems;
-    const sectionLabel = botId ? "Chatbot Management" : "Platform";
+    // Fetch chatbot data when in bot route (for name display)
+    const { data: chatbotData } = useChatbotInWorkspace(
+      workspaceCtx?.workspaceId || "",
+      botId || ""
+    );
+
+    // Get workspace navigation sections and filter by capabilities
+    const allWorkspaceNavSections = workspaceCtx
+      ? getWorkspaceNavSections(workspaceCtx.workspaceId)
+      : [];
+
+    // Filter navigation sections based on user capabilities
+    const filterNavSectionsByCapability = (sections: NavSection[]): NavSection[] => {
+      if (!workspaceCtx) return [];
+      
+      return sections
+        .filter((section) => {
+          // If section has a required capability, check it
+          if (section.requiredCapability) {
+            return workspaceCtx.capabilities[section.requiredCapability];
+          }
+          return true;
+        })
+        .map((section) => ({
+          ...section,
+          items: section.items.filter((item) => {
+            if (!item.requiredCapability) return true;
+            return workspaceCtx.capabilities[item.requiredCapability];
+          }),
+        }))
+        .filter((section) => section.items.length > 0);
+    };
+
+    const workspaceNavSections = filterNavSectionsByCapability(allWorkspaceNavSections);
+
+    // Select navigation sections based on context
+    const navSections =
+      workspaceCtx && botId
+        ? getWorkspaceChatbotNavSections(workspaceCtx.workspaceId, botId)
+        : workspaceNavSections;
+    
+    // Header label: Use chatbot name if available, otherwise workspace name
+    const headerLabel = workspaceCtx && botId && chatbotData
+      ? chatbotData.name
+      : workspaceCtx?.workspaceName || "Platform";
 
     const handleLogout = () => {
         logout(queryClient);
@@ -128,65 +173,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>{sectionLabel}</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.url || pathname?.startsWith(item.url + "/");
-
-                                if (item.items && item.items.length > 0) {
+                {navSections.map((section) => (
+                    <SidebarGroup key={section.label}>
+                        <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {section.items.map((item) => {
+                                    const isActive = pathname === item.url || pathname?.startsWith(item.url + "/");
                                     return (
-                                        <Collapsible
-                                            key={item.title}
-                                            asChild
-                                            defaultOpen={isActive}
-                                            className="group/collapsible"
-                                        >
-                                            <SidebarMenuItem>
-                                                <CollapsibleTrigger asChild>
-                                                    <SidebarMenuButton tooltip={item.title} isActive={isActive}>
-                                                        <item.icon />
-                                                        <span>{item.title}</span>
-                                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                                                    </SidebarMenuButton>
-                                                </CollapsibleTrigger>
-                                                <CollapsibleContent>
-                                                    <SidebarMenuSub>
-                                                        {item.items.map((subItem) => {
-                                                            const isSubActive = pathname === subItem.url;
-                                                            return (
-                                                                <SidebarMenuSubItem key={subItem.title}>
-                                                                    <SidebarMenuSubButton asChild isActive={isSubActive}>
-                                                                        <Link href={subItem.url}>
-                                                                            <subItem.icon className="size-4" />
-                                                                            <span>{subItem.title}</span>
-                                                                        </Link>
-                                                                    </SidebarMenuSubButton>
-                                                                </SidebarMenuSubItem>
-                                                            )
-                                                        })}
-                                                    </SidebarMenuSub>
-                                                </CollapsibleContent>
-                                            </SidebarMenuItem>
-                                        </Collapsible>
+                                        <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+                                                <Link href={item.url}>
+                                                    <item.icon />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
                                     );
-                                }
-
-                                return (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                                            <Link href={item.url}>
-                                                <item.icon />
-                                                <span>{item.title}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                );
-                            })}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                                })}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                ))}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
@@ -228,7 +236,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link href="/profile">
+                                    <Link href={workspaceCtx ? `/${workspaceCtx.workspaceId}/profile` : "/"}>
                                         <User className="mr-2 h-4 w-4" />
                                         Profile
                                     </Link>

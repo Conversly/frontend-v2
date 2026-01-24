@@ -1,7 +1,11 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { PieChart } from '@mui/x-charts/PieChart';
+
+const MAX_TOPICS = 5;
 
 interface TopicData {
   name: string;
@@ -19,12 +23,45 @@ interface TopicPieChartProps {
 
 export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
 
-  const chartData = topics?.map((topic, index) => ({
-    id: index,
-    value: topic.value,
-    label: topic.name,
-    color: topic.color
-  })) || [];
+  const chartData = (() => {
+    if (!topics || topics.length === 0) return [];
+
+    // Convert to mutable array and sort
+    const sortedTopics = [...topics].sort((a, b) => b.value - a.value);
+
+    if (sortedTopics.length <= MAX_TOPICS) {
+      return sortedTopics.map((topic, index) => ({
+        id: index,
+        value: topic.value,
+        label: topic.name,
+        color: topic.color
+      }));
+    }
+
+    const topTopics = sortedTopics.slice(0, MAX_TOPICS);
+    const otherTopics = sortedTopics.slice(MAX_TOPICS);
+
+    // Check if otherTopics has any value
+    const otherValue = otherTopics.reduce((sum, t) => sum + t.value, 0);
+
+    const data = topTopics.map((topic, index) => ({
+      id: index,
+      value: topic.value,
+      label: topic.name,
+      color: topic.color
+    }));
+
+    if (otherValue > 0) {
+      data.push({
+        id: MAX_TOPICS,
+        value: otherValue,
+        label: "Other",
+        color: "#94a3b8"
+      });
+    }
+
+    return data;
+  })();
 
   return (
     <Card className="shadow-sm border-border/50">
@@ -34,7 +71,7 @@ export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
           Topic Distribution
         </CardTitle>
         <CardDescription>
-          Message volume by topic
+          Message volume by topic (Top 5)
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 min-h-[300px] flex items-center justify-center">
@@ -72,4 +109,3 @@ export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
     </Card>
   );
 }
-

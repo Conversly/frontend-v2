@@ -53,7 +53,7 @@ export const createWhatsAppIntegration = async (
   input: CreateWhatsAppIntegrationInput
 ): Promise<WhatsAppIntegrationResponse> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_INTEGRATION(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_INTEGRATION.path(),
     {
       method: "POST",
       data: input,
@@ -71,7 +71,7 @@ export const updateWhatsAppIntegration = async (
   input: UpdateWhatsAppIntegrationInput
 ): Promise<WhatsAppIntegrationResponse> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.UPDATE_INTEGRATION(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.UPDATE_INTEGRATION.path(),
     {
       method: "PATCH",
       params: { chatbotId },
@@ -89,7 +89,7 @@ export const getWhatsAppIntegration = async (
   chatbotId: string // cuid2
 ): Promise<WhatsAppIntegrationResponse | null> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_INTEGRATION(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_INTEGRATION.path(),
     {
       method: "GET",
       params: { chatbotId },
@@ -109,7 +109,7 @@ export const deleteWhatsAppIntegration = async (
   chatbotId: string // UUID
 ): Promise<{ success: boolean; message: string }> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.DELETE_INTEGRATION(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.DELETE_INTEGRATION.path(),
     {
       method: "DELETE",
       params: { chatbotId },
@@ -127,7 +127,7 @@ export const sendWhatsAppMessage = async (
   input: SendWhatsAppMessageInput
 ): Promise<SendWhatsAppMessageResponse> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.SEND_MESSAGE(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.SEND_MESSAGE.path(),
     {
       method: "POST",
       params: { chatbotId },
@@ -174,7 +174,7 @@ export const getWhatsAppChats = async (
   chatbotId: string,
   whatsappId: string
 ): Promise<WhatsAppContact[]> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.GET_CHATS()
+  const endpoint = API.ENDPOINTS.WHATSAPP.GET_CHATS.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId);
 
@@ -196,7 +196,7 @@ export const getWhatsAppContactMessages = async (
   whatsappId: string,
   contactId: string
 ): Promise<WhatsAppMessage[]> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.GET_CONTACT_MESSAGES()
+  const endpoint = API.ENDPOINTS.WHATSAPP.GET_CONTACT_MESSAGES.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId)
     .replace(':contactId', contactId);
@@ -228,7 +228,7 @@ export const addWhatsAppContact = async (
   whatsappId: string,
   input: AddWhatsAppContactInput
 ): Promise<WhatsAppContact> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.ADD_CONTACT()
+  const endpoint = API.ENDPOINTS.WHATSAPP.ADD_CONTACT.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId);
 
@@ -286,7 +286,7 @@ export const getWhatsAppAnalytics = async (
   chatbotId: string,
   whatsappId: string
 ): Promise<WhatsAppAnalytics> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.GET_ANALYTICS()
+  const endpoint = API.ENDPOINTS.WHATSAPP.GET_ANALYTICS.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId);
 
@@ -308,7 +308,7 @@ export const getWhatsAppAnalyticsPerDay = async (
   whatsappId: string,
   days: number = 30
 ): Promise<WhatsAppAnalyticsPerDay[]> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.GET_ANALYTICS_PER_DAY()
+  const endpoint = API.ENDPOINTS.WHATSAPP.GET_ANALYTICS_PER_DAY.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId);
 
@@ -359,7 +359,7 @@ export const getWhatsAppTemplates = async (
   chatbotId: string
 ): Promise<WhatsAppTemplate[]> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_TEMPLATES(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_TEMPLATES.path(),
     {
       method: "GET",
       params: { chatbotId }
@@ -376,7 +376,7 @@ export const syncWhatsAppTemplates = async (
   chatbotId: string
 ): Promise<WhatsAppTemplate[]> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.SYNC_TEMPLATES(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.SYNC_TEMPLATES.path(),
     {
       method: "POST",
       data: { chatbotId }
@@ -393,7 +393,7 @@ export const getWhatsAppCampaigns = async (
   chatbotId: string
 ): Promise<WhatsAppCampaign[]> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_CAMPAIGNS(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_CAMPAIGNS.path(),
     {
       method: "GET",
       params: { chatbotId }
@@ -411,7 +411,7 @@ export const createWhatsAppCampaign = async (
   data: { name: string; templateId: string; scheduledAt?: Date }
 ): Promise<WhatsAppCampaign> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_CAMPAIGN(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_CAMPAIGN.path(),
     {
       method: "POST",
       data: { chatbotId, ...data }
@@ -427,7 +427,7 @@ export const launchWhatsAppCampaign = async (
   chatbotId: string,
   contactIds?: string[]
 ): Promise<any> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.LAUNCH_CAMPAIGN().replace(':id', campaignId);
+  const endpoint = API.ENDPOINTS.WHATSAPP.LAUNCH_CAMPAIGN.path().replace(':id', campaignId);
   const res = await fetch(
     API.ENDPOINTS.WHATSAPP.BASE_URL() + endpoint,
     {
@@ -447,7 +447,7 @@ export const getWhatsAppContactsList = async (
   chatbotId: string
 ): Promise<WhatsAppContact[]> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_CONTACTS_LIST(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_CONTACTS_LIST.path(),
     {
       method: "GET",
       params: { chatbotId }
@@ -465,7 +465,7 @@ export const createWhatsAppTemplate = async (
   data: { name: string; category: string; language: string; components: any[] }
 ): Promise<WhatsAppTemplate> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_TEMPLATE(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_TEMPLATE.path(),
     {
       method: "POST",
       data: { chatbotId, ...data }
@@ -480,7 +480,7 @@ export const deleteWhatsAppTemplate = async (
   chatbotId: string,
   templateId: string
 ): Promise<{ success: boolean; message: string }> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.DELETE_TEMPLATE().replace(':id', templateId);
+  const endpoint = API.ENDPOINTS.WHATSAPP.DELETE_TEMPLATE.path().replace(':id', templateId);
   const res = await fetch(
     API.ENDPOINTS.WHATSAPP.BASE_URL() + endpoint,
     {
@@ -498,7 +498,7 @@ export const markWhatsAppMessagesAsRead = async (
   messageIds: string[]
 ): Promise<{ success: boolean; message: string }> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.MARK_MESSAGES_READ(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.MARK_MESSAGES_READ.path(),
     {
       method: "POST",
       params: { chatbotId },
@@ -532,7 +532,7 @@ export const getDefaultWhatsAppTemplates = async (
   chatbotId: string
 ): Promise<{ all: WhatsAppTemplate[], defaults: WhatsAppTemplate[] }> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_DEFAULT_TEMPLATES(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.GET_DEFAULT_TEMPLATES.path(),
     {
       method: "GET",
       params: { chatbotId }
@@ -574,7 +574,7 @@ export const createDefaultWhatsAppTemplate = async (
   data: CreateDefaultTemplateParams
 ): Promise<WhatsAppTemplate> => {
   const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_DEFAULT_TEMPLATE(),
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.CREATE_DEFAULT_TEMPLATE.path(),
     {
       method: "POST",
       data: { chatbotId, ...data }
@@ -589,7 +589,7 @@ export const updateWhatsAppTemplate = async (
   chatbotId: string,
   params: UpdateTemplateParams
 ): Promise<WhatsAppTemplate> => {
-  const endpoint = API.ENDPOINTS.WHATSAPP.UPDATE_TEMPLATE().replace(':id', params.templateId);
+  const endpoint = API.ENDPOINTS.WHATSAPP.UPDATE_TEMPLATE.path().replace(':id', params.templateId);
   const res = await fetch(
     API.ENDPOINTS.WHATSAPP.BASE_URL() + endpoint,
     {

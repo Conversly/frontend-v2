@@ -127,7 +127,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({ chatbotId }) =
                                 <div className="flex gap-4 mb-3 text-sm text-muted-foreground">
                                     <span>Category: {template.category}</span>
                                     <span>Language: {template.language}</span>
-                                    {template.metaTemplateId === null && <span className="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium uppercase">DRAFT</span>}
+                                    {template.metaTemplateId === null && <span className="bg-muted px-1.5 py-0.5 rounded text-2xs font-medium uppercase">DRAFT</span>}
                                 </div>
                                 <div className="flex justify-end">
                                     <button

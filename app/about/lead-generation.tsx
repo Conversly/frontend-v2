@@ -18,10 +18,10 @@ const LeadGeneration = () => {
         >
           <Badge variant="secondary" className="mb-4">Growth Engine</Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
-            Lead Generation & Sales Automation
+            Turn Website Traffic Into Revenue
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Transform prospects into customers with AI-powered sales automation that works 24/7 to nurture your pipeline.
+            Capture leads 24/7, qualify prospects instantly, and nurture them automatically. Increase conversion rates by 40% while your sales team focuses on closing deals.
           </p>
         </motion.div>
 

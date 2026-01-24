@@ -1,4 +1,4 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
   ChatbotResponse,
@@ -14,13 +14,22 @@ import {
 } from "@/types/chatbot";
 
 export const createChatBot = async (chatbot: CreateChatbotInput) => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.CREATE(),
+  if (!chatbot.workspaceId) {
+    throw new Error("workspaceId is required to create a chatbot");
+  }
+
+  const endpoint = API.ENDPOINTS.WORKSPACES.CHATBOTS.path().replace(
+    ":workspaceId",
+    chatbot.workspaceId
+  );
+
+  const res = (await fetch(
+    API.ENDPOINTS.WORKSPACES.BASE_URL() + endpoint,
     {
       method: "POST",
       data: chatbot,
-    },
-  ).then((res) => res.data) as ApiResponse<ChatbotResponse, Error>;
+    }
+  ).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
 
   if (!res.success) {
     throw new Error(res.message);
@@ -28,29 +37,48 @@ export const createChatBot = async (chatbot: CreateChatbotInput) => {
   return res.data;
 };
 
-export const getChatbot = async (chatbotId: string): Promise<ChatbotResponse> => {
-  const endpoint = API.ENDPOINTS.CHATBOT.GET_CHATBOT().replace(
+export const getChatbot = async (
+  workspaceId: string,
+  chatbotId: string
+): Promise<ChatbotResponse> => {
+  const endpoint = API.ENDPOINTS.WORKSPACES.CHATBOT.path()
+    .replace(":workspaceId", workspaceId)
+    .replace(":botId", chatbotId);
+
+  const res = (await fetch(API.ENDPOINTS.WORKSPACES.BASE_URL() + endpoint, {
+    method: "GET",
+  }).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
+// Public/legacy fetch by botId only (used in public deploy pages where workspaceId isn't in the URL)
+export const getChatbotPublic = async (chatbotId: string): Promise<ChatbotResponse> => {
+  const endpoint = API.ENDPOINTS.CHATBOT.GET_CHATBOT.path().replace(
     ":chatbotId",
     chatbotId
   );
-  const res = await fetch(API.ENDPOINTS.CHATBOT.BASE_URL() + endpoint, {
+  const res = (await fetch(API.ENDPOINTS.CHATBOT.BASE_URL() + endpoint, {
     method: "GET",
-  }).then((res) => res.data) as ApiResponse<ChatbotResponse, Error>;
+  }).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
 
-  if (!res.success) {
-    throw new Error(res.message);
-  }
-
+  if (!res.success) throw new Error(res.message);
   return res.data;
 };
 
-export const getChatbots = async (): Promise<GetChatbotsResponse[]> => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_CHATBOTS(),
-    {
-      method: "GET",
-    },
-  ).then((res) => res.data) as ApiResponse<GetChatbotsResponse[], Error>;
+export const getChatbots = async (workspaceId: string): Promise<GetChatbotsResponse[]> => {
+  const url =
+    API.ENDPOINTS.WORKSPACES.BASE_URL() +
+    API.ENDPOINTS.WORKSPACES.CHATBOTS.path().replace(":workspaceId", workspaceId);
+
+  const res = await fetch(url, { method: "GET" }).then((res) => res.data) as ApiResponse<
+    GetChatbotsResponse[],
+    Error
+  >;
 
   if (!res.success) {
     throw new Error(res.message);
@@ -63,12 +91,19 @@ export const deleteChatbot = async (
   input: DeleteChatbotInput
 ): Promise<DeleteChatbotResponse> => {
   try {
-    const res = await fetch(
-      API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_CHATBOT().replace(":chatbotId", input.id),
-      {
-        method: "DELETE",
-      },
-    ).then((res) => res.data) as DeleteChatbotResponse;
+    if (!input.workspaceId) {
+      throw new Error("workspaceId is required to delete a chatbot");
+    }
+
+    const url =
+      API.ENDPOINTS.WORKSPACES.BASE_URL() +
+      API.ENDPOINTS.WORKSPACES.CHATBOT.path()
+        .replace(":workspaceId", input.workspaceId)
+        .replace(":botId", input.id);
+
+    const res = await fetch(url, { method: "DELETE" }).then(
+      (res) => res.data
+    ) as DeleteChatbotResponse;
 
     if (!res.success) {
       throw new Error(res.message || "Failed to delete chatbot");
@@ -82,8 +117,10 @@ export const deleteChatbot = async (
 };
 
 export const createTopic = async (input: CreateTopicInput): Promise<TopicResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.CREATE_TOPIC(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.CHATBOT.CREATE_TOPIC,
+    API.ENDPOINTS.CHATBOT.BASE_URL(),
     {
       method: "POST",
       data: input,
@@ -98,8 +135,10 @@ export const createTopic = async (input: CreateTopicInput): Promise<TopicRespons
 };
 
 export const updateTopic = async (input: UpdateTopicInput): Promise<TopicResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.UPDATE_TOPIC(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.CHATBOT.UPDATE_TOPIC,
+    API.ENDPOINTS.CHATBOT.BASE_URL(),
     {
       method: "PATCH",
       data: input,
@@ -115,11 +154,13 @@ export const updateTopic = async (input: UpdateTopicInput): Promise<TopicRespons
 
 export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicResponse> => {
   try {
-    const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() +  API.ENDPOINTS.CHATBOT.DELETE_TOPIC().replace(":id", input.id);
-    const res = await fetch(
-      endpoint,
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+      API.ENDPOINTS.CHATBOT.DELETE_TOPIC,
+      API.ENDPOINTS.CHATBOT.BASE_URL(),
       {
         method: "DELETE",
+        params: { id: input.id },
       },
     ).then((res) => res.data) as DeleteTopicResponse;
 
@@ -135,7 +176,7 @@ export const deleteTopic = async (input: DeleteTopicInput): Promise<DeleteTopicR
 };
 
 export const getTopic = async (chatbotId: string): Promise<TopicResponse[]> => {
-  const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_TOPICS().replace(":chatbotId", chatbotId);
+  const endpoint = API.ENDPOINTS.CHATBOT.BASE_URL() + API.ENDPOINTS.CHATBOT.GET_TOPICS.path().replace(":chatbotId", chatbotId);
   const res = await fetch(
     endpoint,
     {
@@ -149,4 +190,3 @@ export const getTopic = async (chatbotId: string): Promise<TopicResponse[]> => {
 
   return res.data;
 };
-

@@ -1,27 +1,19 @@
 import {
-    MessageSquare,
-
     Activity,
     BarChart3,
-    Database,
     Zap,
-    LogOut,
     User,
     Bot,
-    Play,
-    LineChart,
-    Plug,
-    Share2,
+    Sparkles,
+    LayoutDashboard,
+    PieChart,
+    Hash,
     BrainCircuit,
     MessageCircle,
-    UserPlus,
-    Paintbrush,
-    Hash,
+    Inbox,
     Upload,
-    Link as LinkIcon,
     HelpCircle,
     FileText,
-    Bell,
     Palette,
     Rocket,
     Home,
@@ -29,174 +21,218 @@ import {
     Phone,
     Settings,
     Code,
-    Sparkles,
-    LayoutDashboard,
-    PieChart,
     Globe,
     Headset,
     Book,
     Users,
+    Plug,
+    CreditCard,
+    Shield,
+    FileCheck,
+    Building2,
 } from "lucide-react";
+import type { WorkspaceCapabilities } from "@/types/permissions";
 
 export type NavItem = {
     title: string;
     url: string;
     icon: React.ComponentType<{ className?: string }>;
-    items?: NavItem[]; // For nested items
+    requiredCapability?: keyof WorkspaceCapabilities;
 };
 
-// Main Dashboard Navigation
-export const dashboardNavItems: NavItem[] = [
+export type NavSection = {
+    label: string;
+    items: NavItem[];
+    requiredCapability?: keyof WorkspaceCapabilities;
+};
+
+// Workspace-scoped Dashboard Navigation (sections with headings)
+export const getWorkspaceNavSections = (workspaceId: string): NavSection[] => [
     {
-        title: "Home",
-        url: "/",
-        icon: Home,
+        label: "Workspace",
+        items: [
+            {
+                title: "Chatbots",
+                url: `/${workspaceId}/chatbot`,
+                icon: Bot,
+                requiredCapability: "canViewChatbots",
+            },
+            {
+                title: "Promote",
+                url: `/${workspaceId}/promote-manager`,
+                icon: Megaphone,
+                requiredCapability: "canManageCampaigns",
+            },
+        ],
     },
     {
-        title: "Chatbots",
-        url: "/chatbot",
-        icon: Bot,
+        label: "Billing",
+        requiredCapability: "canViewBilling",
+        items: [
+            {
+                title: "Overview",
+                url: `/${workspaceId}/billing`,
+                icon: CreditCard,
+                requiredCapability: "canViewBilling",
+            },
+            {
+                title: "Subscription",
+                url: `/${workspaceId}/billing/subscription`,
+                icon: FileCheck,
+                requiredCapability: "canViewBilling",
+            },
+            {
+                title: "Usage",
+                url: `/${workspaceId}/billing/usage`,
+                icon: BarChart3,
+                requiredCapability: "canViewBilling",
+            },
+            {
+                title: "Payment Methods",
+                url: `/${workspaceId}/billing/payment-methods`,
+                icon: CreditCard,
+                requiredCapability: "canViewBilling",
+            },
+        ],
     },
     {
-        title: "Promote",
-        url: "/promote-manager",
-        icon: Megaphone,
-    },
-    {
-        title: "profile",
-        url: "/profile",
-        icon: User,
+        label: "Settings",
+        items: [
+            {
+                title: "Manage",
+                url: `/${workspaceId}/manage`,
+                icon: Settings,
+                requiredCapability: "canManageMembers",
+            },
+            {
+                title: "Profile",
+                url: `/${workspaceId}/profile`,
+                icon: User,
+            },
+        ],
     },
 ];
 
-// Chatbot-specific Navigation (requires botId to be injected)
-export const getChatbotNavItems = (botId: string): NavItem[] => [
+// Workspace + Chatbot-specific Navigation (sections with headings)
+export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: string): NavSection[] => [
     {
-        title: "Playground",
-        url: `/chatbot/${botId}/playground`,
-        icon: Sparkles,
-    },
-    {
-        title: "Activity",
-        url: `/chatbot/${botId}/activity`, // Parent URL (optional if only using children)
-        icon: Activity,
+        label: "Build",
         items: [
             {
+                title: "Playground",
+                url: `/${workspaceId}/chatbot/${botId}/playground`,
+                icon: Sparkles,
+            },
+            {
+                title: "Customize",
+                url: `/${workspaceId}/chatbot/${botId}/customize`,
+                icon: Palette,
+            },
+            {
+                title: "Actions",
+                url: `/${workspaceId}/chatbot/${botId}/actions`,
+                icon: Zap,
+            },
+        ],
+    },
+    {
+        label: "Knowledge Base",
+        items: [
+            {
+                title: "Current Data",
+                url: `/${workspaceId}/chatbot/${botId}/sources`,
+                icon: BrainCircuit,
+            }
+        ],
+    },
+    {
+        label: "Analytics",
+        items: [
+            {
+                title: "Statistics",
+                url: `/${workspaceId}/chatbot/${botId}/analytics/statistic`,
+                icon: PieChart,
+            },
+            {
+                title: "Topics",
+                url: `/${workspaceId}/chatbot/${botId}/analytics/topics`,
+                icon: Hash,
+            },
+            {
                 title: "Chat Logs",
-                url: `/chatbot/${botId}/activity/chat-logs`,
+                url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
                 icon: MessageCircle,
             },
             {
+                title: "Inbox",
+                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
+                icon: Inbox,
+            },
+            {
                 title: "Leads",
-                url: `/chatbot/${botId}/activity/leads`,
+                url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
                 icon: Users,
             },
         ],
     },
     {
-        title: "Analytics",
-        url: `/chatbot/${botId}/analytics`,
-        icon: LayoutDashboard,
+        label: "Channels",
         items: [
             {
-                title: "Statistics",
-                url: `/chatbot/${botId}/analytics/statistic`,
-                icon: PieChart,
+                title: "WhatsApp",
+                url: `/${workspaceId}/chatbot/${botId}/whatsapp`,
+                icon: MessageCircle,
             },
             {
-                title: "Topics",
-                url: `/chatbot/${botId}/analytics/topics`,
-                icon: Hash,
+                title: "Integration",
+                url: `/${workspaceId}/chatbot/${botId}/integration`,
+                icon: Plug,
             },
         ],
     },
     {
-        title: "Knowledge Base",
-        url: `/chatbot/${botId}/sources`,
-        icon: Book,
-        items: [
-            {
-                title: "Current Data",
-                url: `/chatbot/${botId}/sources`,
-                icon: BrainCircuit,
-            },
-            {
-                title: "Files",
-                url: `/chatbot/${botId}/sources/files`,
-                icon: Upload,
-            },
-            {
-                title: "Website",
-                url: `/chatbot/${botId}/sources/website`,
-                icon: Globe,
-            },
-            {
-                title: "Q&A",
-                url: `/chatbot/${botId}/sources/qa`,
-                icon: HelpCircle,
-            },
-            {
-                title: "Text",
-                url: `/chatbot/${botId}/sources/text`,
-                icon: FileText,
-            },
-        ],
-    },
-    {
-        title: "Customize",
-        url: `/chatbot/${botId}/customize`,
-        icon: Palette,
-    },
-    {
-        title: "WhatsApp",
-        url: `/chatbot/${botId}/whatsapp`,
-        icon: MessageCircle,
-    },
-    {
-        title: "Actions",
-        url: `/chatbot/${botId}/actions`,
-        icon: Zap,
-    },
-    {
-        title: "Voice-Agent",
-        url: `/chatbot/${botId}/voice`,
-        icon: Headset,
+        label: "Voice Agent",
         items: [
             {
                 title: "Assistant",
-                url: `/chatbot/${botId}/voice`,
-                icon: Settings,
+                url: `/${workspaceId}/chatbot/${botId}/voice`,
+                icon: Headset,
             },
             {
                 title: "Campaigns",
-                url: `/chatbot/${botId}/voice/campaigns`,
+                url: `/${workspaceId}/chatbot/${botId}/voice/campaigns`,
                 icon: Megaphone,
             },
             {
                 title: "Analytics",
-                url: `/chatbot/${botId}/voice/analytics`,
+                url: `/${workspaceId}/chatbot/${botId}/voice/analytics`,
                 icon: BarChart3,
             },
             {
                 title: "Phone Numbers",
-                url: `/chatbot/${botId}/voice/phone-numbers`,
+                url: `/${workspaceId}/chatbot/${botId}/voice/phone-numbers`,
                 icon: Phone,
             },
             {
                 title: "Widget",
-                url: `/chatbot/${botId}/voice/widget`,
+                url: `/${workspaceId}/chatbot/${botId}/voice/widget`,
                 icon: Code,
             },
-        ]
+        ],
     },
     {
-        title: "Integration",
-        url: `/chatbot/${botId}/integration`,
-        icon: Plug,
-    },
-    {
-        title: "Deploy",
-        url: `/chatbot/${botId}/deploy`,
-        icon: Rocket,
+        label: "Deploy",
+        items: [
+            {
+                title: "Deploy",
+                url: `/${workspaceId}/chatbot/${botId}/deploy`,
+                icon: Rocket,
+            },
+            {
+                title: "Deploy Live",
+                url: `/${workspaceId}/chatbot/${botId}/deploy-live`,
+                icon: Rocket,
+            },
+        ],
     },
 ];

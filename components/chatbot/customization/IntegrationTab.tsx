@@ -92,15 +92,53 @@ export function IntegrationTab({
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      {/* Embed Code */}
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+        <SectionHeader
+          title="Embed Code"
+          description="Add this code to your website to display the chat widget"
+          icon={Code}
+        />
+
+        <div className="space-y-4">
+          <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
+            <code className="text-xs text-muted-foreground font-mono block whitespace-pre-wrap">
+              {getEmbedCode()}
+            </code>
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={handleCopyEmbedCode}
+            className="w-full border-border text-foreground hover:bg-muted/50"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy Embed Code
+          </Button>
+
+          <div className="flex items-start gap-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-sans text-xs text-blue-900 mb-1 font-medium">
+                Paste this code before the closing &lt;/body&gt; tag on your website.
+              </p>
+              <p className="font-sans text-xs text-blue-700">
+                The widget will automatically appear on pages matching your allowed domains.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* API Key */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="API Key"
           description="Use this key to authenticate API requests"
           icon={Key}
         />
 
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           {isLoadingApiKey ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -155,14 +193,14 @@ export function IntegrationTab({
       </div>
 
       {/* Domain Allowlist */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="Domain Allowlist"
           description="Restrict widget access to specific domains"
           icon={Globe}
         />
 
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           {isLoadingDomains ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -219,44 +257,6 @@ export function IntegrationTab({
             <p className="font-sans text-xs">
               Enter domains without protocol (e.g., example.com, not https://example.com)
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Embed Code */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader
-          title="Embed Code"
-          description="Add this code to your website to display the chat widget"
-          icon={Code}
-        />
-
-        <div className="mt-4 space-y-4">
-          <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
-            <code className="text-xs text-muted-foreground font-mono block whitespace-pre-wrap">
-              {getEmbedCode()}
-            </code>
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={handleCopyEmbedCode}
-            className="w-full border-border text-foreground hover:bg-muted/50"
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            Copy Embed Code
-          </Button>
-
-          <div className="flex items-start gap-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5" />
-            <div className="flex-1">
-              <p className="font-sans text-xs text-blue-900 mb-1 font-medium">
-                Paste this code before the closing &lt;/body&gt; tag on your website.
-              </p>
-              <p className="font-sans text-xs text-blue-700">
-                The widget will automatically appear on pages matching your allowed domains.
-              </p>
-            </div>
           </div>
         </div>
       </div>

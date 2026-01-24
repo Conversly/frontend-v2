@@ -84,10 +84,10 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
     <>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]">
+          <h1 className="text-2xl font-semibold">
             Add training sources
           </h1>
-          <p className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             We found {sources.length} sources from your website. {totalSelected} selected for training.
           </p>
         </div>

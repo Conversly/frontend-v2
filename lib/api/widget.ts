@@ -75,7 +75,7 @@ export const getChatbotResponse = async (
             success: true,
           },
         ];
-        
+
         const response = dummyResponses[Math.floor(Math.random() * dummyResponses.length)];
         resolve(response);
       }, 1500); // Simulate network delay
@@ -136,7 +136,7 @@ export const submitFeedback = async (
   };
 
   const res = await responseFetch(
-    API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.FEEDBACK(),
+    API.ENDPOINTS.RESPONSE.BASE_URL() + API.ENDPOINTS.RESPONSE.FEEDBACK.path(),
     {
       method: "POST",
       data: requestBody,

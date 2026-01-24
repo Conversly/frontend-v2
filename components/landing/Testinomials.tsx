@@ -249,7 +249,7 @@ const TestimonialCard = ({ testimonial, className }: { testimonial: Testimonial;
         {/* Content */}
         <p className={cn(
           "text-foreground leading-relaxed",
-          testimonial.size === "sm" ? "text-xs" : testimonial.size === "lg" ? "text-sm" : "text-[13px]"
+          testimonial.size === "sm" ? "text-xs" : testimonial.size === "lg" ? "text-sm" : "text-sm"
         )}>
           {testimonial.text}
         </p>

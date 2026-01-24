@@ -1,4 +1,4 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
   ChannelType,
@@ -16,9 +16,9 @@ import {
  * Get all prompts for a chatbot (all channel prompts)
  */
 export const getAllPrompts = async (chatbotId: string): Promise<AllPromptsResponse> => {
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + 
-    API.ENDPOINTS.PROMPT.GET_ALL().replace(":chatbotId", chatbotId);
-  
+  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() +
+    API.ENDPOINTS.PROMPT.GET_ALL.path().replace(":chatbotId", chatbotId);
+
   const res = await fetch(endpoint, {
     method: "GET",
   }).then((res) => res.data) as ApiResponse<AllPromptsResponse, Error>;
@@ -36,11 +36,11 @@ export const getChannelPrompt = async (
   chatbotId: string,
   channel: ChannelType
 ): Promise<ChannelPromptResponse> => {
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + 
-    API.ENDPOINTS.PROMPT.GET_CHANNEL()
+  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() +
+    API.ENDPOINTS.PROMPT.GET_CHANNEL.path()
       .replace(":chatbotId", chatbotId)
       .replace(":channel", channel);
-  
+
   const res = await fetch(endpoint, {
     method: "GET",
   }).then((res) => res.data) as ApiResponse<ChannelPromptResponse, Error>;
@@ -66,9 +66,9 @@ export const generatePrompt = async (
   if (input.tone) params.append("tone", input.tone);
   if (input.targetAudience) params.append("targetAudience", input.targetAudience);
 
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + 
-    API.ENDPOINTS.PROMPT.GENERATE() + `?${params.toString()}`;
-  
+  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() +
+    API.ENDPOINTS.PROMPT.GENERATE.path() + `?${params.toString()}`;
+
   const res = await fetch(endpoint, {
     method: "GET",
   }).then((res) => res.data) as ApiResponse<GeneratedPromptResponse, Error>;
@@ -90,9 +90,9 @@ export const generateChannelPrompt = async (
   params.append("channel", input.channel);
   params.append("userDescription", input.userDescription);
 
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + 
-    API.ENDPOINTS.PROMPT.GENERATE_CHANNEL() + `?${params.toString()}`;
-  
+  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() +
+    API.ENDPOINTS.PROMPT.GENERATE_CHANNEL.path() + `?${params.toString()}`;
+
   const res = await fetch(endpoint, {
     method: "GET",
   }).then((res) => res.data) as ApiResponse<GeneratedPromptResponse, Error>;
@@ -109,12 +109,15 @@ export const generateChannelPrompt = async (
 export const updateAllChannels = async (
   input: UpdateAllChannelsInput
 ): Promise<ChannelPromptResponse[]> => {
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + API.ENDPOINTS.PROMPT.UPDATE_ALL();
-  
-  const res = await fetch(endpoint, {
-    method: "PUT",
-    data: input,
-  }).then((res) => res.data) as ApiResponse<ChannelPromptResponse[], Error>;
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.PROMPT.UPDATE_ALL,
+    API.ENDPOINTS.PROMPT.BASE_URL(),
+    {
+      method: "PUT",
+      data: input,
+    }
+  ).then((res) => res.data) as ApiResponse<ChannelPromptResponse[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
@@ -128,12 +131,15 @@ export const updateAllChannels = async (
 export const upsertChannelPrompt = async (
   input: UpsertChannelPromptInput
 ): Promise<ChannelPromptResponse> => {
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + API.ENDPOINTS.PROMPT.UPSERT_CHANNEL();
-  
-  const res = await fetch(endpoint, {
-    method: "POST",
-    data: input,
-  }).then((res) => res.data) as ApiResponse<ChannelPromptResponse, Error>;
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.PROMPT.UPSERT_CHANNEL,
+    API.ENDPOINTS.PROMPT.BASE_URL(),
+    {
+      method: "POST",
+      data: input,
+    }
+  ).then((res) => res.data) as ApiResponse<ChannelPromptResponse, Error>;
 
   if (!res.success) {
     throw new Error(res.message);
@@ -145,16 +151,18 @@ export const upsertChannelPrompt = async (
  * Delete channel prompt
  */
 export const deleteChannelPrompt = async (id: string): Promise<DeletePromptResponse> => {
-  const endpoint = API.ENDPOINTS.PROMPT.BASE_URL() + 
-    API.ENDPOINTS.PROMPT.DELETE_CHANNEL().replace(":id", id);
-  
-  const res = await fetch(endpoint, {
-    method: "DELETE",
-  }).then((res) => res.data) as ApiResponse<DeletePromptResponse, Error>;
+  const endpointPath = API.ENDPOINTS.PROMPT.DELETE_CHANNEL.path().replace(":id", id);
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.PROMPT.DELETE_CHANNEL,
+    API.ENDPOINTS.PROMPT.BASE_URL() + endpointPath.replace(API.ENDPOINTS.PROMPT.DELETE_CHANNEL.path(), ''),
+    {
+      method: "DELETE",
+    }
+  ).then((res) => res.data) as ApiResponse<DeletePromptResponse, Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
   return res.data;
 };
-

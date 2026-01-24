@@ -10,6 +10,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import Image from "next/image";
 import { emailLogin, emailRegister } from "@/lib/api/auth";
 import { joinWaitlist } from "@/lib/api/waitlist";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -73,6 +74,28 @@ export default function LoginPage() {
     }
   }, [searchParams]);
 
+  const validateAuthEmail = (value: string): string => {
+    const trimmed = value.trim();
+    if (!trimmed) return "Email is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) return "Invalid email format";
+    return "";
+  };
+
+  const getPasswordValidationErrors = (value: string): string[] => {
+    const errors: string[] = [];
+    if (!value) {
+      errors.push("Password is required");
+      return errors;
+    }
+    if (value.length < 8) errors.push("Password must be at least 8 characters");
+    if (!/[a-z]/.test(value)) errors.push("Password must contain at least one lowercase letter");
+    if (!/[A-Z]/.test(value)) errors.push("Password must contain at least one uppercase letter");
+    if (!/[0-9]/.test(value)) errors.push("Password must contain at least one number");
+    if (!/[@$!%*?&#]/.test(value)) errors.push("Password must contain at least one special character");
+    return errors;
+  };
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -80,17 +103,27 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
+        const emailError = validateAuthEmail(email);
+        if (emailError) {
+          setError(emailError);
+          setLoading(false);
+          return;
+        }
+
+        const passwordErrors = getPasswordValidationErrors(password);
+        if (passwordErrors.length > 0) {
+          setError(passwordErrors.join(", "));
+          setLoading(false);
+          return;
+        }
+
         if (password !== confirmPassword) {
           setError("Passwords do not match");
           setLoading(false);
           return;
         }
-        if (password.length < 6) {
-          setError("Password must be at least 6 characters");
-          setLoading(false);
-          return;
-        }
-        const response = await emailRegister(email, password, undefined, inviteCode || undefined);
+
+        const response = await emailRegister(email.trim(), password, undefined, inviteCode || undefined);
         if (response.success) {
           setVerificationSent(true);
         }
@@ -98,7 +131,19 @@ export default function LoginPage() {
         const response = await emailLogin(email, password);
         if (response.success) {
           localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
-          router.push("/chatbot");
+          
+          // Check for pending invite token
+          const pendingInviteToken = localStorage.getItem("pending_invite_token");
+          if (pendingInviteToken) {
+            localStorage.removeItem("pending_invite_token");
+            router.push(`/invite/${pendingInviteToken}`);
+            return;
+          }
+          
+          const workspaces = await getUserWorkspaces();
+          const first = workspaces[0]?.workspaceId;
+          if (first) router.push(`/${first}/chatbot`);
+          else router.push("/");
         }
       }
     } catch (err: any) {
@@ -117,7 +162,12 @@ export default function LoginPage() {
     if (mounted) {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true";
       if (isLoggedIn && user) {
-        router.push("/chatbot");
+        getUserWorkspaces()
+          .then((ws) => {
+            const first = ws[0]?.workspaceId;
+            if (first) router.push(`/${first}/chatbot`);
+          })
+          .catch(() => {});
       }
     }
   }, [mounted, user, router]);

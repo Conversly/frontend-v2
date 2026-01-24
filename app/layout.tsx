@@ -4,24 +4,16 @@ import { merge } from "@/utils/ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Roboto, Space_Grotesk } from "next/font/google";
+import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
 import { defaultMetadata, organizationSchema } from "@/lib/metadata";
 import GlobalChatWidget from "@/components/shared/GlobalChatWidget";
 
-const roboto = Roboto({
-  variable: "--font-roboto",
-  weight: ["100", "300", "400", "500", "700", "900"],
-  preload: true,
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
+const lato = Lato({
+  variable: "--font-lato",
+  weight: ["100", "300", "400", "700", "900"],
   preload: true,
   subsets: ["latin"],
   display: "swap",
@@ -55,19 +47,27 @@ export default function RootLayout({
       </head>
       <body
         className={merge(
-          spaceGrotesk.variable,
-          roboto.variable,
-          "font-sans antialiased m-0 p-0",
+          lato.variable,
+          "font-sans antialiased m-0 p-0 h-full w-full flex flex-col overflow-hidden",
         )}
       >
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
         >
           <ThemeProvider attribute="class" enableSystem>
-            <AppContextProvider>{children}</AppContextProvider>
+            <AppContextProvider>
+              <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
+                {children}
+              </div>
+            </AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
-        <GlobalChatWidget />
+        <Script
+          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-jwb9YLnmpKqsNxuTn63adNcmveGvv4.js"
+          data-chatbot-id="a7zzrm5gpn4pax804olp52tp"
+          data-testing="false"
+          strategy="afterInteractive"
+        />
         <CalendlyWidget />
       </body>
     </html>

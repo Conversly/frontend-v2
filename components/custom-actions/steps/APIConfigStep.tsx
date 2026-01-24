@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { CustomAction } from '@/types/customActions';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CustomAction, CustomActionConfig } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     Select,
     SelectContent,
@@ -13,43 +13,99 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Plus, X, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, X, Sparkles, Terminal } from 'lucide-react';
+import { CurlImportDialog } from '../CurlImportDialog';
+import CodeMirror from '@uiw/react-codemirror';
+import { json } from '@codemirror/lang-json';
+import { EditorView } from '@codemirror/view';
+import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 interface Props {
     formData: CustomAction;
     updateField: (path: string, value: any) => void;
-    onNext: () => void;
-    onBack: () => void;
+    onNext?: () => void;
+    onBack?: () => void;
+    errors?: ActionFormErrors;
 }
 
-/**
- * Extract {{variable}} patterns from a string
- */
-function extractVariables(str: string): string[] {
+function splitEndpoint(endpoint: string): { pathname: string; query: Record<string, string> } {
+    const raw = (endpoint || '').trim();
+    const qIndex = raw.indexOf('?');
+    const pathname = (qIndex === -1 ? raw : raw.slice(0, qIndex)) || '';
+    const search = qIndex === -1 ? '' : raw.slice(qIndex + 1);
+    const query: Record<string, string> = {};
+    if (search.trim().length) {
+        const sp = new URLSearchParams(search);
+        sp.forEach((v, k) => {
+            if (!k.trim()) return;
+            query[k] = v;
+        });
+    }
+    return {
+        pathname: pathname.startsWith('/') || pathname.length === 0 ? pathname : `/${pathname}`,
+        query,
+    };
+}
+
+function buildEndpoint(pathname: string, query: Record<string, string>): string {
+    const p = (pathname || '').trim();
+    const path = p.length ? (p.startsWith('/') ? p : `/${p}`) : '';
+    const search = new URLSearchParams(
+        Object.entries(query).filter(([k]) => (k || '').trim().length > 0)
+    ).toString();
+    return `${path}${search ? `?${search}` : ''}`;
+}
+
+function extractPathParams(endpoint: string): string[] {
+    const found: string[] = [];
+    const curly = endpoint.match(/\{([^}]+)\}/g) || [];
+    for (const m of curly) {
+        const name = m.replace(/[{}]/g, '').trim();
+        if (name) found.push(name);
+    }
+    const colon = endpoint.match(/:([A-Za-z0-9_]+)/g) || [];
+    for (const m of colon) {
+        const name = m.slice(1).trim();
+        if (name) found.push(name);
+    }
+    return [...new Set(found)];
+}
+
+function extractLegacyVariables(str: string): string[] {
     const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
-    return matches.map(m => m.replace(/\{\{|\}\}/g, '').trim());
+    return [...new Set(matches.map((m) => m.replace(/\{\{|\}\}/g, '').trim()).filter(Boolean))];
 }
 
-export const APIConfigStep: React.FC<Props> = ({
+export const APIConfigSection: React.FC<Props> = ({
     formData,
     updateField,
     onNext,
     onBack,
+    errors,
 }) => {
     const [showAdvanced, setShowAdvanced] = useState(false);
+    const [staticBodyDraft, setStaticBodyDraft] = useState('');
+    const [staticBodyError, setStaticBodyError] = useState<string | null>(null);
+    const [isBodyDirty, setIsBodyDirty] = useState(false);
     const config = formData.apiConfig;
 
-    // Combine baseUrl and endpoint for the unified URL input
-    const fullUrl = `${config.baseUrl}${config.endpoint}`;
+    const endpointParts = useMemo(() => splitEndpoint(config.endpoint || ''), [config.endpoint]);
+
+    // Combine baseUrl + endpoint (endpoint includes querystring)
+    const fullUrl = useMemo(() => {
+        return `${config.baseUrl}${config.endpoint || ''}`;
+    }, [config.baseUrl, config.endpoint]);
 
     // Parse full URL back into base and endpoint
     const handleFullUrlChange = (value: string) => {
         try {
             const urlObj = new URL(value);
-            updateField('apiConfig.baseUrl', urlObj.origin);
-            updateField('apiConfig.endpoint', urlObj.pathname + urlObj.search);
+            updateField('apiConfig', {
+                ...config,
+                baseUrl: urlObj.origin,
+                endpoint: `${urlObj.pathname}${urlObj.search || ''}`,
+            });
         } catch {
             // If not a valid URL, just update the endpoint
             if (value.startsWith('/')) {
@@ -65,52 +121,96 @@ export const APIConfigStep: React.FC<Props> = ({
         }
     };
 
-    // Detect variables from URL and body
-    const detectedVariables = useMemo(() => {
-        const vars: string[] = [];
-        if (config.endpoint) {
-            vars.push(...extractVariables(config.endpoint));
-        }
-        if (config.bodyTemplate) {
-            vars.push(...extractVariables(config.bodyTemplate));
-        }
-        return [...new Set(vars)];
-    }, [config.endpoint, config.bodyTemplate]);
+    const staticHeaders = config.staticHeaders ?? {};
+    const staticQueryParams = endpointParts.query;
+    const headerCount = Object.keys(staticHeaders).length;
+    const queryParamCount = Object.keys(staticQueryParams).length;
 
-    const isValid = () => {
-        try {
-            if (!config.baseUrl || !config.endpoint || !config.method) return false;
-            new URL(config.baseUrl);
-            return true;
-        } catch {
-            return false;
-        }
+    const detectedPathParams = useMemo(() => extractPathParams(config.endpoint || ''), [config.endpoint]);
+    const legacyEndpointVars = useMemo(() => extractLegacyVariables(config.endpoint || ''), [config.endpoint]);
+
+    // Keep the static body editor in sync with config changes.
+    useEffect(() => {
+        // While the user is typing, don't clobber their draft (especially mid-edit when JSON is invalid).
+        if (isBodyDirty) return;
+
+        const next =
+            config.staticBody !== undefined
+                ? JSON.stringify(config.staticBody, null, 2)
+                : '';
+        setStaticBodyDraft(next);
+        setStaticBodyError(null);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData.id, config.staticBody, config.method, isBodyDirty]);
+
+    const handleCurlImport = (imported: Partial<CustomActionConfig>) => {
+        const nextStaticHeaders = imported.staticHeaders ?? staticHeaders;
+        const nextStaticBody: any = imported.staticBody ?? config.staticBody;
+
+        updateField('apiConfig', {
+            ...config,
+            ...imported,
+            staticHeaders: nextStaticHeaders,
+            staticBody: nextStaticBody,
+        });
     };
 
-    const headerCount = Object.keys(config.headers || {}).length;
+    const handleAddPathParam = () => {
+        const raw = window.prompt('Path param name (example: userId)');
+        const name = (raw || '').trim().replace(/\s+/g, '_');
+        if (!name) return;
+
+        const token = `{${name}}`;
+        const cur = fullUrl || '';
+        const qIndex = cur.indexOf('?');
+        const before = qIndex === -1 ? cur : cur.slice(0, qIndex);
+        const after = qIndex === -1 ? '' : cur.slice(qIndex);
+
+        const prefix = before.length === 0 || before.endsWith('/') ? before : `${before}/`;
+        const nextUrl = `${prefix}${token}${after}`;
+        handleFullUrlChange(nextUrl);
+    };
 
     return (
         <div className="space-y-6">
-            <div className="space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight">API Configuration</h2>
-                <p className="text-muted-foreground">Configure how to call your external API.</p>
+            <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2 flex-1">
+                    <h2 className="text-2xl font-bold tracking-tight">API request</h2>
+                    <p className="text-muted-foreground">
+                        The API endpoint that should be called by the AI Agent to retrieve data or to send updates.
+                    </p>
+                </div>
+                <CurlImportDialog
+                    onImport={(imported) => handleCurlImport(imported)}
+                    trigger={
+                        <Button type="button" variant="outline" className="h-10 gap-2 shrink-0">
+                            <Terminal className="h-4 w-4" />
+                            Import from cURL
+                        </Button>
+                    }
+                />
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Endpoint</CardTitle>
-                    <CardDescription>
-                        Enter the full URL for your API endpoint.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {/* Unified URL Input */}
-                    <div className="flex gap-2">
+            {/* Method + URL */}
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">HTTPS URL</Label>
+                    {detectedPathParams.length > 0 && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Sparkles className="h-3.5 w-3.5" />
+                            <span>Path params: {detectedPathParams.map((v) => `{${v}}`).join(', ')}</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex gap-2 items-end">
+                    <div className="w-28">
+                        <Label className="text-xs text-muted-foreground">Method</Label>
                         <Select
                             value={config.method}
                             onValueChange={(value) => updateField('apiConfig.method', value)}
                         >
-                            <SelectTrigger className="w-[100px]">
+                            <SelectTrigger className="h-10">
                                 <SelectValue placeholder="Method" />
                             </SelectTrigger>
                             <SelectContent>
@@ -121,245 +221,358 @@ export const APIConfigStep: React.FC<Props> = ({
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
+
+                    <div className="flex-1">
+                        <Label className="text-xs text-muted-foreground">HTTPS URL</Label>
                         <Input
                             value={fullUrl}
                             onChange={(e) => handleFullUrlChange(e.target.value)}
-                            placeholder="https://api.example.com/v1/products/{{product_id}}"
-                            className="flex-1 font-mono text-sm"
+                            placeholder="https://api.example.com/v1/resource/{id}"
+                            className="h-10 font-mono text-sm"
                         />
                     </div>
 
-                    <p className="text-xs text-muted-foreground">
-                        Use <code className="px-1 py-0.5 rounded bg-muted">{'{{variable_name}}'}</code> for dynamic values extracted from the conversation.
+                    <Button type="button" variant="outline" className="h-10 shrink-0" onClick={handleAddPathParam}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add path param
+                    </Button>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                    Put dynamic values in the request via the <strong>Inputs</strong> step (destination = Path / Query / Header / Body).
+                </p>
+                {(errors?.['apiConfig.baseUrl'] || errors?.['apiConfig.endpoint']) && (
+                    <p className="text-xs text-destructive">
+                        {errors?.['apiConfig.baseUrl'] ?? errors?.['apiConfig.endpoint']}
                     </p>
-
-                    {/* Detected Variables */}
-                    {detectedVariables.length > 0 && (
-                        <div className="flex items-start gap-2 p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                            <Sparkles className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                            <div className="flex-1">
-                                <div className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-                                    Detected Variables
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {detectedVariables.map(v => (
-                                        <Badge key={v} variant="secondary" className="font-mono text-xs">
-                                            {`{{${v}}}`}
-                                        </Badge>
-                                    ))}
-                                </div>
-                                <p className="text-xs text-green-700 dark:text-green-300 mt-2">
-                                    These will be auto-created as parameters in the next step.
-                                </p>
-                            </div>
+                )}
+                {legacyEndpointVars.length > 0 && (
+                    <div className="flex items-center justify-between gap-3 rounded-md border border-yellow-200 bg-yellow-50 px-3 py-2 text-xs dark:border-yellow-800 dark:bg-yellow-900/20">
+                        <div className="text-yellow-900 dark:text-yellow-200">
+                            Legacy endpoint templates detected: {legacyEndpointVars.map((v) => `{{${v}}}`).join(', ')}. Prefer <code className="px-1 py-0.5 rounded bg-muted">{'{var}'}</code>.
                         </div>
-                    )}
-
-                    {/* Full URL Preview */}
-                    <div className="rounded-md bg-muted p-3 text-sm font-mono break-all">
-                        <span className="font-semibold text-primary">{config.method}</span>{' '}
-                        <span className="text-muted-foreground">{config.baseUrl}</span>
-                        <span className="text-foreground">{config.endpoint}</span>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            onClick={() => {
+                                const next = (config.endpoint || '').replace(/\{\{([^}]+)\}\}/g, (_m, name) => `{${String(name).trim()}}`);
+                                updateField('apiConfig.endpoint', next);
+                            }}
+                        >
+                            Convert
+                        </Button>
                     </div>
-                </CardContent>
-            </Card>
+                )}
+            </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                        <span>Authentication & Headers</span>
-                        {headerCount > 0 && (
-                            <Badge variant="secondary" className="ml-2">
-                                {headerCount} header{headerCount !== 1 ? 's' : ''}
-                            </Badge>
-                        )}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Authentication */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="auth_type">Auth Type</Label>
-                            <Select
-                                value={config.authType}
-                                onValueChange={(value) => updateField('apiConfig.authType', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">None</SelectItem>
-                                    <SelectItem value="bearer">Bearer Token</SelectItem>
-                                    <SelectItem value="api_key">API Key</SelectItem>
-                                    <SelectItem value="basic">Basic Auth</SelectItem>
-                                </SelectContent>
-                            </Select>
+            {/* Tabs */}
+            <Tabs defaultValue="auth">
+                <TabsList className="w-full justify-start">
+                    <TabsTrigger value="auth">Auth</TabsTrigger>
+                    <TabsTrigger value="query" className="gap-2">
+                        Query (static)
+                        <Badge variant="secondary" className="h-5 px-2 text-xs">
+                            {queryParamCount}
+                        </Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="headers" className="gap-2">
+                        Headers (static)
+                        <Badge variant="secondary" className="h-5 px-2 text-xs">
+                            {headerCount}
+                        </Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="body">Body</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="auth" className="mt-4">
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="space-y-2">
+                                <Label className="text-xs">Auth Type</Label>
+                                <Select
+                                    value={config.authType || 'none'}
+                                    onValueChange={(value) => updateField('apiConfig.authType', value)}
+                                >
+                                    <SelectTrigger className="h-9 text-xs">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">None</SelectItem>
+                                        <SelectItem value="bearer">Bearer Token</SelectItem>
+                                        <SelectItem value="api_key">API Key</SelectItem>
+                                        <SelectItem value="basic">Basic Auth</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {(config.authType || 'none') !== 'none' && (
+                                <div className="col-span-2 space-y-2">
+                                    <Label className="text-xs">
+                                        {config.authType === 'bearer' && 'Bearer Token'}
+                                        {config.authType === 'api_key' && 'API Key'}
+                                        {config.authType === 'basic' && 'Base64 Credentials'}
+                                    </Label>
+                                    <Input
+                                        type="password"
+                                        value={config.authValue || ''}
+                                        onChange={(e) => updateField('apiConfig.authValue', e.target.value)}
+                                        placeholder="Enter token/key (or secret ref)"
+                                        className="h-9 text-xs font-mono"
+                                    />
+                                    {errors?.['apiConfig.authValue'] && (
+                                        <p className="text-xs text-destructive">{errors['apiConfig.authValue']}</p>
+                                    )}
+                                    <p className="text-xs text-muted-foreground">
+                                        Tip: store a secret reference like <code className="px-1 py-0.5 rounded bg-muted">secrets.MY_API_KEY</code> and resolve it server-side.
+                                    </p>
+                                </div>
+                            )}
                         </div>
+                    </div>
+                </TabsContent>
 
-                        {config.authType !== 'none' && (
-                            <div className="md:col-span-2 space-y-2">
-                                <Label htmlFor="auth_value">
-                                    {config.authType === 'bearer' && 'Bearer Token'}
-                                    {config.authType === 'api_key' && 'API Key'}
-                                    {config.authType === 'basic' && 'Base64 Encoded Credentials'}
-                                </Label>
-                                <Input
-                                    id="auth_value"
-                                    type="password"
-                                    value={config.authValue || ''}
-                                    onChange={(e) => updateField('apiConfig.authValue', e.target.value)}
-                                    placeholder="Enter your token/key"
+                <TabsContent value="query" className="mt-4">
+                    <div className="space-y-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full justify-start h-10"
+                            onClick={() =>
+                                updateField('apiConfig.endpoint', buildEndpoint(endpointParts.pathname, { ...staticQueryParams, '': '' }))
+                            }
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add key value pair
+                        </Button>
+                        <KeyValueEditor
+                            value={staticQueryParams}
+                            onChange={(params) =>
+                                updateField('apiConfig.endpoint', buildEndpoint(endpointParts.pathname, params))
+                            }
+                            placeholder={{ key: 'key', value: 'value' }}
+                            addLabel="Add key value pair"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Dynamic query params belong in <strong>Inputs</strong> (destination = Query).
+                        </p>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="headers" className="mt-4">
+                    <div className="space-y-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full justify-start h-10"
+                            onClick={() =>
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticHeaders: { ...staticHeaders, '': '' },
+                                })
+                            }
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add key value pair
+                        </Button>
+                        <HeaderEditor
+                            value={staticHeaders}
+                            onChange={(headers) =>
+                                updateField('apiConfig', {
+                                    ...config,
+                                    staticHeaders: headers,
+                                })
+                            }
+                            addLabel="Add key value pair"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Dynamic headers belong in <strong>Inputs</strong> (destination = Header).
+                        </p>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="body" className="mt-4">
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <Label>Body</Label>
+                            {['POST', 'PUT', 'PATCH'].includes(config.method) && staticBodyDraft && (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7 text-xs"
+                                    onClick={() => {
+                                        try {
+                                            const parsed = JSON.parse(staticBodyDraft);
+                                            const formatted = JSON.stringify(parsed, null, 2);
+                                            setStaticBodyDraft(formatted);
+                                            setStaticBodyError(null);
+                                            updateField('apiConfig', {
+                                                ...config,
+                                                staticBody: parsed,
+                                            });
+                                        } catch (e) {
+                                            // Not valid JSON, ignore
+                                        }
+                                    }}
+                                >
+                                    Format JSON
+                                </Button>
+                            )}
+                        </div>
+                        {['POST', 'PUT', 'PATCH'].includes(config.method) ? (
+                            <div className="border rounded-lg overflow-hidden">
+                                <CodeMirror
+                                    value={staticBodyDraft}
+                                    onChange={(value) => {
+                                        setIsBodyDirty(true);
+                                        setStaticBodyDraft(value);
+                                        try {
+                                            const parsed = value.trim().length ? JSON.parse(value) : undefined;
+                                            setStaticBodyError(null);
+                                            setIsBodyDirty(false);
+                                            updateField('apiConfig', {
+                                                ...config,
+                                                staticBody: parsed,
+                                            });
+                                        } catch (e: any) {
+                                            setStaticBodyError('Invalid JSON');
+                                            // keep draft; don't clobber staticBody with invalid data
+                                        }
+                                    }}
+                                    extensions={[
+                                        json(),
+                                        EditorView.lineWrapping
+                                    ]}
+                                    placeholder='{\n  "mode": "dev",\n  "partial": { "styles": { "appearance": "light" } }\n}'
+                                    minHeight="300px"
+                                    maxHeight="500px"
+                                    theme="light"
+                                    basicSetup={{
+                                        lineNumbers: true,
+                                        foldGutter: true,
+                                        highlightActiveLineGutter: true,
+                                        highlightActiveLine: true,
+                                    }}
                                 />
                             </div>
+                        ) : (
+                            <div className="text-sm text-muted-foreground">
+                                Body is only sent for POST/PUT/PATCH requests.
+                            </div>
                         )}
+                        {staticBodyError && (
+                            <p className="text-xs text-destructive">{staticBodyError}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                            This is the <strong>static JSON body</strong>. To mark a field as dynamic, set its value to an <strong>exact placeholder string</strong> like{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">{"\"{{appearance}}\""}</code> (must be valid JSON). In the next step we’ll detect these placeholders and pre-create Inputs with the correct{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">bodyPath</code>.
+                        </p>
                     </div>
-
-                    {/* Headers */}
-                    <div className="space-y-2">
-                        <Label>Custom Headers</Label>
-                        <HeaderEditor
-                            value={config.headers || {}}
-                            onChange={(headers) => updateField('apiConfig.headers', headers)}
-                        />
-                    </div>
-
-                    {/* Request Body */}
-                    {['POST', 'PUT', 'PATCH'].includes(config.method) && (
-                        <div className="space-y-2">
-                            <Label htmlFor="body_template">Request Body</Label>
-                            <Textarea
-                                id="body_template"
-                                value={config.bodyTemplate || ''}
-                                onChange={(e) => updateField('apiConfig.bodyTemplate', e.target.value)}
-                                placeholder='{"product_id": "{{product_id}}", "quantity": {{quantity}}}'
-                                rows={4}
-                                className="font-mono text-sm"
-                            />
-                            <p className="text-xs text-muted-foreground">
-                                JSON body template. Use <code className="px-1 py-0.5 rounded bg-muted">{'{{variable}}'}</code> for dynamic values.
-                            </p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                </TabsContent>
+            </Tabs>
 
             {/* Advanced Options */}
             <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2 w-full justify-start text-muted-foreground hover:text-foreground">
-                        {showAdvanced ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+                    >
+                        {showAdvanced ? (
+                            <ChevronDown className="h-3 w-3 mr-1" />
+                        ) : (
+                            <ChevronRight className="h-3 w-3 mr-1" />
+                        )}
                         Advanced Options
                     </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-4 pt-4">
-                    <Card>
-                        <CardContent className="space-y-6 pt-6">
-                            {/* Query Params */}
-                            <div className="space-y-2">
-                                <Label>Query Parameters</Label>
-                                <KeyValueEditor
-                                    value={config.queryParams || {}}
-                                    onChange={(params) => updateField('apiConfig.queryParams', params)}
-                                    placeholder={{ key: 'param_name', value: 'param_value' }}
-                                />
-                            </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-2">
+                            <Label className="text-xs">Success Codes</Label>
+                            <Input
+                                value={(config.successCodes || []).join(', ')}
+                                onChange={(e) =>
+                                    updateField(
+                                        'apiConfig.successCodes',
+                                        e.target.value
+                                            .split(',')
+                                            .map((s) => parseInt(s.trim()) || 0)
+                                            .filter((n) => n > 0)
+                                    )
+                                }
+                                placeholder="200, 201"
+                                className="h-8 text-xs"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs">Timeout (sec)</Label>
+                            <Input
+                                type="number"
+                                value={config.timeoutSeconds}
+                                onChange={(e) => updateField('apiConfig.timeoutSeconds', parseInt(e.target.value))}
+                                min="1"
+                                max="300"
+                                className="h-8 text-xs"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs">Retry Count</Label>
+                            <Input
+                                type="number"
+                                value={config.retryCount}
+                                onChange={(e) => updateField('apiConfig.retryCount', parseInt(e.target.value))}
+                                min="0"
+                                max="5"
+                                className="h-8 text-xs"
+                            />
+                        </div>
+                    </div>
 
-                            {/* Response Mapping */}
-                            <div className="space-y-2">
-                                <Label htmlFor="response_mapping">Response Mapping (JSONPath)</Label>
-                                <Input
-                                    id="response_mapping"
-                                    value={config.responseMapping || ''}
-                                    onChange={(e) => updateField('apiConfig.responseMapping', e.target.value)}
-                                    placeholder="$.data.products[0].price"
-                                />
-                                <p className="text-xs text-muted-foreground">
-                                    Extract specific data from response. Leave empty to return full response.
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {/* Success Codes */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="success_codes">Success HTTP Codes</Label>
-                                    <Input
-                                        id="success_codes"
-                                        value={(config.successCodes || []).join(', ')}
-                                        onChange={(e) =>
-                                            updateField(
-                                                'apiConfig.successCodes',
-                                                e.target.value.split(',').map((s) => parseInt(s.trim()) || 0).filter(n => n > 0)
-                                            )
-                                        }
-                                        placeholder="200, 201"
-                                    />
-                                </div>
-
-                                {/* Timeout */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="timeout">Timeout (seconds)</Label>
-                                    <Input
-                                        id="timeout"
-                                        type="number"
-                                        value={config.timeoutSeconds}
-                                        onChange={(e) =>
-                                            updateField('apiConfig.timeoutSeconds', parseInt(e.target.value))
-                                        }
-                                        min="1"
-                                        max="300"
-                                    />
-                                </div>
-
-                                {/* Retry Count */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="retry_count">Retry Count</Label>
-                                    <Input
-                                        id="retry_count"
-                                        type="number"
-                                        value={config.retryCount}
-                                        onChange={(e) =>
-                                            updateField('apiConfig.retryCount', parseInt(e.target.value))
-                                        }
-                                        min="0"
-                                        max="5"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* SSL Verification */}
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="verify_ssl"
-                                    checked={config.verifySsl}
-                                    onCheckedChange={(checked) =>
-                                        updateField('apiConfig.verifySsl', checked as boolean)
-                                    }
-                                />
-                                <Label htmlFor="verify_ssl">Verify SSL Certificate</Label>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="verify_ssl"
+                            checked={config.verifySsl}
+                            onCheckedChange={(checked) => updateField('apiConfig.verifySsl', checked as boolean)}
+                        />
+                        <Label htmlFor="verify_ssl" className="text-xs">
+                            Verify SSL Certificate
+                        </Label>
+                    </div>
                 </CollapsibleContent>
             </Collapsible>
 
-            {/* Buttons */}
-            <div className="flex justify-between">
-                <Button variant="outline" onClick={onBack}>
-                    ← Back
-                </Button>
-                <Button onClick={onNext} disabled={!isValid()}>
-                    Next: Parameters →
-                </Button>
-            </div>
+            {/* Navigation Buttons - only show if onNext/onBack provided */}
+            {(onNext || onBack) && (
+                <div className="flex justify-between pt-6">
+                    {onBack ? (
+                        <Button variant="outline" onClick={onBack}>
+                            ← Back
+                        </Button>
+                    ) : <div />}
+
+                    {onNext && (
+                        <Button onClick={onNext} disabled={!config.baseUrl || !(config.endpoint || '').trim()}>
+                            Next: Inputs →
+                        </Button>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
 
-// Improved Header Editor Component with better UX
+// Header Editor Component
 const HeaderEditor: React.FC<{
     value: Record<string, string>;
     onChange: (value: Record<string, string>) => void;
-}> = ({ value, onChange }) => {
+    addLabel?: string;
+}> = ({ value, onChange, addLabel = 'Add Header' }) => {
     const pairs = Object.entries(value);
 
     const addPair = () => {
@@ -379,9 +592,9 @@ const HeaderEditor: React.FC<{
 
     if (pairs.length === 0) {
         return (
-            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Custom Header
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-8">
+                <Plus className="h-3 w-3 mr-1" />
+                {addLabel}
             </Button>
         );
     }
@@ -389,48 +602,45 @@ const HeaderEditor: React.FC<{
     return (
         <div className="space-y-2">
             {pairs.map(([key, val], index) => (
-                <div key={index} className="flex gap-2 items-start">
-                    <div className="flex-1 min-w-0">
-                        <Input
-                            value={key}
-                            onChange={(e) => updatePair(index, e.target.value, val)}
-                            placeholder="Header-Name"
-                            className="font-mono text-sm"
-                        />
-                    </div>
-                    <div className="flex-[2] min-w-0">
-                        <Input
-                            value={val}
-                            onChange={(e) => updatePair(index, key, e.target.value)}
-                            placeholder="Header-Value"
-                            className="font-mono text-sm"
-                        />
-                    </div>
+                <div key={index} className="flex gap-2 items-center">
+                    <Input
+                        value={key}
+                        onChange={(e) => updatePair(index, e.target.value, val)}
+                        placeholder="Header-Name"
+                        className="w-36 font-mono text-xs h-8"
+                    />
+                    <Input
+                        value={val}
+                        onChange={(e) => updatePair(index, key, e.target.value)}
+                        placeholder="Header-Value"
+                        className="flex-1 font-mono text-xs h-8"
+                    />
                     <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => removePair(index)}
-                        className="h-10 w-10 flex-shrink-0 text-muted-foreground hover:text-destructive"
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3" />
                     </Button>
                 </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Another Header
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-7">
+                <Plus className="h-3 w-3 mr-1" />
+                {addLabel}
             </Button>
         </div>
     );
 };
 
-// Simple Key-Value Editor (for query params)
+// Key-Value Editor (for query params)
 const KeyValueEditor: React.FC<{
     value: Record<string, string>;
     onChange: (value: Record<string, string>) => void;
     placeholder: { key: string; value: string };
-}> = ({ value, onChange, placeholder }) => {
+    addLabel?: string;
+}> = ({ value, onChange, placeholder, addLabel = 'Add key value pair' }) => {
     const pairs = Object.entries(value);
 
     const addPair = () => {
@@ -456,29 +666,32 @@ const KeyValueEditor: React.FC<{
                         value={key}
                         onChange={(e) => updatePair(index, e.target.value, val)}
                         placeholder={placeholder.key}
-                        className="flex-1"
+                        className="flex-1 text-xs h-8"
                     />
                     <Input
                         value={val}
                         onChange={(e) => updatePair(index, key, e.target.value)}
                         placeholder={placeholder.value}
-                        className="flex-1"
+                        className="flex-1 text-xs h-8"
                     />
                     <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => removePair(index)}
-                        className="h-10 w-10"
+                        className="h-7 w-7"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3" />
                     </Button>
                 </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed">
-                <Plus className="h-4 w-4 mr-2" />
-                Add {pairs.length === 0 ? 'Parameter' : 'Another'}
+            <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-7">
+                <Plus className="h-3 w-3 mr-1" />
+                {addLabel}
             </Button>
         </div>
     );
 };
+
+// Keep backward compatibility
+export const APIConfigStep = APIConfigSection;

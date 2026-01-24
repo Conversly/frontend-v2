@@ -22,8 +22,8 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]">Agent&apos;s UI</h1>
-        <p className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground">
+        <h1 className="text-2xl font-semibold">Agent&apos;s UI</h1>
+        <p className="text-sm text-muted-foreground">
           Style your agent to match your brand. You can customize it further in the settings later.
         </p>
       </div>
@@ -38,7 +38,7 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <Label className="pl-0.5 text-sm font-medium">Appearance</Label>
           <div className="flex gap-2">
             <Button
@@ -60,7 +60,7 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
               Dark
             </Button>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-1">
           <Label className="pl-0.5 text-sm font-medium">Primary color</Label>

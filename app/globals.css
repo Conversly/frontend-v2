@@ -15,23 +15,31 @@
 
 :root {
   /* Typography - Update fonts in lib/theme/fonts.ts */
-  font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-  --font-roboto: var(--font-roboto);
-  --font-space-grotesk: var(--font-space-grotesk);
+  font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
+  /* `--font-lato` is provided by next/font in app/layout.tsx */
 
   /* Typography tokens */
-  --font-h1: 20px;
-  --font-h2: 16px;
-  --font-h3: 14px;
-  --font-body: 14px;
-  --font-small: 13px;
-  --font-xsmall: 12px;
-  --line-h1: 28px;
-  --line-h2: 24px;
-  --line-h3: 20px;
-  --line-body: 22px;
-  --line-small: 20px;
-  --line-xsmall: 18px;
+  --font-h1: 19.5899px;
+  --font-h2: 17.6316px;
+  --font-h3: 15px;
+  /* Interpolated/Default */
+  --font-h4: 13.7136px;
+  --font-h5: 11.7539px;
+  --font-body: 13px;
+  --font-small: 11.7539px;
+  --font-xsmall: 10px;
+  --font-ui: 14px;
+
+  --line-h1: 23.5092px;
+  --line-h2: 21.5496px;
+  --line-h3: 18px;
+  /* Interpolated */
+  --line-h4: 15.6719px;
+  --line-h5: 13.7136px;
+  --line-body: 16px;
+  --line-small: 18.4713px;
+  --line-xsmall: 12px;
+  --line-ui: 19.5899px;
   --content-max-width: 1280px;
 
   /* Global Cursor Rules */
@@ -83,7 +91,7 @@
   --chart-5: oklch(0.30 0.20 260);
 
   /* Sidebar - White with subtle border */
-  --sidebar-background: #FFFFFF;
+  --sidebar-background: #F8F9FA;
   --sidebar-foreground: oklch(0.20 0.02 260);
   --sidebar-primary: oklch(0.55 0.25 260);
   --sidebar-primary-foreground: #FFFFFF;
@@ -91,7 +99,7 @@
   --sidebar-accent-foreground: oklch(0.20 0.02 260);
   --sidebar-border: #E4E4E7;
   --sidebar-ring: oklch(0.55 0.25 260);
-  --sidebar: #FFFFFF;
+  --sidebar: #F8F9FA;
 }
 
 /* Dark Theme - Balanced between ElevenLabs and Vapi */
@@ -152,11 +160,32 @@
 
 @theme inline {
   /* Font families - Managed by lib/theme/fonts.ts */
-  --font-sans: var(--font-roboto);
+  --font-sans: var(--font-lato);
   --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
-  --font-roboto: var(--font-roboto);
-  --font-space-grotesk: var(--font-space-grotesk);
+  --font-lato: var(--font-lato);
+
+  /* Typography (Tailwind v4) */
+  /* Font sizes */
+  --text-2xs: var(--font-xsmall);
+  --text-2xs--line-height: var(--line-xsmall);
+  --text-xs: var(--font-small);
+  --text-xs--line-height: var(--line-small);
+  --text-sm: var(--font-body);
+  --text-sm--line-height: var(--line-body);
+  --text-base: var(--font-ui);
+  --text-base--line-height: var(--line-ui);
+  --text-lg: var(--font-h4);
+  --text-lg--line-height: var(--line-h4);
+  --text-xl: var(--font-h2);
+  --text-xl--line-height: var(--line-h2);
+  --text-2xl: var(--font-h1);
+  --text-2xl--line-height: var(--line-h1);
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
 
   /* Radius values */
   --radius-sm: calc(var(--radius) - 4px);
@@ -653,18 +682,30 @@
 
 @layer base {
   :root {
-    @apply overflow-x-hidden overscroll-none;
+    @apply overflow-x-hidden;
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
+    /* Custom Scrollbar Styling */
     &::-webkit-scrollbar {
-      display: none;
+      width: 6px;
+      height: 6px;
     }
 
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--border);
+      border-radius: var(--radius);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: color-mix(in oklch, var(--border), black 10%);
+    }
+
+    /* Firefox Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 
   * {
@@ -682,34 +723,89 @@
     color: var(--foreground);
   }
 
+  :root {
+    @apply h-full overflow-hidden;
+  }
+
   html {
-    @apply scroll-smooth;
-    scroll-behavior: smooth;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior-y: none;
   }
 
   body {
-    @apply bg-background text-foreground overscroll-none;
+    @apply bg-background text-foreground h-full w-full overflow-hidden;
     background-color: var(--background);
     color: var(--foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
     transition: background-color 0.5s ease, color 0.5s ease;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
-    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
+    font-size: var(--font-body);
+    font-weight: 400;
+    line-height: var(--line-body);
+    letter-spacing: 0.15px;
   }
 
   /* Hero & Titles - Font defined in lib/theme/fonts.ts */
   h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
   .hero-title,
   .hero-heading {
-    font-family: var(--font-space-grotesk), "Space Grotesk",
-      var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h1);
+    font-weight: 700;
+    line-height: var(--line-h1);
+    letter-spacing: 0.15px;
+  }
+
+  h2 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h2);
+    font-weight: 700;
+    line-height: var(--line-h2);
+    letter-spacing: 0.15px;
+  }
+
+  h4 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h4);
+    font-weight: 700;
+    line-height: var(--line-h4);
+    letter-spacing: 0.25px;
+  }
+
+  h5 {
+    font-family: var(--font-lato), "Lato", sans-serif;
+    font-size: var(--font-h5);
+    font-weight: 700;
+    line-height: var(--line-h5);
+    letter-spacing: 0.15px;
+  }
+
+  /* Reset link default to inherit unless specified */
+  a {
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--font-lato), "Lato", sans-serif;
+  }
+
+  /* Specific A tag style requested - applied to class or default? Assuming default for now or specific context */
+  /*
+  {
+        "level": "A",
+        "font": "Lato, Helvetica, sans-serif",
+        "size": "10px",
+        "weight": "500",
+        "lineHeight": "28px",
+        "letterSpacing": "0.5px"
+    } 
+  */
+  a.small-link {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0.5px;
   }
 
   a:active,
@@ -798,10 +894,6 @@
   }
 
   /* Layout & page structure */
-  .app-shell {
-    font-family: var(--font-roboto), "Roboto", "Helvetica Neue", "Arial", sans-serif;
-  }
-
   .page-container {
     width: 100%;
     /* padding removed to allow full-height layouts */

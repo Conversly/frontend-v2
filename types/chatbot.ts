@@ -1,17 +1,25 @@
 export interface CreateChatbotInput {
   name: string;
   description: string;
+  workspaceId?: string;
 }
 
 export interface ChatbotResponse {
   id: string;
-  userId: string;
+  workspaceId: string;
   name: string;
   description: string;
-  systemPrompt: string;  // widget channel system prompt
+  systemPrompt: string; // From WIDGET channel
+  status: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+
+  devVersion: number;
+  liveVersion: number;
+  deployStatusField: string | null;
+  lastDeployedAt: Date | null;
   apiKey: string | null;
+  createdBy?: string | null;
 }
 
 export interface GetChatbotsResponse {
@@ -19,11 +27,19 @@ export interface GetChatbotsResponse {
   name: string;
   description: string;
   createdAt: Date | null;
+  status: string;
   userId: string;
+  devVersion: number;
+  liveVersion: number;
+  deployStatusField: string | null;
+  lastDeployedAt: Date | null;
+  workspaceId: string;
 }
+
 
 export interface DeleteChatbotInput {
   id: string;
+  workspaceId?: string;
 }
 
 export interface DeleteChatbotResponse {

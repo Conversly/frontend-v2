@@ -27,14 +27,14 @@ const CustomerSupport = () => {
                             Support Automation
                         </Badge>
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
-                            24/7 Customer Support
-                            <span className="block text-xl md:text-2xl font-normal text-muted-foreground mt-4">Always Online, Always Ready</span>
+                            Support That Never Sleeps
+                            <span className="block text-xl md:text-2xl font-normal text-muted-foreground mt-4">Answer 1,000+ Conversations Simultaneously</span>
                         </h2>
 
                         <div className="space-y-8 mt-8">
-                            <SupportFeature icon="⚡" title="Instant Response Time" desc="No more waiting. Get immediate responses to customer queries at any time of day or night." color="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" />
-                            <SupportFeature icon="🤖" title="Automated Query Resolution" desc="Handle common customer queries automatically, reducing the load on your human support team." color="bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400" />
-                            <SupportFeature icon="🎯" title="Consistent Service Quality" desc="Maintain high service standards with AI-powered responses that are always accurate and on-brand." color="bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400" />
+                            <SupportFeature icon="⚡" title="<2 Second Response Time" desc="Customers don't wait. AI responds instantly 24/7 — no hold music, no 'please wait', no frustration." color="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" />
+                            <SupportFeature icon="🤖" title="Handle 80% of Tickets Automatically" desc="AI resolves routine questions instantly. Your team focuses on complex issues that need human touch." color="bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400" />
+                            <SupportFeature icon="🎯" title="94% Customer Satisfaction" desc="Accurate, on-brand responses every time. No bad days, no inconsistency — just reliable support at scale." color="bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400" />
                         </div>
 
                         <div className="mt-10">

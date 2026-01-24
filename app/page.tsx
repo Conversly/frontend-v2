@@ -7,11 +7,15 @@ import PricingSection from "@/components/landing/pricing";
 import QuestionsSection from "@/components/landing/questions";
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
+import HumanEscalationSection from "@/components/landing/human-escalation";
 import BroadcastSection from "@/components/landing/broadcast-section";
+import ComparisonSection from "@/components/landing/comparison-section";
+import EnhancedTestimonials from "@/components/landing/enhanced-testimonials";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 import TestimonialsSection from "@/components/landing/Testinomials";
 
 // Single source of truth for content width
@@ -24,28 +28,40 @@ export default function Home() {
     try {
       const isLoggedIn = localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN);
       if (isLoggedIn === "true") {
-        router.replace("/chatbot"); 
+        getUserWorkspaces()
+          .then((ws) => {
+            const first = ws[0]?.workspaceId;
+            if (first) router.replace(`/${first}/chatbot`);
+          })
+          .catch(() => {
+            // Local flag says logged-in, but backend says no (cookie expired, etc).
+            // Clear it to prevent redirect ping-pong between `/` and `/:workspaceId/...`.
+            localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "false");
+          });
       }
     } catch { }
   }, [router]);
 
   return (
-    <main className="bg-background relative min-h-screen">
+    <main className="bg-background relative w-full">
       {/* Global Grid Background */}
       <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
       <div className="relative z-10">
         <Navbar />
-        
+
         <div className={CONTENT_WIDTH}>
           <Hero />
           {/* <Testimonial /> */}
           <UnifiedOfferings />
-          <BroadcastSection />
+          <HumanEscalationSection />
+          <ComparisonSection />
           <HowItWorks />
+          {/* <BroadcastSection /> */}
+          <EnhancedTestimonials />
           <PricingSection />
           {/* <QuestionsSection /> */}
-          <TestimonialsSection/>
+          <TestimonialsSection />
           <Footer />
         </div>
       </div>
