@@ -58,10 +58,10 @@ export default function Home() {
           <ComparisonSection />
           <HowItWorks />
           {/* <BroadcastSection /> */}
-          <EnhancedTestimonials />
+          {/* <EnhancedTestimonials /> */}
           <PricingSection />
           {/* <QuestionsSection /> */}
-          <TestimonialsSection />
+          {/* <TestimonialsSection /> */}
           <Footer />
         </div>
       </div>
