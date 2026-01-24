@@ -33,7 +33,11 @@ export default function Home() {
             const first = ws[0]?.workspaceId;
             if (first) router.replace(`/${first}/chatbot`);
           })
-          .catch(() => { });
+          .catch(() => {
+            // Local flag says logged-in, but backend says no (cookie expired, etc).
+            // Clear it to prevent redirect ping-pong between `/` and `/:workspaceId/...`.
+            localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "false");
+          });
       }
     } catch { }
   }, [router]);

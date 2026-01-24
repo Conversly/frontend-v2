@@ -68,6 +68,8 @@ type AgentInboxState = {
   closeConversationTab: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
   clearUnread: (conversationId: string) => void;
+  setUnreadCountsFromInbox: (items: { conversationId: string; unreadCount: number }[]) => void;
+  incrementUnread: (conversationId: string, by?: number) => void;
 
   setHistoryFromApi: (conversationId: string, items: ConversationMessageItem[]) => void;
   appendLiveMessage: (message: ChatMessage, opts?: { bumpUnread?: boolean }) => void;
@@ -174,6 +176,31 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
     }));
   },
 
+  setUnreadCountsFromInbox: (items) => {
+    set(() => {
+      const unreadCountByConversationId: Record<string, number> = {};
+      for (const it of items) {
+        if (!it?.conversationId) continue;
+        unreadCountByConversationId[it.conversationId] = Math.max(0, Number(it.unreadCount) || 0);
+      }
+      return { unreadCountByConversationId };
+    });
+  },
+
+  incrementUnread: (conversationId, by = 1) => {
+    if (!conversationId) return;
+    const n = Math.max(1, Number(by) || 1);
+    set((state) => {
+      if (state.activeConversationId === conversationId) return state;
+      return {
+        unreadCountByConversationId: {
+          ...state.unreadCountByConversationId,
+          [conversationId]: (state.unreadCountByConversationId[conversationId] ?? 0) + n,
+        },
+      };
+    });
+  },
+
   setHistoryFromApi: (conversationId, items) => {
     const history: ChatMessage[] = items.map((m) => {
       const sentAt = m.createdAt ? new Date(m.createdAt) : new Date();
@@ -221,7 +248,9 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
       const messagesByConversationId = { ...state.messagesByConversationId, [message.conversationId]: next };
 
       const bumpUnread =
-        opts?.bumpUnread !== false && state.activeConversationId !== message.conversationId;
+        opts?.bumpUnread !== false &&
+        message.senderType === "USER" &&
+        state.activeConversationId !== message.conversationId;
       const unreadCountByConversationId = bumpUnread
         ? {
             ...state.unreadCountByConversationId,

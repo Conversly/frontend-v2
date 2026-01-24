@@ -94,6 +94,15 @@ export interface EscalationItem {
   agentDisplayName?: string | null;
   agentAvatarUrl?: string | null;
   assignedAt: string | null;
+
+  // Optional (when escalations endpoint includes conversation fields)
+  channel?: MessageChannel;
+  conversationStatus?: ConversationStatus;
+  conversationClosedAt?: string | null;
+
+  // Optional (present when `mine=true` on GET /activity/escalations)
+  lastMessageAt?: string | null;
+  unreadCount?: number | null;
 }
 
 export interface GetEscalationsResponse {
@@ -114,5 +123,13 @@ export interface GetEscalationResponse {
       lastMessageAt: string | null;
       closedAt: string | null;
     };
+  };
+}
+
+export interface MarkEscalationReadResponse {
+  success: true;
+  data: {
+    escalationId: string;
+    lastReadAt: string; // ISO timestamp
   };
 }

@@ -10,6 +10,7 @@ import type {
   ConversationItem,
   ConversationMessageItem,
   EscalationItem,
+  EscalationStatus,
 } from "@/types/activity";
 
 export const useChatlogsQuery = (chatbotId: string) =>
@@ -36,12 +37,14 @@ export const useConversationsQuery = (chatbotId: string) =>
     enabled: Boolean(chatbotId),
   });
 
-export const useEscalationsQuery = (chatbotId: string) =>
+export const useEscalationsQuery = (
+  chatbotId: string,
+  params?: { mine?: boolean; status?: EscalationStatus; limit?: number },
+) =>
   useQuery<EscalationItem[]>({
-    queryKey: [QUERY_KEY.ACTIVITY_ESCALATIONS, chatbotId],
-    queryFn: () => listEscalations({ chatbotId }),
+    queryKey: [QUERY_KEY.ACTIVITY_ESCALATIONS, chatbotId, params?.mine, params?.status, params?.limit],
+    queryFn: () => listEscalations({ chatbotId, mine: params?.mine, status: params?.status, limit: params?.limit }),
     staleTime: 10_000,
     enabled: Boolean(chatbotId),
   });
-
 

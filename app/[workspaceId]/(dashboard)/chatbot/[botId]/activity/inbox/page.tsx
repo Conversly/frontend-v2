@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -27,12 +27,11 @@ import {
 } from "@/types/websocket";
 
 import {
-  useConversationsQuery,
   useEscalationsQuery,
   useMessagesQuery,
 } from "@/services/activity";
-import { closeConversation } from "@/lib/api/activity";
-import type { ConversationItem, EscalationItem } from "@/types/activity";
+import { closeConversation, markEscalationRead } from "@/lib/api/activity";
+import type { EscalationItem } from "@/types/activity";
 import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/agent-inbox";
 
 import {
@@ -236,6 +235,8 @@ export default function InboxPage() {
   const closeConversationTab = useAgentInboxStore((s) => s.closeConversationTab);
   const setActiveConversation = useAgentInboxStore((s) => s.setActiveConversation);
   const clearUnread = useAgentInboxStore((s) => s.clearUnread);
+  const setUnreadCountsFromInbox = useAgentInboxStore((s) => s.setUnreadCountsFromInbox);
+  const incrementUnread = useAgentInboxStore((s) => s.incrementUnread);
   const upsertEscalationDelta = useAgentInboxStore((s) => s.upsertEscalationDelta);
   const upsertStateUpdate = useAgentInboxStore((s) => s.upsertStateUpdate);
 
@@ -246,7 +247,6 @@ export default function InboxPage() {
   const stateByConversationId = useAgentInboxStore((s) => s.stateByConversationId);
   const escalationsById = useAgentInboxStore((s) => s.escalationsById);
   const escalationIdByConversationId = useAgentInboxStore((s) => s.escalationIdByConversationId);
-  const conversationsById = useAgentInboxStore((s) => s.conversationsById);
   const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
   const setHistoryFromApi = useAgentInboxStore((s) => s.setHistoryFromApi);
   const appendLiveMessage = useAgentInboxStore((s) => s.appendLiveMessage);
@@ -255,14 +255,37 @@ export default function InboxPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [infoOpen, setInfoOpen] = useState(false);
 
-  const { data: conversations, isLoading: isLoadingConversations } = useConversationsQuery(botId);
-  const { data: escalations, isLoading: isLoadingEscalations } = useEscalationsQuery(botId);
+  // All/Waiting tabs are mine=false; Mine tab is mine=true.
+  const { data: escalationsAll, isLoading: isLoadingEscalationsAll } = useEscalationsQuery(botId, {
+    mine: false,
+    limit: 200,
+  });
+  const {
+    data: myEscalations,
+    refetch: refetchMyEscalations,
+    isLoading: isLoadingMyEscalations,
+  } = useEscalationsQuery(botId, { mine: true, limit: 200 });
 
   useEffect(() => {
-    if (conversations || escalations) {
-      hydrateSnapshots({ conversations, escalations });
+    if (escalationsAll) {
+      hydrateSnapshots({ escalations: escalationsAll });
     }
-  }, [conversations, escalations, hydrateSnapshots]);
+  }, [escalationsAll, hydrateSnapshots]);
+
+  useEffect(() => {
+    if (!myEscalations) return;
+    // IMPORTANT:
+    // If backend intentionally returns `agentUserId: null` when `mine=false`,
+    // the "Mine" tab filter (e.agentUserId === me) will never match unless we also
+    // hydrate from the `mine=true` payload.
+    hydrateSnapshots({ escalations: myEscalations });
+    setUnreadCountsFromInbox(
+      myEscalations.map((e) => ({
+        conversationId: e.conversationId,
+        unreadCount: e.unreadCount ?? 0,
+      })),
+    );
+  }, [hydrateSnapshots, myEscalations, setUnreadCountsFromInbox]);
 
   const notificationsRoomId = useMemo(() => {
     if (!workspaceId || !botId) return "";
@@ -277,6 +300,29 @@ export default function InboxPage() {
 
       const eventType = msg.eventType;
       const data = (msg as any).data ?? {};
+
+      // Backend-backed unread events (optional). We only track unread for escalations assigned to me.
+      if (eventType === "USER_MESSAGE" || eventType === "UNREAD_INCREMENT") {
+        const conversationId = data.conversationId;
+        const escalationId = data.escalationId;
+        const isMine =
+          Boolean(agentUserId) &&
+          ((typeof escalationId === "string" && escalationId && escalationsById[escalationId]?.agentUserId === agentUserId) ||
+            (typeof conversationId === "string" &&
+              conversationId &&
+              escalationIdByConversationId[conversationId] &&
+              escalationsById[escalationIdByConversationId[conversationId]]?.agentUserId === agentUserId));
+
+        if (conversationId && conversationId !== activeConversationId && isMine) {
+          incrementUnread(conversationId);
+        }
+        return;
+      }
+      if (eventType === "UNREAD_RESET") {
+        const conversationId = data.conversationId;
+        if (conversationId) clearUnread(conversationId);
+        return;
+      }
 
       // Minimal handling: treat all notifications as escalation deltas where possible.
       if (
@@ -308,24 +354,47 @@ export default function InboxPage() {
     },
   });
 
+  // Reconnect safety: on WS reconnect, rehydrate unread from backend.
+  const lastConnRef = useRef(connectionState);
+  useEffect(() => {
+    const prev = lastConnRef.current;
+    lastConnRef.current = connectionState;
+    if (connectionState === ConnectionState.CONNECTED && prev !== ConnectionState.CONNECTED) {
+      refetchMyEscalations();
+    }
+  }, [connectionState, refetchMyEscalations]);
+
+  const markConversationRead = useCallback(
+    async (conversationId: string) => {
+      const escalationId = escalationIdByConversationId[conversationId];
+      if (!escalationId) return;
+      try {
+        await markEscalationRead(escalationId);
+      } catch {
+        await refetchMyEscalations();
+      }
+    },
+    [escalationIdByConversationId, refetchMyEscalations],
+  );
+
   const inboxItems = useMemo(() => {
-    const list = Object.values(escalationsById) as EscalationItem[];
+    // Source list is server-driven by tab:
+    // - all/waiting: mine=false list
+    // - mine: mine=true list
+    const list = (activeTab === "mine" ? myEscalations : escalationsAll) ?? [];
     const filtered = list.filter((e) => {
       const status = (e.status || "").toUpperCase();
       const isWaiting = status === "WAITING_FOR_AGENT" || status === "REQUESTED";
-      const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
-      const conversationStatus = conversationsById[e.conversationId]?.status;
-      const isClosed =
-        conversationStatus === "CLOSED" ||
-        status === "CANCELLED" ||
-        status === "TIMED_OUT" ||
-        status === "RESOLVED";
+      const isClosed = status === "CANCELLED" || status === "TIMED_OUT" || status === "RESOLVED";
 
-      // Closed chats shouldn't stay in the active inbox list.
+      // Only hide when the escalation is explicitly closed.
+      // We intentionally do NOT hide based on conversationStatus because backend can close a conversation
+      // while an escalation is still active (ASSIGNED/HUMAN_ACTIVE), which would incorrectly hide it.
       if (isClosed) return false;
 
       if (activeTab === "waiting" && !isWaiting) return false;
-      if (activeTab === "mine" && !isMine) return false;
+      // Mine tab is sourced from `mine=true` backend query; don't re-filter by agent id here
+      // (agent id may be temporarily unavailable during auth hydration).
 
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
@@ -346,11 +415,10 @@ export default function InboxPage() {
     });
 
     return filtered;
-  }, [escalationsById, conversationsById, activeTab, searchQuery, agentUserId]);
+  }, [activeTab, escalationsAll, myEscalations, searchQuery]);
 
   const activeEscalationId = activeConversationId ? escalationIdByConversationId[activeConversationId] : undefined;
   const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
-  const activeConversation = activeConversationId ? conversationsById[activeConversationId] : undefined;
   const activeState = activeConversationId ? stateByConversationId[activeConversationId] : undefined;
   const activeHeaderStatus = statusUi(String(activeEscalation?.status ?? activeState?.status ?? ""));
 
@@ -383,8 +451,9 @@ export default function InboxPage() {
       openConversation(conversationId);
       setActiveConversation(conversationId);
       clearUnread(conversationId);
+      void markConversationRead(conversationId);
     },
-    [openConversation, setActiveConversation, clearUnread],
+    [openConversation, setActiveConversation, clearUnread, markConversationRead],
   );
 
   const onClaim = useCallback(
@@ -396,6 +465,7 @@ export default function InboxPage() {
       const room = conversationRoomId(e.conversationId);
       openConversation(e.conversationId);
       setActiveConversation(e.conversationId);
+      void markConversationRead(e.conversationId);
 
       sendMessage({
         action: WebSocketMessageType.CLAIM,
@@ -407,7 +477,7 @@ export default function InboxPage() {
         },
       });
     },
-    [agentUserId, openConversation, sendMessage, setActiveConversation],
+    [agentUserId, markConversationRead, openConversation, sendMessage, setActiveConversation],
   );
 
   const onSend = useCallback(() => {
@@ -474,7 +544,8 @@ export default function InboxPage() {
     upsertStateUpdate,
   ]);
 
-  const isLoadingInbox = isLoadingConversations || isLoadingEscalations;
+  const isLoadingInbox =
+    (activeTab === "mine" ? isLoadingMyEscalations : isLoadingEscalationsAll);
 
   return (
     <div className="flex h-full bg-background">
@@ -543,7 +614,6 @@ export default function InboxPage() {
               ))
             ) : inboxItems.length > 0 ? (
               inboxItems.map((e) => {
-                const conversation = conversationsById[e.conversationId] as ConversationItem | undefined;
                 const isActive = activeConversationId === e.conversationId;
                 const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
                 const isAssigned = Boolean(e.agentUserId);
@@ -570,9 +640,9 @@ export default function InboxPage() {
                       <div className="flex items-start gap-2 min-w-0">
                         <span
                           className="mt-0.5 shrink-0"
-                          title={String(conversation?.channel || "WIDGET").toUpperCase()}
+                          title={String(e.channel || "WIDGET").toUpperCase()}
                         >
-                          {getChannelIcon(conversation?.channel)}
+                          {getChannelIcon(e.channel)}
                         </span>
 
                         <div className="min-w-0">
@@ -681,8 +751,8 @@ export default function InboxPage() {
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground shrink-0">{activeHeaderStatus.label}</span>
-                  <span className="shrink-0" title={String(activeConversation?.channel || "WIDGET").toUpperCase()}>
-                    {getChannelIcon(activeConversation?.channel)}
+                  <span className="shrink-0" title={String(activeEscalation?.channel || "WIDGET").toUpperCase()}>
+                    {getChannelIcon(activeEscalation?.channel)}
                   </span>
                   {activeEscalation?.reason ? (
                     <span className="text-xs text-muted-foreground truncate">
@@ -736,6 +806,7 @@ export default function InboxPage() {
                     onClick={() => {
                       setActiveConversation(id);
                       clearUnread(id);
+                      void markConversationRead(id);
                     }}
                     className={cn(
                       "flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs shrink-0",
@@ -886,9 +957,9 @@ export default function InboxPage() {
                         <div>
                           <div className="text-xs text-muted-foreground">Channel</div>
                           <div className="mt-1 flex items-center gap-2">
-                            {getChannelIcon(activeConversation?.channel)}
+                            {getChannelIcon(activeEscalation?.channel)}
                             <span className="text-xs">
-                              {String(activeConversation?.channel || "WIDGET").toUpperCase()}
+                              {String(activeEscalation?.channel || "WIDGET").toUpperCase()}
                             </span>
                           </div>
                         </div>
@@ -997,9 +1068,9 @@ export default function InboxPage() {
               Send
             </Button>
           </div>
-          {activeConversation && (
+          {activeConversationId && (
             <div className="mt-2 text-xs text-muted-foreground">
-              Channel: <span className="font-medium">{activeConversation.channel}</span>
+              Channel: <span className="font-medium">{String(activeEscalation?.channel || "WIDGET").toUpperCase()}</span>
             </div>
           )}
         </div>

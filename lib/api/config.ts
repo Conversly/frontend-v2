@@ -99,6 +99,7 @@ export const API = {
 
       LIST_ESCALATIONS: allMode(() => "/escalations"),
       GET_ESCALATION: allMode(() => "/escalations/:escalationId"),
+      MARK_ESCALATION_READ: allMode(() => "/escalations/:escalationId/read"),
     },
     DEPLOY: {
       BASE_URL: () => "/deploy",
