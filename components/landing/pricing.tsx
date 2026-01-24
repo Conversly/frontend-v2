@@ -8,13 +8,14 @@ const pricingPlans = [
   {
     name: "Starter",
     priceMonthly: "Free",
-    description: "Experience the power of VerlyAI risk-free",
+    description: "Perfect for testing & small teams — no credit card required",
     features: [
-      "14-day free trial",
-      "500 message credits",
-      "Basic voice & chat agents",
+      "500 free message credits",
+      "14-day full-feature trial",
+      "All channels (chat, voice, WhatsApp)",
+      "Basic analytics dashboard",
       "Community support",
-      "Standard response time",
+      "No credit card required",
     ],
     gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
     stats: "14",
@@ -25,42 +26,42 @@ const pricingPlans = [
     name: "Pro",
     popular: true,
     priceMonthly: "$30",
-    description: "Scale your operations with pay-as-you-go",
+    description: "For growing businesses — typical cost $400-800/month (saves $9,500 vs hiring)",
     features: [
-      "Pay-as-you-go credits",
-      "Advanced voice & chat agents",
-      "WhatsApp integration",
-      "Priority email support",
-      "Function calling & tools",
-      "Analytics dashboard",
+      "Pay only $0.05 per conversation",
+      "Priority support (4-hour response)",
+      "Advanced analytics & insights",
+      "Function calling & API integrations",
+      "Custom branding & white-label",
+      "99.9% uptime SLA guarantee",
     ],
     gradient: "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10",
-    stats: "Flex",
-    statsLabel: "Pay-as-you-go",
-    cta: "Get Started",
+    stats: "$0.05",
+    statsLabel: "Per conversation",
+    cta: "Start Pro Trial",
   },
   {
     name: "Enterprise",
     priceMonthly: "Custom",
-    description: "For organizations requiring maximum scale",
+    description: "For scale & compliance — volume discounts save up to 70%",
     features: [
-      "Unlimited volume discounts",
-      "Custom LLM fine-tuning",
+      "Volume discounts (save up to 70%)",
+      "Custom LLM fine-tuning for your brand",
       "Dedicated success manager",
-      "On-premise deployment",
-      "SLA guarantees",
-      "SSO & advanced security",
+      "On-premise deployment option",
+      "SOC 2 + HIPAA compliance",
+      "SSO & advanced security controls",
     ],
     gradient: "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
     stats: "∞",
     statsLabel: "Unlimited Scale",
-    cta: "Contact Sales",
+    cta: "Talk to Sales",
   },
 ]
 
 export default function PricingSection() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden px-4" id="pricing">
+    <section className="pt-6 lg:pt-6 pb-24 lg:pb-32 relative overflow-hidden px-4" id="pricing">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-transparent opacity-50" />
@@ -94,7 +95,7 @@ export default function PricingSection() {
       <div className="relative w-full max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16 space-y-4"
+          className="text-center mb-8 space-y-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -109,12 +110,12 @@ export default function PricingSection() {
             </span>
           </motion.div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight">
-            Simple, Transparent Pricing
+            Simple Pricing That Grows With You
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Start free and <span className="text-foreground font-medium">scale as you grow</span>.{" "}
+            Start free. Pay only for what you use. <span className="text-foreground font-medium">Cancel anytime.</span>{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 font-medium">
-              No hidden fees or surprises.
+              Save $9,600/month vs hiring support agents.
             </span>
           </p>
         </motion.div>

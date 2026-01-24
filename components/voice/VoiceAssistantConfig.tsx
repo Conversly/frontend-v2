@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { VoicePreview } from "@/components/voice/VoicePreview";
 import { Badge } from "@/components/ui/badge";
 
@@ -106,6 +106,8 @@ interface VoiceAssistantConfigProps {
 
 export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfigProps) {
     const router = useRouter();
+    const params = useParams<{ workspaceId?: string }>();
+    const workspaceId = (params as any)?.workspaceId as string | undefined;
     const { data: assistant, isLoading, refetch } = useAssistant(assistantId);
 
     // Mutations
@@ -192,7 +194,14 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
             {/* Header */}
             <div className="flex items-center justify-between border-b px-6 py-3">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.push(`/chatbot/${botId}/voice`)}>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                            if (!workspaceId) return;
+                            router.push(`/${workspaceId}/chatbot/${botId}/voice`);
+                        }}
+                    >
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
@@ -410,7 +419,7 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
                                                                 <span className="font-medium">{voice.name}</span>
                                                                 <span className="text-xs text-muted-foreground">{voice.description}</span>
                                                             </div>
-                                                            <div className="ml-auto px-2 py-0.5 rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground">
+                                                            <div className="ml-auto px-2 py-0.5 rounded-full bg-secondary text-2xs font-medium text-secondary-foreground">
                                                                 {voice.gender}
                                                             </div>
                                                         </div>
@@ -482,7 +491,14 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
                                             <CardTitle>Inbound Phone Numbers</CardTitle>
                                             <CardDescription>Phone numbers routed to this assistant.</CardDescription>
                                         </div>
-                                        <Button variant="outline" size="sm" onClick={() => router.push(`/chatbot/${botId}/voice/phone-numbers`)}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                if (!workspaceId) return;
+                                                router.push(`/${workspaceId}/chatbot/${botId}/voice/phone-numbers`);
+                                            }}
+                                        >
                                             Manage Numbers
                                         </Button>
                                     </div>

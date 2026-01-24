@@ -1,4 +1,4 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
   ProcessRequest,
@@ -14,8 +14,10 @@ export const processDataSource = async (
   request: ProcessRequest
 ): Promise<ApiResponse<DatasourceResponse>> => {
   try {
-    const res = await fetch(
-      API.ENDPOINTS.DATA_SOURCE.BASE_URL() + API.ENDPOINTS.DATA_SOURCE.PROCESS(),
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+      API.ENDPOINTS.DATA_SOURCE.PROCESS,
+      API.ENDPOINTS.DATA_SOURCE.BASE_URL(),
       {
         method: "POST",
         data: request,
@@ -37,8 +39,10 @@ export const addCitation = async (
   request: AddCitationRequest
 ): Promise<ApiResponse<AddCitationResponse["data"]>> => {
   try {
-    const res = await fetch(
-      API.ENDPOINTS.DATA_SOURCE.BASE_URL() + API.ENDPOINTS.DATA_SOURCE.ADD_CITATION(),
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+      API.ENDPOINTS.DATA_SOURCE.ADD_CITATION,
+      API.ENDPOINTS.DATA_SOURCE.BASE_URL(),
       {
         method: "PUT",
         data: request,
@@ -60,7 +64,7 @@ export const fetchEmbeddings = async (
   dataSourceId: string
 ): Promise<FetchEmbeddingsResponse["data"]> => {
   try {
-    const endpoint = API.ENDPOINTS.DATA_SOURCE.EMBEDDINGS().replace(
+    const endpoint = API.ENDPOINTS.DATA_SOURCE.EMBEDDINGS.path().replace(
       ":dataSourceId",
       dataSourceId
     );
@@ -84,8 +88,10 @@ export const deleteKnowledge = async (
   datasourceId: string
 ): Promise<DeleteKnowledgeResponse> => {
   try {
-    const res = await fetch(
-      API.ENDPOINTS.DATA_SOURCE.BASE_URL() + API.ENDPOINTS.DATA_SOURCE.DELETE_KNOWLEDGE(),
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+      API.ENDPOINTS.DATA_SOURCE.DELETE_KNOWLEDGE,
+      API.ENDPOINTS.DATA_SOURCE.BASE_URL(),
       {
         method: "DELETE",
         data: { chatbotId, datasourceId },
@@ -107,7 +113,7 @@ export const fetchDataSources = async (
   chatbotId: string
 ): Promise<FetchDataSourcesResponse["data"]> => {
   try {
-    const endpoint = API.ENDPOINTS.DATA_SOURCE.GET_DATA_SOURCES().replace(
+    const endpoint = API.ENDPOINTS.DATA_SOURCE.GET_DATA_SOURCES.path().replace(
       ":chatbotId",
       chatbotId
     );

@@ -1,4 +1,4 @@
-import { CustomActionConfig, HttpMethod } from '@/types/customActions';
+import { ApiConfig, HttpMethod } from '@/types/customActions';
 
 /**
  * Header classification for smart filtering
@@ -12,7 +12,7 @@ export interface ClassifiedHeader {
 }
 
 export interface ParsedCurlResult {
-    config: Partial<CustomActionConfig>;
+    config: Partial<ApiConfig>;
     classifiedHeaders: ClassifiedHeader[];
     detectedVariables: string[];
 }
@@ -179,10 +179,28 @@ function parseHeader(headerStr: string): { key: string; value: string } | null {
     return { key, value };
 }
 
-export function parseCurlCommand(curlString: string): Partial<CustomActionConfig> {
-    const config: Partial<CustomActionConfig> = {
-        headers: {},
-        queryParams: {},
+/**
+ * Normalize curl -d/--data payload tokens.
+ *
+ * Chrome/Firefox "Copy as cURL" sometimes uses Bash ANSI-C quoting: $'{"json":"..."}'
+ * Our tokenizer removes the quotes but keeps the leading '$', producing strings like:
+ *   ${"json":"..."}
+ * which is not valid JSON and breaks downstream JSON parsing/formatting.
+ *
+ * We only strip the leading '$' when it directly prefixes a JSON object/array.
+ */
+function normalizeCurlDataPayload(raw: string): string {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('$') && (trimmed[1] === '{' || trimmed[1] === '[')) {
+        return trimmed.slice(1);
+    }
+    return raw;
+}
+
+export function parseCurlCommand(curlString: string): Partial<ApiConfig> {
+    const headers: Record<string, string> = {};
+    const config: Partial<ApiConfig> = {
+        staticHeaders: headers,
     };
 
     const tokens = tokenizeCurlCommand(curlString);
@@ -217,8 +235,8 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                     if (i + 1 < tokens.length) {
                         const headerStr = tokens[++i];
                         const parsed = parseHeader(headerStr);
-                        if (parsed && config.headers) {
-                            config.headers[parsed.key] = parsed.value;
+                        if (parsed) {
+                            headers[parsed.key] = parsed.value;
 
                             // Check for Auth headers
                             if (parsed.key.toLowerCase() === 'authorization') {
@@ -239,9 +257,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                     if (i + 1 < tokens.length) {
                         const cookieStr = tokens[++i];
                         // Add cookies as Cookie header
-                        if (config.headers) {
-                            config.headers['Cookie'] = cookieStr;
-                        }
+                        headers['Cookie'] = cookieStr;
                     }
                     break;
 
@@ -269,9 +285,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                 case '--user-agent':
                     if (i + 1 < tokens.length) {
                         const userAgent = tokens[++i];
-                        if (config.headers) {
-                            config.headers['User-Agent'] = userAgent;
-                        }
+                        headers['User-Agent'] = userAgent;
                     }
                     break;
 
@@ -279,9 +293,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
                 case '--referer':
                     if (i + 1 < tokens.length) {
                         const referer = tokens[++i];
-                        if (config.headers) {
-                            config.headers['Referer'] = referer;
-                        }
+                        headers['Referer'] = referer;
                     }
                     break;
 
@@ -311,8 +323,8 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
 
                             if (flag === '--header' || flag === '-H') {
                                 const parsed = parseHeader(value);
-                                if (parsed && config.headers) {
-                                    config.headers[parsed.key] = parsed.value;
+                                if (parsed) {
+                                    headers[parsed.key] = parsed.value;
                                 }
                             }
                         }
@@ -331,14 +343,7 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
         try {
             const urlObj = new URL(url);
             config.baseUrl = urlObj.origin;
-            config.endpoint = urlObj.pathname;
-
-            // Extract query params
-            urlObj.searchParams.forEach((value, key) => {
-                if (config.queryParams) {
-                    config.queryParams[key] = value;
-                }
-            });
+            config.endpoint = `${urlObj.pathname}${urlObj.search || ''}`;
         } catch (e) {
             // If URL parsing fails, just set what we found as endpoint
             config.endpoint = url;
@@ -355,7 +360,14 @@ export function parseCurlCommand(curlString: string): Partial<CustomActionConfig
 
     // Set body
     if (body) {
-        config.bodyTemplate = body;
+        const normalized = normalizeCurlDataPayload(body);
+        try {
+            const parsed = JSON.parse(normalized);
+            config.staticBody = parsed;
+        } catch {
+            // Not JSON; store as a JSON string (still valid JSON)
+            config.staticBody = normalized;
+        }
     }
 
     return config;
@@ -373,8 +385,8 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
     const classifiedHeaders: ClassifiedHeader[] = [];
     const essentialHeaders: Record<string, string> = {};
 
-    if (config.headers) {
-        for (const [key, value] of Object.entries(config.headers)) {
+    const headerSource = config.staticHeaders ?? {};
+    for (const [key, value] of Object.entries(headerSource)) {
             const category = classifyHeader(key);
             classifiedHeaders.push({ key, value, category });
 
@@ -383,7 +395,6 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
             if (category === 'essential' || category === 'optional') {
                 essentialHeaders[key] = value;
             }
-        }
     }
 
     // Sort headers: essential first, then optional, then browser
@@ -399,8 +410,8 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
         detectedVariables.push(...extractVariables(config.endpoint));
     }
 
-    if (config.bodyTemplate) {
-        detectedVariables.push(...extractVariables(config.bodyTemplate));
+    if (typeof config.staticBody === 'string') {
+        detectedVariables.push(...extractVariables(config.staticBody));
     }
 
     // Remove duplicates
@@ -409,7 +420,7 @@ export function parseCurlCommandEnhanced(curlString: string): ParsedCurlResult {
     // Update config headers to only include non-browser headers
     const cleanConfig = {
         ...config,
-        headers: essentialHeaders,
+        staticHeaders: essentialHeaders,
     };
 
     return {

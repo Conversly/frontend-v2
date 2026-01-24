@@ -1,4 +1,4 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
   AnalyzeImageInput,
@@ -20,8 +20,10 @@ import {
 export const analyzeImage = async (
   input: AnalyzeImageInput
 ): Promise<AnalyzeImageResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.ANALYZE_IMAGE(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.ANALYZE_IMAGE,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: input,
@@ -38,8 +40,10 @@ export const analyzeImage = async (
 export const fetchSitemap = async (
   input: FetchSitemapInput
 ): Promise<FetchSitemapResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.FETCH_SITEMAP(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.FETCH_SITEMAP,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: {
@@ -58,8 +62,10 @@ export const fetchSitemap = async (
 export const inferPrompt = async (
   input: InferPromptInput
 ): Promise<InferPromptResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.INFER_PROMPT(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.INFER_PROMPT,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: input,
@@ -76,8 +82,10 @@ export const inferPrompt = async (
 export const searchSources = async (
   input: SearchSourcesInput
 ): Promise<SearchSourcesResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.SEARCH_SOURCES(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.SEARCH_SOURCES,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: input,
@@ -94,8 +102,10 @@ export const searchSources = async (
 export const generateTopics = async (
   input: GenerateTopicsInput
 ): Promise<GenerateTopicsResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.TOPIC(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.TOPIC,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: input,
@@ -112,8 +122,10 @@ export const generateTopics = async (
 export const generateWidgetConfig = async (
   input: GenerateWidgetConfigInput
 ): Promise<GenerateWidgetConfigResponse> => {
-  const res = await fetch(
-    API.ENDPOINTS.SETUP.BASE_URL() + API.ENDPOINTS.SETUP.WIDGET_CONFIG(),
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.WIDGET_CONFIG,
+    API.ENDPOINTS.SETUP.BASE_URL(),
     {
       method: "POST",
       data: input,

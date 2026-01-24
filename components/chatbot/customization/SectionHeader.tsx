@@ -8,10 +8,12 @@ export interface SectionHeaderProps {
 
 export function SectionHeader({ title, description, icon: Icon }: SectionHeaderProps) {
   return (
-    <div>
-      {Icon && <Icon className="w-5 h-5 mb-2 text-primary" />}
-      <h3 className="type-section-title mb-1">{title}</h3>
-      {description && <p className="type-body-muted">{description}</p>}
+    <div className="mb-4">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-primary shrink-0" />}
+        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      </div>
+      {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
     </div>
   );
 }

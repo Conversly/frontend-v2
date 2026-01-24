@@ -75,13 +75,13 @@ function CommentItem({ comment, isReply = false, productId }: { comment: Comment
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-sm">{comment.author.name}</span>
                         {comment.author.badge && (
-                            <div className="flex items-center gap-1 bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-medium">
+                            <div className="flex items-center gap-1 bg-primary/10 text-primary px-1.5 py-0.5 rounded text-2xs font-medium">
                                 {comment.author.isMaker && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
                                 {comment.author.badge}
                             </div>
                         )}
                         {comment.author.isMaker && !comment.author.badge && (
-                            <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded text-[10px] font-medium">
+                            <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded text-2xs font-medium">
                                 Maker
                             </span>
                         )}

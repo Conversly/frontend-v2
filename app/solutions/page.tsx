@@ -28,45 +28,45 @@ const solutions = [
     icon: ShoppingCart,
     title: "E-commerce & Retail",
     category: "Commerce",
-    description: "Automate order tracking, product inquiries, returns, and customer support for online stores.",
+    description: "Turn browsers into buyers with instant answers. Stop losing sales to unanswered questions — AI responds in 2 seconds, 24/7.",
     color: "text-blue-600",
     bg: "bg-blue-100 dark:bg-blue-900/30",
     features: [
-      "Real-time order status via WhatsApp",
-      "Product recommendations using RAG",
-      "Automated return processing",
-      "Multi-language support for global customers",
-      "Integration with Shopify, WooCommerce"
+      "Instant order tracking via chat or WhatsApp",
+      "Product recommendations that increase AOV 18%",
+      "Automated returns save 15 hrs/week",
+      "Support 95+ languages without hiring",
+      "Works with Shopify, WooCommerce, Magento"
     ]
   },
   {
     icon: Laptop,
     title: "SaaS Platforms",
     category: "Support",
-    description: "Provide instant product support, onboarding assistance, and technical troubleshooting.",
+    description: "Cut support costs by 80% while improving CSAT scores. AI handles Tier 1 tickets, your team focuses on product development.",
     color: "text-purple-600",
     bg: "bg-purple-100 dark:bg-purple-900/30",
     features: [
-      "Technical documentation Q&A",
-      "Feature explanation with context",
-      "API troubleshooting assistance",
-      "Billing and subscription management",
-      "Intelligent escalation to support engineers"
+      "Answer docs questions with 95% accuracy",
+      "Reduce onboarding support by 70%",
+      "Troubleshoot common errors instantly",
+      "Handle billing inquiries automatically",
+      "Smart routing to engineers when needed"
     ]
   },
   {
     icon: Heart,
     title: "Healthcare",
     category: "Voice",
-    description: "Schedule appointments, answer patient questions, and manage healthcare communications compliantly.",
+    description: "Never miss a patient call again. AI handles appointment scheduling, insurance verification, and routine inquiries — HIPAA compliant.",
     color: "text-red-600",
     bg: "bg-red-100 dark:bg-red-900/30",
     features: [
-      "HIPAA-compliant data handling",
-      "Appointment booking and reminders",
-      "Insurance verification",
-      "Prescription refill automation",
-      "Multi-lingual patient support"
+      "100% HIPAA-compliant & secure",
+      "24/7 appointment booking & reminders",
+      "Verify insurance in seconds",
+      "Automate prescription refills",
+      "Communicate in patient's language"
     ]
   },
   {
@@ -88,15 +88,15 @@ const solutions = [
     icon: Building,
     title: "Real Estate",
     category: "Sales",
-    description: "Qualify leads, schedule property viewings, and answer property questions 24/7.",
+    description: "Capture every lead — even at 2am. AI qualifies prospects, schedules viewings, and answers property questions while you sleep.",
     color: "text-teal-600",
     bg: "bg-teal-100 dark:bg-teal-900/30",
     features: [
-      "Lead qualification and scoring",
-      "Property information retrieval",
-      "Virtual tour scheduling",
-      "Mortgage calculator integration",
-      "CRM synchronization"
+      "Qualify 200+ leads/month automatically",
+      "Instant answers to property questions",
+      "Schedule tours 24/7 via voice or chat",
+      "Calculate mortgages in real-time",
+      "Auto-sync with your CRM"
     ]
   },
   {
@@ -195,11 +195,11 @@ function SolutionsContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-foreground"
           >
-            Solutions for every <br />
-            <span className="text-primary">Business Challenge</span>
+            AI That Works for <br />
+            <span className="text-primary">Your Industry</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            From automating customer support to streamlining sales operations, discover how VerlyAI adapts to your specific needs.
+            From e-commerce stores handling 1,000+ daily inquiries to healthcare providers scheduling appointments — see how businesses like yours automate support and save thousands monthly.
           </p>
         </section>
 

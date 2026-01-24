@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, Globe, MessageSquare, Settings, BarChart3, Zap } from "lucide-react";
+import { useParams } from "next/navigation";
 
 interface Step7CompletionProps {
   chatbotId: string;
@@ -13,6 +14,9 @@ interface Step7CompletionProps {
 
 export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps) {
   const confettiTriggered = useRef(false);
+  const params = useParams<{ workspaceId?: string }>();
+  const workspaceId = (params as any)?.workspaceId as string | undefined;
+  const base = workspaceId ? `/${workspaceId}/chatbot/${chatbotId}` : `#`;
 
   useEffect(() => {
     if (confettiTriggered.current) return;
@@ -52,26 +56,26 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
 
   const quickLinks = [
     {
-      href: `/chatbot/${chatbotId}/customize`,
+      href: `${base}/customize`,
       icon: Globe,
       title: "Deploy to Website",
       description: "Get embed code for your site",
       primary: true,
     },
     {
-      href: `/chatbot/${chatbotId}/whatsapp`,
+      href: `${base}/whatsapp`,
       icon: MessageSquare,
       title: "Connect WhatsApp",
       description: "Deploy on WhatsApp Business",
     },
     {
-      href: `/chatbot/${chatbotId}/playground`,
+      href: `${base}/playground`,
       icon: Zap,
       title: "Test Your Bot",
       description: "Try it in the playground",
     },
     {
-      href: `/chatbot/${chatbotId}/analytics`,
+      href: `${base}/analytics`,
       icon: BarChart3,
       title: "View Analytics",
       description: "Monitor conversations",
@@ -99,7 +103,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
 
         <div className="flex flex-col gap-1">
           <motion.h1
-            className="text-[28px] font-semibold leading-[130%] tracking-[-1.12px]"
+            className="text-2xl font-semibold"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -107,7 +111,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
             🎉 Your chatbot is ready!
           </motion.h1>
           <motion.p
-            className="text-sm leading-[140%] tracking-[-0.28px] text-muted-foreground"
+            className="text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -161,7 +165,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
       >
-        <Link href={`/chatbot/${chatbotId}`}>
+        <Link href={workspaceId ? `/${workspaceId}/chatbot/${chatbotId}` : "#"}>
           <Button className="w-full" size="lg">
             Go to Dashboard
           </Button>

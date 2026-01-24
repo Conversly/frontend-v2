@@ -46,7 +46,7 @@ function FeatureSteps({
   }, [progress, features.length, autoPlayInterval])
 
   return (
-    <div className={cn("py-8 md:py-12", className)}>
+    <div className={cn("pt-8 md:pt-12 pb-0 md:pb-0", className)}>
       <div className="w-full">
 
 
@@ -116,7 +116,7 @@ function FeatureSteps({
                         alt={feature.step}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-contain"
+                        className="object-contain object-top"
                       />
                     </motion.div>
                   ),
@@ -257,7 +257,7 @@ const tabs = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-10 lg:py-20 relative overflow-hidden">
+    <section className="pt-10 lg:pt-20 pb-0 lg:pb-0 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />

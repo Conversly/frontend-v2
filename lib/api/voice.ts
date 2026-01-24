@@ -1,4 +1,4 @@
-import { fetch } from "@/lib/api/axios";
+import { fetch, guardedFetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
     VoiceConfig,
@@ -25,7 +25,7 @@ export const generateVoiceToken = async (
     agentName?: string
 ): Promise<LiveKitTokenResponse> => {
     const endpoint = API.ENDPOINTS.VOICE.BASE_URL() +
-        API.ENDPOINTS.VOICE.GENERATE_TOKEN().replace(":chatbotId", chatbotId);
+        API.ENDPOINTS.VOICE.GENERATE_TOKEN.path().replace(":chatbotId", chatbotId);
 
     // Build request body matching z-terminal API structure
     const requestBody: any = {
@@ -66,7 +66,7 @@ export const makeOutboundCall = async (
     agentName?: string
 ): Promise<LiveKitTokenResponse> => {
     const endpoint = API.ENDPOINTS.VOICE.BASE_URL() +
-        API.ENDPOINTS.VOICE.MAKE_CALL().replace(":chatbotId", chatbotId);
+        API.ENDPOINTS.VOICE.MAKE_CALL.path().replace(":chatbotId", chatbotId);
 
     const requestBody = {
         phone_number: phoneNumber,
@@ -74,14 +74,18 @@ export const makeOutboundCall = async (
         room_config: agentName ? { agents: [{ agent_name: agentName }] } : undefined
     };
 
-    const res = await fetch(endpoint, {
-        method: "POST",
-        data: requestBody,
-    }).then((res) => res.data) as ApiResponse<LiveKitTokenResponse, Error>;
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+        API.ENDPOINTS.VOICE.MAKE_CALL,
+        endpoint.replace(API.ENDPOINTS.VOICE.MAKE_CALL.path().replace(":chatbotId", chatbotId), ''),
+        {
+            method: "POST",
+            data: requestBody,
+        }
+    ).then((res) => res.data) as ApiResponse<LiveKitTokenResponse, Error>;
 
     if (!res.success) {
         throw new Error(res.message);
     }
     return res.data;
 };
-

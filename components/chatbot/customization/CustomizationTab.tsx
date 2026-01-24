@@ -44,6 +44,7 @@ import { ContentTab } from './ContentTab';
 import { AppearanceTab } from './AppearanceTab';
 import { AITab } from './AITab';
 import { IntegrationTab } from './IntegrationTab';
+import { useEditGuard } from '@/store/branch';
 
 interface CustomizationTabProps {
   chatbotId: string;
@@ -90,6 +91,9 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     generateApiKey,
   } = useCustomizationStore();
 
+  // Edit guarding for LIVE mode
+  const { guardEdit, isLiveMode } = useEditGuard();
+
   // Local default to seed the store on first mount
   const defaultConfig: UIConfigInput = {
     DisplayName: 'Support Bot',
@@ -131,15 +135,16 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
   const config: UIConfigInput = draft ?? defaultConfig;
 
-  // Helper to update draft
+  // Helper to update draft (guarded)
   const updateConfig = (updates: Partial<UIConfigInput>) => {
-    setDraftConfig({ ...config, ...updates });
+    guardEdit(() => setDraftConfig({ ...config, ...updates }));
   };
 
-  // Icon upload handler
+  // Icon upload handler (guarded)
   const handleIconUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!guardEdit(() => true)) return;
     try {
       const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
@@ -147,20 +152,22 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
       });
       if (!res.ok) throw new Error('Upload failed');
       const blob = await res.json();
-      updateConfig({ PrimaryIcon: blob.url as string, widgeticon: '' });
+      setDraftConfig({ ...config, PrimaryIcon: blob.url as string, widgeticon: '' });
       toast.success('Profile picture uploaded');
     } catch (e: any) {
       toast.error(e?.message || 'Upload failed');
     }
   };
 
-  // Domain management handler
+  // Domain management handler (guarded)
   const handleAddDomain = async (domain: string) => {
+    if (!guardEdit(() => true)) return;
     await addDomain(chatbotId, domain);
   };
 
-  // API key generation handler
+  // API key generation handler (guarded)
   const handleGenerateApiKey = async () => {
+    if (!guardEdit(() => true)) return;
     await generateApiKey(chatbotId);
   };
 
@@ -172,13 +179,12 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl font-bold">
               <span className="text-amber-500">⚠</span>
-              Deploy Changes?
+              Save Changes?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-base text-muted-foreground pt-2">
               <span className="block font-semibold text-foreground mb-2">
-                This will auto-deploy changes to your live chatbot.
+                This will persist your changes in DRAFT mode.
               </span>
-              If you have the widget deployed on your website, visitors will immediately see these updates.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-2 pt-4">
@@ -202,84 +208,83 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="space-y-6 pb-8">
-        {/* Header & Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="page-header mb-0">
-            <h1 className="page-title">Customize</h1>
-            <p className="page-subtitle">
-              Configure your chatbot's appearance, behavior, and integrations
-            </p>
+      <div className="h-full flex flex-col">
+        {/* Main Settings Tabs - Full width row at top */}
+        <Tabs defaultValue="content" className="flex flex-col h-full">
+          {/* Tabs with actions on the right - full width */}
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <TabsList className="bg-card/60 p-1 rounded-xl flex flex-nowrap gap-2 flex-1 max-w-[500px]">
+              <TabsTrigger
+                value="content"
+                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <Settings2 className="w-4 h-4 mr-2" />
+                Content
+              </TabsTrigger>
+              <TabsTrigger
+                value="appearance"
+                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <Palette className="w-4 h-4 mr-2" />
+                Appearance
+              </TabsTrigger>
+              <TabsTrigger
+                value="ai"
+                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <BrainCircuit className="w-4 h-4 mr-2" />
+                AI
+              </TabsTrigger>
+              <TabsTrigger
+                value="integration"
+                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <Code className="w-4 h-4 mr-2" />
+                Integration
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Actions: Widget status + Save/Reset */}
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Widget</span>
+                <input
+                  type="checkbox"
+                  checked={config.widgetEnabled}
+                  onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
+                  disabled={isLiveMode}
+                  className="w-4 h-4 rounded border-border bg-muted/50 accent-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+              </div>
+              <Separator orientation="vertical" className="h-6" />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => guardEdit(() => resetDraftFromSaved())}
+                  disabled={isLiveMode}
+                  className="border-border text-foreground hover:bg-muted/50 disabled:opacity-50"
+                >
+                  Reset
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={isSaving || isLiveMode}
+                  onClick={() => guardEdit(() => setShowSaveConfirm(true))}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[70px] disabled:opacity-50"
+                >
+                  {isSaving ? 'Saving…' : 'Save'}
+                </Button>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 mr-2">
-              <span className="text-sm text-muted-foreground">Widget status</span>
-              <input
-                type="checkbox"
-                checked={config.widgetEnabled}
-                onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
-                className="w-4 h-4 rounded border-border bg-muted/50 accent-primary"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => resetDraftFromSaved()}
-                className="border-border text-foreground hover:bg-muted/50"
-              >
-                Reset
-              </Button>
-              <Button
-                disabled={isSaving}
-                onClick={() => setShowSaveConfirm(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[80px]"
-              >
-                {isSaving ? 'Saving…' : 'Save'}
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Separator />
-
-        {/* Two-column layout: settings left, preview right */}
-        <div className="grid lg:grid-cols-[1fr_580px] gap-6 items-start">
-          <div className="space-y-6 min-w-0">
-            {/* Main Settings Tabs */}
-            <Tabs defaultValue="content" className="space-y-6">
-              <TabsList className="bg-card/60 p-1 rounded-xl flex flex-wrap">
-                <TabsTrigger
-                  value="content"
-                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <Settings2 className="w-4 h-4 mr-2" />
-                  Content
-                </TabsTrigger>
-                <TabsTrigger
-                  value="appearance"
-                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <Palette className="w-4 h-4 mr-2" />
-                  Appearance
-                </TabsTrigger>
-                <TabsTrigger
-                  value="ai"
-                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <BrainCircuit className="w-4 h-4 mr-2" />
-                  AI
-                </TabsTrigger>
-                <TabsTrigger
-                  value="integration"
-                  className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <Code className="w-4 h-4 mr-2" />
-                  Integration
-                </TabsTrigger>
-              </TabsList>
-
+          {/* Two-column layout: form left, preview right - both start at same level */}
+          <div className="flex-1 grid lg:grid-cols-[minmax(0,1fr)_460px] gap-6 min-h-0">
+            {/* Form content - scrollable */}
+            <div className="flex-1 overflow-y-auto min-h-0 pr-2">
               {/* Content Tab */}
-              <TabsContent value="content">
+              <TabsContent value="content" className="mt-0">
                 <ContentTab config={config} updateConfig={updateConfig} />
               </TabsContent>
 
@@ -320,34 +325,33 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                   onGenerateApiKey={handleGenerateApiKey}
                 />
               </TabsContent>
-            </Tabs>
-          </div>
+            </div>
 
-          {/* Preview Right Column */}
-          <div className="sticky top-6">
-            <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6 min-h-[600px]">
-              <SectionHeader
-                title="Live Preview"
-                description="See how your chatbot will appear on your website"
-                icon={Sparkles}
-              />
-              <div className="mt-6 flex justify-center">
-                <div className="w-[420px] h-[620px] rounded-lg overflow-hidden shadow-lg">
-                  <PreviewWidget
-                    config={{
-                      ...config,
-                      suggestedMessages: config.starterQuestions,
-                      alignChatButton: config.buttonAlignment,
-                    } as PackageUIConfig}
-                    contained
-                  />
+            {/* Preview Right Column - aligned with form start */}
+            <div className="sticky top-6">
+              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl px-6 py-4 min-h-[600px]">
+                <SectionHeader
+                  title="Live Preview"
+                  description="See how your chatbot will appear on your website"
+                  icon={Sparkles}
+                />
+                <div className="mt-4 flex justify-center">
+                  <div className="w-[380px] h-[580px] rounded-lg overflow-hidden shadow-lg">
+                    <PreviewWidget
+                      config={{
+                        ...config,
+                        suggestedMessages: config.starterQuestions,
+                        alignChatButton: config.buttonAlignment,
+                      } as PackageUIConfig}
+                      contained
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Tabs>
       </div>
     </TooltipProvider>
   );
 }
-

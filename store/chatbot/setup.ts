@@ -24,6 +24,7 @@ interface SetupWizardState {
   useCase: string;
   isSubmitting: boolean;
   chatbotId: string;
+  workspaceId?: string;
 
   setStep: (s: WizardStep) => void;
   setProtocol: (p: 'https://' | 'http://') => void;
@@ -31,6 +32,7 @@ interface SetupWizardState {
   setUseCase: (u: string) => void;
   setIsSubmitting: (b: boolean) => void;
   setChatbotId: (id: string) => void;
+  setWorkspaceId: (id?: string) => void;
   reset: () => void;
 
   startProcessing: (input: StartProcessingInput) => Promise<StartProcessingResult>;
@@ -43,6 +45,7 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
   useCase: 'General AI Agent',
   isSubmitting: false,
   chatbotId: '',
+  workspaceId: undefined,
 
   setStep: (s) => set({ step: s }),
   setProtocol: (p) => set({ protocol: p }),
@@ -50,6 +53,7 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
   setUseCase: (u) => set({ useCase: u }),
   setIsSubmitting: (b) => set({ isSubmitting: b }),
   setChatbotId: (id) => set({ chatbotId: id }),
+  setWorkspaceId: (id) => set({ workspaceId: id }),
   reset: () => set({
     step: 1,
     protocol: 'https://',
@@ -57,6 +61,7 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
     useCase: 'General AI Agent',
     isSubmitting: false,
     chatbotId: '',
+    workspaceId: undefined,
   }),
 
   startProcessing: async ({ websiteUrl, useCase, host }) => {
@@ -68,6 +73,7 @@ export const useSetupStore = create<SetupWizardState>((set, get) => ({
       const created = await createChatBot({
         name: defaultName,
         description: defaultDescription,
+        workspaceId: get().workspaceId,
       });
       const createdId = String(created.id);
       set({ chatbotId: createdId });

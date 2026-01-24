@@ -13,12 +13,12 @@ export const VoiceAgentVisual = () => (
       {/* AI Agent bubbles (left side) */}
       <div className="flex flex-col gap-1.5 items-start max-w-[100px]">
         <div
-          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-[9px] text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_0.5s_forwards]"
+          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_0.5s_forwards]"
         >
           Hi! How can I help?
         </div>
         <div
-          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-[9px] text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_2.5s_forwards]"
+          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_2.5s_forwards]"
         >
           Let me check that for you...
         </div>
@@ -27,12 +27,12 @@ export const VoiceAgentVisual = () => (
       {/* Caller bubbles (right side) */}
       <div className="flex flex-col gap-1.5 items-end max-w-[100px]">
         <div
-          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-[9px] text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_1.5s_forwards]"
+          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_1.5s_forwards]"
         >
           I need help with my order
         </div>
         <div
-          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-[9px] text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_3.5s_forwards]"
+          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_3.5s_forwards]"
         >
           Order #12345
         </div>
@@ -51,7 +51,7 @@ export const VoiceAgentVisual = () => (
             <Mic size={10} className="text-blue-500" />
           </div>
         </div>
-        <span className="text-[8px] text-gray-500 text-center block mt-1">AI Agent</span>
+        <span className="text-2xs text-gray-500 text-center block mt-1">AI Agent</span>
       </div>
 
       {/* Audio Waveform */}
@@ -75,7 +75,7 @@ export const VoiceAgentVisual = () => (
             <Phone size={24} className="text-gray-600" />
           </div>
         </div>
-        <span className="text-[8px] text-gray-500 text-center block mt-1">Caller</span>
+        <span className="text-2xs text-gray-500 text-center block mt-1">Caller</span>
       </div>
     </div>
 
@@ -159,9 +159,9 @@ export const WhatsAppVisual = () => {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 className="self-end max-w-[85%] relative z-10"
               >
-                <div className="bg-[#DCF8C6] p-2 rounded-lg rounded-tr-none shadow-sm text-[10px] text-gray-800 leading-tight">
+                <div className="bg-[#DCF8C6] p-2 rounded-lg rounded-tr-none shadow-sm text-2xs text-gray-800 leading-tight">
                   I need to reschedule my appointment 📅
-                  <p className="text-[8px] text-gray-500 text-right mt-1">10:42 AM</p>
+                  <p className="text-2xs text-gray-500 text-right mt-1">10:42 AM</p>
                 </div>
               </motion.div>
             )}
@@ -189,12 +189,12 @@ export const WhatsAppVisual = () => {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 className="self-start max-w-[85%] relative z-10"
               >
-                <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-[10px] text-gray-800 leading-tight">
+                <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-2xs text-gray-800 leading-tight">
                   <div>Confirming Saturday at 2 PM? ✅</div>
                   <div className="mt-2 bg-[#F0F2F5] rounded p-1.5 text-center text-blue-500 font-medium border border-gray-100">
                     Confirm
                   </div>
-                  <p className="text-[8px] text-gray-400 text-right mt-1">10:42 AM</p>
+                  <p className="text-2xs text-gray-400 text-right mt-1">10:42 AM</p>
                 </div>
               </motion.div>
             )}
@@ -262,24 +262,24 @@ export const WebsiteWidgetVisual = () => {
                     <Bot size={12} className="text-purple-600" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-semibold text-gray-800">Support Agent</div>
+                    <div className="text-2xs font-semibold text-gray-800">Support Agent</div>
                     <div className="flex items-center gap-1">
                       <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                      <div className="text-[8px] text-gray-400">Online</div>
+                      <div className="text-2xs text-gray-400">Online</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Messages */}
                 <div className="space-y-2">
-                  <div className="bg-gray-50 p-2 rounded-lg rounded-tl-none text-[9px] text-gray-600 leading-snug">
+                  <div className="bg-gray-50 p-2 rounded-lg rounded-tl-none text-2xs text-gray-600 leading-snug">
                     Hi there! How can I help? 👋
                   </div>
                   <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="bg-purple-600 text-white p-2 rounded-lg rounded-tr-none text-[9px] ml-auto w-max max-w-[80%] leading-snug shadow-sm"
+                    className="bg-purple-600 text-white p-2 rounded-lg rounded-tr-none text-2xs ml-auto w-max max-w-[80%] leading-snug shadow-sm"
                   >
                     Pricing for teams?
                   </motion.div>
@@ -287,7 +287,7 @@ export const WebsiteWidgetVisual = () => {
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="bg-gray-50 p-2 rounded-lg rounded-tl-none text-[9px] text-gray-600 leading-snug"
+                    className="bg-gray-50 p-2 rounded-lg rounded-tl-none text-2xs text-gray-600 leading-snug"
                   >
                     Starts at $29/mo per seat! 🚀
                   </motion.div>

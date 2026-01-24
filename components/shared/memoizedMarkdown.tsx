@@ -18,20 +18,20 @@ const MemoizedMarkdownBlock = memo(
         rehypePlugins={[rehypeHighlight]}
         components={{
           p: ({ children }) => (
-            <p className="text-[18px] font-sans text-gray-300 mb-4">{children}</p>
+            <p className="text-sm text-gray-300 mb-4">{children}</p>
           ),
           code({ className, children, ...props }) {
             const isInline = !className;
 
             if (isInline) {
               return (
-                <code className="px-1.5 py-0.5 bg-[#2a2a2a] text-gray-200 font-sans rounded text-[15px]" {...props}>
+                <code className="px-1.5 py-0.5 bg-[#2a2a2a] text-gray-200 font-mono rounded text-xs" {...props}>
                   {children}
                 </code>
               );
             }
             return (
-              <pre className="p-4 my-3 bg-[#2a2a2a] font-sans text-gray-200 rounded-lg overflow-x-auto">
+              <pre className="p-4 my-3 bg-[#2a2a2a] font-mono text-gray-200 rounded-lg overflow-x-auto text-xs">
                 <code className={className} {...props}>
                   {children}
                 </code>
@@ -45,7 +45,7 @@ const MemoizedMarkdownBlock = memo(
             <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-200">{children}</ol>
           ),
           li: ({ children }) => (
-            <li className="text-[15px] font-sans text-gray-200">{children}</li>
+            <li className="text-sm text-gray-200">{children}</li>
           ),
           a: ({ href, children }) => (
             <a 

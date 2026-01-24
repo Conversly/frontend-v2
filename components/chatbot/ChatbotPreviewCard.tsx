@@ -64,6 +64,7 @@ const getGradientFromName = (name: string): { gradient: string; baseColor: strin
 
 export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProps) {
   const { gradient, baseColor } = getGradientFromName(chatbot.name);
+  const workspacePrefix = `/${chatbot.workspaceId}`;
 
   // Calculate time since last update
   const getTimeSinceUpdate = () => {
@@ -85,7 +86,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
     <Card className="max-h-[300px] overflow-hidden rounded-xl border transition-all ease-in-out hover:border-primary/20">
       {/* Chatbot Preview Section */}
       <Link
-        href={`/chatbot/${chatbot.id}/playground`}
+        href={`${workspacePrefix}/chatbot/${chatbot.id}/playground`}
         className="block h-[200px] w-full overflow-hidden border-b"
       >
         <div
@@ -104,8 +105,8 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
                 background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0.44%, rgba(0, 0, 0, 0) 49.5%), rgb(255, 255, 255)'
               }}
             >
-              <p className="line-clamp-1 w-full origin-left font-medium text-[7.85px] leading-normal tracking-tight text-black">
-                {chatbot.name}
+              <p className="line-clamp-1 w-full font-medium text-2xs leading-tight tracking-tight text-black">
+                <span className="inline-block origin-left scale-75">{chatbot.name}</span>
               </p>
             </div>
 
@@ -144,7 +145,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
 
       {/* Card Footer */}
       <Link
-        href={`/chatbot/${chatbot.id}`}
+        href={`${workspacePrefix}/chatbot/${chatbot.id}`}
         className="flex flex-row justify-between gap-4 p-6"
       >
         <div className="flex flex-col gap-2">

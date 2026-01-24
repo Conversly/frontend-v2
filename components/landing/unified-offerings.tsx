@@ -45,8 +45,8 @@ export default function UnifiedOfferings() {
   const cards: Card[] = [
     // Row 1: Offerings (channels)
     {
-      title: "Voice Agents",
-      tagline: "Automate calls and deflect 80% of volume",
+      title: "Voice AI",
+      tagline: "Never miss a sales call again — AI answers every call instantly and books appointments 24/7",
       icon: <Mic size={18} />,
       visual: <VoiceAgentVisual />,
       accent: "text-blue-600",
@@ -54,16 +54,16 @@ export default function UnifiedOfferings() {
       colSpan: "md:col-span-2",
     },
     {
-      title: "WhatsApp",
-      tagline: "Engage 2B+ users on their favorite app",
+      title: "WhatsApp AI",
+      tagline: "Turn WhatsApp into your #1 sales channel — reach customers where they spend 3+ hours daily",
       icon: <MessageCircle size={18} />,
       visual: <WhatsAppVisual />,
       accent: "text-emerald-600",
       bgAccent: "bg-emerald-500/10 border-emerald-500/20",
     },
     {
-      title: "Web Widget",
-      tagline: "Embed a chatbot on any website instantly",
+      title: "Website Chat",
+      tagline: "Stop losing visitors who have questions — convert 23% more browsers into buyers",
       icon: <MessageSquare size={18} />,
       visual: <WebsiteWidgetVisual />,
       accent: "text-purple-600",
@@ -80,8 +80,8 @@ export default function UnifiedOfferings() {
     //   bgAccent: "bg-orange-500/10 border-orange-500/20",
     // },
     {
-      title: "Model Comparison",
-      tagline: "Test GPT, Claude, Llama side by side",
+      title: "Smart AI Switching",
+      tagline: "Get the best AI responses at the lowest cost — save up to 90% on AI expenses",
       icon: <GitCompare size={18} />,
       visual: <ModelComparisonVisual />,
       accent: "text-sky-600",
@@ -89,8 +89,8 @@ export default function UnifiedOfferings() {
       colSpan: "md:col-span-1",
     },
     {
-      title: "Smart Escalation",
-      tagline: "Hand off to humans when it matters",
+      title: "Intelligent Handoff",
+      tagline: "VIP treatment for complex issues — AI handles routine, humans handle what matters",
       icon: <ArrowUpRight size={18} />,
       visual: <SmartEscalationVisual />,
       accent: "text-rose-600",
@@ -98,8 +98,8 @@ export default function UnifiedOfferings() {
       colSpan: "md:col-span-2",
     },
     {
-      title: "Analytics",
-      tagline: "Track performance and optimize over time",
+      title: "Actionable Insights",
+      tagline: "Know exactly what customers want — improve satisfaction by 40% with data-driven decisions",
       icon: <BarChart3 size={18} />,
       visual: <AnalyticsVisual />,
       accent: "text-amber-600",
@@ -127,11 +127,16 @@ export default function UnifiedOfferings() {
           className="text-center space-y-4"
         >
           <p className="text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground">
-            Everything you need
+            Meet customers everywhere they are
           </p>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-            Deploy across channels. Connect to your stack.
+            One Platform. Every Channel.{" "}
+            <br className="hidden md:block" />
+            Unlimited Conversations.
           </h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mt-4">
+            Deploy AI agents across chat, voice, and WhatsApp. Handle unlimited conversations simultaneously while your team focuses on complex issues.
+          </p>
         </motion.div>
 
         {/* 6-card bento grid (4 columns) */}
@@ -214,7 +219,7 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
         <div className="relative h-44 w-full overflow-hidden bg-muted/30">
           <Image
             src={card.image}
-            alt={card.title}
+            alt={`VerlyAI Feature: ${card.title} - ${card.tagline}`}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -226,14 +231,14 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
       <div
         className={`px-5 py-4 ${!card.image && !card.visual ? "py-8" : ""} relative z-10`}
       >
-        <div className="flex items-start gap-3">
+        <div className="flex flex-col items-start gap-3">
           <div
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border shrink-0 ${card.bgAccent} ${card.accent}`}
           >
             {card.icon}
             {card.title}
           </div>
-          <p className="text-foreground/80 text-sm font-medium leading-snug">
+          <p className="text-foreground/80 text-sm font-medium leading-relaxed">
             {card.tagline}
           </p>
         </div>

@@ -1,6 +1,7 @@
-import { fetch } from "./axios";
+import { fetch, guardedFetch, getPath } from "./axios";
 import { API, ApiResponse } from "./config";
 import {
+    ApiConfig,
     CreateCustomActionInput,
     CustomAction,
     GetActionsQuery,
@@ -12,10 +13,39 @@ import {
     GetTemplatesQuery,
 } from "@/types/customActions";
 
+function normalizeApiConfigForBackend(config: ApiConfig): ApiConfig {
+    // Strip any accidental legacy keys by explicit pick.
+    return {
+        method: config.method,
+        baseUrl: config.baseUrl,
+        endpoint: config.endpoint,
+        staticHeaders: config.staticHeaders ?? {},
+        staticBody: config.staticBody,
+        authType: config.authType ?? "none",
+        authValue: config.authValue,
+        authHeader: config.authHeader,
+        responseMapping: config.responseMapping,
+        successCodes: config.successCodes,
+        timeoutSeconds: config.timeoutSeconds,
+        retryCount: config.retryCount,
+        retryOnCodes: config.retryOnCodes,
+        followRedirects: config.followRedirects,
+        verifySsl: config.verifySsl,
+    };
+}
+
 export const createCustomAction = async (data: CreateCustomActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.CREATE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.CREATE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        {
+            method: "POST",
+            data: {
+                ...data,
+                apiConfig: normalizeApiConfigForBackend(data.apiConfig),
+            },
+        }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -27,7 +57,7 @@ export const createCustomAction = async (data: CreateCustomActionInput) => {
 
 export const getCustomActions = async (data: GetActionsQuery) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.LIST(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.LIST.path(),
         data
     ).then((res) => res.data)) as ApiResponse<CustomAction[]>;
 
@@ -40,7 +70,7 @@ export const getCustomActions = async (data: GetActionsQuery) => {
 
 export const getCustomAction = async (chatbotId: string, actionId: string) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.GET(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.GET.path(),
         { chatbotId, actionId }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
@@ -52,9 +82,17 @@ export const getCustomAction = async (chatbotId: string, actionId: string) => {
 };
 
 export const updateCustomAction = async (data: UpdateCustomActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.UPDATE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.UPDATE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        {
+            method: "POST",
+            data: {
+                ...data,
+                apiConfig: data.apiConfig ? normalizeApiConfigForBackend(data.apiConfig) : undefined,
+            },
+        }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -65,9 +103,11 @@ export const updateCustomAction = async (data: UpdateCustomActionInput) => {
 };
 
 export const deleteCustomAction = async (chatbotId: string, actionId: string) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.DELETE(),
-        { chatbotId, actionId }
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.DELETE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data: { chatbotId, actionId } }
     ).then((res) => res.data)) as ApiResponse<null>;
 
     if (!res.success) {
@@ -78,9 +118,11 @@ export const deleteCustomAction = async (chatbotId: string, actionId: string) =>
 };
 
 export const toggleCustomAction = async (data: ToggleActionInput) => {
-    const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TOGGLE(),
-        data
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = (await guardedFetch(
+        API.ENDPOINTS.ACTIONS.TOGGLE,
+        API.ENDPOINTS.ACTIONS.BASE_URL(),
+        { method: "POST", data }
     ).then((res) => res.data)) as ApiResponse<CustomAction>;
 
     if (!res.success) {
@@ -92,8 +134,13 @@ export const toggleCustomAction = async (data: ToggleActionInput) => {
 
 export const testCustomAction = async (data: TestActionInput) => {
     const res = (await fetch.post(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEST(),
-        data
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEST.path(),
+        {
+            chatbotId: data.chatbotId,
+            apiConfig: normalizeApiConfigForBackend(data.apiConfig),
+            parameters: data.parameters,
+            testArgs: data.testArgs ?? {},
+        }
     ).then((res) => res.data)) as ApiResponse<TestActionResponse>;
 
     if (!res.success) {
@@ -105,7 +152,7 @@ export const testCustomAction = async (data: TestActionInput) => {
 
 export const getActionTemplates = async (params?: GetTemplatesQuery) => {
     const res = (await fetch.get(
-        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEMPLATES(),
+        API.ENDPOINTS.ACTIONS.BASE_URL() + API.ENDPOINTS.ACTIONS.TEMPLATES.path(),
         { params }
     ).then((res) => res.data)) as ApiResponse<ActionTemplate[]>;
 

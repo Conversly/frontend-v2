@@ -126,7 +126,7 @@ export const TopicsVisualization = () => {
                     </div>
                     <div className="flex-1">
                         <div className="text-white text-sm font-semibold">AI Topic Classification</div>
-                        <div className="text-white/70 text-[11px]">Auto-tagging incoming questions</div>
+                        <div className="text-white/70 text-xs">Auto-tagging incoming questions</div>
                     </div>
                     <motion.div
                         animate={{ scale: [1, 1.2, 1] }}
@@ -166,7 +166,7 @@ export const TopicsVisualization = () => {
                                             className="flex items-center gap-1 px-2 py-1 bg-violet-100 rounded-full"
                                         >
                                             <Zap size={12} className="text-violet-600" />
-                                            <span className="text-[10px] font-medium text-violet-600">AI</span>
+                                            <span className="text-2xs font-medium text-violet-600">AI</span>
                                         </motion.div>
                                     )}
                                 </motion.div>
@@ -184,7 +184,7 @@ export const TopicsVisualization = () => {
                                                 {/* Message Bubble */}
                                                 <div className="flex-1 bg-slate-50 border border-slate-100 rounded-xl rounded-bl-sm p-3 shadow-sm">
                                                     <div className="flex items-start gap-2">
-                                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-[10px] font-medium text-slate-600 shrink-0">
+                                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-2xs font-medium text-slate-600 shrink-0">
                                                             U
                                                         </div>
                                                         <p className="text-sm text-slate-700 leading-snug">{msg.text}</p>
@@ -244,7 +244,7 @@ export const TopicsVisualization = () => {
                                         <BarChart3 size={14} className="text-emerald-600" />
                                         <span className="text-xs font-medium text-emerald-700">Topic Analytics</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                                    <div className="flex items-center gap-1 text-2xs text-slate-400">
                                         <TrendingUp size={12} className="text-emerald-500" />
                                         <span>Live insights</span>
                                     </div>
@@ -260,7 +260,7 @@ export const TopicsVisualization = () => {
                                     >
                                         <div className="flex items-center gap-2 mb-2">
                                             <PieChart size={14} className="text-violet-600" />
-                                            <span className="text-[10px] font-medium text-violet-600">Total Questions</span>
+                                            <span className="text-2xs font-medium text-violet-600">Total Questions</span>
                                         </div>
                                         <motion.div
                                             initial={{ opacity: 0 }}
@@ -279,7 +279,7 @@ export const TopicsVisualization = () => {
                                     >
                                         <div className="flex items-center gap-2 mb-2">
                                             <Tag size={14} className="text-emerald-600" />
-                                            <span className="text-[10px] font-medium text-emerald-600">Topics Tagged</span>
+                                            <span className="text-2xs font-medium text-emerald-600">Topics Tagged</span>
                                         </div>
                                         <motion.div
                                             initial={{ opacity: 0 }}
@@ -303,11 +303,11 @@ export const TopicsVisualization = () => {
                                         <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1">
                                                 <ThumbsUp size={10} className="text-emerald-500" />
-                                                <span className="text-[10px] text-emerald-600">89%</span>
+                                                <span className="text-2xs text-emerald-600">89%</span>
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <ThumbsDown size={10} className="text-red-400" />
-                                                <span className="text-[10px] text-red-500">11%</span>
+                                                <span className="text-2xs text-red-500">11%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -322,7 +322,7 @@ export const TopicsVisualization = () => {
                                                 transition={{ delay: 0.5 + index * 0.1 }}
                                                 className="flex items-center gap-3"
                                             >
-                                                <div className="w-20 text-[10px] font-medium text-slate-600 truncate">
+                                                <div className="w-20 text-2xs font-medium text-slate-600 truncate">
                                                     {item.topic}
                                                 </div>
                                                 <div className="flex-1 h-4 bg-slate-200 rounded-full overflow-hidden">
@@ -334,7 +334,7 @@ export const TopicsVisualization = () => {
                                                         style={{ backgroundColor: item.color }}
                                                     />
                                                 </div>
-                                                <div className="w-8 text-[10px] font-semibold text-slate-600 text-right">
+                                                <div className="w-8 text-2xs font-semibold text-slate-600 text-right">
                                                     {item.count}
                                                 </div>
                                             </motion.div>

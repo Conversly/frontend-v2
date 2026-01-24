@@ -97,7 +97,7 @@ export const MessagingCategoriesVisual = () => {
                     </div>
                     <div className="flex-1">
                         <div className="text-white text-sm font-semibold">Broadcaster</div>
-                        <div className="text-white/70 text-[10px]">Official Business Account</div>
+                        <div className="text-white/70 text-2xs">Official Business Account</div>
                     </div>
                 </div>
 
@@ -119,13 +119,13 @@ export const MessagingCategoriesVisual = () => {
                                 className="bg-white rounded-lg p-2.5 shadow-sm max-w-[90%] self-start relative z-10"
                             >
                                 <div className="flex justify-between items-start mb-1">
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${msg.color} flex items-center gap-1`}>
+                                    <span className={`text-2xs px-1.5 py-0.5 rounded font-medium ${msg.color} flex items-center gap-1`}>
                                         {msg.icon} {msg.type}
                                     </span>
                                 </div>
                                 <div className="font-semibold text-slate-800 text-sm mb-0.5">{msg.title}</div>
                                 <div className="text-slate-600 text-xs leading-snug">{msg.body}</div>
-                                <div className="text-[10px] text-slate-400 text-right mt-1">{msg.time}</div>
+                                <div className="text-2xs text-slate-400 text-right mt-1">{msg.time}</div>
                             </motion.div>
                         ))}
                     </div>
@@ -190,7 +190,7 @@ export const CTAVisual = () => {
                                 Our latest collection is finally here!
                                 <br />Get <span className="font-bold text-green-600">30% OFF</span> on your first order.
                             </p>
-                            <p className="text-[10px] text-slate-400 mt-2">Offers expire in 24h</p>
+                            <p className="text-2xs text-slate-400 mt-2">Offers expire in 24h</p>
                         </div>
 
                         {/* Buttons */}
@@ -321,7 +321,7 @@ export const SchedulingVisual = () => {
                     transition={{ delay: 2, type: "spring" }}
                     className="absolute bottom-4 left-4 right-4 bg-slate-800 text-white text-xs py-2 px-3 rounded-md shadow-lg flex items-center gap-2"
                 >
-                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-black text-[10px]">✓</div>
+                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-black text-2xs">✓</div>
                     Scheduled for Oct 12
                 </motion.div>
             </div>

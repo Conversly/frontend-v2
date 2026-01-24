@@ -50,17 +50,17 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
       className="space-y-6"
     >
       {/* System Prompt */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="System Prompt"
           description="Define how your AI assistant behaves and responds"
           icon={BrainCircuit}
         />
 
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-base text-foreground">Prompt Instructions</label>
+              <label className="font-sans text-sm text-foreground">Prompt Instructions</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -107,16 +107,16 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
       </div>
 
       {/* AI Behavior Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="AI Behavior"
           description="Configure how the AI interacts with users"
         />
 
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-base text-foreground">Collect User Feedback</label>
+              <label className="font-sans text-sm text-foreground">Collect User Feedback</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -139,7 +139,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-base text-foreground">Allow Message Regeneration</label>
+              <label className="font-sans text-sm text-foreground">Allow Message Regeneration</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />

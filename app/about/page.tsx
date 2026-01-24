@@ -39,9 +39,9 @@ export default function AboutPage() {
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]"
               >
-                The Complete Platform <br className="hidden md:block" />
+                Support That Scales <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-600 to-primary animate-gradient">
-                  for Automated Support
+                  Without the Headcount
                 </span>
               </motion.h1>
 
@@ -51,7 +51,7 @@ export default function AboutPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-2xl mx-auto"
               >
-                VerlyAI empowers developers to deploy autonomous agents that understand, act, and resolve — not just chat.
+                Deploy AI agents across voice, chat & WhatsApp that handle 10X more conversations than human teams — at a fraction of the cost. Your customers get instant answers. Your team focuses on what matters.
               </motion.p>
             </div>
           </div>
@@ -73,17 +73,17 @@ export default function AboutPage() {
                   Why we exist
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-                  Beyond <span className="text-primary italic">Decision Trees</span>
+                  Why Companies Choose <span className="text-primary">VerlyAI</span>
                 </h2>
                 <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
                   <p>
-                    Traditional chatbots are broken. They rely on rigid decision trees that fail the moment a customer steps off the scripted path.
+                    <span className="font-semibold text-foreground">Traditional chatbots frustrate customers.</span> They force people through rigid menus and fail the moment someone asks a real question.
                   </p>
                   <p>
-                    We built VerlyAI to solve this. Our platform leverages state-of-the-art Large Language Models (LLMs) to create agents that truly understand intent, context, and nuance.
+                    <span className="font-semibold text-foreground">VerlyAI is different.</span> Our AI agents understand natural language, learn from your knowledge base, and handle complex conversations — just like your best support agent would.
                   </p>
                   <p className="font-medium text-foreground">
-                    Whether it's on WhatsApp, over a Phone Call, or embedded in your App — VerlyAI agents act as tireless extensions of your team.
+                    The result? <span className="text-primary">80% cost reduction</span>, instant responses 24/7, and happier customers who get real answers — not scripted responses.
                   </p>
                 </div>
                 <div className="pt-4">
@@ -131,27 +131,27 @@ export default function AboutPage() {
         <section className="py-20 lg:py-32">
           <div className={CONTENT_WIDTH}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6">Built for Developers</h2>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6">Enterprise-Grade. Developer-Friendly.</h2>
               <p className="text-xl text-muted-foreground">
-                We believe that the best AI products are built by developers, not dragged-and-dropped by consultants.
+                Build production-ready AI agents in minutes with APIs your team will love. Bank-level security. 99.9% uptime. Zero compromises.
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  title: "Developer Experience",
-                  desc: "Top-tier SDKs, comprehensive docs, and an API-first approach.",
-                  icon: <Users className="w-6 h-6" />
+                  title: "2-Minute Setup",
+                  desc: "No complex integrations. Copy one line of code and your AI agent is live. Works with your existing tools.",
+                  icon: <Zap className="w-6 h-6" />
                 },
                 {
-                  title: "Privacy First",
-                  desc: "Your data is yours. We offer strict isolation and compliance features.",
+                  title: "Bank-Level Security",
+                  desc: "SOC 2 certified, GDPR compliant, data encryption at rest and in transit. Your customer data is fortress-protected.",
                   icon: <Globe className="w-6 h-6" />
                 },
                 {
-                  title: "Enterprise Scale",
-                  desc: "99.9% uptime SLA, SSO, and dedicated support for large deployments.",
+                  title: "Scale Infinitely",
+                  desc: "Handle 10 conversations or 10,000 simultaneously. 99.9% uptime SLA. Black Friday traffic? No problem.",
                   icon: <Cpu className="w-6 h-6" />
                 }
               ].map((item, i) => (

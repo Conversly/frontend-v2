@@ -44,27 +44,23 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
       {/* Initial Message */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader 
-          title="Initial Message" 
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+        <SectionHeader
+          title="Initial Message"
           description="The first message users see when they open the chat"
           icon={MessageSquare}
         />
-        
-        <div className="mt-4 space-y-4">
+
+        <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-base text-foreground">Welcome Message</label>
               <Tooltip>
-                <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
-                </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
                     This message appears when users first open the chat widget
@@ -84,14 +80,14 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       </div>
 
       {/* Starter Questions */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader 
-          title="Starter Questions" 
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+        <SectionHeader
+          title="Starter Questions"
           description="Quick action buttons to help users get started"
           icon={HelpCircle}
         />
-        
-        <div className="mt-4 space-y-3">
+
+        <div className="space-y-3">
           {(config.starterQuestions || []).map((question, index) => (
             <div key={index} className="flex items-center gap-2">
               <Input
@@ -116,7 +112,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               )}
             </div>
           ))}
-          
+
           {(config.starterQuestions || []).length < 4 && (
             <Button
               variant="outline"
@@ -127,27 +123,20 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               Add Question
             </Button>
           )}
-          
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <HelpCircle className="w-4 h-4" />
-            <p className="font-sans text-sm">
-              Add up to 4 starter questions. Empty questions will be hidden.
-            </p>
-          </div>
         </div>
       </div>
 
       {/* Message Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
-        <SectionHeader 
-          title="Message Settings" 
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+        <SectionHeader
+          title="Message Settings"
           description="Customize message input and display options"
         />
-        
-        <div className="mt-4 space-y-4">
+
+        <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-base text-foreground">Message Placeholder</label>
+              <label className="font-sans text-sm text-foreground">Message Placeholder</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -167,7 +156,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-base text-foreground">Footer Text</label>
+              <label className="font-sans text-sm text-foreground">Footer Text</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -187,7 +176,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-base text-foreground">Keep Showing Suggested Messages</label>
+              <label className="font-sans text-sm text-foreground">Keep Showing Suggested Messages</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />

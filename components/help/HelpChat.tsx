@@ -120,7 +120,7 @@ export function HelpChat() {
                                     )}
                                 >
                                     {message.content}
-                                    <div className={cn("text-[10px] mt-1 opacity-70", message.role === "user" ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                                    <div className={cn("text-2xs mt-1 opacity-70", message.role === "user" ? "text-primary-foreground/70" : "text-muted-foreground")}>
                                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@ export function HelpChat() {
                         </Button>
                     </div>
                 </div>
-                <p className="text-[10px] text-center text-muted-foreground mt-2">
+                <p className="text-2xs text-center text-muted-foreground mt-2">
                     AI can make mistakes. Please verify important information.
                 </p>
             </div>
