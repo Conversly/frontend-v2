@@ -47,7 +47,7 @@ export const defaultMetadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
-    title: 'VerlyAI - Automate Support with AI Voice & Chat Agents',
+    title: '',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web. Start for free.',
     siteName: siteConfig.name,
     images: [
@@ -61,7 +61,7 @@ export const defaultMetadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VerlyAI - Automate Support with AI Voice & Chat Agents',
+    title: 'VerlyAI - AI Agent for Customer Support',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
     images: [siteConfig.ogImage],
     creator: '@VerlyAI',
