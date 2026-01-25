@@ -129,7 +129,7 @@ export const WhatsAppVisual = () => {
         }}
       />
 
-      <div className="w-52 bg-white rounded-[2rem] shadow-xl border border-gray-200 relative overflow-hidden h-full max-h-[220px] flex flex-col z-10">
+      <div className="w-52 bg-white rounded-[2rem] shadow-xl border border-gray-200 relative overflow-hidden h-full max-h-full flex flex-col z-10">
         {/* Status Bar */}
         <div className="h-7 bg-[#075E54] flex items-center px-3 gap-2 flex-shrink-0">
           <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
@@ -227,7 +227,7 @@ export const WebsiteWidgetVisual = () => {
       <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
 
       {/* Browser Window Mockup */}
-      <div className="w-full max-w-[280px] bg-white rounded-lg shadow-xl border border-gray-200/60 overflow-hidden relative h-[180px] z-10 transition-transform duration-500 group-hover:scale-[1.02]">
+      <div className="w-full max-w-[280px] bg-white rounded-lg shadow-xl border border-gray-200/60 overflow-hidden relative h-full z-10 transition-transform duration-500 group-hover:scale-[1.02]">
         {/* Browser Header */}
         <div className="h-6 bg-gray-50/80 backdrop-blur-sm border-b border-gray-100 flex items-center px-3 gap-1.5">
           <div className="w-2 h-2 rounded-full bg-[#ff5f56]"></div>

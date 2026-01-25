@@ -1,61 +1,91 @@
 'use client';
-import { Check, Star } from "lucide-react"
+import { Check, Info, Star } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { redirect } from "next/navigation";
 
+type PlanFeature = {
+  text: string
+  info?: string
+}
+
 const pricingPlans = [
   {
     name: "Starter",
-    priceMonthly: "Free",
-    description: "Perfect for testing & small teams — no credit card required",
+    priceMonthly: "$39",
+    description: "Pay yearly (save 40%) — billed $468 yearly",
     features: [
-      "500 free message credits",
-      "14-day full-feature trial",
-      "All channels (chat, voice, WhatsApp)",
-      "Basic analytics dashboard",
-      "Community support",
-      "No credit card required",
+      { text: "1 chatbot", info: "Create and deploy up to 1 chatbot under your account." },
+      { text: "Up to 4k messages per month", info: "Included messages per month (usage limits apply)." },
+      { text: "Up to 1,000 pages", info: "Training capacity for your data sources (pages are normalized units)." },
+      { text: "1 member", info: "Includes access for 1 user account." },
     ],
     gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
-    stats: "14",
-    statsLabel: "Days Trial",
-    cta: "Start Free Trial",
+    stats: "4k",
+    statsLabel: "Messages / month",
+    cta: "Start a free trial",
   },
   {
-    name: "Pro",
+    name: "Growth",
     popular: true,
-    priceMonthly: "$30",
-    description: "For growing businesses — typical cost $400-800/month (saves $9,500 vs hiring)",
+    priceMonthly: "$79",
+    description: "Pay yearly (save 40%) — billed $948 yearly",
     features: [
-      "Pay only $0.05 per conversation",
-      "Priority support (4-hour response)",
-      "Advanced analytics & insights",
-      "Function calling & API integrations",
-      "Custom branding & white-label",
-      "99.9% uptime SLA guarantee",
+      { text: "Up to 2 chatbots", info: "Create and deploy up to 2 chatbots under your account." },
+      { text: "Up to 10k messages per month", info: "Included messages per month (usage limits apply)." },
+      { text: "Up to 10,000 pages", info: "Higher training capacity for your data sources (pages are normalized units)." },
+      { text: "Up to 4 team members", info: "Invite teammates to collaborate in the same workspace." },
+      { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
+      { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
+      { text: "Auto Refresh (Monthly)", info: "Automatically re-sync your sources on a monthly schedule." },
     ],
     gradient: "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10",
-    stats: "$0.05",
-    statsLabel: "Per conversation",
-    cta: "Start Pro Trial",
+    stats: "10k",
+    statsLabel: "Messages / month",
+    cta: "Start a free trial",
   },
+  // {
+  //   name: "Scale",
+  //   priceMonthly: "$259",
+  //   description: "Pay yearly (save 40%) — billed $3108 yearly",
+  //   features: [
+  //     { text: "Up to 3 chatbots", info: "Create and deploy up to 3 chatbots under your account." },
+  //     { text: "Up to 40k messages per month", info: "Included messages per month (usage limits apply)." },
+  //     { text: "Up to 50,000 pages", info: "Large training capacity for your data sources (pages are normalized units)." },
+  //     { text: "Up to 10 team members", info: "Invite more teammates to collaborate in the same workspace." },
+  //     { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
+  //     { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
+  //     { text: "Auto Refresh (Weekly)", info: "Automatically re-sync your sources on a weekly schedule." },
+  //     { text: "Auto Scan (Daily)", info: "Automatically scan for new/removed URLs and keep sources in sync." },
+  //     { text: "Webhook Support", info: "Send real-time events to your systems (messages, leads, escalations, etc.)." },
+  //   ],
+  //   gradient: "from-blue-500/10 via-indigo-500/10 to-purple-500/10",
+  //   stats: "40k",
+  //   statsLabel: "Messages / month",
+  //   cta: "Start a free trial",
+  // },
   {
     name: "Enterprise",
     priceMonthly: "Custom",
-    description: "For scale & compliance — volume discounts save up to 70%",
+    description: "Custom pricing (volume-based)",
     features: [
-      "Volume discounts (save up to 70%)",
-      "Custom LLM fine-tuning for your brand",
-      "Dedicated success manager",
-      "On-premise deployment option",
-      "SOC 2 + HIPAA compliance",
-      "SSO & advanced security controls",
+      { text: "Up to 10,000 chatbots", info: "Enterprise scale — create and deploy a large number of chatbots." },
+      { text: "Customizable message volume", info: "Message volume scales with your needs; pricing adjusts with usage." },
+      { text: "Up to 500,000 pages", info: "Enterprise training capacity for your data sources (pages are normalized units)." },
+      { text: "Manual Refresh", info: "Manually sync your sources whenever you need an update." },
+      { text: "Up to 10,000 team members", info: "Enterprise collaboration scale for large orgs." },
+      { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
+      { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
+      { text: "Rate Limiting", info: "Control usage by limiting messages/conversations to manage costs." },
+      { text: "Auto Refresh (Daily)", info: "Automatically re-sync your sources on a daily schedule." },
+      { text: "Webhook Support", info: "Send real-time events to your systems (messages, leads, escalations, etc.)." },
+      { text: "Priority Support", info: "Faster support response times and prioritized ticket handling." },
+      { text: "Custom Integrations", info: "Request bespoke integrations or features tailored to your workflow." },
     ],
     gradient: "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
-    stats: "∞",
-    statsLabel: "Unlimited Scale",
-    cta: "Talk to Sales",
+    stats: "Custom",
+    statsLabel: "Plan",
+    cta: "Contact us",
   },
 ]
 
@@ -191,9 +221,25 @@ export default function PricingSection() {
                         <div className="mt-0.5 p-1 rounded-full bg-primary/10 flex-shrink-0">
                           <Check className="w-3.5 h-3.5 text-primary" />
                         </div>
-                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                          {feature}
-                        </span>
+                        <div className="flex items-start gap-2 min-w-0">
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                            {feature.text}
+                          </span>
+                          {feature.info ? (
+                            <span className="relative mt-0.5 inline-flex">
+                              <button
+                                type="button"
+                                aria-label={`More info about: ${feature.text}`}
+                                className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground/70 hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                              >
+                                <Info className="h-4 w-4" />
+                              </button>
+                              <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-lg border border-border/60 bg-background/95 px-3 py-2 text-xs leading-snug text-foreground shadow-lg opacity-0 backdrop-blur-md transition-opacity duration-150 [span:has(button:hover)_&]:opacity-100 [span:has(button:focus-visible)_&]:opacity-100">
+                                {feature.info}
+                              </span>
+                            </span>
+                          ) : null}
+                        </div>
                       </li>
                     ))}
                   </ul>

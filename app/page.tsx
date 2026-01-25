@@ -60,6 +60,7 @@ export default function Home() {
           {/* <BroadcastSection /> */}
           {/* <EnhancedTestimonials /> */}
           <PricingSection />
+          <QuestionsSection />
           {/* <QuestionsSection /> */}
           {/* <TestimonialsSection /> */}
           <Footer />

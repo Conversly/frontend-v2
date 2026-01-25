@@ -198,7 +198,7 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={card.action}
-      className={`group relative rounded-xl border bg-card overflow-hidden transition-all hover:shadow-md ${card.colSpan || ""
+      className={`group relative rounded-xl border bg-card overflow-hidden transition-all hover:shadow-md flex flex-col h-full ${card.colSpan || ""
         } ${card.action ? "cursor-pointer" : ""}`}
     >
       {/* Spotlight Overlay */}
@@ -211,12 +211,12 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
 
       {/* Visual or Image */}
       {card.visual && (
-        <div className={`${card.colSpan ? "h-52" : "h-44"} w-full overflow-hidden`}>
+        <div className="h-56 md:h-60 w-full overflow-hidden shrink-0">
           {card.visual}
         </div>
       )}
       {card.image && !card.visual && (
-        <div className="relative h-44 w-full overflow-hidden bg-muted/30">
+        <div className="relative h-56 md:h-60 w-full overflow-hidden bg-muted/30 shrink-0">
           <Image
             src={card.image}
             alt={`VerlyAI Feature: ${card.title} - ${card.tagline}`}
@@ -229,16 +229,20 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
 
       {/* Content */}
       <div
-        className={`px-5 py-4 ${!card.image && !card.visual ? "py-8" : ""} relative z-10`}
+        className={`px-5 py-3 ${!card.image && !card.visual ? "py-8" : ""} relative z-10`}
       >
-        <div className="flex flex-col items-start gap-3">
-          <div
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border shrink-0 ${card.bgAccent} ${card.accent}`}
-          >
-            {card.icon}
-            {card.title}
+        <div className="flex flex-col items-start gap-2">
+          <div className="flex items-center gap-2">
+            <div
+              className={`inline-flex items-center justify-center size-7 rounded-lg border ${card.bgAccent} ${card.accent}`}
+            >
+              {card.icon}
+            </div>
+            <p className="text-sm font-semibold tracking-tight">
+              {card.title}
+            </p>
           </div>
-          <p className="text-foreground/80 text-sm font-medium leading-relaxed">
+          <p className="text-foreground/80 text-sm font-medium leading-relaxed line-clamp-2">
             {card.tagline}
           </p>
         </div>

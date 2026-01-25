@@ -146,7 +146,7 @@ export default function ComparisonSection() {
             viewport={{ once: true }}
             className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6"
           >
-            Why Choose AI?
+            Why Choose Verly.ai?
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -155,7 +155,7 @@ export default function ComparisonSection() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70"
           >
-            AI Support vs. Hiring Agents
+            AI Support vs. Hiring Staff
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
