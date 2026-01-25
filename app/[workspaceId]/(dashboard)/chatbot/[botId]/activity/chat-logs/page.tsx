@@ -11,7 +11,11 @@ import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
 import type { ConversationMessageItem } from "@/types/activity";
 import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
 import { downloadJsonFile } from "@/lib/utils";
-import { Download, Filter, Search, MessageCircle, MessageSquare, Phone, Mail, Globe, Hash } from "lucide-react";
+import {
+  ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
+  ACTIVITY_PAGE_ROOT_CLASSNAME,
+} from "@/components/chatbot/activity/layout-constants";
+import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -73,6 +77,15 @@ export default function ChatLogsPage() {
     });
   }, [chatlogs, activeTab, searchQuery]);
 
+  const statusDot = (status?: string) => {
+    const s = String(status || "").toUpperCase();
+    if (!s) return "bg-muted-foreground/30";
+    if (s.includes("WAIT") || s.includes("PENDING")) return "bg-blue-500";
+    if (s.includes("ACTIVE") || s.includes("OPEN") || s.includes("IN_PROGRESS")) return "bg-green-500";
+    if (s.includes("RESOLVED") || s.includes("CLOSED") || s.includes("DONE")) return "bg-muted-foreground/50";
+    return "bg-muted-foreground/40";
+  };
+
   // Helper to get channel icon
   const getChannelIcon = (channel?: string) => {
     const c = (channel || "").toUpperCase();
@@ -98,9 +111,9 @@ export default function ChatLogsPage() {
   }, [messages]);
 
   return (
-    <div className="flex h-full bg-background min-h-0">
+    <div className={ACTIVITY_PAGE_ROOT_CLASSNAME}>
       {/* Sidebar */}
-      <div className="w-80 shrink-0 border-r flex flex-col bg-background/50 min-h-0">
+      <div className={ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME}>
         <div className="px-4 py-3 border-b space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="type-subtitle font-semibold text-foreground">Chat logs</h2>
@@ -132,52 +145,79 @@ export default function ChatLogsPage() {
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
-          <div className="p-3 space-y-1">
+          <div className="min-w-0 divide-y">
             {isLoadingChatlogs ? (
               Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="px-4 py-3 rounded-md space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-3 w-1/2" />
+                <div key={i} className="flex items-center gap-3 px-4 py-4">
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <Skeleton className="h-4 w-40" />
+                      <Skeleton className="h-3 w-14" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
                 </div>
               ))
             ) : filteredChatlogs.length > 0 ? (
               filteredChatlogs.map((c) => {
                 const isActive = selectedConvId === c.conversationId;
+                const ts = c.lastMessageAt ?? c.updatedAt ?? c.createdAt;
+                const channelLabel = String(c.channel || "WIDGET").toUpperCase();
+                const preview = `Status: ${String(c.status || "—")}`;
                 return (
                   <button
                     key={c.conversationId}
                     onClick={() => setSelectedConvId(c.conversationId)}
                     className={cn(
-                      "w-full text-left px-4 py-3 rounded-lg border border-transparent transition-all group",
-                      "hover:bg-muted/50 hover:border-border/50",
-                      isActive ? "bg-muted border-border shadow-sm" : "bg-transparent"
+                      "group/item relative flex w-full min-w-0 cursor-pointer items-center gap-3 px-4 py-4 text-left transition-colors",
+                      "hover:bg-muted",
+                      isActive ? "bg-muted" : "bg-transparent",
                     )}
                   >
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
+                    {/* Avatar (channel) + status dot */}
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/60">
+                      <span className="scale-[1.05]" title={channelLabel}>
                         {getChannelIcon(c.channel)}
-                        <span
-                          className={cn(
-                            "text-xs font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide",
-                            isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover:bg-background"
-                          )}
-                        >
-                          {c.channel || "WIDGET"}
+                      </span>
+                      <span
+                        className={cn(
+                          "absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background",
+                          statusDot(c.status),
+                        )}
+                        aria-hidden="true"
+                      />
+                    </div>
+
+                    {/* Main content */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex min-w-0 items-center justify-between gap-3">
+                        <div className="min-w-0 flex items-center gap-2">
+                          <span className="truncate text-sm font-medium">
+                            <span className="text-muted-foreground">#</span>
+                            {c.conversationId}
+                          </span>
+                          <span
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+                              isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover/item:bg-background",
+                            )}
+                          >
+                            {channelLabel}
+                          </span>
+                        </div>
+
+                        <span className="text-muted-foreground flex-none text-xs tabular-nums">
+                          {formatShortDateTime(ts)}
                         </span>
                       </div>
-                      <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                        {formatShortDateTime(c.lastMessageAt ?? c.updatedAt ?? c.createdAt)}
-                      </span>
-                    </div>
 
-                    <div className="line-clamp-2 text-sm font-medium leading-relaxed text-foreground/90">
-                      <span className="text-muted-foreground">Status:</span> {c.status}
-                    </div>
-
-                    <div className="mt-2 flex items-center justify-between">
-                      <code className="text-xs text-muted-foreground/70 truncate max-w-[120px]">
-                        {c.conversationId}
-                      </code>
+                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                        <span className="min-w-0 truncate text-sm text-muted-foreground">{preview}</span>
+                      </div>
                     </div>
                   </button>
                 );

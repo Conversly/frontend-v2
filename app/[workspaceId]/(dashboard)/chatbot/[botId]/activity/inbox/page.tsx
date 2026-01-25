@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import {
+  ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
+  ACTIVITY_PAGE_ROOT_CLASSNAME,
+} from "@/components/chatbot/activity/layout-constants";
 
 import { useAuth } from "@/store/auth";
 import { useSocketStore } from "@/store/websocket";
@@ -552,11 +556,11 @@ export default function InboxPage() {
     (activeTab === "mine" ? isLoadingMyEscalations : isLoadingEscalationsAll);
 
   return (
-    <div className="flex h-full bg-background">
+    <div className={ACTIVITY_PAGE_ROOT_CLASSNAME}>
       <OpenConversationSubscribers />
 
       {/* Left: Inbox */}
-      <div className="w-96 shrink-0 border-r flex flex-col bg-background/50 min-h-0">
+      <div className={ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME}>
         <div className="px-4 py-3 border-b space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="type-subtitle font-semibold text-foreground">Inbox</h2>
@@ -639,7 +643,12 @@ export default function InboxPage() {
                 const unread = unreadCountByConversationId[e.conversationId] ?? 0;
                 const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
                 const lastMsg = lastMsgList.length ? lastMsgList[lastMsgList.length - 1] : undefined;
-                const previewText = (lastMsg?.text || e.reason || "—").trim() || "—";
+                const primaryReason = (e.reason || "").trim();
+                const lastMsgText = (lastMsg?.text || "").trim();
+                const previewText =
+                  lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
+                    ? lastMsgText
+                    : "Open chat";
                 const ts = lastMsg ? lastMsg.sentAt.toISOString() : e.requestedAt;
                 const claimErr = lastClaimErrorByConversationId[e.conversationId];
 
@@ -671,14 +680,8 @@ export default function InboxPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center justify-between gap-3">
                         <div className="min-w-0 flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "truncate text-sm font-medium",
-                              isActive ? "text-foreground" : "text-foreground/90",
-                            )}
-                          >
-                            <span className="text-muted-foreground">#</span>
-                            {shortId(e.conversationId)}
+                          <span className="truncate text-sm font-medium text-foreground">
+                            {primaryReason || "No reason"}
                           </span>
                           {isMine && !isActive && (
                             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -704,6 +707,12 @@ export default function InboxPage() {
                         ) : isAssigned ? (
                           <Check className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                         ) : null}
+
+                        <code className="shrink-0 text-[11px] text-muted-foreground/80">
+                          <span className="text-muted-foreground">#</span>
+                          {shortId(e.conversationId)}
+                        </code>
+                        <span className="shrink-0 text-muted-foreground/60">•</span>
 
                         <span
                           className={cn(
