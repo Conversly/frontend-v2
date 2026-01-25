@@ -608,12 +608,21 @@ export default function InboxPage() {
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
-          <div className="p-3 space-y-1">
+          <div className="min-w-0 divide-y">
             {isLoadingInbox ? (
               Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="px-4 py-3 rounded-md space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-3 w-1/2" />
+                <div key={i} className="flex items-center gap-3 px-4 py-4">
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <Skeleton className="h-4 w-40" />
+                      <Skeleton className="h-3 w-14" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
                 </div>
               ))
             ) : inboxItems.length > 0 ? (
@@ -628,63 +637,127 @@ export default function InboxPage() {
                   (e.status || "").toUpperCase() === "REQUESTED";
                 const canClaim = waitingForAgent && !isAssigned;
                 const unread = unreadCountByConversationId[e.conversationId] ?? 0;
+                const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
+                const lastMsg = lastMsgList.length ? lastMsgList[lastMsgList.length - 1] : undefined;
+                const previewText = (lastMsg?.text || e.reason || "—").trim() || "—";
+                const ts = lastMsg ? lastMsg.sentAt.toISOString() : e.requestedAt;
+                const claimErr = lastClaimErrorByConversationId[e.conversationId];
 
                 return (
                   <button
                     key={e.escalationId}
                     onClick={() => onSelectRow(e.conversationId)}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-lg border border-transparent transition-all group",
-                      "hover:bg-muted/50 hover:border-border/50",
-                      isActive ? "bg-muted border-border shadow-sm" : "bg-transparent",
-                      isMine && !isActive ? "border-l-2 border-l-primary/70" : "",
+                      "group/item relative flex w-full min-w-0 cursor-pointer items-center gap-3 px-4 py-4 text-left transition-colors",
+                      "hover:bg-muted",
+                      isActive ? "bg-muted" : "bg-transparent",
                     )}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-2 min-w-0">
-                        <span
-                          className="mt-0.5 shrink-0"
-                          title={String(e.channel || "WIDGET").toUpperCase()}
-                        >
-                          {getChannelIcon(e.channel)}
-                        </span>
+                    {/* Avatar (channel) + status dot */}
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/60">
+                      <span className="scale-[1.05]" title={String(e.channel || "WIDGET").toUpperCase()}>
+                        {getChannelIcon(e.channel)}
+                      </span>
+                      <span
+                        className={cn(
+                          "absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background",
+                          ui.dotClass,
+                        )}
+                        aria-hidden="true"
+                      />
+                    </div>
 
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span
-                              className={cn(
-                                "mt-[1px] h-2 w-2 rounded-full shrink-0",
-                                ui.dotClass,
-                              )}
-                              aria-hidden="true"
-                            />
-                            <span className="text-[11px] text-muted-foreground shrink-0">{ui.label}</span>
-                            <div className="text-sm font-medium truncate">
-                              <span className="text-muted-foreground">#</span>
-                              {shortId(e.conversationId)}
-                            </div>
-                          </div>
-                          <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
-                            {e.reason ? e.reason : "—"}
-                          </div>
+                    {/* Main content */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex min-w-0 items-center justify-between gap-3">
+                        <div className="min-w-0 flex items-center gap-2">
+                          <span
+                            className={cn(
+                              "truncate text-sm font-medium",
+                              isActive ? "text-foreground" : "text-foreground/90",
+                            )}
+                          >
+                            <span className="text-muted-foreground">#</span>
+                            {shortId(e.conversationId)}
+                          </span>
+                          {isMine && !isActive && (
+                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                              Mine
+                            </span>
+                          )}
+                          {waitingForAgent && !isAssigned && (
+                            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-600">
+                              Waiting
+                            </span>
+                          )}
                         </div>
+                        <span className="text-muted-foreground flex-none text-xs tabular-nums">
+                          {formatRelative(ts)}
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        {unread > 0 && (
-                          <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
-                            {unread}
-                          </span>
-                        )}
-                        <span className="text-[11px] text-muted-foreground tabular-nums">
-                          {formatRelative(e.requestedAt)}
+                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                        {canClaim ? (
+                          <span className="text-muted-foreground shrink-0 text-xs">Unassigned</span>
+                        ) : isMine ? (
+                          <Check className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
+                        ) : isAssigned ? (
+                          <Check className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        ) : null}
+
+                        <span
+                          className={cn(
+                            "min-w-0 truncate text-sm text-muted-foreground",
+                            claimErr ? "text-destructive" : "",
+                          )}
+                        >
+                          {claimErr ? `Claim failed: ${claimErr}` : previewText}
                         </span>
 
-                        {canClaim ? (
+                        {unread > 0 && (
+                          <div className="ms-auto flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary px-2 text-[11px] font-medium text-primary-foreground tabular-nums">
+                            {unread}
+                          </div>
+                        )}
+                      </div>
+
+                      {!isMine && isAssigned && claimedByLabel && (
+                        <div className="mt-1 text-[11px] text-muted-foreground">
+                          Claimed by{" "}
+                          <span className="font-medium text-foreground/70">
+                            {e.agentDisplayName ? e.agentDisplayName : shortId(e.agentUserId || "")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Hover actions */}
+                    <div
+                      className={cn(
+                        "pointer-events-none absolute inset-y-0 right-0 flex items-center bg-gradient-to-l from-muted from-50% px-3 opacity-0 transition-opacity",
+                        "group-hover/item:opacity-100",
+                      )}
+                      aria-hidden="true"
+                    >
+                      <div className="pointer-events-auto flex items-center gap-1.5">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 rounded-full"
+                          onClick={(evt) => {
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                            void copyText(e.conversationId);
+                          }}
+                          aria-label="Copy conversation id"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        {canClaim && (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 text-xs px-2"
+                            className="h-9 rounded-full px-3 text-xs"
                             onClick={(evt) => {
                               evt.preventDefault();
                               evt.stopPropagation();
@@ -693,38 +766,9 @@ export default function InboxPage() {
                           >
                             Claim
                           </Button>
-                        ) : isMine ? (
-                          <span
-                            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
-                            title="Assigned to you"
-                          >
-                            <Check className="h-3.5 w-3.5" />
-                          </span>
-                        ) : isAssigned ? (
-                          <span
-                            className="text-[11px] text-muted-foreground"
-                            title={claimedByLabel ? `Claimed by ${claimedByLabel}` : "Claimed"}
-                          >
-                            {e.agentDisplayName ? "Taken" : "Taken"}
-                          </span>
-                        ) : null}
+                        )}
                       </div>
                     </div>
-
-                    {!isMine && isAssigned && (
-                      <div className="mt-1 text-[11px] text-muted-foreground">
-                        Claimed by{" "}
-                        <code className="text-xs">
-                          {e.agentDisplayName ? e.agentDisplayName : shortId(e.agentUserId || "")}
-                        </code>
-                      </div>
-                    )}
-
-                    {lastClaimErrorByConversationId[e.conversationId] && (
-                      <div className="mt-1 text-[11px] text-destructive">
-                        Claim failed: {lastClaimErrorByConversationId[e.conversationId]}
-                      </div>
-                    )}
                   </button>
                 );
               })
