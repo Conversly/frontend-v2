@@ -393,8 +393,12 @@ export default function InboxPage() {
       if (isClosed) return false;
 
       if (activeTab === "waiting" && !isWaiting) return false;
-      // Mine tab is sourced from `mine=true` backend query; don't re-filter by agent id here
-      // (agent id may be temporarily unavailable during auth hydration).
+      // Mine tab is sourced from `mine=true` backend query, but we still guard it client-side
+      // once auth hydration completes. This prevents backend/edge-case pollution where `mine=true`
+      // can include escalations assigned to other agents.
+      if (activeTab === "mine" && agentUserId) {
+        if (e.agentUserId !== agentUserId) return false;
+      }
 
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
@@ -415,7 +419,7 @@ export default function InboxPage() {
     });
 
     return filtered;
-  }, [activeTab, escalationsAll, myEscalations, searchQuery]);
+  }, [activeTab, agentUserId, escalationsAll, myEscalations, searchQuery]);
 
   const activeEscalationId = activeConversationId ? escalationIdByConversationId[activeConversationId] : undefined;
   const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
