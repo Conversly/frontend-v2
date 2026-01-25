@@ -16,6 +16,8 @@ interface TopicSummaryTableProps {
 }
 
 export function TopicSummaryTable({ topics, isLoading }: TopicSummaryTableProps) {
+  const sortedTopics = [...(topics || [])].sort((a, b) => b.value - a.value);
+
   return (
     <Card className="p-4">
       <div className="flex items-center mb-3">
@@ -44,8 +46,8 @@ export function TopicSummaryTable({ topics, isLoading }: TopicSummaryTableProps)
               </tr>
             </thead>
             <tbody>
-              {topics && topics.length > 0 ? (
-                topics.map((topic, index) => {
+              {sortedTopics.length > 0 ? (
+                sortedTopics.map((topic, index) => {
                   const totalFeedback = topic.likes + topic.dislikes;
                   const engagementRate = topic.value > 0 ? ((totalFeedback / topic.value) * 100).toFixed(1) : '0.0';
                   
@@ -60,12 +62,12 @@ export function TopicSummaryTable({ topics, isLoading }: TopicSummaryTableProps)
                           <span className="text-xs font-medium">{topic.name}</span>
                         </div>
                       </td>
-                      <td className="py-2 px-3 text-xs font-medium">{topic.value}</td>
+                      <td className="py-2 px-3 text-xs font-medium">{topic.value.toLocaleString()}</td>
                       <td className="py-2 px-3">
-                        <span className="text-xs text-green-600 font-medium">{topic.likes}</span>
+                        <span className="text-xs text-green-600 font-medium">{topic.likes.toLocaleString()}</span>
                       </td>
                       <td className="py-2 px-3">
-                        <span className="text-xs text-red-600 font-medium">{topic.dislikes}</span>
+                        <span className="text-xs text-red-600 font-medium">{topic.dislikes.toLocaleString()}</span>
                       </td>
                       <td className="py-2 px-3 text-xs">{engagementRate}%</td>
                     </tr>

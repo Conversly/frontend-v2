@@ -4,8 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { PieChart } from '@mui/x-charts/PieChart';
-
-const MAX_TOPICS = 5;
+import { useMemo, useState } from "react";
 
 interface TopicData {
   name: string;
@@ -22,46 +21,18 @@ interface TopicPieChartProps {
 }
 
 export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
+  const [hoveredTopicName, setHoveredTopicName] = useState<string | null>(null);
 
-  const chartData = (() => {
+  const chartData = useMemo(() => {
     if (!topics || topics.length === 0) return [];
-
-    // Convert to mutable array and sort
     const sortedTopics = [...topics].sort((a, b) => b.value - a.value);
-
-    if (sortedTopics.length <= MAX_TOPICS) {
-      return sortedTopics.map((topic, index) => ({
-        id: index,
-        value: topic.value,
-        label: topic.name,
-        color: topic.color
-      }));
-    }
-
-    const topTopics = sortedTopics.slice(0, MAX_TOPICS);
-    const otherTopics = sortedTopics.slice(MAX_TOPICS);
-
-    // Check if otherTopics has any value
-    const otherValue = otherTopics.reduce((sum, t) => sum + t.value, 0);
-
-    const data = topTopics.map((topic, index) => ({
+    return sortedTopics.map((topic, index) => ({
       id: index,
       value: topic.value,
       label: topic.name,
-      color: topic.color
+      color: topic.color,
     }));
-
-    if (otherValue > 0) {
-      data.push({
-        id: MAX_TOPICS,
-        value: otherValue,
-        label: "Other",
-        color: "#94a3b8"
-      });
-    }
-
-    return data;
-  })();
+  }, [topics]);
 
   return (
     <Card className="shadow-sm border-border/50">
@@ -71,32 +42,41 @@ export function TopicPieChart({ topics, isLoading }: TopicPieChartProps) {
           Topic Distribution
         </CardTitle>
         <CardDescription>
-          Message volume by topic (Top 5)
+          Message volume by topic
+          {hoveredTopicName ? (
+            <span className="ml-2 text-foreground/80">
+              · Hover: <span className="font-medium">{hoveredTopicName}</span>
+            </span>
+          ) : null}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 min-h-[300px] flex items-center justify-center">
         {isLoading ? (
           <Skeleton className="h-[250px] w-[250px] rounded-full" />
         ) : (
-          <div className="w-full h-[300px] flex justify-center">
+          <div className="w-full h-[300px] flex items-center justify-center overflow-hidden">
             {chartData.length > 0 ? (
               <PieChart
                 series={[
                   {
                     data: chartData,
                     innerRadius: 30,
+                    outerRadius: 110,
                     paddingAngle: 2,
                     cornerRadius: 4,
                     highlightScope: { fade: 'global', highlight: 'item' },
                     faded: { innerRadius: 20, additionalRadius: -20, color: 'gray' },
                   },
                 ]}
-                slotProps={{
-                  legend: {
-                    position: { vertical: 'bottom', horizontal: 'center' },
-                  }
+                width={340}
+                height={260}
+                hideLegend
+                onHighlightChange={(item) => {
+                  if (!item) return setHoveredTopicName(null);
+                  const label = chartData[item.dataIndex ?? -1]?.label;
+                  setHoveredTopicName(label ?? null);
                 }}
-                margin={{ top: 0, bottom: 60, left: 0, right: 0 }}
+                margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
               />
             ) : (
               <div className="flex items-center justify-center text-muted-foreground text-sm">

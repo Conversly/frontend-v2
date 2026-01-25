@@ -6,77 +6,41 @@ import { TrendingUp } from "lucide-react";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { chartsGridClasses } from '@mui/x-charts/ChartsGrid';
+import { useMemo, useState } from "react";
+import type { TopicSeries as TopicSeriesType } from "@/types/analytics";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7c7c'];
-const MAX_TOPICS = 5;
-
-interface TopicSeries {
-  topicId: string;
-  topicName: string;
-  color?: string | null;
-  series: Array<{ date: string; messages: number }>;
-}
+const DEFAULT_VISIBLE_TOPICS = 8;
 
 interface TopicLineChartProps {
-  topics?: TopicSeries[];
+  topics?: TopicSeriesType[];
   isLoading: boolean;
   formatDate: (dateString: string) => string;
 }
 
 export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChartProps) {
 
-  // Process data to filter Top N + Other
-  const processedTopics = (() => {
+  const [showAllTopics, setShowAllTopics] = useState(false);
+
+  const sortedTopics = useMemo(() => {
     if (!topics || topics.length === 0) return [];
 
-    // Calculate total messages per topic to sort
-    const topicTotals = topics.map(t => ({
-      ...t,
-      totalMessages: t.series.reduce((sum, s) => sum + s.messages, 0)
-    }));
+    return [...topics]
+      .map((t) => ({
+        ...t,
+        totalMessages: t.series.reduce((sum, s) => sum + s.messages, 0),
+      }))
+      .sort((a, b) => b.totalMessages - a.totalMessages);
+  }, [topics]);
 
-    // Sort by total messages descending
-    topicTotals.sort((a, b) => b.totalMessages - a.totalMessages);
-
-    // If we have few topics, return as is
-    if (topicTotals.length <= MAX_TOPICS) {
-      return topicTotals;
-    }
-
-    // Split into Top N and Rest
-    const topTopics = topicTotals.slice(0, MAX_TOPICS);
-    const otherTopics = topicTotals.slice(MAX_TOPICS);
-
-    // Create "Other" topic
-    // We need to merge all series from otherTopics
-    // First, find all unique dates involved in "Other"
-    const otherSeriesMap = new Map<string, number>();
-
-    otherTopics.forEach(topic => {
-      topic.series.forEach(point => {
-        const current = otherSeriesMap.get(point.date) || 0;
-        otherSeriesMap.set(point.date, current + point.messages);
-      });
-    });
-
-    // Convert map to array
-    const otherSeries = Array.from(otherSeriesMap.entries()).map(([date, messages]) => ({
-      date,
-      messages
-    }));
-
-    const otherTopic: TopicSeries = {
-      topicId: 'other',
-      topicName: 'Other',
-      color: '#94a3b8', // Gray for Other
-      series: otherSeries
-    };
-
-    return [...topTopics, otherTopic];
-  })();
+  const processedTopics = useMemo(() => {
+    if (sortedTopics.length === 0) return [];
+    if (showAllTopics) return sortedTopics;
+    return sortedTopics.slice(0, DEFAULT_VISIBLE_TOPICS);
+  }, [sortedTopics, showAllTopics]);
 
   // Transform data for MUI X Charts (dataset format)
-  const chartDataset = (() => {
+  const chartDataset = useMemo(() => {
     if (processedTopics.length === 0) return [];
 
     // Get all unique dates from the processed topics (including Other)
@@ -96,22 +60,26 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
 
       processedTopics.forEach(topic => {
         const point = topic.series.find(p => p.date === date);
-        dataPoint[topic.topicName] = point?.messages || 0;
+        dataPoint[topic.topicId] = point?.messages || 0;
       });
 
       return dataPoint;
     });
-  })();
+  }, [processedTopics, formatDate]);
 
   // Generate series config dynamically
-  const chartSeries = processedTopics.map((topic, index) => ({
-    dataKey: topic.topicName,
-    label: topic.topicName,
-    color: topic.topicName === 'Other' ? '#94a3b8' : (topic.color || COLORS[index % COLORS.length]),
-    showMark: false,
-    connectNulls: true,
-    curve: "linear" as const,
-  }));
+  const chartSeries = useMemo(
+    () =>
+      processedTopics.map((topic, index) => ({
+        dataKey: topic.topicId,
+        label: topic.topicName,
+        color: topic.color || COLORS[index % COLORS.length],
+        showMark: false,
+        connectNulls: true,
+        curve: "linear" as const,
+      })),
+    [processedTopics]
+  );
 
   const chartSetting = {
     grid: { horizontal: true },
@@ -138,13 +106,31 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
   return (
     <Card className="shadow-sm border-border/50">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          Topic Messages Over Time
-        </CardTitle>
-        <CardDescription>
-          Trend analysis of conversation topics (Top 5)
-        </CardDescription>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              Topic Messages Over Time
+            </CardTitle>
+            <CardDescription>
+              {sortedTopics.length <= DEFAULT_VISIBLE_TOPICS
+                ? "Trend analysis of conversation topics"
+                : showAllTopics
+                  ? `Showing all topics (${sortedTopics.length})`
+                  : `Showing top ${DEFAULT_VISIBLE_TOPICS} topics by volume`}
+            </CardDescription>
+          </div>
+
+          {sortedTopics.length > DEFAULT_VISIBLE_TOPICS && (
+            <button
+              type="button"
+              onClick={() => setShowAllTopics((v) => !v)}
+              className="text-xs font-medium text-primary hover:underline whitespace-nowrap mt-1"
+            >
+              {showAllTopics ? "Show top topics" : `Show all (${sortedTopics.length})`}
+            </button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         {isLoading ? (

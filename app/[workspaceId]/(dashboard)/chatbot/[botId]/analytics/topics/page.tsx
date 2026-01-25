@@ -9,7 +9,6 @@ import {
 import { useState } from "react";
 import { ManageTopicsDialog } from "@/components/analytics/manage-topics-dialog";
 import { TimePeriodSelector } from "@/components/analytics/time-period-selector";
-import { TopicOverviewCards } from "@/components/analytics/topic-overview-cards";
 import { TopicLineChart } from "@/components/analytics/topic-line-chart";
 import { TopicPieChart } from "@/components/analytics/topic-pie-chart";
 import { TopicSummaryTable } from "@/components/analytics/topic-summary-table";
@@ -84,9 +83,6 @@ export default function TopicsPage() {
         endDate={barChartData?.dateRange?.endDate || pieChartData?.dateRange?.endDate}
       />
 
-      {transformedPieData.length > 0 && (
-        <TopicOverviewCards topics={transformedPieData} />
-      )}
 
       <div className="grid gap-4 md:grid-cols-2">
         <TopicLineChart
