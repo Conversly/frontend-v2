@@ -57,7 +57,7 @@ export default function StatisticPage({ params }: StatisticPageProps) {
     return { likes, dislikes, none: 0 };
   };
 
-  const feedbackDistribution = calculateFeedbackDistribution();
+  const feedbackDistribution = chartsData?.feedbackDistribution ?? calculateFeedbackDistribution();
 
   if (summaryError || chartsError || feedbacksError) {
     return (

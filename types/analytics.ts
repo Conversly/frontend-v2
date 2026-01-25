@@ -20,7 +20,7 @@ export interface SummaryMetricsData {
   totalMessagesThisMonth: number;
   avgMessagesPerConversation: number;
   likeRatePercent: number;
-  activeConversationsToday: number;
+  avgConversationSessionSec: number;
 }
 
 export interface GetSummaryResponse {

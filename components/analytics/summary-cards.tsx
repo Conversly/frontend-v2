@@ -1,13 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquare, BarChart3, ThumbsUp, Users } from "lucide-react";
+import { MessageSquare, BarChart3, ThumbsUp, Clock } from "lucide-react";
 
 interface SummaryCardsProps {
   summaryData?: {
     totalMessagesThisMonth?: number;
     avgMessagesPerConversation?: number;
     likeRatePercent?: number;
-    activeConversationsToday?: number;
+    avgConversationSessionSec?: number;
   };
   isLoading: boolean;
 }
@@ -68,17 +68,19 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
 
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
-          <p className="text-sm font-medium text-muted-foreground">Active Conversations</p>
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <p className="text-sm font-medium text-muted-foreground">Avg. Session Duration</p>
+          <Clock className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
             <Skeleton className="h-8 w-12 mt-1" />
           ) : (
-            <div className="text-2xl font-bold">{summaryData?.activeConversationsToday || 0}</div>
+            <div className="text-2xl font-bold">
+              {((summaryData?.avgConversationSessionSec ?? 0) / 60).toFixed(1)} min
+            </div>
           )}
         </div>
-        <p className="text-xs text-muted-foreground mt-1">Today</p>
+        <p className="text-xs text-muted-foreground mt-1">Average per conversation</p>
       </Card>
     </div>
   );
