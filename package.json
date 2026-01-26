@@ -60,6 +60,7 @@
     "react": "19.2.1",
     "react-color": "^2.19.3",
     "react-dom": "19.2.1",
+    "react-google-charts": "^5.2.1",
     "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
     "react-textarea-autosize": "^8.5.9",

@@ -13,6 +13,7 @@ import { SummaryCards } from "@/components/analytics/summary-cards";
 import { ChartsSection } from "@/components/analytics/charts-section";
 import { RecentFeedbackTable } from "@/components/analytics/recent-feedback-table";
 import { DashboardAnalyticsSection } from "@/components/analytics/dashboard-analytics-section";
+import { CountryAnalyticsCard } from "@/components/analytics/country-analytics-card";
 
 interface StatisticPageProps {
   params: Promise<{
@@ -112,6 +113,11 @@ export default function StatisticPage({ params }: StatisticPageProps) {
         dashboard={dashboardData}
         isLoading={dashboardLoading}
         formatDate={formatDate}
+      />
+
+      <CountryAnalyticsCard
+        country={dashboardData?.country}
+        isLoading={dashboardLoading}
       />
 
       <RecentFeedbackTable
