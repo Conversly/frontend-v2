@@ -1,12 +1,18 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { useAnalyticsSummaryQuery, useAnalyticsChartsQuery, useAnalyticsFeedbacksQuery } from "@/services/analytics";
+import {
+  useAnalyticsSummaryQuery,
+  useAnalyticsChartsQuery,
+  useAnalyticsFeedbacksQuery,
+  useAnalyticsDashboardQuery,
+} from "@/services/analytics";
 import { useState, use } from "react";
 import { ControlsCard } from "@/components/analytics/controls-card";
 import { SummaryCards } from "@/components/analytics/summary-cards";
 import { ChartsSection } from "@/components/analytics/charts-section";
 import { RecentFeedbackTable } from "@/components/analytics/recent-feedback-table";
+import { DashboardAnalyticsSection } from "@/components/analytics/dashboard-analytics-section";
 
 interface StatisticPageProps {
   params: Promise<{
@@ -22,6 +28,7 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   const { data: summaryData, isLoading: summaryLoading, error: summaryError } = useAnalyticsSummaryQuery(botId);
   const { data: chartsData, isLoading: chartsLoading, error: chartsError } = useAnalyticsChartsQuery(botId, selectedDays);
   const { data: feedbacksData, isLoading: feedbacksLoading, error: feedbacksError } = useAnalyticsFeedbacksQuery(botId, feedbackLimit);
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useAnalyticsDashboardQuery(botId, selectedDays);
 
   const formatDate = (dateString: string) => {
     try {
@@ -59,7 +66,7 @@ export default function StatisticPage({ params }: StatisticPageProps) {
 
   const feedbackDistribution = chartsData?.feedbackDistribution ?? calculateFeedbackDistribution();
 
-  if (summaryError || chartsError || feedbacksError) {
+  if (summaryError || chartsError || feedbacksError || dashboardError) {
     return (
       <div className="px-4 md:px-6 py-4 md:py-6">
         <div className="mb-4">
@@ -98,6 +105,12 @@ export default function StatisticPage({ params }: StatisticPageProps) {
         chartsLoading={chartsLoading}
         feedbackDistribution={feedbackDistribution}
         feedbacksLoading={feedbacksLoading}
+        formatDate={formatDate}
+      />
+
+      <DashboardAnalyticsSection
+        dashboard={dashboardData}
+        isLoading={dashboardLoading}
         formatDate={formatDate}
       />
 

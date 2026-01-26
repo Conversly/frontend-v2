@@ -51,6 +51,7 @@ export interface GetChartsResponse {
 }
 
 export interface FeedbackItem {
+  convId: string | null;
   content: string;
   feedback: 'like' | 'dislike';
   feedbackComment: string | null;
@@ -61,6 +62,29 @@ export interface GetFeedbacksResponse {
   success: boolean;
   data: FeedbackItem[];
 }
+
+export interface VoiceLogItem {
+  id: string;
+  roomName: string | null;
+  assistantName: string | null;
+  botName: string;
+  phoneNumber: string | null;
+  status: string;
+  startedAt: Date | null;
+  endedAt: Date | null;
+  durationSec: number | null;
+  endReason: string | null;
+  recordingUrl: string | null;
+}
+
+export interface GetVoiceLogsResponse {
+  success: boolean;
+  data: VoiceLogItem[];
+}
+
+// ============================================================================
+// LEGACY TOPICS CHART TYPES (back-compat for existing UI)
+// ============================================================================
 
 export interface TopicSeriesPoint {
   date: string; // ISO date (YYYY-MM-DD)
@@ -78,15 +102,10 @@ export interface TopicSeries {
 
 export interface TopicBarChartData {
   topics: TopicSeries[];
-  dateRange: { startDate: string; endDate: string }; // ISO dates
+  dateRange: { startDate: string; endDate: string };
 }
 
-export interface GetTopicBarChartResponse {
-  success: boolean;
-  data: TopicBarChartData;
-}
-
-export interface TopicAggregate {
+export interface TopicPieChartTopic {
   topicId: string;
   topicName: string;
   color: string | null;
@@ -96,8 +115,13 @@ export interface TopicAggregate {
 }
 
 export interface TopicPieChartData {
-  topics: TopicAggregate[];
+  topics: TopicPieChartTopic[];
   dateRange: { startDate: string; endDate: string };
+}
+
+export interface GetTopicBarChartResponse {
+  success: boolean;
+  data: TopicBarChartData;
 }
 
 export interface GetTopicPieChartResponse {
@@ -105,46 +129,72 @@ export interface GetTopicPieChartResponse {
   data: TopicPieChartData;
 }
 
-// Topic CRUD types
-export interface CreateTopicInput {
-  chatbotId: string;
-  name: string;
+// ============================================================================
+// UNIFIED DASHBOARD TYPES
+// ============================================================================
+
+export interface SentimentCounts {
+  veryNegative: number;
+  negative: number;
+  neutral: number;
+  positive: number;
+  veryPositive: number;
 }
 
-export interface TopicResponse {
-  id: string;
-  chatbotId: string;
-  name: string;
+export interface SentimentDayPoint extends SentimentCounts {
+  date: string; // ISO date (YYYY-MM-DD)
+}
+
+export interface SentimentData {
+  perDay: SentimentDayPoint[];
+  totals: SentimentCounts;
+}
+
+export interface TopicDayPoint {
+  date: string;
+  conversations: number;
+  likes: number;
+  dislikes: number;
+}
+
+export interface TopicWithSeries {
+  topicId: string;
+  topicName: string;
   color: string | null;
-  createdAt: Date | null;
+  series: TopicDayPoint[];
 }
 
-export interface UpdateTopicInput {
-  id: string;
-  name?: string;
+export interface TopicTotal {
+  topicId: string;
+  topicName: string;
+  color: string | null;
+  conversations: number;
+  likes: number;
+  dislikes: number;
 }
 
-export interface DeleteTopicInput {
-  id: string;
+export interface TopicsData {
+  perDay: TopicWithSeries[];
+  totals: TopicTotal[];
 }
 
-export interface DeleteTopicResponse {
+export interface CountryDataPoint {
+  countryCode: string;
+  conversations: number;
+}
+
+export interface CountryData {
+  data: CountryDataPoint[];
+}
+
+export interface DashboardData {
+  sentiment: SentimentData;
+  topics: TopicsData;
+  country: CountryData;
+  dateRange: { startDate: string; endDate: string };
+}
+
+export interface GetDashboardResponse {
   success: boolean;
-  message?: string;
+  data: DashboardData;
 }
-
-export interface GetTopicsResponse {
-  success: boolean;
-  data: TopicResponse[];
-}
-
-export interface CreateTopicResponse {
-  success: boolean;
-  data: TopicResponse;
-}
-
-export interface UpdateTopicResponse {
-  success: boolean;
-  data: TopicResponse;
-}
-  

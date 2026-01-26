@@ -87,6 +87,7 @@ export const API = {
       GET_SUMMARY: allMode(() => "/analytics/summary"),
       GET_CHARTS: allMode(() => "/analytics/charts"),
       GET_FEEDBACKS: allMode(() => "/analytics/feedbacks"),
+      GET_DASHBOARD: allMode(() => "/analytics/dashboard"),
       GET_TOPIC_BAR_CHART: allMode(() => "/analytics/topics/bar-chart"),
       GET_TOPIC_PIE_CHART: allMode(() => "/analytics/topics/pie-chart"),
     },

@@ -1,10 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "@/utils/query-key";
 import { 
   getAnalytics, 
   getAnalyticsCharts, 
   getAnalyticsFeedbacks, 
   getAnalyticsSummary,
+  getAnalyticsDashboard,
   getAnalyticsTopicBarChart,
   getAnalyticsTopicPieChart,
 } from "@/lib/api/analytics";
@@ -13,12 +14,9 @@ import type {
   SummaryMetricsData, 
   ChartsData, 
   FeedbackItem,
+  DashboardData,
   TopicBarChartData,
   TopicPieChartData,
-  TopicResponse,
-  CreateTopicInput,
-  UpdateTopicInput,
-  DeleteTopicInput
 } from "@/types/analytics";
 
 export const useAnalyticsQuery = (chatbotId: string) =>
@@ -48,6 +46,13 @@ export const useAnalyticsFeedbacksQuery = (chatbotId: string, limit: number = 5)
   useQuery<FeedbackItem[]>({
     queryKey: [QUERY_KEY.ANALYTICS_FEEDBACKS, chatbotId, limit],
     queryFn: () => getAnalyticsFeedbacks(chatbotId, limit),
+    staleTime: 60_000,
+  });
+
+export const useAnalyticsDashboardQuery = (chatbotId: string, days: number = 7) =>
+  useQuery<DashboardData>({
+    queryKey: [QUERY_KEY.ANALYTICS_DASHBOARD, chatbotId, days],
+    queryFn: () => getAnalyticsDashboard(chatbotId, days),
     staleTime: 60_000,
   });
 

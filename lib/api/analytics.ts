@@ -6,6 +6,8 @@ import {
   GetSummaryResponse,
   GetFeedbacksResponse,
   GetChartsResponse,
+  DashboardData,
+  GetDashboardResponse,
   TopicBarChartData,
   TopicPieChartData,
   GetTopicBarChartResponse,
@@ -99,6 +101,36 @@ export const getAnalyticsFeedbacks = async (chatbotId: string, limit: number = 5
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message || "Failed to fetch analytics feedbacks");
+  }
+};
+
+export const getAnalyticsDashboard = async (
+  chatbotId: string,
+  days: number = 7
+): Promise<DashboardData> => {
+  try {
+    if (!chatbotId || chatbotId.trim() === "") {
+      throw new Error(
+        `Invalid chatbot ID: ${chatbotId}. Must be a valid UUID string.`
+      );
+    }
+
+    const endpoint = API.ENDPOINTS.ANALYTICS.GET_DASHBOARD.path();
+    const urlWithParams = `${endpoint}?chatbotId=${encodeURIComponent(chatbotId)}&days=${days}`;
+    console.log("Dashboard API - Final URL:", urlWithParams);
+
+    const res = (await fetch(urlWithParams, {
+      method: "GET",
+    }).then((res) => res.data)) as GetDashboardResponse;
+
+    if (!res.success) {
+      throw new Error("Failed to fetch analytics dashboard");
+    }
+
+    return res.data;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error(error.message || "Failed to fetch analytics dashboard");
   }
 };
 
