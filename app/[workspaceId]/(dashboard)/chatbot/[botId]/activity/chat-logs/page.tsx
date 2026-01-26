@@ -70,7 +70,9 @@ export default function ChatLogsPage() {
       // 2. Filter by Search Query
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        return log.conversationId.toLowerCase().includes(query);
+        const message = String(log.lastUserMessage || "").toLowerCase();
+        const id = String(log.conversationId || "").toLowerCase();
+        return message.includes(query) || id.includes(query);
       }
 
       return true;
@@ -126,7 +128,7 @@ export default function ChatLogsPage() {
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Search ID or message..."
+              placeholder="Search message..."
               className="pl-8 h-8 text-xs"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -165,9 +167,9 @@ export default function ChatLogsPage() {
             ) : filteredChatlogs.length > 0 ? (
               filteredChatlogs.map((c) => {
                 const isActive = selectedConvId === c.conversationId;
-                const ts = c.lastMessageAt ?? c.updatedAt ?? c.createdAt;
+                const ts = c.lastUserMessageAt ?? c.lastMessageAt ?? c.updatedAt ?? c.createdAt;
                 const channelLabel = String(c.channel || "WIDGET").toUpperCase();
-                const preview = `Status: ${String(c.status || "—")}`;
+                const title = String(c.lastUserMessage || "").trim() || "No user message";
                 return (
                   <button
                     key={c.conversationId}
@@ -196,10 +198,7 @@ export default function ChatLogsPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center justify-between gap-3">
                         <div className="min-w-0 flex items-center gap-2">
-                          <span className="truncate text-sm font-medium">
-                            <span className="text-muted-foreground">#</span>
-                            {c.conversationId}
-                          </span>
+                          <span className="truncate text-sm font-medium">{title}</span>
                           <span
                             className={cn(
                               "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
@@ -215,9 +214,6 @@ export default function ChatLogsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                        <span className="min-w-0 truncate text-sm text-muted-foreground">{preview}</span>
-                      </div>
                     </div>
                   </button>
                 );

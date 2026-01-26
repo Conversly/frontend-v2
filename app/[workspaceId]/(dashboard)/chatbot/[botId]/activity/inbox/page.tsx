@@ -406,7 +406,12 @@ export default function InboxPage() {
 
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        if (!e.conversationId.toLowerCase().includes(q) && !(e.reason || "").toLowerCase().includes(q)) {
+        const msg = String(e.lastUserMessage || "").toLowerCase();
+        if (
+          !msg.includes(q) &&
+          !e.conversationId.toLowerCase().includes(q) &&
+          !(e.reason || "").toLowerCase().includes(q)
+        ) {
           return false;
         }
       }
@@ -572,7 +577,7 @@ export default function InboxPage() {
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Search conversation or reason..."
+              placeholder="Search message or reason..."
               className="pl-8 h-8 text-xs"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -645,11 +650,15 @@ export default function InboxPage() {
                 const lastMsg = lastMsgList.length ? lastMsgList[lastMsgList.length - 1] : undefined;
                 const primaryReason = (e.reason || "").trim();
                 const lastMsgText = (lastMsg?.text || "").trim();
+                const title = String(e.lastUserMessage || "").trim() || lastMsgText || primaryReason || "Open chat";
                 const previewText =
                   lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
                     ? lastMsgText
                     : "Open chat";
-                const ts = lastMsg ? lastMsg.sentAt.toISOString() : e.requestedAt;
+                const ts =
+                  e.lastUserMessageAt ||
+                  e.lastMessageAt ||
+                  (lastMsg ? lastMsg.sentAt.toISOString() : e.requestedAt);
                 const claimErr = lastClaimErrorByConversationId[e.conversationId];
 
                 return (
@@ -681,7 +690,7 @@ export default function InboxPage() {
                       <div className="flex min-w-0 items-center justify-between gap-3">
                         <div className="min-w-0 flex items-center gap-2">
                           <span className="truncate text-sm font-medium text-foreground">
-                            {primaryReason || "No reason"}
+                            {title}
                           </span>
                           {isMine && !isActive && (
                             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -707,12 +716,6 @@ export default function InboxPage() {
                         ) : isAssigned ? (
                           <Check className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                         ) : null}
-
-                        <code className="shrink-0 text-[11px] text-muted-foreground/80">
-                          <span className="text-muted-foreground">#</span>
-                          {shortId(e.conversationId)}
-                        </code>
-                        <span className="shrink-0 text-muted-foreground/60">•</span>
 
                         <span
                           className={cn(
@@ -857,6 +860,9 @@ export default function InboxPage() {
               {openConversationIds.map((id) => {
                 const unread = unreadCountByConversationId[id] ?? 0;
                 const isActive = id === activeConversationId;
+                const escId = escalationIdByConversationId[id];
+                const label =
+                  (escId ? escalationsById[escId]?.lastUserMessage : undefined)?.trim() || shortId(id);
                 return (
                   <button
                     key={id}
@@ -870,7 +876,7 @@ export default function InboxPage() {
                       isActive ? "bg-muted border-border" : "bg-background hover:bg-muted/40 border-border/60",
                     )}
                   >
-                    <span className="font-medium">{shortId(id)}</span>
+                    <span className="font-medium">{label}</span>
                     {unread > 0 && (
                       <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
                         {unread}

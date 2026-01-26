@@ -47,6 +47,8 @@ export interface ConversationItem {
   createdAt: string;
   updatedAt: string;
   lastMessageAt: string | null;
+  lastUserMessage: string | null;
+  lastUserMessageAt: string | null;
   closedAt: string | null;
   metadata: Record<string, unknown>;
 }
@@ -102,6 +104,8 @@ export interface EscalationItem {
 
   // Optional (present when `mine=true` on GET /activity/escalations)
   lastMessageAt?: string | null;
+  lastUserMessage?: string | null;
+  lastUserMessageAt?: string | null;
   unreadCount?: number | null;
 }
 
