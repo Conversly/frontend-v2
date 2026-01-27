@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { User, Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, MessageSquare, ThumbsDown, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const messages = [
     {
@@ -240,9 +241,11 @@ export default function HumanEscalationSection() {
                             transition={{ delay: 0.4 }}
                             className="pt-4"
                         >
-                            <Button size="lg" className="rounded-full bg-slate-900 text-white hover:bg-slate-800 px-8 h-14 text-lg shadow-2xl shadow-slate-900/20 hover:shadow-slate-900/40 hover:-translate-y-1 transition-all duration-300">
-                                Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
-                            </Button>
+                            <Link href="/login">
+                                <Button size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-14 text-lg shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
+                                    Start Building <ArrowRight className="ml-2 w-5 h-5" />
+                                </Button>
+                            </Link>
                         </motion.div>
                     </div>
 

@@ -21,6 +21,8 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import { NoiseBackground } from "@/components/ui/noise-background";
+import { VideoModal } from "@/components/ui/video-modal";
 
 type OfferingType = "chat" | "voice" | "whatsapp";
 
@@ -623,6 +625,7 @@ export default function Hero() {
   const router = useRouter();
   const [activeOffering, setActiveOffering] = useState<OfferingType>("chat");
   const [isPaused, setIsPaused] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   // Auto-cycle through offerings
   useEffect(() => {
@@ -701,65 +704,86 @@ export default function Hero() {
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="flex flex-col gap-8 pt-2"
-            >
-
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.5 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
-                <Button
-                  size="lg"
-                  className="group gap-2 h-12 px-6 text-base transition-all duration-300 hover:shadow-md"
-                  onClick={() => {
-                    // @ts-ignore
-                    if (window.Calendly) {
-                      // @ts-ignore
-                      window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
-                    }
-                  }}
+                <NoiseBackground
+                  containerClassName="w-fit p-1.5 rounded-full"
+                  gradientColors={[
+                    "rgb(255, 100, 150)",
+                    "rgb(100, 150, 255)",
+                    "rgb(255, 200, 100)",
+                  ]}
                 >
-                  <Calendar className="w-5 h-5" />
-                  Schedule a meet
-                </Button>
+                  <button
+                    className="cursor-pointer rounded-full bg-gradient-to-r from-neutral-100 via-neutral-100 to-white px-6 py-3 text-black font-medium shadow-[0px_2px_0px_0px_var(--color-neutral-50)_inset,0px_0.5px_1px_0px_var(--color-neutral-400)] transition-all duration-100 active:scale-98 flex items-center gap-2"
+                    onClick={() => {
+                      // @ts-ignore
+                      if (window.Calendly) {
+                        // @ts-ignore
+                        window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
+                      }
+                    }}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Schedule a meet
+                  </button>
+                </NoiseBackground>
               </motion.div>
 
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="group gap-2 h-auto py-3 px-6 rounded-full border border-input text-base font-medium hover:bg-accent/50"
+                  onClick={() => setIsVideoOpen(true)}
+                >
+                  <Play className="w-4 h-4 fill-current opacity-80" />
+                  Watch Demo
+                </Button>
+              </motion.div>
+            </div>
 
-              {/* Social / follow */}
-              <div className="flex flex-wrap items-center gap-3 text-muted-foreground mt-4">
-                <div className="flex items-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl px-3 py-1 shadow-sm">
-                  <span className="text-xs font-semibold tracking-[0.16em] text-foreground/80 uppercase">
-                    Follow us
-                  </span>
-                  <span className="h-1 w-8 rounded-full bg-gradient-to-r from-primary/70 via-primary/40 to-transparent" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://x.com/VerlyAI"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-                  >
-                    <XIcon className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-black" />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/company/verlyai/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-                  >
-                    <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-[#0a66c2]" />
-                  </a>
-                </div>
+            <VideoModal
+              open={isVideoOpen}
+              onOpenChange={setIsVideoOpen}
+            />
+
+
+            {/* Social / follow */}
+            <div className="flex flex-wrap items-center gap-3 text-muted-foreground mt-4">
+              <div className="flex items-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl px-3 py-1 shadow-sm">
+                <span className="text-xs font-semibold tracking-[0.16em] text-foreground/80 uppercase">
+                  Follow us
+                </span>
+                <span className="h-1 w-8 rounded-full bg-gradient-to-r from-primary/70 via-primary/40 to-transparent" />
               </div>
-            </motion.div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://x.com/VerlyAI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <XIcon className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-black" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/company/verlyai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-[#0a66c2]" />
+                </a>
+              </div>
+            </div>
           </motion.div>
 
           {/* Visual Side */}
@@ -821,6 +845,6 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }

@@ -131,7 +131,7 @@ export default function ComparisonSection() {
   }, [isPaused]);
 
   return (
-    <section className="py-20 lg:py-32 relative overflow-hidden">
+    <section className="pt-2 pb-20 lg:pt-10 lg:pb-32 relative overflow-hidden -mt-12 lg:-mt-24">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />

@@ -91,7 +91,7 @@ const pricingPlans = [
 
 export default function PricingSection() {
   return (
-    <section className="pt-6 lg:pt-6 pb-24 lg:pb-32 relative overflow-hidden px-4" id="pricing">
+    <section className="pt-12 lg:pt-40 pb-24 lg:pb-32 relative overflow-hidden px-4" id="pricing">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-transparent opacity-50" />
