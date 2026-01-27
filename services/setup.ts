@@ -51,7 +51,7 @@ export async function runInitialSetup(
   // Hydrate customization store with widget config results
   if (result.widgetConfig) {
     const customization = useCustomizationStore.getState();
-    
+
     // Load existing customization first (if any)
     if (customization.loadCustomization) {
       try {
@@ -78,6 +78,12 @@ export async function runInitialSetup(
           autoShowInitial: false,
           autoShowDelaySec: 3,
           widgetEnabled: true,
+          callEnabled: false,
+          attention: {
+            messagePopupEnabled: false,
+            popupSoundEnabled: false,
+            soundUrl: '',
+          },
           primaryColor: '#0e4b75',
           widgetBubbleColour: '#0e4b75',
           PrimaryIcon: '',

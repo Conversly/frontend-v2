@@ -84,6 +84,12 @@ export default function HelpPage() {
                     chatHeight: styles.chatHeight || "500px",
                     converslyWebId: botId,
                     uniqueClientId: "", // Generated inside widget if empty
+                    callEnabled: !!partial.callEnabled,
+                    attention: {
+                        messagePopupEnabled: !!partial.attention?.messagePopupEnabled,
+                        popupSoundEnabled: !!partial.attention?.popupSoundEnabled,
+                        soundUrl: partial.attention?.soundUrl || "",
+                    },
                 };
 
                 setChatConfig(uiConfig);

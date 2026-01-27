@@ -108,6 +108,12 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     autoShowInitial: true,
     autoShowDelaySec: 3,
     widgetEnabled: true,
+    callEnabled: false,
+    attention: {
+      messagePopupEnabled: false,
+      popupSoundEnabled: false,
+      soundUrl: '',
+    },
     primaryColor: '#0e4b75',
     widgetBubbleColour: '#0e4b75',
     PrimaryIcon: 'https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/Screenshot%202025-11-01%20at%203.18.10%E2%80%AFpm.png',
