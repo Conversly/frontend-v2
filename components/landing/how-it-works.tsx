@@ -308,6 +308,7 @@ export default function HowItWorks() {
                 const Icon = tab.icon
                 return (
                   <motion.div
+                    key={tab.value}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

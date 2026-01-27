@@ -37,6 +37,31 @@ const faqCategories = [
     ]
   },
   {
+    category: "Chatbot Training and Support",
+    questions: [
+      {
+        question: "Can I train the chatbot with raw text (no pages/files)?",
+        answer: "Yes — paste raw text into your knowledge base and we’ll index it the same way as scraped pages or uploaded docs. This is perfect for internal SOPs, policies, and “things that aren’t on your website”."
+      },
+      {
+        question: "What content can I use to train the chatbot?",
+        answer: "Website URLs (single page or full site), sitemaps, docs/knowledge bases, and uploads like PDF/DOCX/TXT/MD. Mix sources — the bot learns better with broader coverage and fewer gaps."
+      },
+      {
+        question: "Do you automatically re-train when my website changes?",
+        answer: "If you enable auto-sync, we periodically re-crawl/re-index your sources so the bot stays up to date. You can also trigger a manual sync anytime when you ship a big update."
+      },
+      {
+        question: "What happens when the bot can’t answer?",
+        answer: "You can configure escalation rules so the bot hands off to a human, captures contact info, creates a ticket, or routes the conversation to a team inbox — while preserving full conversation context."
+      },
+      {
+        question: "How long does training take?",
+        answer: "Usually minutes. It depends on the total content volume and the number of sources. You can start testing immediately as new content is indexed."
+      }
+    ]
+  },
+  {
     category: "Integration & Deployment",
     questions: [
       {
@@ -50,6 +75,18 @@ const faqCategories = [
       {
         question: "What is the latency for Voice Agents?",
         answer: "Our voice infrastructure is optimized for real-time conversation. By using streaming transcription and edge caching, we achieve varying latencies as low as 500ms, providing a natural 'interruptible' conversation experience."
+      },
+      {
+        question: "Can I embed the chatbot on my website?",
+        answer: "Yes. You can embed it with a snippet and customize branding, colors, position, and behavior. You can also link directly to a hosted chat page."
+      },
+      {
+        question: "Can I integrate with Slack/Zendesk/CRM tools?",
+        answer: "Yes — integrate via API/webhooks and connect support workflows (handoff, ticket creation, lead capture). If you tell us your stack, we’ll recommend the cleanest integration path."
+      },
+      {
+        question: "Is the widget customizable / white-label?",
+        answer: "Yes. You can match your site’s design and optionally remove branding depending on your plan. You can also tune tone, model behavior, and escalation triggers."
       }
     ]
   },
@@ -67,6 +104,18 @@ const faqCategories = [
       {
         question: "Do you offer on-premise deployment?",
         answer: "Yes, for Enterprise customers, VerlyAI can be deployed within your own VPC (AWS/GCP/Azure) or creating a dedicated instance to ensure maximum compliance and security."
+      },
+      {
+        question: "How does the free trial work?",
+        answer: "You get full access for the trial period (no long-term commitment). When the trial ends, you can upgrade to keep the bot live or stay on a limited/free tier if available."
+      },
+      {
+        question: "What counts toward usage limits?",
+        answer: "Typically: message volume, indexed content size, and/or number of chatbots/workspaces. If you’re unsure which lever matters most for you, ping support and we’ll map your expected traffic to the right plan."
+      },
+      {
+        question: "Do you offer plans for agencies?",
+        answer: "Yes — if you’re building bots for clients, we can set you up with an agency-style workflow (multiple bots, separate client environments, and billing options). Email us and we’ll get you the details."
       }
     ]
   }
@@ -80,7 +129,7 @@ const FaqPage = () => {
       <div className="relative z-10">
         <Navbar />
 
-        <main className="pt-24 pb-16">
+        <main className="pt-32 pb-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header */}
             <div className="text-center mb-16">
@@ -124,7 +173,7 @@ const FaqPage = () => {
                 Can't find what you're looking for? Our support team is here to help.
               </p>
               <a
-                href="mailto:support@verlyai.com"
+                href="mailto:support@verlyai.xyz"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-all"
               >
                 Contact Support

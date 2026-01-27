@@ -697,7 +697,7 @@ export default function Hero() {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl text-muted-foreground max-w-lg leading-relaxed tracking-tight"
             >
-              Deploy AI agents across voice, chat & WhatsApp in minutes. Answer unlimited conversations simultaneously while your team focuses on complex issues. Scale support without scaling costs.
+              Deploy AI agents across Website chat, Voice & WhatsApp in minutes. Answer unlimited conversations simultaneously while your team focuses on complex issues. Scale support without scaling costs.
             </motion.p>
 
             {/* CTA Buttons */}

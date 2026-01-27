@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import { 
-  Calendar, 
-  MapPin, 
+import {
+  Calendar,
+  MapPin,
   DollarSign,
   Star,
   Search,
@@ -21,7 +21,7 @@ export const CustomActionsVisual = () => (
     <div className="absolute top-4 right-8 w-1 h-1 bg-orange-300 rounded-full animate-ping" />
     <div className="absolute bottom-8 left-6 w-1.5 h-1.5 bg-pink-300 rounded-full animate-pulse" />
     <div className="absolute top-1/3 left-4 w-1 h-1 bg-orange-200 rounded-full animate-ping" style={{ animationDelay: '0.5s' }} />
-    
+
     {/* Main flow container */}
     <div className="flex items-center justify-center gap-2 w-full max-w-[280px]">
       {/* Left icons */}
@@ -94,7 +94,7 @@ export const ModelComparisonVisual = () => (
           <span className="text-xs font-semibold text-gray-800">GPT</span>
         </div>
         <div className="flex gap-0.5 mb-2">
-          {[1,2,3,4].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
+          {[1, 2, 3, 4].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
           <Star size={10} className="text-gray-200 fill-gray-200" />
         </div>
         <div className="space-y-1.5">
@@ -113,7 +113,7 @@ export const ModelComparisonVisual = () => (
           <span className="text-xs font-semibold text-gray-800">Llama</span>
         </div>
         <div className="flex gap-0.5 mb-2">
-          {[1,2,3,4,5].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
+          {[1, 2, 3, 4, 5].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
         </div>
         <div className="space-y-1.5">
           <div className="h-1.5 bg-emerald-200 rounded-full w-full" />
@@ -135,64 +135,129 @@ export const ModelComparisonVisual = () => (
   </div>
 );
 
-// Smart Escalation Visual
-export const SmartEscalationVisual = () => (
-  <div className="w-full h-full bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 flex flex-col items-center justify-center p-3 relative overflow-hidden">
-    {/* Sparkles */}
-    <div className="absolute top-4 right-4 w-1 h-1 bg-rose-300 rounded-full animate-ping" />
-    
-    {/* Rule bubble */}
-    <div className="bg-white rounded-2xl rounded-bl-sm px-3 py-1.5 shadow-sm border border-gray-100 text-[9px] text-gray-700 font-medium mb-2">
-      Escalate if frustrated &gt;5min
-    </div>
+// Human Handoff Visual - Enhanced with animations
+export const SmartEscalationVisual = () => {
+  const [isEscalating, setIsEscalating] = React.useState(false);
 
-    {/* Main content row */}
-    <div className="flex items-center gap-2 w-full max-w-[260px]">
-      {/* Ticket cards */}
-      <div className="flex-1 space-y-1.5">
-        <div className="bg-white rounded-lg p-2 shadow-sm border border-gray-100 flex items-center gap-2">
-          <div className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center">
-            <MessageSquare size={10} className="text-blue-600" />
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setIsEscalating(true);
+      setTimeout(() => setIsEscalating(false), 2000);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="w-full h-full bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 flex flex-col items-center justify-center p-3 relative overflow-hidden">
+      {/* Sparkles */}
+      <div className="absolute top-4 right-4 w-1 h-1 bg-rose-300 rounded-full animate-ping" />
+      <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-pink-300 rounded-full animate-pulse" />
+
+      {/* Animated transfer effect */}
+      {isEscalating && (
+        <>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-rose-300/20 rounded-full animate-ping" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-pink-300/30 rounded-full animate-pulse" />
+        </>
+      )}
+
+      {/* Rule bubble */}
+      <div className="bg-white rounded-2xl rounded-bl-sm px-3 py-1.5 shadow-sm border border-gray-100 text-[9px] text-gray-700 font-medium mb-3 animate-[fadeIn_0.5s_ease-out]">
+        Escalate if frustrated &gt;5min
+      </div>
+
+      {/* Main content row */}
+      <div className="flex items-center gap-3 w-full max-w-[280px]">
+        {/* AI Bot */}
+        <div className="flex flex-col items-center gap-1">
+          <div className={`w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl shadow-sm border border-purple-200 flex items-center justify-center transition-all duration-500 ${isEscalating ? 'scale-95 opacity-70' : 'scale-100'}`}>
+            <MessageSquare size={18} className="text-purple-600" />
           </div>
-          <div className="flex-1">
-            <p className="text-[8px] font-medium text-gray-800">Sure, let's create a ticket!</p>
-            <p className="text-[7px] text-green-500">Open</p>
-          </div>
-          <Clock size={10} className="text-gray-300" />
+          <span className="text-[8px] text-gray-500 font-medium">AI Bot</span>
         </div>
-        <div className="bg-white rounded-lg p-2 shadow-sm border border-gray-100 flex items-center gap-2">
-          <div className="w-5 h-5 bg-gray-100 rounded flex items-center justify-center">
-            <FileText size={10} className="text-gray-500" />
+
+        {/* Animated Arrow */}
+        <div className="flex-1 flex items-center justify-center relative">
+          <svg className={`w-12 h-8 transition-all duration-500 ${isEscalating ? 'translate-x-2 opacity-100' : 'translate-x-0 opacity-60'}`} viewBox="0 0 48 32">
+            <defs>
+              <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#f43f5e" />
+                <stop offset="100%" stopColor="#ec4899" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M4 16 L36 16 M28 8 L36 16 L28 24"
+              stroke="url(#arrowGradient)"
+              strokeWidth="3"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={isEscalating ? 'animate-[pulse_0.5s_ease-in-out]' : ''}
+            />
+          </svg>
+          {/* Animated data particles */}
+          {isEscalating && (
+            <>
+              <div className="absolute left-1/4 w-1 h-1 bg-rose-400 rounded-full animate-[moveRight_1s_ease-out]" />
+              <div className="absolute left-1/3 w-1.5 h-1.5 bg-pink-400 rounded-full animate-[moveRight_1s_ease-out_0.2s]" />
+            </>
+          )}
+        </div>
+
+        {/* Human Agent */}
+        <div className="flex flex-col items-center gap-1">
+          <div className={`w-14 h-16 relative transition-all duration-500 ${isEscalating ? 'scale-110 drop-shadow-lg' : 'scale-100'}`}>
+            {/* Human silhouette - Head */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-6 bg-gradient-to-b from-rose-300 to-rose-400 rounded-full shadow-sm" />
+            {/* Body */}
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-b from-rose-400 to-rose-500 rounded-t-lg rounded-b-sm shadow-md" />
+            {/* Earpiece indicator */}
+            <div className={`absolute top-1 right-1 w-2 h-3 bg-white rounded-full shadow-sm transition-all duration-300 ${isEscalating ? 'animate-pulse' : ''}`} />
+            {/* Active indicator */}
+            {isEscalating && (
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+            )}
           </div>
-          <div className="flex-1">
-            <p className="text-[8px] font-medium text-gray-800">Ticket #234</p>
-            <p className="text-[7px] text-gray-400">Open</p>
-          </div>
-          <span className="text-[7px] text-gray-400">12m ago</span>
+          <span className="text-[8px] text-gray-500 font-medium">Human Agent</span>
         </div>
       </div>
 
-      {/* Arrow and human silhouette */}
-      <div className="flex flex-col items-center gap-1">
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path d="M4 12 L16 12 M12 8 L16 12 L12 16" stroke="#f43f5e" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <div className="w-12 h-16 relative">
-          {/* Human silhouette */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-400/30 to-slate-500/40 rounded-t-full" style={{ clipPath: 'ellipse(50% 35% at 50% 35%)' }} />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-b from-slate-400/30 to-slate-500/40 rounded-t-lg" />
-          {/* Earpiece */}
-          <div className="absolute top-3 right-1 w-1.5 h-3 bg-white rounded-full shadow-sm" />
+      {/* Ticket preview */}
+      <div className="mt-3 w-full max-w-[260px]">
+        <div className={`bg-white rounded-lg p-2 shadow-sm border border-gray-100 transition-all duration-500 ${isEscalating ? 'border-rose-300 shadow-md' : ''}`}>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center">
+              <FileText size={10} className="text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[8px] font-medium text-gray-800">Ticket #1234 transferred</p>
+              <p className={`text-[7px] transition-colors ${isEscalating ? 'text-rose-500' : 'text-gray-400'}`}>
+                {isEscalating ? 'Transferring...' : 'Ready for handoff'}
+              </p>
+            </div>
+            <Clock size={10} className="text-gray-300" />
+          </div>
         </div>
       </div>
-    </div>
 
-    {/* Escalate button */}
-    <button className="mt-2 px-5 py-1.5 bg-gradient-to-r from-rose-400 to-red-400 text-white text-[10px] font-semibold rounded-full shadow-md shadow-rose-200 hover:shadow-lg hover:scale-105 transition-all">
-      Escalate
-    </button>
-  </div>
-);
+      {/* Handoff button */}
+      <button className={`mt-3 px-5 py-1.5 bg-gradient-to-r from-rose-400 to-pink-500 text-white text-[10px] font-semibold rounded-full shadow-md hover:shadow-lg transition-all ${isEscalating ? 'shadow-rose-300 scale-105' : 'shadow-rose-200'}`}>
+        Handoff to Human
+      </button>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes moveRight {
+          from { left: 25%; opacity: 1; }
+          to { left: 75%; opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+};
 
 // Analytics Visual - charts
 export const AnalyticsVisual = () => (
@@ -217,10 +282,10 @@ export const AnalyticsVisual = () => (
       {/* Line chart */}
       <div className="relative h-10 mb-2">
         <svg className="w-full h-full" viewBox="0 0 200 40" preserveAspectRatio="none">
-          <path 
-            d="M0 35 Q20 30 40 28 T80 20 T120 25 T160 15 T200 10" 
-            stroke="#8b5cf6" 
-            strokeWidth="2" 
+          <path
+            d="M0 35 Q20 30 40 28 T80 20 T120 25 T160 15 T200 10"
+            stroke="#8b5cf6"
+            strokeWidth="2"
             fill="none"
             className="animate-[draw_2s_ease-out_forwards]"
           />
@@ -242,8 +307,8 @@ export const AnalyticsVisual = () => (
           { h: 75, color: 'bg-indigo-400' },
           { h: 95, color: 'bg-blue-400' },
         ].map((bar, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className={`flex-1 ${bar.color} rounded-t transition-all hover:opacity-80`}
             style={{ height: `${bar.h}%`, animationDelay: `${i * 0.1}s` }}
           />
@@ -279,7 +344,7 @@ export const AITrainingVisual = () => (
     <div className="relative">
       {/* Glow effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-violet-400/20 to-cyan-400/20 blur-xl rounded-full scale-150" />
-      
+
       {/* AI cube */}
       <div className="relative w-14 h-14 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl shadow-lg flex items-center justify-center z-10">
         <span className="text-white font-bold text-lg">AI</span>
@@ -301,14 +366,14 @@ export const AITrainingVisual = () => (
         return (
           <React.Fragment key={i}>
             {/* Connection line */}
-            <svg 
+            <svg
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] pointer-events-none"
               style={{ zIndex: 0 }}
             >
-              <line 
-                x1="70" y1="70" 
-                x2={70 + x} y2={70 + y} 
-                stroke="#a5b4fc" 
+              <line
+                x1="70" y1="70"
+                x2={70 + x} y2={70 + y}
+                stroke="#a5b4fc"
                 strokeWidth="1.5"
                 strokeDasharray="3 2"
                 className="animate-[dash_1.5s_linear_infinite]"
@@ -317,9 +382,9 @@ export const AITrainingVisual = () => (
               <circle cx={70 + x} cy={70 + y} r="2" fill="#818cf8" />
             </svg>
             {/* Source icon */}
-            <div 
+            <div
               className={`absolute w-9 h-9 ${source.bg} rounded-lg border flex items-center justify-center shadow-sm z-10 animate-[float_3s_ease-in-out_infinite]`}
-              style={{ 
+              style={{
                 left: `calc(50% + ${x}px - 18px)`,
                 top: `calc(50% + ${y}px - 18px)`,
                 animationDelay: `${i * 0.3}s`

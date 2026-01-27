@@ -2,103 +2,135 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Phone, MessageCircle, Bot, User, Mic } from "lucide-react";
 
-export const VoiceAgentVisual = () => (
-  <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-    {/* Abstract background elements */}
-    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
-    <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
+export const VoiceAgentVisual = () => {
+  const [step, setStep] = useState(0);
 
-    {/* Chat bubbles container */}
-    <div className="w-full max-w-[300px] flex justify-between mb-3 px-2 z-10">
-      {/* AI Agent bubbles (left side) */}
-      <div className="flex flex-col gap-1.5 items-start max-w-[100px]">
-        <div
-          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_0.5s_forwards]"
-        >
-          Hi! How can I help?
-        </div>
-        <div
-          className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700 opacity-0 animate-[fadeSlideIn_0.4s_ease-out_2.5s_forwards]"
-        >
-          Let me check that for you...
-        </div>
-      </div>
-
-      {/* Caller bubbles (right side) */}
-      <div className="flex flex-col gap-1.5 items-end max-w-[100px]">
-        <div
-          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_1.5s_forwards]"
-        >
-          I need help with my order
-        </div>
-        <div
-          className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white opacity-0 animate-[fadeSlideIn_0.4s_ease-out_3.5s_forwards]"
-        >
-          Order #12345
-        </div>
-      </div>
-    </div>
-
-    <div className="flex items-center gap-3 z-10 w-full max-w-[280px] justify-between">
-      {/* Agent Avatar */}
-      <div className="relative">
-        <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
-          <div className="bg-blue-100 p-2 rounded-full">
-            <User size={24} className="text-blue-600" />
-          </div>
-          {/* Headset indicator */}
-          <div className="absolute -right-1 -top-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100">
-            <Mic size={10} className="text-blue-500" />
-          </div>
-        </div>
-        <span className="text-2xs text-gray-500 text-center block mt-1">AI Agent</span>
-      </div>
-
-      {/* Audio Waveform */}
-      <div className="flex-1 flex justify-center gap-1 h-8 items-center">
-        {[0.4, 0.7, 1, 0.6, 0.8, 0.5, 0.9, 0.4].map((h, i) => (
-          <div
-            key={i}
-            className="w-1.5 bg-indigo-400 rounded-full animate-pulse"
-            style={{
-              height: `${h * 100}%`,
-              animationDelay: `${i * 0.1}s`
-            }}
-          ></div>
-        ))}
-      </div>
-
-      {/* User Phone */}
-      <div className="relative">
-        <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
-          <div className="bg-gray-100 p-2 rounded-full">
-            <Phone size={24} className="text-gray-600" />
-          </div>
-        </div>
-        <span className="text-2xs text-gray-500 text-center block mt-1">Caller</span>
-      </div>
-    </div>
-
-    {/* Connection line */}
-    <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-10 pointer-events-none" style={{ zIndex: 0 }}>
-      <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#E0E7FF" strokeWidth="2" strokeDasharray="6 4" />
-    </svg>
-
-    {/* Keyframe animation */}
-    <style jsx>{`
-      @keyframes fadeSlideIn {
-        0% {
-          opacity: 0;
-          transform: translateY(8px) scale(0.95);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
+  useEffect(() => {
+    const loop = async () => {
+      while (true) {
+        setStep(1); // Agent: Hi! How can I help?
+        await new Promise((r) => setTimeout(r, 2000));
+        setStep(2); // Caller: I need help with my order
+        await new Promise((r) => setTimeout(r, 2000));
+        setStep(3); // Agent: Let me check that for you...
+        await new Promise((r) => setTimeout(r, 2000));
+        setStep(4); // Caller: Order #12345
+        await new Promise((r) => setTimeout(r, 3000));
+        setStep(0); // Clear
+        await new Promise((r) => setTimeout(r, 500));
       }
-    `}</style>
-  </div>
-);
+    };
+    loop();
+  }, []);
+
+  return (
+    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Abstract background elements */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
+
+      {/* Chat bubbles container */}
+      <div className="w-full max-w-[300px] flex justify-between mb-3 px-2 z-10 min-h-[80px]">
+        {/* AI Agent bubbles (left side) */}
+        <div className="flex flex-col gap-1.5 items-start max-w-[100px]">
+          <AnimatePresence>
+            {step >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700"
+              >
+                Hi! How can <br /> I help?
+              </motion.div>
+            )}
+            {step >= 3 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                className="bg-white px-2.5 py-1.5 rounded-xl rounded-bl-sm shadow-sm border border-blue-100 text-2xs text-gray-700"
+              >
+                Let me check <br /> that for you...
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Caller bubbles (right side) */}
+        <div className="flex flex-col gap-1.5 items-end max-w-[100px]">
+          <AnimatePresence>
+            {step >= 2 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white text-right"
+              >
+                I need help with <br /> my order
+              </motion.div>
+            )}
+            {step >= 4 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                className="bg-indigo-500 px-2.5 py-1.5 rounded-xl rounded-br-sm shadow-sm text-2xs text-white text-right"
+              >
+                Order #12345
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 z-10 w-full max-w-[280px] justify-between">
+        {/* Agent Avatar */}
+        <div className="relative">
+          <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
+            <div className="bg-blue-100 p-2 rounded-full">
+              <User size={24} className="text-blue-600" />
+            </div>
+            {/* Headset indicator */}
+            <div className="absolute -right-1 -top-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100">
+              <Mic size={10} className="text-blue-500" />
+            </div>
+          </div>
+          <span className="text-2xs text-gray-500 text-center block mt-1">AI Agent</span>
+        </div>
+
+        {/* Audio Waveform */}
+        <div className="flex-1 flex justify-center gap-1 h-8 items-center">
+          {[0.4, 0.7, 1, 0.6, 0.8, 0.5, 0.9, 0.4].map((h, i) => (
+            <div
+              key={i}
+              className="w-1.5 bg-indigo-400 rounded-full animate-pulse"
+              style={{
+                height: `${h * 100}%`,
+                animationDelay: `${i * 0.1}s`
+              }}
+            ></div>
+          ))}
+        </div>
+
+        {/* User Phone */}
+        <div className="relative">
+          <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
+            <div className="bg-gray-100 p-2 rounded-full">
+              <Phone size={24} className="text-gray-600" />
+            </div>
+          </div>
+          <span className="text-2xs text-gray-500 text-center block mt-1">Caller</span>
+        </div>
+      </div>
+
+      {/* Connection line */}
+      <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-10 pointer-events-none" style={{ zIndex: 0 }}>
+        <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#E0E7FF" strokeWidth="2" strokeDasharray="6 4" />
+      </svg>
+    </div>
+  );
+};
 
 export const WhatsAppVisual = () => {
   const [step, setStep] = useState(0);

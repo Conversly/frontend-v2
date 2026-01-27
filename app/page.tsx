@@ -4,7 +4,7 @@ import Hero from "@/components/landing/hero";
 import Testimonial from "@/components/landing/testimonial";
 import HowItWorks from "@/components/landing/how-it-works";
 import PricingSection from "@/components/landing/pricing";
-import QuestionsSection from "@/components/landing/questions";
+
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
 import HumanEscalationSection from "@/components/landing/human-escalation";
@@ -60,7 +60,7 @@ export default function Home() {
           {/* <BroadcastSection /> */}
           {/* <EnhancedTestimonials /> */}
           <PricingSection />
-          <QuestionsSection />
+
           {/* <QuestionsSection /> */}
           {/* <TestimonialsSection /> */}
           <Footer />

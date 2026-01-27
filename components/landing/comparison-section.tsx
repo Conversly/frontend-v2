@@ -351,21 +351,7 @@ export default function ComparisonSection() {
             </div>
           </div>
 
-          {/* Bottom CTA */}
-          <div className="mt-16 text-center">
-            <div className="flex justify-center mb-6">
-              <Button
-                size="lg"
-                onClick={() => router.push("/login")}
-                className="h-14 px-10 text-lg rounded-full bg-gradient-to-r from-primary to-blue-700 hover:from-primary/90 hover:to-blue-700/90 shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-1 transition-all duration-300 font-bold"
-              >
-                <span className="mr-2">🚀</span> Stop Hiring, Start Scaling
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground font-medium">
-              Join 500+ companies automating their support.
-            </p>
-          </div>
+
         </div>
       </div>
     </section>
