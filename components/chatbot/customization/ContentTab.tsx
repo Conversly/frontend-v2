@@ -4,12 +4,13 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import {
   MessageSquare,
   HelpCircle,
   Plus,
   X,
+  PhoneCall,
+  Bell,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -25,6 +26,17 @@ interface ContentTabProps {
 }
 
 export function ContentTab({ config, updateConfig }: ContentTabProps) {
+  const attention = config.attention ?? {
+    messagePopupEnabled: false,
+    popupSoundEnabled: false,
+    soundUrl: '',
+  };
+  const updateAttention = (
+    updates: Partial<UIConfigInput['attention']>
+  ) => {
+    updateConfig({ attention: { ...attention, ...updates } });
+  };
+
   const handleAddQuestion = () => {
     const questions = [...(config.starterQuestions || [])];
     if (questions.length < 4) {
@@ -195,6 +207,112 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
             />
           </div>
+        </div>
+      </div>
+
+      {/* Calls + Attention */}
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+        <SectionHeader
+          title="Calls & Attention"
+          description="Voice entrypoints + optional popup/sound nudges"
+          icon={PhoneCall}
+        />
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-3">
+              <label className="font-sans text-sm text-foreground">Enable Calls</label>
+              <Tooltip>
+                <TooltipTrigger>
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-sans text-sm">
+                    Toggles call/voice entrypoints in the widget UI.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <input
+              type="checkbox"
+              checked={config.callEnabled || false}
+              onChange={(e) => updateConfig({ callEnabled: e.target.checked })}
+              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-muted-foreground" />
+                <label className="font-sans text-sm text-foreground">Message Popup</label>
+              </div>
+              <Tooltip>
+                <TooltipTrigger>
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-sans text-sm">
+                    Shows a small message popup when the widget is collapsed.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <input
+              type="checkbox"
+              checked={attention.messagePopupEnabled || false}
+              onChange={(e) => updateAttention({ messagePopupEnabled: e.target.checked })}
+              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-3">
+              <label className="font-sans text-sm text-foreground">Popup Sound</label>
+              <Tooltip>
+                <TooltipTrigger>
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-sans text-sm">
+                    Plays an optional sound when the popup shows (requires Message Popup).
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <input
+              type="checkbox"
+              checked={attention.popupSoundEnabled || false}
+              onChange={(e) => updateAttention({ popupSoundEnabled: e.target.checked })}
+              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              disabled={!attention.messagePopupEnabled}
+            />
+          </div>
+
+          {(attention.messagePopupEnabled || attention.popupSoundEnabled) && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="font-sans text-sm text-foreground">Sound URL (optional)</label>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-sans text-sm">
+                      Absolute URL to an audio file. Leave empty to use default / no sound.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Input
+                value={attention.soundUrl || ''}
+                onChange={(e) => updateAttention({ soundUrl: e.target.value })}
+                placeholder="https://cdn.example.com/ping.mp3"
+                className="bg-muted/50 border-border/50 text-foreground"
+                disabled={!attention.popupSoundEnabled}
+              />
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

@@ -60,6 +60,12 @@ function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput 
     autoShowInitial: s.autoShowInitial ?? false,
     autoShowDelaySec: s.autoShowDelaySec ?? 3,
     widgetEnabled: true, // Default to enabled
+    callEnabled: p.callEnabled ?? false,
+    attention: {
+      messagePopupEnabled: p.attention?.messagePopupEnabled ?? false,
+      popupSoundEnabled: p.attention?.popupSoundEnabled ?? false,
+      soundUrl: p.attention?.soundUrl ?? '',
+    },
     primaryColor: s.primaryColor || '#0e4b75',
     widgetBubbleColour: s.widgetBubbleColour || '#0e4b75',
     PrimaryIcon: s.PrimaryIcon || '',
@@ -123,6 +129,7 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
 
+      const soundUrl = (draft.attention?.soundUrl ?? '').trim();
       const partial: ChatbotCustomizationPartial = {
         styles: {
           appearance: draft.appearance,
@@ -146,6 +153,12 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
           continueShowingSuggestedMessages: draft.keepShowingSuggested,
         },
         onlyAllowOnAddedDomains: false,
+        callEnabled: !!draft.callEnabled,
+        attention: {
+          messagePopupEnabled: !!draft.attention?.messagePopupEnabled,
+          popupSoundEnabled: !!draft.attention?.popupSoundEnabled,
+          ...(soundUrl ? { soundUrl } : {}),
+        },
         initialMessage,
         suggestedMessages,
       };

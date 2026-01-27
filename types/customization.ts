@@ -37,8 +37,25 @@ export interface WidgetStyles {
 export interface ChatbotCustomization {
     styles?: WidgetStyles;
     onlyAllowOnAddedDomains?: boolean;
+    /**
+     * Feature flag for enabling voice/call entrypoints in the widget UI.
+     * Defaults to false when the widget_config row is auto-created.
+     */
+    callEnabled?: boolean;
+    /**
+     * "Get attention" UX controls (popup + optional sound).
+     * Shallow-merged on PATCH updates.
+     */
+    attention?: WidgetAttentionConfig;
     initialMessage?: string;
     suggestedMessages?: string[];
+}
+
+export interface WidgetAttentionConfig {
+    messagePopupEnabled?: boolean;
+    popupSoundEnabled?: boolean;
+    /** Optional; absent by default when not set */
+    soundUrl?: string;
 }
 
 export interface ChatbotWidget {
@@ -66,6 +83,13 @@ export interface UIConfigInput {
   autoShowInitial: boolean;
   autoShowDelaySec: number;
   widgetEnabled: boolean;
+  callEnabled: boolean;
+  attention: {
+    messagePopupEnabled: boolean;
+    popupSoundEnabled: boolean;
+    /** Optional; empty string means "not set" */
+    soundUrl?: string;
+  };
 
   // Style / colour / icons / layout
   primaryColor: string;
