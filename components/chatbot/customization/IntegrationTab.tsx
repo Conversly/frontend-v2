@@ -76,7 +76,7 @@ export function IntegrationTab({
   };
 
   const getEmbedCode = () => `<Script
-  src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-3EpIMWVWfZ7JgXgUQ8VMmyJYEMX08t.js"
+  src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-jwb9YLnmpKqsNxuTn63adNcmveGvv4.js"
   data-chatbot-id="${chatbotId}"
   data-testing="${config.testing ? 'true' : 'false'}"
 />`;
