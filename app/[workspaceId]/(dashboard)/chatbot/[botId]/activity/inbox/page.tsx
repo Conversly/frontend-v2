@@ -8,7 +8,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
 import { cn } from "@/lib/utils";
 import {
   ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
@@ -458,6 +460,7 @@ export default function InboxPage() {
     : [];
 
   const [draft, setDraft] = useState("");
+  const [isPreview, setIsPreview] = useState(false);
 
   const onSelectRow = useCallback(
     (conversationId: string) => {
@@ -939,7 +942,9 @@ export default function InboxPage() {
                             isSystem && "bg-background text-muted-foreground border border-dashed text-xs",
                           )}
                         >
-                          <div className="whitespace-pre-wrap break-words">{m.text}</div>
+                          <div className="whitespace-pre-wrap break-words">
+                            <MarkdownRenderer>{m.text}</MarkdownRenderer>
+                          </div>
                           <div
                             className={cn(
                               "mt-1 text-[10px] opacity-70 tabular-nums",
@@ -1096,26 +1101,53 @@ export default function InboxPage() {
         </div>
 
         <div className="border-t bg-background px-6 py-4">
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn("h-7 px-2 text-xs", !isPreview && "bg-muted")}
+                onClick={() => setIsPreview(false)}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn("h-7 px-2 text-xs", isPreview && "bg-muted")}
+                onClick={() => setIsPreview(true)}
+              >
+                Preview
+              </Button>
+            </div>
+          </div>
           <div className="flex items-end gap-2">
             <div className="flex-1">
-              <Input
-                placeholder={
-                  activeConversationId
-                    ? canSendInActiveConversation
-                      ? "Type a message…"
-                      : "Claim this chat to reply"
-                    : "Select a conversation"
-                }
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                disabled={!activeConversationId || !canSendInActiveConversation}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    onSend();
+              {isPreview ? (
+                <div className="min-h-[80px] rounded-md border bg-muted/30 p-3 text-sm">
+                  <MarkdownRenderer>{draft || "*No content to preview*"}</MarkdownRenderer>
+                </div>
+              ) : (
+                <Textarea
+                  placeholder={
+                    activeConversationId
+                      ? canSendInActiveConversation
+                        ? "Type a message…"
+                        : "Claim this chat to reply"
+                      : "Select a conversation"
                   }
-                }}
-              />
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  disabled={!activeConversationId || !canSendInActiveConversation}
+                  className="min-h-[80px] resize-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      onSend();
+                    }
+                  }}
+                />
+              )}
             </div>
             <Button
               className="gap-2"

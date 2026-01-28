@@ -15,6 +15,7 @@ import {
   ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
   ACTIVITY_PAGE_ROOT_CLASSNAME,
 } from "@/components/chatbot/activity/layout-constants";
+import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
 import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -313,7 +314,7 @@ export default function ChatLogsPage() {
                             : "bg-muted text-foreground",
                         )}
                       >
-                        <div className="whitespace-pre-wrap break-words">{m.content}</div>
+                        <MarkdownRenderer>{m.content}</MarkdownRenderer>
                       </div>
                       <div className={cn("flex items-center gap-2 text-[11px] text-muted-foreground", isUser && "justify-end")}>
                         {ts ? <span className="tabular-nums">{ts}</span> : null}
