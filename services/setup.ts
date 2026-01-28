@@ -99,6 +99,12 @@ export async function runInitialSetup(
           uniqueClientId: '',
           testing: false,
         }),
+        callEnabled: false,
+        attention: {
+          messagePopupEnabled: true,
+          popupSoundEnabled: true,
+        },
+
         DisplayName: result.inferPrompt?.name || draft?.DisplayName || 'Support Bot',
         PrimaryIcon: result.widgetConfig.logoUrl || draft?.PrimaryIcon || '',
         primaryColor: result.widgetConfig.primaryColor || draft?.primaryColor || '#0e4b75',

@@ -70,6 +70,12 @@ export default function HelpPage() {
                     autoShowInitial: true,
                     autoShowDelaySec: 2,
                     widgetEnabled: true,
+                    callEnabled: !!partial.callEnabled,
+                    attention: {
+                        messagePopupEnabled: !!partial.attention?.messagePopupEnabled,
+                        popupSoundEnabled: !!partial.attention?.popupSoundEnabled,
+                        soundUrl: partial.attention?.soundUrl || "",
+                    },
                     primaryColor: styles.primaryColor || pageConfig.theme.primaryColor,
                     // Added missing required properties with default/mock values
                     widgetBubbleColour: styles.widgetBubbleColour || styles.primaryColor || "#000000",
