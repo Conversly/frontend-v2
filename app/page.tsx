@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { getUserWorkspaces } from "@/lib/api/workspaces";
 import TestimonialsSection from "@/components/landing/Testinomials";
+import ExploreSection from "@/components/landing/explore-section";
 
 // Single source of truth for content width
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
@@ -54,7 +55,12 @@ export default function Home() {
           <Hero />
           {/* <Testimonial /> */}
           <UnifiedOfferings />
-          <HowItWorks />
+        </div>
+
+        <ExploreSection />
+
+        <div className={CONTENT_WIDTH}>
+          {/* <HowItWorks /> */}
           <ComparisonSection />
           <HumanEscalationSection />
           {/* <BroadcastSection /> */}

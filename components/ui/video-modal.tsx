@@ -11,7 +11,7 @@ interface VideoModalProps {
     videoSrc?: string;
 }
 
-export function VideoModal({ open, onOpenChange, videoSrc = "/chatbot-creation-demo.mp4" }: VideoModalProps) {
+export function VideoModal({ open, onOpenChange, videoSrc = "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/chatbot-creation-demo.webm" }: VideoModalProps) {
     const [isMinimized, setIsMinimized] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const currentTimeRef = useRef(0);

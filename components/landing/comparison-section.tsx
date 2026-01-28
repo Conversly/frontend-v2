@@ -125,13 +125,13 @@ export default function ComparisonSection() {
 
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % comparisonData.length);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [isPaused]);
 
   return (
-    <section className="pt-2 pb-20 lg:pt-10 lg:pb-32 relative overflow-hidden -mt-12 lg:-mt-24">
+    <section className="pt-20 pb-20 lg:pt-40 lg:pb-32 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-transparent opacity-30" />
@@ -139,7 +139,7 @@ export default function ComparisonSection() {
 
       <div className="container relative mx-auto px-4 z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-5xl mx-auto mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -153,9 +153,9 @@ export default function ComparisonSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70"
+            className="text-3xl sm:text-4xl lg:text-5xl md:whitespace-nowrap font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70"
           >
-            AI Support vs. Hiring Staff
+            AI Support vs. Manual Customer Support
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -182,7 +182,6 @@ export default function ComparisonSection() {
                     onClick={() => {
                       setActiveIndex(index);
                       setIsPaused(true);
-                      setTimeout(() => setIsPaused(false), 10000);
                     }}
                     className={cn(
                       "group flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-300 min-w-[220px] lg:min-w-0 border-2 relative overflow-hidden",
@@ -209,7 +208,7 @@ export default function ComparisonSection() {
                       <motion.div
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
-                        transition={{ duration: 5, ease: "linear" }}
+                        transition={{ duration: 2, ease: "linear" }}
                         className="absolute bottom-0 left-0 h-1 bg-primary/20"
                       />
                     )}
