@@ -6,42 +6,46 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Code2, Settings2, Database, BarChart3, MessageSquare, Wrench } from "lucide-react";
 
-// Mapping tabs to remote Vercel Blob images
-
 const TABS = [
     {
         id: "playground",
         label: "Playground",
+        description: "Test and experiment with your AI agent",
         icon: <Code2 className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Playground.webp",
     },
     {
         id: "sources",
         label: "Sources",
+        description: "Connect your knowledge base",
         icon: <Database className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Sources.webp",
     },
     {
         id: "customization",
         label: "Customization",
+        description: "Personalize your agent's behavior",
         icon: <Wrench className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Customize.webp",
     },
     {
         id: "analytics",
         label: "Analytics",
+        description: "Monitor performance metrics",
         icon: <BarChart3 className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/analytics.webp",
     },
     {
         id: "chatlogs",
         label: "Chat Logs",
+        description: "Review conversation history",
         icon: <MessageSquare className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/chatlogs.webp",
     },
     {
         id: "setup",
         label: "Setup",
+        description: "Configure your integration",
         icon: <Settings2 className="h-4 w-4" />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Setup.webp",
     },
@@ -59,7 +63,7 @@ export default function ExploreSection() {
         const interval = setInterval(() => {
             const nextIndex = (activeIndex + 1) % TABS.length;
             setActiveTab(TABS[nextIndex].id);
-        }, 2000);
+        }, 3500);
 
         return () => clearInterval(interval);
     }, [isPaused, activeIndex]);
@@ -67,111 +71,201 @@ export default function ExploreSection() {
     const activeContent = TABS.find((t) => t.id === activeTab) || TABS[0];
 
     return (
-        <section className="w-full py-12 md:py-15 bg-black relative overflow-hidden">
-            {/* Full width gradient/noise effects */}
-            <div className="absolute inset-0 bg-primary/10 pointer-events-none" />
+        <section className="w-full py-16 md:py-24 lg:py-32 bg-gradient-to-b from-black via-zinc-950 to-black relative overflow-hidden">
+            {/* Animated Background Effects */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+            </div>
 
-            <div className="mx-auto w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] px-6 relative z-10">
-                <div className="relative">
-                    <div className="flex w-full flex-col items-start gap-4">
-                        <div className="inline-flex items-center rounded-full px-4 py-1.5 font-medium text-sm border border-zinc-700 text-white bg-black/20 backdrop-blur-md">
-                            <div className="mr-2 size-2 rounded-full bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9]"></div>
-                            Explore
-                        </div>
-                        <div className="flex w-full flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
-                            <h2 className="pt-6 pb-4 font-medium text-4xl text-white tracking-tight md:pt-0 md:pb-0 lg:text-5xl">
-                                Glimpse of Verly.ai
-                                <br />
-                            </h2>
-                        </div>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+                {/* Section Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-12 md:mb-16 space-y-4"
+                >
+                    <div className="inline-flex items-center justify-center rounded-full px-4 py-1.5 font-medium text-sm border border-zinc-700/50 text-white bg-zinc-900/50 backdrop-blur-sm mb-4">
+                        <div className="mr-2 size-2 rounded-full bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] animate-pulse"></div>
+                        Platform Features
+                    </div>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1, duration: 0.6 }}
+                        className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight"
+                    >
+                        Glimpse of Verly.ai
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
+                        className="text-lg text-zinc-400 max-w-2xl mx-auto"
+                    >
+                        Experience our powerful platform with an{" "}
+                        <span className="text-white font-medium">intuitive interface</span> designed for{" "}
+                        <span className="bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] bg-clip-text text-transparent">
+                            seamless AI integration
+                        </span>
+                        .
+                    </motion.p>
+                </motion.div>
 
-                        {/* Desktop Tabs */}
-                        <div className="my-12 hidden w-full md:block">
-                            <div
-                                className="relative z-10 items-center justify-start group inline-flex space-x-1 rounded-full py-2 bg-transparent w-full overflow-x-auto overflow-y-hidden px-4 pb-0.5 border-b border-white/10 no-scrollbar"
-                                data-indicator="underline"
-                            >
-                                {TABS.map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => {
-                                            setActiveTab(tab.id);
-                                            setIsPaused(true);
-                                        }}
-                                        className={cn(
-                                            "rounded-full px-5 py-2 font-medium text-sm transition-colors duration-300 flex-none pt-0 relative group",
-                                            activeTab === tab.id
-                                                ? "text-white"
-                                                : "text-zinc-400 hover:text-zinc-200"
-                                        )}
-                                    >
-                                        <span className="relative z-30 flex items-center justify-center gap-2 py-2">
+                {/* Desktop Tabs */}
+                <div className="hidden md:block">
+                    {/* Tab Navigation */}
+                    <div className="relative mb-8">
+                        <div className="flex items-center justify-center gap-2 flex-wrap">
+                            {TABS.map((tab) => (
+                                <motion.button
+                                    key={tab.id}
+                                    onClick={() => {
+                                        setActiveTab(tab.id);
+                                        setIsPaused(true);
+                                    }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className={cn(
+                                        "relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 group",
+                                        activeTab === tab.id
+                                            ? "text-white shadow-lg"
+                                            : "text-zinc-400 hover:text-white hover:bg-zinc-900/50"
+                                    )}
+                                >
+                                    {/* Active Background Gradient */}
+                                    {activeTab === tab.id && (
+                                        <motion.div
+                                            layoutId="activeTabBackground"
+                                            className="absolute inset-0 bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] rounded-xl"
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
+
+                                    {/* Content */}
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        <span className={cn(
+                                            "transition-transform duration-300",
+                                            activeTab === tab.id ? "scale-110" : "group-hover:scale-110"
+                                        )}>
                                             {tab.icon}
-                                            {tab.label}
                                         </span>
-                                        {activeTab === tab.id && (
-                                            <motion.div
-                                                layoutId="activeTabIndicator"
-                                                className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-white rounded-full"
-                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                            />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
+                                        {tab.label}
+                                    </span>
 
-                            {/* Content Area */}
-                            <div className="relative flex aspect-video w-full items-center justify-center rounded-2xl p-1 bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9]">
-                                <div className="absolute inset-[1px] bg-gradient-to-br from-white via-blue-50 via-30% via-blue-200 via-50% via-blue-400 via-70% to-black rounded-2xl overflow-hidden">
-                                    {/* Inner Gradient Background */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-[#FB923C]/20 via-[#F472B6]/20 to-[#E879F9]/20 opacity-30" />
+                                    {/* Hover Effect Border */}
+                                    {activeTab !== tab.id && (
+                                        <div className="absolute inset-0 rounded-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    )}
+                                </motion.button>
+                            ))}
+                        </div>
+                    </div>
 
+                    {/* Content Display Area */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative"
+                    >
+                        {/* Gradient Border Wrapper */}
+                        <div className="relative rounded-2xl p-[2px] bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9] shadow-2xl">
+                            <div className="relative bg-gradient-to-br from-zinc-900 via-zinc-950 to-black rounded-2xl overflow-hidden">
+                                {/* Content Container */}
+                                <div className="relative aspect-video w-full flex items-center justify-center p-6 md:p-10">
+                                    {/* Animated Background Pattern */}
+                                    <div className="absolute inset-0 opacity-20">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-[#FB923C]/10 via-[#F472B6]/10 to-[#E879F9]/10" />
+                                    </div>
+
+                                    {/* Image with Animation */}
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={activeContent.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="relative w-full h-full flex items-center justify-center p-4 md:p-10"
+                                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                                            className="relative w-full h-full flex flex-col items-center justify-center"
                                         >
-                                            <Image
-                                                src={activeContent.image}
-                                                alt={`${activeContent.label} preview`}
-                                                width={1400}
-                                                height={900}
-                                                className="z-20 h-full w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                                                priority
-                                                unoptimized // Optional: if remote images shouldn't be optimized by Next.js or if domain issues persist
-                                            />
+                                            <div className="relative w-full h-full">
+                                                <Image
+                                                    src={activeContent.image}
+                                                    alt={`${activeContent.label} preview`}
+                                                    width={1400}
+                                                    height={900}
+                                                    className="w-full h-full object-contain rounded-lg"
+                                                    priority
+                                                    unoptimized
+                                                />
+                                            </div>
+
+
                                         </motion.div>
                                     </AnimatePresence>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Mobile View */}
-                        <div className="w-full md:hidden flex flex-col gap-6">
-                            {TABS.map((tab) => (
-                                <div key={tab.id} className="relative rounded-3xl border border-zinc-800 bg-black text-zinc-200 overflow-hidden">
-                                    <div className="p-4 border-b border-zinc-800 bg-white/5 font-medium flex items-center gap-2">
-                                        {tab.icon}
-                                        {tab.label}
+                        {/* Glow Effect */}
+                        <div className="absolute -inset-1 bg-gradient-to-br from-[#FB923C]/20 via-[#F472B6]/20 to-[#E879F9]/20 rounded-2xl blur-2xl -z-10 opacity-50" />
+                    </motion.div>
+                </div>
+
+                {/* Mobile View */}
+                <div className="md:hidden space-y-6">
+                    {TABS.map((tab, index) => (
+                        <motion.div
+                            key={tab.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1 }}
+                            className="relative group"
+                        >
+                            {/* Card with Gradient Border */}
+                            <div className="relative rounded-2xl p-[1px] bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-700 hover:from-[#FB923C] hover:via-[#F472B6] hover:to-[#E879F9] transition-all duration-500">
+                                <div className="relative rounded-2xl bg-gradient-to-br from-zinc-900 to-black overflow-hidden">
+                                    {/* Header */}
+                                    <div className="p-4 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-lg bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9]">
+                                                {tab.icon}
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="font-semibold text-white">{tab.label}</h3>
+                                                <p className="text-xs text-zinc-400 mt-0.5">{tab.description}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden p-6 bg-gradient-to-br from-white via-blue-50 via-blue-200 via-blue-400 to-black">
-                                        <Image
-                                            src={tab.image}
-                                            alt={tab.label}
-                                            width={600}
-                                            height={400}
-                                            className="w-full h-auto rounded-lg shadow-lg object-contain"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9] opacity-10 pointer-events-none mix-blend-overlay" />
+
+                                    {/* Image Container */}
+                                    <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-4">
+                                        <div className="relative w-full h-full rounded-lg overflow-hidden">
+                                            <Image
+                                                src={tab.image}
+                                                alt={tab.label}
+                                                width={600}
+                                                height={400}
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
+
+                                        {/* Subtle Overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
+                            </div>
+
+                            {/* Glow Effect on Hover */}
+                            <div className="absolute -inset-1 bg-gradient-to-br from-[#FB923C]/0 via-[#F472B6]/0 to-[#E879F9]/0 group-hover:from-[#FB923C]/20 group-hover:via-[#F472B6]/20 group-hover:to-[#E879F9]/20 rounded-2xl blur-xl -z-10 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </section>
