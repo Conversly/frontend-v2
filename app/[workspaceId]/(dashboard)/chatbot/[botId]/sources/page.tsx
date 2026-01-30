@@ -20,7 +20,8 @@ import {
   AlertTriangle,
   Eye,
   MoreVertical,
-  Filter
+  Filter,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -311,14 +312,14 @@ function DataSourceRow({
               <Eye className="w-4 h-4 mr-2" />
               View chunks
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={onEditCitation}
               disabled={isLiveMode}
             >
               <Edit3 className="w-4 h-4 mr-2" />
               Edit citation
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={onDelete}
               disabled={isLiveMode}
               className="text-destructive focus:text-destructive"
@@ -352,7 +353,7 @@ export default function DataSourcesPage() {
   // Calculate source counts by type
   const sourceCounts = useMemo(() => {
     if (!dataSources) return { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 };
-    
+
     return {
       all: dataSources.length,
       URL: dataSources.filter(s => s.type === 'URL').length,
@@ -452,6 +453,10 @@ export default function DataSourcesPage() {
                 {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
               </p>
             </div>
+            <Button onClick={() => setIsAddDialogOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Knowledge
+            </Button>
           </div>
 
           {/* Search */}

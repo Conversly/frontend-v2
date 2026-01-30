@@ -104,7 +104,7 @@ export default function Navbar() {
         h-[74px] flex items-center
         top-0 w-full rounded-none
         lg:top-6 lg:max-w-7xl lg:rounded-[47px]
-        border border-white/20 shadow-lg bg-white/60 backdrop-blur-md text-gray-900 
+        border border-border/40 shadow-lg bg-background/60 backdrop-blur-md text-foreground 
         ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'
           }`}
       >

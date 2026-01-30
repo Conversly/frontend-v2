@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '../ui/separator';
 import { toast } from 'sonner';
 import {
     ActionFormErrors,
@@ -265,7 +264,7 @@ export const CustomActionForm: React.FC<Props> = ({
     }, [formData.parameters]);
 
     return (
-        <div className="h-full w-full max-w-6xl mx-auto flex flex-col space-y-6 min-w-0">
+        <div className="h-full w-full flex flex-col space-y-6 min-w-0">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -277,12 +276,10 @@ export const CustomActionForm: React.FC<Props> = ({
                     </p>
                 </div>
             </div>
-            <Separator />
-
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0 pb-6 w-full min-w-0">
-                {/* Left Panel - Form */}
-                <div className="lg:col-span-7 flex flex-col min-h-0 min-w-0">
-                    {/* Progress Steps - Clean Horizontal Design */}
+            <div className="flex-1 min-h-0 pb-6 w-full min-w-0">
+                {/* Content Panel - Left aligned with max width for form readability */}
+                <div className="max-w-full flex flex-col min-h-0 min-w-0 h-full">
+                    {/* Progress Steps */}
                     <div className="mb-6 flex items-center w-full max-w-2xl">
                         {[1, 2, 3, 4, 5].map((step, index) => (
                             <div key={step} className="flex-1 flex items-center">
@@ -290,37 +287,37 @@ export const CustomActionForm: React.FC<Props> = ({
                                     const isUnlocked = step <= maxStepUnlocked;
                                     const isCurrentOrPast = currentStep >= step;
                                     return (
-                                <div
-                                    className={cn(
-                                        "flex items-center gap-2 group",
-                                        isUnlocked ? "cursor-pointer" : "cursor-not-allowed opacity-50",
-                                        isCurrentOrPast ? "text-foreground" : "text-muted-foreground"
-                                    )}
-                                    onClick={() => isUnlocked && setCurrentStep(step)}
-                                >
-                                    <div
-                                        className={cn(
-                                            "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200",
-                                            currentStep > step
-                                                ? "bg-primary text-primary-foreground shadow-sm"
-                                                : currentStep === step
-                                                    ? "bg-primary text-primary-foreground ring-4 ring-primary/20 shadow-sm"
-                                                    : "bg-muted border border-border group-hover:border-primary/50"
-                                        )}
-                                    >
-                                        {currentStep > step ? <Check className="h-4 w-4" /> : step}
-                                    </div>
-                                    <span className={cn(
-                                        "text-sm font-medium whitespace-nowrap hidden sm:block",
-                                        currentStep === step && "text-primary"
-                                    )}>
-                                        {step === 1 && "General"}
-                                        {step === 2 && "API"}
-                                        {step === 3 && "Inputs"}
-                                        {step === 4 && "Test response"}
-                                        {step === 5 && "Data access"}
-                                    </span>
-                                </div>
+                                        <div
+                                            className={cn(
+                                                "flex items-center gap-2 group",
+                                                isUnlocked ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                                                isCurrentOrPast ? "text-foreground" : "text-muted-foreground"
+                                            )}
+                                            onClick={() => isUnlocked && setCurrentStep(step)}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200",
+                                                    currentStep > step
+                                                        ? "bg-primary text-primary-foreground shadow-sm"
+                                                        : currentStep === step
+                                                            ? "bg-primary text-primary-foreground ring-4 ring-primary/20 shadow-sm"
+                                                            : "bg-muted border border-border group-hover:border-primary/50"
+                                                )}
+                                            >
+                                                {currentStep > step ? <Check className="h-4 w-4" /> : step}
+                                            </div>
+                                            <span className={cn(
+                                                "text-sm font-medium whitespace-nowrap hidden sm:block",
+                                                currentStep === step && "text-primary"
+                                            )}>
+                                                {step === 1 && "General"}
+                                                {step === 2 && "API"}
+                                                {step === 3 && "Inputs"}
+                                                {step === 4 && "Test response"}
+                                                {step === 5 && "Data access"}
+                                            </span>
+                                        </div>
                                     );
                                 })()}
                                 {index < 4 && (

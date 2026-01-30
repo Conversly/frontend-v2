@@ -41,13 +41,13 @@ export const ActionList: React.FC<Props> = ({
     if (actions.length === 0) {
         return (
             <div className="flex items-center justify-center p-6 h-full">
-                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-white overflow-hidden min-h-[600px] shadow-sm">
+                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-card overflow-hidden min-h-[600px] shadow-sm">
                     {/* Left side - Content */}
                     <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
                             <Zap className="h-7 w-7 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-slate-800 mb-3">
+                        <h3 className="text-2xl font-bold text-foreground mb-3">
                             Your bot doesn't have any skills yet
                         </h3>
                         <p className="text-muted-foreground mb-8 max-w-md leading-relaxed">
@@ -63,7 +63,7 @@ export const ActionList: React.FC<Props> = ({
                             ].map((feature, idx) => (
                                 <div
                                     key={idx}
-                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm"
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-sm"
                                 >
                                     <feature.icon className="h-3.5 w-3.5" />
                                     {feature.label}
@@ -78,7 +78,7 @@ export const ActionList: React.FC<Props> = ({
                     </div>
 
                     {/* Right side - Visualization */}
-                    <div className="hidden lg:block border-l border-slate-100 bg-gradient-to-br from-slate-50 to-white">
+                    <div className="hidden lg:block border-l border-border bg-gradient-to-br from-muted/30 to-background">
                         <ActionsVisual />
                     </div>
                 </div>

@@ -40,8 +40,8 @@ export function DeployPreview({ config }: DeployPreviewProps) {
     const announcement = config.announcement || {};
 
     return (
-        <div className="h-full bg-slate-100 dark:bg-zinc-900 p-8 overflow-y-auto flex items-center justify-center">
-            <div className="w-full max-w-4xl bg-white dark:bg-black rounded-xl shadow-2xl border overflow-hidden min-h-[600px] flex flex-col relative transition-all duration-300">
+        <div className="h-full bg-muted/30 p-8 overflow-y-auto flex items-center justify-center">
+            <div className="w-full max-w-4xl bg-card rounded-xl shadow-2xl border overflow-hidden min-h-[600px] flex flex-col relative transition-all duration-300">
 
                 {/* Announcement Bar */}
                 {announcement.enabled && (
@@ -68,7 +68,7 @@ export function DeployPreview({ config }: DeployPreviewProps) {
                         <h1 className="font-bold text-xl">{config.title || "Support Page"}</h1>
                     </div>
                     {config.isLive && (
-                        <div className="flex items-center gap-2 text-xs font-medium text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                        <div className="flex items-center gap-2 text-xs font-medium text-green-600 dark:text-green-400 bg-green-100/50 dark:bg-green-900/20 px-2 py-1 rounded-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                             Live
                         </div>
@@ -110,7 +110,7 @@ export function DeployPreview({ config }: DeployPreviewProps) {
                         {config.channels.chatbot && (
                             <Card className="hover:border-primary/50 transition-colors group cursor-pointer border-dashed border-2">
                                 <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
-                                    <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div className="w-12 h-12 rounded-full bg-blue-100/50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                                     </div>
                                     <div className="space-y-1">
@@ -125,7 +125,7 @@ export function DeployPreview({ config }: DeployPreviewProps) {
                         {config.channels.email && (
                             <Card className="hover:border-primary/50 transition-colors group cursor-pointer">
                                 <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
-                                    <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div className="w-12 h-12 rounded-full bg-purple-100/50 dark:bg-purple-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <Mail className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                                     </div>
                                     <div className="space-y-1">
@@ -140,7 +140,7 @@ export function DeployPreview({ config }: DeployPreviewProps) {
                         {config.channels.voice && (
                             <Card className="hover:border-primary/50 transition-colors group cursor-pointer">
                                 <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
-                                    <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div className="w-12 h-12 rounded-full bg-green-100/50 dark:bg-green-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <Phone className="w-6 h-6 text-green-600 dark:text-green-400" />
                                     </div>
                                     <div className="space-y-1">

@@ -18,9 +18,9 @@ import { UpgradeModal } from "@/components/subscription/upgrade-modal";
 
 const TIER_COLORS: Record<string, string> = {
   FREE: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-  PERSONAL: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  PRO: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  ENTERPRISE: "bg-gradient-to-r from-purple-600 to-pink-600 text-white",
+  PERSONAL: "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  PRO: "bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+  ENTERPRISE: "bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400 border-orange-200 dark:border-orange-800",
 };
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
@@ -57,9 +57,11 @@ export default function PlansPage() {
   };
 
   const formatPrice = (price: string, currency: string = "usd") => {
+    if (price === "Custom") return "Custom";
     const numPrice = parseFloat(price);
+    if (isNaN(numPrice)) return price;
     const symbol = currency === "usd" ? "$" : currency.toUpperCase();
-    return `${symbol}${numPrice.toFixed(2)}`;
+    return `${symbol}${numPrice.toFixed(0)}`;
   };
 
   const getEntitlementDisplay = (entitlements: SubscriptionPlan["entitlements"]) => {
@@ -173,12 +175,12 @@ export default function PlansPage() {
               return (
                 <Card
                   key={plan.planId}
-                  className={`relative ${isCurrent ? "ring-2 ring-primary" : ""} ${tierType === "PRO" ? "border-primary shadow-lg" : ""
+                  className={`relative border ${isCurrent ? "ring-2 ring-primary border-primary" : "border-border"} ${tierType === "PRO" ? "border-purple-500/50 shadow-lg shadow-purple-500/5" : ""
                     }`}
                 >
                   {tierType === "PRO" && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                      <Badge className="bg-purple-600 hover:bg-purple-700 text-white border-0">Most Popular</Badge>
                     </div>
                   )}
                   <CardHeader>
@@ -203,7 +205,7 @@ export default function PlansPage() {
                       </span>
                     </div>
 
-                    {plan.priceAnnually && parseFloat(plan.priceAnnually) > 0 && (
+                    {plan.priceAnnually && plan.priceAnnually !== "Custom" && parseFloat(plan.priceAnnually) > 0 && (
                       <div className="flex items-center gap-2 text-sm">
                         <button
                           onClick={() => setBillingPeriod("monthly")}

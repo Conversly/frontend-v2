@@ -81,18 +81,18 @@ export const getWorkspaceNavSections = (workspaceId: string): NavSection[] => [
                 icon: FileCheck,
                 requiredCapability: "canViewBilling",
             },
-            {
-                title: "Usage",
-                url: `/${workspaceId}/billing/usage`,
-                icon: BarChart3,
-                requiredCapability: "canViewBilling",
-            },
-            {
-                title: "Payment Methods",
-                url: `/${workspaceId}/billing/payment-methods`,
-                icon: CreditCard,
-                requiredCapability: "canViewBilling",
-            },
+            // {
+            //     title: "Usage",
+            //     url: `/${workspaceId}/billing/usage`,
+            //     icon: BarChart3,
+            //     requiredCapability: "canViewBilling",
+            // },
+            // {
+            //     title: "Payment Methods",
+            //     url: `/${workspaceId}/billing/payment-methods`,
+            //     icon: CreditCard,
+            //     requiredCapability: "canViewBilling",
+            // },
         ],
     },
     {
@@ -163,16 +163,26 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
                 icon: MessageCircle,
             },
-            {
-                title: "Escalations Inbox",
-                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
-                icon: Inbox,
-            },
+            // {
+            //     title: "Escalations Inbox",
+            //     url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
+            //     icon: Inbox,
+            // },
             // {
             //     title: "Leads",
             //     url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
             //     icon: Users,
             // },
+        ],
+    },
+    {
+        label: "Escalation",
+        items: [
+            {
+                title: "Inbox",
+                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
+                icon: Inbox,
+            },
         ],
     },
     {
@@ -198,26 +208,26 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 url: `/${workspaceId}/chatbot/${botId}/voice`,
                 icon: Headset,
             },
-            {
-                title: "Campaigns",
-                url: `/${workspaceId}/chatbot/${botId}/voice/campaigns`,
-                icon: Megaphone,
-            },
-            {
-                title: "Analytics",
-                url: `/${workspaceId}/chatbot/${botId}/voice/analytics`,
-                icon: BarChart3,
-            },
-            {
-                title: "Phone Numbers",
-                url: `/${workspaceId}/chatbot/${botId}/voice/phone-numbers`,
-                icon: Phone,
-            },
-            {
-                title: "Widget",
-                url: `/${workspaceId}/chatbot/${botId}/voice/widget`,
-                icon: Code,
-            },
+            // {
+            //     title: "Campaigns",
+            //     url: `/${workspaceId}/chatbot/${botId}/voice/campaigns`,
+            //     icon: Megaphone,
+            // },
+            // {
+            //     title: "Analytics",
+            //     url: `/${workspaceId}/chatbot/${botId}/voice/analytics`,
+            //     icon: BarChart3,
+            // },
+            // {
+            //     title: "Phone Numbers",
+            //     url: `/${workspaceId}/chatbot/${botId}/voice/phone-numbers`,
+            //     icon: Phone,
+            // },
+            // {
+            //     title: "Widget",
+            //     url: `/${workspaceId}/chatbot/${botId}/voice/widget`,
+            //     icon: Code,
+            // },
         ],
     },
     {

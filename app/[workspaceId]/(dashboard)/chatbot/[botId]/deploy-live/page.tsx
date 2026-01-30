@@ -151,7 +151,7 @@ export default function DeployLivePage() {
             <div className="flex items-center justify-center h-full">
                 <div className="flex flex-col items-center gap-4">
                     <Clock className="w-8 h-8 animate-spin text-blue-500" />
-                    <p className="text-slate-500 font-medium">Loading deployment status...</p>
+                    <p className="text-muted-foreground font-medium">Loading deployment status...</p>
                 </div>
             </div>
         );
@@ -178,12 +178,12 @@ export default function DeployLivePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Visualization Column */}
                 <div className="lg:col-span-2 space-y-6">
-                    <Card className="overflow-hidden border-slate-200/60 shadow-md">
+                    <Card className="overflow-hidden border-border/60 shadow-md">
                         <DeployVisual isDeploying={isDeploying} />
                     </Card>
 
                     {isLocked && (
-                        <Alert variant="destructive" className="bg-red-50 border-red-200">
+                        <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
                             <ShieldAlert className="h-5 w-5" />
                             <AlertTitle>Deployment Locked</AlertTitle>
                             <AlertDescription>
@@ -194,7 +194,7 @@ export default function DeployLivePage() {
                     )}
 
                     {!isDirty && !isDeploying && !isLocked && (
-                        <Alert className="bg-emerald-50 border-emerald-200 text-emerald-800">
+                        <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                             <AlertTitle>All changes synced</AlertTitle>
                             <AlertDescription>
@@ -207,24 +207,24 @@ export default function DeployLivePage() {
                 {/* Actions Column */}
                 <div className="space-y-6">
                     {/* Status Card */}
-                    <Card className="bg-slate-50 border-slate-200 shadow-sm">
+                    <Card className="bg-muted/30 border-border shadow-sm">
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-sm uppercase tracking-wider text-slate-500">Current Status</CardTitle>
+                            <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Current Status</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex justify-between items-end">
                                 <div>
-                                    <p className="text-2xl font-bold text-slate-900">v{status?.liveVersion || 0}</p>
-                                    <p className="text-xs text-slate-500">Live Version</p>
+                                    <p className="text-2xl font-bold text-foreground">v{status?.liveVersion || 0}</p>
+                                    <p className="text-xs text-muted-foreground">Live Version</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-2xl font-bold text-blue-600">v{status?.devVersion || 0}</p>
-                                    <p className="text-xs text-slate-500">Draft Version</p>
+                                    <p className="text-xs text-muted-foreground">Draft Version</p>
                                 </div>
                             </div>
-                            <div className="pt-2 border-t border-slate-200">
+                            <div className="pt-2 border-t border-border">
                                 <div className="flex items-center justify-between text-xs">
-                                    <span className="text-slate-500">State:</span>
+                                    <span className="text-muted-foreground">State:</span>
                                     <span className={`font-semibold ${status?.deployStatusField === 'SYNCED' ? 'text-emerald-600' :
                                         status?.deployStatusField === 'DEPLOYING' ? 'text-blue-600' :
                                             'text-orange-600'
@@ -234,8 +234,8 @@ export default function DeployLivePage() {
                                 </div>
                                 {status?.lastDeployedAt && (
                                     <div className="flex items-center justify-between text-xs mt-1">
-                                        <span className="text-slate-500">Last Deployed:</span>
-                                        <span className="text-slate-700">
+                                        <span className="text-muted-foreground">Last Deployed:</span>
+                                        <span className="text-foreground">
                                             {new Date(status.lastDeployedAt).toLocaleDateString()}
                                         </span>
                                     </div>
@@ -256,11 +256,11 @@ export default function DeployLivePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pb-4">
-                            <div className="p-3 bg-blue-50 rounded-lg border border-blue-100 text-xs text-blue-700 flex gap-3">
+                            <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 text-xs text-blue-600 dark:text-blue-400 flex gap-3">
                                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>This will deploy all the changes which you have done on your live chatbot. User will be affected.</p>
                             </div>
-                            <div className="mt-3 p-3 bg-orange-50 rounded-lg border border-orange-100 text-xs text-orange-700 flex gap-3">
+                            <div className="mt-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20 text-xs text-orange-600 dark:text-orange-400 flex gap-3">
                                 <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>Your chatbot will be inactive for a short duration (1-2 minutes) during deployment.</p>
                             </div>
@@ -282,7 +282,7 @@ export default function DeployLivePage() {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center"
+                                    className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center"
                                 >
                                     <motion.div
                                         animate={{ rotate: 360 }}
@@ -290,8 +290,8 @@ export default function DeployLivePage() {
                                     >
                                         <Rocket className="w-10 h-10 text-blue-500" />
                                     </motion.div>
-                                    <h4 className="mt-4 font-bold text-slate-900">Pushing Changes</h4>
-                                    <p className="text-xs text-slate-500 mt-1">Please wait until the sync is complete. This usually takes less than a minute.</p>
+                                    <h4 className="mt-4 font-bold text-foreground">Pushing Changes</h4>
+                                    <p className="text-xs text-muted-foreground mt-1">Please wait until the sync is complete. This usually takes less than a minute.</p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -301,7 +301,7 @@ export default function DeployLivePage() {
                     <Card className={status?.liveVersion === 0 ? 'opacity-50 cursor-not-allowed' : ''}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <RotateCcw className="w-5 h-5 text-slate-500" />
+                                <RotateCcw className="w-5 h-5 text-muted-foreground" />
                                 Rollback Changes
                             </CardTitle>
                             <CardDescription>
@@ -309,7 +309,7 @@ export default function DeployLivePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pb-4">
-                            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 flex gap-3">
+                            <div className="p-3 bg-muted/50 rounded-lg border border-border text-xs text-muted-foreground flex gap-3">
                                 <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>This will remove all your changes to the current live stage. Your draft will be replaced by the current production configuration.</p>
                             </div>
@@ -317,7 +317,7 @@ export default function DeployLivePage() {
                         <CardFooter>
                             <Button
                                 variant="outline"
-                                className="w-full border-slate-200 hover:bg-slate-50"
+                                className="w-full border-border hover:bg-muted"
                                 disabled={status?.liveVersion === 0 || isDeploying || isActionInProgress || activeBranch !== 'DEV'}
                                 onClick={handleRollback}
                             >

@@ -14,6 +14,21 @@ import {
 import { IntegrationConfig, IntegrationPlatform } from '@/types/integration';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Card } from '@/components/ui/card';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { joinWaitlist } from "@/lib/api/waitlist";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, Plus, Mail, MessageSquare, ArrowRight } from "lucide-react";
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -32,6 +47,14 @@ export default function IntegrationPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [isLoadingIntegrations] = useState(false);
 
+  // Integration Request State
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [requestEmail, setRequestEmail] = useState("");
+  const [integrationName, setIntegrationName] = useState("");
+  const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
+  const [requestError, setRequestError] = useState("");
+
   // Filter integrations by category
   const filteredIntegrations = useMemo(() => {
     if (categoryFilter === 'all') return integrations;
@@ -45,13 +68,16 @@ export default function IntegrationPage() {
   }, [integrations]);
 
   // Handle setup initiation
+  // Handle setup initiation
   const handleSetup = async (platformId: string) => {
     const integration = integrations.find(i => i.id === platformId);
 
     if (!integration) return;
 
     if (integration.status === 'coming-soon') {
-      toast.info(`${integration.name} integration is coming soon!`);
+      // Pre-fill the request modal with this integration's name
+      setIntegrationName(integration.name);
+      setIsRequestModalOpen(true);
       return;
     }
 
@@ -112,6 +138,49 @@ export default function IntegrationPage() {
 
   // Get sidebar items for active integration
   const sidebarItems = activeIntegration ? getIntegrationSidebarItems(activeIntegration) : [];
+
+  const handleRequestSubmit = async () => {
+    if (!integrationName.trim()) {
+      setRequestError("Please enter an integration name");
+      return;
+    }
+    if (!requestEmail.trim()) {
+      setRequestError("Please enter your email address");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(requestEmail)) {
+      setRequestError("Please enter a valid email address");
+      return;
+    }
+
+    setIsRequestSubmitting(true);
+    setRequestError("");
+
+    try {
+      await joinWaitlist({
+        email: requestEmail,
+        comments: `Integration Request: ${integrationName}`,
+      });
+      setIsRequestSuccess(true);
+      toast.success("Request submitted successfully!");
+    } catch (error: any) {
+      console.error("Integration request error:", error);
+      setRequestError(error.message || "Failed to submit request");
+      toast.error("Failed to submit request. Please try again.");
+    } finally {
+      setIsRequestSubmitting(false);
+    }
+  };
+
+  const resetRequestForm = () => {
+    setIsRequestSuccess(false);
+    setIntegrationName("");
+    setRequestEmail("");
+    setRequestError("");
+  };
 
   const connectedIntegrations = integrations.filter(i => i.status === 'connected');
   const availableIntegrations = filteredIntegrations.filter(i => i.status !== 'connected');
@@ -227,6 +296,44 @@ export default function IntegrationPage() {
                     onSetup={handleSetup}
                   />
                 ))}
+
+                {/* Request New Integration Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card
+                    className="h-full relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 border-2 border-dashed border-border hover:border-primary/50 cursor-pointer group flex flex-col"
+                    onClick={() => setIsRequestModalOpen(true)}
+                  >
+                    <div className="p-6 space-y-4 flex flex-col h-full">
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center border-2 border-dashed border-muted-foreground/20 group-hover:border-primary/30 bg-muted/30 group-hover:bg-primary/5 transition-all duration-300">
+                        <Plus className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+
+                      <div className="space-y-2 flex-1">
+                        <h3 className="type-section-title group-hover:text-primary transition-colors">
+                          Request Integration
+                        </h3>
+                        <p className="type-body-muted line-clamp-2 leading-relaxed">
+                          Don't see what you need? Request a new integration and we'll prioritize it.
+                        </p>
+                      </div>
+
+                      <div className="pt-2 mt-auto">
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between group-hover:border-primary/30 group-hover:text-primary"
+                        >
+                          Request Access
+                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
               </div>
             ) : (
               <div className="text-center py-12 px-4">
@@ -243,22 +350,11 @@ export default function IntegrationPage() {
             )}
           </div>
 
+          {/* Request Integration Feature */}
+
+
           {/* Feature Request */}
-          <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h4 className="type-subtitle mb-1">
-                  Don't see your integration?
-                </h4>
-                <p className="type-body-muted">
-                  Request a new integration and we'll prioritize it for development
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="shadow-sm">
-                Request Integration
-              </Button>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -274,6 +370,110 @@ export default function IntegrationPage() {
           onConnect={handleConnect}
         />
       )}
+      {/* Request Integration Modal */}
+      <Dialog open={isRequestModalOpen} onOpenChange={(open) => {
+        setIsRequestModalOpen(open);
+        if (!open) setTimeout(resetRequestForm, 300);
+      }}>
+        <DialogContent className="sm:max-w-[425px] overflow-hidden border-border bg-background shadow-lg">
+          <AnimatePresence mode="wait">
+            {!isRequestSuccess ? (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <DialogHeader className="mb-4">
+                  <DialogTitle className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-primary" />
+                    Request Integration
+                  </DialogTitle>
+                  <DialogDescription>
+                    Tell us which tool you want to connect, and we'll notify you when it's ready.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-4 py-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="int-name" className="text-sm font-semibold flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Integration Name <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="int-name"
+                      placeholder="e.g. Salesforce, HubSpot, Jira..."
+                      value={integrationName}
+                      onChange={(e) => setIntegrationName(e.target.value)}
+                      disabled={isRequestSubmitting}
+                      className="focus-visible:ring-primary"
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="req-email" className="text-sm font-semibold flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Email Address <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="req-email"
+                      type="email"
+                      placeholder="Where should we notify you?"
+                      value={requestEmail}
+                      onChange={(e) => setRequestEmail(e.target.value)}
+                      disabled={isRequestSubmitting}
+                      className={requestError && !requestEmail ? "border-destructive" : ""}
+                    />
+                  </div>
+
+                  {requestError && (
+                    <p className="text-xs text-destructive font-medium animate-in fade-in slide-in-from-top-1">
+                      {requestError}
+                    </p>
+                  )}
+                </div>
+
+                <DialogFooter className="mt-6">
+                  <Button variant="outline" onClick={() => setIsRequestModalOpen(false)} disabled={isRequestSubmitting}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} className="min-w-[100px]">
+                    {isRequestSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Submit Request"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center justify-center py-6 text-center"
+              >
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                  <Sparkles className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Request Received!</h3>
+                <p className="text-muted-foreground max-w-[280px] mb-6 text-sm">
+                  Thank you for your feedback. We've added <strong>{integrationName}</strong> to our roadmap wishlist.
+                </p>
+                <Button onClick={() => setIsRequestModalOpen(false)} className="w-full sm:w-auto">
+                  Done
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

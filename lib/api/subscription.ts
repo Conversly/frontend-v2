@@ -36,13 +36,13 @@ export interface CurrentSubscription {
 // Mock Data
 const MOCK_PLANS: SubscriptionPlan[] = [
     {
-        planId: "free",
-        planName: "Free",
-        tierType: "FREE",
-        priceMonthly: "0",
-        priceAnnually: "0",
+        planId: "starter",
+        planName: "Starter",
+        tierType: "PERSONAL",
+        priceMonthly: "39",
+        priceAnnually: "468",
         currency: "usd",
-        description: "For personal projects and exploration.",
+        description: "Pay yearly (save 40%) — billed $468 yearly",
         entitlements: {
             maxChatbots: 1,
             maxUsers: 1,
@@ -55,35 +55,35 @@ const MOCK_PLANS: SubscriptionPlan[] = [
         },
     },
     {
-        planId: "pro",
-        planName: "Pro",
+        planId: "growth",
+        planName: "Growth",
         tierType: "PRO",
-        priceMonthly: "29",
-        priceAnnually: "290",
+        priceMonthly: "79",
+        priceAnnually: "948",
         currency: "usd",
-        description: "For professionals and growing businesses.",
+        description: "Pay yearly (save 40%) — billed $948 yearly",
         entitlements: {
-            maxChatbots: 5,
-            maxUsers: 3,
+            maxChatbots: 2,
+            maxUsers: 4,
             allowWhatsApp: true,
-            allowVoice: true,
+            allowVoice: false,
             allowAPI: true,
-            allowWebhooks: true,
+            allowWebhooks: false,
             allowCustomBranding: false,
-            prioritySupport: true,
+            prioritySupport: false,
         },
     },
     {
         planId: "enterprise",
         planName: "Enterprise",
         tierType: "ENTERPRISE",
-        priceMonthly: "99",
-        priceAnnually: "990",
+        priceMonthly: "Custom",
+        priceAnnually: "Custom",
         currency: "usd",
-        description: "For large teams with advanced needs.",
+        description: "Custom pricing (volume-based)",
         entitlements: {
-            maxChatbots: -1, // Unlimited
-            maxUsers: -1, // Unlimited
+            maxChatbots: 10000,
+            maxUsers: 10000,
             allowWhatsApp: true,
             allowVoice: true,
             allowAPI: true,
@@ -96,8 +96,8 @@ const MOCK_PLANS: SubscriptionPlan[] = [
 ];
 
 const MOCK_CURRENT_SUBSCRIPTION: CurrentSubscription = {
-    planId: "free",
-    planName: "Free",
+    planId: "starter",
+    planName: "Starter",
     status: "active",
     currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     usage: {

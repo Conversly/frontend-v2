@@ -16,14 +16,14 @@ import {
 } from "lucide-react";
 
 const BackgroundPattern = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
-    <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 border-l border-slate-100 ${className}`}>
+    <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 border-l border-border/50 ${className}`}>
         {/* Grid Pattern */}
         <div className="absolute inset-0 z-0 opacity-40">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,theme(colors.border)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.border)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         </div>
 
         {/* Soft Gradient */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-tr from-blue-500/5 via-slate-50/50 to-emerald-500/5"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-tr from-blue-500/5 via-background/50 to-emerald-500/5"></div>
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center justify-center">
@@ -79,9 +79,9 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                     className="flex flex-col items-center gap-3"
                     animate={isDeploying ? { opacity: 0.7 } : { opacity: 1 }}
                 >
-                    <div className="w-24 h-24 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-300 flex items-center justify-center relative overflow-hidden group">
+                    <div className="w-24 h-24 bg-card rounded-2xl border-2 border-dashed border-border flex items-center justify-center relative overflow-hidden group">
                         <motion.div
-                            className="text-slate-400 group-hover:text-blue-500 transition-colors"
+                            className="text-muted-foreground group-hover:text-blue-500 transition-colors"
                             animate={isDeploying ? { rotate: 360 } : {}}
                             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                         >
@@ -96,18 +96,18 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                             />
                         )}
                     </div>
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Draft (DEV)</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Draft (DEV)</span>
                 </motion.div>
 
                 {/* CONNECTION LINE */}
-                <div className="flex-1 h-px bg-slate-200 relative">
+                <div className="flex-1 h-px bg-border relative">
                     <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-blue-500 to-emerald-500"
                         initial={{ scaleX: 0, originX: 0 }}
                         animate={isDeploying ? { scaleX: 1 } : { scaleX: 0 }}
                     />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2">
-                        <ArrowRight className={isDeploying ? "text-blue-500" : "text-slate-300"} size={20} />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2">
+                        <ArrowRight className={isDeploying ? "text-blue-500" : "text-muted-foreground"} size={20} />
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                     animate={isDeploying ? { scale: [1, 1.05, 1] } : { scale: 1 }}
                     transition={{ duration: 1, repeat: Infinity }}
                 >
-                    <div className="w-24 h-24 bg-emerald-50 rounded-2xl border-2 border-emerald-200 flex items-center justify-center relative overflow-hidden">
+                    <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl border-2 border-emerald-500/20 flex items-center justify-center relative overflow-hidden">
                         <div className="text-emerald-500 relative z-10">
                             {isDeploying ? <Clock size={40} className="animate-pulse" /> : <Globe size={40} />}
                         </div>
@@ -156,7 +156,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                                 </span>
                                 Syncing configurations...
                             </div>
-                            <p className="text-xs text-slate-500 max-w-[250px]">
+                            <p className="text-xs text-muted-foreground max-w-[250px]">
                                 Moving your prompts, actions, and widget settings to the production environment.
                             </p>
                         </motion.div>
@@ -168,10 +168,10 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                             exit={{ y: -10, opacity: 0 }}
                             className="flex flex-col items-center gap-2"
                         >
-                            <div className="text-slate-400 font-medium flex items-center gap-2">
+                            <div className="text-muted-foreground font-medium flex items-center gap-2">
                                 <Users size={16} /> Ready for deployment
                             </div>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                                 Your changes are safe in draft mode until you choose to go live.
                             </p>
                         </motion.div>

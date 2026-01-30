@@ -1,4 +1,267 @@
-'use client';
+"use client";
+
+import { useState } from "react";
+import dynamic from 'next/dynamic';
+import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { joinWaitlist } from "@/lib/api/waitlist";
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Loader2,
+  Sparkles,
+  MessageCircle,
+  CheckCircle2,
+  Megaphone,
+  Zap,
+  Smartphone,
+  Users,
+} from "lucide-react";
+
+// Dynamic import for visual component
+const WhatsAppVisual = dynamic(() => import('@/components/whatsapp/WhatsAppVisual'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-slate-50 dark:bg-slate-900 animate-pulse" />
+});
+
+export default function WhatsAppPage() {
+  const params = useParams();
+
+  // Request Modal State
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [requestEmail, setRequestEmail] = useState("");
+  const [useCase, setUseCase] = useState("");
+  const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
+  const [requestError, setRequestError] = useState("");
+
+  const handleRequestSubmit = async () => {
+    if (!useCase.trim()) {
+      setRequestError("Please describe your use case");
+      return;
+    }
+
+    if (!requestEmail.trim()) {
+      setRequestError("Please enter your email address");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(requestEmail)) {
+      setRequestError("Please enter a valid email address");
+      return;
+    }
+
+    setIsRequestSubmitting(true);
+    setRequestError("");
+
+    try {
+      await joinWaitlist({
+        email: requestEmail,
+        comments: `Integration Request: WhatsApp - ${useCase}`,
+      });
+      setIsRequestSuccess(true);
+      toast.success("Request submitted successfully!");
+    } catch (error: any) {
+      console.error("WhatsApp request error:", error);
+      setRequestError(error.message || "Failed to submit request");
+      toast.error("Failed to submit request. Please try again.");
+    } finally {
+      setIsRequestSubmitting(false);
+    }
+  };
+
+  const resetRequestForm = () => {
+    setIsRequestSuccess(false);
+    setUseCase("");
+    setRequestEmail("");
+    setRequestError("");
+  };
+
+  return (
+    <div className="w-full h-full bg-background overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-6 py-6 max-w-[1920px] h-full flex flex-col justify-center">
+
+          <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-white dark:bg-slate-950 overflow-hidden min-h-[600px] shadow-sm dark:border-slate-800">
+
+            {/* Left side - Content */}
+            <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center relative z-10">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#25D366] to-[#128C7E] flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
+                <MessageCircle className="h-9 w-9 text-white fill-white/20" />
+              </div>
+
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
+                WhatsApp Agents
+              </h1>
+
+              <p className="text-muted-foreground mb-8 max-w-md leading-relaxed text-lg">
+                Connect with billions of users on WhatsApp. Automate support, send broadcasts, and drive engagement with AI-powered conversations.
+              </p>
+
+              {/* Feature highlights */}
+              <div className="flex flex-wrap justify-center gap-3 mb-10">
+                {[
+                  { icon: Zap, label: "24/7 Automation" },
+                  { icon: Users, label: "Mass Broadcasts" },
+                  { icon: Smartphone, label: "Rich Media" },
+                ].map((feature, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-sm font-medium border border-transparent dark:border-slate-800"
+                  >
+                    <feature.icon className="h-4 w-4 text-green-600 dark:text-green-500" />
+                    {feature.label}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                size="lg"
+                className="h-12 px-8 text-base shadow-lg shadow-green-500/20 hover:shadow-green-500/30 transition-all duration-300 transform hover:-translate-y-0.5 bg-[#25D366] hover:bg-[#20bd5a] text-white"
+                onClick={() => setIsRequestModalOpen(true)}
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Request Access
+              </Button>
+            </div>
+
+            {/* Right side - Visual */}
+            <div className="hidden lg:block border-l border-slate-100 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 relative overflow-hidden">
+              <WhatsAppVisual />
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      {/* Request Modal */}
+      <Dialog open={isRequestModalOpen} onOpenChange={(open) => {
+        setIsRequestModalOpen(open);
+        if (!open) setTimeout(resetRequestForm, 300);
+      }}>
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-border bg-background shadow-2xl gap-0">
+          <AnimatePresence mode="wait">
+            {!isRequestSuccess ? (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col"
+              >
+                <div className="p-6 pb-0">
+                  <DialogHeader className="mb-6 space-y-3">
+                    <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-2">
+                      <Sparkles className="w-6 h-6 text-green-600 dark:text-green-500" />
+                    </div>
+                    <DialogTitle className="text-2xl font-bold">
+                      Request WhatsApp Access
+                    </DialogTitle>
+                    <DialogDescription className="text-base leading-relaxed text-muted-foreground/80">
+                      WhatsApp integration is currently in private beta. Tell us about your business use case to get early access.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="use-case" className="text-sm font-semibold flex items-center gap-1">
+                        Use Case <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="use-case"
+                        placeholder="e.g. Automated customer support for my e-commerce store..."
+                        value={useCase}
+                        onChange={(e) => setUseCase(e.target.value)}
+                        disabled={isRequestSubmitting}
+                        className="h-11 bg-muted/30 focus:bg-background transition-colors"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="req-email" className="text-sm font-semibold flex items-center gap-1">
+                        Email Address <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="req-email"
+                        type="email"
+                        placeholder="you@company.com"
+                        value={requestEmail}
+                        onChange={(e) => setRequestEmail(e.target.value)}
+                        disabled={isRequestSubmitting}
+                        className={`h-11 bg-muted/30 focus:bg-background transition-colors ${requestError && (!requestEmail || (requestEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestEmail))) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      />
+                    </div>
+
+                    {requestError && (
+                      <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-destructive" />
+                        {requestError}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <DialogFooter className="p-6 pt-8 bg-muted/20 mt-6 border-t border-border/50">
+                  <Button variant="ghost" onClick={() => setIsRequestModalOpen(false)} disabled={isRequestSubmitting} className="mr-auto hover:bg-background">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-green-500/20 bg-[#25D366] hover:bg-[#20bd5a] text-white">
+                    {isRequestSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Submit Request"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center justify-center py-8 text-center"
+              >
+                <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                  <CheckCircle2 className="w-10 h-10" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Request Received!</h3>
+                <p className="text-muted-foreground max-w-[300px] mb-8">
+                  We've received your request for WhatsApp access. We'll be in touch with you shortly at <strong>{requestEmail}</strong>.
+                </p>
+                <Button onClick={() => setIsRequestModalOpen(false)} size="lg" className="w-full sm:w-auto min-w-[140px]">
+                  Done
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/*
+// ==========================================
+// PREVIOUS IMPLEMENTATION (COMMENTED OUT)
+// ==========================================
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -343,7 +606,7 @@ export default function WhatsAppSetupPage() {
     <div className="w-full h-full overflow-y-auto">
       <div className="container mx-auto px-6 py-6 max-w-[1920px]">
 
-        {/* Standard Page Header */}
+        // Standard Page Header
         <div className="page-header">
           <h1 className="page-title">Connect WhatsApp</h1>
           <p className="page-subtitle">
@@ -354,7 +617,7 @@ export default function WhatsAppSetupPage() {
 
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32">
 
-          {/* Quick Connect Option */}
+          // Quick Connect Option
           <Button
             type="button"
             className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-semibold gap-2 w-full sm:max-w-xs mx-auto block"
@@ -383,7 +646,7 @@ export default function WhatsAppSetupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-8">
 
-            {/* 1. Webhook Configuration */}
+            // 1. Webhook Configuration
             <div className="space-y-4">
               <div className="flex items-center gap-2 px-1">
                 <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">1</div>
@@ -434,7 +697,7 @@ export default function WhatsAppSetupPage() {
               </Card>
             </div>
 
-            {/* 2. Credentials */}
+            // 2. Credentials
             <div className="space-y-4">
               <div className="flex items-center gap-2 px-1">
                 <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">2</div>
@@ -500,7 +763,7 @@ export default function WhatsAppSetupPage() {
               </Card>
             </div>
 
-            {/* Actions */}
+            // Actions
             <div className="pt-8 pb-12 flex justify-end">
               <Button
                 type="submit"
@@ -518,3 +781,4 @@ export default function WhatsAppSetupPage() {
     </div>
   );
 }
+*/
