@@ -66,7 +66,10 @@ export function ChartsSection({
       "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
         fill: "#64748b",
         fontSize: "0.75rem"
-      }
+      },
+      "& .MuiAreaElement-root": {
+        fillOpacity: 0.25,
+      },
     },
   };
 

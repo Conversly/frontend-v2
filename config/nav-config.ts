@@ -176,10 +176,15 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
         ],
     },
     {
-        label: "Escalation",
+        label: "Human Escalations",
         items: [
             {
-                title: "Inbox",
+                title: "Escalation Analytics",
+                url: `/${workspaceId}/chatbot/${botId}/escalation-analytics`,
+                icon: BarChart3,
+            },
+            {
+                title: "Live Inbox",
                 url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
                 icon: Inbox,
             },

@@ -74,6 +74,7 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
         dataKey: topic.topicId,
         label: topic.topicName,
         color: topic.color || COLORS[index % COLORS.length],
+        area: true,
         showMark: false,
         connectNulls: true,
         curve: "linear" as const,
@@ -99,7 +100,10 @@ export function TopicLineChart({ topics, isLoading, formatDate }: TopicLineChart
       "& .MuiChartsLegend-series text": {
         fontSize: "0.75rem !important",
         fill: "#64748b !important"
-      }
+      },
+      "& .MuiAreaElement-root": {
+        fillOpacity: 0.25,
+      },
     },
   };
 
