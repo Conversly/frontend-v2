@@ -15,14 +15,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { getLoggedInUser } from "@/lib/api/user";
+import { getUserWorkspaces } from "@/lib/api/workspaces";
 import { QUERY_KEY } from "@/utils/query-key";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
@@ -60,6 +55,18 @@ export default function Navbar() {
       } catch { }
     }
   }, [fetchedUser, setUser]);
+
+  const { data: workspaces } = useQuery({
+    queryKey: [QUERY_KEY.GET_WORKSPACES],
+    queryFn: async () => await getUserWorkspaces(),
+    enabled: mounted && !!user,
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const dashboardHref = workspaces?.[0]?.workspaceId
+    ? `/${workspaces[0].workspaceId}/chatbot`
+    : "/";
 
 
   const [isVisible, setIsVisible] = useState(true);
@@ -368,32 +375,20 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <div className="w-10 h-10 rounded-full border border-border overflow-hidden">
-                    <Image
-                      src={user.avatarUrl || "/default-avatar.png"}
-                      alt="User avatar"
-                      width={40}
-                      height={40}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="w-full cursor-pointer">
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => logout(queryClient)}
-                    className="w-full cursor-pointer"
-                  >
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center gap-3">
+                <Link href={dashboardHref}>
+                  <Button variant="outline" className="rounded-full">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
+                  className="rounded-full"
+                  onClick={() => logout(queryClient)}
+                >
+                  Logout
+                </Button>
+              </div>
             ) : (
               <>
                 <Link href="/login">
