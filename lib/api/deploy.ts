@@ -50,10 +50,23 @@ export interface RollbackResult {
 }
 
 export interface DeployStatus {
-	deployStatusField: 'SYNCED' | 'DEPLOYING' | 'LOCKED' | 'DEV_DIRTY';
+	deployStatusField: 'NOT_DEPLOYED' | 'SYNCED' | 'DEPLOYING' | 'LOCKED' | 'DEV_DIRTY';
 	devVersion: number;
 	liveVersion: number;
 	lastDeployedAt: string | Date | null;
+	hasUnpublishedChanges?: boolean;
+}
+
+type DeployStatusValue = DeployStatus['deployStatusField'];
+
+// What the backend *may* return (we normalize to DeployStatus).
+interface DeployStatusApiResponse {
+	deployStatusField?: DeployStatusValue;
+	deployStatus?: DeployStatusValue;
+	devVersion: number;
+	liveVersion: number;
+	lastDeployedAt: string | Date | null;
+	hasUnpublishedChanges?: boolean;
 }
 
 export const getWidgetConfig = async (chatbotId: string): Promise<GetWidgetResponse> => {
@@ -241,10 +254,17 @@ export const getDeployStatus = async (chatbotId: string): Promise<DeployStatus> 
 		{
 			method: 'GET',
 		}
-	).then((r) => r.data) as ApiResponse<DeployStatus, Error>;
+	).then((r) => r.data) as ApiResponse<DeployStatusApiResponse, Error>;
 
 	if (!res.success) {
 		throw new Error(res.message);
 	}
-	return res.data;
+
+	// Normalize field-name mismatch between backend (`deployStatus`) and frontend (`deployStatusField`).
+	const deployStatusField = res.data.deployStatusField ?? res.data.deployStatus ?? 'SYNCED';
+
+	return {
+		...res.data,
+		deployStatusField,
+	};
 };

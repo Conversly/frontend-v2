@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type Branch = 'DEV' | 'LIVE';
-export type DeployState = 'SYNCED' | 'DEV_DIRTY' | 'DEPLOYING' | 'LOCKED';
+export type DeployState = 'NOT_DEPLOYED' | 'SYNCED' | 'DEV_DIRTY' | 'DEPLOYING' | 'LOCKED';
 
 interface BranchState {
     activeBranch: Branch;

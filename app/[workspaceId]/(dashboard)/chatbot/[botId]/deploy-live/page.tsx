@@ -143,8 +143,29 @@ export default function DeployLivePage() {
     };
 
     const isDeploying = status?.deployStatusField === 'DEPLOYING';
-    const isDirty = status?.deployStatusField === 'DEV_DIRTY' || (status && status.devVersion > status.liveVersion);
+    const isDirty =
+        status?.deployStatusField === 'DEV_DIRTY' ||
+        status?.hasUnpublishedChanges === true ||
+        (status && status.devVersion > status.liveVersion);
     const isLocked = status?.deployStatusField === 'LOCKED';
+
+    const deployStateUi = (() => {
+        const state = status?.deployStatusField;
+        switch (state) {
+            case 'NOT_DEPLOYED':
+                return { label: 'Not deployed yet', className: 'text-muted-foreground' };
+            case 'SYNCED':
+                return { label: 'Up to date', className: 'text-emerald-600' };
+            case 'DEV_DIRTY':
+                return { label: 'Unpublished changes', className: 'text-orange-600' };
+            case 'DEPLOYING':
+                return { label: 'Publishing…', className: 'text-blue-600' };
+            case 'LOCKED':
+                return { label: 'Deployment locked', className: 'text-red-600' };
+            default:
+                return { label: 'Unknown', className: 'text-muted-foreground' };
+        }
+    })();
 
     if (isLoading && !status) {
         return (
@@ -225,11 +246,8 @@ export default function DeployLivePage() {
                             <div className="pt-2 border-t border-border">
                                 <div className="flex items-center justify-between text-xs">
                                     <span className="text-muted-foreground">State:</span>
-                                    <span className={`font-semibold ${status?.deployStatusField === 'SYNCED' ? 'text-emerald-600' :
-                                        status?.deployStatusField === 'DEPLOYING' ? 'text-blue-600' :
-                                            'text-orange-600'
-                                        }`}>
-                                        {status?.deployStatusField?.replace('_', ' ') || 'Unknown'}
+                                    <span className={`font-semibold ${deployStateUi.className}`}>
+                                        {deployStateUi.label}
                                     </span>
                                 </div>
                                 {status?.lastDeployedAt && (
