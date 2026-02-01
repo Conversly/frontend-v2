@@ -67,11 +67,12 @@ export default function LiveChatPage() {
         fetchContacts();
     }, [botId, integrationId]);
 
-    // Fetch messages when contact is selected
+    // Fetch messages when contact is selected, and poll so inbound WhatsApp messages appear
     useEffect(() => {
-        const fetchMessages = async () => {
-            if (!selectedContact || !botId || !integrationId) return;
-            setIsLoadingMessages(true);
+        if (!selectedContact || !botId || !integrationId) return;
+
+        const fetchMessages = async (showLoading = true) => {
+            if (showLoading) setIsLoadingMessages(true);
             try {
                 const contactId = selectedContact.id || selectedContact.phoneNumber;
                 const data = await getWhatsAppContactMessages(botId, integrationId, contactId);
@@ -79,10 +80,14 @@ export default function LiveChatPage() {
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             } finally {
-                setIsLoadingMessages(false);
+                if (showLoading) setIsLoadingMessages(false);
             }
         };
-        fetchMessages();
+
+        fetchMessages(true);
+
+        const pollInterval = setInterval(() => fetchMessages(false), 5000);
+        return () => clearInterval(pollInterval);
     }, [selectedContact, botId, integrationId]);
 
     // Auto-scroll to bottom when messages change
