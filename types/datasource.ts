@@ -35,12 +35,29 @@ export interface DatasourceResponse {
     message: string;
   }
   
+export type ChatbotStatus = 'DRAFT' | 'TRAINING' | 'ACTIVE' | 'INACTIVE';
+
+export type DataSourceType =
+  | 'PDF'
+  | 'URL'
+  | 'TXT'
+  | 'DOCX'
+  | 'HTML'
+  | 'MD'
+  | 'CSV'
+  | 'QNA'
+  | 'DOCUMENT';
+
+export type DataSourceIngestionStatus = 'DRAFT' | 'QUEUEING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+
   export interface DataSourceItem {
     id: string;
-    type: string;
+    type: DataSourceType;
     name: string;
+    status: ChatbotStatus;
+    ingestionStatus: DataSourceIngestionStatus;
     sourceDetails: any;
-    createdAt: Date | null;
+    createdAt: string | Date | null;
     citation: string | null;
   }
   

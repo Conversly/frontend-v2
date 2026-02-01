@@ -20,7 +20,6 @@ import {
   AlertTriangle,
   Eye,
   MoreVertical,
-  Filter,
   Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -82,6 +81,26 @@ const DATA_SOURCE_BADGE_COLORS = {
   QNA: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
   TXT: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
 } as const;
+
+const TRAINING_STATUS_BADGE_COLORS = {
+  DRAFT: 'bg-muted text-muted-foreground border-border',
+  QUEUEING: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+  PROCESSING: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  COMPLETED: 'bg-green-500/10 text-green-600 border-green-500/20',
+  FAILED: 'bg-red-500/10 text-red-600 border-red-500/20',
+} as const;
+
+const USAGE_STATUS_BADGE_COLORS = {
+  DRAFT: 'bg-muted text-muted-foreground border-border',
+  TRAINING: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  ACTIVE: 'bg-green-500/10 text-green-600 border-green-500/20',
+  INACTIVE: 'bg-muted text-muted-foreground border-border',
+} as const;
+
+function getStatusBadgeClass(status: string | null | undefined, map: Record<string, string>) {
+  if (!status) return 'bg-muted text-muted-foreground border-border';
+  return map[status] ?? 'bg-muted text-muted-foreground border-border';
+}
 
 function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
   const [copied, setCopied] = useState(false);
@@ -301,6 +320,26 @@ function DataSourceRow({
         </Badge>
       </td>
       <td className="py-4 px-4">
+        <Badge
+          className={cn(
+            'text-xs',
+            getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
+          )}
+        >
+          {dataSource.ingestionStatus ?? '—'}
+        </Badge>
+      </td>
+      <td className="py-4 px-4">
+        <Badge
+          className={cn(
+            'text-xs',
+            getStatusBadgeClass(dataSource.status, USAGE_STATUS_BADGE_COLORS)
+          )}
+        >
+          {dataSource.status ?? '—'}
+        </Badge>
+      </td>
+      <td className="py-4 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -508,6 +547,12 @@ export default function DataSourcesPage() {
                   </th>
                   <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Type
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Training status
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Usage status
                   </th>
                   <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-[80px]">
                     Actions
