@@ -218,8 +218,8 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
         {/* Main Settings Tabs - Full width row at top */}
         <Tabs defaultValue="content" className="flex flex-col h-full">
           {/* Tabs with actions on the right - full width */}
-          <div className="flex items-center justify-between gap-4 mb-4">
-            <TabsList className="bg-card/60 p-1 rounded-xl flex flex-nowrap gap-2 flex-1 max-w-[500px]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+            <TabsList className="bg-card/60 p-1 rounded-xl flex flex-nowrap gap-2 flex-1 max-w-full lg:max-w-[500px] overflow-x-auto">
               <TabsTrigger
                 value="content"
                 className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -285,8 +285,8 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
             </div>
           </div>
 
-          {/* Two-column layout: form left, preview right - both start at same level */}
-          <div className="flex-1 grid lg:grid-cols-[minmax(0,1fr)_460px] gap-6 min-h-0">
+          {/* Two-column layout: cap form width so preview gets more space */}
+          <div className="flex-1 grid lg:grid-cols-2 gap-6 min-h-0 overflow-hidden">
             {/* Form content - scrollable */}
             <div className="flex-1 overflow-y-auto min-h-0 pr-2">
               {/* Content Tab */}
@@ -334,23 +334,32 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
             </div>
 
             {/* Preview Right Column - aligned with form start */}
-            <div className="sticky top-6">
-              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl px-6 py-4 min-h-[600px]">
+            <div className="hidden lg:block overflow-y-auto no-scrollbar">
+              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl px-6 py-4">
                 <SectionHeader
                   title="Live Preview"
                   description="See how your chatbot will appear on your website"
                   icon={Sparkles}
                 />
-                <div className="mt-4 flex justify-center">
-                  <div className="w-[380px] h-[580px] rounded-lg overflow-hidden shadow-lg">
-                    <PreviewWidget
-                      config={{
-                        ...config,
-                        suggestedMessages: config.starterQuestions,
-                        alignChatButton: config.buttonAlignment,
-                      } as PackageUIConfig}
-                      contained
-                    />
+                {/* Preview container with fixed height */}
+                <div className="mt-4 h-[900px]">
+                  <div className="flex justify-center">
+                    <div 
+                      className="rounded-lg overflow-hidden shadow-lg"
+                      style={{
+                        width: `min(${config.chatWidth || '350px'}, 100%)`,
+                        height: `min(${config.chatHeight || '500px'}, 800px)`,
+                      }}
+                    >
+                      <PreviewWidget
+                        config={{
+                          ...config,
+                          suggestedMessages: config.starterQuestions,
+                          alignChatButton: config.buttonAlignment,
+                        } as PackageUIConfig}
+                        contained
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
