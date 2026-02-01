@@ -35,27 +35,16 @@ export interface DatasourceResponse {
     message: string;
   }
   
-export type ChatbotStatus = 'DRAFT' | 'TRAINING' | 'ACTIVE' | 'INACTIVE';
-
-export type DataSourceType =
-  | 'PDF'
-  | 'URL'
-  | 'TXT'
-  | 'DOCX'
-  | 'HTML'
-  | 'MD'
-  | 'CSV'
-  | 'QNA'
-  | 'DOCUMENT';
-
-export type DataSourceIngestionStatus = 'DRAFT' | 'QUEUEING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
-
   export interface DataSourceItem {
     id: string;
-    type: DataSourceType;
+    // Backend-mapped value (legacy + new variants).
+    // Examples seen: "Website", "Document", "URL", "DOCUMENT", "QNA", "TXT", ...
+    type: string;
     name: string;
-    status: ChatbotStatus;
-    ingestionStatus: DataSourceIngestionStatus;
+    // Usage status (backend enum-ish, but keep legacy to match backend mapping)
+    status: string;
+    // Training/ingestion status (backend enum-ish, but keep legacy to match backend mapping)
+    ingestionStatus: string;
     sourceDetails: any;
     createdAt: string | Date | null;
     citation: string | null;
