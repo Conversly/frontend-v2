@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Settings, Trash2, Bot, Ellipsis } from "lucide-react";
+import { Trash2, Ellipsis, Loader2 } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -65,6 +66,8 @@ const getGradientFromName = (name: string): { gradient: string; baseColor: strin
 export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProps) {
   const { gradient, baseColor } = getGradientFromName(chatbot.name);
   const workspacePrefix = `/${chatbot.workspaceId}`;
+  const [isNavigating, setIsNavigating] = useState(false);
+  const playgroundHref = `${workspacePrefix}/chatbot/${chatbot.id}/playground`;
 
   // Calculate time since last update
   const getTimeSinceUpdate = () => {
@@ -83,11 +86,24 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
   };
 
   return (
-    <Card className="max-h-[300px] overflow-hidden rounded-xl border transition-all ease-in-out hover:border-primary/20">
+    <Card
+      className="relative max-h-[300px] overflow-hidden rounded-xl border transition-all ease-in-out hover:border-primary/20"
+      data-navigating={isNavigating ? "true" : "false"}
+    >
+      {isNavigating && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/20 backdrop-blur-[1px]">
+          <div className="flex items-center gap-2 rounded-md bg-background/80 px-3 py-2 text-xs text-muted-foreground shadow">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Opening…
+          </div>
+        </div>
+      )}
       {/* Chatbot Preview Section */}
       <Link
-        href={`${workspacePrefix}/chatbot/${chatbot.id}/playground`}
+        href={playgroundHref}
         className="block h-[200px] w-full overflow-hidden border-b"
+        onClick={() => setIsNavigating(true)}
+        aria-disabled={isNavigating}
       >
         <div
           className="relative flex h-full w-full select-none items-end justify-center overflow-hidden"
@@ -144,11 +160,13 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
       </Link>
 
       {/* Card Footer */}
-      <Link
-        href={`${workspacePrefix}/chatbot/${chatbot.id}`}
-        className="flex flex-row justify-between gap-4 p-6"
-      >
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-row items-start justify-between gap-4 p-6">
+        <Link
+          href={playgroundHref}
+          className="flex min-w-0 flex-1 flex-col gap-2"
+          onClick={() => setIsNavigating(true)}
+          aria-disabled={isNavigating}
+        >
           <div className="flex flex-row gap-2">
             <span className="line-clamp-1 break-all font-medium text-primary leading-tight transition-colors hover:text-primary/80">
               {chatbot.name}
@@ -157,33 +175,25 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
           <span className="line-clamp-1 font-medium text-muted-foreground text-xs">
             Last trained <span>{getTimeSinceUpdate()}</span>
           </span>
-        </div>
+        </Link>
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-9 w-9 shrink-0"
-            >
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" className="h-9 w-9 shrink-0">
               <Ellipsis className="h-6 w-6 text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-
             <DropdownMenuItem
               className="text-destructive"
-              onClick={(e) => {
-                e.preventDefault();
-                onDelete(chatbot.id);
-              }}
+              onClick={() => onDelete(chatbot.id)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </Link>
+      </div>
     </Card>
   );
 }
