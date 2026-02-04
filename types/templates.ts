@@ -1,8 +1,19 @@
-import type { WhatsAppTemplateComponent } from '../../../drizzle/schema';
+
 
 // ============================================================================
 // Input Types
 // ============================================================================
+
+
+export interface WhatsAppTemplateComponent {
+    type: 'HEADER' | 'BODY' | 'FOOTER' | 'BUTTONS' | 'CAROUSEL';
+    format?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT';
+    text?: string;
+    buttons?: any[];
+    example?: any;
+    cards?: any[];
+}
+
 
 export interface CreateTemplateInput {
     chatbotId: string;
