@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { IntegrationSidebarItem, IntegrationPlatform } from '@/types/integration';
 import { Button } from '@/components/ui/button';
@@ -13,18 +13,20 @@ import {
   FileText,
   Zap,
   Settings,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
   LayoutDashboard,
   Megaphone,
   Users,
+  CreditCard,
+  Workflow,
+  Puzzle,
+  FolderOpen
 } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface IntegrationSidebarProps {
   platform: IntegrationPlatform;
@@ -36,13 +38,17 @@ interface IntegrationSidebarProps {
 // Icon mapping
 const iconMap: Record<string, React.ComponentType<any>> = {
   MessageSquare,
-  BarChart3,
-  FileText,
-  Zap,
-  Settings,
-  LayoutDashboard,
-  Megaphone,
-  Users,
+  BarChart3, // Analytics
+  FileText, // Templates (History/FileText)
+  Zap, // Automation
+  Settings, // Manage
+  LayoutDashboard, // Dashboard
+  Megaphone, // Campaigns
+  Users, // Contacts
+  CreditCard, // WA Pay
+  Workflow, // Flows
+  Puzzle, // Integrations
+  FolderOpen, // All Projects
 };
 
 export function IntegrationSidebar({
@@ -52,105 +58,55 @@ export function IntegrationSidebar({
   onClose
 }: IntegrationSidebarProps) {
   const pathname = usePathname();
-  const [isMinimized, setIsMinimized] = useState(false);
 
-  const getPlatformColor = (platform: IntegrationPlatform) => {
-    switch (platform) {
-      case 'whatsapp':
-        return 'text-green-500 bg-green-500/10';
-      case 'slack':
-        return 'text-purple-500 bg-purple-500/10';
-      case 'stripe':
-        return 'text-blue-500 bg-blue-500/10';
-      default:
-        return 'text-gray-500 bg-gray-500/10';
-    }
-  };
+  // Additional static items usually present in this specific sidebar view based on screenshot
+  // We can merge passed items with static ones or just rely on what's passed if updated elsewhere.
+  // For now, I will trust the passed `items` but enforce the styling.
 
   return (
-    <div
-      className={cn(
-        "h-full border-r bg-background/95 backdrop-blur-sm transition-all duration-300 flex flex-col",
-        isMinimized ? "w-16" : "w-64"
-      )}
-    >
-      {/* Header */}
-      <div className="h-14 border-b px-4 flex items-center justify-between">
-        {!isMinimized && (
-          <h3 className="type-subtitle capitalize truncate">
-            {platform}
-          </h3>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsMinimized(!isMinimized)}
-          className="flex-shrink-0"
-        >
-          {isMinimized ? (
-            <ChevronLeft className="w-4 h-4" />
-          ) : (
-            <ChevronRight className="w-4 h-4" />
-          )}
-        </Button>
+    <div className="h-full w-[72px] flex flex-col bg-sidebar border-r border-sidebar-border shrink-0">
+      {/* Logo / Header Area */}
+      <div className="h-16 flex items-center justify-center border-b border-sidebar-border shrink-0">
+        {/* Logo */}
+        <div className="relative w-10 h-10 flex items-center justify-center">
+          <Image
+            src="/whatsapp.png"
+            alt="WhatsApp"
+            width={32}
+            height={32}
+            className="object-contain"
+          />
+        </div>
       </div>
 
-      {/* Navigation Items */}
-      <ScrollArea className="flex-1">
-        <div className={cn("space-y-1 p-3", isMinimized && "flex flex-col items-center p-2")}>
+      <ScrollArea className="flex-1 w-full">
+        <div className="flex flex-col items-center py-2 gap-1 px-1">
           {items.map((item) => {
             const IconComponent = iconMap[item.icon as keyof typeof iconMap] || MessageSquare;
             const fullPath = `${basePath}${item.path}`;
-            const isActive = pathname === fullPath;
+            const isActive = pathname === fullPath || pathname?.startsWith(fullPath + '/');
 
-            return isMinimized ? (
-              <Tooltip key={item.id}>
-                <TooltipTrigger asChild>
-                  <Link href={fullPath}>
-                    <Button
-                      variant={isActive ? "default" : "ghost"}
-                      size="icon"
-                      className={cn(
-                        "w-10 h-10 relative",
-                        isActive && "bg-primary text-primary-foreground"
-                      )}
-                    >
-                      <IconComponent className="w-5 h-5" />
-                      {item.badge && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                          {item.badge}
-                        </span>
-                      )}
-                    </Button>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p>{item.label}</p>
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <Link key={item.id} href={fullPath}>
+            return (
+              <Link key={item.id} href={fullPath} className="w-full">
                 <Button
-                  variant={isActive ? "default" : "ghost"}
+                  variant="ghost"
                   className={cn(
-                    "w-full justify-start gap-3",
-                    isActive && "bg-primary text-primary-foreground"
+                    "w-full h-auto py-3 !px-0 flex flex-col items-center justify-center gap-1.5 rounded-lg transition-colors",
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
                   )}
                 >
                   <IconComponent className="w-5 h-5" />
-                  <span className="flex-1 text-left text-sm">{item.label}</span>
+                  <span className="text-[length:var(--font-xsmall)] font-medium leading-tight text-center">{item.label}</span>
+
                   {item.badge && (
-                    <span className="px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">
-                      {item.badge}
-                    </span>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full" />
                   )}
                 </Button>
               </Link>
             );
           })}
-
-          {/* Add Template/Action Button (Example for WhatsApp) */}
-
         </div>
       </ScrollArea>
     </div>

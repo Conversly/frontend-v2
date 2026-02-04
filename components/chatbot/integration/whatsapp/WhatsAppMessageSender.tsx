@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { sendWhatsAppMessage, SendWhatsAppMessageInput, getWhatsAppTemplates } from '@/lib/api/whatsapp';
+import { sendWhatsAppMessage, getWhatsAppTemplates } from '@/lib/api/whatsapp';
+import type { WhatsAppContactMessageItem } from "@/types/whatsapp";
 
 import { Loader2, Send, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface WhatsAppMessageSenderProps {
     chatbotId: string;
     recipientPhone?: string; // Optional: if provided, hides phone input
-    onMessageSent?: (message: any) => void;
+    onMessageSent?: (message: WhatsAppContactMessageItem) => void;
 }
 
 export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
@@ -126,8 +127,12 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                 onMessageSent({
                     id: response.messageId || `temp-${Date.now()}`,
                     content: messageType === 'text' ? messageBody : `Template: ${selectedTemplate?.name}`,
-                    type: 'agent',
-                    timestamp: new Date().toISOString()
+                    type: 'assistant',
+                    createdAt: new Date(),
+                    citations: [],
+                    feedback: 0,
+                    feedbackComment: null,
+                    metadata: null,
                 });
             }
             setTimeout(() => setSuccess(false), 3000);

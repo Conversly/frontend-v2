@@ -27,8 +27,12 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from '@/lib/utils';
-import { getWhatsAppChats, getWhatsAppContactMessages, WhatsAppContact, WhatsAppMessage } from '@/lib/api/whatsapp';
+import { getWhatsAppChats, getWhatsAppContactMessages } from '@/lib/api/whatsapp';
+import type { WhatsAppContact, WhatsAppContactMessageItem } from "@/types/whatsapp";
 import { WhatsAppMessageSender } from '@/components/chatbot/integration/whatsapp/WhatsAppMessageSender';
+
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function LiveChatPage() {
     const routeParams = useParams<{ workspaceId: string; botId: string; id: string }>();
@@ -39,7 +43,7 @@ export default function LiveChatPage() {
     const [activeTab, setActiveTab] = useState('active');
     const [selectedContact, setSelectedContact] = useState<WhatsAppContact | null>(null);
     const [contacts, setContacts] = useState<WhatsAppContact[]>([]);
-    const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
+    const [messages, setMessages] = useState<WhatsAppContactMessageItem[]>([]);
     const [isLoadingContacts, setIsLoadingContacts] = useState(true);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -115,7 +119,7 @@ export default function LiveChatPage() {
 
 
     return (
-        <div className="flex h-full bg-background overflow-hidden w-full relative">
+        <div className="flex h-full bg-[#f0f2f5] overflow-hidden w-full relative font-sans">
             {/* 1. Sidebar (Navigation) - Hidden on mobile during chat focus, or use rail */}
             <div className="hidden md:block">
                 <IntegrationSidebar
@@ -127,56 +131,96 @@ export default function LiveChatPage() {
 
             {/* 2. Contact List Panel (Left) */}
             <div className={cn(
-                "w-full md:w-80 border-r flex flex-col bg-card/50 flex-shrink-0 transition-all duration-300 min-h-0",
+                "w-full md:w-[400px] border-r flex flex-col bg-white flex-shrink-0 transition-all duration-300 min-h-0",
                 selectedContact ? "hidden md:flex" : "flex"
             )}>
-                <div className="p-4 border-b space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="font-semibold text-lg">Chats</h2>
-                    </div>
-
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="w-full grid grid-cols-2">
-                            <TabsTrigger value="all">All</TabsTrigger>
-                            <TabsTrigger value="unread">Unread</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
-
-                    <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Search or start new chat" className="pl-9" />
+                {/* Header */}
+                <div className="h-16 bg-[#f0f2f5] border-r border-[#d1d7db] flex items-center justify-between px-4 shrink-0">
+                    <Avatar className="cursor-pointer">
+                        {/* Placeholder for current user avatar */}
+                        <AvatarFallback className="bg-[#dfe5e7] text-gray-500">ME</AvatarFallback>
+                    </Avatar>
+                    <div className="flex gap-3 text-[#54656f]">
+                        <Button variant="ghost" size="icon" className="hover:bg-transparent">
+                            <span className="sr-only">New Chat</span>
+                            <div className="w-6 h-6 border-2 border-[#54656f] rounded-full flex items-center justify-center border-dashed">
+                                <span className="text-lg leading-none">+</span>
+                            </div>
+                        </Button>
+                        <Button variant="ghost" size="icon" className="hover:bg-transparent">
+                            <MoreVertical className="w-5 h-5" />
+                        </Button>
                     </div>
                 </div>
 
-                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
+                {/* Search Bar */}
+                <div className="p-2 border-b bg-white">
+                    <div className="relative bg-[#f0f2f5] rounded-lg h-9 flex items-center px-3">
+                        <Search className="w-5 h-5 text-[#54656f] mr-4 cursor-pointer" />
+                        <Input
+                            placeholder="Search or start new chat"
+                            className="border-0 bg-transparent h-full p-0 focus-visible:ring-0 placeholder:text-[#54656f] text-sm"
+                        />
+                    </div>
+                    {/* Tabs could go here if needed, keeping simple for now to match WA */}
+                    <div className="flex gap-2 mt-2 px-1">
+                        <span
+                            onClick={() => setActiveTab('all')}
+                            className={cn(
+                                "px-3 py-1 rounded-full text-sm cursor-pointer transition-colors",
+                                activeTab === 'all' ? "bg-[#e7fce3] text-[#008069]" : "bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef]"
+                            )}
+                        >
+                            All
+                        </span>
+                        <span
+                            onClick={() => setActiveTab('unread')}
+                            className={cn(
+                                "px-3 py-1 rounded-full text-sm cursor-pointer transition-colors",
+                                activeTab === 'unread' ? "bg-[#e7fce3] text-[#008069]" : "bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef]"
+                            )}
+                        >
+                            Unread
+                        </span>
+                    </div>
+                </div>
+
+                {/* Contacts List */}
+                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth bg-white">
                     {isLoadingContacts ? (
                         <div className="flex justify-center p-4">
-                            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                            <Loader2 className="w-6 h-6 animate-spin text-[#00a884]" />
                         </div>
                     ) : (
-                        <div className="divide-y">
+                        <div className="divide-y-0">
                             {contacts.map((contact) => (
                                 <div
                                     key={contact.id}
                                     onClick={() => setSelectedContact(contact)}
                                     className={cn(
-                                        "p-4 cursor-pointer hover:bg-muted/50 transition-colors flex gap-3",
-                                        selectedContact?.id === contact.id && "bg-muted"
+                                        "px-3 py-3 cursor-pointer hover:bg-[#f5f6f6] transition-colors flex gap-3 items-center group relative",
+                                        selectedContact?.id === contact.id && "bg-[#f0f2f5] hover:bg-[#f0f2f5]"
                                     )}
                                 >
-                                    <Avatar>
-                                        <AvatarFallback>{contact.displayName?.[0] || contact.phoneNumber[0]}</AvatarFallback>
+                                    <Avatar className="w-12 h-12">
+                                        <AvatarFallback className="bg-[#dfe5e7] text-gray-500 font-medium text-lg">
+                                            {contact.displayName?.[0] || contact.phoneNumber[0]}
+                                        </AvatarFallback>
                                     </Avatar>
-                                    <div className="flex-1 overflow-hidden">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <span className="font-medium truncate">{contact.displayName || contact.phoneNumber}</span>
-                                            <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                    <div className="flex-1 overflow-hidden border-b border-[#f0f2f5] pb-3 group-hover:border-transparent">
+                                        <div className="flex justify-between items-center mb-0.5">
+                                            <span className="text-[#111b21] font-normal text-[15px] truncate">
+                                                {contact.displayName || contact.phoneNumber}
+                                            </span>
+                                            <span className="text-xs text-[#667781] whitespace-nowrap">
                                                 {/* TODO: Add timestamps from API */}
+                                                Yesterday
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <p className="text-sm text-muted-foreground truncate">
+                                            <p className="text-[13px] text-[#667781] truncate">
                                                 {/* TODO: Add last message preview from API */}
+                                                Tap to view messages
                                             </p>
                                         </div>
                                     </div>
@@ -189,109 +233,146 @@ export default function LiveChatPage() {
 
             {/* 3. Chat Area (Middle) */}
             <div className={cn(
-                "flex-1 flex flex-col min-w-0 bg-background md:border-r transition-all duration-300",
+                "flex-1 flex flex-col min-w-0 bg-[#efeae2] relative transition-all duration-300",
                 !selectedContact ? "hidden md:flex" : "flex"
             )}>
+                {/* WhatsApp Background Pattern */}
+                <div className="absolute inset-0 opacity-40 pointer-events-none" style={{
+                    backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')",
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '400px'
+                }} />
+
                 {selectedContact ? (
                     <>
                         {/* Header */}
-                        <div className="h-16 border-b px-4 md:px-6 flex items-center justify-between bg-card/30">
-                            <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="h-16 px-4 py-2 flex items-center justify-between bg-[#f0f2f5] border-l border-[#d1d7db] z-10 shrink-0">
+                            <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                                 {/* Back Button (Mobile Only) */}
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="md:hidden shrink-0 -ml-2"
-                                    onClick={() => setSelectedContact(null)}
+                                    className="md:hidden shrink-0 -ml-2 text-[#54656f]"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedContact(null);
+                                    }}
                                 >
                                     <ArrowLeft className="w-5 h-5" />
                                 </Button>
 
-                                <div className="flex items-center gap-3 min-w-0">
-                                    <Avatar className="shrink-0">
-                                        <AvatarFallback>{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="min-w-0">
-                                        <h3 className="font-semibold truncate">{selectedContact.displayName || selectedContact.phoneNumber}</h3>
-                                        {/* API NEEDED: Contact status (online/offline) */}
-                                        {/* <p className="text-xs text-green-500 flex items-center gap-1">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                            Online
-                                        </p> */}
-                                    </div>
+                                <Avatar className="shrink-0 w-10 h-10">
+                                    <AvatarFallback className="bg-[#dfe5e7] text-gray-500">
+                                        {selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="min-w-0 flex flex-col justify-center">
+                                    <h3 className="font-normal text-[#111b21] text-base truncate leading-tight">
+                                        {selectedContact.displayName || selectedContact.phoneNumber}
+                                    </h3>
+                                    <p className="text-xs text-[#667781] truncate leading-tight mt-0.5">
+                                        click here for contact info
+                                    </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1 md:gap-2 shrink-0">
-                                <Button variant="outline" size="sm" className="hidden sm:flex">Resolve</Button>
-                                <Button variant="ghost" size="icon" className="sm:hidden"><CheckCheck className="w-4 h-4" /></Button>
-                                <Button variant="ghost" size="icon"><Search className="w-4 h-4" /></Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className={cn(isProfileOpen && "bg-muted")}
-                                >
-                                    <PanelRight className="w-4 h-4" />
+                            <div className="flex items-center gap-2 shrink-0">
+                                <Button variant="ghost" size="icon" className="text-[#54656f]">
+                                    <Search className="w-5 h-5" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="text-[#54656f]">
+                                    <MoreVertical className="w-5 h-5" />
                                 </Button>
                             </div>
                         </div>
 
                         {/* Messages Container */}
-                        <div className="flex-1 relative overflow-hidden flex flex-col">
-                            <div 
+                        <div className="flex-1 relative overflow-hidden flex flex-col z-0">
+                            <div
                                 ref={scrollAreaRef}
-                                className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth"
+                                className="flex-1 overflow-y-auto p-4 md:px-[5%] py-2 scroll-smooth"
                                 onScroll={handleScroll}
                             >
-                                <div className="space-y-6 max-w-3xl mx-auto pb-4">
+                                <div className="space-y-1 pb-4 flex flex-col">
                                     {isLoadingMessages ? (
                                         <div className="flex justify-center py-8">
-                                            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                                            <Loader2 className="w-8 h-8 animate-spin text-[#00a884]" />
                                         </div>
                                     ) : messages.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center py-12 text-center min-h-[400px]">
-                                            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                                                <Mail className="w-8 h-8 text-muted-foreground" />
+                                            <div className="bg-[#ffffff] px-4 py-2 rounded-lg shadow-sm text-xs text-[#54656f]">
+                                                Messages are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
                                             </div>
-                                            <h3 className="font-semibold text-lg mb-2">No messages yet</h3>
-                                            <p className="text-sm text-muted-foreground max-w-sm">
-                                                Start a conversation by sending a message below.
-                                            </p>
+                                            <div className="mt-8 text-center text-[#54656f]">
+                                                <h3 className="font-normal text-lg mb-2">No messages here yet...</h3>
+                                                <p className="text-sm">Send a message to start the conversation.</p>
+                                            </div>
                                         </div>
                                     ) : (
                                         <>
-                                            {messages.map((msg) => (
-                                                <div
-                                                    key={msg.id}
-                                                    className={cn(
-                                                        "flex gap-3",
-                                                        msg.type === 'user' ? "justify-start" : "justify-end"
-                                                    )}
-                                                >
-                                                    {msg.type === 'user' && (
-                                                        <Avatar className="w-8 h-8 hidden sm:block shrink-0">
-                                                            <AvatarFallback>U</AvatarFallback>
-                                                        </Avatar>
-                                                    )}
-                                                    <div className={cn(
-                                                        "max-w-[85%] sm:max-w-[70%] rounded-2xl p-3 sm:p-4 shadow-sm",
-                                                        msg.type === 'user'
-                                                            ? "bg-card border rounded-tl-sm"
-                                                            : "bg-primary text-primary-foreground rounded-tr-sm"
-                                                    )}>
-                                                        <p className="text-sm leading-relaxed break-words">{msg.content}</p>
-                                                        <span
-                                                            className={cn(
-                                                                "text-xs opacity-70 mt-1 block text-right",
-                                                                msg.type !== 'user' && "text-primary-foreground/80"
-                                                            )}
+                                            {messages.map((msg) => {
+                                                const isUser = msg.type === 'user';
+                                                return (
+                                                    <div
+                                                        key={msg.id}
+                                                        className={cn(
+                                                            "mb-1 flex w-full",
+                                                            isUser ? "justify-start" : "justify-end"
+                                                        )}
+                                                    >
+                                                        <div className={cn(
+                                                            "relative max-w-[85%] sm:max-w-[65%] px-2 py-1.5 shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] text-sm leading-relaxed",
+                                                            isUser
+                                                                ? "bg-white rounded-tr-lg rounded-br-lg rounded-bl-lg text-[#111b21] origin-top-left" // User bubble (Left)
+                                                                : "bg-[#d9fdd3] rounded-tl-lg rounded-bl-lg rounded-br-lg text-[#111b21] origin-top-right" // Bot bubble (Right)
+                                                        )}
+                                                            style={{
+                                                                borderTopLeftRadius: isUser ? 0 : 8,
+                                                                borderTopRightRadius: isUser ? 8 : 0,
+                                                            }}
                                                         >
-                                                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                            {msg.type !== 'user' && <CheckCheck className="inline w-3 h-3 ml-1" />}
-                                                        </span>
+                                                            {/* Tail CSS would go here, simplified with rounded corners for now */}
+
+                                                            <div className="px-1 pt-1 break-words whitespace-pre-wrap">
+                                                                {isUser || !msg.type ? (
+                                                                    <span>{msg.content}</span>
+                                                                ) : (
+                                                                    /* Markdown Renderer for AI messages */
+                                                                    <div className="markdown-content">
+                                                                        <ReactMarkdown
+                                                                            remarkPlugins={[remarkGfm]}
+                                                                            components={{
+                                                                                h1: ({ node, ...props }) => <h1 className="text-lg font-bold my-2" {...props} />,
+                                                                                h2: ({ node, ...props }) => <h2 className="text-base font-bold my-1" {...props} />,
+                                                                                ul: ({ node, ...props }) => <ul className="list-disc ml-4 my-1" {...props} />,
+                                                                                ol: ({ node, ...props }) => <ol className="list-decimal ml-4 my-1" {...props} />,
+                                                                                li: ({ node, ...props }) => <li className="my-0.5" {...props} />,
+                                                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                                                a: ({ node, ...props }) => <a className="text-[#027eb5] hover:underline" {...props} />,
+                                                                                code: ({ node, ...props }) => <code className="bg-black/10 rounded px-1 text-xs font-mono" {...props} />,
+                                                                                pre: ({ node, ...props }) => <pre className="bg-black/10 rounded p-2 overflow-x-auto text-xs font-mono my-2" {...props} />
+                                                                            }}
+                                                                        >
+                                                                            {msg.content}
+                                                                        </ReactMarkdown>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="flex justify-end items-center gap-1 mt-0.5 select-none float-right relative top-1">
+                                                                <span className="text-[11px] text-[#667781] min-w-fit">
+                                                                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                                </span>
+                                                                {!isUser && (
+                                                                    <CheckCheck className={cn(
+                                                                        "w-4 h-4",
+                                                                        (msg as any).status === 'read' ? "text-[#53bdeb]" : "text-[#667781]"
+                                                                    )} />
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                             {/* Scroll anchor */}
                                             <div ref={messagesEndRef} />
                                         </>
@@ -306,18 +387,18 @@ export default function LiveChatPage() {
                                     size="icon"
                                     className={cn(
                                         "absolute bottom-20 right-4 md:right-6 z-10",
-                                        "rounded-full shadow-lg bg-primary hover:bg-primary/90",
+                                        "rounded-full shadow-md bg-[#25d366] hover:bg-[#20bd5a] text-white",
                                         "animate-in fade-in slide-in-from-bottom-4 duration-200",
-                                        "h-10 w-10"
+                                        "h-10 w-10 border-none"
                                     )}
                                     aria-label="Scroll to bottom"
                                 >
-                                    <ChevronDown className="w-5 h-5" />
+                                    <ChevronDown className="w-6 h-6" />
                                 </Button>
                             )}
                         </div>
 
-                        <div className="p-4 border-t bg-card/30">
+                        <div className="p-2 bg-[#f0f2f5] border-l border-[#d1d7db] z-10">
                             <WhatsAppMessageSender
                                 chatbotId={botId}
                                 recipientPhone={selectedContact.phoneNumber}
@@ -326,12 +407,18 @@ export default function LiveChatPage() {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
-                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                            <span className="text-2xl">👋</span>
+                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-6 text-center border-b-[6px] border-[#43c485]">
+                        <div className="max-w-[560px] text-center">
+                            <h1 className="text-[#41525d] text-[32px] font-light mb-5">WhatsApp Web</h1>
+                            <div className="text-[#667781] text-sm leading-6">
+                                Send and receive messages without keeping your phone online.<br />
+                                Use WhatsApp on up to 4 linked devices and 1 phone.
+                            </div>
                         </div>
-                        <h3 className="font-semibold text-lg">Detailed Live Chat</h3>
-                        <p className="text-sm max-w-sm mt-2">Select a conversation from the left to view details, history, and manage the customer profile.</p>
+                        <div className="fixed bottom-10 flex gap-2 items-center text-[#8696a0] text-sm">
+                            <span className="w-4 h-4 rounded-full bg-current opacity-50"></span>
+                            End-to-end encrypted
+                        </div>
                     </div>
                 )}
             </div>
@@ -339,74 +426,76 @@ export default function LiveChatPage() {
             {/* 4. Smart Profile Panel (Right) */}
             {selectedContact && isProfileOpen && (
                 <>
-                    {/* Backdrop for mobile */}
-                    <div
-                        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-20 xl:hidden"
-                        onClick={() => setIsProfileOpen(false)}
-                    />
-
                     {/* Panel */}
-                    <div className="absolute right-0 top-0 h-full z-30 xl:static xl:z-0 w-[85%] sm:w-80 xl:w-72 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 border-l animate-in slide-in-from-right duration-300 shadow-2xl xl:shadow-none overflow-y-auto">
-                        {/* Mobile Close Button */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute top-2 right-2 xl:hidden z-50"
-                            onClick={() => setIsProfileOpen(false)}
-                        >
-                            <X className="w-5 h-5" />
-                        </Button>
-
-                        <div className="p-6 border-b text-center relative">
-                            <Avatar className="w-20 h-20 mx-auto mb-4">
-                                <AvatarFallback className="text-xl">{selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}</AvatarFallback>
-                            </Avatar>
-                            <h3 className="font-semibold text-lg">{selectedContact.displayName || 'Unknown User'}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{selectedContact.phoneNumber}</p>
-
-                            <div className="flex gap-2 justify-center mt-4">
-                                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
-                                    <Phone className="w-3.5 h-3.5 mr-1.5" /> Call
-                                </Button>
-                                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
-                                    <Mail className="w-3.5 h-3.5 mr-1.5" /> Email
-                                </Button>
-                            </div>
+                    <div className="w-full md:w-[350px] bg-[#f0f2f5] border-l border-[#d1d7db] flex flex-col animate-in slide-in-from-right duration-200 shadow-xl z-20">
+                        {/* Header */}
+                        <div className="h-16 px-6 flex items-center bg-[#f0f2f5] shrink-0">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsProfileOpen(false)}
+                                className="mr-4 hover:bg-transparent text-[#54656f]"
+                            >
+                                <X className="w-5 h-5" />
+                            </Button>
+                            <span className="text-[#111b21] font-medium text-base">Contact Info</span>
                         </div>
 
-                        <div className="p-4">
-                            <Accordion type="single" collapsible defaultValue="attributes" className="w-full">
-                                <AccordionItem value="tags">
-                                    <AccordionTrigger>Tags</AccordionTrigger>
-                                    <AccordionContent>
-                                        <div className="flex flex-wrap gap-2 pt-2">
-                                            {/* API NEEDED: Fetch tags for contact */}
-                                            {/* <Badge variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200">Hot Lead</Badge> */}
-                                            <Button variant="outline" size="sm" className="h-6 text-xs px-2 border-dashed">+ Add</Button>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
+                        <div className="flex-1 overflow-y-auto bg-[#f0f2f5]">
+                            {/* Profile Card */}
+                            <div className="bg-white p-6 shadow-sm mb-3 flex flex-col items-center">
+                                <Avatar className="w-48 h-48 mb-4">
+                                    <AvatarFallback className="bg-[#dfe5e7] text-gray-500 text-6xl">
+                                        {selectedContact.displayName?.[0] || selectedContact.phoneNumber[0]}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <h2 className="text-xl font-normal text-[#111b21] mb-1">
+                                    {selectedContact.displayName || selectedContact.phoneNumber}
+                                </h2>
+                                <p className="text-[#667781] text-lg font-light">
+                                    {selectedContact.phoneNumber}
+                                </p>
+                            </div>
 
-                                <AccordionItem value="attributes">
-                                    <AccordionTrigger>User Attributes</AccordionTrigger>
-                                    <AccordionContent>
-                                        <div className="space-y-3 pt-2">
-                                            {/* API NEEDED: Fetch user attributes (location, created at, etc) */}
-                                            <span className="text-sm text-muted-foreground">No attributes found.</span>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
+                            {/* Actions */}
+                            <div className="bg-white p-4 shadow-sm mb-3">
+                                <div className="mb-4">
+                                    <h3 className="text-[#667781] text-sm mb-2">About</h3>
+                                    <p className="text-[#111b21] text-sm">Busy</p>
+                                </div>
+                            </div>
 
-                                <AccordionItem value="campaigns">
-                                    <AccordionTrigger>Campaign History</AccordionTrigger>
-                                    <AccordionContent>
-                                        <div className="space-y-3 pt-2">
-                                            {/* API NEEDED: Fetch campaign history */}
-                                            <span className="text-sm text-muted-foreground">No campaigns found.</span>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
+                            {/* Accordion Attributes - Keeping logic but styling roughly */}
+                            <div className="bg-white p-4 shadow-sm mb-3">
+                                <Accordion type="single" collapsible defaultValue="attributes" className="w-full">
+                                    <AccordionItem value="tags" className="border-b-0">
+                                        <AccordionTrigger className="text-[#111b21] hover:no-underline py-3">Tags</AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="flex flex-wrap gap-2 pt-2">
+                                                <Button variant="outline" size="sm" className="h-6 text-xs px-2 border-dashed">+ Add</Button>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                    <AccordionItem value="attributes" className="border-b-0">
+                                        <AccordionTrigger className="text-[#111b21] hover:no-underline py-3">User Attributes</AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="space-y-3 pt-2">
+                                                <span className="text-sm text-[#667781]">No attributes found.</span>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                    <AccordionItem value="campaigns" className="border-b-0">
+                                        <AccordionTrigger className="text-[#111b21] hover:no-underline py-3">Campaign History</AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="space-y-3 pt-2">
+                                                <span className="text-sm text-[#667781]">No campaigns found.</span>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
                 </>

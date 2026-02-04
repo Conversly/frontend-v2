@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
-import { getWhatsAppContactsList } from '@/lib/api/whatsapp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -21,8 +20,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -35,7 +32,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { addWhatsAppContact } from '@/lib/api/whatsapp';
 import {
     Users,
     Upload,
@@ -48,6 +44,9 @@ import {
     ChevronDown
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { CsvImportDialog } from '@/components/chatbot/whatsapp/CsvImportDialog';
+import { toast } from 'sonner';
+import { useCreateContact, useGetContacts } from '@/services/contacts';
 
 export default function WhatsAppContactsPage() {
     const routeParams = useParams<{ workspaceId: string; botId: string; id: string }>();
@@ -59,54 +58,36 @@ export default function WhatsAppContactsPage() {
     const sidebarItems = getIntegrationSidebarItems('whatsapp');
     const basePath = `/${workspaceId}/chatbot/${botId}/whatsapp/${integrationId}`;
 
-    // Mock Data
-    const [contacts, setContacts] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // Hooks
+    const { data: contactsResponse, isLoading } = useGetContacts({ chatbotId: botId });
+    const { mutateAsync: createContact, isPending: isAdding } = useCreateContact();
+
+    const contacts = contactsResponse || [];
 
     // Add Contact State
     const [isAddContactOpen, setIsAddContactOpen] = useState(false);
     const [newContact, setNewContact] = useState({ name: '', phone: '', email: '' });
-    const [isAdding, setIsAdding] = useState(false);
+
+    // Import Dialog State
+    const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
     const handleAddContact = async () => {
         if (!newContact.phone) return;
-        setIsAdding(true);
         try {
-            await addWhatsAppContact(botId, integrationId, {
+            await createContact({
+                chatbotId: botId,
                 phoneNumber: newContact.phone,
                 displayName: newContact.name,
                 email: newContact.email,
-                channels: ['WHATSAPP'],
-                metadata: {},
-                whatsappUserMetadata: {}
             });
-            // Refresh contacts
-            const data = await getWhatsAppContactsList(botId);
-            setContacts(data);
             setIsAddContactOpen(false);
             setNewContact({ name: '', phone: '', email: '' });
+            toast.success("Contact added successfully");
         } catch (error) {
             console.error("Failed to add contact", error);
-        } finally {
-            setIsAdding(false);
+            toast.error("Failed to add contact");
         }
     };
-
-    useEffect(() => {
-        const loadContacts = async () => {
-            setIsLoading(true);
-            try {
-                const data = await getWhatsAppContactsList(botId);
-                setContacts(data);
-            } catch (error) {
-                console.error("Failed to load contacts", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadContacts();
-    }, [botId]);
-
 
     return (
         <div className="flex h-full">
@@ -139,26 +120,6 @@ export default function WhatsAppContactsPage() {
                 <div className="flex-1 overflow-auto p-6">
                     <div className="max-w-6xl mx-auto space-y-6">
 
-                        {/* Quick Guide Banner */}
-                        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-100">
-                            <CardContent className="p-6 flex items-center justify-between">
-                                <div>
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
-                                        <h3 className="font-medium">Introducing AI-powered Magic on Contacts</h3>
-                                    </div>
-                                    <p className="text-sm text-green-800">Generate tags and segment users automatically based on their behavior.</p>
-                                    <div className="flex gap-4 mt-4 text-xs text-muted-foreground">
-                                        <span className="flex items-center gap-1"><Upload className="w-3 h-3" /> Import up to 2 lakh contacts</span>
-                                        <span className="flex items-center gap-1 cursor-pointer hover:underline text-primary">Watch Tutorial</span>
-                                    </div>
-                                </div>
-                                <Button className="bg-green-600 hover:bg-green-700 text-white">
-                                    Try AI Magic
-                                </Button>
-                            </CardContent>
-                        </Card>
-
                         {/* Actions Toolbar */}
                         <div className="flex items-center justify-between bg-background p-4 rounded-lg border shadow-sm">
                             <div className="flex items-center gap-4">
@@ -171,9 +132,6 @@ export default function WhatsAppContactsPage() {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Button variant="default" className="bg-slate-800 text-white hover:bg-slate-700">
-                                    Broadcast
-                                </Button>
                                 <Dialog open={isAddContactOpen} onOpenChange={setIsAddContactOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline" className="gap-2">
@@ -238,16 +196,28 @@ export default function WhatsAppContactsPage() {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
-                                        <DropdownMenuItem>Upload CSV</DropdownMenuItem>
+                                        <DropdownMenuItem onSelect={() => setIsImportDialogOpen(true)}>
+                                            Upload CSV
+                                        </DropdownMenuItem>
                                         <DropdownMenuItem>Import from Google Sheets</DropdownMenuItem>
                                         <DropdownMenuItem>Paste Numbers</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-                                <Button variant="outline" className="gap-2">
-                                    Action <ChevronDown className="w-4 h-4" />
-                                </Button>
                             </div>
                         </div>
+
+                        {/* Import Dialog */}
+                        <CsvImportDialog
+                            open={isImportDialogOpen}
+                            onOpenChange={setIsImportDialogOpen}
+                            chatbotId={botId}
+                            onSuccess={() => {
+                                // Invalidate query via parent or refetch?
+                                // Ideally the mutation in CsvImportDialog handles invalidation if we use the hook there.
+                                // Or we assume the user might manually refresh/we rely on standard invalidation.
+                                toast.success("Import processing in background");
+                            }}
+                        />
 
                         {/* Contacts Table */}
                         <div className="bg-background rounded-lg border shadow-sm overflow-hidden">
@@ -282,7 +252,7 @@ export default function WhatsAppContactsPage() {
                                                 </TableCell>
                                                 <TableCell className="font-medium">
                                                     <div className="flex items-center gap-2">
-                                                        {contact.displayName || contact.name || 'Unknown'}
+                                                        {contact.displayName || 'Unknown'}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>{contact.phoneNumber}</TableCell>
@@ -306,7 +276,7 @@ export default function WhatsAppContactsPage() {
                                 </TableBody>
                             </Table>
                             <div className="p-4 border-t text-center text-xs text-muted-foreground">
-                                Showing 8 contacts
+                                Showing {contacts.length} contacts
                             </div>
                         </div>
 
@@ -316,3 +286,4 @@ export default function WhatsAppContactsPage() {
         </div>
     );
 }
+

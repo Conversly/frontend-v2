@@ -138,18 +138,32 @@ export const API = {
       DELETE_INTEGRATION: devMode(() => "/"),
       GET_DEFAULT_TEMPLATES: allMode(() => "/templates/defaults"),
       CREATE_DEFAULT_TEMPLATE: devMode(() => "/templates/default"),
-      UPDATE_TEMPLATE: devMode(() => "/templates/:id"),
-      GET_TEMPLATES: allMode(() => "/templates"),
-      SYNC_TEMPLATES: devMode(() => "/templates/sync"),
-      CREATE_TEMPLATE: devMode(() => "/templates"),
-      DELETE_TEMPLATE: devMode(() => "/templates/:id"),
+
+      // Templates
+      GET_TEMPLATES: allMode(() => "/template"),
+      GET_TEMPLATE: allMode(() => "/template/:id"),
+      CREATE_TEMPLATE: devMode(() => "/template"),
+      UPDATE_TEMPLATE: devMode(() => "/template/:id"),
+      DELETE_TEMPLATE: devMode(() => "/template/:id"),
+      GENERATE_TEMPLATE: devMode(() => "/template/generate"),
+      SYNC_TEMPLATES: devMode(() => "/template/sync"),
+      SEND_TEMPLATE: devMode(() => "/send-template"),
+
+      // Contacts
+      GET_CONTACTS: allMode(() => "/contacts"),
+      GET_CONTACT: allMode(() => "/contacts/:id"),
+      CREATE_CONTACT: devMode(() => "/contacts"),
+      UPDATE_CONTACT: devMode(() => "/contacts/:id"),
+      DELETE_CONTACT: devMode(() => "/contacts/:id"),
+      BULK_IMPORT_CONTACTS: devMode(() => "/contacts/bulk-contacts"),
+
+      // Existing others
       SEND_MESSAGE: devMode(() => "/send"),
       GET_CHATS: allMode(() => "/chats/:chatbotId/:whatsappId"),
       GET_CONTACT_MESSAGES: allMode(() => "/chats/:chatbotId/:whatsappId/:contactId"),
-      ADD_CONTACT: devMode(() => "/contacts/:chatbotId/:whatsappId"),
+      ADD_CONTACT: devMode(() => "/contacts/:chatbotId/:whatsappId"), // Keep for backward compat if needed, or remove if replaced
       GET_ANALYTICS: allMode(() => "/analytics/:chatbotId/:whatsappId"),
       GET_ANALYTICS_PER_DAY: allMode(() => "/analytics/per-day/:chatbotId/:whatsappId"),
-      SEND_TEMPLATE: devMode(() => "/send-template"),
       TOGGLE_INTERVENTION: devMode(() => "/intervene"),
       GET_CAMPAIGNS: allMode(() => "/campaigns"),
       CREATE_CAMPAIGN: devMode(() => "/campaigns"),
@@ -157,6 +171,7 @@ export const API = {
       GET_CAMPAIGN_STATS: allMode(() => "/campaigns/:id/stats"),
       GET_CONTACTS_LIST: allMode(() => "/contacts-list"),
       MARK_MESSAGES_READ: devMode(() => "/messages/read"),
+      IMPORT_CONTACTS: devMode(() => "/contacts/import"), // Helper for legacy or specific use
     },
     ACTIONS: {
       BASE_URL: () => "/actions",

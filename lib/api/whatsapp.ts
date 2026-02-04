@@ -1,6 +1,12 @@
 import { fetch } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import { WhatsAppIntegrationResponse } from "@/types/integration";
+import type {
+  GetWhatsAppChatsResponse,
+  GetWhatsAppContactMessagesResponse,
+  WhatsAppContact,
+  WhatsAppContactMessageItem,
+} from "@/types/whatsapp";
 
 export interface CreateWhatsAppIntegrationInput {
   chatbotId: string; // UUID
@@ -141,35 +147,6 @@ export const sendWhatsAppMessage = async (
   return res.data;
 };
 
-export interface WhatsAppContact {
-  id: string;
-  phoneNumber: string;
-  displayName?: string;
-  email?: string;
-  channels: string[]; // ['WHATSAPP', etc.]
-  metadata: Record<string, any>;
-  whatsappUserMetadata: Record<string, any>;
-  createdAt?: string;
-  updatedAt?: string;
-  userMetadata?: any; // Keeping for backward compatibility if needed, but schema uses metadata/whatsappUserMetadata
-}
-
-export interface WhatsAppMessage {
-  id: string;
-  content: string;
-  type: 'user' | 'assistant' | 'agent';
-  timestamp: Date | string;
-  metadata?: any;
-  channelMessageMetadata?: {
-    messageId?: string;
-    status?: 'sent' | 'delivered' | 'read' | 'failed';
-    waId?: string;
-    from?: string;
-    timestamp?: string;
-    [key: string]: any;
-  };
-}
-
 export const getWhatsAppChats = async (
   chatbotId: string,
   whatsappId: string
@@ -183,19 +160,23 @@ export const getWhatsAppChats = async (
     {
       method: "GET",
     },
-  ).then((res) => res.data) as ApiResponse<WhatsAppContact[], Error>;
+  ).then((res) => res.data) as ApiResponse<GetWhatsAppChatsResponse | WhatsAppContact[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data || [];
+
+  const payload = res.data;
+  if (Array.isArray(payload)) return payload;
+  if (payload?.data && Array.isArray(payload.data)) return payload.data;
+  return [];
 };
 
 export const getWhatsAppContactMessages = async (
   chatbotId: string,
   whatsappId: string,
   contactId: string
-): Promise<WhatsAppMessage[]> => {
+): Promise<WhatsAppContactMessageItem[]> => {
   const endpoint = API.ENDPOINTS.WHATSAPP.GET_CONTACT_MESSAGES.path()
     .replace(':chatbotId', chatbotId)
     .replace(':whatsappId', whatsappId)
@@ -206,12 +187,31 @@ export const getWhatsAppContactMessages = async (
     {
       method: "GET",
     },
-  ).then((res) => res.data) as ApiResponse<WhatsAppMessage[], Error>;
+  ).then((res) => res.data) as ApiResponse<GetWhatsAppContactMessagesResponse | any[], Error>;
 
   if (!res.success) {
     throw new Error(res.message);
   }
-  return res.data || [];
+
+  const payload = res.data;
+  const rawMessages: any[] = Array.isArray(payload) ? payload : (payload?.data ?? []);
+
+  const normalizeType = (t: unknown) => {
+    if (t === "user" || t === "assistant" || t === "system" || t === "tool") return t;
+    if (t === "agent") return "assistant";
+    return "assistant";
+  };
+
+  return rawMessages.map((m) => ({
+    id: String(m?.id ?? ""),
+    type: normalizeType(m?.type),
+    content: String(m?.content ?? ""),
+    createdAt: new Date(m?.createdAt ?? m?.timestamp ?? Date.now()),
+    citations: Array.isArray(m?.citations) ? m.citations.map(String) : [],
+    feedback: typeof m?.feedback === "number" ? m.feedback : 0,
+    feedbackComment: m?.feedbackComment ?? null,
+    metadata: m?.metadata ?? m?.channelMessageMetadata ?? null,
+  }));
 };
 
 export interface AddWhatsAppContactInput {
@@ -694,4 +694,28 @@ export const onboardWhatsAppClient = async (
     verifiedName: res.data?.verifiedName,
     steps: res.data?.steps,
   };
+};
+
+export interface ImportWhatsAppContactsInput {
+  fileUrl: string;
+  originalFileName: string;
+}
+
+export const importWhatsAppContacts = async (
+  chatbotId: string,
+  input: ImportWhatsAppContactsInput
+): Promise<{ success: boolean; message: string; jobId: string }> => {
+  const res = await fetch(
+    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.IMPORT_CONTACTS.path(),
+    {
+      method: "POST",
+      params: { chatbotId },
+      data: input,
+    },
+  ).then((res) => res.data) as ApiResponse<{ success: boolean; message: string; jobId: string }, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+  return res.data;
 };
