@@ -12,6 +12,10 @@ export interface WhatsAppTemplateComponent {
     buttons?: any[];
     example?: any;
     cards?: any[];
+    // Auth specific
+    add_security_recommendation?: boolean;
+    code_expiration_minutes?: number;
+    otp_type?: 'COPY_CODE' | 'ONE_TAP';
 }
 
 

@@ -35,6 +35,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from "@/lib/utils";
 
 // Define Validation Schema
+// Define Validation Schema
 const formSchema = z.object({
     templateName: z.string()
         .min(1, "Template name is required")
@@ -53,6 +54,19 @@ const formSchema = z.object({
         url: z.string().url("Invalid URL").optional().or(z.literal('')),
         phoneNumber: z.string().optional(),
     })).optional(),
+    // Auth specific
+    expirationWarning: z.number().min(1, "Minimum 1 minute").max(90, "Maximum 90 minutes").optional().or(z.nan()),
+    securityDisclaimer: z.boolean().default(false),
+}).superRefine((data, ctx) => {
+    if (data.category === 'AUTHENTICATION') {
+        if (!data.expirationWarning || isNaN(data.expirationWarning)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Expiration warning time is required (1-90 mins)",
+                path: ["expirationWarning"]
+            });
+        }
+    }
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -92,6 +106,7 @@ export default function CreateTemplatePage() {
             bodyText: '',
             footerText: '',
             buttons: [],
+            securityDisclaimer: false,
         }
     });
 
@@ -105,8 +120,26 @@ export default function CreateTemplatePage() {
         headerText,
         bodyText,
         footerText,
-        buttons = []
+        buttons = [],
+        securityDisclaimer,
+        expirationWarning
     } = watchedValues;
+
+    // Handle Category Changes
+    useEffect(() => {
+        if (category === 'AUTHENTICATION') {
+            setValue('templateType', 'TEXT');
+            // Check if body is empty or user hasn't typed much, maybe set default?
+            // Actually design hides the body input, so we should set a valid default for internal state/preview
+            // and submission.
+            // But we shouldn't overwrite if user switches back and forth if we want to preserve state?
+            // For now, let's enable hard default for Auth to match "verification code" feel
+            setValue('bodyText', '{{1}} is your verification code.');
+            setValue('headerText', '');
+            setValue('footerText', '');
+            setValue('buttons', []); // Auth has fixed button structure constructed at submit
+        }
+    }, [category, setValue]);
 
     useEffect(() => {
         // Initialize from source if copy
@@ -187,27 +220,51 @@ export default function CreateTemplatePage() {
 
         // Prepare Components
         const components: any[] = [];
-        // Header
-        if (data.headerText) {
-            components.push({ type: 'HEADER', format: 'TEXT', text: data.headerText });
-        }
-        // Body
-        components.push({ type: 'BODY', text: data.bodyText });
-        // Footer
-        if (data.footerText) {
-            components.push({ type: 'FOOTER', text: data.footerText });
-        }
-        // Buttons
-        if (data.buttons && data.buttons.length > 0) {
+
+        if (data.category === 'AUTHENTICATION') {
+            components.push({
+                type: 'BODY',
+                add_security_recommendation: data.securityDisclaimer,
+                text: data.bodyText // Should be "{{1}} is your verification code." or similar
+            });
+            components.push({
+                type: 'FOOTER',
+                code_expiration_minutes: data.expirationWarning
+            });
             components.push({
                 type: 'BUTTONS',
-                buttons: data.buttons.map(b => ({
-                    type: b.type,
-                    text: b.text,
-                    url: b.type === 'URL' ? b.url : undefined,
-                    phone_number: b.type === 'PHONE' ? b.phoneNumber : undefined,
-                }))
+                buttons: [
+                    {
+                        type: 'OTP',
+                        otp_type: 'COPY_CODE',
+                        text: 'Copy code'
+                    }
+                ]
             });
+        } else {
+            // Standard Marketing/Utility mapping
+            // Header
+            if (data.headerText) {
+                components.push({ type: 'HEADER', format: 'TEXT', text: data.headerText });
+            }
+            // Body
+            components.push({ type: 'BODY', text: data.bodyText });
+            // Footer
+            if (data.footerText) {
+                components.push({ type: 'FOOTER', text: data.footerText });
+            }
+            // Buttons
+            if (data.buttons && data.buttons.length > 0) {
+                components.push({
+                    type: 'BUTTONS',
+                    buttons: data.buttons.map(b => ({
+                        type: b.type,
+                        text: b.text,
+                        url: b.type === 'URL' ? b.url : undefined,
+                        phone_number: b.type === 'PHONE' ? b.phoneNumber : undefined,
+                    }))
+                });
+            }
         }
 
         try {
@@ -317,12 +374,14 @@ export default function CreateTemplatePage() {
                                     </div>
                                 </div>
 
-                                {/* 2. Generate with AI */}
-                                <AIGenerator
-                                    onGenerate={applyGeneratedOption}
-                                    category={category}
-                                    language={language}
-                                />
+                                {/* 2. Generate with AI (Marketing Only) */}
+                                {category === 'MARKETING' && (
+                                    <AIGenerator
+                                        onGenerate={applyGeneratedOption}
+                                        category={category}
+                                        language={language}
+                                    />
+                                )}
 
                                 {/* 3. Template Name */}
                                 <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
@@ -380,27 +439,29 @@ export default function CreateTemplatePage() {
                                     )}
                                 </div>
 
-                                {/* 5. Template Body (Format) */}
-                                <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
-                                    <div className="mb-2">
-                                        <h4 className="text-base font-medium text-gray-900">Template Format</h4>
-                                        <p className="text-xs text-gray-500">Use text formatting - *bold* , _italic_ & ~strikethrough~</p>
-                                    </div>
-                                    <div>
-                                        <Textarea
-                                            placeholder="Enter your message in here..."
-                                            {...register('bodyText')}
-                                            className={cn("min-h-[200px] bg-gray-50 font-mono text-sm", errors.bodyText && "border-red-500 focus-visible:ring-red-500")}
-                                            maxLength={1024}
-                                        />
-                                        <div className="flex justify-between items-start mt-1">
-                                            <div className="flex-1">
-                                                {errors.bodyText && <p className="text-xs text-red-500">{errors.bodyText.message}</p>}
+                                {/* 5. Template Body (Format) - Hidden for AUTHENTICATION */}
+                                {category !== 'AUTHENTICATION' && (
+                                    <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
+                                        <div className="mb-2">
+                                            <h4 className="text-base font-medium text-gray-900">Template Format</h4>
+                                            <p className="text-xs text-gray-500">Use text formatting - *bold* , _italic_ & ~strikethrough~</p>
+                                        </div>
+                                        <div>
+                                            <Textarea
+                                                placeholder="Enter your message in here..."
+                                                {...register('bodyText')}
+                                                className={cn("min-h-[200px] bg-gray-50 font-mono text-sm", errors.bodyText && "border-red-500 focus-visible:ring-red-500")}
+                                                maxLength={1024}
+                                            />
+                                            <div className="flex justify-between items-start mt-1">
+                                                <div className="flex-1">
+                                                    {errors.bodyText && <p className="text-xs text-red-500">{errors.bodyText.message}</p>}
+                                                </div>
+                                                <p className="text-xs text-right text-gray-400">{bodyText?.length || 0}/1024</p>
                                             </div>
-                                            <p className="text-xs text-right text-gray-400">{bodyText?.length || 0}/1024</p>
                                         </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* 6. Sample Values */}
                                 {paramMatches.length > 0 && (
@@ -427,140 +488,178 @@ export default function CreateTemplatePage() {
                                     </div>
                                 )}
 
-                                {/* 7. Footer */}
-                                <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
-                                    <div className="mb-2">
-                                        <h4 className="text-base font-medium text-gray-900">Template Footer <span className="text-gray-400 font-normal">(Optional)</span></h4>
-                                        <p className="text-xs text-gray-500">Your message content. Upto 60 characters are allowed.</p>
-                                    </div>
-                                    <Input
-                                        placeholder="Enter footer text here"
-                                        {...register('footerText')}
-                                        maxLength={60}
-                                        className={cn("bg-gray-50", errors.footerText && "border-red-500 focus-visible:ring-red-500")}
-                                    />
-                                    {errors.footerText && <p className="text-xs text-red-500">{errors.footerText.message}</p>}
-                                </div>
+                                {/* 7. Footer / Expiration Warning */}
+                                {category === 'AUTHENTICATION' ? (
+                                    <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
+                                        <div className="mb-2">
+                                            <h4 className="text-base font-medium text-gray-900">Expiration Warning <span className="text-gray-400 font-normal">(Optional)</span></h4>
+                                            <p className="text-xs text-gray-500">The time should be between 1 to 90 minutes.</p>
+                                        </div>
+                                        <Input
+                                            type="number"
+                                            placeholder="Enter time in minutes"
+                                            {...register('expirationWarning', { valueAsNumber: true })}
+                                            min={1}
+                                            max={90}
+                                            className={cn("bg-gray-50", errors.expirationWarning && "border-red-500 focus-visible:ring-red-500")}
+                                        />
+                                        {errors.expirationWarning && <p className="text-xs text-red-500">{errors.expirationWarning.message}</p>}
 
-                                {/* 8. Interactive Actions */}
-                                <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-6">
-                                    <div className="mb-2">
-                                        <h4 className="text-base font-medium text-gray-900">Interactive Actions</h4>
-                                        <p className="text-xs text-gray-500">In addition to your message, you can send actions with your message.</p>
-                                    </div>
-
-                                    <RadioGroup
-                                        value={interactiveActionType}
-                                        onValueChange={setInteractiveActionType}
-                                        className="flex space-x-4 mb-4"
-                                    >
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="None" id="r1" />
-                                            <Label htmlFor="r1">None</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="CAT" id="r2" />
-                                            <Label htmlFor="r2">Call to Actions</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="QuickReplies" id="r3" />
-                                            <Label htmlFor="r3">Quick Replies</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="All" id="r4" />
-                                            <Label htmlFor="r4">All</Label>
-                                        </div>
-                                    </RadioGroup>
-
-                                    {(interactiveActionType === 'CAT' || interactiveActionType === 'All') && (
-                                        <div className="space-y-4">
-                                            {/* Action 1 */}
-                                            {buttons.filter((b: any) => b.type === 'URL' || b.type === 'PHONE').map((btn: any, idx: number) => (
-                                                <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                                                    <div className="col-span-12 md:col-span-2">
-                                                        <span className="text-sm font-medium">Call to Action {idx + 1}:</span>
-                                                    </div>
-                                                    <div className="col-span-12 md:col-span-3">
-                                                        {/* For Buttons, because they are dynamic and mixed type, complex to map to Zod directly with useFieldArray strictly in this quick refactor. 
-                                                               I'll keep them as controlled state but validate them in onSubmit for simplicity in this specific user request context, 
-                                                               OR map them to form 'buttons' field.
-                                                               BETTER: Map them to form buttons.
-                                                           */}
-                                                        <Select value={btn.type} onValueChange={(val) => {
-                                                            const newButtons = [...buttons];
-                                                            newButtons[idx].type = val as any;
-                                                            setValue('buttons', newButtons);
-                                                        }}>
-                                                            <SelectTrigger className="bg-gray-50">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="URL">URL</SelectItem>
-                                                                <SelectItem value="PHONE">Phone Number</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                    <div className="col-span-12 md:col-span-3">
-                                                        <Input
-                                                            placeholder="Button title"
-                                                            value={btn.text}
-                                                            onChange={(e) => {
-                                                                const newButtons = [...buttons];
-                                                                newButtons[idx].text = e.target.value;
-                                                                setValue('buttons', newButtons);
-                                                            }}
-                                                            maxLength={25}
-                                                            className="bg-gray-50"
-                                                        />
-                                                    </div>
-                                                    <div className="col-span-12 md:col-span-3">
-                                                        <Input
-                                                            placeholder={btn.type === 'URL' ? 'https://example.com' : '+123456789'}
-                                                            value={btn.type === 'URL' ? btn.url : btn.phoneNumber}
-                                                            onChange={(e) => {
-                                                                const newButtons = [...buttons];
-                                                                if (btn.type === 'URL') newButtons[idx].url = e.target.value;
-                                                                else newButtons[idx].phoneNumber = e.target.value;
-                                                                setValue('buttons', newButtons);
-                                                            }}
-                                                            className="bg-gray-50"
-                                                        />
-                                                    </div>
-                                                    <div className="col-span-12 md:col-span-1 flex justify-end">
-                                                        <Button variant="ghost" size="icon" type="button" onClick={() => {
-                                                            const newButtons = buttons.filter((_: any, i: number) => i !== idx);
-                                                            setValue('buttons', newButtons);
-                                                        }}>
-                                                            <X className="w-4 h-4 text-gray-400" />
-                                                        </Button>
-                                                    </div>
+                                        <div className="flex items-center justify-between pt-4 mt-2">
+                                            <div className="flex flex-col">
+                                                <span className="text-base font-medium text-gray-900">Add Security Disclaimer</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="p-1 bg-gray-100 rounded-full" title="Turn on the toggle to include a security recommendation message.">
+                                                    <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path>
+                                                    </svg>
                                                 </div>
-                                            ))}
-
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                type="button"
-                                                onClick={() => {
-                                                    const currentButtons = buttons || [];
-                                                    setValue('buttons', [...currentButtons, { type: 'URL', text: '', url: '' }]);
-                                                }}
-                                                disabled={buttons.filter((b: any) => b.type !== 'QUICK_REPLY').length >= 2}
-                                            >
-                                                <Plus className="w-4 h-4 mr-2" /> Add Call to Action
-                                            </Button>
-                                        </div>
-                                    )}
-
-                                    <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm text-gray-700">Enable Click Tracking</span>
-                                            <MousePointer2 className="w-4 h-4 text-gray-400" />
-                                            <Switch checked={clickTracking} onCheckedChange={setClickTracking} disabled />
-                                            <Badge className="bg-[#713ce2] hover:bg-[#713ce2]">PRO ✨</Badge>
+                                                <Controller
+                                                    name="securityDisclaimer"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Switch
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
+                                        <div className="mb-2">
+                                            <h4 className="text-base font-medium text-gray-900">Template Footer <span className="text-gray-400 font-normal">(Optional)</span></h4>
+                                            <p className="text-xs text-gray-500">Your message content. Upto 60 characters are allowed.</p>
+                                        </div>
+                                        <Input
+                                            placeholder="Enter footer text here"
+                                            {...register('footerText')}
+                                            maxLength={60}
+                                            className={cn("bg-gray-50", errors.footerText && "border-red-500 focus-visible:ring-red-500")}
+                                        />
+                                        {errors.footerText && <p className="text-xs text-red-500">{errors.footerText.message}</p>}
+                                    </div>
+                                )}
+
+                                {/* 8. Interactive Actions - Only for non-Authentication */}
+                                {category !== 'AUTHENTICATION' && (
+                                    <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-6">
+                                        <div className="mb-2">
+                                            <h4 className="text-base font-medium text-gray-900">Interactive Actions</h4>
+                                            <p className="text-xs text-gray-500">In addition to your message, you can send actions with your message.</p>
+                                        </div>
+
+                                        <RadioGroup
+                                            value={interactiveActionType}
+                                            onValueChange={setInteractiveActionType}
+                                            className="flex space-x-4 mb-4"
+                                        >
+                                            <div className="flex items-center space-x-2">
+                                                <RadioGroupItem value="None" id="r1" />
+                                                <Label htmlFor="r1">None</Label>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <RadioGroupItem value="CAT" id="r2" />
+                                                <Label htmlFor="r2">Call to Actions</Label>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <RadioGroupItem value="QuickReplies" id="r3" />
+                                                <Label htmlFor="r3">Quick Replies</Label>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <RadioGroupItem value="All" id="r4" />
+                                                <Label htmlFor="r4">All</Label>
+                                            </div>
+                                        </RadioGroup>
+
+                                        {(interactiveActionType === 'CAT' || interactiveActionType === 'All') && (
+                                            <div className="space-y-4">
+                                                {/* Action 1 */}
+                                                {buttons.filter((b: any) => b.type === 'URL' || b.type === 'PHONE').map((btn: any, idx: number) => (
+                                                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                                                        <div className="col-span-12 md:col-span-2">
+                                                            <span className="text-sm font-medium">Call to Action {idx + 1}:</span>
+                                                        </div>
+                                                        <div className="col-span-12 md:col-span-3">
+                                                            <Select value={btn.type} onValueChange={(val) => {
+                                                                const newButtons = [...buttons];
+                                                                newButtons[idx].type = val as any;
+                                                                setValue('buttons', newButtons);
+                                                            }}>
+                                                                <SelectTrigger className="bg-gray-50">
+                                                                    <SelectValue />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="URL">URL</SelectItem>
+                                                                    <SelectItem value="PHONE">Phone Number</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div className="col-span-12 md:col-span-3">
+                                                            <Input
+                                                                placeholder="Button title"
+                                                                value={btn.text}
+                                                                onChange={(e) => {
+                                                                    const newButtons = [...buttons];
+                                                                    newButtons[idx].text = e.target.value;
+                                                                    setValue('buttons', newButtons);
+                                                                }}
+                                                                maxLength={25}
+                                                                className="bg-gray-50"
+                                                            />
+                                                        </div>
+                                                        <div className="col-span-12 md:col-span-3">
+                                                            <Input
+                                                                placeholder={btn.type === 'URL' ? 'https://example.com' : '+123456789'}
+                                                                value={btn.type === 'URL' ? btn.url : btn.phoneNumber}
+                                                                onChange={(e) => {
+                                                                    const newButtons = [...buttons];
+                                                                    if (btn.type === 'URL') newButtons[idx].url = e.target.value;
+                                                                    else newButtons[idx].phoneNumber = e.target.value;
+                                                                    setValue('buttons', newButtons);
+                                                                }}
+                                                                className="bg-gray-50"
+                                                            />
+                                                        </div>
+                                                        <div className="col-span-12 md:col-span-1 flex justify-end">
+                                                            <Button variant="ghost" size="icon" type="button" onClick={() => {
+                                                                const newButtons = buttons.filter((_: any, i: number) => i !== idx);
+                                                                setValue('buttons', newButtons);
+                                                            }}>
+                                                                <X className="w-4 h-4 text-gray-400" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const currentButtons = buttons || [];
+                                                        setValue('buttons', [...currentButtons, { type: 'URL', text: '', url: '' }]);
+                                                    }}
+                                                    disabled={buttons.filter((b: any) => b.type !== 'QUICK_REPLY').length >= 2}
+                                                >
+                                                    <Plus className="w-4 h-4 mr-2" /> Add Call to Action
+                                                </Button>
+                                            </div>
+                                        )}
+
+                                        <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-700">Enable Click Tracking</span>
+                                                <MousePointer2 className="w-4 h-4 text-gray-400" />
+                                                <Switch checked={clickTracking} onCheckedChange={setClickTracking} disabled />
+                                                <Badge className="bg-[#713ce2] hover:bg-[#713ce2]">PRO ✨</Badge>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-4">

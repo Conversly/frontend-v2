@@ -120,6 +120,39 @@ export default function WhatsAppContactsPage() {
                 <div className="flex-1 overflow-auto p-6">
                     <div className="max-w-6xl mx-auto space-y-6">
 
+                        {/* Quick Guide Banner */}
+                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
+                            <h4 className="text-lg font-semibold text-slate-800 mb-2">Quick Guide</h4>
+                            <p className="text-slate-600 mb-6">Import contact, create audience & launch campaign, all from one place.</p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Import Card */}
+                                <div
+                                    onClick={() => setIsImportDialogOpen(true)}
+                                    className="bg-white border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-green-500 hover:shadow-sm transition-all flex items-center gap-4 group"
+                                >
+                                    <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                        <Upload className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h5 className="font-medium text-slate-800 group-hover:text-green-700 transition-colors">Import Contacts</h5>
+                                        <p className="text-sm text-slate-500">Import up to 2 lakh contacts in one go</p>
+                                    </div>
+                                </div>
+
+                                {/* Tutorial Card */}
+                                <div className="bg-white border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:shadow-sm transition-all flex items-center gap-4 group relative overflow-hidden">
+                                    <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pl-0.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    </div>
+                                    <div>
+                                        <h5 className="font-medium text-slate-800 group-hover:text-blue-700 transition-colors">Watch Tutorial</h5>
+                                        <p className="text-sm text-slate-500">Learn how to manage audiences</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Actions Toolbar */}
                         <div className="flex items-center justify-between bg-background p-4 rounded-lg border shadow-sm">
                             <div className="flex items-center gap-4">
