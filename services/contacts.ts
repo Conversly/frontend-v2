@@ -12,15 +12,16 @@ import type {
     BulkImportInput,
     CreateContactInput,
     GetContactsQuery,
+    GetContactsResponse,
     UpdateContactInput
 } from "@/types/contacts";
 
 export const useGetContacts = (query: GetContactsQuery) => {
-    return useQuery({
-        queryKey: [QUERY_KEY.GET_CONTACTS, query.chatbotId, query.search, query.limit, query.offset],
+    return useQuery<GetContactsResponse>({
+        queryKey: [QUERY_KEY.GET_CONTACTS, query.chatbotId, query.search, query.limit, query.cursor],
         queryFn: async () => {
             const res = await getContacts(query);
-            return res.data?.data || [];
+            return res.data;
         },
         enabled: !!query.chatbotId,
     });

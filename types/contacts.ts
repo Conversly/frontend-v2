@@ -14,13 +14,12 @@ export interface UpdateContactInput {
     email?: string;
     phoneNumber?: string;
 }
-
 export interface GetContactsQuery {
     chatbotId: string;
     search?: string;
     limit?: number;
-    offset?: number;
-}
+    cursor?: string | null;
+  }
 
 export interface BulkImportInput {
     chatbotId: string;
@@ -48,11 +47,8 @@ export interface ContactResponse {
 export interface GetContactsResponse {
     success: boolean;
     data: ContactResponse[];
-    pagination: {
-        total: number;
-        limit: number;
-        offset: number;
-    };
+    nextCursor: string | null;
+    hasMore: boolean;
 }
 
 export interface CreateContactResponse {

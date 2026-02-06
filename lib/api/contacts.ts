@@ -12,6 +12,7 @@ import {
 } from "../../types/contacts";
 import { API } from "./config";
 import { guardedFetch, getPath } from "./axios";
+import type { AxiosRequestConfig } from "axios";
 
 // Interface definitions that might be missing from exports or just for clarity
 interface GetContactParams {
@@ -48,6 +49,22 @@ export const getContacts = async (query: GetContactsQuery) => {
         {
             method: "GET",
             params: query,
+        }
+    );
+};
+
+export const getContactsWithConfig = async (
+    query: GetContactsQuery,
+    config?: AxiosRequestConfig
+) => {
+    const endpoint = API.ENDPOINTS.WHATSAPP.GET_CONTACTS;
+    return guardedFetch<GetContactsResponse>(
+        endpoint,
+        API.ENDPOINTS.WHATSAPP.BASE_URL(),
+        {
+            method: "GET",
+            params: query,
+            ...(config || {}),
         }
     );
 };
