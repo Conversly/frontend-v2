@@ -56,7 +56,7 @@ const formSchema = z.object({
     })).optional(),
     // Auth specific
     expirationWarning: z.number().min(1, "Minimum 1 minute").max(90, "Maximum 90 minutes").optional().or(z.nan()),
-    securityDisclaimer: z.boolean().default(false),
+    securityDisclaimer: z.boolean().optional(),
 }).superRefine((data, ctx) => {
     if (data.category === 'AUTHENTICATION') {
         if (!data.expirationWarning || isNaN(data.expirationWarning)) {
@@ -224,7 +224,7 @@ export default function CreateTemplatePage() {
         if (data.category === 'AUTHENTICATION') {
             components.push({
                 type: 'BODY',
-                add_security_recommendation: data.securityDisclaimer,
+                add_security_recommendation: data.securityDisclaimer ?? false,
                 text: data.bodyText // Should be "{{1}} is your verification code." or similar
             });
             components.push({

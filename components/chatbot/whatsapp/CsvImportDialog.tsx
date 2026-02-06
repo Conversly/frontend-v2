@@ -18,7 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { importWhatsAppContacts } from '@/lib/api/whatsapp';
+import { bulkImportContacts } from '@/lib/api/contacts';
 
 interface CsvImportDialogProps {
     open: boolean;
@@ -172,10 +172,11 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
 
             const blob = await uploadRes.json();
 
-            // 2. Notify Backend
-            await importWhatsAppContacts(chatbotId, {
+            // 2. Notify Backend (new contacts API)
+            await bulkImportContacts({
+                chatbotId,
                 fileUrl: blob.url,
-                originalFileName: file.name
+                originalFileName: file.name,
             });
 
             toast.success('Import started successfully');

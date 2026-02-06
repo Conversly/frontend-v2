@@ -171,7 +171,6 @@ export const API = {
       GET_CAMPAIGN_STATS: allMode(() => "/campaigns/:id/stats"),
       GET_CONTACTS_LIST: allMode(() => "/contacts-list"),
       MARK_MESSAGES_READ: devMode(() => "/messages/read"),
-      IMPORT_CONTACTS: devMode(() => "/contacts/import"), // Helper for legacy or specific use
     },
     ACTIONS: {
       BASE_URL: () => "/actions",

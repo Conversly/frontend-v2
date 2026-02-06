@@ -695,27 +695,3 @@ export const onboardWhatsAppClient = async (
     steps: res.data?.steps,
   };
 };
-
-export interface ImportWhatsAppContactsInput {
-  fileUrl: string;
-  originalFileName: string;
-}
-
-export const importWhatsAppContacts = async (
-  chatbotId: string,
-  input: ImportWhatsAppContactsInput
-): Promise<{ success: boolean; message: string; jobId: string }> => {
-  const res = await fetch(
-    API.ENDPOINTS.WHATSAPP.BASE_URL() + API.ENDPOINTS.WHATSAPP.IMPORT_CONTACTS.path(),
-    {
-      method: "POST",
-      params: { chatbotId },
-      data: input,
-    },
-  ).then((res) => res.data) as ApiResponse<{ success: boolean; message: string; jobId: string }, Error>;
-
-  if (!res.success) {
-    throw new Error(res.message);
-  }
-  return res.data;
-};
