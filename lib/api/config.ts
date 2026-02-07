@@ -71,7 +71,8 @@ export const API = {
       UPDATE_TOPIC: devMode(() => "/topics"),
       DELETE_TOPIC: devMode(() => "/topics"),
       GET_TOPIC: allMode(() => "/topics/:id"),
-      GET_TOPICS: allMode(() => "/:chatbotId/topics")
+      GET_TOPICS: allMode(() => "/:chatbotId/topics"),
+      UPDATE_CHATBOT: devMode(() => "/:id")
     },
     DATA_SOURCE: {
       BASE_URL: () => "/datasource",
@@ -232,6 +233,11 @@ export const API = {
       LIST_USERS: allMode(() => "/list/user"),
       CHECK_INVITE: allMode(() => "/check-invite"),
     },
+    LEADS: {
+      BASE_URL: () => "/leads",
+      CREATE: allMode(() => "/"),   //POST
+      GET_LEADS: allMode(() => "/"), //GET
+    }
   },
 };
 

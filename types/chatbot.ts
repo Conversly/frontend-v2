@@ -11,6 +11,10 @@ export interface ChatbotResponse {
   description: string;
   systemPrompt: string; // From WIDGET channel
   status: string;
+  logoUrl?: string | null;
+  primaryColor?: string | null;
+  leadGenerationEnabled?: boolean;
+  escalationEnabled?: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
 
@@ -36,6 +40,16 @@ export interface GetChatbotsResponse {
   workspaceId: string;
 }
 
+
+export interface UpdateChatbotInput {
+  id: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  status?: string;
+  leadGenerationEnabled?: boolean;
+  escalationEnabled?: boolean;
+  workspaceId: string;
+}
 
 export interface DeleteChatbotInput {
   id: string;

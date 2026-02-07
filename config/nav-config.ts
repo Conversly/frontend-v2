@@ -163,16 +163,16 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
                 icon: MessageCircle,
             },
-            // {
-            //     title: "Escalations Inbox",
-            //     url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
-            //     icon: Inbox,
-            // },
-            // {
-            //     title: "Leads",
-            //     url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
-            //     icon: Users,
-            // },
+            {
+                title: "Escalations Inbox",
+                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
+                icon: Inbox,
+            },
+            {
+                title: "Leads",
+                url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
+                icon: Users,
+            },
         ],
     },
     {
@@ -247,6 +247,21 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 title: "Deploy",
                 url: `/${workspaceId}/chatbot/${botId}/deploy-live`,
                 icon: Rocket,
+            },
+        ],
+    },
+    {
+        label: "Settings",
+        items: [
+            // {
+            //     title: "Deploy",
+            //     url: `/${workspaceId}/chatbot/${botId}/deploy`,
+            //     icon: Rocket,
+            // },
+            {
+                title: "General",
+                url: `/${workspaceId}/chatbot/${botId}/general`,
+                icon: Settings,
             },
         ],
     },

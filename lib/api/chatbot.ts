@@ -11,7 +11,28 @@ import {
   UpdateTopicInput,
   DeleteTopicInput,
   DeleteTopicResponse,
+  UpdateChatbotInput,
 } from "@/types/chatbot";
+
+export const updateChatbot = async (chatbot: UpdateChatbotInput): Promise<ChatbotResponse> => {
+  // DEV_ONLY - Uses guardedFetch for automatic mode checking
+  const res = (await guardedFetch(
+    {
+      ...API.ENDPOINTS.CHATBOT.UPDATE_CHATBOT,
+      path: () => API.ENDPOINTS.CHATBOT.UPDATE_CHATBOT.path().replace(":id", chatbot.id),
+    },
+    API.ENDPOINTS.CHATBOT.BASE_URL(),
+    {
+      method: "PATCH",
+      data: chatbot,
+    }
+  ).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+  return res.data;
+};
 
 export const createChatBot = async (chatbot: CreateChatbotInput) => {
   if (!chatbot.workspaceId) {

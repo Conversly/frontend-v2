@@ -3,6 +3,7 @@ import {
   getChatbots,
   getChatbot,
   deleteChatbot,
+  updateChatbot,
   getTopic,
   createTopic,
   updateTopic,
@@ -77,6 +78,18 @@ export const useDeleteChatbot = () => {
     mutationFn: deleteChatbot,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+    },
+  });
+};
+
+export const useUpdateChatbotMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: [QUERY_KEY.UPDATE_CHATBOT],
+    mutationFn: updateChatbot,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOT, data.workspaceId, data.id] });
     },
   });
 };
