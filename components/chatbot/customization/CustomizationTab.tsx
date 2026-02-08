@@ -29,14 +29,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
-import dynamic from 'next/dynamic';
-import type { UIConfigInput as PackageUIConfig } from '@conversly/chat-widget';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const PreviewWidget = dynamic(
-  () => import('@conversly/chat-widget').then((mod) => mod.PreviewWidget),
-  { ssr: false }
-);
+import { LivePreviewWidget } from './LivePreviewWidget';
+
 import { useCustomizationDraft, useCustomizationStore } from '@/store/chatbot/customization';
 import type { UIConfigInput } from '@/types/customization';
 import { SectionHeader } from './SectionHeader';
@@ -343,21 +339,18 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 />
                 {/* Preview container with fixed height */}
                 <div className="mt-4 h-[900px]">
-                  <div className="flex justify-center">
-                    <div 
+                  <div className="flex justify-center h-full">
+                    <div
                       className="rounded-lg overflow-hidden shadow-lg"
                       style={{
                         width: `min(${config.chatWidth || '350px'}, 100%)`,
                         height: `min(${config.chatHeight || '500px'}, 800px)`,
                       }}
                     >
-                      <PreviewWidget
-                        config={{
-                          ...config,
-                          suggestedMessages: config.starterQuestions,
-                          alignChatButton: config.buttonAlignment,
-                        } as PackageUIConfig}
-                        contained
+                      <LivePreviewWidget
+                        chatbotId={chatbotId}
+                        config={config}
+                        className="w-full h-full"
                       />
                     </div>
                   </div>

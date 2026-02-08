@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import dynamic from "next/dynamic";
-import type { UIConfigInput } from "@conversly/chat-widget";
-import { Separator } from "@/components/ui/separator";
-
-const ActualWidget = dynamic(
-  () => import("@conversly/chat-widget").then((mod) => mod.ActualWidget),
-  { ssr: false }
-);
+import { PlaygroundWidget } from "@/components/PlaygroundWidget";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
 import { upsertChannelPrompt } from "@/lib/api/prompt";
@@ -116,12 +109,7 @@ export default function PlaygroundPage() {
     toast.success("Chat reset");
   };
 
-  // Auto-reset chat when model or temperature changes
-  useEffect(() => {
-    if (!isLoading && config) {
-      setWidgetKey(prev => prev + 1);
-    }
-  }, [model, temperature]);
+
 
   if (isLoading) {
     return (
@@ -150,16 +138,13 @@ export default function PlaygroundPage() {
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
           <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
-            <ActualWidget
+            <PlaygroundWidget
               key={widgetKey}
-              config={config as any}
-              playgroundConfig={{
-                chatbotId: botId,
-                systemPrompt,
-                model,
-                temperature,
-              }}
-              contained
+              chatbotId={botId}
+              config={config}
+              systemPrompt={systemPrompt}
+              model={model}
+              temperature={temperature}
             />
             <div className="flex h-full items-center justify-center p-6 text-center text-muted-foreground bg-muted/20">
               {/* <div className="space-y-2">

@@ -34,7 +34,6 @@ export default function DataDeletionPage() {
       // TODO: Implement actual deletion request API
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      console.log('Data deletion request:', formData);
 
       setIsSubmitted(true);
       toast.success('Your data deletion request has been submitted successfully');

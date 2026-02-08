@@ -29,16 +29,6 @@ export const ChatEntry = ({
   const time = new Date(timestamp);
   const title = time.toLocaleTimeString(locale, { timeStyle: 'full' });
 
-  // Debug logging
-  React.useEffect(() => {
-    console.log('[ChatEntry] Rendering:', {
-      message,
-      messageOrigin,
-      timestamp,
-      name,
-    });
-  }, [message, messageOrigin, timestamp, name]);
-
   if (!message || message.trim() === '') {
     console.warn('[ChatEntry] Empty message, skipping render');
     return null;
@@ -66,8 +56,8 @@ export const ChatEntry = ({
       <div
         className={cn(
           'max-w-[85%] rounded-lg px-3 py-2 text-sm break-words',
-          messageOrigin === 'local' 
-            ? 'bg-primary text-primary-foreground ml-auto' 
+          messageOrigin === 'local'
+            ? 'bg-primary text-primary-foreground ml-auto'
             : 'bg-muted mr-auto text-foreground'
         )}
       >
