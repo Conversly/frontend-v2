@@ -27,6 +27,23 @@ import { Search, Calendar as CalendarIcon, Filter, X } from "lucide-react";
 import { useGetLeadsInfinite } from "@/services/leads";
 import { useTopicsQuery } from "@/services/chatbot";
 import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { ConversationViewer } from "@/components/chatbot/activity/ConversationViewer";
+import { useMessagesQuery } from "@/services/activity";
+import { LeadResponse } from "@/types/leads";
+import type { ConversationMessageItem } from "@/types/activity";
 
 // Source options based on types
 const SOURCE_OPTIONS = [
@@ -73,6 +90,26 @@ export default function LeadsPage() {
     startDate: startDate || undefined,
     endDate: endDate || undefined,
   });
+
+
+
+  // 3. Conversation View State
+  const [selectedLead, setSelectedLead] = useState<LeadResponse | null>(null);
+  const { data: messages, isLoading: isLoadingMessages } = useMessagesQuery(
+    chatbotId,
+    selectedLead?.conversationId || ""
+  );
+
+  const renderedMessages = useMemo(() => {
+    if (!messages) return [];
+    return messages.map((m: ConversationMessageItem) => ({
+      id: m.id,
+      role: (m.type === "user" ? "user" : "assistant") as "user" | "assistant",
+      content: m.content,
+      createdAt: m.createdAt ? new Date(m.createdAt) : undefined,
+      citations: m.citations,
+    }));
+  }, [messages]);
 
   const { data: topics } = useTopicsQuery(chatbotId);
 
@@ -236,18 +273,19 @@ export default function LeadsPage() {
                 <TableHead>Source</TableHead>
                 <TableHead>Topic</TableHead>
                 <TableHead>Created At</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     Loading leads...
                   </TableCell>
                 </TableRow>
               ) : leads.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     No leads found matching your criteria.
                   </TableCell>
                 </TableRow>
@@ -272,12 +310,35 @@ export default function LeadsPage() {
                     <TableCell className="text-muted-foreground text-sm">
                       {format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")}
                     </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => setSelectedLead(lead)}
+                          >
+                            See conversation
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
               {isFetchingNextPage && (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-12 text-center text-muted-foreground text-sm">
+                  <TableCell
+                    colSpan={7}
+                    className="h-12 text-center text-muted-foreground text-sm"
+                  >
                     Loading more...
                   </TableCell>
                 </TableRow>
@@ -289,6 +350,29 @@ export default function LeadsPage() {
         {/* Infinite Scroll Sentinel */}
         <div ref={observerTarget} className="h-4 w-full" />
       </div>
+
+      <Sheet
+        open={!!selectedLead}
+        onOpenChange={(open) => !open && setSelectedLead(null)}
+      >
+        <SheetContent className="sm:max-w-xl w-[90vw] overflow-hidden flex flex-col">
+          <SheetHeader className="mb-4">
+            <SheetTitle>Conversation</SheetTitle>
+            {selectedLead && (
+              <div className="text-sm text-muted-foreground">
+                Lead: <span className="font-medium text-foreground">{selectedLead.name}</span>
+              </div>
+            )}
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto -mr-6 pr-6">
+            <ConversationViewer
+              messages={renderedMessages}
+              isLoading={isLoadingMessages}
+              emptyMessage="No messages found for this conversation."
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

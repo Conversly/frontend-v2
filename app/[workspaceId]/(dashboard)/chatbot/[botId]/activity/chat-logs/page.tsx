@@ -15,7 +15,7 @@ import {
   ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
   ACTIVITY_PAGE_ROOT_CLASSNAME,
 } from "@/components/chatbot/activity/layout-constants";
-import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
+import { ConversationViewer } from "@/components/chatbot/activity/ConversationViewer";
 import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -106,7 +106,7 @@ export default function ChatLogsPage() {
     // Map API message shape to widget Message shape
     return messages.map((m: ConversationMessageItem) => ({
       id: m.id,
-      role: m.type === "user" ? "user" : "assistant",
+      role: (m.type === "user" ? "user" : "assistant") as "user" | "assistant",
       content: m.content,
       createdAt: m.createdAt ? new Date(m.createdAt) : undefined,
       citations: m.citations,
@@ -298,37 +298,16 @@ export default function ChatLogsPage() {
                 </div>
               ))}
             </div>
-          ) : selectedConvId && renderedMessages.length > 0 ? (
-            <div className="mx-auto w-full max-w-3xl space-y-3">
-              {renderedMessages.map((m) => {
-                const isUser = m.role === "user";
-                const ts = m.createdAt ? formatShortDateTime(m.createdAt) : "";
-                return (
-                  <div key={m.id} className={cn("flex", isUser ? "justify-end" : "justify-start")}>
-                    <div className={cn("max-w-[85%] space-y-1", isUser ? "items-end" : "items-start")}>
-                      <div
-                        className={cn(
-                          "rounded-2xl px-4 py-2 text-sm leading-relaxed shadow-sm",
-                          isUser
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-foreground",
-                        )}
-                      >
-                        <MarkdownRenderer>{m.content}</MarkdownRenderer>
-                      </div>
-                      <div className={cn("flex items-center gap-2 text-[11px] text-muted-foreground", isUser && "justify-end")}>
-                        {ts ? <span className="tabular-nums">{ts}</span> : null}
-                        {Array.isArray(m.citations) && m.citations.length > 0 ? (
-                          <span className="tabular-nums">• {m.citations.length} citation{m.citations.length === 1 ? "" : "s"}</span>
-                        ) : null}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           ) : selectedConvId ? (
-            <p className="type-body-muted">No messages in this conversation yet.</p>
+            <ConversationViewer
+              messages={renderedMessages}
+              isLoading={isLoadingMessages}
+              emptyMessage={
+                renderedMessages.length === 0
+                  ? "No messages in this conversation yet."
+                  : undefined
+              }
+            />
           ) : (
             <p className="type-body-muted">Choose a conversation from the left.</p>
           )}
@@ -367,3 +346,5 @@ function formatShortDateTime(dateLike: Date | string) {
     return "";
   }
 }
+
+
