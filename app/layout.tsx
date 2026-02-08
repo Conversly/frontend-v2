@@ -61,10 +61,15 @@ export default function RootLayout({
             </AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.CHAT_WIDGET_BASE_URL = "${process.env.NEXT_PUBLIC_WIDGET_URL || "http://localhost:3001"}";`,
+          }}
+        />
         <Script
-          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/conversly/loader.min-vsJTyUc6uDnNfowZ7tGdz2c2WQVcQo.js"
+          src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/embed.js"
           data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
-          data-testing="false"
+          data-primary-color="#4F46E5"
           strategy="afterInteractive"
         />
         <script
