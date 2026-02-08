@@ -17,13 +17,7 @@ import { Step6PromptTuning } from "@/components/chatbot/setup/Step6PromptTuning"
 import { Step7Completion } from "@/components/chatbot/setup/Step7Completion";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
-import dynamic from "next/dynamic";
-import type { UIConfigInput as PackageUIConfig } from "@conversly/chat-widget";
-
-const PreviewWidget = dynamic(
-  () => import("@conversly/chat-widget").then((mod) => mod.PreviewWidget),
-  { ssr: false }
-);
+import { LivePreviewWidget } from "@/components/chatbot/customization/LivePreviewWidget";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -347,13 +341,10 @@ export default function SetupWizardPage() {
             <SetupVisualization url={composedUrl} stage={stage}>
               {step === 4 && draftConfig && (
                 <div className="w-[380px] h-[500px] rounded-lg overflow-hidden shadow-lg">
-                  <PreviewWidget
-                    config={{
-                      ...draftConfig,
-                      suggestedMessages: draftConfig.starterQuestions,
-                      alignChatButton: draftConfig.buttonAlignment,
-                    } as PackageUIConfig}
-                    contained
+                  <LivePreviewWidget
+                    chatbotId={chatbotId || ""}
+                    config={draftConfig}
+                    className="w-full h-full"
                   />
                 </div>
               )}
