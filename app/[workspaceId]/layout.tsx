@@ -66,7 +66,9 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
   return (
     <WorkspaceProvider value={ctx}>
-      <RouteProtectionWrapper>{children}</RouteProtectionWrapper>
+      <div className="theme-workspace h-full w-full">
+        <RouteProtectionWrapper>{children}</RouteProtectionWrapper>
+      </div>
     </WorkspaceProvider>
   );
 }

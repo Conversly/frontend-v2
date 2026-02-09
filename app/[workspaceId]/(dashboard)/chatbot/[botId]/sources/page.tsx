@@ -63,21 +63,27 @@ import {
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
+  WEBSITE: Globe,
   DOCUMENT: FileText,
+  PDF: FileText,
   QNA: MessageSquare,
   TXT: AlignLeft,
 } as const;
 
 const DATA_SOURCE_COLORS = {
   URL: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
+  WEBSITE: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
   DOCUMENT: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
+  PDF: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
   QNA: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20 text-purple-600',
   TXT: 'from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 text-orange-600',
 } as const;
 
 const DATA_SOURCE_BADGE_COLORS = {
   URL: 'bg-green-500/10 text-green-600 border-green-500/20',
+  WEBSITE: 'bg-green-500/10 text-green-600 border-green-500/20',
   DOCUMENT: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  PDF: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
   QNA: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
   TXT: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
 } as const;
@@ -98,9 +104,11 @@ const USAGE_STATUS_BADGE_COLORS = {
 } as const;
 
 function getStatusBadgeClass(status: string | null | undefined, map: Record<string, string>) {
-  if (!status) return 'bg-muted text-muted-foreground border-border';
-  return map[status] ?? 'bg-muted text-muted-foreground border-border';
+  if (!status) return map.DRAFT;
+  const normalizedKey = status.toUpperCase();
+  return map[normalizedKey] || map.DRAFT;
 }
+
 
 function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
   const [copied, setCopied] = useState(false);
@@ -264,7 +272,7 @@ function EditCitationDialog({
   );
 }
 
-function DataSourceRow({
+function DataSourceCard({
   dataSource,
   onDelete,
   onEditCitation,
@@ -277,73 +285,42 @@ function DataSourceRow({
   onViewChunks: () => void;
   isLiveMode: boolean;
 }) {
-  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
-  const badgeColor = DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS];
+  const normalizedType = (dataSource.type || 'DOCUMENT').toUpperCase() as keyof typeof DATA_SOURCE_ICONS;
+  const Icon = DATA_SOURCE_ICONS[normalizedType] || FileText;
+  const badgeColor = DATA_SOURCE_BADGE_COLORS[normalizedType as keyof typeof DATA_SOURCE_BADGE_COLORS] || DATA_SOURCE_BADGE_COLORS.DOCUMENT;
+  const colorClass = DATA_SOURCE_COLORS[normalizedType as keyof typeof DATA_SOURCE_COLORS] || DATA_SOURCE_COLORS.DOCUMENT;
 
   return (
-    <motion.tr
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="group border-b border-border hover:bg-muted/30 transition-colors"
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="group relative flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
     >
-      <td className="py-4 px-4">
-        <div className="flex items-center gap-3">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 overflow-hidden">
           <div className={cn(
-            'w-9 h-9 rounded-lg bg-gradient-to-br flex items-center justify-center border',
-            DATA_SOURCE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_COLORS]
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-gradient-to-br',
+            colorClass
           )}>
-            <Icon className="w-4 h-4" />
+            <Icon className="h-5 w-5" />
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-foreground truncate max-w-[300px]">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-foreground truncate" title={dataSource.name}>
               {dataSource.name}
-            </p>
+            </h3>
             {dataSource.citation && (
-              <p className="text-xs text-muted-foreground truncate max-w-[300px]">
+              <p className="text-xs text-muted-foreground truncate" title={dataSource.citation}>
                 {dataSource.citation}
               </p>
             )}
           </div>
         </div>
-      </td>
-      <td className="py-4 px-4">
-        {dataSource.createdAt && (
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <Calendar className="w-3.5 h-3.5" />
-            {new Date(dataSource.createdAt).toLocaleDateString()}
-          </div>
-        )}
-      </td>
-      <td className="py-4 px-4">
-        <Badge className={cn('text-xs', badgeColor)}>
-          {dataSource.type}
-        </Badge>
-      </td>
-      <td className="py-4 px-4">
-        <Badge
-          className={cn(
-            'text-xs',
-            getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
-          )}
-        >
-          {dataSource.ingestionStatus ?? '—'}
-        </Badge>
-      </td>
-      <td className="py-4 px-4">
-        <Badge
-          className={cn(
-            'text-xs',
-            getStatusBadgeClass(dataSource.status, USAGE_STATUS_BADGE_COLORS)
-          )}
-        >
-          {dataSource.status ?? '—'}
-        </Badge>
-      </td>
-      <td className="py-4 px-4">
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVertical className="w-4 h-4" />
+            <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground">
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -368,8 +345,27 @@ function DataSourceRow({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </td>
-    </motion.tr>
+      </div>
+
+      {/* Footer / Status */}
+      <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Calendar className="h-3.5 w-3.5" />
+          <span>{dataSource.createdAt ? new Date(dataSource.createdAt).toLocaleDateString() : 'N/A'}</span>
+        </div>
+        <div className="flex gap-2">
+          <Badge
+            className={cn(
+              'text-[10px] px-1.5 py-0 h-5',
+              getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
+            )}
+          >
+            {dataSource.ingestionStatus ?? 'Draft'}
+          </Badge>
+          {/* Optional: Show Usage Status if different from Training? Usually Ingestion is key. */}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -536,44 +532,20 @@ export default function DataSourcesPage() {
               )}
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-muted/50 sticky top-0">
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Last update
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Training status
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Usage status
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-[80px]">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence>
-                  {filteredSources.map((source) => (
-                    <DataSourceRow
-                      key={source.id}
-                      dataSource={source}
-                      onDelete={() => handleDelete(source)}
-                      onEditCitation={() => handleEditCitation(source)}
-                      onViewChunks={() => setViewingSource(source)}
-                      isLiveMode={isLiveMode}
-                    />
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
+              <AnimatePresence mode="popLayout">
+                {filteredSources.map((source) => (
+                  <DataSourceCard
+                    key={source.id}
+                    dataSource={source}
+                    onDelete={() => handleDelete(source)}
+                    onEditCitation={() => handleEditCitation(source)}
+                    onViewChunks={() => setViewingSource(source)}
+                    isLiveMode={isLiveMode}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
           )}
         </div>
       </div>

@@ -157,114 +157,188 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Settings Sidebar */}
-        <div className="w-[380px] border-l bg-background overflow-y-auto">
-          <div className="p-6 space-y-6">
-            <div>
-              <h3 className="mb-4 type-section-title tracking-tight">Configuration</h3>
+        <div className="w-[380px] border-l bg-background flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="mb-4 type-section-title tracking-tight">Configuration</h3>
 
-              <div className="space-y-5">
-                {/* System Prompt */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-medium text-foreground/70">
-                      System Prompt
-                    </label>
+                <div className="space-y-6">
+                  {/* System Instruction Card */}
+                  <div className="bg-card rounded-xl border shadow-sm overflow-hidden flex flex-col">
+                    <div className="bg-muted/30 px-4 py-3 border-b flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 text-muted-foreground"
+                        >
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <span className="text-sm font-medium">System Instruction</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleSavePrompt}
+                        disabled={isSavingPrompt}
+                        className="h-7 text-xs bg-background"
+                      >
+                        {isSavingPrompt ? "Saving..." : "Save"}
+                      </Button>
+                    </div>
+                    <Textarea
+                      value={systemPrompt}
+                      onChange={(e) => setSystemPrompt(e.target.value)}
+                      placeholder="You are a helpful assistant..."
+                      className="h-[250px] overflow-y-auto w-full resize-none border-0 focus-visible:ring-0 p-4 text-sm font-mono leading-relaxed bg-transparent"
+                    />
+                    <div className="px-4 py-2 bg-muted/30 border-t text-[10px] text-muted-foreground text-right tabular-nums">
+                      {systemPrompt.length} characters
+                    </div>
+                  </div>
+
+                  {/* Model Configuration Card */}
+                  <div className="bg-card rounded-xl border shadow-sm p-4 space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4 text-muted-foreground"
+                      >
+                        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5 10 10 0 0 0-10 0 4 4 0 0 1 5 5 4 4 0 0 1 5 5" />
+                      </svg>
+                      <span className="text-sm font-medium">Model Settings</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs text-muted-foreground mb-1.5 block">
+                          Model
+                        </label>
+                        <select
+                          value={model}
+                          onChange={(e) => setModel(e.target.value)}
+                          className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring transition-all"
+                        >
+                          <option value="gemini-2.0">Gemini 2.0</option>
+                          <option value="gpt-4">GPT-4</option>
+                          <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                          <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="text-xs text-muted-foreground">
+                            Temperature
+                          </label>
+                          <span className="text-xs font-mono text-muted-foreground tabular-nums">
+                            {temperature.toFixed(2)}
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="2"
+                          step="0.01"
+                          value={temperature}
+                          onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                          className="w-full cursor-pointer accent-primary"
+                        />
+                        <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                          <span>Precise</span>
+                          <span>Creative</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Session Card */}
+                  <div className="bg-card rounded-xl border shadow-sm p-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4 text-muted-foreground"
+                      >
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                      </svg>
+                      <span className="text-sm font-medium">Session Control</span>
+                    </div>
                     <Button
-                      size="sm"
                       variant="outline"
-                      onClick={handleSavePrompt}
-                      disabled={isSavingPrompt}
-                      className="h-7 text-xs"
+                      onClick={handleResetChat}
+                      className="w-full bg-background hover:bg-muted"
                     >
-                      {isSavingPrompt ? "Saving..." : "Save"}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4 mr-2"
+                      >
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                        <path d="M8 16H3v5" />
+                      </svg>
+                      Reset Session
                     </Button>
                   </div>
-                  <Textarea
-                    value={systemPrompt}
-                    onChange={(e) => setSystemPrompt(e.target.value)}
-                    placeholder="You are a helpful assistant..."
-                    className="h-[200px] font-mono text-sm resize-none overflow-y-auto"
-                  />
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    {systemPrompt.length} characters
-                  </p>
                 </div>
+              </div>
 
-                {/* Model */}
-                <div>
-                  <label className="mb-2 block text-xs font-medium text-foreground/70">
-                    Model
-                  </label>
-                  <select
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="gemini-2.0">Gemini 2.0</option>
-                    <option value="gpt-4">GPT-4</option>
-                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                  </select>
-                </div>
-
-                {/* Temperature */}
-                <div>
-                  <label className="mb-2 block text-xs font-medium text-foreground/70">
-                    Temperature: {temperature.toFixed(2)}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="2"
-                    step="0.01"
-                    value={temperature}
-                    onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>Precise</span>
-                    <span>Creative</span>
+              {/* Info Section */}
+              <div className="px-6 pb-6 pt-2">
+                <div className="rounded-lg bg-muted/30 p-4 border border-blue-100/50 dark:border-blue-900/20">
+                  <h4 className="text-xs font-medium text-foreground mb-2 flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-3.5 w-3.5 text-blue-500"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" x2="12" y1="16" y2="12" />
+                      <line x1="12" x2="12.01" y1="8" y2="8" />
+                    </svg>
+                    Playground Info
+                  </h4>
+                  <div className="space-y-2 text-[11px] text-muted-foreground leading-relaxed">
+                    <p>
+                      Test your chatbot's behavior with different configurations. Changes to Model
+                      and Temperature are <span className="font-medium text-foreground">session-only</span>.
+                    </p>
+                    <p>
+                      Save the <span className="font-medium text-foreground">System Instruction</span> to
+                      persist logic changes for all users.
+                    </p>
                   </div>
                 </div>
-
-                {/* Reset Button */}
-                <Button
-                  variant="outline"
-                  onClick={handleResetChat}
-                  className="w-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 mr-2"
-                  >
-                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                    <path d="M21 3v5h-5" />
-                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                    <path d="M8 16H3v5" />
-                  </svg>
-                  Reset Chat
-                </Button>
-              </div>
-            </div>
-
-            {/* Info Section */}
-            <div className="pt-4 border-t">
-              <h3 className="mb-3 type-subtitle">About</h3>
-              <div className="space-y-2 type-body-muted">
-                <p>
-                  The playground allows you to test your chatbot with different configurations
-                  without affecting the production settings.
-                </p>
-                <p className="pt-2">
-                  <strong className="text-foreground">Note:</strong> Changes to model and temperature
-                  are local to this session only. Save the system prompt to persist changes.
-                </p>
               </div>
             </div>
           </div>

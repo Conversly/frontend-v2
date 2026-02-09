@@ -41,6 +41,8 @@ import {
     Sun,
     Laptop,
     Megaphone,
+    MoreVertical,
+    PanelLeft,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
@@ -48,14 +50,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { NavItem, NavSection } from "@/config/nav-config";
 import { getWorkspaceNavSections, getWorkspaceChatbotNavSections } from "@/config/nav-config";
 import { useMaybeWorkspace } from "@/contexts/workspace-context";
-import { useChatbotInWorkspace } from "@/services/chatbot";
+
+
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
     const router = useRouter();
     const { user, logout } = useAuth();
     const queryClient = useQueryClient();
-    const { isMobile } = useSidebar();
+    const { isMobile, toggleSidebar, state } = useSidebar();
     const { setTheme, theme } = useTheme();
     const workspaceCtx = useMaybeWorkspace();
 
@@ -63,58 +67,51 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     // /:workspaceId/chatbot/:botId/...
     const segs = (pathname || "").split("/").filter(Boolean);
     const isBotRoute =
-      !!workspaceCtx &&
-      segs[0] === workspaceCtx.workspaceId &&
-      segs[1] === "chatbot" &&
-      !!segs[2] &&
-      segs[2] !== "create";
+        !!workspaceCtx &&
+        segs[0] === workspaceCtx.workspaceId &&
+        segs[1] === "chatbot" &&
+        !!segs[2] &&
+        segs[2] !== "create";
     const botId = isBotRoute ? segs[2] : null;
 
-    // Fetch chatbot data when in bot route (for name display)
-    const { data: chatbotData } = useChatbotInWorkspace(
-      workspaceCtx?.workspaceId || "",
-      botId || ""
-    );
+
 
     // Get workspace navigation sections and filter by capabilities
     const allWorkspaceNavSections = workspaceCtx
-      ? getWorkspaceNavSections(workspaceCtx.workspaceId)
-      : [];
+        ? getWorkspaceNavSections(workspaceCtx.workspaceId)
+        : [];
 
     // Filter navigation sections based on user capabilities
     const filterNavSectionsByCapability = (sections: NavSection[]): NavSection[] => {
-      if (!workspaceCtx) return [];
-      
-      return sections
-        .filter((section) => {
-          // If section has a required capability, check it
-          if (section.requiredCapability) {
-            return workspaceCtx.capabilities[section.requiredCapability];
-          }
-          return true;
-        })
-        .map((section) => ({
-          ...section,
-          items: section.items.filter((item) => {
-            if (!item.requiredCapability) return true;
-            return workspaceCtx.capabilities[item.requiredCapability];
-          }),
-        }))
-        .filter((section) => section.items.length > 0);
+        if (!workspaceCtx) return [];
+
+        return sections
+            .filter((section) => {
+                // If section has a required capability, check it
+                if (section.requiredCapability) {
+                    return workspaceCtx.capabilities[section.requiredCapability];
+                }
+                return true;
+            })
+            .map((section) => ({
+                ...section,
+                items: section.items.filter((item) => {
+                    if (!item.requiredCapability) return true;
+                    return workspaceCtx.capabilities[item.requiredCapability];
+                }),
+            }))
+            .filter((section) => section.items.length > 0);
     };
 
     const workspaceNavSections = filterNavSectionsByCapability(allWorkspaceNavSections);
 
     // Select navigation sections based on context
     const navSections =
-      workspaceCtx && botId
-        ? getWorkspaceChatbotNavSections(workspaceCtx.workspaceId, botId)
-        : workspaceNavSections;
-    
-    // Header label: Use chatbot name if available, otherwise workspace name
-    const headerLabel = workspaceCtx && botId && chatbotData
-      ? chatbotData.name
-      : workspaceCtx?.workspaceName || "Platform";
+        workspaceCtx && botId
+            ? getWorkspaceChatbotNavSections(workspaceCtx.workspaceId, botId)
+            : workspaceNavSections;
+
+
 
     const handleLogout = () => {
         logout(queryClient);
@@ -147,7 +144,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     };
 
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar
+            collapsible="icon"
+            className="border-r border-border bg-sidebar"
+            {...props}
+        >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -182,9 +183,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     const isActive = pathname === item.url || pathname?.startsWith(item.url + "/");
                                     return (
                                         <SidebarMenuItem key={item.title}>
-                                            <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+                                            <SidebarMenuButton
+                                                asChild
+                                                isActive={isActive}
+                                                tooltip={item.title}
+                                                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200"
+                                            >
                                                 <Link href={item.url}>
-                                                    <item.icon />
+                                                    <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
                                                     <span>{item.title}</span>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -198,6 +204,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={toggleSidebar}
+                            tooltip="Collapse Sidebar"
+                            className="text-muted-foreground hover:text-foreground"
+                        >
+                            <PanelLeft className="h-4 w-4" />
+                            <span>Collapse</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -213,7 +229,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         <span className="truncate font-semibold">{getUserDisplayName()}</span>
                                         <span className="truncate text-xs">{getUserEmail()}</span>
                                     </div>
-                                    <ChevronsUpDown className="ml-auto size-4" />
+                                    <MoreVertical className="ml-auto size-4" /> {/* Changed to MoreVertical (ellipsis) as requested */}
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent

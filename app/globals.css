@@ -19,27 +19,26 @@
   /* `--font-lato` is provided by next/font in app/layout.tsx */
 
   /* Typography tokens */
-  --font-h1: 19.5899px;
-  --font-h2: 17.6316px;
-  --font-h3: 15px;
-  /* Interpolated/Default */
-  --font-h4: 13.7136px;
-  --font-h5: 11.7539px;
-  --font-body: 13px;
-  --font-small: 11.7539px;
-  --font-xsmall: 10px;
-  --font-ui: 14px;
+  /* Typography tokens - Scaled Up */
+  --font-h1: 24px;
+  --font-h2: 20px;
+  --font-h3: 18px;
+  --font-h4: 16px;
+  --font-h5: 14px;
+  --font-body: 14px;
+  --font-small: 13px;
+  --font-xsmall: 12px;
+  --font-ui: 15px;
 
-  --line-h1: 23.5092px;
-  --line-h2: 21.5496px;
-  --line-h3: 18px;
-  /* Interpolated */
-  --line-h4: 15.6719px;
-  --line-h5: 13.7136px;
-  --line-body: 16px;
-  --line-small: 18.4713px;
-  --line-xsmall: 12px;
-  --line-ui: 19.5899px;
+  --line-h1: 32px;
+  --line-h2: 28px;
+  --line-h3: 24px;
+  --line-h4: 24px;
+  --line-h5: 20px;
+  --line-body: 20px;
+  --line-small: 16px;
+  --line-xsmall: 16px;
+  --line-ui: 20px;
   --content-max-width: 1280px;
 
   /* Global Cursor Rules */
@@ -90,16 +89,21 @@
   --chart-4: oklch(0.40 0.20 260);
   --chart-5: oklch(0.30 0.20 260);
 
-  /* Sidebar - White with subtle border */
-  --sidebar-background: #F8F9FA;
+  /* Sidebar - Soft Gray */
+  --sidebar-background: #F9FAFB;
   --sidebar-foreground: oklch(0.20 0.02 260);
   --sidebar-primary: oklch(0.55 0.25 260);
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F4F4F5;
-  --sidebar-accent-foreground: oklch(0.20 0.02 260);
+  --sidebar-accent: #EFF6FF;
+  /* Modern Blue tint for hover */
+  --sidebar-accent-foreground: oklch(0.55 0.25 260);
+  /* Modern Blue text */
   --sidebar-border: #E4E4E7;
   --sidebar-ring: oklch(0.55 0.25 260);
-  --sidebar: #F8F9FA;
+  --sidebar: #F9FAFB;
+
+  /* Input Backgrounds (New for Contrast) */
+  --input-background: #F8FAFC;
 }
 
 /* Dark Theme - Balanced between ElevenLabs and Vapi */
@@ -156,6 +160,8 @@
   --sidebar-accent-foreground: oklch(0.98 0.01 260);
   --sidebar-border: #242424;
   --sidebar-ring: #3b82f6;
+
+  --input-background: #1A1A1A;
 }
 
 @theme inline {
@@ -260,6 +266,59 @@
   --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-blink-cursor: blink-cursor 1.2s step-end infinite;
 }
+
+/* 
+ * Workspace Theme - Refined 3-Layer System
+ * Layer 1 (Bottom): Soft Blue Background (#F4F7FB)
+ * Layer 2 (Structure): White Sidebar (#FFFFFF)
+ * Layer 3 (Content): White Cards with Shadow (#FFFFFF)
+ */
+.theme-workspace {
+  /* BACKGROUND (Layer 1) - Soft Blue/Slate Tint */
+  --background: #F4F7FB;
+  /* Previously #FBFCFD */
+
+  /* SIDEBAR (Layer 2) - Pure White */
+  --sidebar: #FFFFFF;
+  --sidebar-background: #FFFFFF;
+  --header-background: #FFFFFF;
+
+  /* CARDS (Layer 3) - Pure White */
+  --card: #FFFFFF;
+  --popover: #FFFFFF;
+
+  /* Typography */
+  --foreground: #1E293B;
+  /* Slate-800 - High contrast */
+  --muted-foreground: #64748B;
+  /* Slate-500 */
+
+  /* Borders - Crisper Slate-200 */
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --sidebar-border: #E2E8F0;
+
+  /* Primary Color - Brand Blue */
+  --primary: oklch(0.55 0.20 260);
+  --ring: oklch(0.55 0.20 260);
+
+  /* Input Backgrounds - Contrast Fix */
+  /* On White Sidebar, inputs need a background to be visible */
+  --input-background: #F8FAFC;
+  /* Slate-50 */
+
+  /* Chat Bubbles */
+  --muted: #F1F5F9;
+  /* Slate-100 */
+
+  /* Shadows - Refined for depth on the blue background */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(15 23 42 / 0.1), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 10px 10px -5px rgb(15 23 42 / 0.04);
+}
+
 
 /* Animation Keyframes (Tailwind v4) */
 @keyframes accordion-down {

@@ -246,71 +246,73 @@ export default function ChatLogsPage() {
       </div>
 
       {/* Chat panel */}
-      <div className="flex-1 flex flex-col">
-        <div className="border-b bg-background px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="type-section-title tracking-tight">Conversation</h1>
-              <p className="type-body-muted mt-0.5">
-                {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsFilterOpen(true)}
-                className="gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={!selectedConvId || renderedMessages.length === 0}
-                onClick={() => {
-                  if (!selectedConvId) return;
-                  const payload = {
-                    conversationId: selectedConvId,
-                    chatbotId: botId,
-                    exportedAt: new Date().toISOString(),
-                    filtersApplied: filters,
-                    messages: renderedMessages,
-                  };
-                  downloadJsonFile(`chat-${botId}-${selectedConvId}.json`, payload);
-                }}
-              >
-                <Download className="h-4 w-4" />
-                Download JSON
-              </Button>
+      <div className="flex-1 flex flex-col bg-background p-4 min-w-0 overflow-hidden">
+        <div className="bg-card flex-1 flex flex-col rounded-xl border shadow-sm overflow-hidden ring-1 ring-black/5">
+          <div className="border-b bg-card px-6 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h1 className="type-section-title tracking-tight">Conversation</h1>
+                <p className="type-body-muted mt-0.5">
+                  {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsFilterOpen(true)}
+                  className="gap-2 bg-background hover:bg-accent"
+                >
+                  <Filter className="h-4 w-4" />
+                  Filter
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 bg-background hover:bg-accent"
+                  disabled={!selectedConvId || renderedMessages.length === 0}
+                  onClick={() => {
+                    if (!selectedConvId) return;
+                    const payload = {
+                      conversationId: selectedConvId,
+                      chatbotId: botId,
+                      exportedAt: new Date().toISOString(),
+                      filtersApplied: filters,
+                      messages: renderedMessages,
+                    };
+                    downloadJsonFile(`chat-${botId}-${selectedConvId}.json`, payload);
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                  Download JSON
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto p-6 chat-logs-container">
-          {isLoadingMessages ? (
-            <div className="space-y-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
-                  <Skeleton className="h-6 w-64 rounded-2xl" />
-                </div>
-              ))}
-            </div>
-          ) : selectedConvId ? (
-            <ConversationViewer
-              messages={renderedMessages}
-              isLoading={isLoadingMessages}
-              emptyMessage={
-                renderedMessages.length === 0
-                  ? "No messages in this conversation yet."
-                  : undefined
-              }
-            />
-          ) : (
-            <p className="type-body-muted">Choose a conversation from the left.</p>
-          )}
+          <div className="flex-1 overflow-y-auto p-6 chat-logs-container bg-card">
+            {isLoadingMessages ? (
+              <div className="space-y-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
+                    <Skeleton className="h-6 w-64 rounded-2xl" />
+                  </div>
+                ))}
+              </div>
+            ) : selectedConvId ? (
+              <ConversationViewer
+                messages={renderedMessages}
+                isLoading={isLoadingMessages}
+                emptyMessage={
+                  renderedMessages.length === 0
+                    ? "No messages in this conversation yet."
+                    : undefined
+                }
+              />
+            ) : (
+              <p className="type-body-muted">Choose a conversation from the left.</p>
+            )}
+          </div>
         </div>
       </div>
 

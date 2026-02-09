@@ -9,7 +9,9 @@ import {
     PieChart,
     Hash,
     BrainCircuit,
-    MessageCircle,
+    MessageCircle, // This was already there, but MessageSquare was requested.
+    MessageSquare,
+    Database,
     Inbox,
     Upload,
     HelpCircle,
@@ -116,17 +118,37 @@ export const getWorkspaceNavSections = (workspaceId: string): NavSection[] => [
 // Workspace + Chatbot-specific Navigation (sections with headings)
 export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: string): NavSection[] => [
     {
-        label: "Build",
+        label: "Main Navigation",
         items: [
             {
                 title: "Playground",
                 url: `/${workspaceId}/chatbot/${botId}/playground`,
-                icon: Sparkles,
+                icon: Rocket, // or Terminal
             },
             {
                 title: "Customize",
                 url: `/${workspaceId}/chatbot/${botId}/customize`,
                 icon: Palette,
+            },
+            {
+                title: "Behavior",
+                url: `/${workspaceId}/chatbot/${botId}/behavior`,
+                icon: Settings,
+            },
+            {
+                title: "Deploy",
+                url: `/${workspaceId}/chatbot/${botId}/deploy-live`,
+                icon: Rocket,
+            },
+        ],
+    },
+    {
+        label: "Knowledge & Training",
+        items: [
+            {
+                title: "Data Sources",
+                url: `/${workspaceId}/chatbot/${botId}/sources`,
+                icon: Database,
             },
             {
                 title: "Actions",
@@ -136,44 +158,29 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
         ],
     },
     {
-        label: "Knowledge Base",
-        items: [
-            {
-                title: "Current Data",
-                url: `/${workspaceId}/chatbot/${botId}/sources`,
-                icon: BrainCircuit,
-            }
-        ],
-    },
-    {
         label: "Analytics",
         items: [
             {
-                title: "Statistics",
+                title: "Statistic",
                 url: `/${workspaceId}/chatbot/${botId}/analytics/statistic`,
-                icon: PieChart,
+                icon: BarChart3,
             },
             {
                 title: "Topics",
                 url: `/${workspaceId}/chatbot/${botId}/analytics/topics`,
-                icon: Hash,
+                icon: MessageSquare,
             },
             {
-                title: "Chat Logs",
+                title: "Chats",
                 url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
-                icon: MessageCircle,
-            },
-            {
-                title: "Escalations Inbox",
-                url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
-                icon: Inbox,
+                icon: MessageSquare,
             },
             {
                 title: "Leads",
                 url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
                 icon: Users,
             },
-        ],
+        ]
     },
     {
         label: "Human Escalations",
@@ -199,70 +206,15 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 icon: MessageCircle,
             },
             {
-                title: "Integration",
+                title: "Voice Agent",
+                url: `/${workspaceId}/chatbot/${botId}/voice`,
+                icon: Headset,
+            },
+            {
+                title: "Integrations",
                 url: `/${workspaceId}/chatbot/${botId}/integration`,
                 icon: Plug,
             },
         ],
-    },
-    {
-        label: "Voice Agent",
-        items: [
-            {
-                title: "Assistant",
-                url: `/${workspaceId}/chatbot/${botId}/voice`,
-                icon: Headset,
-            },
-            // {
-            //     title: "Campaigns",
-            //     url: `/${workspaceId}/chatbot/${botId}/voice/campaigns`,
-            //     icon: Megaphone,
-            // },
-            // {
-            //     title: "Analytics",
-            //     url: `/${workspaceId}/chatbot/${botId}/voice/analytics`,
-            //     icon: BarChart3,
-            // },
-            // {
-            //     title: "Phone Numbers",
-            //     url: `/${workspaceId}/chatbot/${botId}/voice/phone-numbers`,
-            //     icon: Phone,
-            // },
-            // {
-            //     title: "Widget",
-            //     url: `/${workspaceId}/chatbot/${botId}/voice/widget`,
-            //     icon: Code,
-            // },
-        ],
-    },
-    {
-        label: "Deploy",
-        items: [
-            // {
-            //     title: "Deploy",
-            //     url: `/${workspaceId}/chatbot/${botId}/deploy`,
-            //     icon: Rocket,
-            // },
-            {
-                title: "Deploy",
-                url: `/${workspaceId}/chatbot/${botId}/deploy-live`,
-                icon: Rocket,
-            },
-        ],
-    },
-    {
-        label: "Settings",
-        items: [
-            // {
-            //     title: "Deploy",
-            //     url: `/${workspaceId}/chatbot/${botId}/deploy`,
-            //     icon: Rocket,
-            // },
-            {
-                title: "General",
-                url: `/${workspaceId}/chatbot/${botId}/general`,
-                icon: Settings,
-            },
-        ],
-    },
+    }
 ];

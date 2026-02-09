@@ -62,7 +62,7 @@ export function ConversationViewer({
                         >
                             <div
                                 className={cn(
-                                    "rounded-2xl px-4 py-2 text-sm leading-relaxed shadow-sm",
+                                    "rounded-2xl px-4 py-2 text-base font-medium leading-relaxed shadow-sm",
                                     isUser
                                         ? "bg-primary text-primary-foreground"
                                         : "bg-muted text-foreground"

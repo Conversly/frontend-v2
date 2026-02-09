@@ -800,374 +800,376 @@ export default function InboxPage() {
       </div>
 
       {/* Right: Chat */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="border-b bg-background px-6 py-2.5">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0 flex items-center gap-2">
-              {activeConversationId ? (
-                <>
-                  <span
-                    className={cn(
-                      "h-2 w-2 rounded-full shrink-0",
-                      activeHeaderStatus.dotClass,
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs text-muted-foreground shrink-0">{activeHeaderStatus.label}</span>
-                  <span className="shrink-0" title={String(activeEscalation?.channel || "WIDGET").toUpperCase()}>
-                    {getChannelIcon(activeEscalation?.channel)}
-                  </span>
-                  {activeEscalation?.reason ? (
-                    <span className="text-xs text-muted-foreground truncate">
-                      {activeEscalation.reason}
+      <div className="flex-1 flex flex-col min-w-0 bg-background p-4 overflow-hidden">
+        <div className="bg-card flex-1 flex flex-col rounded-xl border shadow-sm overflow-hidden ring-1 ring-black/5">
+          <div className="border-b bg-card px-6 py-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0 flex items-center gap-2">
+                {activeConversationId ? (
+                  <>
+                    <span
+                      className={cn(
+                        "h-2 w-2 rounded-full shrink-0",
+                        activeHeaderStatus.dotClass,
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="text-xs text-muted-foreground shrink-0">{activeHeaderStatus.label}</span>
+                    <span className="shrink-0" title={String(activeEscalation?.channel || "WIDGET").toUpperCase()}>
+                      {getChannelIcon(activeEscalation?.channel)}
                     </span>
-                  ) : (
-                    <span className="text-xs text-muted-foreground truncate">—</span>
-                  )}
-                </>
-              ) : (
-                <span className="text-xs text-muted-foreground">Select an escalation from the inbox</span>
-              )}
+                    {activeEscalation?.reason ? (
+                      <span className="text-xs text-muted-foreground truncate">
+                        {activeEscalation.reason}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground truncate">—</span>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Select an escalation from the inbox</span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                {activeConversationId && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={infoOpen ? "Hide info" : "Show info"}
+                      onClick={() => setInfoOpen((v) => !v)}
+                    >
+                      <Info className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={onCloseChat}>
+                      Close
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => closeConversationTab(activeConversationId)}
+                      aria-label="Close tab"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center gap-1.5 shrink-0">
-              {activeConversationId && (
-                <>
+            {/* Tabs for open chats */}
+            {openConversationIds.length > 0 && (
+              <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                {openConversationIds.map((id) => {
+                  const unread = unreadCountByConversationId[id] ?? 0;
+                  const isActive = id === activeConversationId;
+                  const escId = escalationIdByConversationId[id];
+                  const label =
+                    (escId ? escalationsById[escId]?.lastUserMessage : undefined)?.trim() || shortId(id);
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => {
+                        setActiveConversation(id);
+                        clearUnread(id);
+                        void markConversationRead(id);
+                      }}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs shrink-0",
+                        isActive ? "bg-muted border-border" : "bg-background hover:bg-muted/40 border-border/60",
+                      )}
+                    >
+                      <span className="font-medium">{label}</span>
+                      {unread > 0 && (
+                        <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
+                          {unread}
+                        </span>
+                      )}
+                      <span
+                        className="opacity-60 hover:opacity-100"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          evt.stopPropagation();
+                          closeConversationTab(id);
+                        }}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 overflow-hidden flex min-w-0 bg-card">
+            <div className="flex-1 overflow-hidden min-w-0">
+              <ScrollArea className="h-full">
+                <div className="p-6 space-y-4">
+                  {!activeConversationId ? (
+                    <p className="type-body-muted">Choose an escalation from the left.</p>
+                  ) : isLoadingHistory ? (
+                    <div className="space-y-3">
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
+                          <Skeleton className="h-6 w-80 rounded-2xl" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : activeMessages.length === 0 ? (
+                    <p className="type-body-muted">No messages yet.</p>
+                  ) : (
+                    activeMessages.map((m, idx) => {
+                      const isUser = m.senderType === "USER";
+                      const isAgent = m.senderType === "AGENT";
+                      const isAssistant = m.senderType === "ASSISTANT";
+                      const isSystem = m.senderType === "SYSTEM";
+
+                      return (
+                        <div
+                          key={m.id || `${m.conversationId}-${m.sentAt.getTime()}-${idx}`}
+                          className={cn(
+                            "flex",
+                            isUser ? "justify-start" : "justify-end",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "max-w-[85%] rounded-2xl px-4 py-3 text-base font-medium leading-relaxed shadow-sm",
+                              isUser && "bg-card border rounded-tl-sm",
+                              isAgent && "bg-primary text-primary-foreground rounded-tr-sm",
+                              isAssistant && "bg-muted text-foreground border",
+                              isSystem && "bg-background text-muted-foreground border border-dashed text-xs",
+                            )}
+                          >
+                            <div className="whitespace-pre-wrap break-words">
+                              <MarkdownRenderer>{m.text}</MarkdownRenderer>
+                            </div>
+                            <div
+                              className={cn(
+                                "mt-1 text-[10px] opacity-70 tabular-nums",
+                                isAgent ? "text-primary-foreground/80 text-right" : "text-muted-foreground",
+                              )}
+                            >
+                              {m.senderType} •{" "}
+                              {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+
+            <div
+              className={cn(
+                "shrink-0 overflow-hidden transition-all duration-200",
+                infoOpen && activeConversationId ? "w-80 border-l" : "w-0",
+              )}
+              aria-hidden={!infoOpen}
+            >
+              <div className="h-full bg-background">
+                <div className="px-4 py-3 border-b flex items-center justify-between">
+                  <div className="text-sm font-medium">Info</div>
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label={infoOpen ? "Hide info" : "Show info"}
-                    onClick={() => setInfoOpen((v) => !v)}
-                  >
-                    <Info className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-7 text-xs" onClick={onCloseChat}>
-                    Close
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => closeConversationTab(activeConversationId)}
-                    aria-label="Close tab"
+                    aria-label="Close info"
+                    onClick={() => setInfoOpen(false)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </>
-              )}
-            </div>
-          </div>
+                </div>
 
-          {/* Tabs for open chats */}
-          {openConversationIds.length > 0 && (
-            <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-              {openConversationIds.map((id) => {
-                const unread = unreadCountByConversationId[id] ?? 0;
-                const isActive = id === activeConversationId;
-                const escId = escalationIdByConversationId[id];
-                const label =
-                  (escId ? escalationsById[escId]?.lastUserMessage : undefined)?.trim() || shortId(id);
-                return (
-                  <button
-                    key={id}
-                    onClick={() => {
-                      setActiveConversation(id);
-                      clearUnread(id);
-                      void markConversationRead(id);
-                    }}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs shrink-0",
-                      isActive ? "bg-muted border-border" : "bg-background hover:bg-muted/40 border-border/60",
-                    )}
-                  >
-                    <span className="font-medium">{label}</span>
-                    {unread > 0 && (
-                      <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
-                        {unread}
-                      </span>
-                    )}
-                    <span
-                      className="opacity-60 hover:opacity-100"
-                      onClick={(evt) => {
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                        closeConversationTab(id);
-                      }}
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 overflow-hidden flex min-w-0">
-          <div className="flex-1 overflow-hidden min-w-0">
-            <ScrollArea className="h-full">
-              <div className="p-6 space-y-4">
-                {!activeConversationId ? (
-                  <p className="type-body-muted">Choose an escalation from the left.</p>
-                ) : isLoadingHistory ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
-                        <Skeleton className="h-6 w-80 rounded-2xl" />
-                      </div>
-                    ))}
-                  </div>
-                ) : activeMessages.length === 0 ? (
-                  <p className="type-body-muted">No messages yet.</p>
-                ) : (
-                  activeMessages.map((m, idx) => {
-                    const isUser = m.senderType === "USER";
-                    const isAgent = m.senderType === "AGENT";
-                    const isAssistant = m.senderType === "ASSISTANT";
-                    const isSystem = m.senderType === "SYSTEM";
-
-                    return (
-                      <div
-                        key={m.id || `${m.conversationId}-${m.sentAt.getTime()}-${idx}`}
-                        className={cn(
-                          "flex",
-                          isUser ? "justify-start" : "justify-end",
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm",
-                            isUser && "bg-card border rounded-tl-sm",
-                            isAgent && "bg-primary text-primary-foreground rounded-tr-sm",
-                            isAssistant && "bg-muted text-foreground border",
-                            isSystem && "bg-background text-muted-foreground border border-dashed text-xs",
-                          )}
-                        >
-                          <div className="whitespace-pre-wrap break-words">
-                            <MarkdownRenderer>{m.text}</MarkdownRenderer>
-                          </div>
-                          <div
-                            className={cn(
-                              "mt-1 text-[10px] opacity-70 tabular-nums",
-                              isAgent ? "text-primary-foreground/80 text-right" : "text-muted-foreground",
-                            )}
-                          >
-                            {m.senderType} •{" "}
-                            {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-
-          <div
-            className={cn(
-              "shrink-0 overflow-hidden transition-all duration-200",
-              infoOpen && activeConversationId ? "w-80 border-l" : "w-0",
-            )}
-            aria-hidden={!infoOpen}
-          >
-            <div className="h-full bg-background">
-              <div className="px-4 py-3 border-b flex items-center justify-between">
-                <div className="text-sm font-medium">Info</div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Close info"
-                  onClick={() => setInfoOpen(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <ScrollArea className="h-full">
-                <div className="p-4 space-y-4 text-sm">
-                  {!activeConversationId ? (
-                    <div className="text-xs text-muted-foreground">No conversation selected.</div>
-                  ) : (
-                    <>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">Conversation</div>
-                        <div className="flex items-center justify-between gap-2">
-                          <code className="text-xs break-all">{activeConversationId}</code>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Copy conversation id"
-                            onClick={() => copyText(activeConversationId)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      {activeEscalationId && (
+                <ScrollArea className="h-full">
+                  <div className="p-4 space-y-4 text-sm">
+                    {!activeConversationId ? (
+                      <div className="text-xs text-muted-foreground">No conversation selected.</div>
+                    ) : (
+                      <>
                         <div className="space-y-2">
-                          <div className="text-xs text-muted-foreground">Escalation</div>
+                          <div className="text-xs text-muted-foreground">Conversation</div>
                           <div className="flex items-center justify-between gap-2">
-                            <code className="text-xs break-all">{activeEscalationId}</code>
+                            <code className="text-xs break-all">{activeConversationId}</code>
                             <Button
                               variant="ghost"
                               size="icon"
-                              aria-label="Copy escalation id"
-                              onClick={() => copyText(activeEscalationId)}
+                              aria-label="Copy conversation id"
+                              onClick={() => copyText(activeConversationId)}
                             >
                               <Copy className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
-                      )}
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <div className="text-xs text-muted-foreground">Channel</div>
-                          <div className="mt-1 flex items-center gap-2">
-                            {getChannelIcon(activeEscalation?.channel)}
-                            <span className="text-xs">
-                              {String(activeEscalation?.channel || "WIDGET").toUpperCase()}
-                            </span>
+                        {activeEscalationId && (
+                          <div className="space-y-2">
+                            <div className="text-xs text-muted-foreground">Escalation</div>
+                            <div className="flex items-center justify-between gap-2">
+                              <code className="text-xs break-all">{activeEscalationId}</code>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                aria-label="Copy escalation id"
+                                onClick={() => copyText(activeEscalationId)}
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <div className="text-xs text-muted-foreground">Channel</div>
+                            <div className="mt-1 flex items-center gap-2">
+                              {getChannelIcon(activeEscalation?.channel)}
+                              <span className="text-xs">
+                                {String(activeEscalation?.channel || "WIDGET").toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-muted-foreground">Status</div>
+                            <div className="mt-1 text-xs">
+                              {String(activeEscalation?.status ?? activeState?.status ?? "—")}
+                            </div>
                           </div>
                         </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">Status</div>
-                          <div className="mt-1 text-xs">
-                            {String(activeEscalation?.status ?? activeState?.status ?? "—")}
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <div className="text-xs text-muted-foreground">Assigned agent</div>
+                            <div className="mt-1 text-xs">
+                              {activeEscalation?.agentUserId
+                                ? shortId(activeEscalation.agentUserId)
+                                : activeState?.assignedAgentUserId
+                                  ? shortId(activeState.assignedAgentUserId)
+                                  : "—"}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-muted-foreground">WS</div>
+                            <div className="mt-1 text-xs">{connectionState}</div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <div className="text-xs text-muted-foreground">Assigned agent</div>
-                          <div className="mt-1 text-xs">
-                            {activeEscalation?.agentUserId
-                              ? shortId(activeEscalation.agentUserId)
-                              : activeState?.assignedAgentUserId
-                                ? shortId(activeState.assignedAgentUserId)
-                                : "—"}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">WS</div>
-                          <div className="mt-1 text-xs">{connectionState}</div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">Reason</div>
-                        <div className="text-xs whitespace-pre-wrap break-words">
-                          {activeEscalation?.reason || activeState?.reason || "—"}
-                        </div>
-                      </div>
-
-                      {activeEscalation && (
                         <div className="space-y-2">
-                          <div className="text-xs text-muted-foreground">Timestamps</div>
-                          <div className="text-xs space-y-1">
-                            <div>
-                              Requested:{" "}
-                              <span className="text-muted-foreground">
-                                {activeEscalation.requestedAt ? new Date(activeEscalation.requestedAt).toLocaleString() : "—"}
-                              </span>
-                            </div>
-                            <div>
-                              Accepted:{" "}
-                              <span className="text-muted-foreground">
-                                {(activeEscalation as any).acceptedAt
-                                  ? new Date((activeEscalation as any).acceptedAt).toLocaleString()
-                                  : "—"}
-                              </span>
-                            </div>
-                            <div>
-                              Resolved:{" "}
-                              <span className="text-muted-foreground">
-                                {(activeEscalation as any).resolvedAt
-                                  ? new Date((activeEscalation as any).resolvedAt).toLocaleString()
-                                  : "—"}
-                              </span>
-                            </div>
+                          <div className="text-xs text-muted-foreground">Reason</div>
+                          <div className="text-xs whitespace-pre-wrap break-words">
+                            {activeEscalation?.reason || activeState?.reason || "—"}
                           </div>
                         </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-          </div>
-        </div>
 
-        <div className="border-t bg-background px-6 py-4">
-          <div className="mb-2 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn("h-7 px-2 text-xs", !isPreview && "bg-muted")}
-                onClick={() => setIsPreview(false)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn("h-7 px-2 text-xs", isPreview && "bg-muted")}
-                onClick={() => setIsPreview(true)}
-              >
-                Preview
-              </Button>
+                        {activeEscalation && (
+                          <div className="space-y-2">
+                            <div className="text-xs text-muted-foreground">Timestamps</div>
+                            <div className="text-xs space-y-1">
+                              <div>
+                                Requested:{" "}
+                                <span className="text-muted-foreground">
+                                  {activeEscalation.requestedAt ? new Date(activeEscalation.requestedAt).toLocaleString() : "—"}
+                                </span>
+                              </div>
+                              <div>
+                                Accepted:{" "}
+                                <span className="text-muted-foreground">
+                                  {(activeEscalation as any).acceptedAt
+                                    ? new Date((activeEscalation as any).acceptedAt).toLocaleString()
+                                    : "—"}
+                                </span>
+                              </div>
+                              <div>
+                                Resolved:{" "}
+                                <span className="text-muted-foreground">
+                                  {(activeEscalation as any).resolvedAt
+                                    ? new Date((activeEscalation as any).resolvedAt).toLocaleString()
+                                    : "—"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
             </div>
           </div>
-          <div className="flex items-end gap-2">
-            <div className="flex-1">
-              {isPreview ? (
-                <div className="min-h-[80px] rounded-md border bg-muted/30 p-3 text-sm">
-                  <MarkdownRenderer>{draft || "*No content to preview*"}</MarkdownRenderer>
-                </div>
-              ) : (
-                <Textarea
-                  placeholder={
-                    activeConversationId
-                      ? canSendInActiveConversation
-                        ? "Type a message…"
-                        : "Claim this chat to reply"
-                      : "Select a conversation"
-                  }
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  disabled={!activeConversationId || !canSendInActiveConversation}
-                  className="min-h-[80px] resize-none"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      onSend();
+
+          <div className="border-t bg-card px-6 py-4">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn("h-7 px-2 text-xs", !isPreview && "bg-muted")}
+                  onClick={() => setIsPreview(false)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn("h-7 px-2 text-xs", isPreview && "bg-muted")}
+                  onClick={() => setIsPreview(true)}
+                >
+                  Preview
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-end gap-2">
+              <div className="flex-1">
+                {isPreview ? (
+                  <div className="min-h-[80px] rounded-md border bg-muted/30 p-3 text-sm">
+                    <MarkdownRenderer>{draft || "*No content to preview*"}</MarkdownRenderer>
+                  </div>
+                ) : (
+                  <Textarea
+                    placeholder={
+                      activeConversationId
+                        ? canSendInActiveConversation
+                          ? "Type a message…"
+                          : "Claim this chat to reply"
+                        : "Select a conversation"
                     }
-                  }}
-                />
-              )}
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    disabled={!activeConversationId || !canSendInActiveConversation}
+                    className="min-h-[80px] resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        onSend();
+                      }
+                    }}
+                  />
+                )}
+              </div>
+              <Button
+                className="gap-2"
+                disabled={
+                  !activeConversationId ||
+                  !canSendInActiveConversation ||
+                  !draft.trim() ||
+                  connectionState !== ConnectionState.CONNECTED
+                }
+                onClick={onSend}
+              >
+                <Send className="h-4 w-4" />
+                Send
+              </Button>
             </div>
-            <Button
-              className="gap-2"
-              disabled={
-                !activeConversationId ||
-                !canSendInActiveConversation ||
-                !draft.trim() ||
-                connectionState !== ConnectionState.CONNECTED
-              }
-              onClick={onSend}
-            >
-              <Send className="h-4 w-4" />
-              Send
-            </Button>
+            {activeConversationId && (
+              <div className="mt-2 text-xs text-muted-foreground">
+                Channel: <span className="font-medium">{String(activeEscalation?.channel || "WIDGET").toUpperCase()}</span>
+              </div>
+            )}
           </div>
-          {activeConversationId && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              Channel: <span className="font-medium">{String(activeEscalation?.channel || "WIDGET").toUpperCase()}</span>
-            </div>
-          )}
         </div>
       </div>
     </div>
