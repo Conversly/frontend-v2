@@ -1,6 +1,7 @@
 "use client";
 
 import { UserPlus, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 import {
     Card,
     CardContent,
@@ -121,23 +122,6 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>If no human is available</Label>
-                        <Select
-                            value={state.fallbackAction}
-                            onValueChange={(value: any) => updateState({ fallbackAction: value })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select fallback" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Collect email">Collect email</SelectItem>
-                                <SelectItem value="Create ticket">Create ticket</SelectItem>
-                                <SelectItem value="Notify business owner">Notify business owner</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="grid gap-2">
                         <Label>Additional Context (Your Own Words)</Label>
                         <Textarea
                             placeholder="e.g. Only escalate for billing issues if they mention 'refund' twice."
@@ -156,7 +140,13 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={onGenerate}
+                                onClick={() => {
+                                    if (!state.enabled) {
+                                        toast.error("Please enable Human Handoff first to generate a prompt.");
+                                        return;
+                                    }
+                                    onGenerate();
+                                }}
                                 disabled={isGenerating}
                                 className="h-8 border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
                             >

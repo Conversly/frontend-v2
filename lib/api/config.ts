@@ -237,7 +237,13 @@ export const API = {
       BASE_URL: () => "/leads",
       CREATE: allMode(() => "/"),   //POST
       GET_LEADS: allMode(() => "/"), //GET
-    }
+    },
+    LEAD_FORMS: {
+      BASE_URL: () => "/lead-forms",
+      GET_CONFIG: allMode(() => "/:chatbotId"),
+      UPSERT: devMode(() => "/"),
+      SUBMIT: allMode(() => "/submit"),
+    },
   },
 };
 

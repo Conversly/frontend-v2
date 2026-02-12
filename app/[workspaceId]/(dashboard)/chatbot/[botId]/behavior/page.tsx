@@ -7,12 +7,13 @@ import { Loader2, Save, Sparkles, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // API
 import { getChatbot, updateChatbot } from "@/lib/api/chatbot";
 import { getWidgetConfig } from "@/lib/api/deploy";
+import { getLeadFormConfig, upsertLeadFormConfig } from "@/lib/api/lead-forms";
 import { IdentityCard } from "@/components/behaviour/IdentityCard";
-import { StyleCard } from "@/components/behaviour/StyleCard";
 import { HandoffCard } from "@/components/behaviour/HandoffCard";
 import { LeadGenCard } from "@/components/behaviour/LeadGenCard";
 import { GuardrailsCard } from "@/components/behaviour/GuardrailsCard";
@@ -33,6 +34,7 @@ export default function BehaviourPage() {
 
     // Local UI State
     const [behaviour, setBehaviour] = useState<BehaviourState>(DEFAULT_BEHAVIOUR_STATE);
+    const [activeTab, setActiveTab] = useState("identity");
 
     // Data State
     const [isLoading, setIsLoading] = useState(true);
@@ -50,12 +52,14 @@ export default function BehaviourPage() {
             setIsLoading(true);
             try {
                 // Load chatbot, widget config, and ALL prompts
-                const [chatbotData, widgetData, widgetPrompt, leadPrompt, handoffPrompt] = await Promise.all([
+                // Also load Lead Form
+                const [chatbotData, widgetData, widgetPrompt, leadPrompt, handoffPrompt, leadForm] = await Promise.all([
                     getChatbot(workspaceId, botId),
                     getWidgetConfig(botId),
                     getChannelPrompt(botId, "WIDGET").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "LEAD_GENERATION").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "ESCALATION").catch(() => ({ systemPrompt: "" })),
+                    getLeadFormConfig(botId).catch(() => null),
                 ]);
 
                 // Initialize State
@@ -73,9 +77,44 @@ export default function BehaviourPage() {
                     },
                     leadGen: {
                         ...prev.leadGen,
-                        enabled: chatbotData.leadGenerationEnabled ?? false, // Sync with backend flag
-                        strategy: "Passive (intent-based)",
+                        form: leadForm?.data?.data || {
+                            id: "", // Will be assigned on create if empty, or ignored
+                            chatbotId: botId,
+                            title: "Contact Us",
+                            subtitle: "We'll get back to you shortly",
+                            ctaText: "Send Message",
+                            successMessage: "Thanks! We received your message.",
+                            isEnabled: chatbotData.leadGenerationEnabled ?? false,
+                            fields: [
+                                {
+                                    id: "default_name",
+                                    label: "Name",
+                                    type: "text",
+                                    required: true,
+                                    position: 0,
+                                    systemField: "name",
+                                    formId: ""
+                                },
+                                {
+                                    id: "default_email",
+                                    label: "Email",
+                                    type: "email",
+                                    required: true,
+                                    position: 1,
+                                    systemField: "email",
+                                    formId: ""
+                                }
+                            ],
+                            triggers: [],
+                            createdAt: new Date(),
+                            updatedAt: new Date()
+                        },
                         systemPrompt: leadPrompt?.systemPrompt || "",
+                        leadConfig: {
+                            ...prev.leadGen.leadConfig,
+                            pageTriggers: leadForm?.data?.data?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
+                            keywords: leadForm?.data?.data?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
+                        }
                     },
                     mainSystemPrompt: widgetPrompt?.systemPrompt || "",
                 }));
@@ -96,34 +135,96 @@ export default function BehaviourPage() {
 
         setIsSaving(true);
         try {
-            // 1. Update Chatbot Settings (Flags)
-            await updateChatbot({
-                id: botId,
-                workspaceId,
-                leadGenerationEnabled: behaviour.leadGen.enabled,
-                escalationEnabled: behaviour.handoff.enabled,
-            });
+            const promises: Promise<any>[] = [];
 
-            // 2. Save System Prompts (All 3 channels)
-            await Promise.all([
-                upsertChannelPrompt({
-                    chatbotId: botId,
-                    channel: "WIDGET",
-                    systemPrompt: behaviour.mainSystemPrompt,
-                }),
-                upsertChannelPrompt({
-                    chatbotId: botId,
-                    channel: "LEAD_GENERATION",
-                    systemPrompt: behaviour.leadGen.systemPrompt,
-                }),
-                upsertChannelPrompt({
-                    chatbotId: botId,
-                    channel: "ESCALATION",
-                    systemPrompt: behaviour.handoff.systemPrompt,
-                })
-            ]);
+            // 1. IDENTITY TAB
+            if (activeTab === "identity") {
+                // Save Main Widget Prompt
+                promises.push(
+                    upsertChannelPrompt({
+                        chatbotId: botId,
+                        channel: "WIDGET",
+                        systemPrompt: behaviour.mainSystemPrompt,
+                    })
+                );
+                // Note: Chatbot name update (behaviour.identity.aiName) would happen here if API supported it
+                // Currently only name is loaded, not saved back to chatbot object in this flow
+            }
 
-            toast.success("Behaviour saved successfully!");
+            // 2. LEAD GEN TAB
+            if (activeTab === "lead-gen") {
+                // Update Chatbot Flag
+                promises.push(
+                    updateChatbot({
+                        id: botId,
+                        workspaceId,
+                        leadGenerationEnabled: behaviour.leadGen.form?.isEnabled ?? false,
+                    })
+                );
+
+                // Save Lead Prompt
+                promises.push(
+                    upsertChannelPrompt({
+                        chatbotId: botId,
+                        channel: "LEAD_GENERATION",
+                        systemPrompt: behaviour.leadGen.systemPrompt,
+                    })
+                );
+
+                // Save Lead Form
+                if (behaviour.leadGen.form) {
+                    promises.push(upsertLeadFormConfig({
+                        chatbotId: botId,
+                        form: {
+                            id: behaviour.leadGen.form.id || undefined,
+                            title: behaviour.leadGen.form.title,
+                            subtitle: behaviour.leadGen.form.subtitle || undefined,
+                            ctaText: behaviour.leadGen.form.ctaText || undefined,
+                            successMessage: behaviour.leadGen.form.successMessage || undefined,
+                            isEnabled: behaviour.leadGen.form.isEnabled,
+                            pageTriggers: behaviour.leadGen.leadConfig.pageTriggers.split(",").map(s => s.trim()).filter(Boolean),
+                            keywordTriggers: behaviour.leadGen.leadConfig.keywords.split(",").map(s => s.trim()).filter(Boolean)
+                        },
+                        fields: behaviour.leadGen.form.fields.map((f, i) => ({
+                            ...f,
+                            position: i,
+                            id: f.id.startsWith("temp_") ? undefined : f.id,
+                            placeholder: f.placeholder || undefined,
+                            options: f.options || undefined,
+                            systemField: f.systemField || undefined
+                        })),
+                        triggers: behaviour.leadGen.form.triggers.map(t => ({
+                            ...t,
+                            id: t.id.startsWith("temp_") ? undefined : t.id
+                        }))
+                    }));
+                }
+            }
+
+            // 3. HANDOFF TAB
+            if (activeTab === "handoff") {
+                // Update Chatbot Flag
+                promises.push(
+                    updateChatbot({
+                        id: botId,
+                        workspaceId,
+                        escalationEnabled: behaviour.handoff.enabled,
+                    })
+                );
+
+                // Save Handoff Prompt
+                promises.push(
+                    upsertChannelPrompt({
+                        chatbotId: botId,
+                        channel: "ESCALATION",
+                        systemPrompt: behaviour.handoff.systemPrompt,
+                    })
+                );
+            }
+
+            await Promise.all(promises);
+
+            toast.success("Changes saved successfully!");
         } catch (error) {
             console.error("Failed to save behaviour:", error);
             toast.error("Failed to save changes");
@@ -216,7 +317,7 @@ export default function BehaviourPage() {
                             </div>
                             {/* ... other summary items ... */}
                             <div className="flex items-center gap-2">
-                                {behaviour.leadGen.enabled ? (
+                                {behaviour.leadGen.form?.isEnabled ? (
                                     <span className="text-green-500">✔</span>
                                 ) : <span className="text-muted-foreground">✖</span>} Capture leads
                             </div>
@@ -228,46 +329,56 @@ export default function BehaviourPage() {
                 </div>
 
                 <div className="space-y-6 pb-20">
-                    {/* 1. Identity */}
-                    <IdentityCard
-                        state={behaviour.identity}
-                        onChange={(s) => setBehaviour(prev => ({ ...prev, identity: s }))}
-                        systemPrompt={behaviour.mainSystemPrompt}
-                        onSystemPromptChange={(p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
-                        onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
-                        isGenerating={isGeneratingMain}
-                    />
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="grid w-full grid-cols-3">
+                            <TabsTrigger value="identity">Identity</TabsTrigger>
+                            <TabsTrigger value="lead-gen">Lead generation</TabsTrigger>
+                            <TabsTrigger value="handoff">Human Handoff</TabsTrigger>
+                        </TabsList>
 
-                    {/* 2. Conversation Style */}
-                    <StyleCard
-                        state={behaviour.style}
-                        onChange={(s) => setBehaviour(prev => ({ ...prev, style: s }))}
-                    />
+                        {/* 1. Identity & Style (The Master Prompt) */}
+                        <TabsContent value="identity" className="mt-6">
+                            <IdentityCard
+                                identity={behaviour.identity}
+                                onIdentityChange={(s) => setBehaviour(prev => ({ ...prev, identity: s }))}
+                                style={behaviour.style}
+                                onStyleChange={(s) => setBehaviour(prev => ({ ...prev, style: s }))}
+                                systemPrompt={behaviour.mainSystemPrompt}
+                                onSystemPromptChange={(p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
+                                onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
+                                isGenerating={isGeneratingMain}
+                            />
+                        </TabsContent>
 
-                    {/* 3. Human Handoff */}
-                    <HandoffCard
-                        state={behaviour.handoff}
-                        onChange={(s) => setBehaviour(prev => ({ ...prev, handoff: s }))}
-                        onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => setBehaviour(prev => ({
-                            ...prev,
-                            handoff: { ...prev.handoff, systemPrompt: p }
-                        })))}
-                        isGenerating={isGeneratingHandoff}
-                    />
+                        {/* 4. Lead Capture */}
+                        <TabsContent value="lead-gen" className="mt-6">
+                            <LeadGenCard
+                                state={behaviour.leadGen}
+                                onChange={(s) => setBehaviour(prev => ({ ...prev, leadGen: s }))}
+                                onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => setBehaviour(prev => ({
+                                    ...prev,
+                                    leadGen: { ...prev.leadGen, systemPrompt: p }
+                                })))}
+                                isGenerating={isGeneratingLead}
+                            />
+                        </TabsContent>
 
-                    {/* 4. Lead Capture */}
-                    <LeadGenCard
-                        state={behaviour.leadGen}
-                        onChange={(s) => setBehaviour(prev => ({ ...prev, leadGen: s }))}
-                        onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => setBehaviour(prev => ({
-                            ...prev,
-                            leadGen: { ...prev.leadGen, systemPrompt: p }
-                        })))}
-                        isGenerating={isGeneratingLead}
-                    />
+                        {/* 3. Human Handoff */}
+                        <TabsContent value="handoff" className="mt-6">
+                            <HandoffCard
+                                state={behaviour.handoff}
+                                onChange={(s) => setBehaviour(prev => ({ ...prev, handoff: s }))}
+                                onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => setBehaviour(prev => ({
+                                    ...prev,
+                                    handoff: { ...prev.handoff, systemPrompt: p }
+                                })))}
+                                isGenerating={isGeneratingHandoff}
+                            />
+                        </TabsContent>
+                    </Tabs>
 
                     {/* 5. Coming Soon */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
                         <GuardrailsCard />
                         <ActionsCard />
                     </div>

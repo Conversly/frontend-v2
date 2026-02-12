@@ -8,12 +8,12 @@ export const useGetLeadsInfinite = (query: GetLeadsQuery) => {
         queryKey: [
             QUERY_KEY.GET_LEADS,
             query.chatbotId,
-            query.topicId,
             query.source,
             query.startDate,
             query.endDate,
             query.search,
-            query.limit
+            query.limit,
+            query.topicId
         ],
         queryFn: async ({ pageParam = undefined }) => {
             const res = await getLeads({

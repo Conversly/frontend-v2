@@ -1,4 +1,5 @@
 import { ChannelType } from "@/types/prompt";
+import { LeadForm } from "@/types/lead-forms";
 
 export type RoleType =
     | "Customer Support Agent"
@@ -51,28 +52,38 @@ export interface HandoffState {
     systemPrompt: string;
 }
 
-export interface LeadGenState {
-    enabled: boolean;
-    strategy: "Passive (intent-based)" | "After helpful conversation" | "Early proactive";
-    whenToAsk: {
-        afterPricing: boolean;
-        afterRecommendation: boolean;
-        returningVisitor: boolean;
-        afterMessages: boolean;
-        messageCount: number;
-    };
-    infoToCollect: {
-        name: boolean;
-        email: boolean;
-        phone: boolean;
-        company: boolean;
+// ----------------------------------------------------------------------------
+// Lead Generation Configuration (UI State for Prompt Engineering)
+// ----------------------------------------------------------------------------
+
+
+
+export type LeadSensitivity = "Conservative" | "Balanced" | "Aggressive";
+
+export interface LeadGenConfig {
+    signals: {
+        pricing: boolean;
+        demo: boolean;
+        human: boolean;
+        started: boolean;
+        plans: boolean;
+        intent: boolean;
+        repeated: boolean;
         custom: boolean;
-        customQuestion: string;
     };
-    message: string;
-    additionalInstructions: string;
+    customSignal: string;
+    sensitivity: LeadSensitivity;
+    keywords: string; // Comma separated
+    pageTriggers: string; // Comma separated paths
+}
+
+export interface LeadGenState {
+    // We now use the full LeadForm object from API
+    form: LeadForm | null;
     // The actual prompt for LEAD_GENERATION channel
     systemPrompt: string;
+    // UI Configuration for generating the prompt
+    leadConfig: LeadGenConfig;
 }
 
 export interface BehaviourState {
@@ -115,26 +126,24 @@ export const DEFAULT_BEHAVIOUR_STATE: BehaviourState = {
         systemPrompt: "",
     },
     leadGen: {
-        enabled: true,
-        strategy: "Passive (intent-based)",
-        whenToAsk: {
-            afterPricing: true,
-            afterRecommendation: true,
-            returningVisitor: false,
-            afterMessages: false,
-            messageCount: 5,
-        },
-        infoToCollect: {
-            name: true,
-            email: true,
-            phone: false,
-            company: false,
-            custom: false,
-            customQuestion: "",
-        },
-        message: "I can send you the best plan for your needs — where should I send it?",
-        additionalInstructions: "",
+        form: null,
         systemPrompt: "",
+        leadConfig: {
+            signals: {
+                pricing: true,
+                demo: true,
+                human: true,
+                started: false,
+                plans: false,
+                intent: false,
+                repeated: false,
+                custom: false,
+            },
+            customSignal: "",
+            sensitivity: "Balanced",
+            keywords: "",
+            pageTriggers: "/pricing, /contact",
+        }
     },
     mainSystemPrompt: "",
 };
@@ -172,9 +181,18 @@ export function generateSystemPromptFromState(state: BehaviourState): string {
     }
 
     // 4. Lead Gen context (Instructions for when to ask for info)
-    // ... existing generateSystemPromptFromState ...
-    if (state.leadGen.strategy === "Passive (intent-based)") {
-        parts.push(`\nIf the user seems interested in moving forward or asks about pricing/plans, politely ask for their details using this message: "${state.leadGen.message}"`);
+    if (state.leadGen.form?.isEnabled) {
+        const fields = state.leadGen.form.fields
+            .map(f => f.label)
+            .join(", ");
+
+        parts.push(`\nLead Capture Strategy:`);
+        parts.push(`- The goal is to capture leads using the form titled "${state.leadGen.form.title}".`);
+        if (fields) parts.push(`- Information to collect: ${fields}`);
+        if (state.leadGen.form.ctaText) parts.push(`- Call to Action: "${state.leadGen.form.ctaText}"`);
+
+        // We can infer strategy from triggers if needed, but for now just general instruction
+        parts.push(`\nIf the user seems interested in moving forward, asks about pricing, or seems like a potential lead, politely ask for their details.`);
     }
 
     return parts.join("\n");
@@ -201,11 +219,38 @@ export function serializeStateForPromptGen(
         if (state.style.advancedInstructions) parts.push(`Instructions: ${state.style.advancedInstructions}`);
     }
 
-    if (section === "LEAD_GEN" && state.leadGen.enabled) {
-        parts.push(`Strategy: ${state.leadGen.strategy}`);
-        parts.push(`Collect: ${Object.entries(state.leadGen.infoToCollect).filter(([k, v]) => v && k !== 'customQuestion').map(([k]) => k).join(", ")}`);
-        if (state.leadGen.message) parts.push(`Ask Message: "${state.leadGen.message}"`);
-        if (state.leadGen.additionalInstructions) parts.push(`User Custom Instructions: ${state.leadGen.additionalInstructions}`);
+    if (section === "LEAD_GEN" && state.leadGen.form?.isEnabled) {
+        const form = state.leadGen.form;
+        const config = state.leadGen.leadConfig;
+
+        parts.push(`Lead Form Title: ${form.title}`);
+        parts.push(`Fields to Collect: ${form.fields.map(f => `${f.label}`).join(", ")}`);
+
+        // Lead Detection Logic
+        parts.push(`\n--- LEAD DETECTION STRATEGY ---`);
+
+        // 1. Signals & Goal
+        const signals = [];
+        if (config.signals.pricing) signals.push("asks about pricing/cost");
+        if (config.signals.demo) signals.push("asks for a demo");
+        if (config.signals.human) signals.push("asks for a human");
+        if (config.signals.started) signals.push("asks how to get started");
+        if (config.signals.plans) signals.push("asks about plans/packages");
+        if (config.signals.intent) signals.push("shows purchase intent");
+        if (config.signals.repeated) signals.push("asks repeated questions");
+        if (config.signals.custom && config.customSignal) signals.push(`Custom trigger: ${config.customSignal}`);
+
+        if (signals.length > 0) parts.push(`High Intent Signals (Trigger Form): ${signals.join(", ")}`);
+
+        // 2. Page Specifics
+        if (config.pageTriggers) parts.push(`Target Pages: ${config.pageTriggers}`);
+
+
+        // 3. Sensitivity
+        parts.push(`Aggressiveness: ${config.sensitivity}`);
+
+        // 4. Keywords
+        if (config.keywords) parts.push(`Mandatory Keywords: ${config.keywords}`);
     }
 
     if (section === "HANDOFF" && state.handoff.enabled) {
@@ -216,3 +261,4 @@ export function serializeStateForPromptGen(
 
     return parts.join("\n");
 }
+

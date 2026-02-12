@@ -85,8 +85,8 @@ export default function LeadsPage() {
     chatbotId,
     limit: 20,
     search: debouncedSearch || undefined,
-    topicId: topicId === "ALL" ? undefined : topicId,
     source: source === "ALL" ? undefined : (source as any),
+    topicId: topicId === "ALL" ? undefined : topicId,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
   });
@@ -267,11 +267,9 @@ export default function LeadsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead>Contact Info</TableHead>
+                <TableHead>Communication</TableHead>
                 <TableHead>Source</TableHead>
-                <TableHead>Topic</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
               </TableRow>
@@ -279,64 +277,75 @@ export default function LeadsPage() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                     Loading leads...
+                  </TableCell>
+                </TableRow>
+              ) : isError ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center text-destructive">
+                    Failed to load leads. Please try again.
                   </TableCell>
                 </TableRow>
               ) : leads.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                     No leads found matching your criteria.
                   </TableCell>
                 </TableRow>
               ) : (
-                leads.map((lead) => (
-                  <TableRow key={lead.id}>
-                    <TableCell className="font-medium">{lead.name}</TableCell>
-                    <TableCell>{lead.email || "-"}</TableCell>
-                    <TableCell>{lead.phoneNumber || "-"}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{lead.source}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {lead.topicName ? (
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-none">
-                          {lead.topicName}
-                        </Badge>
-                      ) : (
-                        "-"
-                      )}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => setSelectedLead(lead)}
-                          >
-                            See conversation
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
+                leads.map((lead) => {
+                  const name = lead.responses?.find(r => r.systemField === 'name')?.value || "Anonymous";
+                  const email = lead.responses?.find(r => r.systemField === 'email')?.value;
+                  const phone = lead.responses?.find(r => r.systemField === 'phone' || r.systemField === 'phoneNumber')?.value;
+                  return (
+                    <TableRow key={lead.id}>
+                      <TableCell className="font-medium">{name}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col text-sm">
+                          {email && <span>{email}</span>}
+                          {phone && <span className="text-muted-foreground text-xs">{phone}</span>}
+                          {!email && !phone && <span className="text-muted-foreground">-</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{lead.source}</Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {lead.createdAt
+                          ? format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")
+                          : lead.createdAtStr
+                            ? format(new Date(lead.createdAtStr), "MMM d, yyyy h:mm a")
+                            : "-"}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => setSelectedLead(lead)}
+                            >
+                              See conversation
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
               {isFetchingNextPage && (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={5}
                     className="h-12 text-center text-muted-foreground text-sm"
                   >
                     Loading more...
@@ -360,7 +369,9 @@ export default function LeadsPage() {
             <SheetTitle>Conversation</SheetTitle>
             {selectedLead && (
               <div className="text-sm text-muted-foreground">
-                Lead: <span className="font-medium text-foreground">{selectedLead.name}</span>
+                Lead: <span className="font-medium text-foreground">
+                  {selectedLead.responses?.find(r => r.systemField === 'name')?.value || "Anonymous"}
+                </span>
               </div>
             )}
           </SheetHeader>
