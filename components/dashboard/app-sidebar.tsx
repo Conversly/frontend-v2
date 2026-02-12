@@ -205,16 +205,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton
-                            onClick={toggleSidebar}
-                            tooltip="Collapse Sidebar"
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            <PanelLeft className="h-4 w-4" />
-                            <span>Collapse</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton

@@ -176,7 +176,7 @@ export default function LeadsPage() {
                 placeholder="Search name, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-9"
+                className="pl-9 h-9 bg-card"
               />
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function LeadsPage() {
           <div className="w-full md:w-40 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Source</Label>
             <Select value={source} onValueChange={setSource}>
-              <SelectTrigger className="h-9">
+              <SelectTrigger className="h-9 bg-card">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
               <SelectContent>
@@ -205,7 +205,7 @@ export default function LeadsPage() {
           <div className="w-full md:w-40 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Topic</Label>
             <Select value={topicId} onValueChange={setTopicId}>
-              <SelectTrigger className="h-9">
+              <SelectTrigger className="h-9 bg-card">
                 <SelectValue placeholder="All Topics" />
               </SelectTrigger>
               <SelectContent>
@@ -228,7 +228,7 @@ export default function LeadsPage() {
               <div className="relative">
                 <Input
                   type="date"
-                  className="h-9 w-36 px-2 text-sm"
+                  className="h-9 w-36 px-2 text-sm bg-card"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
@@ -239,7 +239,7 @@ export default function LeadsPage() {
               <div className="relative">
                 <Input
                   type="date"
-                  className="h-9 w-36 px-2 text-sm"
+                  className="h-9 w-36 px-2 text-sm bg-card"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
