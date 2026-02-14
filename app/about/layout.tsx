@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'About VerlyAI - Developer-First AI Agent Platform',
     description: 'Build and deploy LLM-based agents across multiple channels with a developer-first platform.',
-    url: 'https://dev.verlyai.xyz/about',
+    url: 'https://verlyai.xyz/about',
     type: 'website',
   },
   twitter: {

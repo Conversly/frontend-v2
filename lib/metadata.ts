@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 export const siteConfig = {
   name: 'VerlyAI',
   description: 'VerlyAI is an AI-powered customer support platform that helps businesses automate customer service using intelligent AI chatbots, voice assistants, and WhatsApp agents. It enables instant issue resolution, 24/7 availability, and seamless escalation to human support teams across web, voice, and messaging channels.',
-  url: 'https://dev.verlyai.xyz',
-  ogImage: 'https://dev.verlyai.xyz/verly_logo.png',
+  url: 'https://verlyai.xyz',
+  ogImage: 'https://verlyai.xyz/verly_logo.png',
   links: {
     twitter: 'https://x.com/VerlyAI',
     linkedin: 'https://www.linkedin.com/company/verlyai/',
@@ -94,7 +94,7 @@ export const organizationSchema = {
   applicationCategory: 'BusinessApplication',
   applicationSubCategory: 'Customer Support Automation',
   operatingSystem: 'Cloud, Web',
-  url: 'https://dev.verlyai.xyz',
+  url: 'https://verlyai.xyz',
   description:
     'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration.',
   offers: {
@@ -112,8 +112,8 @@ export const organizationSchema = {
   creator: {
     '@type': 'Organization',
     name: 'VerlyAI',
-    url: 'https://dev.verlyai.xyz',
-    logo: 'https://dev.verlyai.xyz/verly_logo.png',
+    url: 'https://verlyai.xyz',
+    logo: 'https://verlyai.xyz/verly_logo.png',
     sameAs: [
       'https://x.com/VerlyAI',
       'https://www.linkedin.com/company/verlyai/',
@@ -129,5 +129,5 @@ export const organizationSchema = {
     'Real-time analytics',
     'Custom knowledge base integration',
   ],
-  screenshot: 'https://dev.verlyai.xyz/verly_dashboard_preview.png',
+  screenshot: 'https://verlyai.xyz/verly_dashboard_preview.png',
 };

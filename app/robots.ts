@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/private/', '/dashboard/'],
         },
-        sitemap: 'https://dev.verlyai.xyz/sitemap.xml',
+        sitemap: 'https://verlyai.xyz/sitemap.xml',
     };
 }

@@ -12,4 +12,4 @@ Disallow: /auth/
 Disallow: /deletion/
 
 # Sitemap
-Sitemap: https://dev.verlyai.xyz/sitemap.xml
+Sitemap: https://verlyai.xyz/sitemap.xml

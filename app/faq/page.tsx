@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'FAQ - Developer Guide & Platform Questions | VerlyAI',
     description: 'Technical FAQs about VerlyAI: Latency specs, LLM model support, and API integration.',
-    url: 'https://dev.verlyai.xyz/faq',
+    url: 'https://verlyai.xyz/faq',
   },
 };
 

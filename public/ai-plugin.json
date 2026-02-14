@@ -9,9 +9,9 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://dev.verlyai.xyz"
+    "url": "https://verlyai.xyz"
   },
-  "logo_url": "https://dev.verlyai.xyz/verly_logo.png",
+  "logo_url": "https://verlyai.xyz/verly_logo.png",
   "contact_email": "support@verlyai.com",
-  "legal_info_url": "https://dev.verlyai.xyz/terms"
+  "legal_info_url": "https://verlyai.xyz/terms"
 }

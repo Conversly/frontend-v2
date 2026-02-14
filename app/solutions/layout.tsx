@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Solutions - AI Agents for Every Industry | VerlyAI',
     description: 'Deploy production-ready AI agents for any industry with our developer-first platform.',
-    url: 'https://dev.verlyai.xyz/solutions',
+    url: 'https://verlyai.xyz/solutions',
     type: 'website',
   },
   twitter: {

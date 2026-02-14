@@ -995,7 +995,7 @@ this is how i am storing it as of now :
             "Cookie": "ext_name=ojplmecpdpgccookcobabopnaifgidhf; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTc3MTI0MDc3OH0.RXLErVVzGwgbtNcrPT8xUp-3_tGQWMPo1V6KKitwhKI; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTgwMDIwNjM3OH0.ZyJ6HhyNEIviuACxstcDXW2n8ZjmrCQNrGUlwhpnBbo"
         },
         "queryParams": {},
-        "bodyTemplate": "{\"chatbotId\":\"g2qq9wiocg17lyd5hse821bf\",\"partial\":{\"styles\":{\"appearance\":\"light\",\"displayName\":\"VerlyAI General AI Agent\",\"primaryColor\":\"#062c59\",\"widgetBubbleColour\":\"#062c59\",\"PrimaryIcon\":\"https://dev.verlyai.xyz/verly_logo.png\",\"widgeticon\":\"chat\",\"alignChatButton\":\"right\",\"showButtonText\":false,\"buttonText\":\"Chat with us\",\"messagePlaceholder\":\"Message...\",\"footerText\":\"\",\"dismissableNoticeText\":\"\",\"chatWidth\":\"350px\",\"chatHeight\":\"500px\",\"autoShowInitial\":false,\"autoShowDelaySec\":3,\"collectUserFeedback\":false,\"regenerateMessages\":true,\"continueShowingSuggestedMessages\":false},\"onlyAllowOnAddedDomains\":false,\"initialMessage\":\"Hi\\u0021 👋 How can I help you with VerlyAI General AI Agent today?\",\"suggestedMessages\":[\"How can VerlyAI automate my customer support?\",\"What channels can VerlyAI agents deploy on?\",\"Can VerlyAI broadcast promotional messages on WhatsApp?\",\"How does VerlyAI connect to my existing data?\"]},\"mode\":\"dev\"}",
+        "bodyTemplate": "{\"chatbotId\":\"g2qq9wiocg17lyd5hse821bf\",\"partial\":{\"styles\":{\"appearance\":\"light\",\"displayName\":\"VerlyAI General AI Agent\",\"primaryColor\":\"#062c59\",\"widgetBubbleColour\":\"#062c59\",\"PrimaryIcon\":\"https://verlyai.xyz/verly_logo.png\",\"widgeticon\":\"chat\",\"alignChatButton\":\"right\",\"showButtonText\":false,\"buttonText\":\"Chat with us\",\"messagePlaceholder\":\"Message...\",\"footerText\":\"\",\"dismissableNoticeText\":\"\",\"chatWidth\":\"350px\",\"chatHeight\":\"500px\",\"autoShowInitial\":false,\"autoShowDelaySec\":3,\"collectUserFeedback\":false,\"regenerateMessages\":true,\"continueShowingSuggestedMessages\":false},\"onlyAllowOnAddedDomains\":false,\"initialMessage\":\"Hi\\u0021 👋 How can I help you with VerlyAI General AI Agent today?\",\"suggestedMessages\":[\"How can VerlyAI automate my customer support?\",\"What channels can VerlyAI agents deploy on?\",\"Can VerlyAI broadcast promotional messages on WhatsApp?\",\"How does VerlyAI connect to my existing data?\"]},\"mode\":\"dev\"}",
         "responseMapping": "",
         "successCodes": [
             200
@@ -1902,9 +1902,9 @@ curl 'https://terminal.apps.verlyai.xyz/api/v1/deploy/widget/external?chatbotId=
   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
   -b 'ext_name=ojplmecpdpgccookcobabopnaifgidhf; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTc3MTI0MDc3OH0.RXLErVVzGwgbtNcrPT8xUp-3_tGQWMPo1V6KKitwhKI; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTgwMDIwNjM3OH0.ZyJ6HhyNEIviuACxstcDXW2n8ZjmrCQNrGUlwhpnBbo' \
   -H 'if-none-match: W/"3f9-ODWdVZ2C5wKDWLDssPMyeDB1J2o"' \
-  -H 'origin: https://dev.verlyai.xyz' \
+  -H 'origin: https://verlyai.xyz' \
   -H 'priority: u=1, i' \
-  -H 'referer: https://dev.verlyai.xyz/' \
+  -H 'referer: https://verlyai.xyz/' \
   -H 'sec-ch-ua: "Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
   -H 'sec-ch-ua-mobile: ?0' \
   -H 'sec-ch-ua-platform: "macOS"' \
@@ -2064,9 +2064,9 @@ curl 'https://terminal.apps.verlyai.xyz/api/v1/deploy/widget' \
   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
   -H 'content-type: application/json' \
   -b 'ext_name=ojplmecpdpgccookcobabopnaifgidhf; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTc3MTI0MDc3OH0.RXLErVVzGwgbtNcrPT8xUp-3_tGQWMPo1V6KKitwhKI; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTk4YjdiMy0zYTQyLTQ3NDAtYTg1Yy0xNTAzMGIzZjNkYjciLCJsYXN0TG9naW4iOiIyMDI2LTAxLTE3VDExOjE5OjM4Ljg2OFoiLCJpYXQiOjE3Njg2NDg3NzgsImV4cCI6MTgwMDIwNjM3OH0.ZyJ6HhyNEIviuACxstcDXW2n8ZjmrCQNrGUlwhpnBbo' \
-  -H 'origin: https://dev.verlyai.xyz' \
+  -H 'origin: https://verlyai.xyz' \
   -H 'priority: u=1, i' \
-  -H 'referer: https://dev.verlyai.xyz/' \
+  -H 'referer: https://verlyai.xyz/' \
   -H 'sec-ch-ua: "Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
   -H 'sec-ch-ua-mobile: ?0' \
   -H 'sec-ch-ua-platform: "macOS"' \
@@ -2074,7 +2074,7 @@ curl 'https://terminal.apps.verlyai.xyz/api/v1/deploy/widget' \
   -H 'sec-fetch-mode: cors' \
   -H 'sec-fetch-site: same-site' \
   -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36' \
-  --data-raw $'{"chatbotId":"g2qq9wiocg17lyd5hse821bf","partial":{"styles":{"appearance":"light","displayName":"VerlyAI General AI Agent","primaryColor":"#062c59","widgetBubbleColour":"#062c59","PrimaryIcon":"https://dev.verlyai.xyz/verly_logo.png","widgeticon":"chat","alignChatButton":"right","showButtonText":false,"buttonText":"Chat with us","messagePlaceholder":"Message...","footerText":"","dismissableNoticeText":"","chatWidth":"350px","chatHeight":"500px","autoShowInitial":false,"autoShowDelaySec":3,"collectUserFeedback":false,"regenerateMessages":true,"continueShowingSuggestedMessages":false},"onlyAllowOnAddedDomains":false,"initialMessage":"Hi\u0021 👋 How can I help you with VerlyAI General AI Agent today?","suggestedMessages":["How can VerlyAI automate my customer support?","What channels can VerlyAI agents deploy on?","Can VerlyAI broadcast promotional messages on WhatsApp?","How does VerlyAI connect to my existing data?"]},"mode":"dev"}'
+  --data-raw $'{"chatbotId":"g2qq9wiocg17lyd5hse821bf","partial":{"styles":{"appearance":"light","displayName":"VerlyAI General AI Agent","primaryColor":"#062c59","widgetBubbleColour":"#062c59","PrimaryIcon":"https://verlyai.xyz/verly_logo.png","widgeticon":"chat","alignChatButton":"right","showButtonText":false,"buttonText":"Chat with us","messagePlaceholder":"Message...","footerText":"","dismissableNoticeText":"","chatWidth":"350px","chatHeight":"500px","autoShowInitial":false,"autoShowDelaySec":3,"collectUserFeedback":false,"regenerateMessages":true,"continueShowingSuggestedMessages":false},"onlyAllowOnAddedDomains":false,"initialMessage":"Hi\u0021 👋 How can I help you with VerlyAI General AI Agent today?","suggestedMessages":["How can VerlyAI automate my customer support?","What channels can VerlyAI agents deploy on?","Can VerlyAI broadcast promotional messages on WhatsApp?","How does VerlyAI connect to my existing data?"]},"mode":"dev"}'
 
 
 for this?
