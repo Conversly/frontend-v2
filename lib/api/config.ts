@@ -130,6 +130,8 @@ export const API = {
       SEARCH_SOURCES: allMode(() => "/search-sources"),
       TOPIC: allMode(() => "/topic"),
       WIDGET_CONFIG: allMode(() => "/widget-config"),
+      CRAWL: allMode(() => "/crawl"),
+      MAP_SOURCES: allMode(() => "/map-sources"),
     },
     WHATSAPP: {
       BASE_URL: () => "/whatsapp",

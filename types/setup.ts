@@ -13,6 +13,7 @@ export interface InferPromptInput {
   chatbotId: string;
   websiteUrl: string;
   useCase?: string;
+  markdown?: string;
 }
 
 export interface InferPromptResponse {
@@ -41,6 +42,7 @@ export interface GenerateTopicsInput {
   chatbotId: string;
   websiteUrl: string;
   useCase?: string;
+  markdown?: string;
 }
 
 export interface Topic {
@@ -67,6 +69,7 @@ export interface BootstrapSetupResult {
   generateTopics?: GenerateTopicsResponse;
   searchSources?: SearchSourcesResponse;
   widgetConfig?: GenerateWidgetConfigResponse;
+  mapLinks?: string[];
   errors: {
     inferPrompt?: string;
     generateTopics?: string;
@@ -94,6 +97,29 @@ export interface GenerateWidgetConfigInput {
   websiteUrl: string;
   brandName: string;
   useCase?: string;
+  markdown?: string;
+}
+
+export interface CrawlContentInput {
+  chatbotId: string;
+  websiteUrl: string;
+}
+
+export interface CrawlContentResponse {
+  chatbotId: string;
+  websiteUrl: string;
+  markdown: string;
+  urls: string[];
+}
+
+export interface MapSourcesInput {
+  chatbotId: string;
+  websiteUrl: string;
+}
+
+export interface MapSourcesResponse {
+  searchSources: SearchSourcesResponse;
+  mapLinks: string[];
 }
 
 export interface GenerateWidgetConfigResponse {

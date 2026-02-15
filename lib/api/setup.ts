@@ -15,6 +15,10 @@ import {
   FetchSitemapResponse,
   GenerateWidgetConfigInput,
   GenerateWidgetConfigResponse,
+  CrawlContentInput,
+  CrawlContentResponse,
+  MapSourcesInput,
+  MapSourcesResponse,
 } from "@/types/setup";
 
 export const analyzeImage = async (
@@ -139,6 +143,44 @@ export const generateWidgetConfig = async (
   return res.data;
 };
 
+export const crawlContent = async (
+  input: CrawlContentInput
+): Promise<CrawlContentResponse> => {
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.CRAWL,
+    API.ENDPOINTS.SETUP.BASE_URL(),
+    {
+      method: "POST",
+      data: input,
+    },
+  ).then((r) => r.data) as ApiResponse<CrawlContentResponse>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
+export const mapSources = async (
+  input: MapSourcesInput
+): Promise<MapSourcesResponse> => {
+  const res = await guardedFetch(
+    API.ENDPOINTS.SETUP.MAP_SOURCES,
+    API.ENDPOINTS.SETUP.BASE_URL(),
+    {
+      method: "POST",
+      data: input,
+    },
+  ).then((r) => r.data) as ApiResponse<MapSourcesResponse>;
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return res.data;
+};
+
 /**
  * Runs setup calls with optimal parallelization:
  * 
@@ -153,17 +195,27 @@ export const bootstrapAgentSetup = async (
   const { chatbotId, websiteUrl, useCase, brandName } = input;
   const result: BootstrapSetupResult = { errors: {} };
 
-  // Step 1: Fire independent calls in parallel
-  const [promptR, topicsR, sourcesR] = await Promise.allSettled([
-    inferPrompt({ chatbotId, websiteUrl, useCase }),
-    generateTopics({ chatbotId, websiteUrl, useCase }),
-    searchSources({ chatbotId, websiteUrl }),
+  // Step 0: crawl once (blocking) to produce shared markdown context
+  let markdown = "";
+  try {
+    const crawlRes = await crawlContent({ chatbotId, websiteUrl });
+    markdown = crawlRes.markdown || "";
+  } catch (err: any) {
+    // If crawl fails, keep the current behavior as a fallback
+    result.errors.inferPrompt = err?.message || "Crawl failed";
+  }
+
+  // Step 1: Fire independent calls in parallel (map + infer + topics)
+  const [promptR, topicsR, mapR] = await Promise.allSettled([
+    inferPrompt({ chatbotId, websiteUrl, useCase, markdown: markdown || undefined }),
+    generateTopics({ chatbotId, websiteUrl, useCase, markdown: markdown || undefined }),
+    mapSources({ chatbotId, websiteUrl }),
   ]);
 
   if (promptR.status === "fulfilled") {
     result.inferPrompt = promptR.value;
   } else {
-    result.errors.inferPrompt = promptR.reason?.message || "Failed to infer prompt";
+    result.errors.inferPrompt = promptR.reason?.message || result.errors.inferPrompt || "Failed to infer prompt";
   }
 
   if (topicsR.status === "fulfilled") {
@@ -172,10 +224,11 @@ export const bootstrapAgentSetup = async (
     result.errors.generateTopics = topicsR.reason?.message || "Failed to generate topics";
   }
 
-  if (sourcesR.status === "fulfilled") {
-    result.searchSources = sourcesR.value;
+  if (mapR.status === "fulfilled") {
+    result.searchSources = mapR.value.searchSources;
+    result.mapLinks = mapR.value.mapLinks;
   } else {
-    result.errors.searchSources = sourcesR.reason?.message || "Failed to search sources";
+    result.errors.searchSources = mapR.reason?.message || "Failed to fetch map sources";
   }
 
   // Step 2: Generate widget config (depends on inferPrompt for brandName)
@@ -186,12 +239,12 @@ export const bootstrapAgentSetup = async (
       websiteUrl,
       brandName: finalBrandName,
       useCase,
+      markdown: markdown || undefined,
     });
   } catch (err: any) {
     result.errors.widgetConfig = err?.message || "Failed to generate widget config";
   }
 
-  // Check if all calls failed
   const allFailed =
     !result.inferPrompt &&
     !result.generateTopics &&
