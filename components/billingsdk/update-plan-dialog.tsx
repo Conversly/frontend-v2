@@ -16,8 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState, useCallback } from "react";
-import { useTheme } from "@/contexts/theme-context";
-import { getThemeStyles } from "@/lib/themes";
+import { useThemeStyles } from "@/lib/theme/hooks";
 
 export interface UpdatePlanDialogProps {
   currentPlan: Plan;
@@ -43,8 +42,7 @@ export function UpdatePlanDialog({
     undefined,
   );
   const [isOpen, setIsOpen] = useState(false);
-  const { currentTheme, previewDarkMode } = useTheme();
-  const themeStyles = getThemeStyles(currentTheme, previewDarkMode);
+  const themeStyles = useThemeStyles();
 
   const getCurrentPrice = useCallback(
     (plan: Plan) => (isYearly ? `${plan.yearlyPrice}` : `${plan.monthlyPrice}`),
