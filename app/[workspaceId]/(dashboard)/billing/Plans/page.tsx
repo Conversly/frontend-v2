@@ -1,0 +1,177 @@
+
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { PricingRedesign } from "@/components/billingsdk/pricing-redesign";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useWorkspace } from "@/contexts/workspace-context";
+import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
+
+import { useCheckout, usePlans } from "@/hooks/use-dodo";
+
+export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const { toast } = useToast();
+    const { workspaceId } = React.use(params);
+    const { accountId } = useWorkspace();
+    const { mutateAsync: createCheckout } = useCheckout();
+    const { data: fetchedPlans, isLoading: initialLoading } = usePlans();
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+    const loading = initialLoading || checkoutLoading;
+
+    useEffect(() => {
+        if (!fetchedPlans) return;
+
+        const processPlans = () => {
+            // Map backend plan data to Plan interface, merging with local config
+            const mappedPlans = fetchedPlans.map((p: any) => {
+                // Try to find matching config by ID or Name
+                const config = planConfig.find(
+                    (c) => c.id === p.id || c.title.toLowerCase() === p.name.toLowerCase()
+                );
+
+                // If prices array is empty or undefined, handle gracefully
+                const prices = p.prices || [];
+                const yearly = prices.find((pr: any) => pr.interval === 'year');
+
+                // Fix: Use monthlyPriceCents from the plan object if valid, otherwise fallback to config
+                const priceFromBackend = p.monthlyPriceCents !== undefined ? p.monthlyPriceCents / 100 : undefined;
+
+                const monthlyPrice = priceFromBackend !== undefined
+                    ? String(priceFromBackend)
+                    : (config?.monthlyPrice || "0");
+
+                const yearlyPrice = yearly ? String(yearly.amount / 100) : (config?.yearlyPrice || "0");
+
+                // Base plan object from config or default
+                const basePlan = config || {
+                    id: p.id,
+                    title: p.name,
+                    description: p.description || "Unlock powerful features",
+                    buttonText: "Get Started",
+                    features: [
+                        { name: `${p.creditsPerCycle} Credits per cycle`, icon: "check" }
+                    ],
+                    highlight: false
+                };
+
+                return {
+                    ...basePlan,
+                    id: p.id, // Ensure we use backend ID for checkout
+                    title: p.name, // Use backend name
+                    monthlyPrice,
+                    yearlyPrice,
+                    // Ensure features are preserved from config
+                    features: basePlan.features,
+                    highlight: basePlan.highlight || p.name.toLowerCase().includes('growth'),
+                } as Plan;
+            });
+
+            // Sort plans to match config order if possible
+            const sortedPlans = mappedPlans.sort((a: Plan, b: Plan) => {
+                const indexA = planConfig.findIndex(c => c.title.toLowerCase() === a.title.toLowerCase());
+                const indexB = planConfig.findIndex(c => c.title.toLowerCase() === b.title.toLowerCase());
+                return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+            });
+
+            setPlans(sortedPlans);
+        };
+
+        processPlans();
+    }, [fetchedPlans]);
+
+    useEffect(() => {
+        import("dodopayments-checkout").then(({ DodoPayments }) => {
+            DodoPayments.Initialize({
+                mode: "test",
+                displayType: "overlay",
+                onEvent: (event) => {
+                    console.log("Dodo Event:", event);
+                    if (event.event_type === "checkout.closed") {
+                        toast({
+                            title: "Checkout Closed",
+                            description: "You closed the checkout window."
+                        });
+                    }
+                    if (event.event_type === "checkout.error") {
+                        toast({
+                            title: "Checkout Error",
+                            description: (event.data as any)?.message || "An error occurred.",
+                            variant: "destructive"
+                        });
+                    }
+                },
+            });
+        });
+    }, [toast]);
+
+    const handlePlanSelect = async (planId: string, interval: "month" | "year") => {
+        try {
+            setCheckoutLoading(true);
+
+            const { url } = await createCheckout({
+                planId,
+                interval,
+                accountId
+            });
+
+            if (!url) {
+                throw new Error("No checkout URL returned");
+            }
+
+            const { DodoPayments } = await import("dodopayments-checkout");
+            DodoPayments.Checkout.open({
+                checkoutUrl: url,
+            });
+
+        } catch (error) {
+            console.error("Checkout failed", error);
+            toast({
+                title: "Checkout Failed",
+                description: "Could not initiate checkout. Please try again.",
+                variant: "destructive"
+            });
+        } finally {
+            setCheckoutLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="container py-20 px-4 mx-auto space-y-8">
+                <div className="text-center space-y-4">
+                    <Skeleton className="h-10 w-64 mx-auto" />
+                    <Skeleton className="h-6 w-96 mx-auto" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <Skeleton className="h-[500px] w-full rounded-2xl" />
+                    <Skeleton className="h-[500px] w-full rounded-2xl" />
+                    <Skeleton className="h-[500px] w-full rounded-2xl" />
+                </div>
+            </div>
+        );
+    }
+
+    if (plans.length === 0) {
+        // Fallback to showing config plans if API fails or returns empty? 
+        // Or just show empty state.
+        // Let's show empty state for now as per original code.
+        return (
+            <div className="container py-20 px-4 mx-auto text-center">
+                <h3 className="text-xl font-semibold mb-2">No plans available</h3>
+                <p className="text-muted-foreground">We could not load any plans at this time. Please check back later.</p>
+            </div>
+        );
+    }
+
+    return (
+        <PricingRedesign
+            plans={plans}
+            onPlanSelect={handlePlanSelect}
+        />
+    );
+
+}

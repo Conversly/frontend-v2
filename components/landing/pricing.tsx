@@ -1,8 +1,11 @@
 'use client';
-import { Check, Info, Star } from "lucide-react"
+import { Check, Info, Star, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { redirect } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { PRICING_PLANS } from "@/lib/constants/pricing";
+import { fetch } from "@/lib/api/axios";
 
 type PlanFeature = {
   text: string
@@ -11,6 +14,7 @@ type PlanFeature = {
 
 const pricingPlans = [
   {
+    key: 'STARTER',
     name: "Starter",
     priceMonthly: "$39",
     description: "Pay yearly (save 40%) — billed $468 yearly",
@@ -24,8 +28,10 @@ const pricingPlans = [
     stats: "4k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
+    ctaLoggedIn: "Upgrade to Starter",
   },
   {
+    key: 'GROWTH',
     name: "Growth",
     popular: true,
     priceMonthly: "$79",
@@ -43,28 +49,10 @@ const pricingPlans = [
     stats: "10k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
+    ctaLoggedIn: "Upgrade to Growth",
   },
-  // {
-  //   name: "Scale",
-  //   priceMonthly: "$259",
-  //   description: "Pay yearly (save 40%) — billed $3108 yearly",
-  //   features: [
-  //     { text: "Up to 3 chatbots", info: "Create and deploy up to 3 chatbots under your account." },
-  //     { text: "Up to 40k messages per month", info: "Included messages per month (usage limits apply)." },
-  //     { text: "Up to 50,000 pages", info: "Large training capacity for your data sources (pages are normalized units)." },
-  //     { text: "Up to 10 team members", info: "Invite more teammates to collaborate in the same workspace." },
-  //     { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
-  //     { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
-  //     { text: "Auto Refresh (Weekly)", info: "Automatically re-sync your sources on a weekly schedule." },
-  //     { text: "Auto Scan (Daily)", info: "Automatically scan for new/removed URLs and keep sources in sync." },
-  //     { text: "Webhook Support", info: "Send real-time events to your systems (messages, leads, escalations, etc.)." },
-  //   ],
-  //   gradient: "from-blue-500/10 via-indigo-500/10 to-purple-500/10",
-  //   stats: "40k",
-  //   statsLabel: "Messages / month",
-  //   cta: "Start a free trial",
-  // },
   {
+    key: 'ENTERPRISE',
     name: "Enterprise",
     priceMonthly: "Custom",
     description: "Custom pricing (volume-based)",
@@ -86,10 +74,58 @@ const pricingPlans = [
     stats: "Custom",
     statsLabel: "Plan",
     cta: "Contact us",
+    ctaLoggedIn: "Contact Sales",
   },
 ]
 
-export default function PricingSection() {
+interface PricingSectionProps {
+  accountId?: string; // If present, enables direct checkout mode
+}
+
+export default function PricingSection({ accountId }: PricingSectionProps) {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const handleCheckout = async (planKey: string) => {
+    if (!accountId) return; // Should allow default link behavior
+
+
+    // Find the plan config
+    const planConfig = PRICING_PLANS[planKey as keyof typeof PRICING_PLANS];
+    if (!planConfig) {
+      if (planKey === 'ENTERPRISE') {
+        window.location.href = "mailto:team@verlyai.xyz";
+        return;
+      }
+      return;
+    }
+
+    setLoadingPlan(planKey);
+    try {
+      // Direct API call using provided axios instance
+      const response = await fetch('/api/dodo/checkout', {
+        method: 'POST',
+        data: {
+          planId: planConfig.id,
+          interval: 'month', // Default to month, pending UI toggle implementation
+          accountId,
+        }
+      });
+
+      const data = response.data as any; // Cast for now
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to start checkout");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <section className="pt-12 lg:pt-40 pb-24 lg:pb-32 relative overflow-hidden px-4" id="pricing">
       {/* Background Effects */}
@@ -246,28 +282,63 @@ export default function PricingSection() {
                 </div>
 
                 {/* CTA Button - Always at bottom */}
-                <Link
-                  href={plan.name === "Enterprise" ? "mailto:team@verlyai.xyz" : "/login"}
-                  className={`
-                    w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold text-sm tracking-wide
-                    transition-all duration-300 relative overflow-hidden group/button
-                    ${plan.popular
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
-                      : "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:border-slate-800 dark:hover:bg-slate-800"
-                    }
-                  `}
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    {plan.cta}
-                    <motion.span
-                      className="inline-block"
-                      initial={{ x: 0 }}
-                      whileHover={{ x: 3 }}
-                    >
-                      →
-                    </motion.span>
-                  </span>
-                </Link>
+                {accountId ? (
+                  <button
+                    onClick={() => handleCheckout(plan.key)}
+                    disabled={loadingPlan === plan.key}
+                    className={`
+                     w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold text-sm tracking-wide
+                     transition-all duration-300 relative overflow-hidden group/button
+                     ${plan.popular
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
+                        : "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:border-slate-800 dark:hover:bg-slate-800"
+                      }
+                   `}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      {loadingPlan === plan.key ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          {plan.ctaLoggedIn || plan.cta}
+                          <motion.span
+                            className="inline-block"
+                            initial={{ x: 0 }}
+                            whileHover={{ x: 3 }}
+                          >
+                            →
+                          </motion.span>
+                        </>
+                      )}
+                    </span>
+                  </button>
+                ) : (
+                  <Link
+                    href={plan.name === "Enterprise" ? "mailto:team@verlyai.xyz" : `/register?plan=${plan.key.toLowerCase()}`}
+                    className={`
+                      w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold text-sm tracking-wide
+                      transition-all duration-300 relative overflow-hidden group/button
+                      ${plan.popular
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
+                        : "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:border-slate-800 dark:hover:bg-slate-800"
+                      }
+                    `}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      {plan.cta}
+                      <motion.span
+                        className="inline-block"
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 3 }}
+                      >
+                        →
+                      </motion.span>
+                    </span>
+                  </Link>
+                )}
               </motion.div>
             </motion.div>
           ))}

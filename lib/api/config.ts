@@ -244,6 +244,16 @@ export const API = {
       UPSERT: devMode(() => "/"),
       SUBMIT: allMode(() => "/submit"),
     },
+    SUBSCRIPTION: {
+      BASE_URL: () => "/subscription",
+    },
+    DODO: {
+      BASE_URL: () => "/dodo",
+      CHECKOUT: allMode(() => "/checkout"),
+      PORTAL: allMode(() => "/portal"),
+      USAGE: allMode(() => "/usage/:accountId"),
+      PLANS: allMode(() => "/plans"),
+    },
   },
 };
 

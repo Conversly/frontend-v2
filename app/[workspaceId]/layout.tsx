@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { WorkspaceProvider } from "@/contexts/workspace-context";
+import { SubscriptionProvider } from "@/contexts/subscription-context"; // [NEW]
 import type { WorkspaceContext } from "@/types/permissions";
 import { getWorkspaceContext } from "@/lib/api/workspaces";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
@@ -66,9 +67,11 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
   return (
     <WorkspaceProvider value={ctx}>
-      <div className="theme-workspace h-full w-full">
-        <RouteProtectionWrapper>{children}</RouteProtectionWrapper>
-      </div>
+      <SubscriptionProvider>
+        <div className="theme-workspace h-full w-full">
+          <RouteProtectionWrapper>{children}</RouteProtectionWrapper>
+        </div>
+      </SubscriptionProvider>
     </WorkspaceProvider>
   );
 }
