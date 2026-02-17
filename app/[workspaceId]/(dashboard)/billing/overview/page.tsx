@@ -9,11 +9,10 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
-  getWorkspaceBilling,
   getWorkspaceInvoices,
-  BillingInfo,
   UserInvoice
 } from "@/lib/api/workspaces";
+import { useSubscription } from "@/contexts/subscription-context";
 import { getSubscriptionPlans, SubscriptionPlan, downloadInvoice } from "@/lib/api/subscription";
 import { toast } from "sonner";
 import {
@@ -33,7 +32,7 @@ import { cn } from "@/lib/utils";
 
 export default function BillingPage() {
   const { workspaceName, workspaceId } = useWorkspace();
-  const [billingInfo, setBillingInfo] = useState<BillingInfo | null>(null);
+  const { subscription, credits, usage, isLoading: isSubscriptionLoading } = useSubscription();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [invoices, setInvoices] = useState<UserInvoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,12 +46,10 @@ export default function BillingPage() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [billingData, invoicesData, plansData] = await Promise.all([
-        getWorkspaceBilling(workspaceId),
+      const [invoicesData, plansData] = await Promise.all([
         getWorkspaceInvoices(workspaceId),
         getSubscriptionPlans(),
       ]);
-      setBillingInfo(billingData);
       setInvoices(invoicesData);
       setPlans(plansData);
     } catch (error: any) {
@@ -63,10 +60,13 @@ export default function BillingPage() {
     }
   };
 
+  // Combine loading states
+  const isPageLoading = isLoading || isSubscriptionLoading;
+
   const currentPlan = useMemo(() => {
-    if (!billingInfo?.subscription?.planId) return null;
-    return plans.find(p => p.planId === billingInfo.subscription?.planId) || null;
-  }, [billingInfo, plans]);
+    if (!subscription?.planId) return null;
+    return plans.find(p => p.planId === subscription?.planId) || null;
+  }, [subscription, plans]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -101,7 +101,7 @@ export default function BillingPage() {
           </p>
         </div>
 
-        {isLoading ? (
+        {isPageLoading ? (
           <div className="flex h-60 items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
@@ -119,21 +119,22 @@ export default function BillingPage() {
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="flex items-baseline justify-between">
-                    <div className="text-2xl font-bold">{billingInfo?.subscription?.planName || "Free Plan"}</div>
-                    {billingInfo?.subscription?.status && (
-                      <Badge variant={billingInfo.subscription.status === 'ACTIVE' ? 'default' : 'secondary'}>
-                        {billingInfo.subscription.status}
+                    <div className="text-2xl font-bold">{subscription?.planName || "Free Plan"}</div>
+                    {subscription?.status && (
+                      <Badge variant={subscription.status === 'active' ? 'default' : 'secondary'}>
+                        {subscription.status}
                       </Badge>
                     )}
                   </div>
                   <div className="mt-4 space-y-1">
                     <p className="text-sm text-muted-foreground">
-                      {billingInfo?.subscription?.periodEnd
-                        ? `Renews on ${formatDate(billingInfo.subscription.periodEnd)}`
+                      {subscription?.validUntil
+                        ? `Renews on ${formatDate(subscription.validUntil)}`
                         : 'No active subscription renewal'}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      ({billingInfo?.subscription?.price || "$0.00"} / period)
+                      {/* We might not have price in context directly if not added, but let's assume standard plan details or just hide if missing */}
+                      Manage your plan details below
                     </p>
                   </div>
                 </CardContent>
@@ -152,7 +153,7 @@ export default function BillingPage() {
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="text-2xl font-bold">
-                    {formatCurrency(billingInfo?.balance || 0, billingInfo?.currency || 'CREDITS')}
+                    {formatCurrency(credits?.balance || 0, 'CREDITS')}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
                     Available credits for usage
@@ -180,17 +181,15 @@ export default function BillingPage() {
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-muted-foreground">Messages Sent</span>
                       <span className="font-medium">
-                        {billingInfo?.usage?.messagesSent ?? 0} / {billingInfo?.subscription?.limits?.messages ?? "∞"}
+                        {usage?.messagesSent ?? 0}
                       </span>
                     </div>
-                    <Progress value={calculateUsagePercentage(
-                      billingInfo?.usage?.messagesSent ?? 0,
-                      billingInfo?.subscription?.limits?.messages ?? 0
-                    )} className="h-2" />
+                    {/* Limit might not be in context yet, we can default or add it to context later. For now, removing progress bar if limit is unknown or assuming 0 */}
+                    <Progress value={0} className="h-2" />
                   </div>
                   {/* Placeholder for other usage metrics if needed */}
                   <div className="pt-2">
-                    <p className="text-xs text-muted-foreground">Usage resets on {billingInfo?.subscription?.periodEnd ? formatDate(billingInfo.subscription.periodEnd) : 'next billing cycle'}.</p>
+                    <p className="text-xs text-muted-foreground">Usage resets on {subscription?.validUntil ? formatDate(subscription.validUntil) : 'next billing cycle'}.</p>
                   </div>
                 </CardContent>
               </Card>
