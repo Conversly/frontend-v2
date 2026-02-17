@@ -93,7 +93,7 @@ export default function BillingPage() {
                         <Badge variant={billingInfo.subscription.status === 'ACTIVE' ? 'default' : 'secondary'} className="mr-2">
                           {billingInfo.subscription.status}
                         </Badge>
-                        Renews on {formatDate(billingInfo.subscription.periodEnd)}
+                        {billingInfo.subscription.periodEnd ? `Renews on ${formatDate(billingInfo.subscription.periodEnd)}` : 'No renewal date'}
                       </>
                     ) : (
                       "No active subscription"
@@ -136,11 +136,10 @@ export default function BillingPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {/* Placeholder for usage stats */}
-                    --
+                    {billingInfo?.usage?.messagesSent ?? 0}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Usage billing this period
+                    Messages sent this period
                   </p>
                 </CardContent>
               </Card>

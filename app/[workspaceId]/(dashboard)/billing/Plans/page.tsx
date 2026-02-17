@@ -118,7 +118,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             const isFree = selectedPlan?.monthlyPrice === "0";
 
             if (isFree) {
-                await enrollFree({ planId });
+                await enrollFree({ planId, accountId });
                 toast({
                     title: "Success",
                     description: "Activated free plan!"

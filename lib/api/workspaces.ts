@@ -203,11 +203,17 @@ export interface BillingInfo {
   currency: 'CREDITS' | 'USD';
   subscription: {
     status: string;
-    periodEnd: string;
+    periodEnd: string | null;
     planName: string;
-    limits: any;
     price: string;
+    limits: {
+      messages: number;
+    };
   } | null;
+  usage: {
+    messagesSent: number;
+  };
+  accountStatus: string;
 }
 
 export interface UserInvoice {

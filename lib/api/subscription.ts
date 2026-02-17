@@ -1,6 +1,26 @@
 import { API, ApiResponse } from "@/lib/api/config";
+import { api, getPath } from "@/lib/api/axios";
 import { SubscriptionPlan, CurrentSubscription } from "@/types/subscription";
+
 export type { SubscriptionPlan, CurrentSubscription };
+
+export interface SubscriptionContextData {
+    subscription: {
+        status: 'active' | 'trial' | 'past_due' | 'canceled' | 'unpaid' | 'incomplete';
+        planId: string | null;
+        planName: string;
+        validUntil: string | null;
+    };
+    credits: {
+        balance: number;
+        totalPurchased: number;
+        totalConsumed: number;
+    };
+    usage: {
+        messagesSent: number;
+    };
+    accountStatus: string;
+}
 
 const MOCK_PLANS: SubscriptionPlan[] = [
     {
@@ -86,4 +106,21 @@ export const getCurrentSubscription = async (): Promise<CurrentSubscription> => 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));
     return MOCK_CURRENT_SUBSCRIPTION;
+};
+
+export const getWorkspaceSubscription = async (workspaceId: string): Promise<SubscriptionContextData> => {
+    const baseUrl = getPath(API.ENDPOINTS.WORKSPACES.BASE_URL);
+    const endpointPath = getPath(API.ENDPOINTS.WORKSPACES.BILLING);
+    // Combine but avoid double slash if any
+    const servicePath = baseUrl.replace(/\/$/, '') + '/' + endpointPath.replace(/^\//, '');
+
+    const finalUrl = servicePath.replace(':workspaceId', workspaceId);
+
+    const response = await api.get<ApiResponse<SubscriptionContextData>>(finalUrl);
+
+    if (!response.data.success) {
+        throw new Error(response.data.message || 'Failed to fetch subscription');
+    }
+
+    return response.data.data;
 };

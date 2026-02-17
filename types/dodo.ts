@@ -55,4 +55,5 @@ export interface Plan {
 
 export interface EnrollFreeInput {
     planId: string;
+    accountId: string;
 }
