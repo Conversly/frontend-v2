@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useCallback } from "react";
 import { useMaybeWorkspace } from "./workspace-context";
 import { getWorkspaceSubscription, SubscriptionContextData } from "@/lib/api/subscription";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Define the shape of the subscription context
 // Must match the API response from /api/workspaces/:id/billing
@@ -37,41 +38,27 @@ const SubscriptionContext = createContext<SubscriptionContextType | null>(null);
 export function SubscriptionProvider({ children }: { children: React.ReactNode }) {
     const workspace = useMaybeWorkspace();
     const workspaceId = workspace?.workspaceId;
+    const queryClient = useQueryClient();
 
-    const [data, setData] = useState<SubscriptionContextData>(defaultState);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const { data: subscriptionData, isLoading, error } = useQuery({
+        queryKey: ['subscription', workspaceId],
+        queryFn: async () => {
+            if (!workspaceId) return defaultState;
+            return getWorkspaceSubscription(workspaceId);
+        },
+        enabled: !!workspaceId,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
 
-    const fetchSubscription = useCallback(async () => {
-        if (!workspaceId) {
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            setError(null);
-
-            const subscriptionData = await getWorkspaceSubscription(workspaceId);
-            setData(subscriptionData);
-        } catch (err: any) {
-            console.error("Error fetching subscription context:", err);
-            setError(err.message || "Failed to load subscription data");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [workspaceId]);
-
-    // Initial fetch when workspace changes
-    useEffect(() => {
-        fetchSubscription();
-    }, [fetchSubscription]);
+    const refreshSubscription = useCallback(async () => {
+        await queryClient.invalidateQueries({ queryKey: ['subscription', workspaceId] });
+    }, [queryClient, workspaceId]);
 
     const value: SubscriptionContextType = {
-        ...data,
-        isLoading,
-        error,
-        refreshSubscription: fetchSubscription,
+        ...(subscriptionData || defaultState),
+        isLoading: isLoading && !!workspaceId, // Only loading if we are actually fetching
+        error: error ? (error as Error).message : null,
+        refreshSubscription,
     };
 
     return (
