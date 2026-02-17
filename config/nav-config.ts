@@ -78,12 +78,6 @@ export const getWorkspaceNavSections = (workspaceId: string): NavSection[] => [
                 requiredCapability: "canViewBilling",
             },
             {
-                title: "Subscription",
-                url: `/${workspaceId}/billing/subscription`,
-                icon: FileCheck,
-                requiredCapability: "canViewBilling",
-            },
-            {
                 title: "Plans",
                 url: `/${workspaceId}/billing/Plans`,
                 icon: Zap, // Using Zap icon for Plans/Upgrades

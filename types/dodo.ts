@@ -52,3 +52,7 @@ export interface Plan {
         dodoPriceId: string;
     }[];
 }
+
+export interface EnrollFreeInput {
+    planId: string;
+}

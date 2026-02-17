@@ -7,8 +7,24 @@ import {
     CreatePortalInput,
     CreatePortalResponse,
     UsageResponse,
-    Plan
+    Plan,
+    EnrollFreeInput
 } from "@/types/dodo";
+
+export const enrollFreePlan = async (input: EnrollFreeInput): Promise<void> => {
+    const res = (await fetch(
+        API.ENDPOINTS.SUBSCRIPTION.BASE_URL() + API.ENDPOINTS.SUBSCRIPTION.ENROLL_FREE.path(),
+        {
+            method: "POST",
+            data: input,
+        }
+    ).then((res) => res.data)) as ApiResponse<void, Error>;
+
+    if (!res.success) {
+        throw new Error(res.message);
+    }
+    return;
+};
 
 export const getPlans = async (): Promise<Plan[]> => {
     const res = (await fetch(

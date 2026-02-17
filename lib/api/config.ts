@@ -248,6 +248,7 @@ export const API = {
     },
     SUBSCRIPTION: {
       BASE_URL: () => "/subscription",
+      ENROLL_FREE: allMode(() => "/enroll-free"),
     },
     DODO: {
       BASE_URL: () => "/dodo",

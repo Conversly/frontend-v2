@@ -1,7 +1,7 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createCheckoutSession, createPortalSession, getUsage, getPlans } from "@/lib/api/dodo";
-import { CreateCheckoutInput, CreatePortalInput } from "@/types/dodo";
+import { createCheckoutSession, createPortalSession, getUsage, getPlans, enrollFreePlan } from "@/lib/api/dodo";
+import { CreateCheckoutInput, CreatePortalInput, EnrollFreeInput } from "@/types/dodo";
 
 export const usePlans = () => {
     return useQuery({
@@ -27,5 +27,11 @@ export const useUsage = (accountId: string | undefined) => {
         queryKey: ["usage", accountId],
         queryFn: () => getUsage(accountId!),
         enabled: !!accountId,
+    });
+};
+
+export const useEnrollFree = () => {
+    return useMutation({
+        mutationFn: (input: EnrollFreeInput) => enrollFreePlan(input),
     });
 };

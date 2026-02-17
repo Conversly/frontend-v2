@@ -9,7 +9,7 @@ import axios from "axios";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
 
-import { useCheckout, usePlans } from "@/hooks/use-dodo";
+import { useCheckout, usePlans, useEnrollFree } from "@/hooks/use-dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -18,6 +18,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     const { accountId } = useWorkspace();
     const { mutateAsync: createCheckout } = useCheckout();
     const { data: fetchedPlans, isLoading: initialLoading } = usePlans();
+    const { mutateAsync: enrollFree } = useEnrollFree();
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
     const loading = initialLoading || checkoutLoading;
@@ -112,6 +113,19 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         try {
             setCheckoutLoading(true);
 
+            // Check if plan is free
+            const selectedPlan = plans.find(p => p.id === planId);
+            const isFree = selectedPlan?.monthlyPrice === "0";
+
+            if (isFree) {
+                await enrollFree({ planId });
+                toast({
+                    title: "Success",
+                    description: "Activated free plan!"
+                });
+                return;
+            }
+
             const { url } = await createCheckout({
                 planId,
                 interval,
@@ -130,8 +144,8 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         } catch (error) {
             console.error("Checkout failed", error);
             toast({
-                title: "Checkout Failed",
-                description: "Could not initiate checkout. Please try again.",
+                title: "Error",
+                description: "Could not initiate plan selection. Please try again.",
                 variant: "destructive"
             });
         } finally {
