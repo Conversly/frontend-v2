@@ -5,14 +5,15 @@ import React, { useEffect, useState } from "react";
 import { PricingRedesign } from "@/components/billingsdk/pricing-redesign";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import axios from "axios";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
+import { getWorkspaceBilling, BillingInfo } from "@/lib/api/workspaces";
 
 import { useCheckout, usePlans, useEnrollFree } from "@/hooks/use-dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
     const [plans, setPlans] = useState<Plan[]>([]);
+    const [billingInfo, setBillingInfo] = useState<BillingInfo | null>(null);
     const { toast } = useToast();
     const { workspaceId } = React.use(params);
     const { accountId } = useWorkspace();
@@ -22,6 +23,12 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
     const loading = initialLoading || checkoutLoading;
+
+    useEffect(() => {
+        if (workspaceId) {
+            getWorkspaceBilling(workspaceId).then(setBillingInfo).catch(console.error);
+        }
+    }, [workspaceId]);
 
     useEffect(() => {
         if (!fetchedPlans) return;
@@ -123,6 +130,10 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     title: "Success",
                     description: "Activated free plan!"
                 });
+                // Refresh billing info
+                if (workspaceId) {
+                    getWorkspaceBilling(workspaceId).then(setBillingInfo).catch(console.error);
+                }
                 return;
             }
 
@@ -142,19 +153,29 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 checkoutUrl: url,
             });
 
-        } catch (error) {
-            console.error("Checkout failed", error);
-            toast({
-                title: "Error",
-                description: "Could not initiate plan selection. Please try again.",
-                variant: "destructive"
-            });
+        } catch (error: any) {
+            console.error("Checkout/Enrollment failed", error);
+
+            // Handle specific error for downgrading to free plan while active on paid
+            if (error.message && error.message.includes("Cannot enroll in free plan while having an active paid subscription")) {
+                toast({
+                    title: "Action Required",
+                    description: "Please cancel your current paid subscription before switching to the Free plan.",
+                    variant: "destructive"
+                });
+            } else {
+                toast({
+                    title: "Error",
+                    description: error.message || "Could not initiate plan selection. Please try again.",
+                    variant: "destructive"
+                });
+            }
         } finally {
             setCheckoutLoading(false);
         }
     };
 
-    if (loading) {
+    if (loading && !billingInfo) {
         return (
             <div className="container py-20 px-4 mx-auto space-y-8">
                 <div className="text-center space-y-4">
@@ -185,6 +206,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     return (
         <PricingRedesign
             plans={plans}
+            currentPlanId={billingInfo?.subscription?.planId}
             onPlanSelect={handlePlanSelect}
         />
     );

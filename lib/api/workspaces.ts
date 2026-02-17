@@ -204,6 +204,7 @@ export interface BillingInfo {
   subscription: {
     status: string;
     periodEnd: string | null;
+    planId: string;
     planName: string;
     price: string;
     limits: {

@@ -171,8 +171,8 @@ export default function TopicsPage() {
           </div>
         </div>
 
-        {/* scroll container */}
-        <div className="max-h-[70vh] overflow-y-auto">
+        {/* list container */}
+        <div>
           {isLoading ? (
             <div className="p-4 space-y-2">
               {[1, 2, 3, 4, 5].map((i) => (

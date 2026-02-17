@@ -8,6 +8,7 @@ import { Plan } from "@/lib/billingsdk-config";
 
 export interface PricingRedesignProps {
     plans: Plan[];
+    currentPlanId?: string | null;
     onPlanSelect: (planId: string, interval: "month" | "year") => void;
 }
 
@@ -28,12 +29,23 @@ const getDiscountPercent = (plan: Plan) => {
     );
 };
 
-export function PricingRedesign({ plans, onPlanSelect }: PricingRedesignProps) {
+export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingRedesignProps) {
     const [isYearly, setIsYearly] = useState(false);
 
     // Separate Free plan from others
     const freePlan = plans.find(p => p.title.toLowerCase() === 'free' || p.monthlyPrice === '0');
     const premiumPlans = plans.filter(p => p !== freePlan);
+
+    const isCurrentPlan = (plan: Plan) => {
+        if (!currentPlanId) return false;
+        // Basic ID match
+        if (plan.id === currentPlanId) return true;
+        // Handle "Free" plan match if currentPlanId is not explicitly 'free' but status implies it (backend logic dependence)
+        // For now, assume ID equality.
+        // If currentPlanId is undefined/null, user is likely on free plan implicitly if no subscription data, 
+        // but let's rely on explicit ID passed from parent.
+        return false;
+    };
 
     const renderPrice = (plan: Plan) => (
         <div className="flex items-baseline">
@@ -144,7 +156,14 @@ export function PricingRedesign({ plans, onPlanSelect }: PricingRedesignProps) {
                     <div className="mb-10 w-full rounded-3xl border border-primary-foreground bg-gradient-to-r from-primary-foreground/5 via-primary-foreground/10 to-primary-foreground/5 p-8 shadow-lg">
                         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
                             <div className="flex-1">
-                                <h3 className="text-foreground text-2xl font-bold mb-2">{freePlan.title}</h3>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <h3 className="text-foreground text-2xl font-bold">{freePlan.title}</h3>
+                                    {isCurrentPlan(freePlan) && (
+                                        <div className="bg-green-500/10 text-green-600 ring-green-500/20 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ring-1">
+                                            Current Plan
+                                        </div>
+                                    )}
+                                </div>
                                 <p className="text-muted-foreground mb-6">{freePlan.description}</p>
                                 <div className="mb-6">
                                     <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wider">Includes</h4>
@@ -167,10 +186,12 @@ export function PricingRedesign({ plans, onPlanSelect }: PricingRedesignProps) {
                                     <p className="text-sm text-muted-foreground mt-1">Forever</p>
                                 </div>
                                 <Button
-                                    className="w-full lg:w-auto min-w-[200px] h-12 rounded-xl bg-foreground text-primary-foreground hover:bg-foreground/90"
+                                    className="w-full lg:w-auto min-w-[200px] h-12 rounded-xl"
+                                    variant={isCurrentPlan(freePlan) ? "outline" : "default"}
+                                    disabled={isCurrentPlan(freePlan)}
                                     onClick={() => onPlanSelect(freePlan.id, isYearly ? "year" : "month")}
                                 >
-                                    {freePlan.buttonText || "Get Started"}
+                                    {isCurrentPlan(freePlan) ? "Current Plan" : (freePlan.buttonText || "Get Started")}
                                 </Button>
                             </div>
                         </div>
@@ -182,16 +203,27 @@ export function PricingRedesign({ plans, onPlanSelect }: PricingRedesignProps) {
                     {premiumPlans.map((plan, index) => {
                         const monthlyPriceNum = Number(plan.monthlyPrice) || 0;
                         const yearlyPriceNum = Number(plan.yearlyPrice) || 0;
+                        const isCurrent = isCurrentPlan(plan);
 
                         return (
                             <div
                                 key={plan.id}
-                                className={`flex flex-col border-primary-foreground relative rounded-3xl border bg-gradient-to-b p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] ${gradientFrom[index] || ""} via-primary-foreground/10 to-primary-foreground from-[0%] via-[40%] to-[100%]`}
+                                className={`flex flex-col relative rounded-3xl border p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] ${isCurrent
+                                        ? "border-green-500/50 ring-2 ring-green-500/20 bg-green-500/5"
+                                        : "border-primary-foreground bg-gradient-to-b via-primary-foreground/10 to-primary-foreground from-[0%] via-[40%] to-[100%] " + (gradientFrom[index] || "")
+                                    }`}
                             >
-                                {plan.highlight && (
+                                {plan.highlight && !isCurrent && (
                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
                                         <div className="bg-primary-foreground text-foreground ring-muted-foreground/50 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ring-1">
                                             {plan.badge || "Most popular"}
+                                        </div>
+                                    </div>
+                                )}
+                                {isCurrent && (
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
+                                        <div className="bg-green-600 text-white shadow-lg shadow-green-900/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide whitespace-nowrap">
+                                            Current Plan
                                         </div>
                                     </div>
                                 )}
@@ -223,10 +255,12 @@ export function PricingRedesign({ plans, onPlanSelect }: PricingRedesignProps) {
                                 </div>
 
                                 <Button
-                                    className={`bg-foreground text-primary-foreground hover:bg-foreground/90 border-primary-foreground h-12 w-full rounded-xl border font-medium transition-all duration-200 hover:cursor-pointer mt-auto`}
+                                    className={`h-12 w-full rounded-xl font-medium transition-all duration-200 mt-auto`}
+                                    variant={isCurrent ? "outline" : "default"}
+                                    disabled={isCurrent}
                                     onClick={() => onPlanSelect(plan.id, isYearly ? "year" : "month")}
                                 >
-                                    {plan.buttonText || "Get started"}
+                                    {isCurrent ? "Current Plan" : (plan.buttonText || "Get started")}
                                 </Button>
                             </div>
                         );
