@@ -13,12 +13,15 @@ import {
   Loader2,
   HelpCircle,
   ExternalLink,
+  Play,
+  Terminal,
 } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SectionHeader } from './SectionHeader';
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -82,9 +85,36 @@ export function IntegrationTab({
   async
 ></script>`;
 
+  const getCursorPrompt = () => `Add the following chatbot embed script globally to this project.
+
+Find the main layout file:
+- Next.js (App Router) → app/layout.tsx (inside <body>)
+- Next.js (Pages Router) → pages/_document.tsx (inside <body>)
+- React/Vite → index.html (before </body>)
+
+Insert the script immediately BEFORE the closing </body> tag.
+
+Do NOT duplicate it if it already exists.
+Do NOT modify any other code.
+Ensure it loads on all pages.
+
+Script:
+
+<script
+  src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/embed.js"
+  data-chatbot-id="${chatbotId}"
+  data-primary-color="${config.primaryColor || "#4F46E5"}"
+  async
+></script>`;
+
   const handleCopyEmbedCode = () => {
     navigator.clipboard.writeText(getEmbedCode());
     toast.success('Embed code copied to clipboard');
+  };
+
+  const handleCopyCursorPrompt = () => {
+    navigator.clipboard.writeText(getCursorPrompt());
+    toast.success('Cursor prompt copied to clipboard');
   };
 
   return (
@@ -93,42 +123,103 @@ export function IntegrationTab({
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      {/* Embed Code */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
         <SectionHeader
-          title="Embed Code"
-          description="Add this code to your website to display the chat widget"
+          title="Integration Method"
+          description="Choose how you want to add the chatbot to your website"
           icon={Code}
         />
 
-        <div className="space-y-4">
-          <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
-            <code className="text-xs text-muted-foreground font-mono block whitespace-pre-wrap">
-              {getEmbedCode()}
-            </code>
-          </div>
+        <Tabs defaultValue="manual" className="mt-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="manual">Manual Integration</TabsTrigger>
+            <TabsTrigger value="video">Video Tutorial</TabsTrigger>
+            <TabsTrigger value="cursor">Cursor / AI Prompt</TabsTrigger>
+          </TabsList>
 
-          <Button
-            variant="outline"
-            onClick={handleCopyEmbedCode}
-            className="w-full border-border text-foreground hover:bg-muted/50"
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            Copy Embed Code
-          </Button>
+          <TabsContent value="manual" className="space-y-4">
+            <div className="relative group">
+              <div className="absolute top-2 right-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm backdrop-blur-sm transition-all duration-200"
+                  onClick={handleCopyEmbedCode}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="p-4 bg-muted/50 rounded-lg border border-border/50 min-h-[100px]">
+                <code className="text-xs text-muted-foreground font-mono block whitespace-pre-wrap pr-8">
+                  {getEmbedCode()}
+                </code>
+              </div>
+            </div>
 
-          <div className="flex items-start gap-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5" />
-            <div className="flex-1">
-              <p className="font-sans text-xs text-blue-900 mb-1 font-medium">
-                Paste this code before the closing &lt;/body&gt; tag on your website.
-              </p>
-              <p className="font-sans text-xs text-blue-700">
-                The widget will automatically appear on pages matching your allowed domains.
+            <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
+              <HelpCircle className="w-4 h-4 text-primary mt-0.5" />
+              <div className="flex-1">
+                <p className="font-sans text-xs text-foreground mb-1 font-medium">
+                  Paste this code before the closing &lt;/body&gt; tag on your website.
+                </p>
+                <p className="font-sans text-xs text-muted-foreground">
+                  The widget will automatically appear on pages matching your allowed domains.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="video" className="space-y-4">
+            <div className="aspect-video w-full bg-black/5 rounded-lg border border-border/50 flex items-center justify-center overflow-hidden">
+              <video
+                controls
+                className="w-full h-full object-cover"
+                poster="/placeholder-video-poster.jpg"
+              >
+                <source src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/chatbot-creation-demo.webm" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
+              <Play className="w-4 h-4 text-muted-foreground mt-0.5" />
+              <p className="font-sans text-xs text-muted-foreground">
+                Watch this quick tutorial to learn how to integrate the chatbot into your website.
               </p>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="cursor" className="space-y-4">
+            <div className="relative group">
+              <div className="absolute top-2 right-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm backdrop-blur-sm transition-all duration-200"
+                  onClick={handleCopyCursorPrompt}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="p-4 bg-muted/50 rounded-lg border border-border/50 min-h-[100px]">
+                <code className="text-xs text-muted-foreground font-mono block whitespace-pre-wrap pr-8">
+                  {getCursorPrompt()}
+                </code>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
+              <Terminal className="w-4 h-4 text-primary mt-0.5" />
+              <div className="flex-1">
+                <p className="font-sans text-xs text-foreground mb-1 font-medium">
+                  Using Cursor or another AI editor?
+                </p>
+                <p className="font-sans text-xs text-muted-foreground">
+                  Copy this prompt and paste it into your AI assistant to automatically add the integration code.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* API Key */}
@@ -160,9 +251,9 @@ export function IntegrationTab({
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
-              <div className="flex items-start gap-2 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-lg">
-                <HelpCircle className="w-4 h-4 text-yellow-400 mt-0.5" />
-                <p className="font-sans text-xs text-yellow-200">
+              <div className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <HelpCircle className="w-4 h-4 text-destructive mt-0.5" />
+                <p className="font-sans text-xs text-destructive">
                   Keep this key secret. Do not share it publicly or commit it to version control.
                 </p>
               </div>
