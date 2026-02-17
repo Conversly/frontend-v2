@@ -7,6 +7,7 @@ export const usePlans = () => {
     return useQuery({
         queryKey: ["plans"],
         queryFn: () => getPlans(),
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 };
 

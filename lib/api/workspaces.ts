@@ -223,7 +223,9 @@ export interface UserInvoice {
   amount: string;
   balanceAfter: string;
   createdAt: string;
+
   referenceType: string;
+  dodoPaymentId?: string | null;
 }
 
 export async function getWorkspaceBilling(workspaceId: string): Promise<BillingInfo> {

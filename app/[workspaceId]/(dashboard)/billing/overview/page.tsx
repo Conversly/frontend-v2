@@ -14,7 +14,7 @@ import {
   BillingInfo,
   UserInvoice
 } from "@/lib/api/workspaces";
-import { getSubscriptionPlans, SubscriptionPlan } from "@/lib/api/subscription";
+import { getSubscriptionPlans, SubscriptionPlan, downloadInvoice } from "@/lib/api/subscription";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -26,7 +26,8 @@ import {
   Zap,
   ArrowUpRight,
   ArrowDownLeft,
-  AlertCircle
+  AlertCircle,
+  Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -287,6 +288,7 @@ export default function BillingPage() {
                           <th className="h-10 px-4 align-middle font-medium text-muted-foreground">Description</th>
                           <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Amount</th>
                           <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Balance</th>
+                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Invoice</th>
                         </tr>
                       </thead>
                       <tbody className="[&_tr:last-child]:border-0 bg-card">
@@ -316,6 +318,18 @@ export default function BillingPage() {
                             </td>
                             <td className="p-4 align-middle text-right text-muted-foreground font-mono">
                               {invoice.balanceAfter}
+                            </td>
+                            <td className="p-4 align-middle text-right">
+                              {invoice.dodoPaymentId && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => downloadInvoice(invoice.dodoPaymentId!)}
+                                  title="Download Invoice"
+                                >
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              )}
                             </td>
                           </tr>
                         ))}

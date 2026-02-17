@@ -124,3 +124,23 @@ export const getWorkspaceSubscription = async (workspaceId: string): Promise<Sub
 
     return response.data.data;
 };
+
+export const downloadInvoice = async (paymentId: string) => {
+    const baseUrl = getPath(API.ENDPOINTS.SUBSCRIPTION.BASE_URL);
+    const endpointPath = getPath(API.ENDPOINTS.SUBSCRIPTION.GET_INVOICE_PDF);
+    const url = baseUrl + endpointPath.replace(':id', paymentId);
+
+    const response = await api.get(url, {
+        responseType: 'blob',
+    });
+
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `invoice-${paymentId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+};

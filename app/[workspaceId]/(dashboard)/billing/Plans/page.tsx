@@ -7,13 +7,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
-import { getWorkspaceBilling, BillingInfo } from "@/lib/api/workspaces";
+import { useSubscription } from "@/contexts/subscription-context";
 
 import { useCheckout, usePlans, useEnrollFree } from "@/hooks/use-dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
     const [plans, setPlans] = useState<Plan[]>([]);
-    const [billingInfo, setBillingInfo] = useState<BillingInfo | null>(null);
     const { toast } = useToast();
     const { workspaceId } = React.use(params);
     const { accountId } = useWorkspace();
@@ -22,13 +21,10 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     const { mutateAsync: enrollFree } = useEnrollFree();
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-    const loading = initialLoading || checkoutLoading;
+    // Use the global subscription context instead of fetching locally
+    const { subscription, isLoading: subscriptionLoading, refreshSubscription } = useSubscription();
 
-    useEffect(() => {
-        if (workspaceId) {
-            getWorkspaceBilling(workspaceId).then(setBillingInfo).catch(console.error);
-        }
-    }, [workspaceId]);
+    const loading = initialLoading || checkoutLoading || subscriptionLoading;
 
     useEffect(() => {
         if (!fetchedPlans) return;
@@ -130,10 +126,8 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     title: "Success",
                     description: "Activated free plan!"
                 });
-                // Refresh billing info
-                if (workspaceId) {
-                    getWorkspaceBilling(workspaceId).then(setBillingInfo).catch(console.error);
-                }
+                // Refresh billing info via context
+                await refreshSubscription();
                 return;
             }
 
@@ -175,7 +169,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         }
     };
 
-    if (loading && !billingInfo) {
+    if (loading && !subscription?.planId) {
         return (
             <div className="container py-20 px-4 mx-auto space-y-8">
                 <div className="text-center space-y-4">
@@ -206,9 +200,9 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     return (
         <PricingRedesign
             plans={plans}
-            currentPlanId={billingInfo?.subscription?.planId}
+            currentPlanId={subscription?.planId}
             onPlanSelect={handlePlanSelect}
         />
     );
-
+}
 }
