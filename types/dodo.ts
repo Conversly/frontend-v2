@@ -3,6 +3,7 @@ export interface CreateCheckoutInput {
     planId: string;
     interval: string; // 'month' | 'year'
     accountId: string;
+    workspaceId: string;
 }
 
 export interface CreateCheckoutResponse {

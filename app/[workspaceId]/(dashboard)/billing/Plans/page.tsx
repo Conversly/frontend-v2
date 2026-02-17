@@ -129,7 +129,8 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             const { url } = await createCheckout({
                 planId,
                 interval,
-                accountId
+                accountId,
+                workspaceId
             });
 
             if (!url) {
