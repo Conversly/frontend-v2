@@ -205,4 +205,3 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         />
     );
 }
-}
