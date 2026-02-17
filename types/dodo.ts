@@ -50,7 +50,7 @@ export interface Plan {
         currency: string;
         interval: string;
         isActive: boolean;
-        dodoPriceId: string;
+        dodoProductId: string;
     }[];
 }
 
