@@ -30,52 +30,96 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         if (!fetchedPlans) return;
 
         const processPlans = () => {
-            // Map backend plan data to Plan interface, merging with local config
-            const mappedPlans = fetchedPlans.map((p: any) => {
-                // Try to find matching config by ID or Name
-                const config = planConfig.find(
-                    (c) => c.id === p.id || c.title.toLowerCase() === p.name.toLowerCase()
-                );
+            // Group plans by name to combine monthly/yearly versions
+            const groupedPlans = new Map<string, any[]>();
 
-                // If prices array is empty or undefined, handle gracefully
-                const prices = p.prices || [];
-                const yearly = prices.find((pr: any) => pr.interval === 'year');
-
-                // Fix: Use monthlyPriceCents from the plan object if valid, otherwise fallback to config
-                const priceFromBackend = p.monthlyPriceCents !== undefined ? p.monthlyPriceCents / 100 : undefined;
-
-                const monthlyPrice = priceFromBackend !== undefined
-                    ? String(priceFromBackend)
-                    : (config?.monthlyPrice || "0");
-
-                const yearlyPrice = yearly ? String(yearly.amount / 100) : (config?.yearlyPrice || "0");
-
-                // Base plan object from config or default
-                const basePlan = config || {
-                    id: p.id,
-                    title: p.name,
-                    description: p.description || "Unlock powerful features",
-                    buttonText: "Get Started",
-                    features: [
-                        { name: `${p.creditsPerCycle} Credits per cycle`, icon: "check" }
-                    ],
-                    highlight: false
-                };
-
-                return {
-                    ...basePlan,
-                    id: p.id, // Ensure we use backend ID for checkout
-                    title: p.name, // Use backend name
-                    monthlyPrice,
-                    yearlyPrice,
-                    // Ensure features are preserved from config
-                    features: basePlan.features,
-                    highlight: basePlan.highlight || p.name.toLowerCase().includes('growth'),
-                } as Plan;
+            fetchedPlans.forEach((p: any) => {
+                const normalizedName = p.name.toLowerCase();
+                const existing = groupedPlans.get(normalizedName) || [];
+                groupedPlans.set(normalizedName, [...existing, p]);
             });
 
-            // Sort plans to match config order if possible
-            const sortedPlans = mappedPlans.sort((a: Plan, b: Plan) => {
+            const processedPlans: Plan[] = [];
+
+            // Helper to find config by fuzzy name matching
+            const findConfig = (backendName: string) => {
+                return planConfig.find(c => c.title.toLowerCase() === backendName.toLowerCase());
+            };
+
+            groupedPlans.forEach((variants, name) => {
+                const config = findConfig(name);
+
+                // Find monthly and yearly variants based on their prices
+                // We assume the Dodo product has a price with 'month' or 'year' interval
+
+                let monthlyVariant = variants.find(v =>
+                    v.prices.some((p: any) => p.interval === 'month')
+                );
+
+                let yearlyVariant = variants.find(v =>
+                    v.prices.some((p: any) => p.interval === 'year')
+                );
+
+                // Fallback: if single product has multiple prices (less likely with Dodo structure but possible)
+                if (!monthlyVariant) monthlyVariant = variants.find(v => v.monthlyPriceCents !== undefined);
+
+                // Find specific price objects
+                const getPriceObj = (variant: any, interval: 'month' | 'year') => {
+                    if (!variant) return undefined;
+                    return variant.prices.find((p: any) => p.interval === interval);
+                };
+
+                const monthlyPriceObj = getPriceObj(monthlyVariant, 'month');
+                const yearlyPriceObj = getPriceObj(yearlyVariant, 'year');
+
+                // Helper to get price string
+                const getPriceString = (priceObj: any, variant: any, interval: 'month' | 'year') => {
+                    if (priceObj) return String(priceObj.amount / 100);
+                    // Fallback to monthlyPriceCents if available and appropriate
+                    if (interval === 'month' && variant?.monthlyPriceCents !== undefined) {
+                        return String(variant.monthlyPriceCents / 100);
+                    }
+                    return undefined;
+                };
+
+                const monthlyPrice = getPriceString(monthlyPriceObj, monthlyVariant, 'month') || config?.monthlyPrice || "0";
+                const yearlyPrice = getPriceString(yearlyPriceObj, yearlyVariant, 'year') || config?.yearlyPrice || "0";
+
+                const basePlan = config || {
+                    id: monthlyVariant?.id || yearlyVariant?.id || 'unknown',
+                    title: monthlyVariant?.name || yearlyVariant?.name || name,
+                    description: monthlyVariant?.description || "Unlock powerful features",
+                    buttonText: "Get Started",
+                    features: [
+                        { name: `${monthlyVariant?.creditsPerCycle || 0} Credits per cycle`, icon: "check" }
+                    ],
+                    highlight: false,
+                    monthlyPrice,
+                    yearlyPrice
+                };
+
+                // Use the dodoProductId from the price object if available, otherwise fallback to Plan ID (likely wrong for checkout but handled by error)
+                // If using fallback config, we might not have ID, handled by generic free plan check or error.
+                const monthlyProductId = monthlyPriceObj ? monthlyPriceObj.dodoProductId : monthlyVariant?.id;
+                const yearlyProductId = yearlyPriceObj ? yearlyPriceObj.dodoProductId : yearlyVariant?.id;
+
+                const plan: Plan = {
+                    ...basePlan,
+                    id: basePlan.id,
+                    title: basePlan.title,
+                    monthlyPrice,
+                    yearlyPrice,
+                    monthlyProductId, // Fix: Use correct price ID
+                    yearlyProductId,  // Fix: Use correct price ID
+                    features: basePlan.features,
+                    highlight: basePlan.highlight || basePlan.title.toLowerCase().includes('pro'),
+                };
+
+                processedPlans.push(plan);
+            });
+
+            // Sort plans to match config order
+            const sortedPlans = processedPlans.sort((a: Plan, b: Plan) => {
                 const indexA = planConfig.findIndex(c => c.title.toLowerCase() === a.title.toLowerCase());
                 const indexB = planConfig.findIndex(c => c.title.toLowerCase() === b.title.toLowerCase());
                 return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
@@ -116,12 +160,34 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         try {
             setCheckoutLoading(true);
 
-            // Check if plan is free
             const selectedPlan = plans.find(p => p.id === planId);
-            const isFree = selectedPlan?.monthlyPrice === "0";
+            if (!selectedPlan) throw new Error("Plan not found");
+
+            // Determine correct Dodo Product ID based on interval
+            const targetProductId = interval === 'year'
+                ? selectedPlan.yearlyProductId
+                : selectedPlan.monthlyProductId;
+
+            if (!targetProductId) {
+                // Fallback for Free plan or if mapping missing
+                if (selectedPlan.monthlyPrice === "0") {
+                    await enrollFree({ planId: selectedPlan.id, accountId }); // Use generic ID for free?
+                    toast({
+                        title: "Success",
+                        description: "Activated free plan!"
+                    });
+                    await refreshSubscription();
+                    return;
+                }
+                throw new Error(`Product ID not found for ${interval}ly plan`);
+            }
+
+            // Check if plan is free (double check price)
+            const price = interval === 'year' ? selectedPlan.yearlyPrice : selectedPlan.monthlyPrice;
+            const isFree = price === "0";
 
             if (isFree) {
-                await enrollFree({ planId, accountId });
+                await enrollFree({ planId: targetProductId, accountId });
                 toast({
                     title: "Success",
                     description: "Activated free plan!"
@@ -132,7 +198,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             }
 
             const { url } = await createCheckout({
-                planId,
+                planId: targetProductId, // Send specific product ID
                 interval,
                 accountId,
                 workspaceId
@@ -150,7 +216,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         } catch (error: any) {
             console.error("Checkout/Enrollment failed", error);
 
-            // Handle specific error for downgrading to free plan while active on paid
             if (error.message && error.message.includes("Cannot enroll in free plan while having an active paid subscription")) {
                 toast({
                     title: "Action Required",

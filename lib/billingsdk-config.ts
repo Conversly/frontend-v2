@@ -2,6 +2,8 @@ import { Check, Zap, Star } from "lucide-react";
 
 export interface Plan {
   id: string;
+  monthlyProductId?: string;
+  yearlyProductId?: string;
   title: string;
   description: string;
   highlight?: boolean;
