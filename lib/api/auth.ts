@@ -20,7 +20,6 @@ export const logout = async () => {
 export const googleOauth = async (
   code: string | null,
   credential: string | null,
-  inviteCode?: string | null,
 ) => {
   const res = (await fetch(
     API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.GOOGLE_OAUTH.path(),
@@ -29,7 +28,6 @@ export const googleOauth = async (
       data: {
         code,
         credential,
-        inviteCode,
       },
     },
   ).then((res) => res.data)) as ApiResponse<GoogleOauthResponse>;
@@ -47,7 +45,6 @@ export const emailRegister = async (
   email: string,
   password: string,
   displayName?: string,
-  inviteCode?: string | null,
 ) => {
   const res = (await fetch(
     API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.EMAIL_REGISTER.path(),
@@ -57,7 +54,6 @@ export const emailRegister = async (
         email,
         password,
         displayName,
-        inviteCode,
       },
     },
   ).then((res) => res.data)) as ApiResponse<GoogleOauthResponse>;
