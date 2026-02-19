@@ -8,6 +8,13 @@ import { getChatbot } from "@/lib/api/chatbot";
 import { upsertChannelPrompt } from "@/lib/api/prompt";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 export default function PlaygroundPage() {
@@ -19,7 +26,7 @@ export default function PlaygroundPage() {
 
   const [config, setConfig] = useState<any | null>(null);
   const [systemPrompt, setSystemPrompt] = useState("");
-  const [model, setModel] = useState("gemini-2.0");
+  const [model, setModel] = useState("gpt-5 Mini");
   const [temperature, setTemperature] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingPrompt, setIsSavingPrompt] = useState(false);
@@ -103,14 +110,6 @@ export default function PlaygroundPage() {
     }
   };
 
-  const handleResetChat = () => {
-    // Trigger widget remount by changing key
-    setWidgetKey(prev => prev + 1);
-    toast.success("Chat reset");
-  };
-
-
-
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -146,13 +145,6 @@ export default function PlaygroundPage() {
               model={model}
               temperature={temperature}
             />
-            <div className="flex h-full items-center justify-center p-6 text-center text-muted-foreground bg-muted/20">
-              {/* <div className="space-y-2">
-                <p className="font-semibold">Widget Unavailable</p>
-                <p className="text-sm">The chat widget package is required to preview the bot.</p>
-                <p className="text-xs">Please fix the private package authentication to enable the preview.</p>
-              </div> */}
-            </div>
           </div>
         </div>
 
@@ -226,16 +218,18 @@ export default function PlaygroundPage() {
                         <label className="text-xs text-muted-foreground mb-1.5 block">
                           Model
                         </label>
-                        <select
-                          value={model}
-                          onChange={(e) => setModel(e.target.value)}
-                          className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring transition-all"
-                        >
-                          <option value="gemini-2.0">Gemini 2.0</option>
-                          <option value="gpt-4">GPT-4</option>
-                          <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                          <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                        </select>
+                        <Select value={model} onValueChange={setModel}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a model" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="gpt-5">GPT-5</SelectItem>
+                            <SelectItem value="gpt-5-mini">GPT-5 Mini</SelectItem>
+                            <SelectItem value="gpt-5-nano">GPT-5 Nano</SelectItem>
+                            <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div>
@@ -263,48 +257,6 @@ export default function PlaygroundPage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Session Card */}
-                  <div className="bg-card rounded-xl border shadow-sm p-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-4 w-4 text-muted-foreground"
-                      >
-                        <path d="M12 20h9" />
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                      </svg>
-                      <span className="text-sm font-medium">Session Control</span>
-                    </div>
-                    <Button
-                      variant="outline"
-                      onClick={handleResetChat}
-                      className="w-full bg-background hover:bg-muted"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-4 w-4 mr-2"
-                      >
-                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                        <path d="M21 3v5h-5" />
-                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                        <path d="M8 16H3v5" />
-                      </svg>
-                      Reset Session
-                    </Button>
-                  </div>
                 </div>
               </div>
 
@@ -330,12 +282,13 @@ export default function PlaygroundPage() {
                   </h4>
                   <div className="space-y-2 text-[11px] text-muted-foreground leading-relaxed">
                     <p>
-                      Test your chatbot's behavior with different configurations. Changes to Model
-                      and Temperature are <span className="font-medium text-foreground">session-only</span>.
+                      This playground is your <strong>testing environment</strong>. It allows you to interact with your chatbot exactly as your users will, helping you verify behavior before deployment.
                     </p>
                     <p>
-                      Save the <span className="font-medium text-foreground">System Instruction</span> to
-                      persist logic changes for all users.
+                      Use the <strong>System Instruction</strong> to define the bot's personality and rules. Changes here are saved and will apply to all future conversations.
+                    </p>
+                    <p>
+                      Experiment with <strong>Models</strong> and <strong>Temperature</strong> to fine-tune responses. These settings are temporary for this session to help you find the perfect balance.
                     </p>
                   </div>
                 </div>

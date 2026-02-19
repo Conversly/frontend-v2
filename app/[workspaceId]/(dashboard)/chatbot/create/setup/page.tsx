@@ -340,7 +340,7 @@ export default function SetupWizardPage() {
           <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
             <SetupVisualization url={composedUrl} stage={stage}>
               {step === 4 && draftConfig && (
-                <div className="w-[380px] h-[500px] rounded-lg overflow-hidden shadow-lg">
+                <div className="w-[400px] h-[650px] rounded-lg overflow-hidden shadow-lg">
                   <LivePreviewWidget
                     chatbotId={chatbotId || ""}
                     config={draftConfig}

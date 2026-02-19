@@ -9,6 +9,7 @@ import {
   DeleteKnowledgeResponse,
   FetchDataSourcesResponse,
 } from "@/types/datasource";
+import { handleEntitlementError } from "@/lib/api-error-handler";
 
 export const processDataSource = async (
   request: ProcessRequest
@@ -30,6 +31,9 @@ export const processDataSource = async (
 
     return res;
   } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error;
+    }
     console.error(error);
     throw new Error(error.message || "Failed to process data source");
   }
@@ -55,6 +59,9 @@ export const addCitation = async (
 
     return res;
   } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error;
+    }
     console.error(error);
     throw new Error(error.message || "Failed to add citation");
   }
@@ -78,6 +85,9 @@ export const fetchEmbeddings = async (
 
     return res.data;
   } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error;
+    }
     console.error(error);
     throw new Error(error.message || "Failed to fetch embeddings");
   }

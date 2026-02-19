@@ -13,6 +13,7 @@ import {
   DeleteTopicResponse,
   UpdateChatbotInput,
 } from "@/types/chatbot";
+import { handleEntitlementError } from "@/lib/api-error-handler";
 
 export const updateChatbot = async (chatbot: UpdateChatbotInput): Promise<ChatbotResponse> => {
   // DEV_ONLY - Uses guardedFetch for automatic mode checking
@@ -44,18 +45,25 @@ export const createChatBot = async (chatbot: CreateChatbotInput) => {
     chatbot.workspaceId
   );
 
-  const res = (await fetch(
-    API.ENDPOINTS.WORKSPACES.BASE_URL() + endpoint,
-    {
-      method: "POST",
-      data: chatbot,
-    }
-  ).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
+  try {
+    const res = (await fetch(
+      API.ENDPOINTS.WORKSPACES.BASE_URL() + endpoint,
+      {
+        method: "POST",
+        data: chatbot,
+      }
+    ).then((res) => res.data)) as ApiResponse<ChatbotResponse, Error>;
 
-  if (!res.success) {
-    throw new Error(res.message);
+    if (!res.success) {
+      throw new Error(res.message);
+    }
+    return res.data;
+  } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error; // Re-throw so component knows it failed, but toast is already shown
+    }
+    throw error;
   }
-  return res.data;
 };
 
 export const getChatbot = async (
@@ -138,21 +146,28 @@ export const deleteChatbot = async (
 };
 
 export const createTopic = async (input: CreateTopicInput): Promise<TopicResponse> => {
-  // DEV_ONLY - Uses guardedFetch for automatic mode checking
-  const res = await guardedFetch(
-    API.ENDPOINTS.CHATBOT.CREATE_TOPIC,
-    API.ENDPOINTS.CHATBOT.BASE_URL(),
-    {
-      method: "POST",
-      data: input,
-    },
-  ).then((res) => res.data) as ApiResponse<TopicResponse, Error>;
+  try {
+    // DEV_ONLY - Uses guardedFetch for automatic mode checking
+    const res = await guardedFetch(
+      API.ENDPOINTS.CHATBOT.CREATE_TOPIC,
+      API.ENDPOINTS.CHATBOT.BASE_URL(),
+      {
+        method: "POST",
+        data: input,
+      },
+    ).then((res) => res.data) as ApiResponse<TopicResponse, Error>;
 
-  if (!res.success) {
-    throw new Error(res.message);
+    if (!res.success) {
+      throw new Error(res.message);
+    }
+
+    return res.data;
+  } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error;
+    }
+    throw error;
   }
-
-  return res.data;
 };
 
 export const updateTopic = async (input: UpdateTopicInput): Promise<TopicResponse> => {
