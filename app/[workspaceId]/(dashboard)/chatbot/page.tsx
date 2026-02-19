@@ -139,28 +139,28 @@ export default function WorkspaceChatbotsPage() {
                   Manage chatbots in this workspace.
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span tabIndex={0}>
-                      <Button
-                        onClick={handleCreateChatbot}
-                        disabled={!canCreateChatbot}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Create chatbot
-                      </Button>
-                    </span>
-                  </TooltipTrigger>
-                  {!canCreateChatbot && (
-                    <TooltipContent>
-                      <p>You have reached the chatbot limit for your plan.</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
+              <div className="flex items-center gap-3">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span tabIndex={0}>
+                        <Button
+                          onClick={handleCreateChatbot}
+                          disabled={!canCreateChatbot}
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Create chatbot
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    {!canCreateChatbot && (
+                      <TooltipContent>
+                        <p>You have reached the chatbot limit for your plan.</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
 

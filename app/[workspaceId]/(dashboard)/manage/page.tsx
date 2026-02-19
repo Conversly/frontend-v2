@@ -288,27 +288,29 @@ export default function ManagePage() {
                     <TabsContent value="members" className="space-y-4">
                         <div className="flex justify-end mb-4">
                             <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
-                                <DialogTrigger asChild>
-                                    <div className="inline-block">
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <span tabIndex={0}>
-                                                        <Button className="gap-2 shadow-sm" disabled={!canInviteMember}>
-                                                            <UserPlus className="h-4 w-4" />
-                                                            Invite Member
-                                                        </Button>
-                                                    </span>
-                                                </TooltipTrigger>
-                                                {!canInviteMember && (
-                                                    <TooltipContent>
-                                                        <p>You have reached the team member limit for your plan.</p>
-                                                    </TooltipContent>
-                                                )}
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    </div>
-                                </DialogTrigger>
+                                <div className="inline-block">
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span tabIndex={0}>
+                                                    <Button
+                                                        className="gap-2 shadow-sm"
+                                                        disabled={!canInviteMember}
+                                                        onClick={() => setIsInviteOpen(true)}
+                                                    >
+                                                        <UserPlus className="h-4 w-4" />
+                                                        Invite Member
+                                                    </Button>
+                                                </span>
+                                            </TooltipTrigger>
+                                            {!canInviteMember && (
+                                                <TooltipContent>
+                                                    <p>You have reached the team member limit for your plan.</p>
+                                                </TooltipContent>
+                                            )}
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>Invite to Workspace</DialogTitle>
