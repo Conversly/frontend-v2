@@ -121,7 +121,7 @@ export default function BillingPage() {
                   <div className="flex items-baseline justify-between">
                     <div className="text-2xl font-bold">{subscription?.planName || "Free Plan"}</div>
                     {subscription?.status && (
-                      <Badge variant={subscription.status === 'active' ? 'default' : 'secondary'}>
+                      <Badge variant={subscription.status === 'ACTIVE' ? 'default' : 'secondary'}>
                         {subscription.status}
                       </Badge>
                     )}

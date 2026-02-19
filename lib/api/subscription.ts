@@ -6,7 +6,7 @@ export type { SubscriptionPlan, CurrentSubscription };
 
 export interface SubscriptionContextData {
     subscription: {
-        status: 'active' | 'trial' | 'past_due' | 'canceled' | 'unpaid' | 'incomplete';
+        status: 'ACTIVE' | 'TRIAL' | 'PAST_DUE' | 'CANCELED' | 'UNPAID' | 'INCOMPLETE' | 'INCOMPLETE_EXPIRED';
         planId: string | null;
         planName: string;
         validUntil: string | null;
@@ -87,7 +87,7 @@ const MOCK_PLANS: SubscriptionPlan[] = [
 const MOCK_CURRENT_SUBSCRIPTION: CurrentSubscription = {
     planId: "starter",
     planName: "Starter",
-    status: "active",
+    status: "ACTIVE",
     currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     usage: {
         chatbots: 1,

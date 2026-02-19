@@ -24,7 +24,7 @@ export interface SubscriptionPlan {
 export interface CurrentSubscription {
     planId: string;
     planName: string;
-    status: "active" | "canceled" | "past_due" | "incomplete";
+    status: "ACTIVE" | "CANCELED" | "PAST_DUE" | "INCOMPLETE" | "TRIAL" | "UNPAID" | "INCOMPLETE_EXPIRED";
     currentPeriodEnd: string;
     usage: {
         chatbots: number;
@@ -98,7 +98,7 @@ const MOCK_PLANS: SubscriptionPlan[] = [
 const MOCK_CURRENT_SUBSCRIPTION: CurrentSubscription = {
     planId: "starter",
     planName: "Starter",
-    status: "active",
+    status: "ACTIVE",
     currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     usage: {
         chatbots: 1,

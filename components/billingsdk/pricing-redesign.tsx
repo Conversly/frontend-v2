@@ -209,8 +209,8 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
                             <div
                                 key={plan.id}
                                 className={`flex flex-col relative rounded-3xl border p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] ${isCurrent
-                                        ? "border-green-500/50 ring-2 ring-green-500/20 bg-green-500/5"
-                                        : "border-primary-foreground bg-gradient-to-b via-primary-foreground/10 to-primary-foreground from-[0%] via-[40%] to-[100%] " + (gradientFrom[index] || "")
+                                    ? "border-green-500/50 ring-2 ring-green-500/20 bg-green-500/5"
+                                    : "border-primary-foreground bg-gradient-to-b via-primary-foreground/10 to-primary-foreground from-[0%] via-[40%] to-[100%] " + (gradientFrom[index] || "")
                                     }`}
                             >
                                 {plan.highlight && !isCurrent && (
@@ -236,10 +236,15 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
                                         {isYearly &&
                                             monthlyPriceNum > 0 &&
                                             yearlyPriceNum < monthlyPriceNum * 12 && (
-                                                <span className="bg-primary-foreground text-foreground shadow-muted-foreground/40 inline-block rounded-full px-2 py-1 text-xs whitespace-nowrap shadow-sm">
+                                                <span className="bg-red-500 text-white shadow-sm inline-block rounded-full px-2 py-0.5 text-xs font-bold whitespace-nowrap ml-2">
                                                     Save {getDiscountPercent(plan)}%
                                                 </span>
                                             )}
+                                        {plan.trialPeriodDays && plan.trialPeriodDays > 0 ? (
+                                            <span className="bg-blue-500/10 text-blue-600 shadow-sm ml-2 inline-block rounded-full px-2 py-1 text-xs font-medium whitespace-nowrap">
+                                                {plan.trialPeriodDays} day free trial
+                                            </span>
+                                        ) : null}
                                     </div>
                                     <p className="text-muted-foreground text-sm">
                                         {plan.description}

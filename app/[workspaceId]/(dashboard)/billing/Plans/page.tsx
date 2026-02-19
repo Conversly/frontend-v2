@@ -74,16 +74,23 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
 
                 // Helper to get price string
                 const getPriceString = (priceObj: any, variant: any, interval: 'month' | 'year') => {
-                    if (priceObj) return String(priceObj.amount / 100);
+                    if (priceObj && priceObj.amountCents !== undefined && priceObj.amountCents !== null) {
+                        return String(priceObj.amountCents / 100);
+                    }
                     // Fallback to monthlyPriceCents if available and appropriate
                     if (interval === 'month' && variant?.monthlyPriceCents !== undefined) {
                         return String(variant.monthlyPriceCents / 100);
+                    }
+                    if (interval === 'year' && variant?.yearlyPriceCents !== undefined && variant?.yearlyPriceCents !== null) {
+                        return String(variant.yearlyPriceCents / 100);
                     }
                     return undefined;
                 };
 
                 const monthlyPrice = getPriceString(monthlyPriceObj, monthlyVariant, 'month') || config?.monthlyPrice || "0";
                 const yearlyPrice = getPriceString(yearlyPriceObj, yearlyVariant, 'year') || config?.yearlyPrice || "0";
+
+                const trialPeriodDays = monthlyVariant?.trialPeriodDays || yearlyVariant?.trialPeriodDays || 0;
 
                 const basePlan = config || {
                     id: monthlyVariant?.id || yearlyVariant?.id || 'unknown',
@@ -95,7 +102,8 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     ],
                     highlight: false,
                     monthlyPrice,
-                    yearlyPrice
+                    yearlyPrice,
+                    trialPeriodDays
                 };
 
                 // Use the dodoProductId from the price object if available, otherwise fallback to Plan ID (likely wrong for checkout but handled by error)
@@ -111,8 +119,10 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     yearlyPrice,
                     monthlyProductId, // Fix: Use correct price ID
                     yearlyProductId,  // Fix: Use correct price ID
+                    trialPeriodDays, // Ensure it's passed
                     features: basePlan.features,
-                    highlight: basePlan.highlight || basePlan.title.toLowerCase().includes('pro'),
+                    highlight: basePlan.highlight || basePlan.title.toLowerCase().includes('standard'),
+                    buttonText: trialPeriodDays > 0 ? "Start free trial" : (basePlan.buttonText || "Upgrade"),
                 };
 
                 processedPlans.push(plan);

@@ -17,7 +17,7 @@ interface SubscriptionContextType extends SubscriptionContextData {
 // Default state to avoid null checks everywhere
 const defaultState: SubscriptionContextData = {
     subscription: {
-        status: 'trial',
+        status: 'TRIAL',
         planId: null,
         planName: 'Free',
         validUntil: null,

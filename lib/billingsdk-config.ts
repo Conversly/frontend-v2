@@ -18,6 +18,7 @@ export interface Plan {
     icon: string;
     iconColor?: string;
   }[];
+  trialPeriodDays?: number;
   benefits?: string[];
 }
 
@@ -64,6 +65,8 @@ export const plans: Plan[] = [
     monthlyPrice: "120", // Placeholder, will be overridden by backend
     yearlyPrice: "1440", // Placeholder
     buttonText: "Upgrade",
+    badge: "Most Popular",
+    highlight: true,
     features: [
       { name: "Access to advanced models", icon: "check", iconColor: "text-primary" },
       { name: "1,500 message credits/month", icon: "check", iconColor: "text-primary" },
@@ -82,8 +85,6 @@ export const plans: Plan[] = [
     monthlyPrice: "400", // Placeholder
     yearlyPrice: "4800", // Placeholder
     buttonText: "Upgrade",
-    badge: "Most popular",
-    highlight: true,
     features: [
       { name: "10,000 message credits/month", icon: "check", iconColor: "text-primary" },
       { name: "10 enabled AI Actions per AI agent", icon: "check", iconColor: "text-primary" },
