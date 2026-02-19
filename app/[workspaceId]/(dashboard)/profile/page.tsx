@@ -283,7 +283,7 @@ export default function ProfilePage() {
                                             </div>
                                             {currentSubscription.currentPeriodEnd && (
                                                 <p className="text-sm text-muted-foreground">
-                                                    {currentSubscription.status === "active" ? "Renews" : "Expires"}: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}
+                                                    {currentSubscription.status === "ACTIVE" ? "Renews" : "Expires"}: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}
                                                 </p>
                                             )}
                                         </div>
