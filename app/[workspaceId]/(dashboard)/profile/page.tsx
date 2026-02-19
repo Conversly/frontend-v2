@@ -275,7 +275,7 @@ export default function ProfilePage() {
                                             <div className="flex items-center gap-2">
                                                 <h3 className="text-lg font-semibold">{currentSubscription.planName}</h3>
                                                 <Badge
-                                                    variant={currentSubscription.status === "active" ? "default" : "secondary"}
+                                                    variant={currentSubscription.status === "ACTIVE" ? "default" : "secondary"}
                                                     className={TIER_COLORS[currentSubscription.planName.toUpperCase().split(' ')[0]] || TIER_COLORS.FREE}
                                                 >
                                                     {currentSubscription.status}
