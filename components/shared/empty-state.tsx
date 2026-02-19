@@ -9,6 +9,8 @@ type EmptyStateAction = {
   onClick?: () => void;
   icon?: React.ReactNode;
   variant?: React.ComponentProps<typeof Button>["variant"];
+  className?: string;
+  disabled?: boolean;
 };
 
 export type EmptyStateProps = {
@@ -32,14 +34,14 @@ function ActionButton({ action }: { action: EmptyStateAction }) {
 
   if (action.href) {
     return (
-      <Button asChild variant={action.variant ?? "default"}>
+      <Button asChild variant={action.variant ?? "default"} className={action.className} disabled={action.disabled}>
         <Link href={action.href}>{content}</Link>
       </Button>
     );
   }
 
   return (
-    <Button onClick={action.onClick} variant={action.variant ?? "default"}>
+    <Button onClick={action.onClick} variant={action.variant ?? "default"} className={action.className} disabled={action.disabled}>
       {content}
     </Button>
   );

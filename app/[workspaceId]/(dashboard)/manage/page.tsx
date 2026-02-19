@@ -69,10 +69,22 @@ import {
     WorkspaceMember,
     WorkspaceInvitation
 } from "@/lib/api/workspaces";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function ManagePage() {
     const { workspaceName, workspaceId } = useWorkspace();
     const router = useRouter();
+    const { data: entitlements } = useEntitlements(workspaceId);
+
+    const canInviteMember = entitlements
+        ? (entitlements.limits.team_members === -1 || entitlements.usage.team_members < (entitlements.limits.team_members as number))
+        : true;
 
     // -- Members State --
     const [members, setMembers] = useState<WorkspaceMember[]>([]);
@@ -277,10 +289,25 @@ export default function ManagePage() {
                         <div className="flex justify-end mb-4">
                             <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="gap-2 shadow-sm">
-                                        <UserPlus className="h-4 w-4" />
-                                        Invite Member
-                                    </Button>
+                                    <div className="inline-block">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span tabIndex={0}>
+                                                        <Button className="gap-2 shadow-sm" disabled={!canInviteMember}>
+                                                            <UserPlus className="h-4 w-4" />
+                                                            Invite Member
+                                                        </Button>
+                                                    </span>
+                                                </TooltipTrigger>
+                                                {!canInviteMember && (
+                                                    <TooltipContent>
+                                                        <p>You have reached the team member limit for your plan.</p>
+                                                    </TooltipContent>
+                                                )}
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>

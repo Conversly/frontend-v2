@@ -48,6 +48,7 @@ export const API = {
       ACCEPT_INVITATION: allMode(() => "/invitations/:token/accept"),
       BILLING: allMode(() => "/:workspaceId/billing"),
       INVOICES: allMode(() => "/:workspaceId/billing/invoices"),
+      ENTITLEMENTS: allMode(() => "/:workspaceId/entitlements"),
     },
     USER: {
       BASE_URL: () => "/user",

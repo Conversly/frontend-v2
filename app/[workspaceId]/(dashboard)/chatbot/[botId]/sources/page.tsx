@@ -26,7 +26,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
+import { useEntitlements } from "@/hooks/useEntitlements";
 import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
@@ -370,8 +377,9 @@ function DataSourceCard({
 }
 
 export default function DataSourcesPage() {
-  const routeParams = useParams<{ botId: string }>();
+  const routeParams = useParams<{ botId: string; workspaceId: string }>();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
 
   const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -384,6 +392,11 @@ export default function DataSourcesPage() {
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
   const { guardEdit, isLiveMode } = useEditGuard();
+  const { data: entitlements } = useEntitlements(workspaceId);
+
+  const canAddDatasource = entitlements
+    ? (entitlements.limits.datasources === -1 || entitlements.usage.datasources < (entitlements.limits.datasources as number))
+    : true;
 
   // Calculate source counts by type
   const sourceCounts = useMemo(() => {
@@ -488,10 +501,26 @@ export default function DataSourcesPage() {
                 {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
               </p>
             </div>
-            <Button onClick={() => setIsAddDialogOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Knowledge
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button
+                      onClick={() => setIsAddDialogOpen(true)}
+                      disabled={!canAddDatasource}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Knowledge
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {!canAddDatasource && (
+                  <TooltipContent>
+                    <p>You have reached the datasource limit for your plan.</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* Search */}
@@ -522,6 +551,7 @@ export default function DataSourcesPage() {
                   primaryAction={{
                     label: "Add Knowledge",
                     onClick: () => setIsAddDialogOpen(true),
+                    disabled: !canAddDatasource
                   }}
                   className="border-dashed bg-card/30"
                 />

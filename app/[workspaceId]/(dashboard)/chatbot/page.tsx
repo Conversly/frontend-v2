@@ -14,6 +14,13 @@ import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -33,8 +40,13 @@ export default function WorkspaceChatbotsPage() {
   const resetSetup = useSetupStore((s) => s.reset);
   const switchBranch = useBranchStore((s) => s.switchBranch);
   const { data: chatbots, isLoading, error } = useGetChatbots(workspaceId);
+  const { data: entitlements } = useEntitlements(workspaceId);
   const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const canCreateChatbot = entitlements
+    ? (entitlements.limits.chatbots === -1 || entitlements.usage.chatbots < (entitlements.limits.chatbots as number))
+    : true;
 
   useEffect(() => {
     setWorkspaceId(workspaceId);
@@ -127,12 +139,28 @@ export default function WorkspaceChatbotsPage() {
                   Manage chatbots in this workspace.
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <Button onClick={handleCreateChatbot}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create chatbot
-                </Button>
-              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span tabIndex={0}>
+                      <Button
+                        onClick={handleCreateChatbot}
+                        disabled={!canCreateChatbot}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create chatbot
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  {!canCreateChatbot && (
+                    <TooltipContent>
+                      <p>You have reached the chatbot limit for your plan.</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
@@ -146,6 +174,7 @@ export default function WorkspaceChatbotsPage() {
                 label: "Create chatbot",
                 onClick: handleCreateChatbot,
                 icon: <Plus />,
+                disabled: !canCreateChatbot
               }}
             />
           ) : (
@@ -160,7 +189,7 @@ export default function WorkspaceChatbotsPage() {
             </div>
           )}
         </div>
-      </div>
+      </div >
 
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>

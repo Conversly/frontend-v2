@@ -276,3 +276,25 @@ export async function deleteWorkspace(workspaceId: string): Promise<void> {
     throw new Error(error.message);
   }
 }
+
+export interface EntitlementData {
+  limits: Record<string, number | boolean>;
+  usage: {
+    chatbots: number;
+    datasources: number;
+    team_members: number;
+    messages_per_month: number;
+    storage_mb: number;
+  };
+}
+
+export async function getWorkspaceEntitlements(workspaceId: string): Promise<EntitlementData> {
+  const endpoint = API.ENDPOINTS.WORKSPACES.ENTITLEMENTS.path().replace(":workspaceId", workspaceId);
+  const res = (await fetch(
+    API.ENDPOINTS.WORKSPACES.BASE_URL() + endpoint,
+    { method: "GET" }
+  ).then((r) => r.data)) as ApiResponse<EntitlementData, Error>;
+
+  if (!res.success) throw new Error(res.message);
+  return res.data;
+}
