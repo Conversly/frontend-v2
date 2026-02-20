@@ -116,11 +116,11 @@ export default function ExploreSection() {
                     </motion.p>
                 </motion.div>
 
-                {/* Desktop Tabs */}
-                <div className="hidden md:block">
+                {/* Responsive View (Tabs + Single Image Container) */}
+                <div className="w-full mt-6 md:mt-8">
                     {/* Tab Navigation */}
-                    <div className="relative mb-8">
-                        <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <div className="relative mb-6 md:mb-8 pb-2 overflow-x-auto hide-scrollbar">
+                        <div className="flex items-center justify-start md:justify-center gap-2 md:flex-wrap min-w-max px-2">
                             {TABS.map((tab) => (
                                 <motion.button
                                     key={tab.id}
@@ -131,7 +131,7 @@ export default function ExploreSection() {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={cn(
-                                        "relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 group",
+                                        "relative px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium text-xs md:text-sm transition-all duration-300 group whitespace-nowrap",
                                         activeTab === tab.id
                                             ? "text-white shadow-lg"
                                             : "text-zinc-400 hover:text-white hover:bg-zinc-900/50"
@@ -171,25 +171,25 @@ export default function ExploreSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="relative mt-8"
+                        className="relative mt-4 md:mt-8"
                     >
                         {/* Proper Card Container */}
-                        <div className="relative rounded-[24px] p-2 bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl">
-                            <div className="relative bg-[#09090b] rounded-xl overflow-hidden shadow-inner">
+                        <div className="relative rounded-2xl md:rounded-[24px] p-1.5 md:p-2 bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl">
+                            <div className="relative bg-[#09090b] rounded-lg md:rounded-xl overflow-hidden shadow-inner">
                                 {/* Card Header (Mac OS style dots) */}
-                                <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-white/10 to-transparent flex items-center px-4 z-20 border-b border-white/5">
-                                    <div className="flex gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-red-400/80 shadow-[0_0_10px_rgba(248,113,113,0.5)]" />
-                                        <div className="w-3 h-3 rounded-full bg-amber-400/80 shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
-                                        <div className="w-3 h-3 rounded-full bg-green-400/80 shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
+                                <div className="absolute top-0 inset-x-0 h-8 md:h-10 bg-gradient-to-b from-white/10 to-transparent flex items-center px-3 md:px-4 z-20 border-b border-white/5">
+                                    <div className="flex gap-1.5 md:gap-2">
+                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-400/80 shadow-[0_0_10px_rgba(248,113,113,0.5)]" />
+                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-400/80 shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-400/80 shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
                                     </div>
                                 </div>
 
                                 {/* Content Container Background */}
-                                <div className="relative w-full pt-10 min-h-[400px] flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-[#0a0a0c] to-[#050505]">
+                                <div className="relative w-full pt-8 md:pt-10 min-h-[250px] md:min-h-[400px] flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-[#0a0a0c] to-[#050505]">
 
                                     {/* Subtle grid pattern */}
-                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:16px_16px] md:bg-[size:24px_24px] pointer-events-none" />
 
                                     {/* Image with Animation */}
                                     <AnimatePresence mode="wait">
@@ -199,9 +199,9 @@ export default function ExploreSection() {
                                             animate={{ opacity: 1, scale: 1, y: 0 }}
                                             exit={{ opacity: 0, scale: 0.98, y: -10 }}
                                             transition={{ duration: 0.4, ease: "easeInOut" }}
-                                            className="relative w-full h-full p-4 sm:p-8 flex items-center justify-center z-10"
+                                            className="relative w-full h-full p-2.5 sm:p-4 md:p-8 flex items-center justify-center z-10"
                                         >
-                                            <div className="relative w-full h-full rounded-lg overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 ring-1 ring-black">
+                                            <div className="relative w-full h-full rounded-md md:rounded-lg overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 ring-1 ring-black">
                                                 <Image
                                                     src={activeContent.image}
                                                     alt={`${activeContent.label} preview`}
@@ -219,58 +219,8 @@ export default function ExploreSection() {
                         </div>
 
                         {/* Glow Effect */}
-                        <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 via-blue-500/20 to-indigo-500/20 rounded-[3rem] blur-3xl -z-10 opacity-60 pointer-events-none" />
+                        <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-blue-500/10 to-indigo-500/10 rounded-[2rem] md:rounded-[3rem] blur-2xl md:blur-3xl -z-10 opacity-60 pointer-events-none" />
                     </motion.div>
-                </div>
-
-                {/* Mobile View */}
-                <div className="md:hidden space-y-6">
-                    {TABS.map((tab, index) => (
-                        <motion.div
-                            key={tab.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
-                            className="relative group"
-                        >
-                            {/* Proper Card Container */}
-                            <div className="relative rounded-2xl p-1 bg-white/5 border border-white/10 backdrop-blur-sm transition-all duration-500 hover:bg-white/10">
-                                <div className="relative rounded-xl bg-[#09090b] overflow-hidden border border-white/5">
-                                    {/* Header */}
-                                    <div className="p-4 border-b border-white/5 bg-gradient-to-b from-white/5 to-transparent flex gap-3 items-center">
-                                        <div className="p-2 rounded-lg bg-primary/20 text-primary ring-1 ring-primary/30">
-                                            {tab.icon}
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-white">{tab.label}</h3>
-                                            <p className="text-xs text-zinc-400 mt-0.5">{tab.description}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Image Container */}
-                                    <div className="relative w-full flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-[#0a0a0c] to-[#050505] p-3">
-
-                                        {/* Subtle grid pattern */}
-                                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:12px_12px] pointer-events-none" />
-
-                                        <div className="relative w-full rounded-lg overflow-hidden shadow-2xl border border-white/10 ring-1 ring-black z-10">
-                                            <Image
-                                                src={tab.image}
-                                                alt={tab.label}
-                                                width={600}
-                                                height={400}
-                                                className="w-full h-auto object-cover"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Glow Effect on Hover */}
-                            <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 via-blue-500/20 to-indigo-500/20 rounded-2xl blur-xl -z-10 transition-all duration-500 opacity-0 group-hover:opacity-100 pointer-events-none" />
-                        </motion.div>
-                    ))}
                 </div>
             </div>
         </section>
