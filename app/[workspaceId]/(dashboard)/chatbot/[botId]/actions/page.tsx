@@ -12,22 +12,53 @@ import {
   useDeleteCustomAction,
 } from '@/services/actions';
 import { Loader2 } from 'lucide-react';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { UpgradeDialog } from '@/components/billingsdk/UpgradeDialog';
 
 export default function ActionsPage() {
   const params = useParams();
   const chatbotId = params.botId as string;
+  const workspaceId = params.workspaceId as string;
 
   const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
   const [selectedAction, setSelectedAction] = useState<CustomAction | undefined>(undefined);
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
+  const [upgradeDialogContent, setUpgradeDialogContent] = useState({ title: '', description: '' });
+
+  const { data: entitlements } = useEntitlements(workspaceId);
+
+  const actionsEnabled = entitlements?.features?.actions ?? true;
+  const actionsLimit = (entitlements?.limits?.actionsNum as number) ?? -1;
 
   const { data: actions, isLoading } = useCustomActions({ chatbotId });
+  const actionsUsed = actions?.length ?? 0;
   const createAction = useCreateCustomAction();
   const updateAction = useUpdateCustomAction();
   const deleteAction = useDeleteCustomAction();
 
-  const handleCreate = () => {
+  const handleCreateInternal = () => {
     setSelectedAction(undefined);
     setView('create');
+  };
+
+  const handleCreate = () => {
+    if (!actionsEnabled) {
+      setUpgradeDialogContent({
+        title: "Upgrade to use Custom Actions",
+        description: "Your current plan does not support custom actions. Upgrade to unlock this feature.",
+      });
+      setIsUpgradeDialogOpen(true);
+      return;
+    }
+    if (actionsLimit !== -1 && actionsUsed >= actionsLimit) {
+      setUpgradeDialogContent({
+        title: "Upgrade to create more actions",
+        description: `Your current plan allows up to ${actionsLimit} action${actionsLimit === 1 ? "" : "s"}. Upgrade your plan to create more.`,
+      });
+      setIsUpgradeDialogOpen(true);
+      return;
+    }
+    handleCreateInternal();
   };
 
   const handleEdit = (action: CustomAction) => {
@@ -103,6 +134,13 @@ export default function ActionsPage() {
           </div>
         </div>
       )}
+
+      <UpgradeDialog
+        open={isUpgradeDialogOpen}
+        onOpenChange={setIsUpgradeDialogOpen}
+        title={upgradeDialogContent.title}
+        description={upgradeDialogContent.description}
+      />
     </div>
   );
 }

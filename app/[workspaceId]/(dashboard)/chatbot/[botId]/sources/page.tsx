@@ -20,7 +20,8 @@ import {
   AlertTriangle,
   Eye,
   MoreVertical,
-  Plus
+  Plus,
+  Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,6 +62,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
 import {
   SourcesCategorySidebar,
   AddKnowledgeDialog,
@@ -387,6 +389,7 @@ export default function DataSourcesPage() {
   const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
@@ -506,19 +509,21 @@ export default function DataSourcesPage() {
                 <TooltipTrigger asChild>
                   <span>
                     <Button
-                      onClick={() => setIsAddDialogOpen(true)}
-                      disabled={!canAddDatasource}
+                      onClick={() => {
+                        if (!canAddDatasource) {
+                          setIsUpgradeDialogOpen(true);
+                        } else {
+                          setIsAddDialogOpen(true);
+                        }
+                      }}
+                      className={!canAddDatasource ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
+                      variant={canAddDatasource ? "default" : "outline"}
                     >
-                      <Plus className="w-4 h-4 mr-2" />
+                      {!canAddDatasource ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                       Add Knowledge
                     </Button>
                   </span>
                 </TooltipTrigger>
-                {!canAddDatasource && (
-                  <TooltipContent>
-                    <p>You have reached the datasource limit for your plan.</p>
-                  </TooltipContent>
-                )}
               </Tooltip>
             </TooltipProvider>
           </div>
@@ -550,8 +555,14 @@ export default function DataSourcesPage() {
                   icon={<Database />}
                   primaryAction={{
                     label: "Add Knowledge",
-                    onClick: () => setIsAddDialogOpen(true),
-                    disabled: !canAddDatasource
+                    onClick: () => {
+                      if (!canAddDatasource) {
+                        setIsUpgradeDialogOpen(true);
+                      } else {
+                        setIsAddDialogOpen(true);
+                      }
+                    },
+                    icon: !canAddDatasource ? <Lock /> : <Plus />,
                   }}
                   className="border-dashed bg-card/30"
                 />
@@ -631,6 +642,13 @@ export default function DataSourcesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <UpgradeDialog
+        open={isUpgradeDialogOpen}
+        onOpenChange={setIsUpgradeDialogOpen}
+        title="Upgrade to add more knowledge"
+        description={`Your current plan allows up to ${entitlements?.limits?.datasources} data source${entitlements?.limits?.datasources === 1 ? "" : "s"}. Upgrade your plan to add more.`}
+      />
 
       {/* Pending Sources Panel */}
       <PendingSourcesPanel chatbotId={botId} />
