@@ -222,7 +222,7 @@ Script:
         </Tabs>
       </div>
 
-      {/* API Key */}
+      {/* API Key
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="API Key"
@@ -283,8 +283,9 @@ Script:
           )}
         </div>
       </div>
+      */}
 
-      {/* Domain Allowlist */}
+      {/* Domain Allowlist
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
           title="Domain Allowlist"
@@ -352,6 +353,7 @@ Script:
           </div>
         </div>
       </div>
+      */}
     </motion.div>
   );
 }

@@ -197,14 +197,14 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
               onClick={async () => {
                 try {
                   await saveCustomization(chatbotId);
-                  toast.success('Customization saved & deployed');
+                  toast.success('Customization saved');
                 } catch (err: any) {
                   toast.error(err?.message || 'Failed to save');
                 }
               }}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Save & Deploy
+              Save
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

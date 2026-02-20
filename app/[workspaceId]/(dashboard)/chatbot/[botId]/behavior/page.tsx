@@ -281,17 +281,17 @@ export default function BehaviourPage() {
             {/* LEFT PANEL - Controls (Scrollable) */}
             <div className="flex-1 overflow-y-auto px-8 py-8 min-w-[500px] max-w-4xl mx-auto w-full scrollbar-thin">
                 <div className="mb-8">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight mb-2">Behaviour</h1>
-                            <p className="text-lg text-muted-foreground">
-                                Train how your AI interacts with visitors.
-                            </p>
+                    <div className="flex flex-col mb-4">
+                        <h1 className="text-3xl font-bold tracking-tight mb-2">Behaviour</h1>
+                        <p className="text-lg text-muted-foreground mb-4">
+                            Train how your AI interacts with visitors.
+                        </p>
+                        <div className="inline-flex items-start md:items-center gap-3 px-4 py-3 bg-primary/10 border border-primary/20 rounded-lg self-start">
+                            <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5 md:mt-0" />
+                            <span className="text-sm font-medium text-primary">
+                                Write in your own broken language and we will create a world-class prompt for your bot!
+                            </span>
                         </div>
-                        <Button onClick={handleSave} disabled={isSaving}>
-                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                            Save Changes
-                        </Button>
                     </div>
 
                     {/* Live Summary Card */}
@@ -377,13 +377,12 @@ export default function BehaviourPage() {
                         </TabsContent>
                     </Tabs>
 
-                    {/* 5. Coming Soon */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
-                        <GuardrailsCard />
-                        <ActionsCard />
+                    <div className="flex justify-end pt-8 pb-10 border-t mt-8">
+                        <Button size="lg" onClick={handleSave} disabled={isSaving} className="px-8">
+                            {isSaving ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
+                            Save Changes
+                        </Button>
                     </div>
-
-                    <div className="h-10"></div>
                 </div>
             </div>
         </div>
