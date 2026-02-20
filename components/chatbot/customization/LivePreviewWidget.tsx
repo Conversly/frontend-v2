@@ -115,12 +115,12 @@ export function LivePreviewWidget({
         };
 
         const updateMessage = {
-            source: "chat-widget-host",
+            source: "verly-widget-host",
             type: "widget:config_update",
             payload: widgetConfigPayload
         };
 
-        iframeRef.current.contentWindow.postMessage(updateMessage, "*");
+        iframeRef.current.contentWindow.postMessage(updateMessage, WIDGET_BASE_URL);
 
     }, [iframeLoaded, config, chatbotId]);
 

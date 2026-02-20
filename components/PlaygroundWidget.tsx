@@ -55,7 +55,7 @@ export function PlaygroundWidget({
 
         // Send initial config / style updates
         const styleUpdate = {
-            source: "chat-widget-host",
+            source: "verly-widget-host",
             type: "widget:config_update",
             payload: {
                 // Map UI config to WidgetConfig expectation
@@ -68,7 +68,7 @@ export function PlaygroundWidget({
 
         // Send playground settings (system prompt, model, etc.)
         const playgroundUpdate = {
-            source: "chat-widget-host",
+            source: "verly-widget-host",
             type: "widget:playground_update",
             payload: {
                 chatbotId,
@@ -80,8 +80,8 @@ export function PlaygroundWidget({
             }
         };
 
-        iframeRef.current.contentWindow.postMessage(styleUpdate, "*");
-        iframeRef.current.contentWindow.postMessage(playgroundUpdate, "*");
+        iframeRef.current.contentWindow.postMessage(styleUpdate, WIDGET_BASE_URL);
+        iframeRef.current.contentWindow.postMessage(playgroundUpdate, WIDGET_BASE_URL);
 
     }, [iframeLoaded, chatbotId, config, systemPrompt, model, temperature]);
 
