@@ -90,7 +90,7 @@ export default function ManagePage() {
     const [isMembersLoading, setIsMembersLoading] = useState(false);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
-    const [inviteRole, setInviteRole] = useState<"OWNER" | "ADMIN" | "MEMBER">("MEMBER");
+    const [inviteRole, setInviteRole] = useState<"ADMIN" | "MEMBER">("MEMBER");
     const [isInviting, setIsInviting] = useState(false);
 
     // -- Invitations State --
@@ -290,8 +290,8 @@ export default function ManagePage() {
                                 <div className="inline-block">
                                     <Button
                                         className={`gap-2 shadow-sm ${!canInviteMember
-                                                ? "border border-amber-400 text-amber-600 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                                                : ""
+                                            ? "border border-amber-400 text-amber-600 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                                            : ""
                                             }`}
                                         variant={canInviteMember ? "default" : "outline"}
                                         onClick={() =>
@@ -335,13 +335,12 @@ export default function ManagePage() {
                                             <Label htmlFor="role">Role</Label>
                                             <Select
                                                 value={inviteRole}
-                                                onValueChange={(v: "OWNER" | "ADMIN" | "MEMBER") => setInviteRole(v)}
+                                                onValueChange={(v: "ADMIN" | "MEMBER") => setInviteRole(v)}
                                             >
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a role" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="OWNER">Owner (Full access + deletion)</SelectItem>
                                                     <SelectItem value="ADMIN">Admin (Can manage bots & members)</SelectItem>
                                                     <SelectItem value="MEMBER">Member (Can view bots & chats)</SelectItem>
                                                 </SelectContent>
