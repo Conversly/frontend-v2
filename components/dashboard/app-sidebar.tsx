@@ -149,25 +149,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             className="border-r border-border bg-sidebar"
             {...props}
         >
-            <SidebarHeader>
+            <SidebarHeader className="pt-4 pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-transparent"
                         >
-                            <div className="flex aspect-square size-8 items-center justify-center">
+                            <div className="flex aspect-square size-10 items-center justify-center">
                                 <Image
                                     src="/verly_logo.png"
                                     alt="Verly"
-                                    width={32}
-                                    height={32}
-                                    className="rounded-lg"
+                                    width={40}
+                                    height={40}
+                                    className="object-contain drop-shadow-sm"
                                 />
                             </div>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">Verly</span>
-                                <span className="truncate text-xs">AI Platform</span>
+                            <div className="grid flex-1 text-left leading-tight ml-2">
+                                <span className="truncate font-bold text-base text-foreground">Verly</span>
+                                <span className="truncate text-xs text-muted-foreground font-medium">AI Platform</span>
                             </div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -190,7 +190,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200"
                                             >
                                                 <Link href={item.url}>
-                                                    <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
+                                                    <div className={`p-1.5 rounded-lg flex items-center justify-center shrink-0 ${item.colorClass || "text-muted-foreground bg-muted/20"}`}>
+                                                        <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
+                                                    </div>
                                                     <span>{item.title}</span>
                                                 </Link>
                                             </SidebarMenuButton>
