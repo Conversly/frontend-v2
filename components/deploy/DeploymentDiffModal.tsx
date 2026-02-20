@@ -241,7 +241,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
     const hasChanges = totalChanges > 0;
 
     return (
-        <Card className="overflow-hidden border-border/60 shadow-md flex flex-col h-full">
+        <Card className="overflow-hidden border-border/60 shadow-md flex flex-col h-[calc(100vh-180px)] min-h-[600px]">
             {/* Header */}
             <CardHeader className="pb-3 border-b bg-muted/20">
                 <div>

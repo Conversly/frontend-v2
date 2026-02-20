@@ -54,7 +54,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
     ];
 
     return (
-        <BackgroundPattern className="h-[400px]">
+        <BackgroundPattern className="h-full min-h-[400px]">
             {/* Floating Elements during deployment */}
             <AnimatePresence>
                 {elements.map((id) => (

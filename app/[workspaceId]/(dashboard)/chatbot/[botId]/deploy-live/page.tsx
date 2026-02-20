@@ -45,6 +45,7 @@ export default function DeployLivePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isActionInProgress, setIsActionInProgress] = useState(false);
     const [pageView, setPageView] = useState<PageView>("default");
+    const [isDeployingLocal, setIsDeployingLocal] = useState(false);
 
     const fetchStatus = useCallback(async (showError = true) => {
         try {
@@ -102,8 +103,9 @@ export default function DeployLivePage() {
     };
 
     const handleConfirmDeploy = async () => {
-        // Switch back to default view to show the deploy animation
+        // Switch back to default view and immediately start animation
         setPageView("default");
+        setIsDeployingLocal(true);
         try {
             setIsActionInProgress(true);
             const promise = pushToLive(botId);
@@ -118,6 +120,7 @@ export default function DeployLivePage() {
             await fetchStatus(false);
         } catch (error: any) {
             console.error(error);
+            setIsDeployingLocal(false);
         } finally {
             setIsActionInProgress(false);
         }
@@ -150,12 +153,19 @@ export default function DeployLivePage() {
         }
     };
 
-    const isDeploying = status?.deployStatusField === 'DEPLOYING';
+    const isDeploying = status?.deployStatusField === 'DEPLOYING' || isDeployingLocal;
     const isDirty =
         status?.deployStatusField === 'DEV_DIRTY' ||
         status?.hasUnpublishedChanges === true ||
         (status && status.devVersion > status.liveVersion);
     const isLocked = status?.deployStatusField === 'LOCKED';
+
+    // Clear local deploying flag when backend confirms completion
+    useEffect(() => {
+        if (status?.deployStatusField !== 'DEPLOYING' && status?.deployStatusField !== 'DEV_DIRTY' && isDeployingLocal) {
+            setIsDeployingLocal(false);
+        }
+    }, [status?.deployStatusField, isDeployingLocal]);
 
     const deployStateUi = (() => {
         const state = status?.deployStatusField;
@@ -207,6 +217,27 @@ export default function DeployLivePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Column — swaps between DeployVisual and DiffView */}
                 <div className="lg:col-span-2 space-y-6">
+                    {pageView === "default" && isLocked && (
+                        <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+                            <ShieldAlert className="h-5 w-5" />
+                            <AlertTitle>Deployment Locked</AlertTitle>
+                            <AlertDescription>
+                                Your chatbot configuration is currently locked due to a previous deployment failure.
+                                Please contact support.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+
+                    {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
+                        <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                            <AlertTitle>All changes synced</AlertTitle>
+                            <AlertDescription>
+                                Your LIVE chatbot is currently running the latest version of your configuration.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+
                     <AnimatePresence mode="wait">
                         {pageView === "reviewing" ? (
                             <motion.div
@@ -231,33 +262,12 @@ export default function DeployLivePage() {
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.25 }}
                             >
-                                <Card className="overflow-hidden border-border/60 shadow-md">
+                                <Card className="overflow-hidden border-border/60 shadow-md h-[calc(100vh-180px)] min-h-[600px]">
                                     <DeployVisual isDeploying={isDeploying} />
                                 </Card>
                             </motion.div>
                         )}
                     </AnimatePresence>
-
-                    {pageView === "default" && isLocked && (
-                        <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
-                            <ShieldAlert className="h-5 w-5" />
-                            <AlertTitle>Deployment Locked</AlertTitle>
-                            <AlertDescription>
-                                Your chatbot configuration is currently locked due to a previous deployment failure.
-                                Please contact support or try to recover from a previous state.
-                            </AlertDescription>
-                        </Alert>
-                    )}
-
-                    {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
-                        <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                            <AlertTitle>All changes synced</AlertTitle>
-                            <AlertDescription>
-                                Your LIVE chatbot is currently running the latest version of your configuration.
-                            </AlertDescription>
-                        </Alert>
-                    )}
                 </div>
 
                 {/* Actions Column */}
@@ -355,10 +365,10 @@ export default function DeployLivePage() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <RotateCcw className="w-5 h-5 text-muted-foreground" />
-                                Rollback Changes
+                                Reset Changes
                             </CardTitle>
                             <CardDescription>
-                                Discard your draft and restore from Live.
+                                Reset your draft and restore from Live.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pb-4">
@@ -374,7 +384,7 @@ export default function DeployLivePage() {
                                 disabled={status?.liveVersion === 0 || isDeploying || isActionInProgress || activeBranch !== 'DEV'}
                                 onClick={handleRollback}
                             >
-                                Discard Draft & Sync
+                                Reset Draft & Sync
                             </Button>
                         </CardFooter>
                     </Card>
