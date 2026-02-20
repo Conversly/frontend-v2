@@ -79,10 +79,10 @@ export function IntegrationTab({
   };
 
   const getEmbedCode = () => `<script
-  src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/embed.js"
+  src="https://widget.verlyai.xyz/embed.js"
   data-chatbot-id="${chatbotId}"
+  data-position="bottom-right"
   data-primary-color="${config.primaryColor || "#4F46E5"}"
-  async
 ></script>`;
 
   const getCursorPrompt = () => `Add the following chatbot embed script globally to this project.
@@ -101,10 +101,10 @@ Ensure it loads on all pages.
 Script:
 
 <script
-  src="https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/embed.js"
+  src="https://widget.verlyai.xyz/embed.js"
   data-chatbot-id="${chatbotId}"
+  data-position="bottom-right"
   data-primary-color="${config.primaryColor || "#4F46E5"}"
-  async
 ></script>`;
 
   const handleCopyEmbedCode = () => {

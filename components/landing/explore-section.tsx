@@ -88,7 +88,7 @@ export default function ExploreSection() {
                     className="text-center mb-12 md:mb-16 space-y-4"
                 >
                     <div className="inline-flex items-center justify-center rounded-full px-4 py-1.5 font-medium text-sm border border-zinc-700/50 text-white bg-zinc-900/50 backdrop-blur-sm mb-4">
-                        <div className="mr-2 size-2 rounded-full bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] animate-pulse"></div>
+                        <div className="mr-2 size-2 rounded-full bg-gradient-to-r from-primary via-blue-500 to-indigo-500 animate-pulse"></div>
                         Platform Features
                     </div>
                     <motion.h2
@@ -109,7 +109,7 @@ export default function ExploreSection() {
                     >
                         Experience our powerful platform with an{" "}
                         <span className="text-white font-medium">intuitive interface</span> designed for{" "}
-                        <span className="bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-primary via-blue-500 to-indigo-500 bg-clip-text text-transparent">
                             seamless AI integration
                         </span>
                         .
@@ -141,7 +141,7 @@ export default function ExploreSection() {
                                     {activeTab === tab.id && (
                                         <motion.div
                                             layoutId="activeTabBackground"
-                                            className="absolute inset-0 bg-gradient-to-r from-[#FB923C] via-[#F472B6] to-[#E879F9] rounded-xl"
+                                            className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-indigo-500 rounded-xl"
                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                         />
                                     )}
@@ -171,41 +171,47 @@ export default function ExploreSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="relative"
+                        className="relative mt-8"
                     >
-                        {/* Gradient Border Wrapper */}
-                        <div className="relative rounded-2xl p-[2px] bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9] shadow-2xl">
-                            <div className="relative bg-gradient-to-br from-zinc-900 via-zinc-950 to-black rounded-2xl overflow-hidden">
-                                {/* Content Container */}
-                                <div className="relative aspect-video w-full flex items-center justify-center p-6 md:p-10">
-                                    {/* Animated Background Pattern */}
-                                    <div className="absolute inset-0 opacity-20">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-[#FB923C]/10 via-[#F472B6]/10 to-[#E879F9]/10" />
+                        {/* Proper Card Container */}
+                        <div className="relative rounded-[24px] p-2 bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl">
+                            <div className="relative bg-[#09090b] rounded-xl overflow-hidden shadow-inner">
+                                {/* Card Header (Mac OS style dots) */}
+                                <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-white/10 to-transparent flex items-center px-4 z-20 border-b border-white/5">
+                                    <div className="flex gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-400/80 shadow-[0_0_10px_rgba(248,113,113,0.5)]" />
+                                        <div className="w-3 h-3 rounded-full bg-amber-400/80 shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+                                        <div className="w-3 h-3 rounded-full bg-green-400/80 shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
                                     </div>
+                                </div>
+
+                                {/* Content Container Background */}
+                                <div className="relative w-full pt-10 min-h-[400px] flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-[#0a0a0c] to-[#050505]">
+
+                                    {/* Subtle grid pattern */}
+                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
                                     {/* Image with Animation */}
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={activeContent.id}
-                                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                            initial={{ opacity: 0, scale: 0.98, y: 10 }}
                                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                                            exit={{ opacity: 0, scale: 0.98, y: -10 }}
                                             transition={{ duration: 0.4, ease: "easeInOut" }}
-                                            className="relative w-full h-full flex flex-col items-center justify-center"
+                                            className="relative w-full h-full p-4 sm:p-8 flex items-center justify-center z-10"
                                         >
-                                            <div className="relative w-full h-full">
+                                            <div className="relative w-full h-full rounded-lg overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 ring-1 ring-black">
                                                 <Image
                                                     src={activeContent.image}
                                                     alt={`${activeContent.label} preview`}
                                                     width={1400}
                                                     height={900}
-                                                    className="w-full h-full object-contain rounded-lg"
+                                                    className="w-full h-auto object-cover"
                                                     priority
                                                     unoptimized
                                                 />
                                             </div>
-
-
                                         </motion.div>
                                     </AnimatePresence>
                                 </div>
@@ -213,7 +219,7 @@ export default function ExploreSection() {
                         </div>
 
                         {/* Glow Effect */}
-                        <div className="absolute -inset-1 bg-gradient-to-br from-[#FB923C]/20 via-[#F472B6]/20 to-[#E879F9]/20 rounded-2xl blur-2xl -z-10 opacity-50" />
+                        <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 via-blue-500/20 to-indigo-500/20 rounded-[3rem] blur-3xl -z-10 opacity-60 pointer-events-none" />
                     </motion.div>
                 </div>
 
@@ -228,42 +234,41 @@ export default function ExploreSection() {
                             transition={{ delay: index * 0.1 }}
                             className="relative group"
                         >
-                            {/* Card with Gradient Border */}
-                            <div className="relative rounded-2xl p-[1px] bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-700 hover:from-[#FB923C] hover:via-[#F472B6] hover:to-[#E879F9] transition-all duration-500">
-                                <div className="relative rounded-2xl bg-gradient-to-br from-zinc-900 to-black overflow-hidden">
+                            {/* Proper Card Container */}
+                            <div className="relative rounded-2xl p-1 bg-white/5 border border-white/10 backdrop-blur-sm transition-all duration-500 hover:bg-white/10">
+                                <div className="relative rounded-xl bg-[#09090b] overflow-hidden border border-white/5">
                                     {/* Header */}
-                                    <div className="p-4 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-lg bg-gradient-to-br from-[#FB923C] via-[#F472B6] to-[#E879F9]">
-                                                {tab.icon}
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-white">{tab.label}</h3>
-                                                <p className="text-xs text-zinc-400 mt-0.5">{tab.description}</p>
-                                            </div>
+                                    <div className="p-4 border-b border-white/5 bg-gradient-to-b from-white/5 to-transparent flex gap-3 items-center">
+                                        <div className="p-2 rounded-lg bg-primary/20 text-primary ring-1 ring-primary/30">
+                                            {tab.icon}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="font-semibold text-white">{tab.label}</h3>
+                                            <p className="text-xs text-zinc-400 mt-0.5">{tab.description}</p>
                                         </div>
                                     </div>
 
                                     {/* Image Container */}
-                                    <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-4">
-                                        <div className="relative w-full h-full rounded-lg overflow-hidden">
+                                    <div className="relative w-full flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-[#0a0a0c] to-[#050505] p-3">
+
+                                        {/* Subtle grid pattern */}
+                                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:12px_12px] pointer-events-none" />
+
+                                        <div className="relative w-full rounded-lg overflow-hidden shadow-2xl border border-white/10 ring-1 ring-black z-10">
                                             <Image
                                                 src={tab.image}
                                                 alt={tab.label}
                                                 width={600}
                                                 height={400}
-                                                className="w-full h-full object-contain"
+                                                className="w-full h-auto object-cover"
                                             />
                                         </div>
-
-                                        {/* Subtle Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Glow Effect on Hover */}
-                            <div className="absolute -inset-1 bg-gradient-to-br from-[#FB923C]/0 via-[#F472B6]/0 to-[#E879F9]/0 group-hover:from-[#FB923C]/20 group-hover:via-[#F472B6]/20 group-hover:to-[#E879F9]/20 rounded-2xl blur-xl -z-10 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+                            <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 via-blue-500/20 to-indigo-500/20 rounded-2xl blur-xl -z-10 transition-all duration-500 opacity-0 group-hover:opacity-100 pointer-events-none" />
                         </motion.div>
                     ))}
                 </div>

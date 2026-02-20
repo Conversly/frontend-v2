@@ -745,8 +745,8 @@ export default function Hero() {
                   className="group gap-2 h-auto py-3 px-6 rounded-full border border-input text-base font-medium hover:bg-accent/50"
                   onClick={() => setIsVideoOpen(true)}
                 >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FB923C]/10 to-[#F472B6]/10 flex items-center justify-center group-hover:from-[#FB923C]/20 group-hover:to-[#F472B6]/20 transition-colors">
-                    <Play className="w-3 h-3 text-[#F472B6] fill-current ml-0.5" />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary/10 to-indigo-500/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-indigo-500/20 transition-colors">
+                    <Play className="w-3 h-3 text-primary fill-current ml-0.5" />
                   </div>
                   Watch Demo
                 </Button>
