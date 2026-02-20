@@ -112,9 +112,6 @@ export function LivePreviewWidget({
             popupSoundEnabled: config.attention?.popupSoundEnabled,
             popupSoundUrl: config.attention?.soundUrl,
 
-            // Identity
-            converslyWebId: config.converslyWebId,
-            uniqueClientId: config.uniqueClientId,
         };
 
         const updateMessage = {

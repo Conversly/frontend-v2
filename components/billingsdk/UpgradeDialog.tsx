@@ -177,6 +177,10 @@ export function UpgradeDialog({
             if (!url) throw new Error("No checkout URL returned");
 
             const { DodoPayments } = await import("dodopayments-checkout");
+
+            // Close the dialog so Radix's pointer-events shield doesn't block the Dodo overlay
+            onOpenChange(false);
+
             DodoPayments.Checkout.open({ checkoutUrl: url });
         } catch (error: any) {
             toast({

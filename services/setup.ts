@@ -95,8 +95,6 @@ export async function runInitialSetup(
           widgetButtonText: 'Chat with us',
           chatWidth: '350px',
           chatHeight: '500px',
-          converslyWebId: '',
-          uniqueClientId: '',
           testing: false,
         }),
         callEnabled: false,

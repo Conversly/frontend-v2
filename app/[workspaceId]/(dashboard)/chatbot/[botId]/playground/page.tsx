@@ -73,8 +73,6 @@ export default function PlaygroundPage() {
           widgetButtonText: styles.buttonText || "Chat with us",
           chatWidth: "420px",
           chatHeight: "620px",
-          converslyWebId: chatbotData.apiKey || "",
-          uniqueClientId: "",
           testing: true,
         };
 

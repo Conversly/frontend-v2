@@ -27,17 +27,13 @@ responseFetch.interceptors.request.use(
 /**
  * Send a chat query to the chatbot and get a response
  * @param messages - Array of chat messages (conversation history)
- * @param user - User information including uniqueClientId and converslyWebId (API_KEY)
  * @param mode - Response mode (default: "default")
- * @param metadata - Optional metadata like originUrl
  * @param testing - If true, returns dummy response instead of calling API
  * @returns ChatbotResponseData with response text and citations
  */
 export const getChatbotResponse = async (
   messages: ChatMessage[],
-  user: ChatbotResponseRequest["user"],
   mode: string = "default",
-  metadata?: ChatbotResponseRequest["metadata"],
   testing: boolean = true,
 ): Promise<ChatbotResponseData> => {
   // Return dummy response if testing mode is enabled
@@ -85,9 +81,7 @@ export const getChatbotResponse = async (
   // Real API call
   const requestBody: ChatbotResponseRequest = {
     query: JSON.stringify(messages),
-    mode,
-    user,
-    metadata,
+    mode
   };
 
   const res = await responseFetch(API.ENDPOINTS.RESPONSE.BASE_URL(), {

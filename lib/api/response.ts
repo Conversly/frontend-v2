@@ -29,22 +29,16 @@ responseFetch.interceptors.request.use(
 /**
  * Send a chat query to the chatbot and get a response
  * @param messages - Array of chat messages (conversation history)
- * @param user - User information including unique_client_id and conversly_web_id (API_KEY)
  * @param mode - Response mode (default: "default")
- * @param metadata - Optional metadata like origin_url
  * @returns ChatbotResponseData with response text and citations
  */
 export const getChatbotResponse = async (
   messages: ChatMessage[],
-  user: ChatbotResponseRequest["user"],
   mode: string = "default",
-  metadata?: ChatbotResponseRequest["metadata"],
 ): Promise<ChatbotResponseData> => {
   const requestBody: ChatbotResponseRequest = {
     query: JSON.stringify(messages),
-    mode,
-    user,
-    metadata,
+    mode
   };
 
   const res = await responseFetch(API.ENDPOINTS.RESPONSE.BASE_URL(), {
@@ -64,24 +58,20 @@ export const getChatbotResponse = async (
 /**
  * Send a chat query to the chatbot and get a response
  * @param messages - Array of chat messages (conversation history)
- * @param user - User information including unique_client_id and conversly_web_id (API_KEY)
  * @param mode - Response mode (default: "default")
  * @param chatbotId - ID of the chatbot
  * @param systemPrompt - System prompt for the assistant
  * @param temperature - Temperature setting for the model
  * @param model - Model to use for the playground
- * @param metadata - Optional metadata like origin_url
  * @returns ChatbotResponseData with response text and citations
  */
 export const getPlaygroundResponse = async (
   messages: ChatMessage[],
-  user: PlaygroundResponseRequest["user"],
   mode: string = "default",
   chatbotId: string,
   systemPrompt: string,
   temperature: number,
   model: string,
-  metadata?: PlaygroundResponseRequest["metadata"],
 ): Promise<ChatbotResponseData> => {
   const requestBody: PlaygroundResponseRequest = {
     query: JSON.stringify(messages),
@@ -92,9 +82,7 @@ export const getPlaygroundResponse = async (
       chatbotModel: model,
       chatbotTemperature: temperature,
     },
-    chatbotId: chatbotId,
-    user,
-    metadata,
+    chatbotId: chatbotId
   };
 
   // Use responseFetch instead of base axios instance

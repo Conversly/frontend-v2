@@ -52,9 +52,7 @@ export function ProductChatbot({ chatbotId, embedded }: ProductChatbotProps) {
                     appearance: styles.appearance || "light",
                     widgetButtonText: styles.buttonText || "Chat with us",
                     chatWidth: "380px",
-                    chatHeight: "600px",
-                    converslyWebId: chatbotData.apiKey || "",
-                    uniqueClientId: "",
+                    chatHeight: "600px"
                 };
 
                 setConfig(uiConfig);

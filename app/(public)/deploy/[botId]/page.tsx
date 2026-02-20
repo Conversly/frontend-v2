@@ -87,9 +87,7 @@ export default function HelpPage() {
                     appearance: styles.appearance || "light",
                     widgetButtonText: styles.buttonText || "Chat",
                     chatWidth: styles.chatWidth || "350px",
-                    chatHeight: styles.chatHeight || "500px",
-                    converslyWebId: botId,
-                    uniqueClientId: "", // Generated inside widget if empty
+                    chatHeight: styles.chatHeight || "500px"
                 };
 
                 setChatConfig(uiConfig);

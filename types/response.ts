@@ -1,3 +1,4 @@
+import { metadata } from "@/app/layout";
 import type { Message } from "@conversly/chat-widget";
 
 export interface ChatMessage {
@@ -5,26 +6,9 @@ export interface ChatMessage {
     content: string;
 }
 
-export interface ResponseUserMetadata {
-    [key: string]: unknown;
-}
-
-export interface ResponseUser {
-    uniqueClientId: string; // Random ID to identify user
-    converslyWebId: string; // API_KEY
-    metadata?: ResponseUserMetadata;
-}
-
-export interface ResponseRequestMetadata {
-    originUrl?: string;
-    [key: string]: unknown;
-}
-
 export interface ChatbotResponseRequest {
     query: string; // JSON stringified array of ChatMessage
     mode: "default" | string;
-    user: ResponseUser;
-    metadata?: ResponseRequestMetadata;
 }
 
 export interface PlaygroundResponseRequest {
@@ -37,8 +21,6 @@ export interface PlaygroundResponseRequest {
         chatbotTemperature: number;
     }
     chatbotId: string;
-    user: ResponseUser;
-    metadata?: ResponseRequestMetadata;
 }
 
 export interface ChatbotResponseData {
@@ -49,9 +31,9 @@ export interface ChatbotResponseData {
 }
 
 export interface FeedbackRequest {
-  responseId: string;
-  feedback: "like" | "dislike";
-  comment?: string;
+    responseId: string;
+    feedback: "like" | "dislike";
+    comment?: string;
 }
 
 export interface FeedbackResponse {
@@ -61,24 +43,24 @@ export interface FeedbackResponse {
 
 
 export function convertBackendToUIMessage(
-   response: ChatbotResponseData,
-   role: "assistant" = "assistant"
+    response: ChatbotResponseData,
+    role: "assistant" = "assistant"
 ): Message {
-   return {
-       id: response.responseId || Date.now().toString(),
-       role,
-       content: response.response,
-       createdAt: new Date(),
-       citations: response.citations ?? [],
-   }
+    return {
+        id: response.responseId || Date.now().toString(),
+        role,
+        content: response.response,
+        createdAt: new Date(),
+        citations: response.citations ?? [],
+    }
 }
 
 /**
 * Convert UI messages to backend API format for sending
 */
 export function convertUIToBackendMessages(messages: Message[]): ChatMessage[] {
-   return messages.map((msg) => ({
-       role: msg.role as "user" | "assistant",
-       content: msg.content,
-   }))
+    return messages.map((msg) => ({
+        role: msg.role as "user" | "assistant",
+        content: msg.content,
+    }))
 }

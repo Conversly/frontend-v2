@@ -37,8 +37,6 @@ declare module "@conversly/chat-widget" {
     widgetButtonText?: string
     chatWidth?: string
     chatHeight?: string
-    converslyWebId?: string
-    uniqueClientId?: string
     testing?: boolean
     voiceEnabled?: boolean
   }

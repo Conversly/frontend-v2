@@ -121,8 +121,6 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     widgetButtonText: 'Chat with us',
     chatWidth: '350px',
     chatHeight: '500px',
-    converslyWebId: '',
-    uniqueClientId: '',
     testing: false,
   };
 

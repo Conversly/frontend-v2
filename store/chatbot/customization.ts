@@ -2,14 +2,14 @@
 
 import { create } from 'zustand';
 import { ChatbotCustomizationPayload, ChatbotCustomizationPartial, UIConfigInput, WidgetStyles } from '@/types/customization';
-import { 
-  getWidgetConfig, 
-  updateWidgetConfig, 
-  getDomainAllowlist, 
+import {
+  getWidgetConfig,
+  updateWidgetConfig,
+  getDomainAllowlist,
   addDomainToAllowlist,
   getApiKey,
   createApiKey,
-  DomainInfo 
+  DomainInfo
 } from '@/lib/api/deploy';
 
 interface CustomizationState {
@@ -19,26 +19,26 @@ interface CustomizationState {
   draftConfig: UIConfigInput | null;
   isSaving: boolean;
   isLoading: boolean;
-  
+
   // Domain management
   domains: DomainInfo[];
   isLoadingDomains: boolean;
   isSavingDomain: boolean;
-  
+
   // API Key management
   apiKey: string | null;
   isLoadingApiKey: boolean;
   isCreatingApiKey: boolean;
-  
+
   setDraftConfig: (draft: NonNullable<CustomizationState['draftConfig']>) => void;
   resetDraftFromSaved: () => void;
   loadCustomization: (chatbotId: string) => Promise<void>;
   saveCustomization: (chatbotId: string) => Promise<ChatbotCustomizationPayload>;
-  
+
   // Domain methods
   loadDomains: (chatbotId: string) => Promise<void>;
   addDomain: (chatbotId: string, domain: string) => Promise<void>;
-  
+
   // API Key methods
   loadApiKey: (chatbotId: string) => Promise<void>;
   generateApiKey: (chatbotId: string) => Promise<string>;
@@ -77,8 +77,6 @@ function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput 
     widgetButtonText: s.buttonText || 'Chat with us',
     chatWidth: s.chatWidth || '350px',
     chatHeight: s.chatHeight || '500px',
-    converslyWebId: '',
-    uniqueClientId: '',
     testing: false,
   };
 }
@@ -88,12 +86,12 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
   draftConfig: null,
   isSaving: false,
   isLoading: false,
-  
+
   // Domain state
   domains: [],
   isLoadingDomains: false,
   isSavingDomain: false,
-  
+
   // API Key state
   apiKey: null,
   isLoadingApiKey: false,
@@ -170,7 +168,7 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
       set({ isSaving: false });
     }
   },
-  
+
   // Domain management methods
   loadDomains: async (chatbotId) => {
     set({ isLoadingDomains: true });
@@ -184,7 +182,7 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
       set({ isLoadingDomains: false });
     }
   },
-  
+
   addDomain: async (chatbotId, domain) => {
     set({ isSavingDomain: true });
     try {
@@ -194,7 +192,7 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
       set({ isSavingDomain: false });
     }
   },
-  
+
   // API Key management methods
   loadApiKey: async (chatbotId) => {
     set({ isLoadingApiKey: true });
@@ -208,7 +206,7 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
       set({ isLoadingApiKey: false });
     }
   },
-  
+
   generateApiKey: async (chatbotId) => {
     set({ isCreatingApiKey: true });
     try {

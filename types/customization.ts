@@ -1,66 +1,66 @@
 export interface WidgetStyles {
-    appearance?: 'light' | 'dark';  // renamed from 'theme'
-    displayName?: string;  // keeping camelCase in DB
-    
-    // Colors
-    primaryColor?: string;  // replaces headerColor, buttonColor
-    widgetBubbleColour?: string;  // backend expects this key for message bubbles
-    
-    // Icons & Assets
-    PrimaryIcon?: string;  // renamed from profilePictureFile : url
-    widgeticon?: string;  // renamed from chatIcon (for the widget button icon) : url
-    
-    // Button Configuration
-    alignChatButton?: 'left' | 'right';  // maps to buttonAlignment in frontend
-    showButtonText?: boolean;  // boolean : true/false to show text on widget button
-    buttonText?: string;  // text shown on widget button
-    
-    // Messages & Placeholders
-    messagePlaceholder?: string;
-    footerText?: string;  // HTML
-    dismissableNoticeText?: string;  // maps to dismissibleNoticeText. HTML
-    
-    // Dimensions
-    chatWidth?: string;
-    chatHeight?: string;  
-    
-    // Behavior Flags
-    autoShowInitial?: boolean;  // replaces autoOpenChatWindowAfter > 0 check
-    autoShowDelaySec?: number;  // renamed from autoOpenChatWindowAfter
-    collectUserFeedback?: boolean;  // maps to collectFeedback
-    regenerateMessages?: boolean;  // maps to allowRegenerate
-    continueShowingSuggestedMessages?: boolean;  // maps to keepShowingSuggested
+  appearance?: 'light' | 'dark';  // renamed from 'theme'
+  displayName?: string;  // keeping camelCase in DB
+
+  // Colors
+  primaryColor?: string;  // replaces headerColor, buttonColor
+  widgetBubbleColour?: string;  // backend expects this key for message bubbles
+
+  // Icons & Assets
+  PrimaryIcon?: string;  // renamed from profilePictureFile : url
+  widgeticon?: string;  // renamed from chatIcon (for the widget button icon) : url
+
+  // Button Configuration
+  alignChatButton?: 'left' | 'right';  // maps to buttonAlignment in frontend
+  showButtonText?: boolean;  // boolean : true/false to show text on widget button
+  buttonText?: string;  // text shown on widget button
+
+  // Messages & Placeholders
+  messagePlaceholder?: string;
+  footerText?: string;  // HTML
+  dismissableNoticeText?: string;  // maps to dismissibleNoticeText. HTML
+
+  // Dimensions
+  chatWidth?: string;
+  chatHeight?: string;
+
+  // Behavior Flags
+  autoShowInitial?: boolean;  // replaces autoOpenChatWindowAfter > 0 check
+  autoShowDelaySec?: number;  // renamed from autoOpenChatWindowAfter
+  collectUserFeedback?: boolean;  // maps to collectFeedback
+  regenerateMessages?: boolean;  // maps to allowRegenerate
+  continueShowingSuggestedMessages?: boolean;  // maps to keepShowingSuggested
 }
 
 
 
 export interface ChatbotCustomization {
-    styles?: WidgetStyles;
-    onlyAllowOnAddedDomains?: boolean;
-    /**
-     * Feature flag for enabling voice/call entrypoints in the widget UI.
-     * Defaults to false when the widget_config row is auto-created.
-     */
-    callEnabled?: boolean;
-    /**
-     * "Get attention" UX controls (popup + optional sound).
-     * Shallow-merged on PATCH updates.
-     */
-    attention?: WidgetAttentionConfig;
-    initialMessage?: string;
-    suggestedMessages?: string[];
+  styles?: WidgetStyles;
+  onlyAllowOnAddedDomains?: boolean;
+  /**
+   * Feature flag for enabling voice/call entrypoints in the widget UI.
+   * Defaults to false when the widget_config row is auto-created.
+   */
+  callEnabled?: boolean;
+  /**
+   * "Get attention" UX controls (popup + optional sound).
+   * Shallow-merged on PATCH updates.
+   */
+  attention?: WidgetAttentionConfig;
+  initialMessage?: string;
+  suggestedMessages?: string[];
 }
 
 export interface WidgetAttentionConfig {
-    messagePopupEnabled?: boolean;
-    popupSoundEnabled?: boolean;
-    /** Optional; absent by default when not set */
-    soundUrl?: string;
+  messagePopupEnabled?: boolean;
+  popupSoundEnabled?: boolean;
+  /** Optional; absent by default when not set */
+  soundUrl?: string;
 }
 
 export interface ChatbotWidget {
-    chatbotId: string;
-    partial: ChatbotCustomization;
+  chatbotId: string;
+  partial: ChatbotCustomization;
 }
 
 // Type aliases for backward compatibility
@@ -104,7 +104,5 @@ export interface UIConfigInput {
   widgetButtonText: string;
   chatWidth: string;
   chatHeight: string;
-  converslyWebId: string;
-  uniqueClientId: string;
   testing?: boolean;
 }
