@@ -1,6 +1,9 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageSquare, BarChart3, ThumbsUp, Clock } from "lucide-react";
+import { useSubscription } from "@/contexts/subscription-context";
 
 interface SummaryCardsProps {
   summaryData?: {
@@ -13,24 +16,40 @@ interface SummaryCardsProps {
 }
 
 export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
+  const { usage, credits, isLoading: isSubscriptionLoading } = useSubscription();
+
+  const messagesUsed = usage?.messagesSent || 0;
+  const creditsBalance = credits?.balance || 0;
+  // If plan limit isn't explicitly provided, we can assume total available is used + balance
+  const totalLimit = messagesUsed + creditsBalance;
+  const usagePercentage = totalLimit > 0 ? Math.min(Math.round((messagesUsed / totalLimit) * 100), 100) : 0;
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
-          <p className="text-sm font-medium text-muted-foreground">Total Messages This Month</p>
+          <p className="text-sm font-medium text-muted-foreground">Messages Used</p>
           <MessageSquare className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="flex items-baseline space-x-2">
-          {isLoading ? (
+          {isSubscriptionLoading ? (
             <Skeleton className="h-8 w-20 mt-1" />
           ) : (
-            <div className="text-2xl font-bold">{summaryData?.totalMessagesThisMonth?.toLocaleString() || 0}</div>
+            <>
+              <div className="text-2xl font-bold">{messagesUsed.toLocaleString()}</div>
+              {totalLimit > 0 && (
+                <div className="text-sm font-medium text-muted-foreground">
+                  / {totalLimit.toLocaleString()}
+                </div>
+              )}
+            </>
           )}
-          {/* Placeholder for trend if available in future */}
-          {/* <span className="text-xs text-green-500 font-medium">+12%</span> */}
         </div>
         <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-primary w-[45%]" />
+          <div
+            className="h-full bg-primary transition-all duration-500"
+            style={{ width: `${usagePercentage}%` }}
+          />
         </div>
       </Card>
 
