@@ -73,7 +73,10 @@ export const API = {
       DELETE_TOPIC: devMode(() => "/topics"),
       GET_TOPIC: allMode(() => "/topics/:id"),
       GET_TOPICS: allMode(() => "/:chatbotId/topics"),
-      UPDATE_CHATBOT: devMode(() => "/:id")
+      UPDATE_CHATBOT: devMode(() => "/:id"),
+      // Behaviour Config (sub-resource of chatbot)
+      GET_BEHAVIOUR_CONFIGS: allMode(() => "/:chatbotId/behaviour-config"),
+      UPSERT_BEHAVIOUR_CONFIG: devMode(() => "/:chatbotId/behaviour-config/:section"),
     },
     DATA_SOURCE: {
       BASE_URL: () => "/datasource",

@@ -21,6 +21,7 @@ import {
     serializeStateForPromptGen
 } from "@/components/behaviour/BehaviourState";
 import { generateChannelPrompt, getChannelPrompt, upsertChannelPrompt } from "@/lib/api/prompt";
+import { getBehaviourConfigs, upsertBehaviourConfig } from "@/lib/api/behaviour-config";
 
 type TabId = "identity" | "lead-gen" | "handoff";
 
@@ -50,22 +51,42 @@ export default function BehaviourPage() {
             if (!botId || !workspaceId) return;
             setIsLoading(true);
             try {
-                const [chatbotData, , widgetPrompt, leadPrompt, handoffPrompt, leadForm] = await Promise.all([
+                const [chatbotData, , widgetPrompt, leadPrompt, handoffPrompt, leadForm, behaviourConfigs] = await Promise.all([
                     getChatbot(workspaceId, botId),
                     getWidgetConfig(botId),
                     getChannelPrompt(botId, "WIDGET").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "LEAD_GENERATION").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "ESCALATION").catch(() => ({ systemPrompt: "" })),
                     getLeadFormConfig(botId).catch(() => null),
+                    getBehaviourConfigs(botId).catch(() => []),
                 ]);
+
+                // Build a map of saved behaviour configs by section
+                const savedConfigs: Record<string, any> = {};
+                behaviourConfigs.forEach((cfg: any) => {
+                    savedConfigs[cfg.section] = cfg.config;
+                });
 
                 setBehaviour(prev => ({
                     ...prev,
-                    identity: { ...prev.identity, aiName: chatbotData.name },
+                    // Merge saved IDENTITY config (identity + style) if it exists
+                    identity: savedConfigs.IDENTITY?.identity
+                        ? { ...prev.identity, ...savedConfigs.IDENTITY.identity, aiName: chatbotData.name }
+                        : { ...prev.identity, aiName: chatbotData.name },
+                    style: savedConfigs.IDENTITY?.style
+                        ? { ...prev.style, ...savedConfigs.IDENTITY.style }
+                        : prev.style,
                     handoff: {
                         ...prev.handoff,
                         enabled: chatbotData.escalationEnabled ?? false,
-                        supportMode: chatbotData.escalationEnabled ? "When AI is unsure" : "AI only",
+                        // Merge saved HANDOFF config if it exists
+                        ...(savedConfigs.HANDOFF || {}),
+                        // Always use DB-sourced enabled state
+                        ...(chatbotData.escalationEnabled !== undefined
+                            ? { enabled: chatbotData.escalationEnabled }
+                            : {}),
+                        supportMode: savedConfigs.HANDOFF?.supportMode
+                            ?? (chatbotData.escalationEnabled ? "When AI is unsure" : "AI only"),
                         systemPrompt: handoffPrompt?.systemPrompt || "",
                     },
                     leadGen: {
@@ -82,11 +103,13 @@ export default function BehaviourPage() {
                             triggers: [], createdAt: new Date(), updatedAt: new Date(),
                         },
                         systemPrompt: leadPrompt?.systemPrompt || "",
-                        leadConfig: {
-                            ...prev.leadGen.leadConfig,
-                            pageTriggers: leadForm?.data?.data?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
-                            keywords: leadForm?.data?.data?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
-                        },
+                        leadConfig: savedConfigs.LEAD_GENERATION
+                            ? { ...prev.leadGen.leadConfig, ...savedConfigs.LEAD_GENERATION }
+                            : {
+                                ...prev.leadGen.leadConfig,
+                                pageTriggers: leadForm?.data?.data?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
+                                keywords: leadForm?.data?.data?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
+                            },
                     },
                     mainSystemPrompt: widgetPrompt?.systemPrompt || "",
                 }));
@@ -106,6 +129,11 @@ export default function BehaviourPage() {
             const promises: Promise<any>[] = [];
             if (activeTab === "identity") {
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "WIDGET", systemPrompt: behaviour.mainSystemPrompt }));
+                // Persist UI config
+                promises.push(upsertBehaviourConfig(botId, "IDENTITY", {
+                    identity: behaviour.identity,
+                    style: behaviour.style,
+                }));
             }
             if (activeTab === "lead-gen") {
                 promises.push(updateChatbot({ id: botId, workspaceId, leadGenerationEnabled: behaviour.leadGen.form?.isEnabled ?? false }));
@@ -133,10 +161,19 @@ export default function BehaviourPage() {
                         triggers: behaviour.leadGen.form.triggers.map(t => ({ ...t, id: t.id.startsWith("temp_") ? undefined : t.id })),
                     }));
                 }
+                // Persist UI config
+                promises.push(upsertBehaviourConfig(botId, "LEAD_GENERATION", behaviour.leadGen.leadConfig));
             }
             if (activeTab === "handoff") {
                 promises.push(updateChatbot({ id: botId, workspaceId, escalationEnabled: behaviour.handoff.enabled }));
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "ESCALATION", systemPrompt: behaviour.handoff.systemPrompt }));
+                // Persist UI config (exclude systemPrompt — that's in channel_prompts)
+                promises.push(upsertBehaviourConfig(botId, "HANDOFF", {
+                    supportMode: behaviour.handoff.supportMode,
+                    escalationTriggers: behaviour.handoff.escalationTriggers,
+                    fallbackAction: behaviour.handoff.fallbackAction,
+                    additionalInstructions: behaviour.handoff.additionalInstructions,
+                }));
             }
             await Promise.all(promises);
             toast.success("Changes saved successfully!");

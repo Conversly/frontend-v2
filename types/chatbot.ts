@@ -88,3 +88,15 @@ export interface DeleteTopicResponse {
   success: boolean;
   message?: string;
 }
+
+// Behaviour Config types
+export type BehaviourSectionType = 'IDENTITY' | 'LEAD_GENERATION' | 'HANDOFF';
+
+export interface BehaviourConfigResponse {
+  id: string;
+  chatbotId: string;
+  section: BehaviourSectionType;
+  config: any;
+  createdAt: string;
+  updatedAt: string;
+}
