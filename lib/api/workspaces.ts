@@ -285,6 +285,7 @@ export interface EntitlementData {
     team_members: number;
     messages_per_month: number;
     storage_mb: number;
+    workspaces: number;
   };
 }
 

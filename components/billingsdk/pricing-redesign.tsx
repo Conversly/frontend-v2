@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Zap, Star } from "lucide-react";
+import { Check, Star, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plan } from "@/lib/billingsdk-config";
@@ -12,8 +12,6 @@ export interface PricingRedesignProps {
     onPlanSelect: (planId: string, interval: "month" | "year") => void;
 }
 
-const gradientFrom = ["from-chart-1/70", "from-chart-2/70", "from-chart-3/70", "from-chart-4/70"];
-
 const getDiscountPercent = (plan: Plan) => {
     const monthly = Number(plan.monthlyPrice) || 0;
     const yearly = Number(plan.yearlyPrice) || 0;
@@ -22,75 +20,79 @@ const getDiscountPercent = (plan: Plan) => {
 
     return Math.min(
         100,
-        Math.max(
-            0,
-            Math.round((1 - yearly / (monthly * 12)) * 100),
-        ),
+        Math.max(0, Math.round((1 - yearly / (monthly * 12)) * 100))
     );
 };
 
 export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingRedesignProps) {
     const [isYearly, setIsYearly] = useState(false);
 
-    // Separate Free plan from others
-    const freePlan = plans.find(p => p.title.toLowerCase() === 'free' || p.monthlyPrice === '0');
-    const premiumPlans = plans.filter(p => p !== freePlan);
+    const freePlan = plans.find((p) => p.title.toLowerCase() === "free" || p.monthlyPrice === "0");
+    const premiumPlans = plans.filter((p) => p !== freePlan);
 
     const isCurrentPlan = (plan: Plan) => {
         if (!currentPlanId) return false;
-        // Basic ID match
-        if (plan.id === currentPlanId) return true;
-        // Handle "Free" plan match if currentPlanId is not explicitly 'free' but status implies it (backend logic dependence)
-        // For now, assume ID equality.
-        // If currentPlanId is undefined/null, user is likely on free plan implicitly if no subscription data, 
-        // but let's rely on explicit ID passed from parent.
-        return false;
+        return plan.id === currentPlanId;
     };
 
+    const maxDiscount = Math.max(...premiumPlans.map(getDiscountPercent));
+
     const renderPrice = (plan: Plan) => (
-        <div className="flex items-baseline">
-            <span className="text-muted-foreground text-base">{plan.currency || "$"}</span>
-            <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                    key={isYearly ? "yearly-price" : "monthly-price"}
-                    className="text-foreground ml-1 text-5xl font-bold"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
-                </motion.span>
-            </AnimatePresence>
-            <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                    key={isYearly ? "per-year" : "per-month"}
-                    className="text-muted-foreground ml-2 text-sm"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    / {isYearly ? "year" : "month"}
-                </motion.span>
-            </AnimatePresence>
+        <div className="flex flex-col">
+            <div className="flex items-baseline gap-1">
+                <span className="text-muted-foreground text-2xl font-medium">{plan.currency || "$"}</span>
+                <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                        key={isYearly ? "yearly-price" : "monthly-price"}
+                        className="text-foreground text-6xl font-extrabold tracking-tight"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+                    </motion.span>
+                </AnimatePresence>
+                <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                        key={isYearly ? "per-year" : "per-month"}
+                        className="text-muted-foreground ml-1 text-lg font-medium"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        / {isYearly ? "yr" : "mo"}
+                    </motion.span>
+                </AnimatePresence>
+            </div>
+
+            {/* Contextual Price Subtext */}
+            <div className="h-5 mt-1">
+                {isYearly && Number(plan.monthlyPrice) > 0 && (
+                    <motion.p
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                        className="text-sm text-muted-foreground"
+                    >
+                        Billed ${plan.yearlyPrice} annually
+                    </motion.p>
+                )}
+            </div>
         </div>
     );
 
-    const renderFeatures = (plan: Plan) => (
-        <ul className="space-y-3">
+    const renderFeatures = (plan: Plan, isCurrent: boolean) => (
+        <ul className="space-y-4">
             {plan.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start">
-                    <div className="bg-primary-foreground mt-0.5 mr-3 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full">
-                        {feature.icon === "check" ? (
-                            <Check className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
-                        ) : feature.icon === "start" ? (
-                            <Star className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
+                <li key={idx} className="flex items-start gap-3">
+                    <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isCurrent ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}>
+                        {feature.icon === "star" ? (
+                            <Star className="h-3 w-3 fill-current" />
                         ) : (
-                            <Check className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
+                            <Check className="h-3.5 w-3.5 stroke-[3]" />
                         )}
                     </div>
-                    <span className="text-foreground text-sm leading-relaxed">
+                    <span className="text-muted-foreground text-sm font-medium leading-relaxed">
                         {feature.name}
                     </span>
                 </li>
@@ -99,99 +101,101 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
     );
 
     return (
-        <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <section className="px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
                 {/* Header & Toggle */}
-                <div className="mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div>
-                        <h2 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
-                            Simple, transparent pricing
-                        </h2>
-                        <p className="text-muted-foreground mt-2 text-lg">
-                            Choose the plan that's right for you
-                        </p>
-                    </div>
+                <div className="mb-16 flex flex-col items-center justify-center text-center">
+                    <h2 className="text-foreground text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">
+                        Pricing that scales with you
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl text-lg mb-8">
+                        Start for free, then upgrade when you need more power. No hidden fees.
+                    </p>
 
-                    <div className="bg-primary-foreground/70 relative inline-flex items-center rounded-full p-1.5 dark:!shadow-[inset_0_1.5px_0_color-mix(in_oklch,_var(--primary)_15%,_transparent)]">
-                        <button
-                            onClick={() => setIsYearly(false)}
-                            className={`text-foreground relative z-10 cursor-pointer rounded-full px-4 py-2 text-sm font-medium ${!isYearly
-                                ? "text-foreground border-muted-foreground/10 border"
-                                : "text-muted-foreground"
-                                }`}
-                            aria-pressed={!isYearly}
-                        >
-                            {!isYearly && (
+                    <div className="relative flex flex-col items-center">
+                        {/* Global Discount Attention Seeker */}
+                        {maxDiscount > 0 && (
+                            <div className="absolute -right-10 -top-10 md:-right-24 md:-top-8 rotate-12 z-20">
                                 <motion.div
-                                    layoutId="toggle-indicator"
-                                    className="bg-primary-foreground absolute inset-0 rounded-full shadow-sm"
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
-                            )}
-                            <span className="relative z-10">Monthly</span>
-                        </button>
+                                    animate={{ y: [0, -5, 0] }}
+                                    transition={{ repeat: Infinity, duration: 2 }}
+                                    className="bg-gradient-to-r from-orange-400 to-rose-500 text-white shadow-lg shadow-orange-500/30 rounded-full px-3 py-1.5 text-sm font-bold flex items-center gap-1"
+                                >
+                                    <Sparkles className="w-4 h-4" />
+                                    Save up to {maxDiscount}%
+                                </motion.div>
+                            </div>
+                        )}
 
-                        <button
-                            onClick={() => setIsYearly(true)}
-                            className={`text-foreground relative z-10 cursor-pointer rounded-full px-4 py-2 text-sm font-medium ${isYearly
-                                ? "text-foreground border-muted-foreground/10 border"
-                                : "text-muted-foreground"
-                                }`}
-                            aria-pressed={isYearly}
-                        >
-                            {isYearly && (
-                                <motion.div
-                                    layoutId="toggle-indicator"
-                                    className="bg-primary-foreground absolute inset-0 rounded-full shadow-sm"
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
-                            )}
-                            <span className="relative z-10">Yearly</span>
-                        </button>
+                        <div className="bg-muted/50 p-1.5 rounded-full border border-border flex items-center shadow-inner relative z-10">
+                            <button
+                                onClick={() => setIsYearly(false)}
+                                className={`relative w-32 rounded-full py-2.5 text-sm font-semibold transition-colors z-10 ${!isYearly ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                                    }`}
+                            >
+                                {!isYearly && (
+                                    <motion.div
+                                        layoutId="billing-toggle"
+                                        className="absolute inset-0 bg-background rounded-full shadow-md border border-border/50"
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
+                                )}
+                                <span className="relative z-20">Monthly</span>
+                            </button>
+
+                            <button
+                                onClick={() => setIsYearly(true)}
+                                className={`relative w-32 rounded-full py-2.5 text-sm font-semibold transition-colors z-10 ${isYearly ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                                    }`}
+                            >
+                                {isYearly && (
+                                    <motion.div
+                                        layoutId="billing-toggle"
+                                        className="absolute inset-0 bg-background rounded-full shadow-md border border-border/50"
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
+                                )}
+                                <span className="relative z-20">Yearly</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Free Plan - Full Width */}
+                {/* Free Plan - Full Width Banner */}
                 {freePlan && (
-                    <div className="mb-10 w-full rounded-3xl border border-primary-foreground bg-gradient-to-r from-primary-foreground/5 via-primary-foreground/10 to-primary-foreground/5 p-8 shadow-lg">
+                    <div className={`mb-12 w-full rounded-[2rem] border p-8 md:p-10 transition-all duration-300 ${isCurrentPlan(freePlan)
+                        ? "border-primary/50 bg-primary/5 shadow-[0_0_40px_rgba(var(--primary),0.1)]"
+                        : "border-border bg-card shadow-sm hover:shadow-md"
+                        }`}>
                         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h3 className="text-foreground text-2xl font-bold">{freePlan.title}</h3>
+                            <div className="flex-1 space-y-4 text-center lg:text-left">
+                                <div className="flex flex-col lg:flex-row items-center gap-4">
+                                    <h3 className="text-3xl font-bold">{freePlan.title}</h3>
                                     {isCurrentPlan(freePlan) && (
-                                        <div className="bg-green-500/10 text-green-600 ring-green-500/20 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ring-1">
-                                            Current Plan
-                                        </div>
+                                        <span className="bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-1 text-sm font-bold flex items-center gap-1.5">
+                                            <Check className="w-4 h-4" /> Active Plan
+                                        </span>
                                     )}
                                 </div>
-                                <p className="text-muted-foreground mb-6">{freePlan.description}</p>
-                                <div className="mb-6">
-                                    <h4 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wider">Includes</h4>
-                                    <div className="grid sm:grid-cols-2 gap-4">
-                                        {freePlan.features.map((feature, idx) => (
-                                            <div key={idx} className="flex items-center">
-                                                <div className="bg-primary-foreground mr-3 flex h-5 w-5 items-center justify-center rounded-full">
-                                                    <Check className="h-3 w-3 text-foreground" />
-                                                </div>
-                                                <span className="text-sm text-foreground">{feature.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <p className="text-muted-foreground text-lg max-w-xl">{freePlan.description}</p>
                             </div>
 
-                            <div className="flex flex-col items-center lg:items-end min-w-[250px] space-y-6">
+                            <div className="flex flex-col items-center lg:items-end w-full lg:w-auto space-y-4">
                                 <div className="text-center lg:text-right">
-                                    <span className="text-4xl font-bold text-foreground">Free</span>
-                                    <p className="text-sm text-muted-foreground mt-1">Forever</p>
+                                    <span className="text-5xl font-extrabold text-foreground">$0</span>
                                 </div>
                                 <Button
-                                    className="w-full lg:w-auto min-w-[200px] h-12 rounded-xl"
-                                    variant={isCurrentPlan(freePlan) ? "outline" : "default"}
+                                    size="lg"
+                                    className={`w-full lg:w-64 rounded-xl h-14 text-base font-semibold group ${isCurrentPlan(freePlan)
+                                        ? "bg-muted text-muted-foreground cursor-default hover:bg-muted"
+                                        : ""
+                                        }`}
+                                    variant={isCurrentPlan(freePlan) ? "secondary" : "outline"}
                                     disabled={isCurrentPlan(freePlan)}
                                     onClick={() => onPlanSelect(freePlan.id, isYearly ? "year" : "month")}
                                 >
-                                    {isCurrentPlan(freePlan) ? "Current Plan" : (freePlan.buttonText || "Get Started")}
+                                    {isCurrentPlan(freePlan) ? "Currently Active" : (freePlan.buttonText || "Get Started Free")}
+                                    {!isCurrentPlan(freePlan) && <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />}
                                 </Button>
                             </div>
                         </div>
@@ -199,54 +203,45 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
                 )}
 
                 {/* Premium Plans - Grid */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-7">
-                    {premiumPlans.map((plan, index) => {
-                        const monthlyPriceNum = Number(plan.monthlyPrice) || 0;
-                        const yearlyPriceNum = Number(plan.yearlyPrice) || 0;
+                <div className="grid gap-8 md:grid-cols-2 lg:max-w-4xl mx-auto w-full">
+                    {premiumPlans.map((plan) => {
                         const isCurrent = isCurrentPlan(plan);
+                        const discount = getDiscountPercent(plan);
+                        const hasTrial = plan.trialPeriodDays && plan.trialPeriodDays > 0;
 
                         return (
                             <div
                                 key={plan.id}
-                                className={`flex flex-col relative rounded-3xl border p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] ${isCurrent
-                                    ? "border-green-500/50 ring-2 ring-green-500/20 bg-green-500/5"
-                                    : "border-primary-foreground bg-gradient-to-b via-primary-foreground/10 to-primary-foreground from-[0%] via-[40%] to-[100%] " + (gradientFrom[index] || "")
+                                className={`relative flex flex-col rounded-[2rem] p-8 transition-all duration-300 ${isCurrent
+                                    ? "border-2 border-primary bg-card shadow-[0_0_40px_-10px_rgba(var(--primary),0.2)] scale-[1.02]"
+                                    : plan.highlight
+                                        ? "border-2 border-primary/60 bg-gradient-to-b from-card to-primary/5 shadow-xl hover:-translate-y-1 hover:shadow-2xl"
+                                        : "border border-border bg-card shadow-lg hover:-translate-y-1 hover:shadow-xl"
                                     }`}
                             >
-                                {plan.highlight && !isCurrent && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
-                                        <div className="bg-primary-foreground text-foreground ring-muted-foreground/50 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ring-1">
-                                            {plan.badge || "Most popular"}
+                                {/* Badges */}
+                                <div className="absolute -top-4 left-0 right-0 flex justify-center gap-2">
+                                    {isCurrent ? (
+                                        <div className="bg-primary text-primary-foreground shadow-lg shadow-primary/30 rounded-full px-4 py-1.5 text-sm font-bold flex items-center gap-1.5">
+                                            <Check className="w-4 h-4 stroke-[3]" /> Your Current Plan
                                         </div>
-                                    </div>
-                                )}
-                                {isCurrent && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
-                                        <div className="bg-green-600 text-white shadow-lg shadow-green-900/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide whitespace-nowrap">
-                                            Current Plan
+                                    ) : plan.highlight ? (
+                                        <div className="bg-foreground text-background shadow-lg rounded-full px-4 py-1.5 text-sm font-bold flex items-center gap-1.5">
+                                            <Zap className="w-4 h-4 fill-current" /> Most Popular
                                         </div>
-                                    </div>
-                                )}
+                                    ) : null}
+                                </div>
 
-                                <div className="mb-6">
-                                    <div className="mb-2 flex items-center justify-between">
-                                        <h3 className="text-foreground text-xl font-bold">
-                                            {plan.title}
-                                        </h3>
-                                        {isYearly &&
-                                            monthlyPriceNum > 0 &&
-                                            yearlyPriceNum < monthlyPriceNum * 12 && (
-                                                <span className="bg-red-500 text-white shadow-sm inline-block rounded-full px-2 py-0.5 text-xs font-bold whitespace-nowrap ml-2">
-                                                    Save {getDiscountPercent(plan)}%
-                                                </span>
-                                            )}
-                                        {plan.trialPeriodDays && plan.trialPeriodDays > 0 ? (
-                                            <span className="bg-blue-500/10 text-blue-600 shadow-sm ml-2 inline-block rounded-full px-2 py-1 text-xs font-medium whitespace-nowrap">
-                                                {plan.trialPeriodDays} day free trial
+                                <div className="mb-8 mt-2">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h3 className="text-2xl font-bold">{plan.title}</h3>
+                                        {isYearly && discount > 0 && !isCurrent && (
+                                            <span className="bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-full px-2.5 py-0.5 text-xs font-bold animate-pulse">
+                                                Save {discount}%
                                             </span>
-                                        ) : null}
+                                        )}
                                     </div>
-                                    <p className="text-muted-foreground text-sm">
+                                    <p className="text-muted-foreground text-sm leading-relaxed min-h-[40px]">
                                         {plan.description}
                                     </p>
                                 </div>
@@ -256,17 +251,51 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
                                 </div>
 
                                 <div className="mb-8 flex-1">
-                                    {renderFeatures(plan)}
+                                    <div className="h-px w-full bg-border mb-8" />
+                                    {renderFeatures(plan, isCurrent)}
                                 </div>
 
-                                <Button
-                                    className={`h-12 w-full rounded-xl font-medium transition-all duration-200 mt-auto`}
-                                    variant={isCurrent ? "outline" : "default"}
-                                    disabled={isCurrent}
-                                    onClick={() => onPlanSelect(plan.id, isYearly ? "year" : "month")}
-                                >
-                                    {isCurrent ? "Current Plan" : (plan.buttonText || "Get started")}
-                                </Button>
+                                <div className="mt-auto space-y-3">
+                                    {/* Free Trial Focus area */}
+                                    {hasTrial && !isCurrent && (
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold text-primary">
+                                                Includes a {plan.trialPeriodDays}-day free trial
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <Button
+                                        size="lg"
+                                        className={`w-full h-14 rounded-xl text-base font-bold transition-all duration-300 group ${isCurrent
+                                            ? "bg-muted text-muted-foreground hover:bg-muted"
+                                            : plan.highlight
+                                                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
+                                                : "bg-foreground text-background hover:scale-[1.02]"
+                                            }`}
+                                        variant={isCurrent ? "secondary" : "default"}
+                                        disabled={isCurrent}
+                                        onClick={() => onPlanSelect(plan.id, isYearly ? "year" : "month")}
+                                    >
+                                        {isCurrent ? (
+                                            "Current Plan"
+                                        ) : hasTrial ? (
+                                            <span className="flex items-center">
+                                                Start free trial <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center">
+                                                {plan.buttonText || "Upgrade Now"} <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                                            </span>
+                                        )}
+                                    </Button>
+
+                                    {!isCurrent && (
+                                        <p className="text-xs text-center text-muted-foreground">
+                                            Secure payment via Dodo Payments
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         );
                     })}

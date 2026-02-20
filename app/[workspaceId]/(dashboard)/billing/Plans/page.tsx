@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
 import { useSubscription } from "@/contexts/subscription-context";
-
 import { useCheckout, usePlans, useEnrollFree } from "@/hooks/use-dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
@@ -21,7 +19,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     const { mutateAsync: enrollFree } = useEnrollFree();
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-    // Use the global subscription context instead of fetching locally
     const { subscription, isLoading: subscriptionLoading, refreshSubscription } = useSubscription();
 
     const loading = initialLoading || checkoutLoading || subscriptionLoading;
@@ -30,7 +27,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
         if (!fetchedPlans) return;
 
         const processPlans = () => {
-            // Group plans by name to combine monthly/yearly versions
             const groupedPlans = new Map<string, any[]>();
 
             fetchedPlans.forEach((p: any) => {
@@ -41,16 +37,12 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
 
             const processedPlans: Plan[] = [];
 
-            // Helper to find config by fuzzy name matching
             const findConfig = (backendName: string) => {
                 return planConfig.find(c => c.title.toLowerCase() === backendName.toLowerCase());
             };
 
             groupedPlans.forEach((variants, name) => {
                 const config = findConfig(name);
-
-                // Find monthly and yearly variants based on their prices
-                // We assume the Dodo product has a price with 'month' or 'year' interval
 
                 let monthlyVariant = variants.find(v =>
                     v.prices.some((p: any) => p.interval === 'month')
@@ -60,10 +52,8 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     v.prices.some((p: any) => p.interval === 'year')
                 );
 
-                // Fallback: if single product has multiple prices (less likely with Dodo structure but possible)
                 if (!monthlyVariant) monthlyVariant = variants.find(v => v.monthlyPriceCents !== undefined);
 
-                // Find specific price objects
                 const getPriceObj = (variant: any, interval: 'month' | 'year') => {
                     if (!variant) return undefined;
                     return variant.prices.find((p: any) => p.interval === interval);
@@ -72,12 +62,10 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 const monthlyPriceObj = getPriceObj(monthlyVariant, 'month');
                 const yearlyPriceObj = getPriceObj(yearlyVariant, 'year');
 
-                // Helper to get price string
                 const getPriceString = (priceObj: any, variant: any, interval: 'month' | 'year') => {
                     if (priceObj && priceObj.amountCents !== undefined && priceObj.amountCents !== null) {
                         return String(priceObj.amountCents / 100);
                     }
-                    // Fallback to monthlyPriceCents if available and appropriate
                     if (interval === 'month' && variant?.monthlyPriceCents !== undefined) {
                         return String(variant.monthlyPriceCents / 100);
                     }
@@ -106,8 +94,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     trialPeriodDays
                 };
 
-                // Use the dodoProductId from the price object if available, otherwise fallback to Plan ID (likely wrong for checkout but handled by error)
-                // If using fallback config, we might not have ID, handled by generic free plan check or error.
                 const monthlyProductId = monthlyPriceObj ? monthlyPriceObj.dodoProductId : monthlyVariant?.id;
                 const yearlyProductId = yearlyPriceObj ? yearlyPriceObj.dodoProductId : yearlyVariant?.id;
 
@@ -117,9 +103,9 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     title: basePlan.title,
                     monthlyPrice,
                     yearlyPrice,
-                    monthlyProductId, // Fix: Use correct price ID
-                    yearlyProductId,  // Fix: Use correct price ID
-                    trialPeriodDays, // Ensure it's passed
+                    monthlyProductId,
+                    yearlyProductId,
+                    trialPeriodDays,
                     features: basePlan.features,
                     highlight: basePlan.highlight || basePlan.title.toLowerCase().includes('standard'),
                     buttonText: trialPeriodDays > 0 ? "Start free trial" : (basePlan.buttonText || "Upgrade"),
@@ -128,7 +114,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 processedPlans.push(plan);
             });
 
-            // Sort plans to match config order
             const sortedPlans = processedPlans.sort((a: Plan, b: Plan) => {
                 const indexA = planConfig.findIndex(c => c.title.toLowerCase() === a.title.toLowerCase());
                 const indexB = planConfig.findIndex(c => c.title.toLowerCase() === b.title.toLowerCase());
@@ -147,7 +132,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 mode: "test",
                 displayType: "overlay",
                 onEvent: (event) => {
-                    console.log("Dodo Event:", event);
                     if (event.event_type === "checkout.closed") {
                         toast({
                             title: "Checkout Closed",
@@ -173,15 +157,13 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             const selectedPlan = plans.find(p => p.id === planId);
             if (!selectedPlan) throw new Error("Plan not found");
 
-            // Determine correct Dodo Product ID based on interval
             const targetProductId = interval === 'year'
                 ? selectedPlan.yearlyProductId
                 : selectedPlan.monthlyProductId;
 
             if (!targetProductId) {
-                // Fallback for Free plan or if mapping missing
                 if (selectedPlan.monthlyPrice === "0") {
-                    await enrollFree({ planId: selectedPlan.id, accountId }); // Use generic ID for free?
+                    await enrollFree({ planId: selectedPlan.id, accountId });
                     toast({
                         title: "Success",
                         description: "Activated free plan!"
@@ -192,7 +174,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 throw new Error(`Product ID not found for ${interval}ly plan`);
             }
 
-            // Check if plan is free (double check price)
             const price = interval === 'year' ? selectedPlan.yearlyPrice : selectedPlan.monthlyPrice;
             const isFree = price === "0";
 
@@ -202,13 +183,12 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                     title: "Success",
                     description: "Activated free plan!"
                 });
-                // Refresh billing info via context
                 await refreshSubscription();
                 return;
             }
 
             const { url } = await createCheckout({
-                planId: targetProductId, // Send specific product ID
+                planId: targetProductId,
                 interval,
                 accountId,
                 workspaceId
@@ -224,8 +204,6 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             });
 
         } catch (error: any) {
-            console.error("Checkout/Enrollment failed", error);
-
             if (error.message && error.message.includes("Cannot enroll in free plan while having an active paid subscription")) {
                 toast({
                     title: "Action Required",
@@ -246,37 +224,42 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
 
     if (loading && !subscription?.planId) {
         return (
-            <div className="container py-20 px-4 mx-auto space-y-8">
+            <div className="container py-20 px-4 mx-auto space-y-12">
                 <div className="text-center space-y-4">
-                    <Skeleton className="h-10 w-64 mx-auto" />
-                    <Skeleton className="h-6 w-96 mx-auto" />
+                    <Skeleton className="h-12 w-80 mx-auto rounded-full" />
+                    <Skeleton className="h-6 w-96 mx-auto rounded-full" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <Skeleton className="h-[500px] w-full rounded-2xl" />
-                    <Skeleton className="h-[500px] w-full rounded-2xl" />
-                    <Skeleton className="h-[500px] w-full rounded-2xl" />
+                <div className="max-w-7xl mx-auto space-y-12">
+                    <Skeleton className="h-40 w-full rounded-[2rem]" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        <Skeleton className="h-[600px] w-full rounded-[2rem]" />
+                        <Skeleton className="h-[600px] w-full rounded-[2rem]" />
+                    </div>
                 </div>
             </div>
         );
     }
 
     if (plans.length === 0) {
-        // Fallback to showing config plans if API fails or returns empty? 
-        // Or just show empty state.
-        // Let's show empty state for now as per original code.
         return (
-            <div className="container py-20 px-4 mx-auto text-center">
-                <h3 className="text-xl font-semibold mb-2">No plans available</h3>
-                <p className="text-muted-foreground">We could not load any plans at this time. Please check back later.</p>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                <div className="bg-muted/30 p-8 rounded-3xl border border-border">
+                    <h3 className="text-2xl font-bold mb-3">No plans available</h3>
+                    <p className="text-muted-foreground max-w-md">
+                        We could not load any plans at this time. Please check back later or contact support if the issue persists.
+                    </p>
+                </div>
             </div>
         );
     }
 
     return (
-        <PricingRedesign
-            plans={plans}
-            currentPlanId={subscription?.planId}
-            onPlanSelect={handlePlanSelect}
-        />
+        <div className="min-h-screen bg-background selection:bg-primary/20">
+            <PricingRedesign
+                plans={plans}
+                currentPlanId={subscription?.planId}
+                onPlanSelect={handlePlanSelect}
+            />
+        </div>
     );
 }

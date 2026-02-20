@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createWorkspace, getUserWorkspaces, type CreateWorkspaceInput } from "@/lib/api/workspaces";
+import {
+  createWorkspace,
+  getUserWorkspaces,
+  getWorkspaceEntitlements,
+  type CreateWorkspaceInput,
+} from "@/lib/api/workspaces";
 import { QUERY_KEY } from "@/utils/query-key";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
@@ -24,8 +29,20 @@ export const useCreateWorkspace = () => {
     mutationKey: [QUERY_KEY.CREATE_WORKSPACE],
     mutationFn: (input: CreateWorkspaceInput) => createWorkspace(input),
     onSuccess: () => {
-      // Invalidate workspaces list to refetch
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_WORKSPACES] });
     },
+  });
+};
+
+/**
+ * Fetches the workspace quota limits + current usage.
+ * Used to decide whether to gate the "Create new workspace" action.
+ */
+export const useGetWorkspaceEntitlements = (workspaceId: string | undefined) => {
+  return useQuery({
+    queryKey: ["workspace-entitlements", workspaceId],
+    queryFn: () => getWorkspaceEntitlements(workspaceId!),
+    enabled: !!workspaceId,
+    staleTime: 60_000, // 1 minute
   });
 };

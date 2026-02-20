@@ -9,17 +9,12 @@ import { useSetupStore } from "@/store/chatbot/setup";
 import { useBranchStore } from "@/store/branch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bot, Loader2, Plus } from "lucide-react";
+import { Bot, Loader2, Lock, Plus } from "lucide-react";
 import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useEntitlements } from "@/hooks/useEntitlements";
+import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,10 +38,11 @@ export default function WorkspaceChatbotsPage() {
   const { data: entitlements } = useEntitlements(workspaceId);
   const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
-  const canCreateChatbot = entitlements
-    ? (entitlements.limits.chatbots === -1 || entitlements.usage.chatbots < (entitlements.limits.chatbots as number))
-    : true;
+  const chatbotLimit = (entitlements?.limits?.chatbots as number) ?? -1;
+  const chatbotsUsed = entitlements?.usage?.chatbots ?? 0;
+  const canCreateChatbot = chatbotLimit === -1 || chatbotsUsed < chatbotLimit;
 
   useEffect(() => {
     setWorkspaceId(workspaceId);
@@ -60,6 +56,10 @@ export default function WorkspaceChatbotsPage() {
   }, [router]);
 
   const handleCreateChatbot = () => {
+    if (!canCreateChatbot) {
+      setIsUpgradeDialogOpen(true);
+      return;
+    }
     resetSetup();
     setWorkspaceId(workspaceId);
     switchBranch("DEV");
@@ -140,26 +140,23 @@ export default function WorkspaceChatbotsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span tabIndex={0}>
-                        <Button
-                          onClick={handleCreateChatbot}
-                          disabled={!canCreateChatbot}
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Create chatbot
-                        </Button>
-                      </span>
-                    </TooltipTrigger>
-                    {!canCreateChatbot && (
-                      <TooltipContent>
-                        <p>You have reached the chatbot limit for your plan.</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  onClick={handleCreateChatbot}
+                  variant={canCreateChatbot ? "default" : "outline"}
+                  className={!canCreateChatbot ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
+                >
+                  {canCreateChatbot ? (
+                    <Plus className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Lock className="mr-2 h-4 w-4" />
+                  )}
+                  Create chatbot
+                  {!canCreateChatbot && (
+                    <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
+                      Upgrade
+                    </span>
+                  )}
+                </Button>
               </div>
             </div>
           </div>
@@ -207,6 +204,13 @@ export default function WorkspaceChatbotsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <UpgradeDialog
+        open={isUpgradeDialogOpen}
+        onOpenChange={setIsUpgradeDialogOpen}
+        title="Upgrade to create more chatbots"
+        description={`Your current plan allows up to ${chatbotLimit} chatbot${chatbotLimit === 1 ? "" : "s"}. Upgrade your plan to create more.`}
+      />
     </>
   );
 }

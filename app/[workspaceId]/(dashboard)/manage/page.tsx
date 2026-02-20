@@ -56,7 +56,8 @@ import {
     Settings as SettingsIcon,
     Crown,
     Shield as ShieldIcon,
-    ArrowRight
+    ArrowRight,
+    Lock,
 } from "lucide-react";
 import {
     getWorkspaceMembers,
@@ -70,12 +71,7 @@ import {
     WorkspaceInvitation
 } from "@/lib/api/workspaces";
 import { useEntitlements } from "@/hooks/useEntitlements";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
 
 export default function ManagePage() {
     const { workspaceName, workspaceId } = useWorkspace();
@@ -85,6 +81,9 @@ export default function ManagePage() {
     const canInviteMember = entitlements
         ? (entitlements.limits.team_members === -1 || entitlements.usage.team_members < (entitlements.limits.team_members as number))
         : true;
+
+    const teamMemberLimit = (entitlements?.limits?.team_members as number) ?? -1;
+    const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
     // -- Members State --
     const [members, setMembers] = useState<WorkspaceMember[]>([]);
@@ -289,27 +288,30 @@ export default function ManagePage() {
                         <div className="flex justify-end mb-4">
                             <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
                                 <div className="inline-block">
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <span tabIndex={0}>
-                                                    <Button
-                                                        className="gap-2 shadow-sm"
-                                                        disabled={!canInviteMember}
-                                                        onClick={() => setIsInviteOpen(true)}
-                                                    >
-                                                        <UserPlus className="h-4 w-4" />
-                                                        Invite Member
-                                                    </Button>
-                                                </span>
-                                            </TooltipTrigger>
-                                            {!canInviteMember && (
-                                                <TooltipContent>
-                                                    <p>You have reached the team member limit for your plan.</p>
-                                                </TooltipContent>
-                                            )}
-                                        </Tooltip>
-                                    </TooltipProvider>
+                                    <Button
+                                        className={`gap-2 shadow-sm ${!canInviteMember
+                                                ? "border border-amber-400 text-amber-600 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                                                : ""
+                                            }`}
+                                        variant={canInviteMember ? "default" : "outline"}
+                                        onClick={() =>
+                                            canInviteMember
+                                                ? setIsInviteOpen(true)
+                                                : setIsUpgradeDialogOpen(true)
+                                        }
+                                    >
+                                        {canInviteMember ? (
+                                            <UserPlus className="h-4 w-4" />
+                                        ) : (
+                                            <Lock className="h-4 w-4" />
+                                        )}
+                                        Invite Member
+                                        {!canInviteMember && (
+                                            <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
+                                                Upgrade
+                                            </span>
+                                        )}
+                                    </Button>
                                 </div>
                                 <DialogContent>
                                     <DialogHeader>
@@ -685,6 +687,13 @@ export default function ManagePage() {
                     </AlertDialogContent>
                 </AlertDialog>
             </div>
+
+            <UpgradeDialog
+                open={isUpgradeDialogOpen}
+                onOpenChange={setIsUpgradeDialogOpen}
+                title="Upgrade to invite more members"
+                description={`Your current plan allows up to ${teamMemberLimit === -1 ? "unlimited" : teamMemberLimit} team member${teamMemberLimit === 1 ? "" : "s"}. Upgrade to add more.`}
+            />
         </AccessGuard>
     );
 }

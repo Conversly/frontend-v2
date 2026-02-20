@@ -26,7 +26,7 @@ export default function PlaygroundPage() {
 
   const [config, setConfig] = useState<any | null>(null);
   const [systemPrompt, setSystemPrompt] = useState("");
-  const [model, setModel] = useState("gpt-5 Mini");
+  const [model, setModel] = useState("gpt-5-mini");
   const [temperature, setTemperature] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingPrompt, setIsSavingPrompt] = useState(false);
