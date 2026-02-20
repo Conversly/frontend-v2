@@ -10,6 +10,7 @@ import {
 } from "@/lib/api/deploy";
 import { useBranch } from "@/store/branch";
 import { DeployVisual } from "@/components/deploy/DeployVisual";
+import { DeploymentDiffView } from "@/components/deploy/DeploymentDiffModal";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -27,6 +28,8 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+type PageView = "default" | "reviewing";
+
 export default function DeployLivePage() {
     const { botId, workspaceId } = useParams() as { botId: string; workspaceId: string };
     const {
@@ -41,6 +44,7 @@ export default function DeployLivePage() {
     const [status, setStatus] = useState<DeployStatus | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isActionInProgress, setIsActionInProgress] = useState(false);
+    const [pageView, setPageView] = useState<PageView>("default");
 
     const fetchStatus = useCallback(async (showError = true) => {
         try {
@@ -87,14 +91,19 @@ export default function DeployLivePage() {
         };
     }, [status?.deployStatusField, fetchStatus]);
 
-    const handlePushToLive = async () => {
+    const handleReviewChanges = () => {
         if (activeBranch !== 'DEV') {
             toast.warning("Switch to DEV mode to deploy", {
                 description: "You can only push changes from the development environment."
             });
             return;
         }
+        setPageView("reviewing");
+    };
 
+    const handleConfirmDeploy = async () => {
+        // Switch back to default view to show the deploy animation
+        setPageView("default");
         try {
             setIsActionInProgress(true);
             const promise = pushToLive(botId);
@@ -133,7 +142,6 @@ export default function DeployLivePage() {
 
             await promise;
             await fetchStatus(false);
-            // If rollback is successful, versions are synced
             syncVersions();
         } catch (error: any) {
             console.error(error);
@@ -197,13 +205,40 @@ export default function DeployLivePage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Visualization Column */}
+                {/* Main Column — swaps between DeployVisual and DiffView */}
                 <div className="lg:col-span-2 space-y-6">
-                    <Card className="overflow-hidden border-border/60 shadow-md">
-                        <DeployVisual isDeploying={isDeploying} />
-                    </Card>
+                    <AnimatePresence mode="wait">
+                        {pageView === "reviewing" ? (
+                            <motion.div
+                                key="diff-view"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.25 }}
+                            >
+                                <DeploymentDiffView
+                                    botId={botId}
+                                    onConfirm={handleConfirmDeploy}
+                                    onBack={() => setPageView("default")}
+                                    isDeploying={isDeploying}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="deploy-visual"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                transition={{ duration: 0.25 }}
+                            >
+                                <Card className="overflow-hidden border-border/60 shadow-md">
+                                    <DeployVisual isDeploying={isDeploying} />
+                                </Card>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                    {isLocked && (
+                    {pageView === "default" && isLocked && (
                         <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
                             <ShieldAlert className="h-5 w-5" />
                             <AlertTitle>Deployment Locked</AlertTitle>
@@ -214,7 +249,7 @@ export default function DeployLivePage() {
                         </Alert>
                     )}
 
-                    {!isDirty && !isDeploying && !isLocked && (
+                    {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
                         <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                             <AlertTitle>All changes synced</AlertTitle>
@@ -263,7 +298,7 @@ export default function DeployLivePage() {
                     </Card>
 
                     {/* Push Card */}
-                    <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying ? 'border-blue-500 shadow-blue-100 shadow-lg' : 'opacity-70'}`}>
+                    <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying && pageView === "default" ? 'border-blue-500 shadow-blue-100 shadow-lg' : 'opacity-70'}`}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Rocket className="w-5 h-5 text-blue-500" />
@@ -286,10 +321,10 @@ export default function DeployLivePage() {
                         <CardFooter>
                             <Button
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
-                                disabled={!isDirty || isDeploying || isActionInProgress || activeBranch !== 'DEV'}
-                                onClick={handlePushToLive}
+                                disabled={!isDirty || isDeploying || isActionInProgress || activeBranch !== 'DEV' || pageView === "reviewing"}
+                                onClick={handleReviewChanges}
                             >
-                                {isDeploying ? "Deploying..." : "Publish to Production"}
+                                {isDeploying ? "Deploying..." : pageView === "reviewing" ? "Reviewing Changes…" : "Review & Publish"}
                             </Button>
                         </CardFooter>
 

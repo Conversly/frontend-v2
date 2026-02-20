@@ -268,3 +268,54 @@ export const getDeployStatus = async (chatbotId: string): Promise<DeployStatus> 
 		deployStatusField,
 	};
 };
+
+// ============================================================================
+// DEPLOYMENT DIFF
+// ============================================================================
+
+export type DiffType = 'CREATED' | 'UPDATED' | 'DELETED' | 'UNCHANGED';
+
+export interface FieldDiff {
+	path: string;
+	oldValue: any;
+	newValue: any;
+}
+
+export interface ResourceChange {
+	resourceType: string;
+	logicalId: string;
+	name?: string;
+	changeType: DiffType;
+	diffs?: FieldDiff[];
+	newValue?: any;
+	oldValue?: any;
+}
+
+export interface DeploymentDiffResult {
+	lastDeployedAt: Date | string | null;
+	changes: ResourceChange[];
+}
+
+/**
+ * Get the deployment diff between DEV and LIVE.
+ */
+export const getDeploymentDiff = async (chatbotId: string): Promise<DeploymentDiffResult> => {
+	const endpointObj = API.ENDPOINTS.DEPLOY.GET_DIFF;
+	if (!isEndpointAccessible(endpointObj)) {
+		throw new ApiModeError(endpointObj.path());
+	}
+
+	const endpoint = endpointObj.path().replace(':chatbotId', chatbotId);
+	const res = await fetch(
+		API.ENDPOINTS.DEPLOY.BASE_URL() + endpoint,
+		{
+			method: 'GET',
+		}
+	).then((r) => r.data) as ApiResponse<DeploymentDiffResult, Error>;
+
+	if (!res.success) {
+		throw new Error(res.message);
+	}
+
+	return res.data;
+};

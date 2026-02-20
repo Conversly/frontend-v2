@@ -115,6 +115,7 @@ export const API = {
       DEPLOY: devMode(() => "/:chatbotId/deploy"),
       ROLLBACK: devMode(() => "/:chatbotId/rollback-dev"),
       DEPLOY_STATUS: allMode(() => "/:chatbotId/deploy-status"),
+      GET_DIFF: allMode(() => "/:chatbotId/diff"),
     },
 
     RESPONSE: {
