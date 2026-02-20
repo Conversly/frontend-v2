@@ -106,62 +106,60 @@
   --input-background: #F8FAFC;
 }
 
-/* Dark Theme - Balanced between ElevenLabs and Vapi */
+/* Dark Theme - IDE Style (Zinc 950 base) */
 .dark {
-  /* Background: Medium dark grey (between ElevenLabs and Vapi) */
-  --background: #121212;
-  --foreground: oklch(0.98 0.005 260);
+  /* Background: Deep dark base (Zinc 950) */
+  --background: oklch(0.145 0.005 286);
+  --foreground: oklch(0.98 0.005 286);
 
-  /* Card: Slightly lighter dark grey */
-  --card: #1a1a1a;
-  --card-foreground: oklch(0.98 0.005 260);
+  /* Card: Slightly lighter dark (Zinc 900) */
+  --card: oklch(0.21 0.006 286);
+  --card-foreground: oklch(0.98 0.005 286);
 
-  --popover: #1a1a1a;
-  --popover-foreground: oklch(0.98 0.005 260);
+  --popover: oklch(0.21 0.006 286);
+  --popover-foreground: oklch(0.98 0.005 286);
 
   /* Blue Accent */
-  --primary: #3b82f6;
-  /* Blue 500 */
-  --primary-foreground: #FFFFFF;
+  --primary: oklch(0.63 0.20 260);
+  --primary-foreground: oklch(1 0 0);
 
-  /* Medium dark grey for secondary elements */
-  --secondary: #1f1f1f;
-  --secondary-foreground: oklch(0.98 0.005 260);
+  /* Medium dark for secondary elements (Zinc 800) */
+  --secondary: oklch(0.27 0.006 286);
+  --secondary-foreground: oklch(0.98 0.005 286);
 
-  --muted: #1f1f1f;
-  --muted-foreground: oklch(0.70 0.01 260);
+  --muted: oklch(0.21 0.006 286);
+  --muted-foreground: oklch(0.71 0.01 286);
 
-  /* Blue accent - matches primary theme */
-  --accent: #3b82f6;
-  --accent-foreground: #FFFFFF;
+  --accent: oklch(0.63 0.20 260);
+  --accent-foreground: oklch(1 0 0);
 
   --destructive: oklch(0.65 0.20 25);
-  --destructive-foreground: #FFFFFF;
+  --destructive-foreground: oklch(1 0 0);
 
-  /* Subtle borders - medium dark grey */
-  --border: #242424;
-  --input: #242424;
-  --ring: #3b82f6;
+  /* Borders (Zinc 800) */
+  --border: oklch(0.27 0.006 286);
+  --input: oklch(0.27 0.006 286);
+  --ring: oklch(0.63 0.20 260);
 
   /* Chart colors - Blue gradient */
-  --chart-1: #3b82f6;
-  --chart-2: #2563eb;
-  --chart-3: #1d4ed8;
-  --chart-4: #1e40af;
-  --chart-5: #1e3a8a;
+  --chart-1: oklch(0.63 0.20 260);
+  --chart-2: oklch(0.55 0.22 260);
+  --chart-3: oklch(0.47 0.24 260);
+  --chart-4: oklch(0.40 0.21 260);
+  --chart-5: oklch(0.33 0.18 260);
 
-  /* Sidebar - Medium dark grey (balanced) */
-  --sidebar: #151515;
-  --sidebar-background: #151515;
-  --sidebar-foreground: oklch(0.95 0.01 260);
-  --sidebar-primary: #3b82f6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: oklch(0.25 0.08 260);
-  --sidebar-accent-foreground: oklch(0.98 0.01 260);
-  --sidebar-border: #242424;
-  --sidebar-ring: #3b82f6;
+  /* Sidebar - Slightly lighter than background (Zinc 900) to match IDE aesthetic (like VS Code/Cursor) */
+  --sidebar: oklch(0.21 0.006 286);
+  --sidebar-background: oklch(0.21 0.006 286);
+  --sidebar-foreground: oklch(0.95 0.01 286);
+  --sidebar-primary: oklch(0.63 0.20 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.27 0.006 286);
+  --sidebar-accent-foreground: oklch(0.98 0.01 286);
+  --sidebar-border: oklch(0.27 0.006 286);
+  --sidebar-ring: oklch(0.63 0.20 260);
 
-  --input-background: #1A1A1A;
+  --input-background: oklch(0.145 0.005 286);
 }
 
 @theme inline {
@@ -317,6 +315,52 @@
   --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.06);
   --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.05);
   --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 10px 10px -5px rgb(15 23 42 / 0.04);
+}
+
+/*
+ * Dark Theme Workspace Override
+ *
+ * CRITICAL: .theme-workspace overrides .dark vars if not explicitly targeted
+ * with higher specificity. This guarantees dark mode always looks correct.
+ */
+.dark .theme-workspace {
+  /* Background layers - IDE Style */
+  --background: oklch(0.145 0.005 286);
+  --card: oklch(0.21 0.006 286);
+  --popover: oklch(0.21 0.006 286);
+
+  /* Typography */
+  --foreground: oklch(0.98 0.005 286);
+  --muted-foreground: oklch(0.71 0.01 286);
+
+  /* Sidebar */
+  --sidebar: oklch(0.21 0.006 286);
+  --sidebar-background: oklch(0.21 0.006 286);
+  --sidebar-foreground: oklch(0.95 0.01 286);
+  --header-background: oklch(0.145 0.005 286);
+  /* Match main background */
+
+  /* Borders */
+  --border: oklch(0.27 0.006 286);
+  --input: oklch(0.27 0.006 286);
+  --sidebar-border: oklch(0.27 0.006 286);
+
+  /* Primary */
+  --primary: oklch(0.63 0.20 260);
+  --ring: oklch(0.63 0.20 260);
+
+  /* Input Background */
+  --input-background: oklch(0.145 0.005 286);
+
+  /* Muted */
+  --muted: oklch(0.21 0.006 286);
+
+  /* Shadows - Dark-appropriate */
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.2);
+  --shadow: 0 1px 3px 0 oklch(0 0 0 / 0.3), 0 1px 2px -1px oklch(0 0 0 / 0.2);
+  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.3), 0 2px 4px -2px oklch(0 0 0 / 0.2);
+  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.35), 0 4px 6px -4px oklch(0 0 0 / 0.25);
+  --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.4), 0 10px 10px -5px oklch(0 0 0 / 0.3);
 }
 
 
