@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { AccessGuard } from "@/components/auth/access-guard";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -139,7 +140,9 @@ export default function BillingPage() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">Manage Subscription</Button>
+                  <Link href={`/${workspaceId}/billing/Plans`} className="w-full">
+                    <Button variant="outline" className="w-full">Manage Subscription</Button>
+                  </Link>
                 </CardFooter>
               </Card>
 
@@ -163,9 +166,6 @@ export default function BillingPage() {
                     <span>Auto-recharge disabled</span>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button className="w-full">Add Funds</Button>
-                </CardFooter>
               </Card>
 
               {/* Usage Card */}
