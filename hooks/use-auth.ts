@@ -7,6 +7,7 @@ import { QUERY_KEY } from "@/utils/query-key";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import posthog from "posthog-js";
 
 interface AuthConfig {
   redirectTo?: string;
@@ -51,7 +52,14 @@ export const useAuth = (config: AuthConfig = {}): UseAuthReturn => {
         }
 
         if (isNewUser) {
+          posthog.capture("user_signed_up", {
+            method: "google",
+          });
           showModal();
+        } else {
+          posthog.capture("user_logged_in", {
+            method: "google",
+          });
         }
 
         router.push(redirectTo);

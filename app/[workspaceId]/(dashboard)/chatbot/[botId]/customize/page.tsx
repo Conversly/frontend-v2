@@ -5,11 +5,21 @@ import { useParams } from "next/navigation";
 import { useChatbotInWorkspace } from "@/services/chatbot";
 import { CustomizationTab } from "@/components/chatbot/customization/CustomizationTab";
 import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
+import posthog from "posthog-js";
 
 export default function CustomizePage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
+
+  useEffect(() => {
+    if (botId) {
+      posthog.capture("customize_page_viewed", {
+        chatbot_id: botId
+      });
+    }
+  }, [botId]);
 
   if (!botId) {
     return null;

@@ -7,7 +7,8 @@ import {
   useAnalyticsFeedbacksQuery,
   useAnalyticsDashboardQuery,
 } from "@/services/analytics";
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
+import posthog from "posthog-js";
 import { ControlsCard } from "@/components/analytics/controls-card";
 import { SummaryCards } from "@/components/analytics/summary-cards";
 import { ChartsSection } from "@/components/analytics/charts-section";
@@ -30,6 +31,12 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   const { data: chartsData, isLoading: chartsLoading, error: chartsError } = useAnalyticsChartsQuery(botId, selectedDays);
   const { data: feedbacksData, isLoading: feedbacksLoading, error: feedbacksError } = useAnalyticsFeedbacksQuery(botId, feedbackLimit);
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useAnalyticsDashboardQuery(botId, selectedDays);
+
+  useEffect(() => {
+    posthog.capture("statistics_page_viewed", {
+      chatbot_id: botId
+    });
+  }, [botId]);
 
   const formatDate = (dateString: string) => {
     try {

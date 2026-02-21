@@ -8,11 +8,19 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import posthog from "posthog-js";
 
 export default function DeployPage() {
   const params = useParams();
   const botId = params.botId as string;
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    posthog.capture("deploy_page_viewed", {
+      chatbot_id: botId
+    });
+  }, [botId]);
 
   // Initial state (Mock data for now, normally fetched from DB)
   const [config, setConfig] = useState({
