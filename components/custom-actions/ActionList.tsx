@@ -11,6 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
 // Dynamic import to prevent SSR issues with framer-motion
 const ActionsVisual = dynamic(() => import('./ActionsVisual'), {
@@ -71,10 +72,12 @@ export const ActionList: React.FC<Props> = ({
                             ))}
                         </div>
 
-                        <Button size="lg" onClick={onCreate} className="shadow-lg">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Teach Your First Skill
-                        </Button>
+                        <FeatureGuard feature="actions" currentUsage={actions.length}>
+                            <Button size="lg" onClick={onCreate} className="shadow-lg">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Teach Your First Skill
+                            </Button>
+                        </FeatureGuard>
                     </div>
 
                     {/* Right side - Visualization */}
@@ -91,10 +94,12 @@ export const ActionList: React.FC<Props> = ({
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">Your Skills ({actions.length})</h2>
-                <Button onClick={onCreate}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Teach New Skill
-                </Button>
+                <FeatureGuard feature="actions" currentUsage={actions.length}>
+                    <Button onClick={onCreate}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Teach New Skill
+                    </Button>
+                </FeatureGuard>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -115,14 +120,16 @@ export const ActionList: React.FC<Props> = ({
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => onEdit(action)}>
-                                            <Edit className="h-4 w-4 mr-2" />
-                                            Edit
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive" onClick={() => action.id && onDelete(action.id)}>
-                                            <Trash2 className="h-4 w-4 mr-2" />
-                                            Delete
-                                        </DropdownMenuItem>
+                                        <FeatureGuard feature="actions">
+                                            <DropdownMenuItem onClick={() => onEdit(action)}>
+                                                <Edit className="h-4 w-4 mr-2" />
+                                                Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive" onClick={() => action.id && onDelete(action.id)}>
+                                                <Trash2 className="h-4 w-4 mr-2" />
+                                                Delete
+                                            </DropdownMenuItem>
+                                        </FeatureGuard>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>

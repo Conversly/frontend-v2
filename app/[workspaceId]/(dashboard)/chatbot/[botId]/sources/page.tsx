@@ -39,6 +39,8 @@ import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
+import { useAccessControl } from '@/hooks/useAccessControl';
+import { useWorkspace } from '@/contexts/workspace-context';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,6 +71,7 @@ import {
   PendingSourcesPanel,
   type SourceCategory,
 } from '@/components/chatbot/sources';
+import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
 const DATA_SOURCE_ICONS = {
   URL: Globe,
@@ -340,21 +343,27 @@ function DataSourceCard({
               <Eye className="w-4 h-4 mr-2" />
               View chunks
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={onEditCitation}
-              disabled={isLiveMode}
-            >
-              <Edit3 className="w-4 h-4 mr-2" />
-              Edit citation
+            <DropdownMenuItem onClick={onViewChunks}>
+              <Eye className="w-4 h-4 mr-2" />
+              View chunks
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={onDelete}
-              disabled={isLiveMode}
-              className="text-destructive focus:text-destructive"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
+            <FeatureGuard feature="datasources">
+              <DropdownMenuItem
+                onClick={onEditCitation}
+                disabled={isLiveMode}
+              >
+                <Edit3 className="w-4 h-4 mr-2" />
+                Edit citation
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={onDelete}
+                disabled={isLiveMode}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </FeatureGuard>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -393,17 +402,12 @@ export default function DataSourcesPage() {
   const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
   const { guardEdit, isLiveMode } = useEditGuard();
-  const { data: entitlements } = useEntitlements(workspaceId);
-
-  const canAddDatasource = entitlements
-    ? (entitlements.limits.datasources === -1 || entitlements.usage.datasources < (entitlements.limits.datasources as number))
-    : true;
+  const accessControl = useAccessControl(workspaceId);
 
   // Calculate source counts by type
   const sourceCounts = useMemo(() => {
@@ -512,20 +516,18 @@ export default function DataSourcesPage() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    <Button
-                      onClick={() => {
-                        if (!canAddDatasource) {
-                          setIsUpgradeDialogOpen(true);
-                        } else {
-                          setIsAddDialogOpen(true);
-                        }
-                      }}
-                      className={!canAddDatasource ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
-                      variant={canAddDatasource ? "default" : "outline"}
-                    >
-                      {!canAddDatasource ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-                      Add Knowledge
-                    </Button>
+                    <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
+                      {({ isLocked }) => (
+                        <Button
+                          onClick={() => setIsAddDialogOpen(true)}
+                          variant={!isLocked ? "default" : "outline"}
+                          className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
+                        >
+                          {isLocked ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                          Add Knowledge
+                        </Button>
+                      )}
+                    </FeatureGuard>
                   </span>
                 </TooltipTrigger>
               </Tooltip>
@@ -553,23 +555,21 @@ export default function DataSourcesPage() {
           ) : filteredSources.length === 0 ? (
             <div className="p-6">
               {dataSources?.length === 0 ? (
-                <EmptyState
-                  title="No knowledge sources yet"
-                  description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
-                  icon={<Database />}
-                  primaryAction={{
-                    label: "Add Knowledge",
-                    onClick: () => {
-                      if (!canAddDatasource) {
-                        setIsUpgradeDialogOpen(true);
-                      } else {
-                        setIsAddDialogOpen(true);
-                      }
-                    },
-                    icon: !canAddDatasource ? <Lock /> : <Plus />,
-                  }}
-                  className="border-dashed bg-card/30"
-                />
+                <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
+                  {({ isLocked }) => (
+                    <EmptyState
+                      title="No knowledge sources yet"
+                      description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
+                      icon={<Database />}
+                      primaryAction={accessControl.datasources.canManage ? {
+                        label: "Add Knowledge",
+                        onClick: () => setIsAddDialogOpen(true),
+                        icon: isLocked ? <Lock /> : <Plus />,
+                      } : undefined}
+                      className="border-dashed bg-card/30"
+                    />
+                  )}
+                </FeatureGuard>
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
                   No sources match your search
@@ -646,13 +646,6 @@ export default function DataSourcesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <UpgradeDialog
-        open={isUpgradeDialogOpen}
-        onOpenChange={setIsUpgradeDialogOpen}
-        title="Upgrade to add more knowledge"
-        description={`Your current plan allows up to ${entitlements?.limits?.datasources} data source${entitlements?.limits?.datasources === 1 ? "" : "s"}. Upgrade your plan to add more.`}
-      />
 
       {/* Pending Sources Panel */}
       <PendingSourcesPanel chatbotId={botId} />

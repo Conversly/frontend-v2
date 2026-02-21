@@ -13,8 +13,8 @@ import { Bot, Loader2, Lock, Plus } from "lucide-react";
 import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
-import { useEntitlements } from "@/hooks/useEntitlements";
-import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
+import { FeatureGuard } from "@/components/shared/FeatureGuard";
+import { useAccessControl } from "@/hooks/useAccessControl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,14 +35,11 @@ export default function WorkspaceChatbotsPage() {
   const resetSetup = useSetupStore((s) => s.reset);
   const switchBranch = useBranchStore((s) => s.switchBranch);
   const { data: chatbots, isLoading, error } = useGetChatbots(workspaceId);
-  const { data: entitlements } = useEntitlements(workspaceId);
   const { mutate: deleteChatbot, isPending: isDeleting } = useDeleteChatbot();
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
-  const chatbotLimit = (entitlements?.limits?.chatbots as number) ?? -1;
-  const chatbotsUsed = entitlements?.usage?.chatbots ?? 0;
-  const canCreateChatbot = chatbotLimit === -1 || chatbotsUsed < chatbotLimit;
+  const accessControl = useAccessControl(workspaceId);
+  const chatbotsUsed = chatbots?.length ?? 0;
 
   useEffect(() => {
     setWorkspaceId(workspaceId);
@@ -56,10 +53,6 @@ export default function WorkspaceChatbotsPage() {
   }, [router]);
 
   const handleCreateChatbot = () => {
-    if (!canCreateChatbot) {
-      setIsUpgradeDialogOpen(true);
-      return;
-    }
     resetSetup();
     setWorkspaceId(workspaceId);
     switchBranch("DEV");
@@ -140,23 +133,23 @@ export default function WorkspaceChatbotsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <Button
-                  onClick={handleCreateChatbot}
-                  variant={canCreateChatbot ? "default" : "outline"}
-                  className={!canCreateChatbot ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
-                >
-                  {canCreateChatbot ? (
-                    <Plus className="mr-2 h-4 w-4" />
-                  ) : (
-                    <Lock className="mr-2 h-4 w-4" />
+                <FeatureGuard feature="chatbots" currentUsage={chatbotsUsed}>
+                  {({ isLocked }) => (
+                    <Button
+                      onClick={handleCreateChatbot}
+                      variant={!isLocked ? "default" : "outline"}
+                      className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
+                    >
+                      {isLocked ? <Lock className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
+                      Create chatbot
+                      {isLocked && (
+                        <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
+                          Upgrade
+                        </span>
+                      )}
+                    </Button>
                   )}
-                  Create chatbot
-                  {!canCreateChatbot && (
-                    <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
-                      Upgrade
-                    </span>
-                  )}
-                </Button>
+                </FeatureGuard>
               </div>
             </div>
           </div>
@@ -164,16 +157,19 @@ export default function WorkspaceChatbotsPage() {
           <Separator className="my-6" />
 
           {list.length === 0 ? (
-            <EmptyState
-              title="No chatbots yet"
-              description="Create your first chatbot in this workspace."
-              primaryAction={{
-                label: "Create chatbot",
-                onClick: handleCreateChatbot,
-                icon: <Plus />,
-                disabled: !canCreateChatbot
-              }}
-            />
+            <FeatureGuard feature="chatbots" currentUsage={chatbotsUsed}>
+              {({ isLocked }) => (
+                <EmptyState
+                  title="No chatbots yet"
+                  description="Create your first chatbot in this workspace."
+                  primaryAction={{
+                    label: "Create chatbot",
+                    onClick: handleCreateChatbot,
+                    icon: <Plus />,
+                  }}
+                />
+              )}
+            </FeatureGuard>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {list.map((bot) => (
@@ -205,12 +201,6 @@ export default function WorkspaceChatbotsPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <UpgradeDialog
-        open={isUpgradeDialogOpen}
-        onOpenChange={setIsUpgradeDialogOpen}
-        title="Upgrade to create more chatbots"
-        description={`Your current plan allows up to ${chatbotLimit} chatbot${chatbotLimit === 1 ? "" : "s"}. Upgrade your plan to create more.`}
-      />
     </>
   );
 }

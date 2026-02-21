@@ -70,23 +70,17 @@ import {
     WorkspaceMember,
     WorkspaceInvitation
 } from "@/lib/api/workspaces";
-import { useEntitlements } from "@/hooks/useEntitlements";
-import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
+import { FeatureGuard } from "@/components/shared/FeatureGuard";
+import { useAccessControl } from "@/hooks/useAccessControl";
 
 export default function ManagePage() {
     const { workspaceName, workspaceId } = useWorkspace();
     const router = useRouter();
-    const { data: entitlements } = useEntitlements(workspaceId);
-
-    const canInviteMember = entitlements
-        ? (entitlements.limits.team_members === -1 || entitlements.usage.team_members < (entitlements.limits.team_members as number))
-        : true;
-
-    const teamMemberLimit = (entitlements?.limits?.team_members as number) ?? -1;
-    const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
+    const accessControl = useAccessControl(workspaceId);
 
     // -- Members State --
     const [members, setMembers] = useState<WorkspaceMember[]>([]);
+    const membersUsed = members.length;
     const [isMembersLoading, setIsMembersLoading] = useState(false);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
@@ -288,30 +282,30 @@ export default function ManagePage() {
                         <div className="flex justify-end mb-4">
                             <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
                                 <div className="inline-block">
-                                    <Button
-                                        className={`gap-2 shadow-sm ${!canInviteMember
-                                            ? "border border-amber-400 text-amber-600 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                                            : ""
-                                            }`}
-                                        variant={canInviteMember ? "default" : "outline"}
-                                        onClick={() =>
-                                            canInviteMember
-                                                ? setIsInviteOpen(true)
-                                                : setIsUpgradeDialogOpen(true)
-                                        }
-                                    >
-                                        {canInviteMember ? (
-                                            <UserPlus className="h-4 w-4" />
-                                        ) : (
-                                            <Lock className="h-4 w-4" />
+                                    <FeatureGuard feature="team_members" currentUsage={membersUsed}>
+                                        {({ isLocked }) => (
+                                            <Button
+                                                className={`gap-2 shadow-sm ${isLocked
+                                                    ? "border border-amber-400 text-amber-600 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                                                    : ""
+                                                    }`}
+                                                variant={!isLocked ? "default" : "outline"}
+                                                onClick={() => setIsInviteOpen(true)}
+                                            >
+                                                {!isLocked ? (
+                                                    <UserPlus className="h-4 w-4" />
+                                                ) : (
+                                                    <Lock className="h-4 w-4" />
+                                                )}
+                                                Invite Member
+                                                {isLocked && (
+                                                    <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
+                                                        Upgrade
+                                                    </span>
+                                                )}
+                                            </Button>
                                         )}
-                                        Invite Member
-                                        {!canInviteMember && (
-                                            <span className="ml-2 text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded-full">
-                                                Upgrade
-                                            </span>
-                                        )}
-                                    </Button>
+                                    </FeatureGuard>
                                 </div>
                                 <DialogContent>
                                     <DialogHeader>
@@ -687,12 +681,6 @@ export default function ManagePage() {
                 </AlertDialog>
             </div>
 
-            <UpgradeDialog
-                open={isUpgradeDialogOpen}
-                onOpenChange={setIsUpgradeDialogOpen}
-                title="Upgrade to invite more members"
-                description={`Your current plan allows up to ${teamMemberLimit === -1 ? "unlimited" : teamMemberLimit} team member${teamMemberLimit === 1 ? "" : "s"}. Upgrade to add more.`}
-            />
         </AccessGuard>
     );
 }

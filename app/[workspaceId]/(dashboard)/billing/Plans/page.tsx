@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
 import { useSubscription } from "@/contexts/subscription-context";
-import { useCheckout, usePlans, useEnrollFree } from "@/hooks/use-dodo";
+import { useCheckout, usePlans, useEnrollFree } from "@/services/dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
     const [plans, setPlans] = useState<Plan[]>([]);
