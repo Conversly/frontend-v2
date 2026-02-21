@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import posthog from "posthog-js";
 
 type PageView = "default" | "reviewing";
 
@@ -93,6 +94,10 @@ export default function DeployLivePage() {
     }, [status?.deployStatusField, fetchStatus]);
 
     const handleReviewChanges = () => {
+        posthog.capture("review_and_publish_clicked", {
+            chatbot_id: botId
+        });
+
         if (activeBranch !== 'DEV') {
             toast.warning("Switch to DEV mode to deploy", {
                 description: "You can only push changes from the development environment."

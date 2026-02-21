@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
 import { useSubscription } from "@/contexts/subscription-context";
+import posthog from "posthog-js";
 import { useCheckout, usePlans, useEnrollFree } from "@/services/dodo";
 
 export default function PlansPage({ params }: { params: Promise<{ workspaceId: string }> }) {
@@ -22,6 +23,10 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
     const { subscription, isLoading: subscriptionLoading, refreshSubscription } = useSubscription();
 
     const loading = initialLoading || checkoutLoading || subscriptionLoading;
+
+    useEffect(() => {
+        posthog.capture("subscription_page_viewed");
+    }, []);
 
     useEffect(() => {
         if (!fetchedPlans) return;
@@ -133,6 +138,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
                 displayType: "overlay",
                 onEvent: (event) => {
                     if (event.event_type === "checkout.closed") {
+                        posthog.capture("checkout_closed");
                         toast({
                             title: "Checkout Closed",
                             description: "You closed the checkout window."
@@ -197,6 +203,13 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             if (!url) {
                 throw new Error("No checkout URL returned");
             }
+
+            posthog.capture("upgrade_clicked", {
+                plan_name: selectedPlan.title,
+                plan_id: targetProductId,
+                interval,
+                price: selectedPlan[interval === "year" ? "yearlyPrice" : "monthlyPrice"],
+            });
 
             const { DodoPayments } = await import("dodopayments-checkout");
             DodoPayments.Checkout.open({

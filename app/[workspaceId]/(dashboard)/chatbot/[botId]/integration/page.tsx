@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Plus, Mail, MessageSquare, ArrowRight } from "lucide-react";
+import posthog from "posthog-js";
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -70,6 +71,11 @@ export default function IntegrationPage() {
   // Handle setup initiation
   // Handle setup initiation
   const handleSetup = async (platformId: string) => {
+    posthog.capture("integration_setup_clicked", {
+      chatbot_id: botId,
+      integration_id: platformId,
+    });
+
     const integration = integrations.find(i => i.id === platformId);
 
     if (!integration) return;
@@ -113,6 +119,10 @@ export default function IntegrationPage() {
 
       // Show the integration sidebar
       setActiveIntegration(selectedPlatform);
+      posthog.capture("integration_connected", {
+        chatbot_id: botId,
+        integration_id: selectedPlatform,
+      });
       toast.success(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} connected successfully!`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to connect integration');
@@ -130,6 +140,10 @@ export default function IntegrationPage() {
       )
     );
     setActiveIntegration(null);
+    posthog.capture("integration_disconnected", {
+      chatbot_id: botId,
+      integration_id: platformId,
+    });
     toast.success('Integration disconnected');
   };
 
@@ -140,6 +154,10 @@ export default function IntegrationPage() {
   const sidebarItems = activeIntegration ? getIntegrationSidebarItems(activeIntegration) : [];
 
   const handleRequestSubmit = async () => {
+    posthog.capture("integration_request_submit_clicked", {
+      chatbot_id: botId
+    });
+
     if (!integrationName.trim()) {
       setRequestError("Please enter an integration name");
       return;
@@ -165,6 +183,11 @@ export default function IntegrationPage() {
         comments: `Integration Request: ${integrationName}`,
       });
       setIsRequestSuccess(true);
+      posthog.capture("integration_requested", {
+        chatbot_id: botId,
+        integration_name: integrationName,
+        email: requestEmail,
+      });
       toast.success("Request submitted successfully!");
     } catch (error: any) {
       console.error("Integration request error:", error);
