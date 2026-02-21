@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
 import { motion } from "motion/react";
-import { Plan } from "@/lib/billingsdk-config";
+import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
 
 export interface PricingRedesignProps {
     plans: Plan[];
     currentPlanId?: string | null;
+    currentPlanName?: string | null;
     onPlanSelect: (planId: string, interval: "month" | "year") => void;
     isDialog?: boolean;
 }
@@ -103,13 +104,29 @@ const PricingSwitch = ({
     );
 };
 
-export function PricingRedesign({ plans, currentPlanId, onPlanSelect, isDialog }: PricingRedesignProps) {
+export function PricingRedesign({ plans, currentPlanId, currentPlanName, onPlanSelect, isDialog }: PricingRedesignProps) {
     const [isYearly, setIsYearly] = useState(false);
     const pricingRef = useRef<HTMLDivElement>(null);
 
     const isCurrentPlan = (plan: Plan) => {
         const activeId = currentPlanId || "free";
-        return plan.id === activeId || plan.monthlyProductId === activeId || plan.yearlyProductId === activeId;
+        // Match by product IDs
+        if (plan.id === activeId || plan.monthlyProductId === activeId || plan.yearlyProductId === activeId) {
+            return true;
+        }
+        // Match by plan name/title (subscription.planName vs plan.title)
+        if (currentPlanName && plan.title.toLowerCase() === currentPlanName.toLowerCase()) {
+            return true;
+        }
+        return false;
+    };
+
+    const isLowerTierPlan = (plan: Plan) => {
+        const activeName = currentPlanName || "Free";
+        const currentIndex = planConfig.findIndex(c => c.title.toLowerCase() === activeName.toLowerCase());
+        const planIndex = planConfig.findIndex(c => c.title.toLowerCase() === plan.title.toLowerCase());
+        if (currentIndex === -1 || planIndex === -1) return false;
+        return planIndex < currentIndex;
     };
 
     const maxDiscount = Math.max(...plans.map(getDiscountPercent), 0);
@@ -167,6 +184,8 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect, isDialog }
             )}>
                 {plans.map((plan, index) => {
                     const isCurrent = isCurrentPlan(plan);
+                    const isLower = isLowerTierPlan(plan);
+                    const isDisabled = isCurrent || isLower;
                     const activeDiscount = getDiscountPercent(plan);
                     const hasTrial = plan.trialPeriodDays && plan.trialPeriodDays > 0;
 
@@ -236,9 +255,9 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect, isDialog }
                                         </div>
 
                                         <button
-                                            disabled={isCurrent}
+                                            disabled={isDisabled}
                                             onClick={() => onPlanSelect(plan.id, isYearly ? "year" : "month")}
-                                            className={`w-full py-3 px-4 text-xs sm:text-[13px] font-bold rounded-xl transition-all ${isCurrent
+                                            className={`w-full py-3 px-4 text-xs sm:text-[13px] font-bold rounded-xl transition-all ${isDisabled
                                                 ? "bg-muted text-muted-foreground cursor-default"
                                                 : plan.highlight
                                                     ? "bg-gradient-to-t from-primary to-primary/80 shadow-lg shadow-primary/20 border border-primary text-primary-foreground hover:opacity-90 active:scale-[0.98]"

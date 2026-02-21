@@ -258,6 +258,7 @@ export default function PlansPage({ params }: { params: Promise<{ workspaceId: s
             <PricingRedesign
                 plans={plans}
                 currentPlanId={subscription?.planId}
+                currentPlanName={subscription?.planName}
                 onPlanSelect={handlePlanSelect}
             />
         </div>

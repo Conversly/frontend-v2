@@ -193,16 +193,14 @@ export function UpgradeDialog({
         }
     };
 
-    // ── Filter: hide Free plan + lower plans ───────────────────
+    // ── Filter: show current plan + higher plans only ─────────────────
     const upgradablePlans = plans.filter((p) => {
-        // Do not skip $0/free plans automatically so the current plan can be shown
+        if (!subscription?.planId && !subscription?.planName) return true;
 
-        if (!subscription?.planId) return true;
-
-        // Find current plan object in standard configs to get its index
+        // Find current plan index using planName (planId is a Dodo product ID, not a config ID)
+        const currentPlanName = subscription?.planName || '';
         const currentConfigIndex = planConfig.findIndex(c =>
-            c.id === subscription.planId ||
-            plans.find(fp => fp.id === subscription.planId)?.title.toLowerCase() === c.title.toLowerCase()
+            c.title.toLowerCase() === currentPlanName.toLowerCase()
         );
 
         const thisPlanIndex = planConfig.findIndex(c => c.title.toLowerCase() === p.title.toLowerCase());
@@ -244,6 +242,7 @@ export function UpgradeDialog({
                     <PricingRedesign
                         plans={upgradablePlans}
                         currentPlanId={subscription?.planId}
+                        currentPlanName={subscription?.planName}
                         onPlanSelect={handlePlanSelect}
                         isDialog={true}
                     />
