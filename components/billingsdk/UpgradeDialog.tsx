@@ -193,21 +193,31 @@ export function UpgradeDialog({
         }
     };
 
-    // ── Filter: hide Free plan + current plan ─────────────────────────────────
+    // ── Filter: hide Free plan + lower plans ───────────────────
     const upgradablePlans = plans.filter((p) => {
-        // Skip $0/free plans
-        const isFree = p.monthlyPrice === "0" && p.yearlyPrice === "0";
-        // Skip the plan the user is already subscribed to
-        const isCurrent =
-            p.monthlyProductId === subscription?.planId ||
-            p.yearlyProductId === subscription?.planId ||
-            p.id === subscription?.planId;
-        return !isFree && !isCurrent;
+        // Do not skip $0/free plans automatically so the current plan can be shown
+
+        if (!subscription?.planId) return true;
+
+        // Find current plan object in standard configs to get its index
+        const currentConfigIndex = planConfig.findIndex(c =>
+            c.id === subscription.planId ||
+            plans.find(fp => fp.id === subscription.planId)?.title.toLowerCase() === c.title.toLowerCase()
+        );
+
+        const thisPlanIndex = planConfig.findIndex(c => c.title.toLowerCase() === p.title.toLowerCase());
+
+        // Keep plans that have an equal or higher tier than the current active plan
+        if (currentConfigIndex !== -1 && thisPlanIndex !== -1) {
+            return thisPlanIndex >= currentConfigIndex;
+        }
+
+        return true;
     });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="w-[95vw] max-w-5xl max-h-[92vh] overflow-y-auto">
+            <DialogContent className="w-[96vw] max-w-[1350px] max-h-[92vh] overflow-y-auto">
                 <DialogHeader className="pb-2">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 shrink-0">
@@ -233,8 +243,9 @@ export function UpgradeDialog({
                 ) : (
                     <PricingRedesign
                         plans={upgradablePlans}
-                        currentPlanId={undefined}
+                        currentPlanId={subscription?.planId}
                         onPlanSelect={handlePlanSelect}
+                        isDialog={true}
                     />
                 )}
             </DialogContent>

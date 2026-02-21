@@ -376,7 +376,7 @@ export const ParametersStep: React.FC<Props> = ({
                     </div>
                     <Button
                         size="sm"
-                        variant="primary"
+                        variant="default"
                         onClick={addDetectedParameters}
                         className="shrink-0"
                     >
@@ -422,7 +422,7 @@ export const ParametersStep: React.FC<Props> = ({
                                 </span>
                                 <span>Parameter Details</span>
                                 {param.required && (
-                                    <Badge variant="primary" className="text-[10px] uppercase tracking-wider font-bold h-5">Required</Badge>
+                                    <Badge variant="default" className="text-[10px] uppercase tracking-wider font-bold h-5">Required</Badge>
                                 )}
                             </CardTitle>
                         </CardHeader>
