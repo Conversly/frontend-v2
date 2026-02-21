@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { GetChatbotsResponse } from "@/types/chatbot";
+import { useRouter } from "next/navigation";
 
 interface ChatbotPreviewCardProps {
   chatbot: GetChatbotsResponse;
@@ -66,8 +67,12 @@ const getGradientFromName = (name: string): { gradient: string; baseColor: strin
 export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProps) {
   const { gradient, baseColor } = getGradientFromName(chatbot.name);
   const workspacePrefix = `/${chatbot.workspaceId}`;
+  const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
   const playgroundHref = `${workspacePrefix}/chatbot/${chatbot.id}/playground`;
+
+  // DRAFT status means the AI setup didn't complete successfully
+  const isIncomplete = chatbot.status === 'DRAFT';
 
   // Calculate time since last update
   const getTimeSinceUpdate = () => {
@@ -156,6 +161,29 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
               }}
             />
           </div>
+
+          {isIncomplete && (
+            <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm gap-3">
+              <div className="rounded-full bg-amber-100 p-2 text-amber-600 dark:bg-amber-900/30">
+                <Loader2 className="h-6 w-6" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold text-foreground">Setup Incomplete</p>
+              </div>
+              <Button
+                variant="default"
+                size="sm"
+                className="mt-2 shadow-sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.push(`${workspacePrefix}/chatbot/create/setup?resume=${chatbot.id}`);
+                }}
+              >
+                Complete Setup
+              </Button>
+            </div>
+          )}
         </div>
       </Link>
 

@@ -1,7 +1,19 @@
+/** Maps to the ChatbotStatus DB enum: DRAFT → TRAINING → ACTIVE | INACTIVE */
+export type ChatbotStatus = 'DRAFT' | 'TRAINING' | 'ACTIVE' | 'INACTIVE';
+
+/** Per-step status values for setup wizard tracking */
+export type SetupStepStatus = 'not_started' | 'in_progress' | 'completed' | 'processing' | 'failed';
+/** Maps step number (as string key) to its status */
+export type StepStatuses = Record<string, SetupStepStatus>;
+
 export interface CreateChatbotInput {
   name: string;
   description: string;
   workspaceId?: string;
+  websiteUrl?: string;
+  useCase?: string;
+  /** Defaults to 'DRAFT' when created via the AI setup wizard */
+  status?: ChatbotStatus;
 }
 
 export interface ChatbotResponse {
@@ -10,7 +22,7 @@ export interface ChatbotResponse {
   name: string;
   description: string;
   systemPrompt: string; // From WIDGET channel
-  status: string;
+  status: ChatbotStatus;
   logoUrl?: string | null;
   primaryColor?: string | null;
   leadGenerationEnabled?: boolean;
@@ -24,6 +36,14 @@ export interface ChatbotResponse {
   lastDeployedAt: Date | null;
   apiKey: string | null;
   createdBy?: string | null;
+  websiteUrl?: string | null;
+  useCase?: string | null;
+
+  // Setup wizard progress
+  setupCurrentStep: number;
+  setupStepStatuses: StepStatuses;
+  setupCompletedAt: Date | null;
+  version: number;
 }
 
 export interface GetChatbotsResponse {
@@ -31,13 +51,18 @@ export interface GetChatbotsResponse {
   name: string;
   description: string;
   createdAt: Date | null;
-  status: string;
+  status: ChatbotStatus;
   userId: string;
   devVersion: number;
   liveVersion: number;
   deployStatusField: string | null;
   lastDeployedAt: Date | null;
   workspaceId: string;
+  websiteUrl?: string;
+  useCase?: string;
+  // Setup wizard progress
+  setupCurrentStep: number;
+  setupCompletedAt: Date | null;
 }
 
 
@@ -45,10 +70,16 @@ export interface UpdateChatbotInput {
   id: string;
   logoUrl?: string;
   primaryColor?: string;
-  status?: string;
+  status?: ChatbotStatus;
   leadGenerationEnabled?: boolean;
   escalationEnabled?: boolean;
   workspaceId: string;
+  // Setup wizard progress
+  setupCurrentStep?: number;
+  setupStepStatuses?: StepStatuses;
+  setupCompletedAt?: Date | null;
+  // Optimistic locking
+  version?: number;
 }
 
 export interface DeleteChatbotInput {

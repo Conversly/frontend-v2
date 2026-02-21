@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { useBranchStore } from "@/store/branch";
 import { useChannelPrompt, useUpsertChannelPrompt } from "@/services/prompt";
+import { useChatbotInWorkspace } from "@/services/chatbot";
+import { loadSetupCache, clearSetupCache } from "@/lib/setup-cache";
+import { updateChatbot } from "@/lib/api/chatbot";
 import { QUERY_KEY } from "@/utils/query-key";
 import { Step1UrlAndUsecase } from "@/components/chatbot/setup/Step1UrlAndUsecase";
 import { Step3DataSources } from "@/components/chatbot/setup/Step3DataSources";
@@ -40,6 +43,8 @@ function useStagedProgress(active: boolean) {
 
 export default function SetupWizardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const resumeBotId = searchParams?.get('resume');
   const params = useParams<{ workspaceId: string }>();
   const workspaceId = Array.isArray(params.workspaceId)
     ? params.workspaceId[0]
@@ -58,7 +63,37 @@ export default function SetupWizardPage() {
   const isSubmitting = useSetupStore((s) => s.isSubmitting);
   const startProcessing = useSetupStore((s) => s.startProcessing);
   const reset = useSetupStore((s) => s.reset);
+  const inferredPrompt = useSetupStore((s) => s.inferredPrompt);
   const switchBranch = useBranchStore((s) => s.switchBranch);
+
+  const { data: resumeBot, isLoading: isResuming } = useChatbotInWorkspace(workspaceId, resumeBotId || "");
+
+  // Handle Resume Flow — hydrate from server state (DB is truth)
+  useEffect(() => {
+    if (!resumeBotId || !resumeBot) return;
+
+    // Hydrate wizard from server state
+    if (!chatbotId) {
+      useSetupStore.getState().hydrateFromServer(resumeBot);
+    }
+
+    if (step !== 1) return; // already advanced – don't re-trigger
+
+    // Server tells us which step the user reached
+    const serverStep = resumeBot.setupCurrentStep || 1;
+    if (serverStep > 2) {
+      // Speed optimization: check localStorage cache for inferred prompt
+      const cached = loadSetupCache(resumeBot.id);
+      if (cached?.result.inferPrompt?.systemPrompt) {
+        useSetupStore.setState({ inferredPrompt: cached.result.inferPrompt.systemPrompt });
+      }
+      toast.info('Resuming from where you left off…');
+      setStep(serverStep as 1 | 2 | 3 | 4 | 5 | 6 | 7);
+    } else if (resumeBot.websiteUrl) {
+      // Need to re-run AI processing (step ≤ 2)
+      setStep(2);
+    }
+  }, [resumeBotId, resumeBot, chatbotId, step, setStep]);
 
   // Ensure we are in DEV mode when entering setup
   useEffect(() => {
@@ -71,33 +106,34 @@ export default function SetupWizardPage() {
     setWorkspaceId(workspaceId);
   }, [setWorkspaceId, workspaceId]);
 
+  // Mark setup as complete on server when reaching Step 7
+  useEffect(() => {
+    if (step === 7 && chatbotId) {
+      clearSetupCache(chatbotId);
+      // Persist completion to DB
+      const { workspaceId: wsId, version } = useSetupStore.getState();
+      if (wsId) {
+        updateChatbot({
+          id: chatbotId,
+          workspaceId: wsId,
+          setupCompletedAt: new Date(),
+          setupCurrentStep: 7,
+          setupStepStatuses: {
+            '1': 'completed', '2': 'completed', '3': 'completed',
+            '4': 'completed', '5': 'completed', '6': 'completed',
+          },
+          status: 'ACTIVE',
+          version,
+        }).catch((e) => console.warn('[setup] Failed to persist completion', e));
+      }
+    }
+  }, [step, chatbotId]);
+
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
 
-  // Only redirect on browser refresh (F5 or Ctrl+R)
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      // Set a flag that will be checked on next page load
-      sessionStorage.setItem('was-refreshed', 'true');
-    };
-
-    // Check if we arrived here via refresh
-    const wasRefreshed = sessionStorage.getItem('was-refreshed');
-    if (wasRefreshed) {
-      sessionStorage.removeItem('was-refreshed');
-      console.warn("Page refresh detected. Redirecting to chatbots list.");
-      reset();
-      router.replace(`/${workspaceId}/chatbot`);
-      return;
-    }
-
-    // Listen for page unload to detect refresh
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [reset, router, workspaceId]);
+  // We intentionally removed the anti-refresh redirect here so users 
+  // can refresh the page safely without losing their session if a backend step times out.
 
 
 
@@ -119,24 +155,30 @@ export default function SetupWizardPage() {
   // Step 4 state (personality) - using prompt API
   const { data: widgetPrompt, isLoading: isPromptLoading } = useChannelPrompt(chatbotId || "", "WIDGET");
   const { mutateAsync: savePrompt } = useUpsertChannelPrompt();
-  const [draftPrompt, setDraftPrompt] = useState("");
+  // Seed from the in-memory inferred prompt so Step 6 shows the prompt immediately
+  const [draftPrompt, setDraftPrompt] = useState(inferredPrompt);
 
-  // Polling for prompt if it's empty (async generation)
+  // Sync draft prompt: prefer in-memory inferredPrompt first, then fall back to fetched value.
+  // This runs once when widgetPrompt arrives from the API (e.g. on resume flow).
   useEffect(() => {
-    if (step === 6 && (!widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === '')) {
+    if (widgetPrompt?.systemPrompt && !draftPrompt) {
+      setDraftPrompt(widgetPrompt.systemPrompt);
+    }
+  }, [widgetPrompt]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Polling for prompt only if we genuinely have nothing yet (e.g. async generation still running)
+  useEffect(() => {
+    if (
+      step === 6 &&
+      !draftPrompt &&
+      (!widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === '')
+    ) {
       const interval = setInterval(() => {
         queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROMPTS, chatbotId, "WIDGET"] });
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [step, widgetPrompt, chatbotId, queryClient]);
-
-  // Sync draft prompt with fetched widget prompt
-  useEffect(() => {
-    if (widgetPrompt?.systemPrompt) {
-      setDraftPrompt(widgetPrompt.systemPrompt);
-    }
-  }, [widgetPrompt]);
+  }, [step, draftPrompt, widgetPrompt, chatbotId, queryClient]);
 
   const composedUrl = `${protocol}${host}`.trim();
 
@@ -328,7 +370,7 @@ export default function SetupWizardPage() {
                 onConfirm={onStep4Submit}
                 draftPrompt={draftPrompt}
                 setDraftPrompt={setDraftPrompt}
-                isLoading={isPromptLoading || !widgetPrompt?.systemPrompt || widgetPrompt.systemPrompt.trim() === ''}
+                isLoading={isPromptLoading && !draftPrompt}
               />
             )}
             {step === 7 && chatbotId && (

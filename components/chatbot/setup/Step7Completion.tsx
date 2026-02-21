@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, Globe, MessageSquare, Settings, BarChart3, Zap } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useUpdateChatbotMutation } from "@/services/chatbot";
 
 interface Step7CompletionProps {
   chatbotId: string;
@@ -14,9 +15,11 @@ interface Step7CompletionProps {
 
 export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps) {
   const confettiTriggered = useRef(false);
+  const statusUpdated = useRef(false);
   const params = useParams<{ workspaceId?: string }>();
   const workspaceId = (params as any)?.workspaceId as string | undefined;
   const base = workspaceId ? `/${workspaceId}/chatbot/${chatbotId}` : `#`;
+  const { mutate: updateChatbot } = useUpdateChatbotMutation();
 
   useEffect(() => {
     if (confettiTriggered.current) return;
@@ -53,6 +56,13 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
       }, 250);
     });
   }, []);
+
+  // Mark the chatbot as ACTIVE now that the user has fully completed the setup wizard
+  useEffect(() => {
+    if (statusUpdated.current || !chatbotId || !workspaceId) return;
+    statusUpdated.current = true;
+    updateChatbot({ id: chatbotId, workspaceId, status: 'ACTIVE' });
+  }, [chatbotId, workspaceId, updateChatbot]);
 
   const quickLinks = [
     {
