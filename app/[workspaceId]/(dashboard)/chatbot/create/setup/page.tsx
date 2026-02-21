@@ -87,7 +87,6 @@ export default function SetupWizardPage() {
       if (cached?.result.inferPrompt?.systemPrompt) {
         useSetupStore.setState({ inferredPrompt: cached.result.inferPrompt.systemPrompt });
       }
-      toast.info('Resuming from where you left off…');
       setStep(serverStep as 1 | 2 | 3 | 4 | 5 | 6 | 7);
     } else if (resumeBot.websiteUrl) {
       // Need to re-run AI processing (step ≤ 2)
@@ -340,6 +339,9 @@ export default function SetupWizardPage() {
     }
   };
 
+  // Show a loading screen while restoring resume state (prevents Step 1 flash)
+  const isRestoringResume = !!resumeBotId && (isResuming || (!resumeBot && step === 1));
+
   return (
     <div className="flex h-full w-full flex-col">
       {/* Main Content */}
@@ -348,33 +350,45 @@ export default function SetupWizardPage() {
 
           {/* LEFT PANEL (Inputs & Steps) */}
           <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step >= 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
-            {(step === 1 || step === 2) && (
-              <Step1UrlAndUsecase
-                protocol={protocol}
-                setProtocol={setProtocol}
-                host={host}
-                setHost={setHost}
-                useCase={useCase}
-                setUseCase={setUseCase}
-                isSubmitting={isSubmitting}
-                isValidHost={isValidHost}
-                onSubmit={onStep1Submit}
-                onManualSetup={() => router.push(`/${workspaceId}/chatbot/create`)}
-              />
-            )}
-            {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
-            {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
-            {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
-            {step === 6 && (
-              <Step6PromptTuning
-                onConfirm={onStep4Submit}
-                draftPrompt={draftPrompt}
-                setDraftPrompt={setDraftPrompt}
-                isLoading={isPromptLoading && !draftPrompt}
-              />
-            )}
-            {step === 7 && chatbotId && (
-              <Step7Completion chatbotId={chatbotId} />
+            {isRestoringResume ? (
+              <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-lg font-semibold text-foreground">Restoring your progress…</h2>
+                  <p className="text-sm text-muted-foreground">Picking up where you left off</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {(step === 1 || step === 2) && (
+                  <Step1UrlAndUsecase
+                    protocol={protocol}
+                    setProtocol={setProtocol}
+                    host={host}
+                    setHost={setHost}
+                    useCase={useCase}
+                    setUseCase={setUseCase}
+                    isSubmitting={isSubmitting}
+                    isValidHost={isValidHost}
+                    onSubmit={onStep1Submit}
+                    onManualSetup={() => router.push(`/${workspaceId}/chatbot/create`)}
+                  />
+                )}
+                {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
+                {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
+                {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
+                {step === 6 && (
+                  <Step6PromptTuning
+                    onConfirm={onStep4Submit}
+                    draftPrompt={draftPrompt}
+                    setDraftPrompt={setDraftPrompt}
+                    isLoading={isPromptLoading && !draftPrompt}
+                  />
+                )}
+                {step === 7 && chatbotId && (
+                  <Step7Completion chatbotId={chatbotId} />
+                )}
+              </>
             )}
           </div>
 
