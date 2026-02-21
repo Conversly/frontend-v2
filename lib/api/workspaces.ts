@@ -219,13 +219,17 @@ export interface BillingInfo {
 
 export interface UserInvoice {
   id: string;
-  type: 'CREDIT' | 'DEBIT';
-  amount: string;
-  balanceAfter: string;
-  createdAt: string;
-
-  referenceType: string;
+  date: string;               // ISO 8601
+  description: string;        // Human-readable (e.g. "Subscription Renewal")
+  type: 'credit_grant' | 'payment';
+  creditsAdded: number;
+  balanceAfter: number;
+  paymentAmount?: number;     // In cents (e.g. 2900 = $29.00)
+  currency?: string;          // 'USD'
+  paymentStatus?: string;     // 'succeeded' | 'failed' | 'pending' | 'canceled'
   dodoPaymentId?: string | null;
+  dodoInvoiceId?: string | null;
+  planName?: string;
 }
 
 export async function getWorkspaceBilling(workspaceId: string): Promise<BillingInfo> {

@@ -125,6 +125,41 @@ export const getWorkspaceSubscription = async (workspaceId: string): Promise<Sub
     return response.data.data;
 };
 
+/**
+ * Cancel subscription at the end of the current billing period.
+ * The user keeps their plan until `currentPeriodEnd`, then it cancels.
+ * Calls PATCH /subscription with { cancelAtPeriodEnd: true }.
+ */
+export const cancelSubscription = async (): Promise<void> => {
+    const baseUrl = getPath(API.ENDPOINTS.SUBSCRIPTION.BASE_URL);
+    const url = baseUrl; // PATCH /subscription
+
+    const response = await api.patch<ApiResponse<{ message: string }>>(url, {
+        cancelAtPeriodEnd: true,
+    });
+
+    if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to cancel subscription");
+    }
+};
+
+/**
+ * Undo a scheduled cancellation — keeps the subscription active past period end.
+ * Calls PATCH /subscription with { cancelAtPeriodEnd: false }.
+ */
+export const resumeSubscription = async (): Promise<void> => {
+    const baseUrl = getPath(API.ENDPOINTS.SUBSCRIPTION.BASE_URL);
+    const url = baseUrl;
+
+    const response = await api.patch<ApiResponse<{ message: string }>>(url, {
+        cancelAtPeriodEnd: false,
+    });
+
+    if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to resume subscription");
+    }
+};
+
 export const downloadInvoice = async (paymentId: string) => {
     const baseUrl = getPath(API.ENDPOINTS.SUBSCRIPTION.BASE_URL);
     const endpointPath = getPath(API.ENDPOINTS.SUBSCRIPTION.GET_INVOICE_PDF);
