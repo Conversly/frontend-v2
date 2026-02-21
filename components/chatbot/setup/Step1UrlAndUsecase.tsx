@@ -79,6 +79,8 @@ export function Step1UrlAndUsecase({
   onSubmit,
   onManualSetup,
 }: Step1UrlAndUsecaseProps) {
+  const cachedIsSubmitting = React.useMemo(() => isSubmitting, [isSubmitting]);
+
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <div className="flex flex-col items-center justify-center gap-2 lg:items-start lg:justify-start">
@@ -100,7 +102,7 @@ export function Step1UrlAndUsecase({
               type="button"
               onClick={() => setProtocol(protocol === "https://" ? "http://" : "https://")}
               className="flex w-fit items-center gap-2 rounded-l-lg border-none bg-muted/50 px-3 py-2 text-sm text-muted-foreground outline-hidden transition-colors hover:bg-muted"
-              disabled={isSubmitting}
+              disabled={cachedIsSubmitting}
             >
               {protocol}
             </button>
@@ -119,7 +121,7 @@ export function Step1UrlAndUsecase({
                 value = value.replace(/\/$/, '');
                 setHost(value);
               }}
-              disabled={isSubmitting}
+              disabled={cachedIsSubmitting}
               autoComplete="url"
             />
           </div>
@@ -136,13 +138,13 @@ export function Step1UrlAndUsecase({
                   key={item.id}
                   type="button"
                   onClick={() => setUseCase(item.id)}
-                  disabled={isSubmitting}
+                  disabled={cachedIsSubmitting}
                   className={cn(
                     "relative flex items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left transition-all duration-200",
                     "hover:shadow-sm hover:-translate-y-0.5",
                     "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none",
-                    isSelected 
-                      ? `${item.borderColor} bg-gradient-to-br ${item.gradient}` 
+                    isSelected
+                      ? `${item.borderColor} bg-gradient-to-br ${item.gradient}`
                       : "border-border bg-card hover:border-muted-foreground/30"
                   )}
                 >
@@ -172,24 +174,24 @@ export function Step1UrlAndUsecase({
       </div>
 
       <div className="flex w-full flex-col items-center justify-center gap-5">
-        <Button 
-          className="w-full h-11 text-base font-medium shadow-sm" 
-          type="submit" 
-          disabled={!isValidHost(host) || isSubmitting}
+        <Button
+          className="w-full h-11 text-base font-medium shadow-sm"
+          type="submit"
+          disabled={!isValidHost(host) || cachedIsSubmitting}
         >
-          {isSubmitting ? "Processing..." : "Continue"}
+          {cachedIsSubmitting ? "Processing..." : "Continue"}
         </Button>
         <div className="flex w-full items-center gap-3">
           <div className="h-px flex-1 bg-border" />
           <span className="text-xs font-medium text-muted-foreground">OR</span>
           <div className="h-px flex-1 bg-border" />
         </div>
-        <Button 
-          type="button" 
-          variant="outline" 
-          className="w-full h-11" 
-          onClick={onManualSetup} 
-          disabled={isSubmitting}
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full h-11"
+          onClick={onManualSetup}
+          disabled={cachedIsSubmitting}
         >
           Set up manually with other sources
         </Button>
