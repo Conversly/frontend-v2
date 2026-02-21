@@ -325,118 +325,120 @@ export const ParametersStep: React.FC<Props> = ({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div className="space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight">Parameters</h2>
-                <p className="text-muted-foreground">
+                <h2 className="type-section-title">Parameters</h2>
+                <p className="type-body-muted">
                     Define what information the AI needs to extract from the conversation.
                 </p>
             </div>
 
             {hasLegacyTemplates && (
-                <Alert className="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20">
-                    <AlertDescription className="flex items-center justify-between">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between gap-4">
+                    <div className="flex gap-3">
+                        <Info className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
                         <div>
-                            <span className="font-medium text-yellow-900 dark:text-yellow-200">
-                                Legacy templates detected
-                            </span>
-                            <span className="text-yellow-800 dark:text-yellow-300 ml-2">
-                                We found <code className="px-1 py-0.5 rounded bg-muted">{'{{var}}'}</code> markers. You can convert them into explicit bindings (Path/Query/Header/Body).
-                            </span>
+                            <p className="text-sm font-semibold text-yellow-900">Legacy templates detected</p>
+                            <p className="text-sm text-yellow-800 leading-relaxed mt-0.5">
+                                We found <code className="px-1.5 py-0.5 rounded bg-yellow-100 font-mono text-yellow-900">{'{{var}}'}</code> markers. You can convert them into explicit bindings (Path/Query/Header/Body).
+                            </p>
                         </div>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={convertLegacyTemplatesToBindings}
-                            className="ml-4 border-yellow-300 text-yellow-900 hover:bg-yellow-100 dark:border-yellow-700 dark:text-yellow-200 dark:hover:bg-yellow-900"
-                        >
-                            Convert templates → bindings
-                        </Button>
-                    </AlertDescription>
-                </Alert>
+                    </div>
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={convertLegacyTemplatesToBindings}
+                        className="shrink-0 border-yellow-300 text-yellow-900 hover:bg-yellow-100"
+                    >
+                        Convert templates
+                    </Button>
+                </div>
             )}
 
             {/* Auto-detected variables prompt */}
             {(missingPathParams.length > 0 || missingLegacyVariables.length > 0) && (
-                <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
-                    <Sparkles className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertDescription className="flex items-center justify-between">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-center justify-between gap-4">
+                    <div className="flex gap-3">
+                        <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                         <div>
-                            <span className="font-medium text-green-800 dark:text-green-200">
+                            <p className="text-sm font-semibold text-primary">
                                 {missingPathParams.length + missingLegacyVariables.length} variable
                                 {(missingPathParams.length + missingLegacyVariables.length) !== 1 ? 's' : ''} detected
-                            </span>
-                            <span className="text-green-700 dark:text-green-300 ml-2">
-                                from your API configuration:{' '}
+                            </p>
+                            <p className="text-sm text-primary/80 mt-0.5">
+                                Found in your API config:{' '}
                                 {[
                                     ...missingPathParams.map((v) => `{${v}}`),
                                     ...missingLegacyVariables.map((v) => `{{${v}}}`),
                                 ].join(', ')}
-                            </span>
+                            </p>
                         </div>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={addDetectedParameters}
-                            className="ml-4 border-green-300 text-green-700 hover:bg-green-100 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900"
-                        >
-                            <Plus className="h-4 w-4 mr-1" />
-                            Add All
-                        </Button>
-                    </AlertDescription>
-                </Alert>
+                    </div>
+                    <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={addDetectedParameters}
+                        className="shrink-0"
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add All
+                    </Button>
+                </div>
             )}
 
             {formData.parameters.length === 0 &&
                 missingPathParams.length === 0 &&
                 missingLegacyVariables.length === 0 && (
-                <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/50">
-                    <Info className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground mb-2">No parameters needed?</p>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                        If your API doesn't require any dynamic values, you can skip this step.
-                        Otherwise, add parameters that the AI will extract from conversations.
-                    </p>
-                    <Button variant="outline" onClick={addParameter}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Parameter Manually
-                    </Button>
-                </div>
-            )}
+                    <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/50">
+                        <Info className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                        <p className="text-muted-foreground mb-2">No parameters needed?</p>
+                        <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
+                            If your API doesn't require any dynamic values, you can skip this step.
+                            Otherwise, add parameters that the AI will extract from conversations.
+                        </p>
+                        <Button variant="outline" onClick={addParameter}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Parameter Manually
+                        </Button>
+                    </div>
+                )}
 
             <div className="space-y-4">
                 {formData.parameters.map((param, index) => (
-                    <Card key={index} className="relative">
+                    <Card key={index} className="relative shadow-none bg-[--surface-secondary] border-border overflow-hidden group">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="absolute right-2 top-2 text-muted-foreground hover:text-destructive"
+                            className="absolute right-3 top-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={() => removeParameter(index)}
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>
 
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-lg flex items-center gap-2">
-                                <span>Parameter {index + 1}</span>
+                            <CardTitle className="type-h3 flex items-center gap-3">
+                                <span className="bg-primary/10 text-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
+                                    {index + 1}
+                                </span>
+                                <span>Parameter Details</span>
                                 {param.required && (
-                                    <Badge variant="secondary" className="text-xs">Required</Badge>
+                                    <Badge variant="primary" className="text-[10px] uppercase tracking-wider font-bold h-5">Required</Badge>
                                 )}
                             </CardTitle>
                         </CardHeader>
 
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <CardContent className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Name */}
                                 <div className="space-y-2">
-                                    <Label>Name <span className="text-destructive">*</span></Label>
+                                    <Label className="type-label">Name <span className="text-destructive">*</span></Label>
                                     <Input
                                         value={param.name}
                                         onChange={(e) =>
                                             updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
                                         }
                                         placeholder="product_id"
-                                        className="font-mono"
+                                        className="font-mono bg-background h-10"
                                     />
                                 </div>
 
@@ -712,12 +714,12 @@ export const ParametersStep: React.FC<Props> = ({
                 </Card>
             )}
 
-            <div className="flex justify-between">
-                <Button variant="outline" onClick={onBack}>
+            <div className="flex justify-between pt-8 border-t border-border mt-8">
+                <Button variant="ghost" onClick={onBack} className="px-8">
                     ← Back
                 </Button>
-                <Button onClick={onNext} disabled={!isValid()}>
-                    {formData.parameters.length === 0 ? 'Skip to Test →' : 'Next: Test & Save →'}
+                <Button onClick={onNext} disabled={!isValid()} className="px-8 shadow-card">
+                    {formData.parameters.length === 0 ? 'Skip to Testing' : 'Next: Test Response'}
                 </Button>
             </div>
         </div>

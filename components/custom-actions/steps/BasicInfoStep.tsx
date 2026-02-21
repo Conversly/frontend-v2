@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 interface Props {
@@ -65,23 +66,23 @@ export const BasicInfoStep: React.FC<Props> = ({
     return (
         <div className="space-y-6">
             <div className="space-y-2">
-                <h2 className="text-xl font-bold tracking-tight">General</h2>
-                <p className="text-sm text-muted-foreground">
+                <h2 className="type-section-title">General</h2>
+                <p className="type-body-muted">
                     Define the action and when the AI should use it.
                 </p>
             </div>
 
-            <Card>
+            <Card className="shadow-none border-border bg-[--surface-secondary]">
                 <CardHeader>
-                    <CardTitle>Action details</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="type-h3">Action details</CardTitle>
+                    <CardDescription className="type-body-muted">
                         Define the core identity of your action.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                     {/* Action Name */}
                     <div className="space-y-2">
-                        <Label htmlFor="name">
+                        <Label htmlFor="name" className="type-label">
                             Action Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
@@ -96,17 +97,20 @@ export const BasicInfoStep: React.FC<Props> = ({
                             placeholder="e.g., get_product_price"
                             pattern="^[a-z0-9_]+$"
                             required
-                            className={errors?.name ? 'border-destructive focus-visible:ring-destructive' : undefined}
+                            className={cn(
+                                "bg-background h-11",
+                                errors?.name ? 'border-destructive focus-visible:ring-destructive' : "border-border"
+                            )}
                         />
-                        {errors?.name && <p className="text-xs text-destructive">{errors.name}</p>}
-                        <p className="text-xs text-muted-foreground">
+                        {errors?.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
+                        <p className="type-caption text-muted-foreground">
                             Lowercase letters, numbers, and underscores only. This is the internal identifier.
                         </p>
                     </div>
 
                     {/* Description */}
                     <div className="space-y-2">
-                        <Label htmlFor="description">
+                        <Label htmlFor="description" className="type-label">
                             Description <span className="text-destructive">*</span>
                         </Label>
                         <Textarea
@@ -117,21 +121,25 @@ export const BasicInfoStep: React.FC<Props> = ({
                             rows={4}
                             required
                             minLength={20}
-                            className={errors?.description ? 'border-destructive focus-visible:ring-destructive' : undefined}
+                            className={cn(
+                                "bg-background resize-none",
+                                errors?.description ? 'border-destructive focus-visible:ring-destructive' : "border-border"
+                            )}
                         />
-                        {errors?.description && <p className="text-xs text-destructive">{errors.description}</p>}
-                        <div className="flex justify-between text-xs text-muted-foreground">
+                        {errors?.description && <p className="text-xs text-destructive mt-1">{errors.description}</p>}
+                        <div className="flex justify-between text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
                             <span>The AI uses this to understand when to use this action.</span>
                             <span>{formData.description.length} / 1000</span>
                         </div>
                     </div>
 
                     {/* Example Good Description */}
-                    <div className="rounded-md bg-muted p-4 text-sm">
-                        <div className="flex items-center gap-2 font-medium mb-1">
-                            <span>💡</span> Example of a good description:
+                    <div className="rounded-lg bg-muted/50 p-4 border border-border/50">
+                        <div className="flex items-center gap-2 font-semibold text-foreground mb-1.5 text-sm">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            Example of a good description
                         </div>
-                        <p className="text-muted-foreground">
+                        <p className="type-body-muted italic leading-relaxed">
                             "Use this action when the user asks about product prices, availability,
                             or inventory. It fetches real-time pricing data from our e-commerce API.
                             Requires a product ID or product name."
@@ -139,9 +147,9 @@ export const BasicInfoStep: React.FC<Props> = ({
                     </div>
 
                     {/* Trigger Examples */}
-                    <div className="space-y-2 pt-2">
-                        <Label>
-                            Example user queries <span className="text-muted-foreground">(optional)</span>
+                    <div className="space-y-3 pt-2">
+                        <Label className="type-label">
+                            Example user queries <span className="text-muted-foreground normal-case font-normal">(optional)</span>
                         </Label>
 
                         {triggerExamples.length > 0 && (
@@ -149,13 +157,13 @@ export const BasicInfoStep: React.FC<Props> = ({
                                 {triggerExamples.map((example, index) => (
                                     <div
                                         key={index}
-                                        className="group flex items-center gap-1.5 bg-muted rounded-full pl-3 pr-1.5 py-1.5 text-xs"
+                                        className="group flex items-center gap-2 bg-muted rounded-full pl-3 pr-2 py-1.5 text-xs font-medium border border-border"
                                     >
                                         <span>{example}</span>
                                         <button
                                             type="button"
                                             onClick={() => removeExample(index)}
-                                            className="h-4 w-4 rounded-full hover:bg-destructive/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="h-4 w-4 rounded-full hover:bg-destructive hover:text-white flex items-center justify-center transition-colors"
                                         >
                                             <X className="h-2.5 w-2.5" />
                                         </button>
@@ -170,21 +178,21 @@ export const BasicInfoStep: React.FC<Props> = ({
                                 onChange={(e) => setNewExample(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="e.g., Upgrade my subscription to premium"
-                                className="flex-1 h-9 text-sm"
+                                className="flex-1 h-10 bg-background"
                             />
                             <Button
                                 type="button"
                                 variant="outline"
-                                size="sm"
                                 onClick={addExample}
                                 disabled={!newExample.trim()}
+                                className="h-10"
                             >
-                                <Plus className="h-3.5 w-3.5 mr-1" />
+                                <Plus className="h-4 w-4 mr-2" />
                                 Add
                             </Button>
                         </div>
 
-                        <p className="text-xs text-muted-foreground">
+                        <p className="type-caption">
                             These help you and the AI validate when the action should trigger.
                         </p>
                     </div>
@@ -192,12 +200,12 @@ export const BasicInfoStep: React.FC<Props> = ({
             </Card>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-4">
-                <Button variant="outline" onClick={onCancel}>
+            <div className="flex justify-end gap-3 pt-4 border-t border-border mt-8">
+                <Button variant="ghost" onClick={onCancel} className="px-6">
                     Cancel
                 </Button>
-                <Button onClick={onNext} disabled={!isValid()}>
-                    Next: API →
+                <Button onClick={onNext} disabled={!isValid()} className="px-8 shadow-card">
+                    Next: API Configuration
                 </Button>
             </div>
         </div>

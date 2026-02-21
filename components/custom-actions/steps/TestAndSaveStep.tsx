@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Play } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { ActionFormErrors } from '@/utils/customActionValidation';
 
 function coerceValue(param: ToolParameter, raw: any): any {
@@ -195,48 +196,50 @@ export const TestSection: React.FC<Props> = ({
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Play className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                    <h3 className="text-sm font-semibold">Test</h3>
-                    <p className="text-xs text-muted-foreground">
-                        Verify your action works correctly
+                    <h3 className="type-section-title">Test Action</h3>
+                    <p className="type-body-muted">
+                        Verify your action configuration by running a real request.
                     </p>
                 </div>
             </div>
 
             <div className="space-y-4 pl-10">
                 {/* Configuration Summary */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs p-3 rounded-md bg-muted/50">
-                    <span className="text-muted-foreground">Name:</span>
-                    <span className="font-medium">{formData.displayName || formData.name || '—'}</span>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs p-4 rounded-lg bg-muted/30 border border-border/50">
+                    <span className="text-muted-foreground">Action:</span>
+                    <span className="font-semibold text-foreground">{formData.displayName || formData.name || '—'}</span>
 
                     <span className="text-muted-foreground">Method:</span>
-                    <Badge variant="outline" className="w-fit text-2xs h-5">{formData.apiConfig.method}</Badge>
+                    <Badge variant="outline" className="w-fit text-[10px] font-bold uppercase tracking-wider h-5 bg-background">{formData.apiConfig.method}</Badge>
 
                     <span className="text-muted-foreground">Auth:</span>
-                    <span className="capitalize">{formData.apiConfig.authType}</span>
+                    <span className="capitalize font-medium text-foreground">{formData.apiConfig.authType || 'None'}</span>
                 </div>
 
                 {/* Full URL Preview */}
                 {formData.apiConfig.baseUrl && (
-                    <div className="rounded-md bg-muted p-2 font-mono text-xs break-all max-w-full">
-                        <span className="text-primary font-semibold">{formData.apiConfig.method}</span>{' '}
-                        <span className="text-muted-foreground">{formData.apiConfig.baseUrl}</span>
-                        <span>{formData.apiConfig.endpoint}</span>
+                    <div className="rounded-lg bg-[--surface-secondary] p-3 font-mono text-xs break-all max-w-full border border-border shadow-sm flex gap-2">
+                        <span className="text-primary font-bold uppercase shrink-0">{formData.apiConfig.method}</span>
+                        <div className="flex-1 opacity-80">
+                            <span className="text-muted-foreground">{formData.apiConfig.baseUrl}</span>
+                            <span className="text-foreground">{formData.apiConfig.endpoint}</span>
+                        </div>
                     </div>
                 )}
 
                 {/* Test Parameters */}
                 {formData.parameters.length > 0 && (
-                    <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Test Values</Label>
-                        <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-3">
+                        <Label className="type-label">Test Input Values</Label>
+                        <div className="grid grid-cols-2 gap-4">
                             {formData.parameters.map((param) => (
-                                <div key={param.name} className="flex items-start gap-2">
-                                    <Label className="text-xs font-mono w-24 truncate">{param.name}</Label>
+                                <div key={param.name} className="space-y-1.5">
+                                    <Label className="type-caption font-mono text-[10px] text-muted-foreground uppercase">{param.name}</Label>
                                     <div className="flex-1">
                                         <Input
                                             value={
@@ -245,15 +248,14 @@ export const TestSection: React.FC<Props> = ({
                                                     : ''
                                             }
                                             onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
-                                            placeholder={param.default !== undefined ? String(param.default) : 'test_value'}
-                                            className={
-                                                errors?.[`testArgs.${param.name}`]
-                                                    ? "h-8 text-xs border-destructive focus-visible:ring-destructive"
-                                                    : "h-8 text-xs"
-                                            }
+                                            placeholder={param.default !== undefined ? String(param.default) : 'Enter value...'}
+                                            className={cn(
+                                                "h-10 text-sm bg-background",
+                                                errors?.[`testArgs.${param.name}`] ? "border-destructive focus-visible:ring-destructive" : ""
+                                            )}
                                         />
                                         {errors?.[`testArgs.${param.name}`] && (
-                                            <p className="text-[11px] text-destructive mt-1">
+                                            <p className="text-[10px] font-medium text-destructive mt-1">
                                                 {errors[`testArgs.${param.name}`]}
                                             </p>
                                         )}
@@ -266,25 +268,25 @@ export const TestSection: React.FC<Props> = ({
 
                 {/* Request Preview */}
                 {formData.apiConfig.baseUrl && (
-                    <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Request Preview (computed from bindings)</Label>
-                        <div className="space-y-2">
-                            <div className="rounded-md bg-muted p-2 font-mono text-xs break-all max-w-full">
-                                <span className="text-primary font-semibold">{formData.apiConfig.method}</span>{' '}
-                                {preview.url}
+                    <div className="space-y-4 pt-2">
+                        <Label className="type-label">Request Preview</Label>
+                        <div className="space-y-3">
+                            <div className="rounded-lg bg-muted/40 p-3 font-mono text-xs break-all max-w-full border border-border">
+                                <span className="text-primary font-bold uppercase mr-2">{formData.apiConfig.method}</span>
+                                <span className="text-foreground/80">{preview.url}</span>
                             </div>
 
-                            <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground">Headers</Label>
-                                <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-40 whitespace-pre-wrap break-all max-w-full">
+                            <div className="space-y-1.5 text-left">
+                                <Label className="type-caption uppercase tracking-wider font-semibold opacity-70">Headers</Label>
+                                <div className="rounded-lg bg-card p-3 font-mono text-xs overflow-auto max-h-40 whitespace-pre-wrap break-all max-w-full border border-border shadow-sm">
                                     {JSON.stringify(preview.headers, null, 2)}
                                 </div>
                             </div>
 
                             {['POST', 'PUT', 'PATCH'].includes(formData.apiConfig.method) && (
-                                <div className="space-y-1">
-                                    <Label className="text-xs text-muted-foreground">Body</Label>
-                                    <div className="rounded-md bg-muted p-2 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap break-all max-w-full">
+                                <div className="space-y-1.5 text-left">
+                                    <Label className="type-caption uppercase tracking-wider font-semibold opacity-70">JSON Body</Label>
+                                    <div className="rounded-lg bg-card p-3 font-mono text-xs overflow-auto max-h-48 whitespace-pre-wrap break-all max-w-full border border-border shadow-sm">
                                         {preview.body !== undefined ? JSON.stringify(preview.body, null, 2) : '—'}
                                     </div>
                                 </div>
@@ -297,19 +299,18 @@ export const TestSection: React.FC<Props> = ({
                 <Button
                     onClick={onTest}
                     disabled={testing || !formData.apiConfig.baseUrl || !(formData.apiConfig.endpoint || '').trim()}
-                    size="sm"
-                    variant="outline"
-                    className="w-full"
+                    size="lg"
+                    className="w-full shadow-card mt-2"
                 >
                     {testing ? (
                         <>
-                            <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                            Testing...
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Running test...
                         </>
                     ) : (
                         <>
-                            <Play className="mr-2 h-3.5 w-3.5" />
-                            Run Test
+                            <Play className="mr-2 h-4 w-4 fill-current" />
+                            Run Action Test
                         </>
                     )}
                 </Button>
@@ -388,8 +389,8 @@ export const TestAndSaveStep: React.FC<OldProps> = (props) => {
                 errors={props.errors}
             />
 
-            <div className="flex justify-between">
-                <Button variant="outline" onClick={props.onBack}>
+            <div className="flex justify-between pt-8 border-t border-border mt-8">
+                <Button variant="ghost" onClick={props.onBack} className="px-8">
                     ← Back
                 </Button>
 
@@ -397,11 +398,13 @@ export const TestAndSaveStep: React.FC<OldProps> = (props) => {
                     <Button
                         onClick={props.onSave}
                         disabled={props.saving || (props.testResult !== null && !props.testResult.success)}
+                        className="px-8 shadow-card"
+                        size="lg"
                     >
                         {props.saving ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Saving...
+                                Saving Action...
                             </>
                         ) : (
                             'Save Action'
@@ -411,8 +414,9 @@ export const TestAndSaveStep: React.FC<OldProps> = (props) => {
                     <Button
                         onClick={props.onNext}
                         disabled={!props.onNext || props.testing || !props.formData.apiConfig.baseUrl}
+                        className="px-8 shadow-card"
                     >
-                        Next: Data access →
+                        Next: Data Access
                     </Button>
                 )}
             </div>

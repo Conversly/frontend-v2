@@ -170,25 +170,25 @@ export const SkillWizard: React.FC<Props> = ({
     return (
         <div className="h-[calc(100vh-120px)] flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 px-1">
+            <div className="flex items-center justify-between mb-6 px-1">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8">
+                    <Button variant="ghost" size="icon" onClick={onCancel} className="h-9 w-9">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h2 className="text-base font-semibold">
+                        <h1 className="type-section-title">
                             {existingAction ? 'Edit Skill' : 'Create Custom Action'}
-                        </h2>
-                        <p className="text-xs text-muted-foreground">
+                        </h1>
+                        <p className="type-body-muted">
                             Configure how your bot calls external APIs
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 flex gap-6 min-h-0">
+            <div className="flex-1 flex gap-8 min-h-0">
                 {/* Left Sidebar */}
-                <div className="w-48 flex-shrink-0 flex flex-col">
+                <div className="w-52 flex-shrink-0 flex flex-col">
                     <div className="flex-1 space-y-1">
                         {SECTIONS.map((section) => {
                             const Icon = section.icon;
@@ -198,7 +198,7 @@ export const SkillWizard: React.FC<Props> = ({
                                     key={section.id}
                                     onClick={() => scrollToSection(section.id)}
                                     className={cn(
-                                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left",
+                                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left",
                                         isActive
                                             ? "bg-primary/10 text-primary"
                                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -211,13 +211,13 @@ export const SkillWizard: React.FC<Props> = ({
                         })}
                     </div>
 
-                    <Separator className="my-4" />
+                    <Separator className="my-6" />
 
                     <Button
                         onClick={handleSave}
                         disabled={saving || !formData.apiConfig.baseUrl}
                         className="w-full"
-                        size="sm"
+                        size="lg"
                     >
                         {saving ? (
                             <>
@@ -234,7 +234,7 @@ export const SkillWizard: React.FC<Props> = ({
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 border rounded-lg bg-background shadow-sm overflow-hidden">
+                <div className="flex-1 border border-border rounded-lg bg-card shadow-card overflow-hidden">
                     <ScrollArea className="h-full">
                         <div className="p-6 space-y-8">
                             {/* Trigger Section */}

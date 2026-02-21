@@ -172,11 +172,11 @@ export const APIConfigSection: React.FC<Props> = ({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2 flex-1">
-                    <h2 className="text-2xl font-bold tracking-tight">API request</h2>
-                    <p className="text-muted-foreground">
+                    <h2 className="type-section-title">API request</h2>
+                    <p className="type-body-muted">
                         The API endpoint that should be called by the AI Agent to retrieve data or to send updates.
                     </p>
                 </div>
@@ -192,11 +192,11 @@ export const APIConfigSection: React.FC<Props> = ({
             </div>
 
             {/* Method + URL */}
-            <div className="space-y-2">
+            <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">HTTPS URL</Label>
+                    <Label className="type-label">HTTPS URL</Label>
                     {detectedPathParams.length > 0 && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 text-[11px] font-semibold text-primary uppercase tracking-wider">
                             <Sparkles className="h-3.5 w-3.5" />
                             <span>Path params: {detectedPathParams.map((v) => `{${v}}`).join(', ')}</span>
                         </div>
@@ -204,13 +204,13 @@ export const APIConfigSection: React.FC<Props> = ({
                 </div>
 
                 <div className="flex gap-2 items-end">
-                    <div className="w-28">
-                        <Label className="text-xs text-muted-foreground">Method</Label>
+                    <div className="w-32">
+                        <Label className="type-caption mb-1.5 block">Method</Label>
                         <Select
                             value={config.method}
                             onValueChange={(value) => updateField('apiConfig.method', value)}
                         >
-                            <SelectTrigger className="h-10">
+                            <SelectTrigger className="h-11 bg-background border-border">
                                 <SelectValue placeholder="Method" />
                             </SelectTrigger>
                             <SelectContent>
@@ -224,22 +224,22 @@ export const APIConfigSection: React.FC<Props> = ({
                     </div>
 
                     <div className="flex-1">
-                        <Label className="text-xs text-muted-foreground">HTTPS URL</Label>
+                        <Label className="type-caption mb-1.5 block">Endpoint Path / Full URL</Label>
                         <Input
                             value={fullUrl}
                             onChange={(e) => handleFullUrlChange(e.target.value)}
                             placeholder="https://api.example.com/v1/resource/{id}"
-                            className="h-10 font-mono text-sm"
+                            className="h-11 font-mono text-sm bg-background border-border focus-visible:ring-primary/20"
                         />
                     </div>
 
-                    <Button type="button" variant="outline" className="h-10 shrink-0" onClick={handleAddPathParam}>
+                    <Button type="button" variant="outline" className="h-11 shrink-0 px-4 border-dashed hover:bg-muted" onClick={handleAddPathParam}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add path param
                     </Button>
                 </div>
 
-                <p className="text-xs text-muted-foreground">
+                <p className="type-caption">
                     Put dynamic values in the request via the <strong>Inputs</strong> step (destination = Path / Query / Header / Body).
                 </p>
                 {(errors?.['apiConfig.baseUrl'] || errors?.['apiConfig.endpoint']) && (
@@ -287,16 +287,16 @@ export const APIConfigSection: React.FC<Props> = ({
                     <TabsTrigger value="body">Body</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="auth" className="mt-4">
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-3 gap-3">
+                <TabsContent value="auth" className="mt-6">
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-xs">Auth Type</Label>
+                                <Label className="type-label">Auth Type</Label>
                                 <Select
                                     value={config.authType || 'none'}
                                     onValueChange={(value) => updateField('apiConfig.authType', value)}
                                 >
-                                    <SelectTrigger className="h-9 text-xs">
+                                    <SelectTrigger className="h-10 bg-background">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -310,7 +310,7 @@ export const APIConfigSection: React.FC<Props> = ({
 
                             {(config.authType || 'none') !== 'none' && (
                                 <div className="col-span-2 space-y-2">
-                                    <Label className="text-xs">
+                                    <Label className="type-label">
                                         {config.authType === 'bearer' && 'Bearer Token'}
                                         {config.authType === 'api_key' && 'API Key'}
                                         {config.authType === 'basic' && 'Base64 Credentials'}
@@ -320,13 +320,13 @@ export const APIConfigSection: React.FC<Props> = ({
                                         value={config.authValue || ''}
                                         onChange={(e) => updateField('apiConfig.authValue', e.target.value)}
                                         placeholder="Enter token/key (or secret ref)"
-                                        className="h-9 text-xs font-mono"
+                                        className="h-10 font-mono bg-background"
                                     />
                                     {errors?.['apiConfig.authValue'] && (
-                                        <p className="text-xs text-destructive">{errors['apiConfig.authValue']}</p>
+                                        <p className="text-xs text-destructive mt-1">{errors['apiConfig.authValue']}</p>
                                     )}
-                                    <p className="text-xs text-muted-foreground">
-                                        Tip: store a secret reference like <code className="px-1 py-0.5 rounded bg-muted">secrets.MY_API_KEY</code> and resolve it server-side.
+                                    <p className="type-caption leading-relaxed">
+                                        Tip: store a secret reference like <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-foreground font-semibold">secrets.MY_API_KEY</code> and resolve it server-side.
                                     </p>
                                 </div>
                             )}
@@ -549,16 +549,16 @@ export const APIConfigSection: React.FC<Props> = ({
 
             {/* Navigation Buttons - only show if onNext/onBack provided */}
             {(onNext || onBack) && (
-                <div className="flex justify-between pt-6">
+                <div className="flex justify-between pt-8 border-t border-border mt-8">
                     {onBack ? (
-                        <Button variant="outline" onClick={onBack}>
+                        <Button variant="ghost" onClick={onBack} className="px-8">
                             ← Back
                         </Button>
                     ) : <div />}
 
                     {onNext && (
-                        <Button onClick={onNext} disabled={!config.baseUrl || !(config.endpoint || '').trim()}>
-                            Next: Inputs →
+                        <Button onClick={onNext} disabled={!config.baseUrl || !(config.endpoint || '').trim()} className="px-8 shadow-card">
+                            Next: Configure Inputs
                         </Button>
                     )}
                 </div>

@@ -268,10 +268,10 @@ export const CustomActionForm: React.FC<Props> = ({
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="page-title">
+                    <h1 className="type-page-title">
                         {existingAction ? 'Edit Action' : 'Create New Action'}
-                    </h2>
-                    <p className="page-subtitle mt-1">
+                    </h1>
+                    <p className="type-body-muted mt-1">
                         Configure how your chatbot interacts with external services
                     </p>
                 </div>
@@ -280,16 +280,19 @@ export const CustomActionForm: React.FC<Props> = ({
                 {/* Content Panel - Left aligned with max width for form readability */}
                 <div className="max-w-full flex flex-col min-h-0 min-w-0 h-full">
                     {/* Progress Steps */}
-                    <div className="mb-6 flex items-center w-full max-w-2xl">
+                    <div className="mb-8 flex items-center w-full max-w-2xl">
                         {[1, 2, 3, 4, 5].map((step, index) => (
                             <div key={step} className="flex-1 flex items-center">
                                 {(() => {
                                     const isUnlocked = step <= maxStepUnlocked;
                                     const isCurrentOrPast = currentStep >= step;
+                                    const isCompleted = currentStep > step;
+                                    const isActive = currentStep === step;
+
                                     return (
                                         <div
                                             className={cn(
-                                                "flex items-center gap-2 group",
+                                                "flex flex-col items-center gap-2 group",
                                                 isUnlocked ? "cursor-pointer" : "cursor-not-allowed opacity-50",
                                                 isCurrentOrPast ? "text-foreground" : "text-muted-foreground"
                                             )}
@@ -297,32 +300,32 @@ export const CustomActionForm: React.FC<Props> = ({
                                         >
                                             <div
                                                 className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200",
-                                                    currentStep > step
-                                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                                        : currentStep === step
-                                                            ? "bg-primary text-primary-foreground ring-4 ring-primary/20 shadow-sm"
+                                                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200",
+                                                    isCompleted
+                                                        ? "bg-primary text-white shadow-sm"
+                                                        : isActive
+                                                            ? "bg-primary text-white ring-4 ring-primary/20 shadow-sm"
                                                             : "bg-muted border border-border group-hover:border-primary/50"
                                                 )}
                                             >
-                                                {currentStep > step ? <Check className="h-4 w-4" /> : step}
+                                                {isCompleted ? <Check className="h-4 w-4" /> : step}
                                             </div>
                                             <span className={cn(
-                                                "text-sm font-medium whitespace-nowrap hidden sm:block",
-                                                currentStep === step && "text-primary"
+                                                "text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap hidden sm:block",
+                                                isActive ? "text-primary" : "text-muted-foreground"
                                             )}>
                                                 {step === 1 && "General"}
                                                 {step === 2 && "API"}
                                                 {step === 3 && "Inputs"}
-                                                {step === 4 && "Test response"}
-                                                {step === 5 && "Data access"}
+                                                {step === 4 && "Test"}
+                                                {step === 5 && "Access"}
                                             </span>
                                         </div>
                                     );
                                 })()}
                                 {index < 4 && (
                                     <div className={cn(
-                                        "h-[2px] w-full mx-4 rounded-full transition-colors duration-300",
+                                        "h-1 w-full mx-2 rounded-full transition-colors duration-300 -mt-6",
                                         maxStepUnlocked > step ? "bg-primary" : "bg-muted"
                                     )} />
                                 )}
@@ -331,7 +334,7 @@ export const CustomActionForm: React.FC<Props> = ({
                     </div>
 
                     {/* Form Content */}
-                    <div className="flex-1 border rounded-xl bg-background shadow-sm overflow-hidden flex flex-col min-w-0">
+                    <div className="flex-1 border border-border rounded-lg bg-card shadow-card overflow-hidden flex flex-col min-w-0">
                         <ScrollArea className="flex-1 min-w-0">
                             <div className="p-6 min-w-0">
                                 {currentStep === 1 && (

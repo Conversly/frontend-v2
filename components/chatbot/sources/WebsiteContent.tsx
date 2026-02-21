@@ -138,7 +138,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
 
         <TabsContent value="crawl" className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">URL</label>
+            <label className="type-micro-heading">URL</label>
             <div className="flex gap-2">
               <Select value={protocol} onValueChange={setProtocol}>
                 <SelectTrigger className="w-32">
@@ -165,18 +165,18 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
             </div>
             <div className="flex items-start gap-2 text-xs text-muted-foreground">
               <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-              <span>Links found during crawling or sitemap retrieval may be updated if new links are discovered or some links are invalid.</span>
+              <span className="type-caption">Links found during crawling or sitemap retrieval may be updated if new links are discovered or some links are invalid.</span>
             </div>
           </div>
 
           <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
-            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <CollapsibleTrigger className="flex items-center gap-2 type-body-muted hover:text-foreground transition-colors">
               {isAdvancedOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               Advanced options
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-4 space-y-4">
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm text-muted-foreground">Advanced crawling options coming soon...</p>
+              <div className="p-4 bg-[--surface-secondary] rounded-md border border-border">
+                <p className="type-body-muted">Advanced crawling options coming soon...</p>
               </div>
             </CollapsibleContent>
           </Collapsible>
@@ -200,7 +200,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
           {fetchedPages.length > 0 && (
             <div className="space-y-3 pt-4 border-t border-border">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-foreground">
+                <h4 className="type-micro-heading">
                   Found {fetchedPages.length} page{fetchedPages.length === 1 ? '' : 's'}
                 </h4>
                 <Button
@@ -227,7 +227,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
                 {fetchedPages.map((page, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                    className="flex items-start gap-3 p-3 bg-[--surface-secondary] rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-border"
                     onClick={() => handleTogglePage(page)}
                   >
                     <Checkbox
@@ -243,7 +243,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                <p className="text-xs text-muted-foreground">
+                <p className="type-caption">
                   {selectedPages.size} of {fetchedPages.length} selected
                 </p>
                 <Button
@@ -267,7 +267,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
 
         <TabsContent value="individual" className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">URL</label>
+            <label className="type-micro-heading">URL</label>
             <Input
               type="text"
               value={url}

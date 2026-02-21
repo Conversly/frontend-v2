@@ -48,27 +48,27 @@ export function TextContent({ onSuccess }: TextContentProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="title" className="text-foreground">Title</Label>
+        <Label htmlFor="title" className="type-micro-heading">Title</Label>
         <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex: Company policies"
-          className="bg-background border-input text-foreground"
+          className="border-input text-foreground"
         />
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="text-content" className="text-foreground">Content</Label>
-          <span className="text-xs text-muted-foreground">
+          <Label htmlFor="text-content" className="type-micro-heading">Content</Label>
+          <span className="type-caption">
             {getByteSize(textContent)} B
           </span>
         </div>
 
         {/* Rich Text Toolbar */}
-        <div className="flex items-center gap-1 p-2 bg-muted/50 rounded-lg border border-border">
+        <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
             <Bold className="w-4 h-4" />
           </Button>
@@ -100,7 +100,7 @@ export function TextContent({ onSuccess }: TextContentProps) {
           onChange={(e) => setTextContent(e.target.value)}
           placeholder="Enter your text"
           rows={12}
-          className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
+          className="border-input text-foreground placeholder:text-muted-foreground resize-none"
         />
       </div>
 

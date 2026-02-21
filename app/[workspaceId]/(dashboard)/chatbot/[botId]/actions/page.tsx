@@ -112,7 +112,7 @@ export default function ActionsPage() {
 
       {view === 'list' ? (
         <div className="flex-1 overflow-y-auto">
-          <div className="container mx-auto px-6 py-6 max-w-[1920px]">
+          <div className="container mx-auto px-6 py-6 max-w-[1280px]">
 
             <ActionList
               actions={actions || []}
@@ -124,7 +124,7 @@ export default function ActionsPage() {
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto">
-          <div className="container mx-auto px-6 py-6 max-w-[1920px]">
+          <div className="container mx-auto px-6 py-6 max-w-[1280px]">
             <CustomActionForm
               chatbotId={chatbotId}
               existingAction={selectedAction}

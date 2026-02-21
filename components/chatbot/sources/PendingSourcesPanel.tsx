@@ -121,10 +121,10 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        className="fixed bottom-6 right-6 z-50 w-[360px] bg-card border border-border rounded-2xl shadow-lg p-4 space-y-4"
+        className="fixed bottom-6 right-6 z-50 w-[360px] bg-card border border-border rounded-xl shadow-float p-4 space-y-4"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-heading text-lg text-foreground">
+          <h3 className="type-section-title">
             Pending Sources ({pendingSources.length})
           </h3>
           <Button
@@ -145,7 +145,7 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
                 key={source.id}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg group hover:bg-muted/70 transition-colors"
+                className="flex items-start gap-3 p-3 bg-[--surface-secondary] rounded-lg group hover:bg-muted/70 transition-colors border border-border"
               >
                 <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
@@ -172,8 +172,8 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
         {/* Size Progress */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Total size</span>
-            <span className="text-foreground font-medium">{totalSize} KB / {maxSize} KB</span>
+            <span className="type-body-muted">Total size</span>
+            <span className="text-foreground font-semibold">{totalSize} KB / {maxSize} KB</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
             <div
@@ -187,7 +187,7 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
         <Button
           onClick={handleProcessSources}
           disabled={isLoading || pendingSources.length === 0}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg group"
         >
           {isLoading ? (
             <>

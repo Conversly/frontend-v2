@@ -8,10 +8,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { 
-  Globe, 
-  FileText, 
-  MessageSquare, 
+import {
+  Globe,
+  FileText,
+  MessageSquare,
   AlignLeft,
   ArrowLeft,
   X
@@ -99,8 +99,8 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
                   key={option.id}
                   onClick={() => setSelectedSource(option.id)}
                   className={cn(
-                    'flex flex-col items-start gap-3 p-5 rounded-xl border-2 transition-all',
-                    'hover:border-primary hover:bg-primary/5',
+                    'flex flex-col items-start gap-3 p-5 rounded-lg border transition-all',
+                    'hover:border-primary/50 hover:bg-primary/5 shadow-card-hover',
                     'border-border bg-card'
                   )}
                 >
@@ -111,7 +111,7 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-foreground">{option.label}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{option.label}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       {option.description}
                     </p>
@@ -126,9 +126,9 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent 
+      <DialogContent
         className={cn(
-          'p-0 gap-0',
+          'p-0 gap-0 rounded-xl overflow-hidden',
           selectedSource ? 'max-w-4xl w-[90vw]' : 'max-w-2xl'
         )}
         showCloseButton={false}
@@ -145,7 +145,7 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             )}
-            <DialogTitle className="flex-1">{getDialogTitle()}</DialogTitle>
+            <DialogTitle className="type-section-title flex-1">{getDialogTitle()}</DialogTitle>
             <Button
               variant="ghost"
               size="icon"

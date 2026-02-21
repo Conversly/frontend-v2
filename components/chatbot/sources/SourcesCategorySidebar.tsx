@@ -115,15 +115,15 @@ export function SourcesCategorySidebar({
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors',
                   isSelected
-                    ? 'bg-primary/10 text-primary font-medium'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? 'bg-primary/10 text-primary font-semibold'
+                    : 'text-muted-foreground hover:bg-[--sidebar-accent] hover:text-foreground'
                 )}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
                 <span className="flex-1 text-left">{category.label}</span>
                 {count > 0 && (
                   <span className={cn(
-                    'text-xs px-2 py-0.5 rounded-full',
+                    'text-2xs px-2 py-0.5 rounded-full font-medium',
                     isSelected ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
                   )}>
                     {count}
@@ -138,11 +138,11 @@ export function SourcesCategorySidebar({
         <div className="mt-auto p-2 pt-4">
           <Button
             variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-[--sidebar-accent]"
             onClick={() => setIsRequestModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
-            Request Integration
+            <span className="type-body font-medium">Request Integration</span>
           </Button>
         </div>
       </div>
@@ -165,20 +165,20 @@ export function SourcesCategorySidebar({
               >
                 <div className="p-6 pb-0">
                   <DialogHeader className="mb-6 space-y-3">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-2">
-                      <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-500" />
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
+                      <Sparkles className="w-6 h-6 text-primary" />
                     </div>
-                    <DialogTitle className="text-2xl font-bold">
+                    <DialogTitle className="type-page-title">
                       Request Integration
                     </DialogTitle>
-                    <DialogDescription className="text-base leading-relaxed text-muted-foreground/80">
+                    <DialogDescription className="type-body-muted text-base leading-relaxed">
                       Looking for a specific data source or integration? Let us know what you need and we'll prioritize it.
                     </DialogDescription>
                   </DialogHeader>
 
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <Label htmlFor="integration-name" className="text-sm font-semibold flex items-center gap-1">
+                      <Label htmlFor="integration-name" className="type-micro-heading flex items-center gap-1">
                         Integration Name <span className="text-destructive">*</span>
                       </Label>
                       <Input
@@ -192,7 +192,7 @@ export function SourcesCategorySidebar({
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="req-email" className="text-sm font-semibold flex items-center gap-1">
+                      <Label htmlFor="req-email" className="type-micro-heading flex items-center gap-1">
                         Email Address <span className="text-destructive">*</span>
                       </Label>
                       <Input
@@ -219,7 +219,7 @@ export function SourcesCategorySidebar({
                   <Button variant="ghost" onClick={() => setIsRequestModalOpen(false)} disabled={isRequestSubmitting} className="mr-auto hover:bg-background">
                     Cancel
                   </Button>
-                  <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white transition-all">
                     {isRequestSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

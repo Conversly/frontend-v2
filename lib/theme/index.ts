@@ -1,150 +1,69 @@
 /**
  * Centralized Theme Configuration
- * 
- * This file contains all theme definitions using shadcn OKLCH color format.
- * To change the theme across the entire application, modify the values in this file.
- * 
- * Color Format: OKLCH (OK Lightness Chroma Hue)
- * - Better perceptual uniformity than HSL
- * - More accurate color representation
- * - Format: oklch(lightness chroma hue)
+ *
+ * ─── SINGLE SOURCE OF TRUTH ───────────────────────────────────────────────
+ * All color values are defined ONCE in app/globals.css as OKLCH CSS variables.
+ * This file references those variables so the JS/TS layer always stays in sync.
+ * Never hardcode color values here — update globals.css instead.
+ * ──────────────────────────────────────────────────────────────────────────
  */
 
 import { FONTS } from "./fonts";
 
 /**
- * Light Theme Configuration
- * Using shadcn OKLCH color format
+ * Light Theme — references CSS variables defined in globals.css :root
  */
 export const lightTheme = {
-  // Base colors
-  background: 'oklch(1 0 0)',
-  foreground: 'oklch(0.141 0.005 285.823)',
-
-  // Card/Surface colors
-  card: 'oklch(1 0 0)',
-  cardForeground: 'oklch(0.141 0.005 285.823)',
-
-  // Popover/Dropdown colors
-  popover: 'oklch(1 0 0)',
-  popoverForeground: 'oklch(0.141 0.005 285.823)',
-
-  // Primary/Accent colors
-  primary: 'oklch(0.541 0.281 293.009)',
-  primaryForeground: 'oklch(0.969 0.016 293.756)',
-
-  // Secondary colors
-  secondary: 'oklch(0.967 0.001 286.375)',
-  secondaryForeground: 'oklch(0.21 0.006 285.885)',
-
-  // Accent colors - matches primary teal
-  accent: 'oklch(0.50 0.14 168)',
-  accentForeground: 'oklch(0.99 0 0)',
-
-  // Muted colors
-  muted: 'oklch(0.967 0.001 286.375)',
-  mutedForeground: 'oklch(0.552 0.016 285.938)',
-
-  // Destructive colors
-  destructive: 'oklch(0.577 0.245 27.325)',
-  destructiveForeground: 'oklch(0.969 0.016 293.756)',
-
-  // Border and input colors
-  border: 'oklch(0.92 0.004 286.32)',
-  input: 'oklch(0.92 0.004 286.32)',
-  ring: 'oklch(0.702 0.183 293.541)',
-
-  // Border radius
-  radius: '0.65rem',
-
-  // Chart colors
-  chart1: 'oklch(0.811 0.111 293.571)',
-  chart2: 'oklch(0.606 0.25 292.717)',
-  chart3: 'oklch(0.541 0.281 293.009)',
-  chart4: 'oklch(0.491 0.27 292.581)',
-  chart5: 'oklch(0.432 0.232 292.759)',
-
-  // Sidebar colors
-  sidebar: 'oklch(0.98 0.005 285.823)',
-  sidebarForeground: 'oklch(0.141 0.005 285.823)',
-  sidebarPrimary: 'oklch(0.541 0.281 293.009)',
-  sidebarPrimaryForeground: 'oklch(0.969 0.016 293.756)',
-  sidebarAccent: 'oklch(0.967 0.001 286.375)',
-  sidebarAccentForeground: 'oklch(0.21 0.006 285.885)',
-  sidebarBorder: 'oklch(0.92 0.004 286.32)',
-  sidebarRing: 'oklch(0.702 0.183 293.541)',
+  background: "var(--background)",
+  foreground: "var(--foreground)",
+  card: "var(--card)",
+  cardForeground: "var(--card-foreground)",
+  popover: "var(--popover)",
+  popoverForeground: "var(--popover-foreground)",
+  primary: "var(--primary)",
+  primaryForeground: "var(--primary-foreground)",
+  secondary: "var(--secondary)",
+  secondaryForeground: "var(--secondary-foreground)",
+  accent: "var(--accent)",
+  accentForeground: "var(--accent-foreground)",
+  muted: "var(--muted)",
+  mutedForeground: "var(--muted-foreground)",
+  destructive: "var(--destructive)",
+  destructiveForeground: "var(--destructive-foreground)",
+  border: "var(--border)",
+  input: "var(--input)",
+  ring: "var(--ring)",
+  radius: "var(--radius)",
+  chart1: "var(--chart-1)",
+  chart2: "var(--chart-2)",
+  chart3: "var(--chart-3)",
+  chart4: "var(--chart-4)",
+  chart5: "var(--chart-5)",
+  sidebar: "var(--sidebar)",
+  sidebarForeground: "var(--sidebar-foreground)",
+  sidebarPrimary: "var(--sidebar-primary)",
+  sidebarPrimaryForeground: "var(--sidebar-primary-foreground)",
+  sidebarAccent: "var(--sidebar-accent)",
+  sidebarAccentForeground: "var(--sidebar-accent-foreground)",
+  sidebarBorder: "var(--sidebar-border)",
+  sidebarRing: "var(--sidebar-ring)",
 } as const;
 
 /**
- * Dark Theme Configuration
- * Using shadcn OKLCH color format - Balanced between ElevenLabs and Vapi
+ * Dark Theme — references CSS variables defined in globals.css .dark
+ * (Same variable names; the .dark selector swaps underlying values in CSS.)
  */
-export const darkTheme = {
-  // Base colors - Medium dark grey (balanced)
-  background: '#121212',
-  foreground: 'oklch(0.98 0.005 250)',
-
-  // Card/Surface colors - Slightly lighter dark grey
-  card: '#1a1a1a',
-  cardForeground: 'oklch(0.98 0.005 250)',
-
-  // Popover/Dropdown colors
-  popover: '#1a1a1a',
-  popoverForeground: 'oklch(0.98 0.005 250)',
-
-  // Primary/Accent colors - Teal
-  primary: '#2dd4bf',
-  primaryForeground: '#000000',
-
-  // Secondary colors - Medium dark grey
-  secondary: '#1f1f1f',
-  secondaryForeground: 'oklch(0.98 0.005 250)',
-
-  // Accent colors - matches primary teal
-  accent: '#2dd4bf',
-  accentForeground: '#000000',
-
-  // Muted colors
-  muted: '#1f1f1f',
-  mutedForeground: 'oklch(0.70 0.01 250)',
-
-  // Destructive colors
-  destructive: 'oklch(0.704 0.191 22.216)',
-  destructiveForeground: 'oklch(0.969 0.016 293.756)',
-
-  // Border and input colors - Medium dark grey
-  border: '#242424',
-  input: '#242424',
-  ring: '#2dd4bf',
-
-  // Border radius (same as light)
-  radius: '0.65rem',
-
-  // Chart colors - Teal gradient
-  chart1: '#2dd4bf',
-  chart2: '#14b8a6',
-  chart3: '#0d9488',
-  chart4: '#0f766e',
-  chart5: '#115e59',
-
-  // Sidebar colors - Medium dark grey (balanced)
-  sidebar: '#151515',
-  sidebarForeground: 'oklch(0.95 0.01 168)',
-  sidebarPrimary: '#2dd4bf',
-  sidebarPrimaryForeground: '#000000',
-  sidebarAccent: 'oklch(0.25 0.08 168)',
-  sidebarAccentForeground: 'oklch(0.98 0.01 168)',
-  sidebarBorder: '#242424',
-  sidebarRing: '#2dd4bf',
-} as const;
+export const darkTheme = lightTheme; // .dark in CSS handles all overrides
 
 /**
- * Theme tokens for easy access
+ * Theme tokens — typography and spacing scales.
+ * Font sizes and weights are documented here for reference;
+ * the actual rendering values are driven by CSS variables in globals.css.
  */
 export const themeTokens = {
   light: lightTheme,
   dark: darkTheme,
-  // Typography scale - Roboto font hierarchy
+
   typography: {
     fontFamily: {
       sans: [
@@ -154,92 +73,85 @@ export const themeTokens = {
         "Arial",
         "sans-serif",
       ],
-      mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+      mono: [
+        "ui-monospace",
+        "SFMono-Regular",
+        "Menlo",
+        "Monaco",
+        "Consolas",
+        "monospace",
+      ],
     },
+    // Reference only — actual sizes defined as --font-* in globals.css
     fontSize: {
-      xs: '0.75rem', // 12px -> Default tailwind, but our body is 13px now.
-      sm: '13px', // Updated base body size
-      base: '13px', // Updated base body size
-      lg: '17.6316px', // h2
-      xl: '19.5899px', // h1
-      '2xl': '1.5rem', // 24px
-      '3xl': '1.875rem', // 30px
+      xsmall: "var(--font-xsmall)", // 12px
+      small: "var(--font-small)",  // 13px
+      body: "var(--font-body)",   // 14px
+      ui: "var(--font-ui)",     // 15px
+      h5: "var(--font-h5)",     // 14px
+      h4: "var(--font-h4)",     // 16px
+      h3: "var(--font-h3)",     // 18px
+      h2: "var(--font-h2)",     // 20px
+      h1: "var(--font-h1)",     // 24px
+    },
+    lineHeight: {
+      xsmall: "var(--line-xsmall)",
+      small: "var(--line-small)",
+      body: "var(--line-body)",
+      ui: "var(--line-ui)",
+      h5: "var(--line-h5)",
+      h4: "var(--line-h4)",
+      h3: "var(--line-h3)",
+      h2: "var(--line-h2)",
+      h1: "var(--line-h1)",
     },
     fontWeight: {
-      normal: '400', // Body text, subtext
-      medium: '500', // Buttons
-      semibold: '600', // Headings (h2)
-      bold: '700', // Strong emphasis
-    },
-    // Typography hierarchy mapping
-    hierarchy: {
-      h2: {
-        size: 'text-lg', // 18px
-        weight: 'font-semibold', // 600
-        color: 'text-gray-900', // Primary title
-      },
-      body: {
-        size: 'text-sm', // 14px
-        weight: 'font-normal', // 400
-        color: 'text-gray-700', // Body message
-      },
-      subtext: {
-        size: 'text-xs', // 12px
-        weight: 'font-normal', // 400
-        color: 'text-gray-600', // Secondary info
-      },
-      button: {
-        size: 'text-sm', // 14px
-        weight: 'font-medium', // 500
-        color: 'contrast', // Uses theme contrast color
-      },
+      normal: "400",
+      medium: "500",
+      semibold: "600",
+      bold: "700",
     },
   },
-  // Spacing scale
+
   spacing: {
-    xs: '0.5rem', // 8px
-    sm: '0.75rem', // 12px
-    md: '1rem', // 16px
-    lg: '1.5rem', // 24px
-    xl: '2rem', // 32px
+    xs: "0.5rem",  // 8px
+    sm: "0.75rem", // 12px
+    md: "1rem",    // 16px
+    lg: "1.5rem",  // 24px
+    xl: "2rem",    // 32px
   },
-  // Shadow scale (matching AvailabilityModal)
+
   shadows: {
-    sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-    md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', // From AvailabilityModal
+    sm: "var(--shadow-sm)",
+    DEFAULT: "var(--shadow)",
+    md: "var(--shadow-md)",
+    lg: "var(--shadow-lg)",
+    xl: "var(--shadow-xl)",
   },
-  // Border radius scale
+
   borderRadius: {
-    sm: '0.375rem', // 6px - rounded-md
-    DEFAULT: '0.5rem', // 8px - rounded-lg
-    md: '0.5rem', // 8px
-    lg: '0.75rem', // 12px
-    xl: '1rem', // 16px
-    full: '9999px', // rounded-full
+    sm: "calc(var(--radius) - 4px)",
+    DEFAULT: "var(--radius)",
+    md: "calc(var(--radius) - 2px)",
+    lg: "var(--radius)",
+    xl: "calc(var(--radius) + 4px)",
+    full: "9999px",
   },
 } as const;
 
 /**
- * Helper function to get CSS variable value
+ * Helper to get a CSS variable reference string for a theme token.
+ * Since both themes now use the same CSS variable names,
+ * this simply returns the var() string for use in inline styles.
  */
-export function getThemeVar(token: keyof typeof lightTheme, theme: 'light' | 'dark' = 'light'): string {
-  const themeConfig = theme === 'light' ? lightTheme : darkTheme;
-  return themeConfig[token];
+export function getThemeVar(token: keyof typeof lightTheme): string {
+  return lightTheme[token];
 }
 
-/**
- * Helper function to get OKLCH color string
- */
-export function getOKLCHColor(token: keyof typeof lightTheme, theme: 'light' | 'dark' = 'light'): string {
-  return getThemeVar(token, theme);
+/** @deprecated — Use getThemeVar() instead. Theme is now CSS-variable driven. */
+export function getOKLCHColor(token: keyof typeof lightTheme): string {
+  return getThemeVar(token);
 }
 
-/**
- * Type exports for TypeScript
- */
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = "light" | "dark";
 export type ThemeToken = keyof typeof lightTheme;
-

@@ -80,7 +80,7 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
       {/* Warning Banner */}
       <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
         <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-destructive">
+        <p className="type-body-muted text-destructive">
           If you are uploading a PDF, make sure you can select/highlight the text.
         </p>
       </div>
@@ -114,13 +114,13 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
             )}
           </div>
           <div>
-            <p className="text-foreground font-medium mb-1">
+            <p className="text-foreground font-semibold mb-1">
               {isUploading
                 ? 'Uploading file...'
                 : 'Drag & drop files here, or click to select files'
               }
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="type-body-muted">
               {isUploading
                 ? 'Please wait while your file is being uploaded'
                 : 'Supported file types: pdf, doc, docx, txt'

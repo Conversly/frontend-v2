@@ -80,19 +80,19 @@ export function QAContent({ onSuccess }: QAContentProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="title" className="text-foreground">Title</Label>
+        <Label htmlFor="title" className="type-micro-heading">Title</Label>
         <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex: Refund requests"
-          className="bg-background border-input text-foreground"
+          className="border-input text-foreground"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="question" className="text-foreground">Questions</Label>
+        <Label htmlFor="question" className="type-micro-heading">Questions</Label>
 
         {/* Display existing questions */}
         {questions.map((q, index) => (
@@ -130,7 +130,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
               }
             }}
             placeholder="Ex: How do I request a refund?"
-            className="bg-background border-input text-foreground flex-1"
+            className="border-input text-foreground flex-1"
           />
           <Button
             type="button"
@@ -145,7 +145,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
         </div>
 
         {questions.filter(q => q.trim()).length > 0 && (
-          <p className="text-xs text-muted-foreground">
+          <p className="type-caption">
             {questions.filter(q => q.trim()).length} {questions.filter(q => q.trim()).length === 1 ? 'question' : 'questions'} added
           </p>
         )}
@@ -153,14 +153,14 @@ export function QAContent({ onSuccess }: QAContentProps) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="answer" className="text-foreground">Answer</Label>
-          <span className="text-xs text-muted-foreground">
+          <Label htmlFor="answer" className="type-micro-heading">Answer</Label>
+          <span className="type-caption">
             {getByteSize(answer)} B
           </span>
         </div>
 
         {/* Rich Text Toolbar */}
-        <div className="flex items-center gap-1 p-2 bg-muted/50 rounded-lg border border-border">
+        <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
             <Bold className="w-4 h-4" />
           </Button>
@@ -192,7 +192,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
           onChange={(e) => setAnswer(e.target.value)}
           placeholder="Enter your answer..."
           rows={8}
-          className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
+          className="border-input text-foreground placeholder:text-muted-foreground resize-none"
         />
       </div>
 

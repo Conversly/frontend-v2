@@ -99,10 +99,10 @@ const DATA_SOURCE_BADGE_COLORS = {
 
 const TRAINING_STATUS_BADGE_COLORS = {
   DRAFT: 'bg-muted text-muted-foreground border-border',
-  QUEUEING: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+  QUEUEING: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
   PROCESSING: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  COMPLETED: 'bg-green-500/10 text-green-600 border-green-500/20',
-  FAILED: 'bg-red-500/10 text-red-600 border-red-500/20',
+  COMPLETED: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  FAILED: 'bg-destructive/10 text-destructive border-destructive/20',
 } as const;
 
 const USAGE_STATUS_BADGE_COLORS = {
@@ -138,7 +138,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      className="group bg-muted/50 border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
+      className="group bg-[--surface-secondary] border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <span className="text-xs font-mono text-muted-foreground">Chunk #{index + 1}</span>
@@ -185,7 +185,10 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Badge className={cn('text-xs', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}>
+                <Badge
+                  variant="outline"
+                  className={cn('text-2xs font-medium', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}
+                >
                   {dataSource.type}
                 </Badge>
                 {dataSource.createdAt && (
@@ -194,7 +197,7 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
                   </span>
                 )}
               </div>
-              <DialogTitle className="truncate">{dataSource.name}</DialogTitle>
+              <DialogTitle className="type-section-title truncate">{dataSource.name}</DialogTitle>
               {dataSource.citation && (
                 <a
                   href={dataSource.citation}
@@ -212,7 +215,7 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
         <div className="flex-1 overflow-y-auto p-6">
           <div className="flex items-center gap-2 mb-4">
             <Database className="w-4 h-4 text-primary" />
-            <h4 className="text-sm font-semibold text-foreground">
+            <h4 className="type-micro-heading">
               Embedding Chunks
               {embeddings && (
                 <span className="text-muted-foreground font-normal ml-1">({embeddings.length})</span>
@@ -259,7 +262,7 @@ function EditCitationDialog({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Citation</DialogTitle>
+          <DialogTitle className="type-section-title">Edit Citation</DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <Input
@@ -303,7 +306,7 @@ function DataSourceCard({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+      className="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-4 shadow-card transition-all hover:border-primary/20 shadow-card-hover"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
@@ -315,7 +318,7 @@ function DataSourceCard({
             <Icon className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-foreground truncate" title={dataSource.name}>
+            <h3 className="text-sm font-semibold text-foreground truncate" title={dataSource.name}>
               {dataSource.name}
             </h3>
             {dataSource.citation && (
@@ -364,8 +367,9 @@ function DataSourceCard({
         </div>
         <div className="flex gap-2">
           <Badge
+            variant="outline"
             className={cn(
-              'text-[10px] px-1.5 py-0 h-5',
+              'text-[10px] px-1.5 py-0 h-5 font-medium',
               getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
             )}
           >
@@ -497,10 +501,10 @@ export default function DataSourcesPage() {
         <div className="flex-shrink-0 border-b border-border bg-card p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-heading font-semibold text-foreground">
+              <h1 className="type-page-title">
                 {getCategoryTitle()}
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="type-body-muted mt-1">
                 {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
               </p>
             </div>
@@ -619,7 +623,7 @@ export default function DataSourcesPage() {
       <AlertDialog open={!!sourceToDelete} onOpenChange={(open) => !open && setSourceToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className="type-section-title flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-destructive" />
               Delete Data Source
             </AlertDialogTitle>

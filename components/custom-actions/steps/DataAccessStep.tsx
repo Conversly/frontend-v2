@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Shield, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type DataAccess = "full" | "limited";
 
@@ -124,42 +125,48 @@ export const DataAccessStep: React.FC<Props> = ({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold tracking-tight">Data access</h2>
-        <p className="text-muted-foreground">
+        <h2 className="type-section-title">Data Access</h2>
+        <p className="type-body-muted">
           Control how much of the API response your AI agent can use. Maximum response size is 20KB.
         </p>
       </div>
 
-      <Card>
+      <Card className="shadow-none border-border bg-[--surface-secondary]">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4" />
-            Access level
+          <CardTitle className="type-h3 flex items-center gap-3">
+            <ShieldCheck className="h-5 w-5 text-primary" />
+            Security & Access Level
           </CardTitle>
-          <CardDescription>Choose full access or limit to a specific field.</CardDescription>
+          <CardDescription className="type-body-muted italic leading-relaxed">Choose whether the agent sees the full result or just a specific part.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <RadioGroup value={dataAccess} onValueChange={(v) => setDataAccess(v as DataAccess)}>
-            <div className="flex items-start gap-3 rounded-md border p-3">
+          <RadioGroup value={dataAccess} onValueChange={(v) => setDataAccess(v as DataAccess)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={cn(
+              "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
+              dataAccess === "full" ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20" : "bg-background border-border hover:border-border/80"
+            )} onClick={() => setDataAccess("full")}>
               <RadioGroupItem value="full" id="data_access_full" className="mt-1" />
               <div className="flex-1">
-                <Label htmlFor="data_access_full" className="font-medium">
+                <Label htmlFor="data_access_full" className="type-label block mb-1">
                   Full data access
                 </Label>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="type-caption leading-relaxed">
                   The agent can access the full API response to produce comprehensive answers.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-md border p-3">
+            <div className={cn(
+              "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
+              dataAccess === "limited" ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20" : "bg-background border-border hover:border-border/80"
+            )} onClick={() => setDataAccess("limited")}>
               <RadioGroupItem value="limited" id="data_access_limited" className="mt-1" />
               <div className="flex-1">
-                <Label htmlFor="data_access_limited" className="font-medium">
+                <Label htmlFor="data_access_limited" className="type-label block mb-1">
                   Limited data access
                 </Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  The agent only uses the extracted value from your mapping (fallback to full response if empty).
+                <p className="type-caption leading-relaxed">
+                  The agent only uses the extracted value from your mapping.
                 </p>
               </div>
             </div>
@@ -211,19 +218,21 @@ export const DataAccessStep: React.FC<Props> = ({
         </CardContent>
       </Card>
 
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack}>
+      <div className="flex justify-between pt-8 border-t border-border mt-8">
+        <Button variant="ghost" onClick={onBack} className="px-8">
           ← Back
         </Button>
 
         <Button
           onClick={onSave}
           disabled={saving}
+          className="px-8 shadow-card"
+          size="lg"
         >
           {saving ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
+              Saving Action...
             </>
           ) : (
             "Save Action"
