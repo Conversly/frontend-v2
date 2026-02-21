@@ -160,6 +160,24 @@ export const resumeSubscription = async (): Promise<void> => {
     }
 };
 
+/**
+ * Open the Dodo customer portal for managing payment methods, invoices, and billing.
+ * Returns a redirect URL — redirect the user to it.
+ */
+export const createPortalSession = async (accountId: string): Promise<string> => {
+    const baseUrl = getPath(API.ENDPOINTS.DODO.BASE_URL);
+    const endpointPath = getPath(API.ENDPOINTS.DODO.PORTAL);
+    const url = baseUrl + endpointPath;
+
+    const response = await api.post<ApiResponse<{ url: string }>>(url, { accountId });
+
+    if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to create portal session");
+    }
+
+    return response.data.data.url;
+};
+
 export const downloadInvoice = async (paymentId: string) => {
     const baseUrl = getPath(API.ENDPOINTS.SUBSCRIPTION.BASE_URL);
     const endpointPath = getPath(API.ENDPOINTS.SUBSCRIPTION.GET_INVOICE_PDF);

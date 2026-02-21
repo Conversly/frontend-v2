@@ -30,6 +30,7 @@ import {
   downloadInvoice,
   cancelSubscription,
   resumeSubscription,
+  createPortalSession,
 } from "@/lib/api/subscription";
 import { toast } from "sonner";
 import {
@@ -52,7 +53,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function BillingPage() {
-  const { workspaceName, workspaceId } = useWorkspace();
+  const { workspaceName, workspaceId, accountId } = useWorkspace();
   const { subscription, credits, usage, isLoading: isSubscriptionLoading, refetch } = useSubscription() as any;
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [invoices, setInvoices] = useState<UserInvoice[]>([]);
@@ -60,6 +61,7 @@ export default function BillingPage() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isResuming, setIsResuming] = useState(false);
+  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
 
   useEffect(() => {
     if (workspaceId) {
@@ -110,6 +112,18 @@ export default function BillingPage() {
       toast.error("Failed to download invoice. Please try again.");
     } finally {
       setDownloadingId(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      setIsOpeningPortal(true);
+      const portalUrl = await createPortalSession(accountId);
+      window.location.href = portalUrl;
+    } catch (error: any) {
+      toast.error(error.message || "Failed to open billing portal. Please try again.");
+    } finally {
+      setIsOpeningPortal(false);
     }
   };
 
@@ -222,8 +236,16 @@ export default function BillingPage() {
 
                 {/* Manage Subscription Footer */}
                 <CardFooter className="flex flex-col gap-2">
-                  <Button variant="outline" className="w-full">
-                    Manage Subscription
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    disabled={isOpeningPortal}
+                    onClick={handleManageSubscription}
+                  >
+                    {isOpeningPortal
+                      ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Opening portal…</>
+                      : "Manage Subscription"
+                    }
                   </Button>
 
                   {/* Cancel Plan — shown when active paid sub and NOT already cancelling */}
