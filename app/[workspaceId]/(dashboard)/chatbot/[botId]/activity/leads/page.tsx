@@ -1,5 +1,7 @@
 "use client";
 
+import posthog from "posthog-js";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
@@ -56,6 +58,12 @@ const SOURCE_OPTIONS = [
 export default function LeadsPage() {
   const params = useParams();
   const chatbotId = params.botId as string;
+
+  useEffect(() => {
+    posthog.capture("leads_page_viewed", {
+      chatbot_id: chatbotId
+    });
+  }, [chatbotId]);
 
   // 1. Filter State
   const [search, setSearch] = useState("");

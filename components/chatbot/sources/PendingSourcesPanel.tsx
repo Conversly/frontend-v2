@@ -7,6 +7,7 @@ import { useProcessDataSource } from '@/services/datasource';
 import { ProcessRequest, DocumentData } from '@/types/datasource';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import posthog from 'posthog-js';
 
 interface PendingSourcesPanelProps {
   chatbotId: string;
@@ -87,6 +88,12 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
 
       const result = await processAllSources(request);
       if (result.success) {
+        pendingSources.forEach(source => {
+          posthog.capture("data_source_added", {
+            chatbot_id: chatbotId,
+            source_type: source.type,
+          });
+        });
         toast.success('Data sources processing started', {
           description: 'Data sources will be available shortly',
         });

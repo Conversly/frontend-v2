@@ -11,6 +11,7 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
+import posthog from 'posthog-js';
 import {
     ActionFormErrors,
     formatValidationErrors,
@@ -234,6 +235,7 @@ export const CustomActionForm: React.FC<Props> = ({
 
         setSaving(true);
         try {
+            posthog.capture("action_step_completed", { chatbot_id: chatbotId, step: 5, step_name: "Data access" });
             await onSave(formData);
         } finally {
             setSaving(false);
@@ -340,6 +342,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                         updateField={updateField}
                                         errors={errors}
                                         onNext={() => {
+                                            posthog.capture("action_step_completed", { chatbot_id: chatbotId, step: 1, step_name: "General" });
                                             setMaxStepUnlocked((prev) => Math.max(prev, 2));
                                             setCurrentStep(2);
                                         }}
@@ -353,6 +356,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                         updateField={updateField}
                                         errors={errors}
                                         onNext={() => {
+                                            posthog.capture("action_step_completed", { chatbot_id: chatbotId, step: 2, step_name: "API" });
                                             setMaxStepUnlocked((prev) => Math.max(prev, 3));
                                             setCurrentStep(3);
                                         }}
@@ -365,6 +369,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                         formData={formData}
                                         updateField={updateField}
                                         onNext={() => {
+                                            posthog.capture("action_step_completed", { chatbot_id: chatbotId, step: 3, step_name: "Inputs" });
                                             setMaxStepUnlocked((prev) => Math.max(prev, 4));
                                             setCurrentStep(4);
                                         }}
@@ -382,6 +387,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                         errors={errors}
                                         onBack={() => setCurrentStep(3)}
                                         onNext={() => {
+                                            posthog.capture("action_step_completed", { chatbot_id: chatbotId, step: 4, step_name: "Test response" });
                                             setMaxStepUnlocked((prev) => Math.max(prev, 5));
                                             setCurrentStep(5);
                                         }}

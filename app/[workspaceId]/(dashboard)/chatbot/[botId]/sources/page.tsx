@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -36,6 +36,7 @@ import {
 import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { toast } from 'sonner';
+import posthog from "posthog-js";
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
@@ -391,6 +392,12 @@ export default function DataSourcesPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
 
+  useEffect(() => {
+    posthog.capture("data_sources_page_viewed", {
+      chatbot_id: botId
+    });
+  }, [botId]);
+
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
@@ -510,6 +517,9 @@ export default function DataSourcesPage() {
                   <span>
                     <Button
                       onClick={() => {
+                        posthog.capture("add_knowledge_clicked", {
+                          chatbot_id: botId
+                        });
                         if (!canAddDatasource) {
                           setIsUpgradeDialogOpen(true);
                         } else {
@@ -556,6 +566,9 @@ export default function DataSourcesPage() {
                   primaryAction={{
                     label: "Add Knowledge",
                     onClick: () => {
+                      posthog.capture("add_knowledge_clicked", {
+                        chatbot_id: botId
+                      });
                       if (!canAddDatasource) {
                         setIsUpgradeDialogOpen(true);
                       } else {

@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plan } from "@/lib/billingsdk-config";
+import posthog from "posthog-js";
 
 export interface PricingRedesignProps {
     plans: Plan[];
@@ -159,7 +160,10 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
 
                     <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-1.5 rounded-full shadow-sm relative">
                         <button
-                            onClick={() => setIsYearly(false)}
+                            onClick={() => {
+                                posthog.capture("billing_interval_toggled", { interval: "month" });
+                                setIsYearly(false);
+                            }}
                             className={`relative px-6 py-2 rounded-full text-sm font-bold transition-colors z-10 ${!isYearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                                 }`}
                         >
@@ -174,7 +178,10 @@ export function PricingRedesign({ plans, currentPlanId, onPlanSelect }: PricingR
                         </button>
 
                         <button
-                            onClick={() => setIsYearly(true)}
+                            onClick={() => {
+                                posthog.capture("billing_interval_toggled", { interval: "year" });
+                                setIsYearly(true);
+                            }}
                             className={`relative px-6 py-2 rounded-full text-sm font-bold transition-colors z-10 flex items-center gap-2 ${isYearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                                 }`}
                         >
