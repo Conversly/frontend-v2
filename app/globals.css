@@ -68,8 +68,8 @@
    * ─────────────────────────────────────────────────────────────────────── */
 
   /* Backgrounds */
-  --background: oklch(0.960 0.006 248);
-  /* L0 — cool-tinted canvas */
+  --background: oklch(1 0 0);
+  /* L0 — pure white canvas for public pages */
   --foreground: oklch(0.2101 0.0318 264.66);
   /* Near-black heading color */
 

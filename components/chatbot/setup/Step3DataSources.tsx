@@ -138,7 +138,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
           <Alert variant="destructive" className="py-2">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your plan allows up to {datasourcesLimit} data sources per chatbot. Please unselect some sources to continue.
+              You have selected {totalSelected} sources, but your plan allows up to {datasourcesLimit}. Please deselect {totalSelected - (datasourcesLimit as number)} source{totalSelected - (datasourcesLimit as number) > 1 ? "s" : ""} to continue.
             </AlertDescription>
           </Alert>
         )}

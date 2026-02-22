@@ -41,7 +41,7 @@ export const plans: Plan[] = [
     yearlyPrice: "0",
     buttonText: "Get Started",
     features: [
-      { name: "50 messages/month", icon: "check", iconColor: "text-primary" },
+      { name: "100 messages/month", icon: "check", iconColor: "text-primary" },
       { name: "1 chatbot", icon: "check", iconColor: "text-primary" },
       { name: "10 data sources", icon: "check", iconColor: "text-primary" },
       { name: "1 team member", icon: "check", iconColor: "text-primary" },
@@ -58,7 +58,7 @@ export const plans: Plan[] = [
     features: [
       { name: "3,000 messages/month", icon: "check", iconColor: "text-primary" },
       { name: "3 chatbots", icon: "check", iconColor: "text-primary" },
-      { name: "20 data sources", icon: "check", iconColor: "text-primary" },
+      { name: "50 data sources per chatbot", icon: "check", iconColor: "text-primary" },
       { name: "2 team members", icon: "check", iconColor: "text-primary" },
       { name: "AI Actions (3 per bot)", icon: "check", iconColor: "text-primary" },
     ],
@@ -76,7 +76,7 @@ export const plans: Plan[] = [
     features: [
       { name: "12,000 messages/month", icon: "check", iconColor: "text-primary" },
       { name: "10 chatbots", icon: "check", iconColor: "text-primary" },
-      { name: "100 data sources", icon: "check", iconColor: "text-primary" },
+      { name: "200 data sources per chatbot", icon: "check", iconColor: "text-primary" },
       { name: "5 team members", icon: "check", iconColor: "text-primary" },
       { name: "AI Actions (5 per bot)", icon: "check", iconColor: "text-primary" },
       { name: "Remove Branding", icon: "check", iconColor: "text-primary" },
@@ -93,7 +93,7 @@ export const plans: Plan[] = [
     features: [
       { name: "60,000 messages/month", icon: "check", iconColor: "text-primary" },
       { name: "50 chatbots", icon: "check", iconColor: "text-primary" },
-      { name: "200 data sources", icon: "check", iconColor: "text-primary" },
+      { name: "400 data sources per chatbot", icon: "check", iconColor: "text-primary" },
       { name: "10 team members", icon: "check", iconColor: "text-primary" },
       { name: "AI Actions (10 per bot)", icon: "check", iconColor: "text-primary" },
       { name: "Remove Branding", icon: "check", iconColor: "text-primary" },
