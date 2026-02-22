@@ -1,7 +1,5 @@
 "use client";
 
-import posthog from "posthog-js";
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 // MessageList component missing
@@ -29,12 +27,6 @@ export default function ChatLogsPage() {
   if (!botId) {
     return null;
   }
-
-  useEffect(() => {
-    posthog.capture("chats_page_viewed", {
-      chatbot_id: botId
-    });
-  }, [botId]);
 
   const { data: chatlogs, isLoading: isLoadingChatlogs } = useChatlogsQuery(botId);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);

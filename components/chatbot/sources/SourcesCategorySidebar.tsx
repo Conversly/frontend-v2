@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import posthog from "posthog-js";
 import { PendingSourcesPanel } from './PendingSourcesPanel';
 
 export type SourceCategory = 'all' | 'URL' | 'DOCUMENT' | 'QNA' | 'TXT';
@@ -66,9 +65,6 @@ export function SourcesCategorySidebar({
   };
 
   const handleRequestSubmit = async () => {
-    // Just the submit click
-    posthog.capture("data_source_integration_submit_clicked");
-
     if (!integrationName.trim()) {
       setRequestError("Please specify the integration name");
       return;
@@ -94,10 +90,6 @@ export function SourcesCategorySidebar({
         comments: `Integration Request: ${integrationName}`,
       });
       setIsRequestSuccess(true);
-      posthog.capture("data_source_integration_requested", {
-        integration_name: integrationName,
-        email: requestEmail,
-      });
       toast.success("Request submitted successfully!");
     } catch (error: any) {
       console.error("Integration request error:", error);
@@ -150,10 +142,7 @@ export function SourcesCategorySidebar({
           <Button
             variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-[--sidebar-accent]"
-            onClick={() => {
-              posthog.capture("data_source_request_integration_clicked");
-              setIsRequestModalOpen(true);
-            }}
+            onClick={() => setIsRequestModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
             <span className="type-body font-medium">Request Integration</span>

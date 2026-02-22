@@ -9,7 +9,6 @@ import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
 import { defaultMetadata, organizationSchema } from "@/lib/metadata";
-import { PostHogProvider } from "@/app/providers/PostHogProvider";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -51,19 +50,17 @@ export default function RootLayout({
           "font-sans antialiased m-0 p-0 h-full w-full flex flex-col overflow-hidden",
         )}
       >
-        <PostHogProvider>
-          <GoogleOAuthProvider
-            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
-          >
-            <ThemeProvider attribute="class" enableSystem>
-              <AppContextProvider>
-                <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
-                  {children}
-                </div>
-              </AppContextProvider>
-            </ThemeProvider>
-          </GoogleOAuthProvider>
-        </PostHogProvider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+        >
+          <ThemeProvider attribute="class" enableSystem>
+            <AppContextProvider>
+              <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
+                {children}
+              </div>
+            </AppContextProvider>
+          </ThemeProvider>
+        </GoogleOAuthProvider>
         <script
           src="https://widget.verlyai.xyz/embed.js"
           data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
