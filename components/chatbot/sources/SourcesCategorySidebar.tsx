@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { PendingSourcesPanel } from './PendingSourcesPanel';
 
 export type SourceCategory = 'all' | 'URL' | 'DOCUMENT' | 'QNA' | 'TXT';
 
@@ -24,6 +25,7 @@ interface SourcesCategorySidebarProps {
   selectedCategory: SourceCategory;
   onCategoryChange: (category: SourceCategory) => void;
   onAddKnowledge: () => void;
+  chatbotId: string;
   sourceCounts?: {
     all: number;
     URL: number;
@@ -45,6 +47,7 @@ export function SourcesCategorySidebar({
   selectedCategory,
   onCategoryChange,
   onAddKnowledge,
+  chatbotId,
   sourceCounts = { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 }
 }: SourcesCategorySidebarProps) {
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -135,7 +138,7 @@ export function SourcesCategorySidebar({
         </div>
 
         {/* Request Integration */}
-        <div className="mt-auto p-2 pt-4">
+        <div className="p-2 pt-4 border-t border-border mt-auto">
           <Button
             variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-[--sidebar-accent]"
@@ -145,6 +148,11 @@ export function SourcesCategorySidebar({
             <span className="type-body font-medium">Request Integration</span>
           </Button>
         </div>
+      </div>
+
+      {/* Pending Sources Panel (at bottom of sidebar) */}
+      <div className="p-4 border-t border-border mt-auto bg-card">
+        <PendingSourcesPanel chatbotId={chatbotId} />
       </div>
 
       {/* Request Integration Modal */}

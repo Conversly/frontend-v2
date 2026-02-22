@@ -1,15 +1,19 @@
-'use client';
+import 'client-only';
 
-import { Globe, FileText, MessageSquare, X, ArrowRight, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { Globe, FileText, MessageSquare, X, ArrowRight, Loader2, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePendingSources, useDataSourcesStore, useIsLoading } from '@/store/chatbot/data-sources';
 import { useProcessDataSource } from '@/services/datasource';
 import { ProcessRequest, DocumentData } from '@/types/datasource';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 interface PendingSourcesPanelProps {
   chatbotId: string;
+  mode?: 'inline' | 'sheet';
 }
 
 const getSourceIcon = (type: string) => {
@@ -40,11 +44,12 @@ const getSourceTypeLabel = (type: string) => {
   }
 };
 
-export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
+export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSourcesPanelProps) {
   const pendingSources = usePendingSources();
   const isLoading = useIsLoading();
   const { removePendingSource, clearPendingSources, setIsLoading } = useDataSourcesStore();
   const { mutateAsync: processAllSources } = useProcessDataSource(chatbotId);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const totalSize = pendingSources.length * 4;
   const maxSize = 400;
@@ -91,6 +96,7 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
           description: 'Data sources will be available shortly',
         });
         clearPendingSources();
+        setIsSheetOpen(false); // Close sheet after successful process
       } else {
         toast.error('Failed to process data sources', {
           description: result.message || 'Unknown error',
@@ -112,39 +118,46 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
   };
 
   if (pendingSources.length === 0) {
+    if (mode === 'inline') {
+      return (
+        <div className="flex flex-col flex-1 items-center justify-center bg-transparent w-full text-center text-muted-foreground py-8">
+          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-3">
+            <Database className="w-5 h-5 opacity-50" />
+          </div>
+          <p className="text-xs font-medium text-foreground">No pending sources</p>
+        </div>
+      );
+    }
     return null;
   }
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        className="fixed bottom-6 right-6 z-50 w-[360px] bg-card border border-border rounded-xl shadow-float p-4 space-y-4"
-      >
-        <div className="flex items-center justify-between">
-          <h3 className="type-section-title">
-            Pending Sources ({pendingSources.length})
-          </h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearPendingSources}
-            className="text-muted-foreground hover:text-foreground text-xs"
-          >
-            Clear all
-          </Button>
-        </div>
+  const innerContent = (
+    <div className={cn("flex flex-col min-h-0 h-full", mode === 'inline' ? 'w-full' : 'mt-4')}>
+      <div className="flex items-center justify-between mb-4 flex-shrink-0">
+        <h3 className="type-section-title">
+          Pending Sources ({pendingSources.length})
+        </h3>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearPendingSources}
+          className="text-muted-foreground hover:text-foreground text-xs h-8 px-2"
+        >
+          Clear all
+        </Button>
+      </div>
 
-        <div className="space-y-2 max-h-[200px] overflow-y-auto">
+      <div className="flex-1 overflow-y-auto min-h-0 space-y-2 pr-2 pb-4">
+        <AnimatePresence mode="popLayout">
           {pendingSources.map((source) => {
             const Icon = getSourceIcon(source.type);
             return (
               <motion.div
+                layout
                 key={source.id}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
                 className="flex items-start gap-3 p-3 bg-[--surface-secondary] rounded-lg group hover:bg-muted/70 transition-colors border border-border"
               >
                 <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
@@ -167,8 +180,10 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
               </motion.div>
             );
           })}
-        </div>
+        </AnimatePresence>
+      </div>
 
+      <div className="mt-auto pt-4 space-y-4">
         {/* Size Progress */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
@@ -187,7 +202,7 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
         <Button
           onClick={handleProcessSources}
           disabled={isLoading || pendingSources.length === 0}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg group"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg group h-11"
         >
           {isLoading ? (
             <>
@@ -201,7 +216,50 @@ export function PendingSourcesPanel({ chatbotId }: PendingSourcesPanelProps) {
             </>
           )}
         </Button>
-      </motion.div>
-    </AnimatePresence>
+      </div>
+    </div>
+  );
+
+  if (mode === 'inline') {
+    return (
+      <div className="flex flex-col flex-1 min-h-0 bg-transparent w-full">
+        {innerContent}
+      </div>
+    );
+  }
+
+  // mode === 'sheet'
+  return (
+    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+      <AnimatePresence>
+        {!isSheetOpen && pendingSources.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="w-full mt-4"
+          >
+            <SheetTrigger asChild>
+              <Button
+                variant="default"
+                className="w-full gap-2 justify-start px-4 h-11"
+              >
+                <Database className="w-4 h-4" />
+                <span className="flex-1 text-left">Pending Sources</span>
+                <span className="bg-primary-foreground/20 text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                  {pendingSources.length}
+                </span>
+              </Button>
+            </SheetTrigger>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <SheetContent side="right" className="w-[400px] sm:w-[450px] p-6 flex flex-col gap-0 border-l border-border shadow-2xl z-[100] bg-card">
+        <SheetHeader className="px-0 pb-0">
+          <SheetTitle className="sr-only">Pending Sources</SheetTitle>
+        </SheetHeader>
+        {innerContent}
+      </SheetContent>
+    </Sheet>
   );
 }
