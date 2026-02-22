@@ -166,7 +166,8 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
             />
           </div>
 
-          <div>
+          {/* Todo : Footer Text Need to Add Payment Guard */}
+          {/* <div>
             <div className="flex items-center justify-between mb-2">
               <label className="font-sans text-sm text-foreground">Footer Text</label>
               <Tooltip>
@@ -184,7 +185,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               placeholder="Powered by VerlyAI"
               className="bg-muted/50 border-border/50 text-foreground"
             />
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
