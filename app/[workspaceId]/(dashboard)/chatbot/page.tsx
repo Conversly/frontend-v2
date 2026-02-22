@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bot, Loader2, Lock, Plus } from "lucide-react";
 import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
+import { ResumeActivateCard } from "@/components/chatbot/ResumeActivateCard";
 import { EmptyState } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
 import { FeatureGuard } from "@/components/shared/FeatureGuard";
@@ -120,6 +121,17 @@ export default function WorkspaceChatbotsPage() {
 
   const list = chatbots ?? [];
 
+  // Pick the single most-recently-created DRAFT bot for the Resume card
+  const incompleteBots = list.filter((b) => b.status === "DRAFT");
+  const resumeBot = incompleteBots.sort((a, b) => {
+    const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return tB - tA; // newest first
+  })[0] ?? null;
+
+  // Active-only bots rendered via the normal card
+  const activeBots = list.filter((b) => b.status !== "DRAFT");
+
   return (
     <>
       <div className="w-full justify-center p-6">
@@ -172,10 +184,18 @@ export default function WorkspaceChatbotsPage() {
             </FeatureGuard>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {list.map((bot) => (
+              {/* Resume & Activate card — shown first for the most-recently-created incomplete bot */}
+              {resumeBot && (
+                <ResumeActivateCard
+                  key={`resume-${resumeBot.id}`}
+                  chatbot={resumeBot}
+                  onDelete={() => setDeleteId(resumeBot.id)}
+                />
+              )}
+              {activeBots.map((bot) => (
                 <ChatbotPreviewCard
                   key={bot.id}
-                  chatbot={bot as any}
+                  chatbot={bot}
                   onDelete={() => setDeleteId(bot.id)}
                 />
               ))}

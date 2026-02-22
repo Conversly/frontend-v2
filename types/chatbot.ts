@@ -58,11 +58,16 @@ export interface GetChatbotsResponse {
   deployStatusField: string | null;
   lastDeployedAt: Date | null;
   workspaceId: string;
+  logoUrl?: string | null;
+  primaryColor?: string | null;
   websiteUrl?: string;
   useCase?: string;
   // Setup wizard progress
   setupCurrentStep: number;
+  setupStepStatuses: StepStatuses;
   setupCompletedAt: Date | null;
+  // Aggregated metrics
+  conversationCount: number;
 }
 
 
