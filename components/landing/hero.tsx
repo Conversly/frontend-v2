@@ -668,10 +668,17 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
             >
-              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-primary">
-                We&apos;re live!
-              </div>
+              <a href="https://www.producthunt.com/products/verly-ai?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-verly" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1083403&theme=light&t=1771744763003"
+                  alt="Verly - AI support teammate that talks to customers while you build. | Product Hunt"
+                  style={{ width: "200px", height: "44px" }}
+                  width="250"
+                  height="54"
+                />
+              </a>
             </motion.div>
 
             {/* Heading */}
