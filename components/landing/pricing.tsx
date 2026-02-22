@@ -14,67 +14,78 @@ type PlanFeature = {
 
 const pricingPlans = [
   {
-    key: 'STARTER',
-    name: "Starter",
-    priceMonthly: "$39",
-    description: "Pay yearly (save 40%) — billed $468 yearly",
+    key: 'FREE',
+    name: "Free",
+    priceMonthly: "$0",
+    description: "Start exploring basics — no credit card required",
     features: [
-      { text: "1 chatbot", info: "Create and deploy up to 1 chatbot under your account." },
-      { text: "Up to 4k messages per month", info: "Included messages per month (usage limits apply)." },
-      { text: "Up to 1,000 pages", info: "Training capacity for your data sources (pages are normalized units)." },
-      { text: "1 member", info: "Includes access for 1 user account." },
+      { text: "1 chatbot", info: "Create and deploy 1 chatbot." },
+      { text: "50 messages per month", info: "Included messages per month." },
+      { text: "10 data sources", info: "Maximum 10 data sources per chatbot." },
+      { text: "1 team member", info: "Just for you." },
     ],
     gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
-    stats: "4k",
+    stats: "100",
     statsLabel: "Messages / month",
-    cta: "Start a free trial",
-    ctaLoggedIn: "Upgrade to Starter",
+    cta: "Get Started",
+    ctaLoggedIn: "Your Current Plan", // Assuming FREE is default
   },
   {
-    key: 'GROWTH',
-    name: "Growth",
-    popular: true,
-    priceMonthly: "$79",
-    description: "Pay yearly (save 40%) — billed $948 yearly",
+    key: 'HOBBY',
+    name: "Hobby",
+    priceMonthly: "$29.99",
+    description: "Pay yearly (save margin) — billed $359.88 yearly",
     features: [
-      { text: "Up to 2 chatbots", info: "Create and deploy up to 2 chatbots under your account." },
-      { text: "Up to 10k messages per month", info: "Included messages per month (usage limits apply)." },
-      { text: "Up to 10,000 pages", info: "Higher training capacity for your data sources (pages are normalized units)." },
-      { text: "Up to 4 team members", info: "Invite teammates to collaborate in the same workspace." },
-      { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
-      { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
-      { text: "Auto Refresh (Monthly)", info: "Automatically re-sync your sources on a monthly schedule." },
+      { text: "3 chatbots", info: "Create and deploy up to 3 chatbots." },
+      { text: "3,000 messages per month", info: "Included messages per month." },
+      { text: "20 data sources", info: "Maximum 20 data sources per chatbot." },
+      { text: "2 team members", info: "Invite a teammate." },
+      { text: "AI Actions (3 per bot)", info: "Access to custom actions/tools." },
     ],
     gradient: "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10",
-    stats: "10k",
+    stats: "3k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
-    ctaLoggedIn: "Upgrade to Growth",
+    ctaLoggedIn: "Upgrade to Hobby",
   },
   {
-    key: 'ENTERPRISE',
-    name: "Enterprise",
-    priceMonthly: "Custom",
-    description: "Custom pricing (volume-based)",
+    key: 'STANDARD',
+    name: "Standard",
+    popular: true,
+    priceMonthly: "$79.99",
+    description: "Pay yearly (save margin) — billed $959.88 yearly",
     features: [
-      { text: "Up to 10,000 chatbots", info: "Enterprise scale — create and deploy a large number of chatbots." },
-      { text: "Customizable message volume", info: "Message volume scales with your needs; pricing adjusts with usage." },
-      { text: "Up to 500,000 pages", info: "Enterprise training capacity for your data sources (pages are normalized units)." },
-      { text: "Manual Refresh", info: "Manually sync your sources whenever you need an update." },
-      { text: "Up to 10,000 team members", info: "Enterprise collaboration scale for large orgs." },
-      { text: "Integrations with multiple platforms", info: "Connect with popular platforms (chat/support/workflow tools)." },
-      { text: "API Access", info: "Programmatic access to manage and integrate your setup." },
-      { text: "Rate Limiting", info: "Control usage by limiting messages/conversations to manage costs." },
-      { text: "Auto Refresh (Daily)", info: "Automatically re-sync your sources on a daily schedule." },
-      { text: "Webhook Support", info: "Send real-time events to your systems (messages, leads, escalations, etc.)." },
-      { text: "Priority Support", info: "Faster support response times and prioritized ticket handling." },
-      { text: "Custom Integrations", info: "Request bespoke integrations or features tailored to your workflow." },
+      { text: "10 chatbots", info: "Create and deploy up to 10 chatbots." },
+      { text: "12,000 messages per month", info: "Included messages per month." },
+      { text: "100 data sources", info: "Maximum 100 data sources per chatbot." },
+      { text: "5 team members", info: "Invite your team." },
+      { text: "AI Actions (5 per bot)", info: "Access to custom actions/tools." },
+      { text: "Remove branding", info: "Ability to remove 'Powered by' branding." },
+    ],
+    gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
+    stats: "12k",
+    statsLabel: "Messages / month",
+    cta: "Start a free trial",
+    ctaLoggedIn: "Upgrade to Standard",
+  },
+  {
+    key: 'PRO',
+    name: "Pro",
+    priceMonthly: "$249.99",
+    description: "Pay yearly (save margin) — billed $2999.99 yearly",
+    features: [
+      { text: "50 chatbots", info: "Scale your operations." },
+      { text: "60,000 messages per month", info: "Included messages per month." },
+      { text: "200 data sources", info: "Maximum 200 data sources per chatbot." },
+      { text: "10 team members", info: "For larger teams." },
+      { text: "AI Actions (10 per bot)", info: "Access to custom actions/tools." },
+      { text: "Remove branding", info: "Ability to remove 'Powered by' branding." },
     ],
     gradient: "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
-    stats: "Custom",
-    statsLabel: "Plan",
-    cta: "Contact us",
-    ctaLoggedIn: "Contact Sales",
+    stats: "60k",
+    statsLabel: "Messages / month",
+    cta: "Start a free trial",
+    ctaLoggedIn: "Upgrade to Pro",
   },
 ]
 
@@ -92,10 +103,6 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
     // Find the plan config
     const planConfig = PRICING_PLANS[planKey as keyof typeof PRICING_PLANS];
     if (!planConfig) {
-      if (planKey === 'ENTERPRISE') {
-        window.location.href = "mailto:team@verlyai.xyz";
-        return;
-      }
       return;
     }
 
@@ -187,7 +194,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 w-full items-stretch">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 w-full items-stretch">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={index}
@@ -317,7 +324,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                   </button>
                 ) : (
                   <Link
-                    href={plan.name === "Enterprise" ? "mailto:team@verlyai.xyz" : `/register?plan=${plan.key.toLowerCase()}`}
+                    href={`/register?plan=${plan.key.toLowerCase()}`}
                     className={`
                       w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold text-sm tracking-wide
                       transition-all duration-300 relative overflow-hidden group/button

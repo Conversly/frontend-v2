@@ -87,10 +87,6 @@ export default function ExploreSection() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-12 md:mb-16 space-y-4"
                 >
-                    <div className="inline-flex items-center justify-center rounded-full px-4 py-1.5 font-medium text-sm border border-zinc-700/50 text-white bg-zinc-900/50 backdrop-blur-sm mb-4">
-                        <div className="mr-2 size-2 rounded-full bg-gradient-to-r from-primary via-blue-500 to-indigo-500 animate-pulse"></div>
-                        Platform Features
-                    </div>
                     <motion.h2
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}

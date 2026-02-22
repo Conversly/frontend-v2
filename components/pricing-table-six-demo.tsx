@@ -8,8 +8,8 @@ import { PricingTableSix } from "@/components/billingsdk/pricing-table-six";
 export function PricingTableSixDemo() {
   const plans: Plan[] = [
     {
-      id: "basic",
-      title: "Starter",
+      id: "free",
+      title: "Free",
       description: "Best for individuals and small teams",
       monthlyPrice: "0",
       yearlyPrice: "0",
@@ -22,11 +22,11 @@ export function PricingTableSixDemo() {
       ],
     },
     {
-      id: "premium",
-      title: "Growth",
+      id: "hobby",
+      title: "Hobby",
       description: "Built for expanding teams",
-      monthlyPrice: "50",
-      yearlyPrice: "500",
+      monthlyPrice: "40",
+      yearlyPrice: "400",
       buttonText: "Get Started",
       highlight: true,
       features: [
@@ -38,11 +38,11 @@ export function PricingTableSixDemo() {
       ],
     },
     {
-      id: "custom",
-      title: "Enterprise",
+      id: "standard",
+      title: "Standard",
       description: "Tailored for specialized requirements",
-      monthlyPrice: "99",
-      yearlyPrice: "990",
+      monthlyPrice: "120",
+      yearlyPrice: "1440",
       buttonText: "Get Started",
       features: [
         { name: "Unlimited users, projects, and data", icon: "check" },

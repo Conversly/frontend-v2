@@ -1,14 +1,18 @@
 export const PRICING_PLANS = {
-    STARTER: {
-        id: 'starter',
-        name: 'Starter',
+    FREE: {
+        id: 'free',
+        name: 'Free',
     },
-    GROWTH: {
-        id: 'growth',
-        name: 'Growth',
+    HOBBY: {
+        id: 'hobby',
+        name: 'Hobby',
     },
-    ENTERPRISE: {
-        id: 'enterprise',
-        name: 'Enterprise',
+    STANDARD: {
+        id: 'standard',
+        name: 'Standard',
+    },
+    PRO: {
+        id: 'pro',
+        name: 'Pro',
     }
 } as const;

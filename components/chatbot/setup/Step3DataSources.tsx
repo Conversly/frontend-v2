@@ -10,7 +10,10 @@ import {
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
-import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2 } from "lucide-react";
+import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useWorkspace } from "@/contexts/workspace-context";
+import { useAccessControl } from "@/hooks/useAccessControl";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -35,6 +38,10 @@ const SOURCE_CONFIG: Record<SourceType, { icon: React.ReactNode; label: string; 
 };
 
 export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
+  const { workspaceId } = useWorkspace();
+  const accessControl = useAccessControl(workspaceId);
+  const datasourcesLimit = accessControl.datasources.limit;
+
   const sources = useDataSources();
   const selectedSourceIds = useSelectedSourceIds();
   const toggleSourceSelection = useDataSourcesStore((s) => s.toggleSourceSelection);
@@ -58,6 +65,8 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
 
   const currentSources = openType ? getSourcesByType(openType) : [];
   const currentConfig = openType ? SOURCE_CONFIG[openType] : null;
+
+  const isOverLimit = typeof datasourcesLimit === 'number' && datasourcesLimit !== -1 && totalSelected > datasourcesLimit;
 
   const handleTrainAndContinue = async () => {
     if (!chatbotId || totalSelected === 0) {
@@ -125,10 +134,18 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
           />
         </div>
 
+        {isOverLimit && (
+          <Alert variant="destructive" className="py-2">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Your plan allows up to {datasourcesLimit} data sources per chatbot. Please unselect some sources to continue.
+            </AlertDescription>
+          </Alert>
+        )}
         <Button
           className="w-full"
           onClick={handleTrainAndContinue}
-          disabled={isTraining}
+          disabled={isTraining || isOverLimit}
         >
           {isTraining ? (
             <>
