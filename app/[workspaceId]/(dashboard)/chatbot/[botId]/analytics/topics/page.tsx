@@ -2,8 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import posthog from "posthog-js";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,13 +19,6 @@ import type { TopicResponse } from "@/types/chatbot";
 export default function TopicsPage() {
   const routeParams = useParams<{ botId: string }>();
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
-
-  useEffect(() => {
-    posthog.capture("topics_page_viewed", {
-      chatbot_id: botId
-    });
-  }, [botId]);
-
   const { data: topics, isLoading, error } = useTopicsQuery(botId);
 
   const createTopicMutation = useCreateTopicMutation();

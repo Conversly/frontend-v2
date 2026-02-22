@@ -1,14 +1,5 @@
 import { metadata } from "@/app/layout";
-
-export interface Message {
-    id: string;
-    role: "user" | "assistant" | (string & {});
-    content: string;
-    createdAt?: Date;
-    citations?: string[];
-    responseId?: string;
-    source?: "chat" | "voice";
-}
+import type { Message } from "@conversly/chat-widget";
 
 export interface ChatMessage {
     role: "user" | "assistant";

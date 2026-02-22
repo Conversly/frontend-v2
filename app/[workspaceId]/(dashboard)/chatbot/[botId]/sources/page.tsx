@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -36,7 +36,6 @@ import {
 import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { toast } from 'sonner';
-import posthog from "posthog-js";
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
@@ -403,13 +402,6 @@ export default function DataSourcesPage() {
   const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
-
-  useEffect(() => {
-    posthog.capture("data_sources_page_viewed", {
-      chatbot_id: botId
-    });
-  }, [botId]);
 
   const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
   const deleteMutation = useDeleteKnowledge(botId);
@@ -528,12 +520,7 @@ export default function DataSourcesPage() {
                     <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
                       {({ isLocked }) => (
                         <Button
-                          onClick={() => {
-                            posthog.capture("add_knowledge_clicked", {
-                              chatbot_id: botId
-                            });
-                            setIsAddDialogOpen(true)
-                          }}
+                          onClick={() => setIsAddDialogOpen(true)}
                           variant={!isLocked ? "default" : "outline"}
                           className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
                         >
@@ -577,12 +564,7 @@ export default function DataSourcesPage() {
                       icon={<Database />}
                       primaryAction={accessControl.datasources.canManage ? {
                         label: "Add Knowledge",
-                        onClick: () => {
-                          posthog.capture("add_knowledge_clicked", {
-                            chatbot_id: botId
-                          });
-                          setIsAddDialogOpen(true)
-                        },
+                        onClick: () => setIsAddDialogOpen(true),
                         icon: isLocked ? <Lock /> : <Plus />,
                       } : undefined}
                       className="border-dashed bg-card/30"

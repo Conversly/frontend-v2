@@ -1,7 +1,5 @@
 "use client";
 
-import posthog from "posthog-js";
-
 import { TimePeriodSelector } from "@/components/analytics/time-period-selector";
 import { AbandonmentCard } from "@/components/escalation-analytics/abandonment-card";
 import { BreakdownTabsCard } from "@/components/escalation-analytics/breakdown-tabs-card";
@@ -25,12 +23,6 @@ export default function EscalationAnalyticsPage({
   params,
 }: EscalationAnalyticsPageProps) {
   const { botId } = use(params);
-
-  useEffect(() => {
-    posthog.capture("escalation_analytics_page_viewed", {
-      chatbot_id: botId
-    });
-  }, [botId]);
 
   const [selectedDays, setSelectedDays] = useState<number>(7);
   const [isLoading, setIsLoading] = useState(true);
