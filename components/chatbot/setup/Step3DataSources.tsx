@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  useDataSources, 
-  useDataSourcesStore, 
+import {
+  useDataSources,
+  useDataSourcesStore,
   useSelectedSourceIds,
-  type DataSource 
+  type DataSource
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
@@ -43,7 +43,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
   const [isTraining, setIsTraining] = useState(false);
 
   const getSourcesByType = (type: SourceType) => sources.filter((s) => s.type === type);
-  const getSelectedByType = (type: SourceType) => 
+  const getSelectedByType = (type: SourceType) =>
     sources.filter((s) => s.type === type && selectedSourceIds.has(s.id));
 
   const websiteSources = getSourcesByType("url");
@@ -84,10 +84,10 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
     <>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold">
+          <h1 className="type-section-title">
             Add training sources
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="type-body-muted">
             We found {sources.length} sources from your website. {totalSelected} selected for training.
           </p>
         </div>
@@ -125,8 +125,8 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
           />
         </div>
 
-        <Button 
-          className="w-full" 
+        <Button
+          className="w-full"
           onClick={handleTrainAndContinue}
           disabled={isTraining}
         >
@@ -160,9 +160,9 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             {currentSources.length > 0 ? (
               <ul className="flex flex-col gap-2">
                 {currentSources.map((source) => (
-                  <SourceListItem 
-                    key={source.id} 
-                    source={source} 
+                  <SourceListItem
+                    key={source.id}
+                    source={source}
                     type={openType!}
                     isSelected={selectedSourceIds.has(source.id)}
                     onToggle={() => toggleSourceSelection(source.id)}
@@ -197,7 +197,7 @@ interface SourceRowProps {
 function SourceRow({ icon, label, count, selectedCount, variant = "default", onClick }: SourceRowProps) {
   const displayCount = selectedCount !== undefined ? selectedCount : count;
   const showPartial = selectedCount !== undefined && selectedCount < count && selectedCount > 0;
-  
+
   return (
     <button
       type="button"
@@ -225,10 +225,10 @@ function SourceRow({ icon, label, count, selectedCount, variant = "default", onC
           <div className="text-muted-foreground">{icon}</div>
         )}
         <span className="text-sm font-medium">
-          {count > 0 
-            ? showPartial 
+          {count > 0
+            ? showPartial
               ? `${selectedCount}/${count} ${label}${count > 1 ? "s" : ""}`
-              : `${displayCount} ${label}${displayCount > 1 ? "s" : ""}` 
+              : `${displayCount} ${label}${displayCount > 1 ? "s" : ""}`
             : label}
         </span>
       </div>
@@ -282,8 +282,8 @@ function SourceListItem({ source, type, isSelected, onToggle }: SourceListItemPr
       )}
       onClick={onToggle}
     >
-      <Checkbox 
-        checked={isSelected} 
+      <Checkbox
+        checked={isSelected}
         onCheckedChange={onToggle}
         onClick={(e) => e.stopPropagation()}
         className="shrink-0"
@@ -304,8 +304,8 @@ function SourceListItem({ source, type, isSelected, onToggle }: SourceListItemPr
         )}
       </div>
       {isUrl && (
-        <ExternalLink 
-          className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer" 
+        <ExternalLink
+          className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
           onClick={handleExternalClick}
         />
       )}

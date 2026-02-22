@@ -87,7 +87,7 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
     };
 
     return (
-        <div className="relative h-full w-full overflow-hidden bg-slate-50/50">
+        <div className="relative h-full w-full overflow-hidden bg-[--surface-secondary]">
             {/* Background Canvas */}
             <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
@@ -104,11 +104,11 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
                                 stage !== "idle" && "opacity-100"
                             )} />
 
-                            <div className="relative overflow-hidden rounded-xl border bg-white shadow-sm">
+                            <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm">
                                 {/* Header / URL Bar */}
                                 {stage === "idle" ? (
                                     <div className="p-6">
-                                        <div className="flex items-center gap-2 rounded-lg border bg-slate-50 px-3 py-2">
+                                        <div className="flex items-center gap-2 rounded-lg border border-border bg-[--surface-secondary] px-3 py-2">
                                             <Globe className="h-4 w-4 text-muted-foreground" />
                                             <span className="text-sm text-muted-foreground truncate">
                                                 {url || "https://your-website.com"}
