@@ -229,30 +229,6 @@ export default function PlaygroundPage() {
                           </SelectContent>
                         </Select>
                       </div>
-
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="text-xs text-muted-foreground">
-                            Temperature
-                          </label>
-                          <span className="text-xs font-mono text-muted-foreground tabular-nums">
-                            {temperature.toFixed(2)}
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          min="0"
-                          max="2"
-                          step="0.01"
-                          value={temperature}
-                          onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                          className="w-full cursor-pointer accent-primary"
-                        />
-                        <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-                          <span>Precise</span>
-                          <span>Creative</span>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
