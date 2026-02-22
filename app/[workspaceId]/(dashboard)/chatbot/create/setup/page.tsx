@@ -343,19 +343,19 @@ export default function SetupWizardPage() {
   const isRestoringResume = !!resumeBotId && (isResuming || (!resumeBot && step === 1));
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-full w-full flex-col bg-background">
       {/* Main Content */}
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8">
-        <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border bg-background lg:max-h-[716px] lg:grid-cols-2">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-2 lg:px-8 py-8">
+        <div className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center justify-center justify-items-center overflow-hidden rounded-3xl border border-border bg-card shadow-card lg:max-h-[716px] lg:grid-cols-2">
 
           {/* LEFT PANEL (Inputs & Steps) */}
-          <div className={`flex h-full w-full flex-col bg-background px-4 py-10 lg:px-20 lg:py-20 ${step >= 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
+          <div className={`flex h-full w-full flex-col bg-card px-4 py-10 lg:px-20 lg:py-20 ${step >= 6 ? 'overflow-y-auto justify-start' : 'overflow-y-auto justify-center'}`}>
             {isRestoringResume ? (
               <div className="flex flex-col items-center justify-center gap-4 text-center">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-lg font-semibold text-foreground">Restoring your progress…</h2>
-                  <p className="text-sm text-muted-foreground">Picking up where you left off</p>
+                  <h2 className="type-section-title text-foreground">Restoring your progress…</h2>
+                  <p className="type-body-muted">Picking up where you left off</p>
                 </div>
               </div>
             ) : (
@@ -393,7 +393,7 @@ export default function SetupWizardPage() {
           </div>
 
           {/* RIGHT PANEL (Visualization) */}
-          <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l bg-slate-50/50 lg:flex">
+          <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l border-border bg-[--surface-secondary] lg:flex">
             <SetupVisualization url={composedUrl} stage={stage}>
               {step === 4 && draftConfig && (
                 <div className="w-[400px] h-[650px] rounded-lg overflow-hidden shadow-lg">

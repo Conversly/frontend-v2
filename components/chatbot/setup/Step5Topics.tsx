@@ -76,8 +76,8 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">Topics</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="type-section-title">Topics</h1>
+        <p className="type-body-muted">
           Add topics to organize your agent&apos;s knowledge and analytics.
         </p>
       </div>
@@ -121,7 +121,7 @@ export function Step5Topics({ chatbotId, onContinue }: Step5TopicsProps) {
         ))}
       </div>
 
-      <Button className="w-full" onClick={onContinue}>
+      <Button className="w-full shadow-card" onClick={onContinue}>
         Continue
       </Button>
     </div>
