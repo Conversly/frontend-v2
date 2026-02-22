@@ -21,6 +21,7 @@ import { Step7Completion } from "@/components/chatbot/setup/Step7Completion";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
 import { LivePreviewWidget } from "@/components/chatbot/customization/LivePreviewWidget";
+import posthog from "posthog-js";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -325,6 +326,12 @@ export default function SetupWizardPage() {
       });
       // Invalidate chatbots cache so the new chatbot appears in the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
+
+      posthog.capture("chatbot_created", {
+        chatbot_id: chatbotId,
+        website_url: composedUrl,
+        use_case: useCase,
+      });
 
       // Go to completion step instead of redirecting
       setStep(7);

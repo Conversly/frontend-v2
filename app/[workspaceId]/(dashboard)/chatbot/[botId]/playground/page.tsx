@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import posthog from "posthog-js";
 
 export default function PlaygroundPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -33,6 +34,12 @@ export default function PlaygroundPage() {
 
   // For triggering widget refresh
   const [widgetKey, setWidgetKey] = useState(0);
+
+  useEffect(() => {
+    posthog.capture("playground_page_viewed", {
+      chatbot_id: botId
+    });
+  }, [botId]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -90,6 +97,10 @@ export default function PlaygroundPage() {
   }, [botId]);
 
   const handleSavePrompt = async () => {
+    posthog.capture("save_system_prompt_clicked", {
+      chatbot_id: botId
+    });
+
     if (!botId) return;
 
     setIsSavingPrompt(true);
