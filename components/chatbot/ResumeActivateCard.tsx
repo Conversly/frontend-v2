@@ -76,7 +76,7 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
     return (
         <Card className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-lg">
             {/* Stripe Pattern Header */}
-            <div className="relative h-[120px] w-full overflow-hidden">
+            <div className="relative h-[100px] w-full overflow-hidden">
                 {/* Diagonal stripes using CSS */}
                 <div
                     className="absolute inset-0"
@@ -84,13 +84,13 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
                         background: 'repeating-linear-gradient(45deg, var(--background) 0, var(--background) 10px, var(--card) 10px, var(--card) 20px)',
                     }}
                 />
-                {/* Gradient overlay that fades to card */}
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-100/40 to-card" />
+                {/* Gradient overlay that fades to card — 50% increase in intensity height */}
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-100/10 via-amber-100/40 to-card" />
 
                 {/* DRAFT Badge */}
                 <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 backdrop-blur-sm">
                     <div className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                    <span className="font-mono text-[10px] font-medium tracking-wider text-amber-700">
+                    <span className="text-2xs font-medium tracking-wider text-amber-700">
                         DRAFT
                     </span>
                 </div>
@@ -138,10 +138,10 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
                 {/* Progress Section */}
                 <div className="mb-5 border-t border-border pt-3">
                     <div className="flex items-end justify-between mb-1.5">
-                        <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">
+                        <p className="text-2xs text-muted-foreground uppercase tracking-wider">
                             Setup Progress
                         </p>
-                        <p className="font-mono text-xs font-medium text-amber-600">
+                        <p className="text-xs font-medium text-amber-600">
                             {progress}%
                         </p>
                     </div>

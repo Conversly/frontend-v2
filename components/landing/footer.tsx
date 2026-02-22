@@ -52,8 +52,13 @@ const quickLinks = [
 export default function Footer() {
   return (
     <footer className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden">
-      {/* Gradient transition section - White to Black */}
-      <div className="relative bg-gradient-to-b from-white via-blue-50 via-30% via-blue-200 via-50% via-blue-400 via-70% to-black">
+      {/* Smooth easing gradient - White to Brand Blue to Black */}
+      <div
+        className="relative"
+        style={{
+          background: 'linear-gradient(to bottom, #ffffff 0%, #f7fbff 12.5%, #edf5ff 25%, #d6eaff 37.5%, #b3d7ff 50%, #80bfff 62.5%, #4d94ff 75%, #0056b3 87.5%, #000000 100%)'
+        }}
+      >
         <div className="relative pt-20 pb-16">
           <motion.div
             className="text-center max-w-3xl mx-auto px-4"

@@ -23,7 +23,7 @@ interface ChatbotPreviewCardProps {
 const getPrimaryGradient = (primaryColor?: string | null) => {
   const color = primaryColor || '#007bff';
   return {
-    gradient: `linear-gradient(135deg, ${color}cc 0%, ${color}88 100%)`,
+    gradient: `linear-gradient(135deg, ${color} 0%, ${color}bf 100%)`, // Solid to 75% opacity
     baseColor: color,
   };
 };
@@ -79,23 +79,22 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
       {/* Gradient Header */}
       <Link
         href={playgroundHref}
-        className="relative block h-[120px] w-full overflow-hidden"
+        className="relative block h-[100px] w-full overflow-hidden"
         onClick={() => setIsNavigating(true)}
         aria-disabled={isNavigating}
       >
         <div
-          className="absolute inset-0 opacity-50"
+          className="absolute inset-0 opacity-100"
           style={{ background: gradient }}
         />
-        {/* White frosted layer to desaturate the gradient */}
-        <div className="absolute inset-0 bg-card/30" />
-        {/* Tall soft fade to card — fills bottom 60% to avoid a hard edge */}
-        <div className="absolute inset-x-0 bottom-0 h-[72px] bg-gradient-to-t from-card via-card/80 to-transparent" />
+        {/* Remove frosted layer to keep color vibrant */}
+        {/* Smooth full-height fade to card */}
+        <div className="absolute inset-0 bg-gradient-to-t from-card from-10% via-card/50 via-50% to-transparent" />
 
         {/* Status Badge */}
         <div className={`absolute right-3 top-3 flex items-center gap-1.5 rounded-full border px-2 py-0.5 backdrop-blur-sm ${badge.ringClass}`}>
           <div className={`h-1.5 w-1.5 rounded-full ${badge.dotClass}`} />
-          <span className={`font-mono text-[10px] font-medium tracking-wider ${badge.textClass}`}>
+          <span className={`text-2xs font-medium tracking-wider ${badge.textClass}`}>
             {badge.label}
           </span>
         </div>
@@ -138,21 +137,21 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
         {/* Metrics Row */}
         <div className="mb-5 flex items-center gap-5 border-t border-border pt-3">
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+            <p className="text-2xs text-muted-foreground uppercase tracking-wider mb-0.5">
               Conversations
             </p>
             <div className="flex items-center gap-1.5">
               <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="font-mono text-sm font-medium text-foreground">
+              <p className="text-sm font-medium text-foreground">
                 {chatbot.conversationCount ?? 0}
               </p>
             </div>
           </div>
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+            <p className="text-2xs text-muted-foreground uppercase tracking-wider mb-0.5">
               Version
             </p>
-            <p className="font-mono text-sm font-medium text-foreground">
+            <p className="text-sm font-medium text-foreground">
               v{chatbot.devVersion}
               {chatbot.liveVersion > 0 && chatbot.devVersion !== chatbot.liveVersion && (
                 <span className="text-amber-500 ml-1 text-[10px]">
@@ -163,10 +162,10 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
           </div>
           {chatbot.lastDeployedAt && (
             <div className="ml-auto text-right">
-              <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+              <p className="text-2xs text-muted-foreground uppercase tracking-wider mb-0.5">
                 Deployed
               </p>
-              <p className="font-mono text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {getTimeSince(chatbot.lastDeployedAt)}
               </p>
             </div>
