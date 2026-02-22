@@ -21,6 +21,7 @@ import { FileUploadContent } from './FileUploadContent';
 import { WebsiteContent } from './WebsiteContent';
 import { QAContent } from './QAContent';
 import { TextContent } from './TextContent';
+import { PendingSourcesPanel } from './PendingSourcesPanel';
 
 type SourceType = 'files' | 'website' | 'qa' | 'text' | null;
 
@@ -129,39 +130,52 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
       <DialogContent
         className={cn(
           'p-0 gap-0 rounded-xl overflow-hidden',
-          selectedSource ? 'max-w-4xl w-[90vw]' : 'max-w-2xl'
+          selectedSource ? 'max-w-6xl w-[95vw]' : 'max-w-2xl'
         )}
         showCloseButton={false}
       >
-        <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
-          <div className="flex items-center gap-3">
-            {selectedSource && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleBack}
-                className="h-8 w-8"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            )}
-            <DialogTitle className="type-section-title flex-1">{getDialogTitle()}</DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="h-8 w-8"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        </DialogHeader>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleClose}
+          className="absolute top-4 right-4 h-8 w-8 z-[60] bg-background/50 backdrop-blur-sm hover:bg-muted"
+        >
+          <X className="w-4 h-4" />
+        </Button>
 
-        <div className={cn(
-          "p-6 overflow-y-auto",
-          selectedSource ? "min-h-[50vh] max-h-[75vh]" : "max-h-[70vh]"
-        )}>
-          {renderContent()}
+        <div className="flex w-full h-full max-h-[85vh]">
+          {/* Main content column */}
+          <div className="flex-1 flex flex-col overflow-hidden min-w-0 border-r border-border md:border-none">
+            <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
+              <div className="flex items-center gap-3 pr-8">
+                {selectedSource && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleBack}
+                    className="h-8 w-8"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                )}
+                <DialogTitle className="type-section-title flex-1">{getDialogTitle()}</DialogTitle>
+              </div>
+            </DialogHeader>
+
+            <div className={cn(
+              "p-6 overflow-y-auto flex-1",
+              selectedSource ? "min-h-[50vh]" : "max-h-[70vh]"
+            )}>
+              {renderContent()}
+            </div>
+          </div>
+
+          {/* Pending Sources Column (Only showing when a source type is selected) */}
+          {selectedSource && (
+            <div className="hidden md:flex flex-col flex-shrink-0 pb-4">
+              <PendingSourcesPanel chatbotId={chatbotId} mode="inline" />
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

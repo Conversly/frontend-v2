@@ -503,6 +503,7 @@ export default function DataSourcesPage() {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           onAddKnowledge={() => setIsAddDialogOpen(true)}
+          chatbotId={botId}
           sourceCounts={sourceCounts}
         />
       </div>
@@ -665,8 +666,7 @@ export default function DataSourcesPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Pending Sources Panel */}
-      <PendingSourcesPanel chatbotId={botId} />
+      {/* Pending Sources Panel is now in the sidebar */}
     </div>
   );
 }
