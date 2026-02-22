@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
 import { motion } from "motion/react";
 import { Plan, plans as planConfig } from "@/lib/billingsdk-config";
-import posthog from "posthog-js";
 
 export interface PricingRedesignProps {
     plans: Plan[];
@@ -169,9 +168,7 @@ export function PricingRedesign({ plans, currentPlanId, currentPlanName, onPlanS
                     className={cn("w-full flex justify-center", isDialog ? "mt-2" : "mt-6")}
                 >
                     <PricingSwitch
-                        onSwitch={
-                            setIsYearly
-                        }
+                        onSwitch={setIsYearly}
                         className="w-full sm:w-fit"
                         maxDiscount={maxDiscount}
                         isDialog={isDialog}

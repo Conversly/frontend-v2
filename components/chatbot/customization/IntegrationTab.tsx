@@ -25,7 +25,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SectionHeader } from './SectionHeader';
 import { toast } from 'sonner';
 import { useState } from 'react';
-import posthog from 'posthog-js';
 import type { UIConfigInput } from '@/types/customization';
 import { DomainInfo } from '@/lib/api/deploy';
 
@@ -110,19 +109,11 @@ Script:
 
   const handleCopyEmbedCode = () => {
     navigator.clipboard.writeText(getEmbedCode());
-    posthog.capture("embed_script_copied", {
-      chatbot_id: chatbotId,
-      copy_method: "manual",
-    });
     toast.success('Embed code copied to clipboard');
   };
 
   const handleCopyCursorPrompt = () => {
     navigator.clipboard.writeText(getCursorPrompt());
-    posthog.capture("embed_script_copied", {
-      chatbot_id: chatbotId,
-      copy_method: "cursor_prompt",
-    });
     toast.success('Cursor prompt copied to clipboard');
   };
 

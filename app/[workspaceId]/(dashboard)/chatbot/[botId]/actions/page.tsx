@@ -13,7 +13,6 @@ import {
 } from '@/services/actions';
 import { Loader2 } from 'lucide-react';
 import { FeatureGuard } from '@/components/shared/FeatureGuard';
-import posthog from 'posthog-js';
 
 export default function ActionsPage() {
   const params = useParams();
@@ -54,10 +53,6 @@ export default function ActionsPage() {
           description: action.description,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
-        });
-        posthog.capture("action_created", {
-          chatbot_id: chatbotId,
-          action_name: action.name,
         });
       } else {
         if (!action.id) return;

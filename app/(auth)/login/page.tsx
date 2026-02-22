@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getUserWorkspaces } from "@/lib/api/workspaces";
-import posthog from "posthog-js";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -86,19 +85,11 @@ export default function LoginPage() {
 
         const response = await emailRegister(email.trim(), password, undefined);
         if (response.success) {
-          posthog.capture("user_signed_up", {
-            method: "email",
-            email: email.trim(),
-          });
           setVerificationSent(true);
         }
       } else {
         const response = await emailLogin(email, password);
         if (response.success) {
-          posthog.capture("user_logged_in", {
-            method: "email",
-            email: email.trim(),
-          });
           localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
 
           const workspaces = await getUserWorkspaces();

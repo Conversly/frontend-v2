@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
 import { toast } from "sonner";
-import posthog from "posthog-js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Loader2,
@@ -47,10 +46,6 @@ export default function VoicePage() {
     const [requestError, setRequestError] = useState("");
 
     const handleRequestSubmit = async () => {
-        posthog.capture("voice_agent_submit_clicked", {
-            chatbot_id: params.botId
-        });
-
         if (!useCase.trim()) {
             setRequestError("Please describe your use case");
             return;
@@ -76,10 +71,6 @@ export default function VoicePage() {
                 comments: `Integration Request: Voice Agents - ${useCase}`,
             });
             setIsRequestSuccess(true);
-            posthog.capture("voice_agent_requested", {
-                email: requestEmail,
-                use_case: useCase,
-            });
             toast.success("Request submitted successfully!");
         } catch (error: any) {
             console.error("Voice request error:", error);

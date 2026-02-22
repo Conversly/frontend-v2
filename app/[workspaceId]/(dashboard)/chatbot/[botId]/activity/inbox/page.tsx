@@ -39,7 +39,6 @@ import {
 import { closeConversation, markEscalationRead } from "@/lib/api/activity";
 import type { EscalationItem } from "@/types/activity";
 import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/agent-inbox";
-import posthog from "posthog-js";
 
 import {
   Search,
@@ -228,12 +227,6 @@ export default function InboxPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
   const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
-
-  useEffect(() => {
-    posthog.capture("live_inbox_page_viewed", {
-      chatbot_id: botId
-    });
-  }, [botId]);
 
   const { user } = useAuth();
   const agentUserId = user?.id || "";
@@ -490,12 +483,6 @@ export default function InboxPage() {
       setActiveConversation(e.conversationId);
       void markConversationRead(e.conversationId);
 
-      posthog.capture("escalation_claimed", {
-        chatbot_id: botId,
-        conversation_id: e.conversationId,
-        escalation_id: e.escalationId,
-      });
-
       sendMessage({
         action: WebSocketMessageType.CLAIM,
         room,
@@ -541,11 +528,6 @@ export default function InboxPage() {
     if (!activeConversationId) return;
     try {
       await closeConversation(activeConversationId);
-
-      posthog.capture("conversation_closed", {
-        chatbot_id: botId,
-        conversation_id: activeConversationId,
-      });
 
       // Immediately reflect closure locally so the inbox + header update deterministically.
       const escalationId = escalationIdByConversationId[activeConversationId] || "";

@@ -7,7 +7,6 @@ import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle 
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import posthog from "posthog-js";
 
 // API
 import { getChatbot, updateChatbot } from "@/lib/api/chatbot";
@@ -46,14 +45,6 @@ export default function BehaviourPage() {
     const [isGeneratingMain, setIsGeneratingMain] = useState(false);
     const [isGeneratingLead, setIsGeneratingLead] = useState(false);
     const [isGeneratingHandoff, setIsGeneratingHandoff] = useState(false);
-
-    useEffect(() => {
-        if (botId) {
-            posthog.capture("behavior_page_viewed", {
-                chatbot_id: botId
-            });
-        }
-    }, [botId]);
 
     useEffect(() => {
         async function loadData() {
@@ -243,14 +234,7 @@ export default function BehaviourPage() {
                         return (
                             <button
                                 key={tab.id}
-                                onClick={() => {
-                                    setActiveTab(tab.id);
-                                    posthog.capture("behavior_tab_clicked", {
-                                        chatbot_id: botId,
-                                        tab_id: tab.id,
-                                        tab_name: tab.label
-                                    });
-                                }}
+                                onClick={() => setActiveTab(tab.id)}
                                 className={cn(
                                     "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors",
                                     isActive

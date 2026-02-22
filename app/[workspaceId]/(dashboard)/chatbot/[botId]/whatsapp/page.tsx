@@ -278,7 +278,6 @@ import { WHATSAPP_SETUP_GUIDE } from '@/lib/constants/integrations';
 import { cn } from '@/lib/utils';
 import { useFacebookSDK } from '@/hooks/use-facebook-sdk';
 import { Separator } from "@/components/ui/separator";
-import posthog from "posthog-js";
 
 export default function WhatsAppSetupPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -375,13 +374,7 @@ export default function WhatsAppSetupPage() {
     checkExistingIntegration();
   }, [botId, router]);
 
-  const [hasStartedFillingForm, setHasStartedFillingForm] = useState(false);
-
   const handleInputChange = (field: string, value: string) => {
-    if (!hasStartedFillingForm) {
-      posthog.capture("whatsapp_form_started", { chatbot_id: botId });
-      setHasStartedFillingForm(true);
-    }
     setCredentials(prev => ({ ...prev, [field]: value }));
   };
 
@@ -391,7 +384,6 @@ export default function WhatsAppSetupPage() {
   };
 
   const generateVerifyToken = () => {
-    posthog.capture("whatsapp_generate_token_clicked", { chatbot_id: botId });
     const token = Array.from(crypto.getRandomValues(new Uint8Array(16)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
@@ -449,12 +441,6 @@ export default function WhatsAppSetupPage() {
 
       if (onboardResponse.success) {
         toast.success('WhatsApp integration completed successfully!');
-        posthog.capture("whatsapp_connected", {
-          chatbot_id: botId,
-          method: "facebook_oauth",
-          phone_number_id: phoneNumberId,
-          waba_id: wabaId,
-        });
         // Refresh to check for integration
         const integration = await getWhatsAppIntegration(botId);
         if (integration) {
@@ -466,12 +452,6 @@ export default function WhatsAppSetupPage() {
         // Check if integration was created despite webhook subscription failure
         const integration = await getWhatsAppIntegration(botId);
         if (integration) {
-          posthog.capture("whatsapp_connected", {
-            chatbot_id: botId,
-            method: "facebook_oauth",
-            phone_number_id: phoneNumberId,
-            partial: true,
-          });
           toast.success('WhatsApp integration created! Please configure webhooks manually in Meta Dashboard.');
           router.push(`/${workspaceId}/chatbot/${botId}/whatsapp/${integration.id}/live-chat`);
         } else {
@@ -534,7 +514,6 @@ export default function WhatsAppSetupPage() {
   }, [authCode, signupData, hasProcessed, processEmbeddedSignup]);
 
   const handleEmbeddedSignup = async () => {
-    posthog.capture("whatsapp_connect_facebook_clicked", { chatbot_id: botId });
     if (!isSDKLoaded) {
       toast.error('Facebook SDK is still loading. Please wait...');
       return;
@@ -578,7 +557,6 @@ export default function WhatsAppSetupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    posthog.capture("whatsapp_connect_clicked", { chatbot_id: botId });
 
     if (!credentials.phoneNumberId || !credentials.accessToken || !credentials.verifyToken || !credentials.businessAccountId || !(credentials as any).phoneNumber) {
       toast.error('Please fill in all required fields (Phone Number ID, Access Token, Verify Token, Business Account ID, and Phone Number)');
@@ -598,11 +576,6 @@ export default function WhatsAppSetupPage() {
       });
 
       toast.success('WhatsApp integration created successfully!');
-      posthog.capture("whatsapp_connected", {
-        chatbot_id: botId,
-        method: "manual",
-        phone_number_id: credentials.phoneNumberId,
-      });
 
       // Redirect to live-chat page by default
       if (result?.id) {
