@@ -169,7 +169,7 @@ export default function LoginPage() {
 
       {/* Main Content */}
       <div className="flex-1 mx-auto max-w-screen-lg w-full px-4 pb-24 sm:mt-12 md:px-8 relative z-0">
-        <div className="mx-auto flex w-full max-w-md flex-col space-y-24 lg:max-w-full lg:flex-row lg:items-center lg:space-x-24 lg:space-y-0">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-24 lg:max-w-full lg:flex-row lg:items-center">
 
           {/* Left Side - Login Form */}
           <div className="mx-auto mt-6 w-full sm:w-96 lg:shrink-0">
