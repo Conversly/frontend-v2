@@ -86,8 +86,8 @@ export default function HelpPage() {
                     buttonText: styles.buttonText || "Chat",
                     appearance: styles.appearance || "light",
                     widgetButtonText: styles.buttonText || "Chat",
-                    chatWidth: styles.chatWidth || "350px",
-                    chatHeight: styles.chatHeight || "500px"
+                    chatWidth: styles.chatWidth || "420px",
+                    chatHeight: styles.chatHeight || "700px"
                 };
 
                 setChatConfig(uiConfig);

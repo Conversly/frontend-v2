@@ -162,7 +162,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
             <Input
               value={config.chatWidth}
               onChange={(e) => updateConfig({ chatWidth: e.target.value })}
-              placeholder="e.g., 350px"
+              placeholder="e.g., 420px"
               className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
@@ -171,7 +171,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
             <Input
               value={config.chatHeight}
               onChange={(e) => updateConfig({ chatHeight: e.target.value })}
-              placeholder="e.g., 500px"
+              placeholder="e.g., 700px"
               className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
