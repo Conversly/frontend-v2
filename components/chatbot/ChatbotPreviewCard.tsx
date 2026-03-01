@@ -28,21 +28,6 @@ const getPrimaryGradient = (primaryColor?: string | null) => {
   };
 };
 
-// Deploy status badge config
-const getDeployBadge = (status: string | null) => {
-  switch (status) {
-    case 'SYNCED':
-      return { label: 'Live', dotClass: 'bg-green-500', textClass: 'text-green-700', ringClass: 'border-green-200 bg-green-50' };
-    case 'DEV_DIRTY':
-      return { label: 'Undeployed Changes', dotClass: 'bg-amber-500', textClass: 'text-amber-700', ringClass: 'border-amber-200 bg-amber-50' };
-    case 'DEPLOYING':
-      return { label: 'Deploying', dotClass: 'bg-primary animate-pulse', textClass: 'text-primary', ringClass: 'border-primary/20 bg-primary/5' };
-    case 'NOT_DEPLOYED':
-    default:
-      return { label: 'Not Deployed', dotClass: 'bg-muted-foreground/50', textClass: 'text-muted-foreground', ringClass: 'border-border bg-muted' };
-  }
-};
-
 // Time since helper
 const getTimeSince = (date: Date | null) => {
   if (!date) return "recently";
@@ -63,7 +48,6 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
   const playgroundHref = `${workspacePrefix}/chatbot/${chatbot.id}/playground`;
-  const badge = getDeployBadge(chatbot.deployStatusField);
 
   return (
     <Card className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-lg">
@@ -90,14 +74,6 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
         {/* Remove frosted layer to keep color vibrant */}
         {/* Smooth full-height fade to card */}
         <div className="absolute inset-0 bg-gradient-to-t from-card from-10% via-card/50 via-50% to-transparent" />
-
-        {/* Status Badge */}
-        <div className={`absolute right-3 top-3 flex items-center gap-1.5 rounded-full border px-2 py-0.5 backdrop-blur-sm ${badge.ringClass}`}>
-          <div className={`h-1.5 w-1.5 rounded-full ${badge.dotClass}`} />
-          <span className={`text-2xs font-medium tracking-wider ${badge.textClass}`}>
-            {badge.label}
-          </span>
-        </div>
       </Link>
 
       {/* Card Body */}
