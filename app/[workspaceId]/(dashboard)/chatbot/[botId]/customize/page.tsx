@@ -1,10 +1,8 @@
 "use client";
 
-import { Separator } from '@/components/ui/separator';
 import { useParams } from "next/navigation";
 import { useChatbotInWorkspace } from "@/services/chatbot";
 import { CustomizationTab } from "@/components/chatbot/customization/CustomizationTab";
-import { Loader2 } from "lucide-react";
 
 export default function CustomizePage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -17,15 +15,7 @@ export default function CustomizePage() {
 
   const { data: chatbot, isLoading } = useChatbotInWorkspace(workspaceId, botId);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (!chatbot) {
+  if (!isLoading && !chatbot) {
     return (
       <div className="container py-6">
         <div className="text-center">
@@ -41,7 +31,7 @@ export default function CustomizePage() {
       <div className="container mx-auto px-6 py-6 max-w-[1920px] h-full">
         <CustomizationTab
           chatbotId={botId}
-          systemPrompt={chatbot.systemPrompt || ""}
+          systemPrompt={chatbot?.systemPrompt || ""}
         />
       </div>
     </div>

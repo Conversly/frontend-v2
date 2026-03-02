@@ -185,17 +185,6 @@ export default function DeployLivePage() {
         }
     })();
 
-    if (isLoading && !status) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <div className="flex flex-col items-center gap-4">
-                    <Clock className="w-8 h-8 animate-spin text-blue-500" />
-                    <p className="text-muted-foreground font-medium">Loading deployment status...</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="p-6 h-full w-full space-y-6">
             {/* Header */}

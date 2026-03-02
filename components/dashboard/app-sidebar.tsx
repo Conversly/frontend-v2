@@ -50,6 +50,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { NavItem, NavSection } from "@/config/nav-config";
 import { getWorkspaceNavSections, getWorkspaceChatbotNavSections } from "@/config/nav-config";
 import { useMaybeWorkspace } from "@/contexts/workspace-context";
+import { usePrefetchChatbots, usePrefetchChatbot } from "@/services/chatbot";
+import { usePrefetchDataSources } from "@/services/datasource";
+import { usePrefetchEntitlements } from "@/hooks/useEntitlements";
+import { usePrefetchSubscription } from "@/contexts/subscription-context";
 
 
 
@@ -63,6 +67,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { setTheme, theme } = useTheme();
     const workspaceCtx = useMaybeWorkspace();
 
+    // Prefetch hooks for navigation optimization
+    const { prefetchChatbots } = usePrefetchChatbots();
+    const { prefetchChatbot } = usePrefetchChatbot();
+    const { prefetchDataSources } = usePrefetchDataSources();
+    const { prefetchEntitlements } = usePrefetchEntitlements();
+    const { prefetchSubscription } = usePrefetchSubscription();
+
     // Are we inside a specific chatbot route?
     // /:workspaceId/chatbot/:botId/...
     const segs = (pathname || "").split("/").filter(Boolean);
@@ -73,6 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         !!segs[2] &&
         segs[2] !== "create";
     const botId = isBotRoute ? segs[2] : null;
+    const workspaceId = workspaceCtx?.workspaceId;
 
 
 
@@ -110,6 +122,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         workspaceCtx && botId
             ? getWorkspaceChatbotNavSections(workspaceCtx.workspaceId, botId)
             : workspaceNavSections;
+
+    /**
+     * Handle navigation item hover with intelligent prefetching.
+     * Prefetches relevant data based on the target URL pattern.
+     */
+    const handleNavItemHover = React.useCallback((url: string) => {
+        if (!workspaceId) return;
+
+        // Prefetch subscription and entitlements (used across many pages)
+        prefetchSubscription();
+        prefetchEntitlements(workspaceId);
+
+        // Parse URL to determine what data to prefetch
+        const urlSegments = url.split("/").filter(Boolean);
+
+        // Workspace-level chatbot list page
+        if (urlSegments.length === 2 && urlSegments[1] === "chatbot") {
+            prefetchChatbots(workspaceId);
+            return;
+        }
+
+        // Chatbot-specific routes
+        const urlBotId = urlSegments[2];
+        if (urlBotId && urlBotId !== "create") {
+            // Prefetch chatbot details
+            prefetchChatbot(workspaceId, urlBotId);
+
+            // Prefetch data sources for sources page
+            if (urlSegments[3] === "sources") {
+                prefetchDataSources(urlBotId);
+            }
+        }
+    }, [workspaceId, prefetchChatbots, prefetchChatbot, prefetchDataSources, prefetchEntitlements, prefetchSubscription]);
 
 
 
@@ -189,7 +234,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 tooltip={item.title}
                                                 className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200"
                                             >
-                                                <Link href={item.url}>
+                                                <Link
+                                                    href={item.url}
+                                                    onMouseEnter={() => handleNavItemHover(item.url)}
+                                                    prefetch={true}
+                                                >
                                                     <div className={`p-1.5 rounded-lg flex items-center justify-center shrink-0 ${item.colorClass || "text-muted-foreground bg-muted/20"}`}>
                                                         <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
                                                     </div>

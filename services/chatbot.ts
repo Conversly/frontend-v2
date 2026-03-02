@@ -9,10 +9,17 @@ import {
   updateTopic,
   deleteTopic,
 } from "@/lib/api/chatbot";
-import type { TopicResponse } from "@/types/chatbot";
+import type { TopicResponse, ChatbotResponse, GetChatbotsResponse } from "@/types/chatbot";
 import { QUERY_KEY } from "@/utils/query-key";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
+
+// Cache configuration for chatbots
+const CHATBOT_CACHE_CONFIG = {
+  staleTime: 5 * 60 * 1000,  // 5 minutes
+  gcTime: 15 * 60 * 1000,    // 15 minutes
+};
 
 export const useCreateChatbot = () => {
   const queryClient = useQueryClient();
@@ -37,7 +44,51 @@ export const useGetChatbots = (workspaceId?: string) => {
       return getChatbots(workspaceId);
     },
     enabled: isAuthenticated && !!workspaceId, // Only fetch when authenticated + workspace known
-    staleTime: 60_000,
+    ...CHATBOT_CACHE_CONFIG,
+  });
+};
+
+/**
+ * Hook to prefetch chatbots for a workspace.
+ * Use for preloading data on hover/navigation before page mount.
+ */
+export const usePrefetchChatbots = () => {
+  const queryClient = useQueryClient();
+
+  const prefetchChatbots = useCallback((workspaceId: string) => {
+    if (!workspaceId) return;
+
+    // Only prefetch if not already in cache
+    const existingData = queryClient.getQueryData<GetChatbotsResponse[]>(
+      [QUERY_KEY.GET_CHATBOTS, workspaceId]
+    );
+
+    if (!existingData) {
+      queryClient.prefetchQuery({
+        queryKey: [QUERY_KEY.GET_CHATBOTS, workspaceId],
+        queryFn: () => getChatbots(workspaceId),
+        ...CHATBOT_CACHE_CONFIG,
+      });
+    }
+  }, [queryClient]);
+
+  return { prefetchChatbots };
+};
+
+/**
+ * Utility to prefetch chatbots outside of React components.
+ * Can be used in event handlers for optimal performance.
+ */
+export const prefetchChatbotsUtil = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  workspaceId: string
+) => {
+  if (!workspaceId) return Promise.resolve();
+
+  return queryClient.prefetchQuery({
+    queryKey: [QUERY_KEY.GET_CHATBOTS, workspaceId],
+    queryFn: () => getChatbots(workspaceId),
+    ...CHATBOT_CACHE_CONFIG,
   });
 };
 
@@ -163,6 +214,79 @@ export const useDeleteTopicMutation = (chatbotId: string) => {
         queryKey: [QUERY_KEY.TOPIC_PIE_CHART, chatbotId]
       });
     },
+  });
+};
+
+// Suspense-enabled hooks for streaming architecture
+
+/**
+ * Suspense-enabled hook for fetching chatbots in a workspace.
+ * Use within a React Suspense boundary - will throw a promise while loading.
+ */
+export const useSuspenseGetChatbots = (workspaceId: string) => {
+  return useSuspenseQuery({
+    queryKey: [QUERY_KEY.GET_CHATBOTS, workspaceId ?? "ALL"],
+    queryFn: (): Promise<GetChatbotsResponse[]> => {
+      if (!workspaceId) throw new Error("workspaceId is required");
+      return getChatbots(workspaceId);
+    },
+    ...CHATBOT_CACHE_CONFIG,
+  });
+};
+
+/**
+ * Suspense-enabled hook for fetching a single chatbot in a workspace.
+ * Use within a React Suspense boundary - will throw a promise while loading.
+ */
+export const useSuspenseChatbotInWorkspace = (workspaceId: string, chatbotId: string) => {
+  return useSuspenseQuery<ChatbotResponse>({
+    queryKey: [QUERY_KEY.GET_CHATBOT, workspaceId, chatbotId],
+    queryFn: () => getChatbot(workspaceId, chatbotId),
+    ...CHATBOT_CACHE_CONFIG,
+  });
+};
+
+/**
+ * Hook to prefetch a single chatbot.
+ * Use for preloading data when hovering over chatbot links.
+ */
+export const usePrefetchChatbot = () => {
+  const queryClient = useQueryClient();
+
+  const prefetchChatbot = useCallback((workspaceId: string, chatbotId: string) => {
+    if (!workspaceId || !chatbotId) return;
+
+    // Only prefetch if not already in cache
+    const existingData = queryClient.getQueryData<ChatbotResponse>(
+      [QUERY_KEY.GET_CHATBOT, workspaceId, chatbotId]
+    );
+
+    if (!existingData) {
+      queryClient.prefetchQuery({
+        queryKey: [QUERY_KEY.GET_CHATBOT, workspaceId, chatbotId],
+        queryFn: () => getChatbot(workspaceId, chatbotId),
+        ...CHATBOT_CACHE_CONFIG,
+      });
+    }
+  }, [queryClient]);
+
+  return { prefetchChatbot };
+};
+
+/**
+ * Utility to prefetch a single chatbot outside of React components.
+ */
+export const prefetchChatbotUtil = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  workspaceId: string,
+  chatbotId: string
+) => {
+  if (!workspaceId || !chatbotId) return Promise.resolve();
+
+  return queryClient.prefetchQuery({
+    queryKey: [QUERY_KEY.GET_CHATBOT, workspaceId, chatbotId],
+    queryFn: () => getChatbot(workspaceId, chatbotId),
+    ...CHATBOT_CACHE_CONFIG,
   });
 };
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle } from "lucide-react";
+import { Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -205,14 +205,6 @@ export default function BehaviourPage() {
             setLoading(false);
         }
     };
-
-    if (isLoading) {
-        return (
-            <div className="flex h-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-        );
-    }
 
     return (
         <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">

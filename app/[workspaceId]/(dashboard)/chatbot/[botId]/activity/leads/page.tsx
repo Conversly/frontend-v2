@@ -276,11 +276,29 @@ export default function LeadsPage() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                    Loading leads...
-                  </TableCell>
-                </TableRow>
+                // Skeleton loading rows
+                Array.from({ length: 8 }).map((_, i) => (
+                  <TableRow key={`skeleton-${i}`}>
+                    <TableCell>
+                      <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                        <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-5 w-20 bg-muted rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-4 w-28 bg-muted rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-8 w-8 bg-muted rounded-full animate-pulse" />
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : isError ? (
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center text-destructive">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -13,7 +13,6 @@ import {
   Edit3,
   Copy,
   Check,
-  Loader2,
   Calendar,
   Database,
   AlertCircle,
@@ -33,14 +32,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useDataSourcesQuery, useEmbeddingsQuery, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
-import { useEntitlements } from "@/hooks/useEntitlements";
+import { useSuspenseDataSources, useSuspenseEmbeddings, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
 import { toast } from 'sonner';
 import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
 import { useAccessControl } from '@/hooks/useAccessControl';
-import { useWorkspace } from '@/contexts/workspace-context';
+import { AsyncBoundary } from '@/components/shared/AsyncBoundary';
+import { DataSourceCardSkeleton } from '@/components/skeletons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -175,7 +174,6 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
 }
 
 function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem; onClose: () => void }) {
-  const { data: embeddings, isLoading } = useEmbeddingsQuery(dataSource.id);
   const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
 
   return (
@@ -220,33 +218,49 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
             <Database className="w-4 h-4 text-primary" />
             <h4 className="type-micro-heading">
               Embedding Chunks
-              {embeddings && (
-                <span className="text-muted-foreground font-normal ml-1">({embeddings.length})</span>
-              )}
             </h4>
           </div>
 
-          {isLoading ? (
+          <AsyncBoundary loadingFallback={
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <div className="text-sm text-muted-foreground">Loading embeddings...</div>
             </div>
-          ) : !embeddings || embeddings.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground">
-                No embeddings found. They may still be processing.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {embeddings.map((embedding, index) => (
-                <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
-              ))}
-            </div>
-          )}
+          }>
+            <EmbeddingChunksContent dataSourceId={dataSource.id} />
+          </AsyncBoundary>
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
+  const { data: embeddings } = useSuspenseEmbeddings(dataSourceId);
+
+  if (!embeddings || embeddings.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+        <p className="text-sm text-muted-foreground">
+          No embeddings found. They may still be processing.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-muted-foreground font-normal">({embeddings.length})</span>
+      </div>
+      <div className="space-y-3">
+        <AnimatePresence>
+          {embeddings.map((embedding, index) => (
+            <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
+          ))}
+        </AnimatePresence>
+      </div>
+    </>
   );
 }
 
@@ -391,22 +405,32 @@ function DataSourceCard({
   );
 }
 
-export default function DataSourcesPage() {
-  const routeParams = useParams<{ botId: string; workspaceId: string }>();
-  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
-  const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
+// =============================================================================
+// Dynamic Content Component - Uses Suspense
+// =============================================================================
 
-  const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
-  const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
-  const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+interface DataSourcesContentProps {
+  botId: string;
+  workspaceId: string;
+  selectedCategory: SourceCategory;
+  searchQuery: string;
+  onSourceToDelete: (source: DataSourceItem) => void;
+  onEditingSource: (source: DataSourceItem) => void;
+  onViewingSource: (source: DataSourceItem) => void;
+  isLiveMode: boolean;
+}
 
-  const { data: dataSources, isLoading } = useDataSourcesQuery(botId);
-  const deleteMutation = useDeleteKnowledge(botId);
-  const addCitationMutation = useAddCitation(botId);
-  const { guardEdit, isLiveMode } = useEditGuard();
+function DataSourcesContent({
+  botId,
+  workspaceId,
+  selectedCategory,
+  searchQuery,
+  onSourceToDelete,
+  onEditingSource,
+  onViewingSource,
+  isLiveMode,
+}: DataSourcesContentProps) {
+  const { data: dataSources } = useSuspenseDataSources(botId);
   const accessControl = useAccessControl(workspaceId);
 
   // Calculate source counts by type
@@ -433,6 +457,86 @@ export default function DataSourcesPage() {
       return matchesSearch && matchesCategory;
     });
   }, [dataSources, searchQuery, selectedCategory]);
+
+  if (filteredSources.length === 0) {
+    return (
+      <div className="p-6">
+        {dataSources?.length === 0 ? (
+          <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
+            {({ isLocked }) => (
+              <EmptyState
+                title="No knowledge sources yet"
+                description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
+                icon={<Database />}
+                primaryAction={accessControl.datasources.canManage ? {
+                  label: "Add Knowledge",
+                  onClick: () => {},
+                  icon: isLocked ? <Lock /> : <Plus />,
+                } : undefined}
+                className="border-dashed bg-card/30"
+              />
+            )}
+          </FeatureGuard>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No sources match your search
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
+      <AnimatePresence mode="popLayout">
+        {filteredSources.map((source) => (
+          <DataSourceCard
+            key={source.id}
+            dataSource={source}
+            onDelete={() => onSourceToDelete(source)}
+            onEditCitation={() => onEditingSource(source)}
+            onViewChunks={() => onViewingSource(source)}
+            isLiveMode={isLiveMode}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// =============================================================================
+// Grid Skeleton for Loading State
+// =============================================================================
+
+function DataSourceGridSkeleton({ count = 9 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
+      {Array.from({ length: count }).map((_, i) => (
+        <DataSourceCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
+// Main Page Component
+// =============================================================================
+
+export default function DataSourcesPage() {
+  const routeParams = useParams<{ botId: string; workspaceId: string }>();
+  const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
+
+  const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
+  const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
+  const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const deleteMutation = useDeleteKnowledge(botId);
+  const addCitationMutation = useAddCitation(botId);
+  const { guardEdit, isLiveMode } = useEditGuard();
 
   const confirmDelete = async () => {
     if (!sourceToDelete) return;
@@ -472,11 +576,6 @@ export default function DataSourcesPage() {
     }
   };
 
-  const handleEditCitation = (source: DataSourceItem) => {
-    if (!guardEdit(() => true)) return;
-    setEditingSource(source);
-  };
-
   const getCategoryTitle = () => {
     switch (selectedCategory) {
       case 'URL': return 'Websites';
@@ -489,14 +588,13 @@ export default function DataSourcesPage() {
 
   return (
     <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">
-      {/* Left Sidebar - Categories (Fixed) */}
+      {/* Left Sidebar - Categories (Fixed) - Note: sourceCounts comes from hook inside sidebar */}
       <div className="flex-shrink-0 h-full">
         <SourcesCategorySidebar
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           onAddKnowledge={() => setIsAddDialogOpen(true)}
           chatbotId={botId}
-          sourceCounts={sourceCounts}
         />
       </div>
 
@@ -510,14 +608,22 @@ export default function DataSourcesPage() {
                 {getCategoryTitle()}
               </h1>
               <p className="type-body-muted mt-1">
-                {filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}
+                {/* Show loading state for count */}
+                <Suspense fallback="Loading...">
+                  <DataSourceCount
+                    botId={botId}
+                    selectedCategory={selectedCategory}
+                    searchQuery={searchQuery}
+                  />
+                </Suspense>
               </p>
             </div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
+                    {/* Optimistically show 0 until data loads */}
+                    <FeatureGuard feature="datasources" currentUsage={0}>
                       {({ isLocked }) => (
                         <Button
                           onClick={() => setIsAddDialogOpen(true)}
@@ -547,52 +653,22 @@ export default function DataSourcesPage() {
           </div>
         </div>
 
-        {/* Table (Scrollable) */}
+        {/* Table (Scrollable) - Wrapped in AsyncBoundary for streaming */}
         <div className="flex-1 overflow-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : filteredSources.length === 0 ? (
-            <div className="p-6">
-              {dataSources?.length === 0 ? (
-                <FeatureGuard feature="datasources" currentUsage={dataSources?.length ?? 0}>
-                  {({ isLocked }) => (
-                    <EmptyState
-                      title="No knowledge sources yet"
-                      description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
-                      icon={<Database />}
-                      primaryAction={accessControl.datasources.canManage ? {
-                        label: "Add Knowledge",
-                        onClick: () => setIsAddDialogOpen(true),
-                        icon: isLocked ? <Lock /> : <Plus />,
-                      } : undefined}
-                      className="border-dashed bg-card/30"
-                    />
-                  )}
-                </FeatureGuard>
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  No sources match your search
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
-              <AnimatePresence mode="popLayout">
-                {filteredSources.map((source) => (
-                  <DataSourceCard
-                    key={source.id}
-                    dataSource={source}
-                    onDelete={() => handleDelete(source)}
-                    onEditCitation={() => handleEditCitation(source)}
-                    onViewChunks={() => setViewingSource(source)}
-                    isLiveMode={isLiveMode}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
-          )}
+          <AsyncBoundary
+            loadingFallback={<DataSourceGridSkeleton count={9} />}
+          >
+            <DataSourcesContent
+              botId={botId}
+              workspaceId={workspaceId}
+              selectedCategory={selectedCategory}
+              searchQuery={searchQuery}
+              onSourceToDelete={handleDelete}
+              onEditingSource={setEditingSource}
+              onViewingSource={setViewingSource}
+              isLiveMode={isLiveMode}
+            />
+          </AsyncBoundary>
         </div>
       </div>
 
@@ -650,5 +726,35 @@ export default function DataSourcesPage() {
 
       {/* Pending Sources Panel is now in the sidebar */}
     </div>
+  );
+}
+
+// =============================================================================
+// Helper component for rendering source count in header
+// =============================================================================
+
+function DataSourceCount({
+  botId,
+  selectedCategory,
+  searchQuery,
+}: {
+  botId: string;
+  selectedCategory: SourceCategory;
+  searchQuery: string;
+}) {
+  const { data: dataSources } = useSuspenseDataSources(botId);
+
+  const filteredSources = useMemo(() => {
+    if (!dataSources) return [];
+    return dataSources.filter((source) => {
+      const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || source.type === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [dataSources, searchQuery, selectedCategory]);
+
+  return (
+    <>{filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}</>
   );
 }
