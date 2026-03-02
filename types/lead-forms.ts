@@ -53,7 +53,7 @@ export interface UpsertLeadFormConfigInput {
     chatbotId: string;
     form: Omit<CreateLeadFormInput, 'chatbotId'> & { id?: string };
     fields: LeadFormFieldInput[];
-    triggers: LeadFormTriggerInput[];
+    triggers?: LeadFormTriggerInput[];
 }
 
 export interface SubmitLeadInput {

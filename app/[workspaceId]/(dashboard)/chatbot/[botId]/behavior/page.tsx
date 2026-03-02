@@ -51,7 +51,7 @@ export default function BehaviourPage() {
             if (!botId || !workspaceId) return;
             setIsLoading(true);
             try {
-                const [chatbotData, , widgetPrompt, leadPrompt, handoffPrompt, leadForm, behaviourConfigs] = await Promise.all([
+                const [chatbotData, , widgetPrompt, leadPrompt, handoffPrompt, leadFormData, behaviourConfigs] = await Promise.all([
                     getChatbot(workspaceId, botId),
                     getWidgetConfig(botId),
                     getChannelPrompt(botId, "WIDGET").catch(() => ({ systemPrompt: "" })),
@@ -70,28 +70,38 @@ export default function BehaviourPage() {
                 setBehaviour(prev => ({
                     ...prev,
                     // Merge saved IDENTITY config (identity + style) if it exists
-                    identity: savedConfigs.IDENTITY?.identity
-                        ? { ...prev.identity, ...savedConfigs.IDENTITY.identity, aiName: chatbotData.name }
-                        : { ...prev.identity, aiName: chatbotData.name },
+                    // aiName comes from chatbotData.name as source of truth, but other identity fields from saved config
+                    identity: {
+                        ...prev.identity,
+                        ...(savedConfigs.IDENTITY?.identity || {}),
+                        aiName: chatbotData.name || prev.identity.aiName,
+                    },
                     style: savedConfigs.IDENTITY?.style
                         ? { ...prev.style, ...savedConfigs.IDENTITY.style }
                         : prev.style,
                     handoff: {
                         ...prev.handoff,
                         enabled: chatbotData.escalationEnabled ?? false,
-                        // Merge saved HANDOFF config if it exists
-                        ...(savedConfigs.HANDOFF || {}),
-                        // Always use DB-sourced enabled state
-                        ...(chatbotData.escalationEnabled !== undefined
-                            ? { enabled: chatbotData.escalationEnabled }
-                            : {}),
+                        // Merge saved HANDOFF config if it exists (preserving escalationTriggers, fallbackAction, additionalInstructions)
+                        escalationTriggers: savedConfigs.HANDOFF?.escalationTriggers
+                            ? { ...prev.handoff.escalationTriggers, ...savedConfigs.HANDOFF.escalationTriggers }
+                            : prev.handoff.escalationTriggers,
+                        fallbackAction: savedConfigs.HANDOFF?.fallbackAction
+                            ?? prev.handoff.fallbackAction,
+                        additionalInstructions: savedConfigs.HANDOFF?.additionalInstructions
+                            ?? prev.handoff.additionalInstructions,
+                        // Determine supportMode: prefer saved config, then derive from enabled flag, then default
                         supportMode: savedConfigs.HANDOFF?.supportMode
                             ?? (chatbotData.escalationEnabled ? "When AI is unsure" : "AI only"),
                         systemPrompt: handoffPrompt?.systemPrompt || "",
                     },
                     leadGen: {
                         ...prev.leadGen,
-                        form: leadForm?.data?.data || {
+                        form: leadFormData ? {
+                            ...leadFormData,
+                            // Always use chatbot's leadGenerationEnabled as the source of truth
+                            isEnabled: chatbotData.leadGenerationEnabled ?? false,
+                        } : {
                             id: "", chatbotId: botId,
                             title: "Contact Us", subtitle: "We'll get back to you shortly",
                             ctaText: "Send Message", successMessage: "Thanks! We received your message.",
@@ -107,8 +117,8 @@ export default function BehaviourPage() {
                             ? { ...prev.leadGen.leadConfig, ...savedConfigs.LEAD_GENERATION }
                             : {
                                 ...prev.leadGen.leadConfig,
-                                pageTriggers: leadForm?.data?.data?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
-                                keywords: leadForm?.data?.data?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
+                                pageTriggers: leadFormData?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
+                                keywords: leadFormData?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
                             },
                     },
                     mainSystemPrompt: widgetPrompt?.systemPrompt || "",
@@ -129,7 +139,7 @@ export default function BehaviourPage() {
             const promises: Promise<any>[] = [];
             if (activeTab === "identity") {
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "WIDGET", systemPrompt: behaviour.mainSystemPrompt }));
-                // Persist UI config
+                // Persist UI config (aiName is the AI's self-reference during conversations, separate from chatbot name)
                 promises.push(upsertBehaviourConfig(botId, "IDENTITY", {
                     identity: behaviour.identity,
                     style: behaviour.style,
