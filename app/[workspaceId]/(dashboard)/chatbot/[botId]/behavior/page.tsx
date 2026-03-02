@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
