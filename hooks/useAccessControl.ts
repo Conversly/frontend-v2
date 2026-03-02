@@ -181,25 +181,25 @@ export function useOptimisticAccessControl(workspaceId: string): OptimisticAcces
         actions: {
             canManage: capabilities?.canEditChatbot ?? defaultOptimisticAccess.canManage,
             isEnabledOnPlan: (!!entitlements?.features?.actions && isAccountActive) ?? defaultOptimisticAccess.isEnabledOnPlan,
-            limit: entitlements?.limits?.actionsNum ?? defaultOptimisticAccess.limit,
+            limit: Number(entitlements?.limits?.actionsNum ?? defaultOptimisticAccess.limit),
         },
 
         datasources: {
             canManage: capabilities?.canEditChatbot ?? defaultOptimisticAccess.canManage,
             isEnabledOnPlan: isAccountActive ?? defaultOptimisticAccess.isEnabledOnPlan,
-            limit: entitlements?.limits?.datasources ?? defaultOptimisticAccess.limit,
+            limit: Number(entitlements?.limits?.datasources ?? defaultOptimisticAccess.limit),
         },
 
         chatbots: {
             canManage: defaultOptimisticAccess.canManage, // Typically all admins/owners can create chatbots
             isEnabledOnPlan: isAccountActive ?? defaultOptimisticAccess.isEnabledOnPlan,
-            limit: entitlements?.limits?.chatbots ?? defaultOptimisticAccess.limit,
+            limit: Number(entitlements?.limits?.chatbots ?? defaultOptimisticAccess.limit),
         },
 
         team_members: {
             canManage: capabilities?.canManageMembers ?? defaultOptimisticAccess.canManage,
             isEnabledOnPlan: isAccountActive ?? defaultOptimisticAccess.isEnabledOnPlan,
-            limit: entitlements?.limits?.team_members ?? defaultOptimisticAccess.limit,
+            limit: Number(entitlements?.limits?.team_members ?? defaultOptimisticAccess.limit),
         },
     };
 }
