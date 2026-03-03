@@ -357,10 +357,6 @@ function DataSourceCard({
               <Eye className="w-4 h-4 mr-2" />
               View chunks
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onViewChunks}>
-              <Eye className="w-4 h-4 mr-2" />
-              View chunks
-            </DropdownMenuItem>
             <FeatureGuard feature="datasources">
               <DropdownMenuItem
                 onClick={onEditCitation}
