@@ -161,14 +161,14 @@ export default function BehaviourPage() {
                             pageTriggers: behaviour.leadGen.leadConfig.pageTriggers.split(",").map(s => s.trim()).filter(Boolean),
                             keywordTriggers: behaviour.leadGen.leadConfig.keywords.split(",").map(s => s.trim()).filter(Boolean),
                         },
-                        fields: behaviour.leadGen.form.fields.map((f, i) => ({
+                        fields: (behaviour.leadGen.form.fields ?? []).map((f, i) => ({
                             ...f, position: i,
                             id: f.id.startsWith("temp_") ? undefined : f.id,
                             placeholder: f.placeholder || undefined,
                             options: f.options || undefined,
                             systemField: f.systemField || undefined,
                         })),
-                        triggers: behaviour.leadGen.form.triggers.map(t => ({ ...t, id: t.id.startsWith("temp_") ? undefined : t.id })),
+                        triggers: (behaviour.leadGen.form.triggers ?? []).map(t => ({ ...t, id: t.id.startsWith("temp_") ? undefined : t.id })),
                     }));
                 }
                 // Persist UI config
