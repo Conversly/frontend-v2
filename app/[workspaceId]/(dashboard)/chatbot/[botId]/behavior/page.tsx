@@ -174,6 +174,7 @@ export default function BehaviourPage() {
                 // Persist UI config
                 promises.push(upsertBehaviourConfig(botId, "LEAD_GENERATION", behaviour.leadGen.leadConfig));
             }
+
             if (activeTab === "handoff") {
                 promises.push(updateChatbot({ id: botId, workspaceId, escalationEnabled: behaviour.handoff.enabled }));
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "ESCALATION", systemPrompt: behaviour.handoff.systemPrompt }));
