@@ -165,6 +165,14 @@ export default function SetupWizardPage() {
     }
   }, [widgetPrompt]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Sync with store's inferredPrompt when it arrives (after Step 2 completes)
+  // This ensures the AI-generated prompt is shown instead of the outdated default
+  useEffect(() => {
+    if (inferredPrompt && !draftPrompt) {
+      setDraftPrompt(inferredPrompt);
+    }
+  }, [inferredPrompt]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Polling for prompt only if we genuinely have nothing yet (e.g. async generation still running)
   useEffect(() => {
     if (
