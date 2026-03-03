@@ -1,9 +1,19 @@
-import React from "react";
+import { Metadata } from 'next';
 import { HelpChat } from "@/components/help/HelpChat";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: 'Help & Support | VerlyAI',
+  description: 'Get help with VerlyAI. Contact our support team via email, live chat, or WhatsApp. Access documentation and FAQs for AI customer support agents.',
+  openGraph: {
+    title: 'Help & Support | VerlyAI',
+    description: 'Get support for VerlyAI platform. Contact us via email, live chat, or WhatsApp.',
+    url: 'https://verlyai.xyz/help',
+  },
+};
 
 export default function HelpPage() {
     return (

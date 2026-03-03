@@ -188,7 +188,8 @@ export default function BehaviourPage() {
             await Promise.all(promises);
             toast.success("Changes saved successfully!");
         } catch (error) {
-            toast.error("Failed to save changes");
+            console.error("Save error:", error);
+            toast.error(error instanceof Error ? error.message : "Failed to save changes");
         } finally {
             setIsSaving(false);
         }

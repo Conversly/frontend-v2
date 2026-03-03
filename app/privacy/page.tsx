@@ -1,7 +1,16 @@
-'use client';
-
+import { Metadata } from 'next';
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | VerlyAI',
+  description: 'VerlyAI privacy policy. Learn how we collect, use, and protect your data. GDPR compliant, SOC 2 certified, and HIPAA-ready for healthcare use cases.',
+  openGraph: {
+    title: 'Privacy Policy | VerlyAI',
+    description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA regulations.',
+    url: 'https://verlyai.xyz/privacy',
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

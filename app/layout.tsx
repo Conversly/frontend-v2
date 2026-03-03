@@ -8,7 +8,7 @@ import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
-import { defaultMetadata, organizationSchema } from "@/lib/metadata";
+import { defaultMetadata, organizationSchema, websiteSchema } from "@/lib/metadata";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -36,6 +36,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         {isTesting && (
           <script

@@ -1,7 +1,16 @@
-'use client';
-
+import { Metadata } from 'next';
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | VerlyAI',
+  description: 'VerlyAI Terms of Service. Read our terms for using AI customer support agents, WhatsApp automation, and voice AI services.',
+  openGraph: {
+    title: 'Terms of Service | VerlyAI',
+    description: 'Terms and conditions for using VerlyAI platform, including WhatsApp automation and AI customer support services.',
+    url: 'https://verlyai.xyz/terms',
+  },
+};
 
 export default function TermsOfServicePage() {
   return (

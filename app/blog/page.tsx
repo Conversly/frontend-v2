@@ -1,41 +1,21 @@
-"use client";
-
+import { Metadata } from 'next';
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
-const BLOG_POSTS = [
-    {
-        title: "Why Decision Trees Are Dead: The Shift to Autonomous Agents",
-        excerpt: "Traditional chatbots fail when users go off-script. Discover how VerlyAI's LLM-native agents understand intent and resolve complex issues without rigid decision trees.",
-        date: "Jan 12, 2026",
-        readTime: "5 min read",
-        category: "AI Strategy",
-        slug: "decision-trees-dead-autonomous-agents",
-        image: "/images/blog/autonomous-agents.png",
-    },
-    {
-        title: "Building a Voice Agent in 10 Minutes with VerlyAI",
-        excerpt: "A step-by-step guide to deploying a low-latency voice AI that can handle interruptions, accents, and complex queries over the phone.",
-        date: "Jan 08, 2026",
-        readTime: "8 min read",
-        category: "Tutorials",
-        slug: "building-voice-agent-10-minutes",
-        image: "/images/blog/voice-ai.png",
-    },
-    {
-        title: "Multi-Channel Support: Integrating WhatsApp and Web Chat",
-        excerpt: "Write once, deploy everywhere. Learn how to configure a single VerlyAI agent to handle support tickets seamlessly across WhatsApp, Web, and Voice channels.",
-        date: "Jan 05, 2026",
-        readTime: "6 min read",
-        category: "Engineering",
-        slug: "multi-channel-support-whatsapp-web",
-        image: "/images/blog/omnichannel.png",
-    }
-];
+import { BLOG_POSTS } from "@/lib/blog-data";
+
+export const metadata: Metadata = {
+  title: 'Blog - AI Customer Support & Voice AI Insights | VerlyAI',
+  description: 'Explore the VerlyAI blog for expert insights on AI customer support, voice AI agents, WhatsApp automation, and the future of autonomous support systems.',
+  openGraph: {
+    title: 'Blog - AI Customer Support & Voice AI Insights | VerlyAI',
+    description: 'Deep dives into AI technology, customer experience strategies, and product updates from the VerlyAI team.',
+    url: 'https://verlyai.xyz/blog',
+  },
+};
 
 export default function BlogPage() {
     return (
@@ -47,7 +27,7 @@ export default function BlogPage() {
                 <div className="max-w-7xl mx-auto space-y-12">
                     <div className="text-center space-y-4">
                         <Badge variant="secondary">Latest Updates</Badge>
-                        <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Fresh from the Editors</h2>
+                        <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Fresh from the Editors</h1>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                             Deep dives into AI technology, customer experience strategies, and product updates.
                         </p>

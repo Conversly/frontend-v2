@@ -238,9 +238,9 @@ function OfferingCard({ card, index }: { card: Card; index: number }) {
             >
               {card.icon}
             </div>
-            <p className="text-sm font-semibold tracking-tight">
+            <h3 className="text-sm font-semibold tracking-tight">
               {card.title}
-            </p>
+            </h3>
           </div>
           <p className="text-foreground/80 text-sm font-medium leading-relaxed line-clamp-2">
             {card.tagline}

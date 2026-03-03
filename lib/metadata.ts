@@ -96,13 +96,13 @@ export const organizationSchema = {
   operatingSystem: 'Cloud, Web',
   url: 'https://verlyai.xyz',
   description:
-    'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration.',
+    'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration. Deploy AI agents that handle 10X more customers without hiring.',
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
     name: 'Free Starter Plan',
-    description: 'Start for free with 500 messages included.',
+    description: 'Start for free with 50 messages included per month.',
   },
   aggregateRating: {
     '@type': 'AggregateRating',
@@ -120,14 +120,89 @@ export const organizationSchema = {
     ],
   },
   featureList: [
-    'AI-powered chatbots',
-    'Voice assistant integration',
+    'AI-powered chatbots for website',
+    'Voice AI agents for phone calls',
     'WhatsApp business automation',
     'Multi-channel customer support',
     'Automated ticket resolution',
     'Human handoff escalation',
-    'Real-time analytics',
+    'Real-time analytics dashboard',
     'Custom knowledge base integration',
+    '24/7 availability',
+    'Support for 95+ languages',
+    'Smart AI model switching',
+    'Seamless CRM integrations',
   ],
   screenshot: 'https://verlyai.xyz/verly_dashboard_preview.png',
+};
+
+// WebSite schema for homepage
+export const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'VerlyAI - AI Customer Support Agents',
+  url: 'https://verlyai.xyz',
+  description: 'Deploy AI agents across Website chat, Voice & WhatsApp in minutes. Automate 80% of customer support tickets with intelligent AI that handles unlimited conversations simultaneously.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://verlyai.xyz/solutions?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'VerlyAI',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://verlyai.xyz/verly_logo.png',
+    },
+  },
+  mainEntity: {
+    '@type': 'Service',
+    name: 'AI Customer Support Automation',
+    description: 'AI-powered customer support agents that work across Voice, WhatsApp, and Web Chat to handle unlimited conversations 24/7.',
+    provider: {
+      '@type': 'Organization',
+      name: 'VerlyAI',
+    },
+    areaServed: 'Global',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'AI Support Plans',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Free Plan',
+            description: '1 chatbot, 50 messages/month',
+          },
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Hobby Plan',
+            description: '3 chatbots, 3,000 messages/month',
+          },
+          price: '29.99',
+          priceCurrency: 'USD',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Standard Plan',
+            description: '10 chatbots, 12,000 messages/month',
+          },
+          price: '79.99',
+          priceCurrency: 'USD',
+        },
+      ],
+    },
+  },
 };
