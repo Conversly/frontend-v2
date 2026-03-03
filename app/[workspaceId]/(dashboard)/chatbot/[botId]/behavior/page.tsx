@@ -1,12 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle, AlertCircle, Wand2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 // API
 import { getChatbot, updateChatbot } from "@/lib/api/chatbot";
@@ -31,12 +39,18 @@ const TABS: { id: TabId; label: string; icon: React.ElementType; description: st
     { id: "handoff", label: "Human Handoff", icon: UserPlus, description: "Escalation rules" },
 ];
 
+// Deep equality helper for comparing states
+function deepEqual(a: any, b: any): boolean {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
 export default function BehaviourPage() {
     const params = useParams<{ workspaceId: string; botId: string }>();
     const botId = Array.isArray(params.botId) ? params.botId[0] : params.botId;
     const workspaceId = Array.isArray(params.workspaceId) ? params.workspaceId[0] : params.workspaceId;
 
     const [behaviour, setBehaviour] = useState<BehaviourState>(DEFAULT_BEHAVIOUR_STATE);
+    const [originalBehaviour, setOriginalBehaviour] = useState<BehaviourState | null>(null);
     const [activeTab, setActiveTab] = useState<TabId>("identity");
 
     const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +59,47 @@ export default function BehaviourPage() {
     const [isGeneratingMain, setIsGeneratingMain] = useState(false);
     const [isGeneratingLead, setIsGeneratingLead] = useState(false);
     const [isGeneratingHandoff, setIsGeneratingHandoff] = useState(false);
+
+    // Track if prompt was generated since last config change
+    const [promptGeneratedFlags, setPromptGeneratedFlags] = useState({
+        identity: false,
+        leadGen: false,
+        handoff: false,
+    });
+
+    // Dialog state
+    const [showSaveDialog, setShowSaveDialog] = useState(false);
+    const [pendingSectionsToGenerate, setPendingSectionsToGenerate] = useState<TabId[]>([]);
+
+    // Compute changes per section
+    const hasChanges = useMemo(() => ({
+        identity: originalBehaviour
+            ? !deepEqual(originalBehaviour.identity, behaviour.identity) ||
+              !deepEqual(originalBehaviour.style, behaviour.style)
+            : false,
+        leadGen: originalBehaviour
+            ? !deepEqual(originalBehaviour.leadGen, behaviour.leadGen)
+            : false,
+        handoff: originalBehaviour
+            ? !deepEqual(originalBehaviour.handoff, behaviour.handoff)
+            : false,
+    }), [originalBehaviour, behaviour]);
+
+    const anyChanges = hasChanges.identity || hasChanges.leadGen || hasChanges.handoff;
+
+    // Wrapper to update behaviour and reset prompt flags when config changes
+    const updateBehaviour = (updater: (prev: BehaviourState) => BehaviourState) => {
+        setBehaviour(prev => {
+            const newState = updater(prev);
+            // Reset prompt flags since config changed
+            setPromptGeneratedFlags({
+                identity: false,
+                leadGen: false,
+                handoff: false,
+            });
+            return newState;
+        });
+    };
 
     useEffect(() => {
         async function loadData() {
@@ -67,36 +122,36 @@ export default function BehaviourPage() {
                     savedConfigs[cfg.section] = cfg.config;
                 });
 
-                setBehaviour(prev => ({
-                    ...prev,
+                const loadedBehaviour: BehaviourState = {
+                    ...DEFAULT_BEHAVIOUR_STATE,
                     // Merge saved IDENTITY config (identity + style) if it exists
                     // aiName comes from chatbotData.name as source of truth, but other identity fields from saved config
                     identity: {
-                        ...prev.identity,
+                        ...DEFAULT_BEHAVIOUR_STATE.identity,
                         ...(savedConfigs.IDENTITY?.identity || {}),
-                        aiName: chatbotData.name || prev.identity.aiName,
+                        aiName: chatbotData.name || DEFAULT_BEHAVIOUR_STATE.identity.aiName,
                     },
                     style: savedConfigs.IDENTITY?.style
-                        ? { ...prev.style, ...savedConfigs.IDENTITY.style }
-                        : prev.style,
+                        ? { ...DEFAULT_BEHAVIOUR_STATE.style, ...savedConfigs.IDENTITY.style }
+                        : DEFAULT_BEHAVIOUR_STATE.style,
                     handoff: {
-                        ...prev.handoff,
+                        ...DEFAULT_BEHAVIOUR_STATE.handoff,
                         enabled: chatbotData.escalationEnabled ?? false,
                         // Merge saved HANDOFF config if it exists (preserving escalationTriggers, fallbackAction, additionalInstructions)
                         escalationTriggers: savedConfigs.HANDOFF?.escalationTriggers
-                            ? { ...prev.handoff.escalationTriggers, ...savedConfigs.HANDOFF.escalationTriggers }
-                            : prev.handoff.escalationTriggers,
+                            ? { ...DEFAULT_BEHAVIOUR_STATE.handoff.escalationTriggers, ...savedConfigs.HANDOFF.escalationTriggers }
+                            : DEFAULT_BEHAVIOUR_STATE.handoff.escalationTriggers,
                         fallbackAction: savedConfigs.HANDOFF?.fallbackAction
-                            ?? prev.handoff.fallbackAction,
+                            ?? DEFAULT_BEHAVIOUR_STATE.handoff.fallbackAction,
                         additionalInstructions: savedConfigs.HANDOFF?.additionalInstructions
-                            ?? prev.handoff.additionalInstructions,
+                            ?? DEFAULT_BEHAVIOUR_STATE.handoff.additionalInstructions,
                         // Determine supportMode: prefer saved config, then derive from enabled flag, then default
                         supportMode: savedConfigs.HANDOFF?.supportMode
                             ?? (chatbotData.escalationEnabled ? "When AI is unsure" : "AI only"),
                         systemPrompt: handoffPrompt?.systemPrompt || "",
                     },
                     leadGen: {
-                        ...prev.leadGen,
+                        ...DEFAULT_BEHAVIOUR_STATE.leadGen,
                         form: leadFormData ? {
                             ...leadFormData,
                             // Always use chatbot's leadGenerationEnabled as the source of truth
@@ -114,15 +169,18 @@ export default function BehaviourPage() {
                         },
                         systemPrompt: leadPrompt?.systemPrompt || "",
                         leadConfig: savedConfigs.LEAD_GENERATION
-                            ? { ...prev.leadGen.leadConfig, ...savedConfigs.LEAD_GENERATION }
+                            ? { ...DEFAULT_BEHAVIOUR_STATE.leadGen.leadConfig, ...savedConfigs.LEAD_GENERATION }
                             : {
-                                ...prev.leadGen.leadConfig,
-                                pageTriggers: leadFormData?.pageTriggers?.join(", ") ?? prev.leadGen.leadConfig.pageTriggers,
-                                keywords: leadFormData?.keywordTriggers?.join(", ") ?? prev.leadGen.leadConfig.keywords,
+                                ...DEFAULT_BEHAVIOUR_STATE.leadGen.leadConfig,
+                                pageTriggers: leadFormData?.pageTriggers?.join(", ") ?? DEFAULT_BEHAVIOUR_STATE.leadGen.leadConfig.pageTriggers,
+                                keywords: leadFormData?.keywordTriggers?.join(", ") ?? DEFAULT_BEHAVIOUR_STATE.leadGen.leadConfig.keywords,
                             },
                     },
                     mainSystemPrompt: widgetPrompt?.systemPrompt || "",
-                }));
+                };
+
+                setBehaviour(loadedBehaviour);
+                setOriginalBehaviour(loadedBehaviour);
             } catch (error) {
                 toast.error("Failed to load chatbot configuration");
             } finally {
@@ -132,12 +190,14 @@ export default function BehaviourPage() {
         loadData();
     }, [botId, workspaceId]);
 
-    const handleSave = async () => {
+    const performSave = async () => {
         if (!botId || !workspaceId) return;
         setIsSaving(true);
         try {
             const promises: Promise<any>[] = [];
-            if (activeTab === "identity") {
+
+            // Save all sections that have changes
+            if (hasChanges.identity) {
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "WIDGET", systemPrompt: behaviour.mainSystemPrompt }));
                 // Persist UI config (aiName is the AI's self-reference during conversations, separate from chatbot name)
                 promises.push(upsertBehaviourConfig(botId, "IDENTITY", {
@@ -145,7 +205,7 @@ export default function BehaviourPage() {
                     style: behaviour.style,
                 }));
             }
-            if (activeTab === "lead-gen") {
+            if (hasChanges.leadGen) {
                 promises.push(updateChatbot({ id: botId, workspaceId, leadGenerationEnabled: behaviour.leadGen.form?.isEnabled ?? false }));
                 promises.push(upsertChannelPrompt({ chatbotId: botId, channel: "LEAD_GENERATION", systemPrompt: behaviour.leadGen.systemPrompt }));
                 if (behaviour.leadGen.form) {
@@ -187,6 +247,12 @@ export default function BehaviourPage() {
                 }));
             }
             await Promise.all(promises);
+
+            // Update original state after successful save
+            setOriginalBehaviour(behaviour);
+            // Reset flags after save
+            setPromptGeneratedFlags({ identity: false, leadGen: false, handoff: false });
+
             toast.success("Changes saved successfully!");
         } catch (error) {
             console.error("Save error:", error);
@@ -195,6 +261,61 @@ export default function BehaviourPage() {
             setIsSaving(false);
         }
     };
+
+    const handleSave = async () => {
+        // Determine which sections have changes AND haven't generated prompt since
+        const sectionsNeedingPrompt: TabId[] = [];
+        if (hasChanges.identity && !promptGeneratedFlags.identity) sectionsNeedingPrompt.push("identity");
+        if (hasChanges.leadGen && !promptGeneratedFlags.leadGen) sectionsNeedingPrompt.push("lead-gen");
+        if (hasChanges.handoff && !promptGeneratedFlags.handoff) sectionsNeedingPrompt.push("handoff");
+
+        // If there are sections needing prompt, show dialog
+        if (sectionsNeedingPrompt.length > 0) {
+            setPendingSectionsToGenerate(sectionsNeedingPrompt);
+            setShowSaveDialog(true);
+            return;
+        }
+
+        // Otherwise just save
+        await performSave();
+    };
+
+    const generateAllNeededPrompts = async () => {
+        setShowSaveDialog(false);
+
+        // Generate prompts for all pending sections
+        for (const section of pendingSectionsToGenerate) {
+            if (section === "identity") {
+                await generatePrompt(
+                    "WIDGET",
+                    setIsGeneratingMain,
+                    (p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))
+                );
+            } else if (section === "lead-gen") {
+                await generatePrompt(
+                    "LEAD_GENERATION",
+                    setIsGeneratingLead,
+                    (p) => setBehaviour(prev => ({ ...prev, leadGen: { ...prev.leadGen, systemPrompt: p } }))
+                );
+            } else if (section === "handoff") {
+                await generatePrompt(
+                    "ESCALATION",
+                    setIsGeneratingHandoff,
+                    (p) => setBehaviour(prev => ({ ...prev, handoff: { ...prev.handoff, systemPrompt: p } }))
+                );
+            }
+        }
+
+        // After generating all prompts, save
+        await performSave();
+    };
+
+    const saveOnly = async () => {
+        setShowSaveDialog(false);
+        await performSave();
+    };
+
+    const getSectionLabel = (id: TabId) => TABS.find(t => t.id === id)?.label || id;
 
     const generatePrompt = async (
         type: "WIDGET" | "LEAD_GENERATION" | "ESCALATION",
@@ -210,6 +331,15 @@ export default function BehaviourPage() {
             else if (type === "ESCALATION") description = serializeStateForPromptGen(behaviour, "HANDOFF");
             const res = await generateChannelPrompt({ chatbotId: botId, channel: type, userDescription: description });
             setPrompt(res.systemPrompt);
+
+            // Mark the appropriate flag as generated
+            setPromptGeneratedFlags(prev => ({
+                ...prev,
+                ...(type === "WIDGET" && { identity: true }),
+                ...(type === "LEAD_GENERATION" && { leadGen: true }),
+                ...(type === "ESCALATION" && { handoff: true }),
+            }));
+
             toast.success(`Prompt generated!`);
         } catch {
             toast.error("Failed to generate prompt");
@@ -235,6 +365,10 @@ export default function BehaviourPage() {
                     {TABS.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeTab === tab.id;
+                        const tabHasChanges =
+                            (tab.id === "identity" && hasChanges.identity) ||
+                            (tab.id === "lead-gen" && hasChanges.leadGen) ||
+                            (tab.id === "handoff" && hasChanges.handoff);
                         return (
                             <button
                                 key={tab.id}
@@ -247,8 +381,13 @@ export default function BehaviourPage() {
                                 )}
                             >
                                 <Icon className="h-4 w-4 shrink-0" />
-                                <div className="min-w-0">
-                                    <p className={cn("text-sm font-medium leading-none", isActive ? "text-primary" : "text-foreground")}>{tab.label}</p>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <p className={cn("text-sm font-medium leading-none", isActive ? "text-primary" : "text-foreground")}>{tab.label}</p>
+                                        {tabHasChanges && (
+                                            <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" title="Unsaved changes" />
+                                        )}
+                                    </div>
                                     <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{tab.description}</p>
                                 </div>
                             </button>
@@ -289,7 +428,7 @@ export default function BehaviourPage() {
                         <Sparkles className="h-3 w-3 text-primary shrink-0 mt-0.5" />
                         <span className="text-[10px] text-primary leading-tight">Write in plain language — we'll craft the perfect prompt!</span>
                     </div>
-                    <Button onClick={handleSave} disabled={isSaving} className="w-full h-9" size="sm">
+                    <Button onClick={handleSave} disabled={!anyChanges || isSaving} className="w-full h-9" size="sm">
                         {isSaving ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-2 h-3.5 w-3.5" />}
                         Save Changes
                     </Button>
@@ -318,12 +457,12 @@ export default function BehaviourPage() {
                             {activeTab === "identity" && (
                                 <IdentityCard
                                     identity={behaviour.identity}
-                                    onIdentityChange={(s) => setBehaviour(prev => ({ ...prev, identity: s }))}
+                                    onIdentityChange={(s) => updateBehaviour(prev => ({ ...prev, identity: s }))}
                                     style={behaviour.style}
-                                    onStyleChange={(s) => setBehaviour(prev => ({ ...prev, style: s }))}
+                                    onStyleChange={(s) => updateBehaviour(prev => ({ ...prev, style: s }))}
                                     systemPrompt={behaviour.mainSystemPrompt}
-                                    onSystemPromptChange={(p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
-                                    onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
+                                    onSystemPromptChange={(p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
+                                    onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
                                     isGenerating={isGeneratingMain}
                                 />
                             )}
@@ -331,8 +470,8 @@ export default function BehaviourPage() {
                             {activeTab === "lead-gen" && (
                                 <LeadGenCard
                                     state={behaviour.leadGen}
-                                    onChange={(s) => setBehaviour(prev => ({ ...prev, leadGen: s }))}
-                                    onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => setBehaviour(prev => ({
+                                    onChange={(s) => updateBehaviour(prev => ({ ...prev, leadGen: s }))}
+                                    onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => updateBehaviour(prev => ({
                                         ...prev, leadGen: { ...prev.leadGen, systemPrompt: p },
                                     })))}
                                     isGenerating={isGeneratingLead}
@@ -342,8 +481,8 @@ export default function BehaviourPage() {
                             {activeTab === "handoff" && (
                                 <HandoffCard
                                     state={behaviour.handoff}
-                                    onChange={(s) => setBehaviour(prev => ({ ...prev, handoff: s }))}
-                                    onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => setBehaviour(prev => ({
+                                    onChange={(s) => updateBehaviour(prev => ({ ...prev, handoff: s }))}
+                                    onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => updateBehaviour(prev => ({
                                         ...prev, handoff: { ...prev.handoff, systemPrompt: p },
                                     })))}
                                     isGenerating={isGeneratingHandoff}
@@ -354,6 +493,51 @@ export default function BehaviourPage() {
 
                 </div>
             </div>
+
+            {/* Save Confirmation Dialog */}
+            <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <AlertCircle className="h-5 w-5 text-amber-500" />
+                            Generate Optimized Prompt{pendingSectionsToGenerate.length > 1 ? "s" : ""}?
+                        </DialogTitle>
+                        <DialogDescription className="pt-2">
+                            {pendingSectionsToGenerate.length === 1 ? (
+                                <>
+                                    You have config changes in <strong>{getSectionLabel(pendingSectionsToGenerate[0])}</strong>.
+                                    Generate an optimized prompt to maximize AI performance?"
+                                </>
+                            ) : (
+                                <>
+                                    You have config changes in:
+                                    <ul className="mt-2 space-y-1">
+                                        {pendingSectionsToGenerate.map(section => (
+                                            <li key={section} className="flex items-center gap-2 text-foreground">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                {getSectionLabel(section)}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <p className="mt-3">Generate optimized prompts for these sections to maximize AI performance?</p>
+                                </>
+                            )}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2">
+                        <Button variant="outline" onClick={() => setShowSaveDialog(false)} disabled={isSaving}>
+                            Cancel
+                        </Button>
+                        <Button variant="secondary" onClick={saveOnly} disabled={isSaving}>
+                            Save Only
+                        </Button>
+                        <Button onClick={generateAllNeededPrompts} disabled={isSaving} className="gap-2">
+                            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                            Generate{pendingSectionsToGenerate.length > 1 ? " All" : ""} & Save
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
