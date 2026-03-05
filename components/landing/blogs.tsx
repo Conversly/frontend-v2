@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
-import { Book, ArrowRight, Clock } from "lucide-react"
+import { MenuBook, ArrowForward, AccessTime } from "@mui/icons-material"
 import Link from "next/link"
 
 const articles = [
@@ -49,7 +49,7 @@ export default function RelatedArticles() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-            <Book className="w-4 h-4 text-primary" />
+            <MenuBook sx={{ fontSize: 16 }} className="text-primary" />
             <span className="text-sm font-medium text-primary">
               Latest Articles
             </span>
@@ -96,7 +96,7 @@ export default function RelatedArticles() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm text-primary">{article.category}</span>
                     <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-4 h-4" />
+                      <AccessTime sx={{ fontSize: 16 }} />
                       <span className="text-sm">{article.readTime}</span>
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export default function RelatedArticles() {
                     className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
                   >
                     Read More
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowForward sx={{ fontSize: 16 }} />
                   </Link>
                 </div>
 

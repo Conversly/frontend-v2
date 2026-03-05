@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PieChart as PieChartIcon } from "lucide-react";
+import { ShowChart } from "@mui/icons-material";
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useMemo, useState } from "react";
 
@@ -84,7 +84,7 @@ export function TopicPieChart({ topics, isLoading, showCard = true }: TopicPieCh
     <Card className="shadow-sm border-border/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <PieChartIcon className="h-4 w-4 text-muted-foreground" />
+          <ShowChart sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
           Topic Distribution
         </CardTitle>
         <CardDescription>

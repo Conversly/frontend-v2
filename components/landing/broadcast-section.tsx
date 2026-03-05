@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Zap, MousePointerClick, CalendarClock } from "lucide-react";
+import { ArrowForward, Bolt, TouchApp, Schedule } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { MessagingCategoriesVisual, CTAVisual, SchedulingVisual } from "./cards/BroadcastVisuals";
 
 const tabs = [
   {
     id: 1,
-    icon: <Zap size={18} />,
+    icon: <Bolt sx={{ fontSize: 18 }} />,
     title: "8+ Powerful Messaging Categories",
     description:
       "Send Promotions, Offers, Coupon codes, Carousels and More- Risk-Free!",
@@ -17,7 +17,7 @@ const tabs = [
   },
   {
     id: 2,
-    icon: <MousePointerClick size={18} />,
+    icon: <TouchApp sx={{ fontSize: 18 }} />,
     title: "Add CTAs. Drive 3x Conversions",
     description:
       "Turn conversations into conversions with eye-catching CTA and Quick Reply buttons",
@@ -25,7 +25,7 @@ const tabs = [
   },
   {
     id: 3,
-    icon: <CalendarClock size={18} />,
+    icon: <Schedule sx={{ fontSize: 18 }} />,
     title: "Schedule your WhatsApp messages",
     description:
       "Streamline your work, Schedule Broadcasts 2 months ahead of time",
@@ -152,7 +152,7 @@ export default function BroadcastSection() {
                 className="h-12 px-8 rounded-full bg-[#075e54] hover:bg-[#064e46] text-white shadow-lg shadow-emerald-500/20 group text-base font-semibold"
               >
                 Start for FREE
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowForward sx={{ fontSize: 16 }} className="ml-2 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
           </div>

@@ -1,7 +1,7 @@
-import { LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
 const Icons = {
-  Wallet: (props: LucideProps) => (
+  Wallet: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -26,7 +26,7 @@ const Icons = {
       />
     </svg>
   ),
-  Solana: (props: LucideProps) => (
+  Solana: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="11"
       height="10"
@@ -58,7 +58,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Hyperliquid: (props: LucideProps) => (
+  Hyperliquid: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="144"
       height="144"
@@ -73,7 +73,7 @@ const Icons = {
       />
     </svg>
   ),
-  HyperliquidUSDC: (props: LucideProps) => (
+  HyperliquidUSDC: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -103,7 +103,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  WalletFrame: (props: LucideProps) => (
+  WalletFrame: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={12}
@@ -118,7 +118,7 @@ const Icons = {
       />
     </svg>
   ),
-  CryptoCurrency: (props: LucideProps) => (
+  CryptoCurrency: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={12}
@@ -145,7 +145,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Telegram: (props: LucideProps) => (
+  Telegram: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -162,7 +162,7 @@ const Icons = {
       />
     </svg>
   ),
-  Solscan: (props: LucideProps) => (
+  Solscan: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={12}
@@ -182,7 +182,7 @@ const Icons = {
       />
     </svg>
   ),
-  Website: (props: LucideProps) => (
+  Website: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -199,7 +199,7 @@ const Icons = {
       />
     </svg>
   ),
-  X: (props: LucideProps) => (
+  X: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -216,7 +216,7 @@ const Icons = {
       />
     </svg>
   ),
-  XPost: (props: LucideProps) => (
+  XPost: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -227,7 +227,7 @@ const Icons = {
       <path d="M13.2115 1.9254C8.98169 2.49365 6.5222 4.65425 5.07285 7.16716C4.09031 8.87071 3.56469 10.7519 3.29542 12.4395C3.48013 12.1434 3.67039 11.8669 3.86747 11.6132C4.54894 10.7356 5.35699 10.0714 6.35729 9.8491C6.53174 9.81033 6.70403 9.77269 6.87409 9.73553C9.23493 9.21967 11.1662 8.79768 12.4793 6.77543L11.029 6.12287C10.4692 5.87096 10.4361 5.12757 10.9023 4.79732C12.125 3.93107 12.8369 2.74276 13.2115 1.9254ZM13.9742 0.537759C14.4488 0.500404 14.9422 0.947268 14.7625 1.519C14.5922 2.0606 13.9414 3.85655 12.3556 5.29422L13.6571 5.87986C14.0159 6.04132 14.1408 6.46249 13.9732 6.7868C12.3754 9.87966 9.72443 10.4514 7.21436 10.9929C7.02166 11.0344 6.8298 11.0758 6.6393 11.1181C6.04798 11.2495 5.47649 11.6607 4.89421 12.4105C4.31141 13.161 3.76284 14.1929 3.20553 15.4576C3.04473 15.8225 2.67138 15.9624 2.35904 15.9018C2.03891 15.8398 1.73409 15.5547 1.74517 15.1358C1.80365 12.9259 2.22339 9.50562 3.94673 6.51765C5.69238 3.49102 8.75637 0.948472 13.9742 0.537759Z"></path>
     </svg>
   ),
-  Pinterest: (props: LucideProps) => (
+  Pinterest: (props: SVGProps<SVGSVGElement>) => (
     <svg
       stroke="currentColor"
       fill="currentColor"
@@ -241,7 +241,7 @@ const Icons = {
       <path d="M496 256c0 137-111 248-248 248-25.6 0-50.2-3.9-73.4-11.1 10.1-16.5 25.2-43.5 30.8-65 3-11.6 15.4-59 15.4-59 8.1 15.4 31.7 28.5 56.8 28.5 74.8 0 128.7-68.8 128.7-154.3 0-81.9-66.9-143.2-152.9-143.2-107 0-163.9 71.8-163.9 150.1 0 36.4 19.4 81.7 50.3 96.1 4.7 2.2 7.2 1.2 8.3-3.3.8-3.4 5-20.3 6.9-28.1.6-2.5.3-4.7-1.7-7.1-10.1-12.5-18.3-35.3-18.3-56.6 0-54.7 41.4-107.6 112-107.6 60.9 0 103.6 41.5 103.6 100.9 0 67.1-33.9 113.6-78 113.6-24.3 0-42.6-20.1-36.7-44.8 7-29.5 20.5-61.3 20.5-82.6 0-19-10.2-34.9-31.4-34.9-24.9 0-44.9 25.7-44.9 60.2 0 22 7.4 36.8 7.4 36.8s-24.5 103.8-29 123.2c-5 21.4-3 51.6-.9 71.2C65.4 450.9 0 361.1 0 256 0 119 111 8 248 8s248 111 248 248z"></path>
     </svg>
   ),
-  Instagram: (props: LucideProps) => (
+  Instagram: (props: SVGProps<SVGSVGElement>) => (
     <svg
       stroke="currentColor"
       fill="currentColor"
@@ -255,7 +255,7 @@ const Icons = {
       <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path>
     </svg>
   ),
-  Facebook: (props: LucideProps) => (
+  Facebook: (props: SVGProps<SVGSVGElement>) => (
     <svg
       stroke="currentColor"
       fill="currentColor"
@@ -269,7 +269,7 @@ const Icons = {
       <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64h98.2V334.2H109.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H255V480H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"></path>
     </svg>
   ),
-  Youtube: (props: LucideProps) => (
+  Youtube: (props: SVGProps<SVGSVGElement>) => (
     <svg
       stroke="currentColor"
       fill="currentColor"
@@ -283,7 +283,7 @@ const Icons = {
       <path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path>
     </svg>
   ),
-  Tiktok: (props: LucideProps) => (
+  Tiktok: (props: SVGProps<SVGSVGElement>) => (
     <svg
       stroke="currentColor"
       fill="currentColor"
@@ -297,7 +297,7 @@ const Icons = {
       <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"></path>
     </svg>
   ),
-  Cart: (props: LucideProps) => (
+  Cart: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -312,7 +312,7 @@ const Icons = {
       />
     </svg>
   ),
-  Bank: (props: LucideProps) => (
+  Bank: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -327,7 +327,7 @@ const Icons = {
       />
     </svg>
   ),
-  ArrowDown: (props: LucideProps) => (
+  ArrowDown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -343,7 +343,7 @@ const Icons = {
       <path d="M12 5v14m7-7l-7 7-7-7" />
     </svg>
   ),
-  Tag: (props: LucideProps) => (
+  Tag: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -365,7 +365,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Tarazu: (props: LucideProps) => (
+  Tarazu: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -380,7 +380,7 @@ const Icons = {
       />
     </svg>
   ),
-  ChevronUpDown: (props: LucideProps) => (
+  ChevronUpDown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -398,7 +398,7 @@ const Icons = {
       ></path>
     </svg>
   ),
-  Falling: (props: LucideProps) => (
+  Falling: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -413,7 +413,7 @@ const Icons = {
       />
     </svg>
   ),
-  Gas: (props: LucideProps) => (
+  Gas: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -435,7 +435,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Bribe: (props: LucideProps) => (
+  Bribe: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -451,7 +451,7 @@ const Icons = {
       />
     </svg>
   ),
-  Bot: (props: LucideProps) => (
+  Bot: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -466,7 +466,7 @@ const Icons = {
       />
     </svg>
   ),
-  ChevronRight: (props: LucideProps) => (
+  ChevronRight: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={11}
@@ -484,7 +484,7 @@ const Icons = {
       />
     </svg>
   ),
-  ZigZag: (props: LucideProps) => (
+  ZigZag: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={20}
@@ -499,7 +499,7 @@ const Icons = {
       />
     </svg>
   ),
-  Stats: (props: LucideProps) => (
+  Stats: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={16}
@@ -516,7 +516,7 @@ const Icons = {
       />
     </svg>
   ),
-  Security: (props: LucideProps) => (
+  Security: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={17}
@@ -531,7 +531,7 @@ const Icons = {
       />
     </svg>
   ),
-  Trades: (props: LucideProps) => (
+  Trades: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -546,7 +546,7 @@ const Icons = {
       />
     </svg>
   ),
-  TopTraders: (props: LucideProps) => (
+  TopTraders: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -563,7 +563,7 @@ const Icons = {
       />
     </svg>
   ),
-  Holders: (props: LucideProps) => (
+  Holders: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -578,7 +578,7 @@ const Icons = {
       />
     </svg>
   ),
-  Orders: (props: LucideProps) => (
+  Orders: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -595,7 +595,7 @@ const Icons = {
       />
     </svg>
   ),
-  DevTokens: (props: LucideProps) => (
+  DevTokens: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -612,7 +612,7 @@ const Icons = {
       />
     </svg>
   ),
-  Filter: (props: LucideProps) => (
+  Filter: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={13}
@@ -627,7 +627,7 @@ const Icons = {
       />
     </svg>
   ),
-  Alien: (props: LucideProps) => (
+  Alien: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -642,7 +642,7 @@ const Icons = {
       />
     </svg>
   ),
-  ChefHatCross: (props: LucideProps) => (
+  ChefHatCross: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={22}
       height={19}
@@ -657,7 +657,7 @@ const Icons = {
       />
     </svg>
   ),
-  SortLine: (props: LucideProps) => (
+  SortLine: (props: SVGProps<SVGSVGElement>) => (
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -672,7 +672,7 @@ const Icons = {
       </g>
     </svg>
   ),
-  TwoUser: (props: LucideProps) => (
+  TwoUser: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -694,7 +694,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  ShareToken: (props: LucideProps) => (
+  ShareToken: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={9}
@@ -709,7 +709,7 @@ const Icons = {
       />
     </svg>
   ),
-  GoogleLens: (props: LucideProps) => (
+  GoogleLens: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -727,7 +727,7 @@ const Icons = {
       />
     </svg>
   ),
-  Pause: (props: LucideProps) => (
+  Pause: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -738,7 +738,7 @@ const Icons = {
       <path fill="currentColor" d="M14 19V5h4v14zm-8 0V5h4v14z" />
     </svg>
   ),
-  Loader: (props: LucideProps) => (
+  Loader: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={17}
@@ -753,7 +753,7 @@ const Icons = {
       />
     </svg>
   ),
-  Success: (props: LucideProps) => (
+  Success: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={20}
@@ -768,7 +768,7 @@ const Icons = {
       />
     </svg>
   ),
-  Cross: (props: LucideProps) => (
+  Cross: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={16}
@@ -788,7 +788,7 @@ const Icons = {
       />
     </svg>
   ),
-  Warning: (props: LucideProps) => (
+  Warning: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={32}
@@ -806,7 +806,7 @@ const Icons = {
       />
     </svg>
   ),
-  Close: (props: LucideProps) => (
+  Close: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -823,7 +823,7 @@ const Icons = {
       />
     </svg>
   ),
-  Clock: (props: LucideProps) => (
+  Clock: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -838,7 +838,7 @@ const Icons = {
       />
     </svg>
   ),
-  Refresh: (props: LucideProps) => (
+  Refresh: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={16}
@@ -853,7 +853,7 @@ const Icons = {
       />
     </svg>
   ),
-  DoubleDown: (props: LucideProps) => (
+  DoubleDown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -868,7 +868,7 @@ const Icons = {
       />
     </svg>
   ),
-  Lock: (props: LucideProps) => (
+  Lock: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={16}
@@ -899,7 +899,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Shrimp: (props: LucideProps) => (
+  Shrimp: (props: SVGProps<SVGSVGElement>) => (
     <svg
       height="200px"
       width="200px"
@@ -966,7 +966,7 @@ const Icons = {
       </g>
     </svg>
   ),
-  Dolphin: (props: LucideProps) => (
+  Dolphin: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -1010,7 +1010,7 @@ const Icons = {
       </g>
     </svg>
   ),
-  Whale: (props: LucideProps) => (
+  Whale: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -1054,7 +1054,7 @@ const Icons = {
       </g>
     </svg>
   ),
-  Edit: (props: LucideProps) => (
+  Edit: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="13"
       height="13"
@@ -1071,7 +1071,7 @@ const Icons = {
       />
     </svg>
   ),
-  EditBox: (props: LucideProps) => (
+  EditBox: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="18"
       height="18"
@@ -1103,7 +1103,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  ChevronDown: (props: LucideProps) => (
+  ChevronDown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={20}
       height={21}
@@ -1121,7 +1121,7 @@ const Icons = {
       />
     </svg>
   ),
-  Settings: (props: LucideProps) => (
+  Settings: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -1138,7 +1138,7 @@ const Icons = {
       />
     </svg>
   ),
-  Copy: (props: LucideProps) => (
+  Copy: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -1152,7 +1152,7 @@ const Icons = {
       />
     </svg>
   ),
-  Search: (props: LucideProps) => (
+  Search: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1167,7 +1167,7 @@ const Icons = {
       />
     </svg>
   ),
-  China: (props: LucideProps) => (
+  China: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={36}
@@ -1185,7 +1185,7 @@ const Icons = {
       />
     </svg>
   ),
-  Australia: (props: LucideProps) => (
+  Australia: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={36}
@@ -1216,7 +1216,7 @@ const Icons = {
       />
     </svg>
   ),
-  BellOutline: (props: LucideProps) => (
+  BellOutline: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1230,7 +1230,7 @@ const Icons = {
       />
     </svg>
   ),
-  ShareOutline: (props: LucideProps) => (
+  ShareOutline: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -1250,7 +1250,7 @@ const Icons = {
       <line x1={15.41} x2={8.59} y1={6.51} y2={10.49} />
     </svg>
   ),
-  CrownOutline: (props: LucideProps) => (
+  CrownOutline: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={"1em"}
       height={"1em"}
@@ -1265,7 +1265,7 @@ const Icons = {
       />
     </svg>
   ),
-  ShareBox: (props: LucideProps) => (
+  ShareBox: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={"1em"}
       height={"1em"}
@@ -1280,7 +1280,7 @@ const Icons = {
       />
     </svg>
   ),
-  Cone: (props: LucideProps) => (
+  Cone: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={"1em"}
       height={"1em"}
@@ -1295,7 +1295,7 @@ const Icons = {
       />
     </svg>
   ),
-  SendArrow: (props: LucideProps) => (
+  SendArrow: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width={"1em"}
       height={"1em"}
@@ -1310,7 +1310,7 @@ const Icons = {
       />
     </svg>
   ),
-  USDC: (props: LucideProps) => (
+  USDC: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1330,7 +1330,7 @@ const Icons = {
       />
     </svg>
   ),
-  Ethereum: (props: LucideProps) => (
+  Ethereum: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1343,7 +1343,7 @@ const Icons = {
       <path d="M12 24L5.25 13.5L12 17.625L18.75 13.5L12 24Z" fill="#627EEA" />
     </svg>
   ),
-  Arbitrum: (props: LucideProps) => (
+  Arbitrum: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1360,7 +1360,7 @@ const Icons = {
       <path d="M7.2 15.6L12 18L16.8 15.6H7.2Z" fill="#96BEDC" />
     </svg>
   ),
-  Base: (props: LucideProps) => (
+  Base: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1380,7 +1380,7 @@ const Icons = {
       />
     </svg>
   ),
-  Polygon: (props: LucideProps) => (
+  Polygon: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1395,7 +1395,7 @@ const Icons = {
       <path d="M12 15L16.5 17.25L12 24L7.5 17.25L12 15Z" fill="#8247E5" />
     </svg>
   ),
-  CopyFill: (props: LucideProps) => (
+  CopyFill: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -1416,7 +1416,7 @@ const Icons = {
       </g>
     </svg>
   ),
-  WalletFill: (props: LucideProps) => (
+  WalletFill: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
@@ -1430,7 +1430,7 @@ const Icons = {
       ></path>
     </svg>
   ),
-  Withdraw: (props: LucideProps) => (
+  Withdraw: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="32"
@@ -1458,7 +1458,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Plus: (props: LucideProps) => (
+  Plus: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -1476,7 +1476,7 @@ const Icons = {
       />
     </svg>
   ),
-  Check: (props: LucideProps) => (
+  Check: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -1492,7 +1492,7 @@ const Icons = {
       <path d="M20 6 9 17l-5-5" />
     </svg>
   ),
-  FilterDown: (props: LucideProps) => (
+  FilterDown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="13"
       height="12"
@@ -1521,7 +1521,7 @@ const Icons = {
       />
     </svg>
   ),
-  Send: (props: LucideProps) => (
+  Send: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -1536,7 +1536,7 @@ const Icons = {
       />
     </svg>
   ),
-  Receive: (props: LucideProps) => (
+  Receive: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -1551,7 +1551,7 @@ const Icons = {
       />
     </svg>
   ),
-  Holdings: (props: LucideProps) => (
+  Holdings: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="29"
       height="14"
@@ -1565,7 +1565,7 @@ const Icons = {
       <rect x="13.5" width="14" height="14" rx="7" fill="#A1A1A1" />
     </svg>
   ),
-  Star: (props: LucideProps) => (
+  Star: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -1582,7 +1582,7 @@ const Icons = {
       />
     </svg>
   ),
-  Import: (props: LucideProps) => (
+  Import: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="15"
@@ -1597,7 +1597,7 @@ const Icons = {
       />
     </svg>
   ),
-  Archive: (props: LucideProps) => (
+  Archive: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -1614,7 +1614,7 @@ const Icons = {
       />
     </svg>
   ),
-  Key: (props: LucideProps) => (
+  Key: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="13"
@@ -1631,7 +1631,7 @@ const Icons = {
       />
     </svg>
   ),
-  Trash: (props: LucideProps) => (
+  Trash: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="14"
@@ -1646,7 +1646,7 @@ const Icons = {
       />
     </svg>
   ),
-  Unarchive: (props: LucideProps) => (
+  Unarchive: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -1663,7 +1663,7 @@ const Icons = {
       />
     </svg>
   ),
-  Sidebar: (props: LucideProps) => (
+  Sidebar: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="15"
       height="16"
@@ -1683,7 +1683,7 @@ const Icons = {
       />
     </svg>
   ),
-  SidebarFill: (props: LucideProps) => (
+  SidebarFill: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -1700,7 +1700,7 @@ const Icons = {
       />
     </svg>
   ),
-  EyeOpen: (props: LucideProps) => (
+  EyeOpen: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -1717,7 +1717,7 @@ const Icons = {
       />
     </svg>
   ),
-  EyeClose: (props: LucideProps) => (
+  EyeClose: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="21"
       height="20"
@@ -1732,7 +1732,7 @@ const Icons = {
       />
     </svg>
   ),
-  WarningSign: (props: LucideProps) => (
+  WarningSign: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="21"
       height="20"
@@ -1747,7 +1747,7 @@ const Icons = {
       />
     </svg>
   ),
-  XQuote: (props: LucideProps) => (
+  XQuote: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="13"
@@ -1762,7 +1762,7 @@ const Icons = {
       />
     </svg>
   ),
-  XReply: (props: LucideProps) => (
+  XReply: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="18"
       height="18"
@@ -1779,7 +1779,7 @@ const Icons = {
       />
     </svg>
   ),
-  XRetweet: (props: LucideProps) => (
+  XRetweet: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="19"
       height="18"
@@ -1794,7 +1794,7 @@ const Icons = {
       />
     </svg>
   ),
-  NotificationSpeaker: (props: LucideProps) => (
+  NotificationSpeaker: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="14"
@@ -1811,7 +1811,7 @@ const Icons = {
       />
     </svg>
   ),
-  NotificationSpeakerOff: (props: LucideProps) => (
+  NotificationSpeakerOff: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="15"
       height="15"
@@ -1833,7 +1833,7 @@ const Icons = {
       />
     </svg>
   ),
-  DragHandle: (props: LucideProps) => (
+  DragHandle: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -1848,7 +1848,7 @@ const Icons = {
       />
     </svg>
   ),
-  DEXIcon: (props: LucideProps) => (
+  DEXIcon: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -1899,7 +1899,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  ChartDecreasing: (props: LucideProps) => (
+  ChartDecreasing: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -1916,7 +1916,7 @@ const Icons = {
       />
     </svg>
   ),
-  ExternalLink: (props: LucideProps) => (
+  ExternalLink: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -1931,7 +1931,7 @@ const Icons = {
       />
     </svg>
   ),
-  Fire: (props: LucideProps) => (
+  Fire: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="8"
@@ -1946,7 +1946,7 @@ const Icons = {
       />
     </svg>
   ),
-  Download: (props: LucideProps) => (
+  Download: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="18"
       height="18"
@@ -1961,7 +1961,7 @@ const Icons = {
       />
     </svg>
   ),
-  Phantom: (props: LucideProps) => (
+  Phantom: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="593"
       height="493"
@@ -1976,7 +1976,7 @@ const Icons = {
       />
     </svg>
   ),
-  Copy2: (props: LucideProps) => (
+  Copy2: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="21"
       height="20"
@@ -1993,7 +1993,7 @@ const Icons = {
       />
     </svg>
   ),
-  Copy2Fill: (props: LucideProps) => (
+  Copy2Fill: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="20"
       height="20"
@@ -2010,7 +2010,7 @@ const Icons = {
       />
     </svg>
   ),
-  Verified: (props: LucideProps) => (
+  Verified: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -2027,7 +2027,7 @@ const Icons = {
       />
     </svg>
   ),
-  Play: (props: LucideProps) => (
+  Play: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="11"
       height="12"
@@ -2044,7 +2044,7 @@ const Icons = {
       />
     </svg>
   ),
-  BookEdit: (props: LucideProps) => (
+  BookEdit: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="13"
       height="13"
@@ -2061,7 +2061,7 @@ const Icons = {
       />
     </svg>
   ),
-  ScaleUp: (props: LucideProps) => (
+  ScaleUp: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -2076,7 +2076,7 @@ const Icons = {
       />
     </svg>
   ),
-  Slippage: (props: LucideProps) => (
+  Slippage: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -2091,7 +2091,7 @@ const Icons = {
       />
     </svg>
   ),
-  FuelPump: (props: LucideProps) => (
+  FuelPump: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -2106,7 +2106,7 @@ const Icons = {
       />
     </svg>
   ),
-  Tip: (props: LucideProps) => (
+  Tip: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -2134,7 +2134,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Robot: (props: LucideProps) => (
+  Robot: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="11"
       height="12"
@@ -2161,7 +2161,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Info: (props: LucideProps) => (
+  Info: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -2192,7 +2192,7 @@ const Icons = {
       />
     </svg>
   ),
-  ArrowLeftLong: (props: LucideProps) => (
+  ArrowLeftLong: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="61"
       height="20"
@@ -2217,7 +2217,7 @@ const Icons = {
       />
     </svg>
   ),
-  ArrowOut: (props: LucideProps) => (
+  ArrowOut: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="24"
       height="24"
@@ -2249,7 +2249,7 @@ const Icons = {
       />
     </svg>
   ),
-  PhantomBg: (props: LucideProps) => (
+  PhantomBg: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -2272,7 +2272,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Backpack: (props: LucideProps) => (
+  Backpack: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -2297,7 +2297,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Solflare: (props: LucideProps) => (
+  Solflare: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="24"
       height="24"
@@ -2325,7 +2325,7 @@ const Icons = {
       </defs>
     </svg>
   ),
-  Coinbase: (props: LucideProps) => (
+  Coinbase: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"

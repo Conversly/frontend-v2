@@ -1,18 +1,18 @@
 'use client';
 import React from 'react';
 import {
-  Calendar,
-  MapPin,
-  DollarSign,
+  CalendarMonth,
+  Place,
+  AttachMoney,
   Star,
   Search,
-  MessageSquare,
-  Clock,
-  FileText,
-  Globe,
-  File,
-  Zap
-} from 'lucide-react';
+  Chat,
+  AccessTime,
+  Description,
+  Public,
+  InsertDriveFile,
+  Bolt
+} from '@mui/icons-material';
 
 // Custom Actions Visual - workflow connections
 export const CustomActionsVisual = () => (
@@ -27,10 +27,10 @@ export const CustomActionsVisual = () => (
       {/* Left icons */}
       <div className="flex flex-col gap-3">
         <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-orange-100 flex items-center justify-center animate-[float_3s_ease-in-out_infinite]">
-          <Calendar size={18} className="text-orange-500" />
+          <CalendarMonth sx={{ fontSize: 18 }} className="text-orange-500" />
         </div>
         <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-green-100 flex items-center justify-center animate-[float_3s_ease-in-out_infinite_0.5s]">
-          <DollarSign size={18} className="text-green-500" />
+          <AttachMoney sx={{ fontSize: 18 }} className="text-green-500" />
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export const CustomActionsVisual = () => (
       {/* Right icons */}
       <div className="flex flex-col gap-3">
         <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-blue-100 flex items-center justify-center animate-[float_3s_ease-in-out_infinite_0.3s]">
-          <MapPin size={18} className="text-red-500" />
+          <Place sx={{ fontSize: 18 }} className="text-red-500" />
         </div>
         <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-xl shadow-sm flex items-center justify-center animate-[float_3s_ease-in-out_infinite_0.7s] text-white text-[10px] font-bold">
           API
@@ -94,8 +94,8 @@ export const ModelComparisonVisual = () => (
           <span className="text-xs font-semibold text-gray-800">GPT</span>
         </div>
         <div className="flex gap-0.5 mb-2">
-          {[1, 2, 3, 4].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
-          <Star size={10} className="text-gray-200 fill-gray-200" />
+          {[1, 2, 3, 4].map(i => <Star key={i} sx={{ fontSize: 10 }} className="text-yellow-400 fill-yellow-400" />)}
+          <Star sx={{ fontSize: 10 }} className="text-gray-200 fill-gray-200" />
         </div>
         <div className="space-y-1.5">
           <div className="h-1.5 bg-sky-200 rounded-full w-full" />
@@ -113,7 +113,7 @@ export const ModelComparisonVisual = () => (
           <span className="text-xs font-semibold text-gray-800">Llama</span>
         </div>
         <div className="flex gap-0.5 mb-2">
-          {[1, 2, 3, 4, 5].map(i => <Star key={i} size={10} className="text-yellow-400 fill-yellow-400" />)}
+          {[1, 2, 3, 4, 5].map(i => <Star key={i} sx={{ fontSize: 10 }} className="text-yellow-400 fill-yellow-400" />)}
         </div>
         <div className="space-y-1.5">
           <div className="h-1.5 bg-emerald-200 rounded-full w-full" />
@@ -130,7 +130,7 @@ export const ModelComparisonVisual = () => (
 
     {/* Search icon */}
     <div className="absolute bottom-3 right-3 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-sm">
-      <Search size={12} className="text-gray-400" />
+      <Search sx={{ fontSize: 12 }} className="text-gray-400" />
     </div>
   </div>
 );
@@ -171,7 +171,7 @@ export const SmartEscalationVisual = () => {
         {/* AI Bot */}
         <div className="flex flex-col items-center gap-1">
           <div className={`w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl shadow-sm border border-purple-200 flex items-center justify-center transition-all duration-500 ${isEscalating ? 'scale-95 opacity-70' : 'scale-100'}`}>
-            <MessageSquare size={18} className="text-purple-600" />
+            <Chat sx={{ fontSize: 18 }} className="text-purple-600" />
           </div>
           <span className="text-[8px] text-gray-500 font-medium">AI Bot</span>
         </div>
@@ -227,7 +227,7 @@ export const SmartEscalationVisual = () => {
         <div className={`bg-white rounded-lg p-2 shadow-sm border border-gray-100 transition-all duration-500 ${isEscalating ? 'border-rose-300 shadow-md' : ''}`}>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center">
-              <FileText size={10} className="text-blue-600" />
+              <Description sx={{ fontSize: 10 }} className="text-blue-600" />
             </div>
             <div className="flex-1">
               <p className="text-[8px] font-medium text-gray-800">Ticket #1234 transferred</p>
@@ -235,7 +235,7 @@ export const SmartEscalationVisual = () => {
                 {isEscalating ? 'Transferring...' : 'Ready for handoff'}
               </p>
             </div>
-            <Clock size={10} className="text-gray-300" />
+            <AccessTime sx={{ fontSize: 10 }} className="text-gray-300" />
           </div>
         </div>
       </div>
@@ -273,7 +273,7 @@ export const AnalyticsVisual = () => (
       {/* Mini header */}
       <div className="flex items-center gap-2 mb-2">
         <div className="w-4 h-4 rounded bg-yellow-100 flex items-center justify-center">
-          <Zap size={10} className="text-yellow-500" />
+          <Bolt sx={{ fontSize: 10 }} className="text-yellow-500" />
         </div>
         <div className="h-1.5 bg-gray-200 rounded w-12" />
         <div className="h-1.5 bg-gray-100 rounded w-8 ml-auto" />
@@ -356,8 +356,8 @@ export const AITrainingVisual = () => (
       {[
         { icon: <span className="text-[9px] font-bold text-red-600">PDF</span>, bg: 'bg-red-50 border-red-200', angle: 0, dist: 55 },
         { icon: <span className="text-[10px] font-bold text-blue-600">W</span>, bg: 'bg-blue-50 border-blue-200', angle: 60, dist: 60 },
-        { icon: <File size={14} className="text-gray-500" />, bg: 'bg-gray-50 border-gray-200', angle: 120, dist: 55 },
-        { icon: <Globe size={14} className="text-cyan-600" />, bg: 'bg-cyan-50 border-cyan-200', angle: 180, dist: 60 },
+        { icon: <InsertDriveFile sx={{ fontSize: 14 }} className="text-gray-500" />, bg: 'bg-gray-50 border-gray-200', angle: 120, dist: 55 },
+        { icon: <Public sx={{ fontSize: 14 }} className="text-cyan-600" />, bg: 'bg-cyan-50 border-cyan-200', angle: 180, dist: 60 },
         { icon: <div className="w-3.5 h-3.5 bg-gradient-to-br from-yellow-400 via-green-400 to-blue-400 rounded-sm" />, bg: 'bg-white border-gray-200', angle: 240, dist: 55 },
         { icon: <span className="text-[8px] font-bold text-emerald-600">DOC</span>, bg: 'bg-emerald-50 border-emerald-200', angle: 300, dist: 60 },
       ].map((source, i) => {

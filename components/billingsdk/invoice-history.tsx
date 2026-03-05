@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Download, ReceiptText } from "lucide-react";
+import { Event, Download, Receipt } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 
 export interface InvoiceItem {
@@ -70,7 +70,7 @@ export function InvoiceHistory({
         <CardHeader className="space-y-1">
           {title && (
             <CardTitle className="flex items-center gap-2 truncate text-base text-lg leading-tight font-medium sm:gap-3 sm:text-xl">
-              <ReceiptText className="text-primary h-4 w-4" />
+              <Receipt sx={{ color: "var(--primary)", fontSize: 16 }} />
               {title}
             </CardTitle>
           )}
@@ -111,7 +111,7 @@ export function InvoiceHistory({
               <TableRow key={inv.id} className="group">
                 <TableCell className="text-muted-foreground">
                   <div className="inline-flex items-center gap-2">
-                    <CalendarDays className="h-3.5 w-3.5" />
+                    <Event sx={{ fontSize: 14 }} />
                     {inv.date}
                   </div>
                 </TableCell>
@@ -145,7 +145,7 @@ export function InvoiceHistory({
                     }
                     aria-label={`Download invoice ${inv.id}`}
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <Download sx={{ fontSize: 14 }} />
                     Download
                   </Button>
                 </TableCell>

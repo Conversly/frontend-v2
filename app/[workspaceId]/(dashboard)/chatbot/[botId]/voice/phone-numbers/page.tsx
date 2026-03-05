@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Trash2, Edit } from "lucide-react";
+import { Phone, Delete, Edit } from "@mui/icons-material";
 import { format } from "date-fns";
 import {
     Select,
@@ -79,7 +79,7 @@ export default function PhoneNumbersPage() {
                         {phoneNumbers?.map((number: any) => (
                             <TableRow key={number.id}>
                                 <TableCell className="font-medium flex items-center gap-2">
-                                    <Phone className="h-4 w-4 text-muted-foreground" />
+                                    <Phone sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                     {number.phoneNumber}
                                 </TableCell>
                                 <TableCell>{number.label || '-'}</TableCell>
@@ -117,7 +117,7 @@ export default function PhoneNumbersPage() {
                                             }
                                         }}
                                     >
-                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                        <Delete sx={{ fontSize: 16 }} className="text-destructive" />
                                     </Button>
                                 </TableCell>
                             </TableRow>

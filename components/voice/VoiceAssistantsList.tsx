@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Plus, MoreVertical, Mic, Settings, Play } from "lucide-react";
+import { Add, MoreVert, Mic, Settings, PlayArrow } from "@mui/icons-material";
 import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAssistants, useCreateAssistant } from "@/services/voice-assistant-service";
 import { CreateVoiceAssistantDialog } from "./CreateVoiceAssistantDialog";
-import { Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 import { toast } from "sonner";
 
 interface VoiceAssistantsListProps {
@@ -46,7 +46,7 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
     if (isLoading) {
         return (
             <div className="flex justify-center p-8">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
             </div>
         );
     }
@@ -62,7 +62,7 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
                 </div>
                 <CreateVoiceAssistantDialog botId={botId}>
                     <Button>
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Create Assistant
                     </Button>
                 </CreateVoiceAssistantDialog>
@@ -70,7 +70,7 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
             <CardContent>
                 {!assistants || assistants.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                        <Mic className="mb-4 h-12 w-12 opacity-20" />
+                        <Mic sx={{ fontSize: 48, mb: 1.5, opacity: 0.2 }} />
                         <h3 className="text-lg font-medium">No assistants yet</h3>
                         <p className="mb-4 max-w-sm text-sm">
                             Create your first voice assistant to start handling calls.
@@ -126,7 +126,7 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <MoreVertical className="h-4 w-4" />
+                                                    <MoreVert sx={{ fontSize: 16 }} />
                                                     <span className="sr-only">More</span>
                                                 </Button>
                                             </DropdownMenuTrigger>
@@ -135,11 +135,11 @@ export function VoiceAssistantsList({ botId }: VoiceAssistantsListProps) {
                                                     if (!workspaceId) return;
                                                     router.push(`/${workspaceId}/chatbot/${botId}/voice/assistants/${assistant.id}/configuration`);
                                                 }}>
-                                                    <Settings className="mr-2 h-4 w-4" />
+                                                    <Settings sx={{ fontSize: 16, mr: 1 }} />
                                                     Configure
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <Play className="mr-2 h-4 w-4" />
+                                                    <PlayArrow sx={{ fontSize: 16, mr: 1 }} />
                                                     Test Voice
                                                 </DropdownMenuItem>
                                                 {/* Add Delete option later */}

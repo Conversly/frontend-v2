@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { HelpChat } from "@/components/help/HelpChat";
-import { Mail, MessageCircle, Phone } from "lucide-react";
+import Mail from "@mui/icons-material/Mail";
+import Chat from "@mui/icons-material/Chat";
+import Phone from "@mui/icons-material/Phone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -51,7 +53,7 @@ export default function HelpPage() {
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader>
                                 <div className="mb-4 w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
-                                    <Mail className="w-6 h-6" />
+                                    <Mail sx={{ fontSize: 24 }} />
                                 </div>
                                 <CardTitle>Email Support</CardTitle>
                                 <CardDescription>Get a response within 24 hours</CardDescription>
@@ -70,7 +72,7 @@ export default function HelpPage() {
                             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader>
                                 <div className="mb-4 w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
-                                    <MessageCircle className="w-6 h-6" />
+                                    <Chat sx={{ fontSize: 24 }} />
                                 </div>
                                 <CardTitle>Live Chat</CardTitle>
                                 <CardDescription>Chat with our support team</CardDescription>
@@ -90,7 +92,7 @@ export default function HelpPage() {
                             <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader>
                                 <div className="mb-4 w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform duration-300">
-                                    <Phone className="w-6 h-6" />
+                                    <Phone sx={{ fontSize: 24 }} />
                                 </div>
                                 <CardTitle>WhatsApp</CardTitle>
                                 <CardDescription>Instant answers on your phone</CardDescription>

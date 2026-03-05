@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Heart, MessageSquare } from "lucide-react";
+import { Favorite, Chat } from "@mui/icons-material";
 import { ProductLaunchData } from "@/types/promote";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -76,12 +76,12 @@ export function ProductCard({ product }: ProductCardProps) {
                         )}
                         onClick={handleLike}
                     >
-                        <Heart className={cn("w-4 h-4", liked && "fill-current")} />
+                        <Favorite sx={{ fontSize: 16 }} className={cn(liked && "fill-current")} />
                         <span className="text-xs font-medium">{likesCount}</span>
                     </Button>
 
                     <div className="flex items-center gap-1 text-muted-foreground text-xs mt-1">
-                        <MessageSquare className="w-3 h-3" />
+                        <Chat sx={{ fontSize: 12 }} />
                         <span>{(product.comments || []).length}</span>
                     </div>
                 </div>

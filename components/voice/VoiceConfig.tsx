@@ -1,7 +1,8 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save, Settings, Mic, FileText, Brain, Siren, Shield } from "lucide-react";
+import { Save, Settings, Mic, Description, Psychology, Warning, Security } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 // Import config sections
@@ -138,12 +139,12 @@ export function VoiceConfig({
     const [activeSection, setActiveSection] = React.useState("model");
 
     const sections = [
-        { id: "model", label: "Model", icon: <Settings className="h-4 w-4" />, component: ModelConfig },
-        { id: "voice", label: "Voice", icon: <Mic className="h-4 w-4" />, component: VoiceSettings },
-        { id: "transcriber", label: "Transcription", icon: <FileText className="h-4 w-4" />, component: TranscriberConfig },
-        { id: "behavior", label: "Behavior", icon: <Brain className="h-4 w-4" />, component: CallBehaviorConfig },
-        { id: "escalation", label: "Escalation", icon: <Siren className="h-4 w-4" />, component: EscalationConfig },
-        { id: "compliance", label: "Compliance", icon: <Shield className="h-4 w-4" />, component: ComplianceConfig },
+        { id: "model", label: "Model", icon: <Settings sx={{ fontSize: 16 }} />, component: ModelConfig },
+        { id: "voice", label: "Voice", icon: <Mic sx={{ fontSize: 16 }} />, component: VoiceSettings },
+        { id: "transcriber", label: "Transcription", icon: <Description sx={{ fontSize: 16 }} />, component: TranscriberConfig },
+        { id: "behavior", label: "Behavior", icon: <Psychology sx={{ fontSize: 16 }} />, component: CallBehaviorConfig },
+        { id: "escalation", label: "Escalation", icon: <Warning sx={{ fontSize: 16 }} />, component: EscalationConfig },
+        { id: "compliance", label: "Compliance", icon: <Security sx={{ fontSize: 16 }} />, component: ComplianceConfig },
     ];
 
     const scrollToSection = (id: string) => {
@@ -187,9 +188,9 @@ export function VoiceConfig({
                         disabled={!isDirty || isSaving}
                     >
                         {isSaving ? (
-                            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                            <CircularProgress size={12} className="mr-2" />
                         ) : (
-                            <Save className="mr-2 h-3 w-3" />
+                            <Save sx={{ fontSize: 12 }} className="mr-2" />
                         )}
                         Save
                     </Button>

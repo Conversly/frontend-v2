@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Suspense, Component, type ReactNode, type ErrorInfo } from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { Warning, Refresh } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { HeaderSkeleton, DataSourceSkeleton, ChatbotCardSkeleton } from '@/components/skeletons';
 
@@ -21,14 +21,14 @@ function DefaultErrorFallback({ error, reset }: ErrorStateProps) {
   return (
     <div className="flex flex-col items-center justify-center p-6 text-center">
       <div className="mb-4 rounded-full bg-destructive/10 p-3">
-        <AlertCircle className="h-6 w-6 text-destructive" />
+        <Warning sx={{ fontSize: 24, color: "var(--destructive)" }} />
       </div>
       <h3 className="mb-2 text-lg font-semibold text-foreground">Something went wrong</h3>
       <p className="mb-4 max-w-md text-sm text-muted-foreground">
         {error.message || 'An unexpected error occurred while loading this content.'}
       </p>
       <Button onClick={reset} variant="outline" className="gap-2">
-        <RefreshCw className="h-4 w-4" />
+        <Refresh sx={{ fontSize: 16 }} />
         Try again
       </Button>
     </div>

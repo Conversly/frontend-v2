@@ -6,16 +6,13 @@ import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
 import {
     Search,
-    MoreVertical,
-    CheckCheck,
-    Phone,
-    Loader2,
-    Mail,
-    ArrowLeft,
-    X,
-    PanelRight,
-    ChevronDown,
-} from 'lucide-react';
+    MoreVert,
+    DoneAll,
+    ArrowBack,
+    Close,
+    ExpandMore,
+} from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -148,7 +145,7 @@ export default function LiveChatPage() {
                             </div>
                         </Button>
                         <Button variant="ghost" size="icon" className="hover:bg-transparent">
-                            <MoreVertical className="w-5 h-5" />
+                            <MoreVert sx={{ fontSize: 20 }} />
                         </Button>
                     </div>
                 </div>
@@ -156,7 +153,7 @@ export default function LiveChatPage() {
                 {/* Search Bar */}
                 <div className="p-2 border-b bg-white">
                     <div className="relative bg-[#f0f2f5] rounded-lg h-9 flex items-center px-3">
-                        <Search className="w-5 h-5 text-[#54656f] mr-4 cursor-pointer" />
+                        <Search sx={{ fontSize: 20 }} className="text-[#54656f] mr-4 cursor-pointer" />
                         <Input
                             placeholder="Search or start new chat"
                             className="border-0 bg-transparent h-full p-0 focus-visible:ring-0 placeholder:text-[#54656f] text-sm"
@@ -189,7 +186,7 @@ export default function LiveChatPage() {
                 <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth bg-white">
                     {isLoadingContacts ? (
                         <div className="flex justify-center p-4">
-                            <Loader2 className="w-6 h-6 animate-spin text-[#00a884]" />
+                            <CircularProgress size={24} sx={{ color: '#00a884' }} />
                         </div>
                     ) : (
                         <div className="divide-y-0">
@@ -258,7 +255,7 @@ export default function LiveChatPage() {
                                         setSelectedContact(null);
                                     }}
                                 >
-                                    <ArrowLeft className="w-5 h-5" />
+                                    <ArrowBack sx={{ fontSize: 20 }} />
                                 </Button>
 
                                 <Avatar className="shrink-0 w-10 h-10">
@@ -277,10 +274,10 @@ export default function LiveChatPage() {
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 <Button variant="ghost" size="icon" className="text-[#54656f]">
-                                    <Search className="w-5 h-5" />
+                                    <Search sx={{ fontSize: 20 }} />
                                 </Button>
                                 <Button variant="ghost" size="icon" className="text-[#54656f]">
-                                    <MoreVertical className="w-5 h-5" />
+                                    <MoreVert sx={{ fontSize: 20 }} />
                                 </Button>
                             </div>
                         </div>
@@ -295,7 +292,7 @@ export default function LiveChatPage() {
                                 <div className="space-y-1 pb-4 flex flex-col">
                                     {isLoadingMessages ? (
                                         <div className="flex justify-center py-8">
-                                            <Loader2 className="w-8 h-8 animate-spin text-[#00a884]" />
+                                            <CircularProgress size={32} sx={{ color: '#00a884' }} />
                                         </div>
                                     ) : messages.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center py-12 text-center min-h-[400px]">
@@ -363,8 +360,7 @@ export default function LiveChatPage() {
                                                                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                                                                 </span>
                                                                 {!isUser && (
-                                                                    <CheckCheck className={cn(
-                                                                        "w-4 h-4",
+                                                                    <DoneAll sx={{ fontSize: 16 }} className={cn(
                                                                         (msg as any).status === 'read' ? "text-[#53bdeb]" : "text-[#667781]"
                                                                     )} />
                                                                 )}
@@ -393,7 +389,7 @@ export default function LiveChatPage() {
                                     )}
                                     aria-label="Scroll to bottom"
                                 >
-                                    <ChevronDown className="w-6 h-6" />
+                                    <ExpandMore sx={{ fontSize: 24 }} />
                                 </Button>
                             )}
                         </div>
@@ -436,7 +432,7 @@ export default function LiveChatPage() {
                                 onClick={() => setIsProfileOpen(false)}
                                 className="mr-4 hover:bg-transparent text-[#54656f]"
                             >
-                                <X className="w-5 h-5" />
+                                <Close sx={{ fontSize: 20 }} />
                             </Button>
                             <span className="text-[#111b21] font-medium text-base">Contact Info</span>
                         </div>

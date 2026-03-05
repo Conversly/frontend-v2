@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Play } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { PlayArrow } from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import type { ActionFormErrors } from '@/utils/customActionValidation';
 
@@ -198,7 +199,7 @@ export const TestSection: React.FC<Props> = ({
         <div className="space-y-4">
             <div className="flex items-center gap-3">
                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Play className="h-4 w-4 text-primary" />
+                    <PlayArrow sx={{ fontSize: 16, color: "var(--primary)" }} />
                 </div>
                 <div>
                     <h3 className="type-section-title">Test Action</h3>
@@ -304,12 +305,12 @@ export const TestSection: React.FC<Props> = ({
                 >
                     {testing ? (
                         <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <CircularProgress size={16} sx={{ mr: 1 }} />
                             Running test...
                         </>
                     ) : (
                         <>
-                            <Play className="mr-2 h-4 w-4 fill-current" />
+                            <PlayArrow sx={{ fontSize: 16, mr: 1 }} />
                             Run Action Test
                         </>
                     )}
@@ -403,7 +404,7 @@ export const TestAndSaveStep: React.FC<OldProps> = (props) => {
                     >
                         {props.saving ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <CircularProgress size={16} sx={{ mr: 1 }} />
                                 Saving Action...
                             </>
                         ) : (

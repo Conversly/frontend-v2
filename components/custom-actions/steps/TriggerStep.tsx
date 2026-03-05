@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CustomAction } from '@/types/customActions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, Plus, Zap } from 'lucide-react';
+import { Close, Add, Bolt } from '@mui/icons-material';
 
 interface Props {
     formData: CustomAction;
@@ -66,7 +66,7 @@ export const TriggerSection: React.FC<Props> = ({
         <div className="space-y-4">
             <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Zap className="h-4 w-4 text-primary" />
+                    <Bolt sx={{ fontSize: 16 }} className="text-primary" />
                 </div>
                 <div>
                     <h3 className="text-sm font-semibold">Trigger</h3>
@@ -90,7 +90,7 @@ export const TriggerSection: React.FC<Props> = ({
                                     onClick={() => removeExample(index)}
                                     className="h-4 w-4 rounded-full hover:bg-destructive/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                                 >
-                                    <X className="h-2.5 w-2.5" />
+                                    <Close sx={{ fontSize: 10 }} />
                                 </button>
                             </div>
                         ))}
@@ -113,7 +113,7 @@ export const TriggerSection: React.FC<Props> = ({
                         onClick={addExample}
                         disabled={!newExample.trim()}
                     >
-                        <Plus className="h-3.5 w-3.5 mr-1" />
+                        <Add sx={{ fontSize: 14, mr: 0.5 }} />
                         Add
                     </Button>
                 </div>

@@ -32,13 +32,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-    Upload,
-    Plus,
-    MoreHorizontal,
-    Search,
-    ChevronDown
-} from 'lucide-react';
+import { CloudUpload, Add, MoreHoriz, Search, ExpandMore } from '@mui/icons-material';
 import { CsvImportDialog } from '@/components/chatbot/whatsapp/CsvImportDialog';
 import { toast } from 'sonner';
 import { useCreateContact } from '@/services/contacts';
@@ -200,7 +194,7 @@ export default function WhatsAppContactsPage() {
                                     className="bg-white border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-green-500 hover:shadow-sm transition-all flex items-center gap-4 group"
                                 >
                                     <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
-                                        <Upload className="w-5 h-5" />
+                                        <CloudUpload sx={{ fontSize: 20 }} />
                                     </div>
                                     <div>
                                         <h5 className="font-medium text-slate-800 group-hover:text-green-700 transition-colors">Import Contacts</h5>
@@ -227,7 +221,7 @@ export default function WhatsAppContactsPage() {
                                 <span className="text-xl font-bold text-slate-700">{contacts.length}</span>
                                 <div className="h-6 w-px bg-border"></div>
                                 <div className="relative w-64">
-                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Search sx={{ fontSize: 16, position: "absolute", left: 10, top: 10, color: "var(--muted-foreground)" }} />
                                     <Input
                                         value={searchInput}
                                         onChange={(e) => setSearchInput(e.target.value)}
@@ -241,7 +235,7 @@ export default function WhatsAppContactsPage() {
                                 <Dialog open={isAddContactOpen} onOpenChange={setIsAddContactOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline" className="gap-2">
-                                            <Plus className="w-4 h-4" /> Add Contact
+                                            <Add sx={{ fontSize: 16 }} /> Add Contact
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-[425px]">
@@ -298,7 +292,7 @@ export default function WhatsAppContactsPage() {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" className="gap-2">
-                                            Import <ChevronDown className="w-4 h-4" />
+                                            Import <ExpandMore sx={{ fontSize: 16 }} />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
@@ -372,7 +366,7 @@ export default function WhatsAppContactsPage() {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                            <MoreHorizontal className="w-4 h-4" />
+                                                            <MoreHoriz sx={{ fontSize: 16 }} />
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>

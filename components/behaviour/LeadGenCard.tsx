@@ -1,6 +1,7 @@
 "use client";
 
-import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { ContactPage, AutoAwesome, Add, Delete, DragIndicator, Refresh } from "@mui/icons-material";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -77,7 +78,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
             <div className="flex items-center justify-between mb-6 p-4 bg-muted/30 rounded-lg border border-border">
                 <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Magnet className="h-4 w-4" />
+                        <ContactPage sx={{ fontSize: 16 }} />
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-foreground">Enable Lead Generation</p>
@@ -96,7 +97,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     {/* 1. Lead Detection Strategy */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-primary" />
+                            <AutoAwesome sx={{ fontSize: 16, color: "var(--primary)" }} />
                             <h3 className="text-sm font-semibold text-muted-foreground">Lead Detection Strategy</h3>
                         </div>
 
@@ -245,7 +246,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     {/* 2. Form Appearance */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <Magnet className="h-4 w-4 text-primary" />
+                            <ContactPage sx={{ fontSize: 16 }} className="text-primary" />
                             <h3 className="text-sm font-semibold text-muted-foreground">Form Appearance</h3>
                         </div>
 
@@ -291,11 +292,11 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <GripVertical className="h-4 w-4 text-primary" />
+                                <DragIndicator sx={{ fontSize: 16, color: "var(--primary)" }} />
                                 <h3 className="text-sm font-semibold text-muted-foreground">Form Fields</h3>
                             </div>
                             <Button variant="outline" size="sm" onClick={addField}>
-                                <Plus className="h-3 w-3 mr-1" /> Add Field
+                                <Add sx={{ fontSize: 12, mr: 0.5 }} /> Add Field
                             </Button>
                         </div>
 
@@ -355,7 +356,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                         onClick={() => removeField(index)}
                                         className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <Trash2 className="h-4 w-4" />
+                                        <Delete sx={{ fontSize: 16 }} />
                                     </Button>
                                 </div>
                             ))}
@@ -372,7 +373,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Sparkles className="h-4 w-4 text-primary" />
+                                <AutoAwesome sx={{ fontSize: 16, color: "var(--primary)" }} />
                                 <Label className="text-primary font-medium">Magic Prompt</Label>
                             </div>
                             <Button
@@ -388,7 +389,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 disabled={isGenerating}
                                 className="h-8 border-primary/20 text-primary hover:bg-primary/10 hover:text-primary"
                             >
-                                {isGenerating ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <RefreshCw className="mr-2 h-3 w-3" />}
+                                {isGenerating ? <CircularProgress size={12} sx={{ mr: 1 }} /> : <Refresh sx={{ fontSize: 12, mr: 1 }} />}
                                 Generate from Settings
                             </Button>
                         </div>
@@ -412,7 +413,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
 
             {!form.isEnabled && (
                 <div className="py-12 flex flex-col items-center justify-center gap-3 text-center text-muted-foreground">
-                    <Magnet className="h-8 w-8 text-muted-foreground/40" />
+                    <ContactPage sx={{ fontSize: 32 }} className="text-muted-foreground/40" />
                     <div>
                         <p className="font-medium text-sm text-foreground">Lead Generation is disabled</p>
                         <p className="text-xs mt-1">Enable the toggle above to configure lead capture settings.</p>

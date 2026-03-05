@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle, AlertCircle, Wand2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Save, AutoAwesome, Person, ContactPage, PersonAdd, CheckCircle, Cancel, Warning } from "@mui/icons-material";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,9 +35,9 @@ import { getBehaviourConfigs, upsertBehaviourConfig } from "@/lib/api/behaviour-
 type TabId = "identity" | "lead-gen" | "handoff";
 
 const TABS: { id: TabId; label: string; icon: React.ElementType; description: string }[] = [
-    { id: "identity", label: "Identity", icon: User, description: "Personality & tone" },
-    { id: "lead-gen", label: "Lead Generation", icon: Magnet, description: "Capture leads" },
-    { id: "handoff", label: "Human Handoff", icon: UserPlus, description: "Escalation rules" },
+    { id: "identity", label: "Identity", icon: Person, description: "Personality & tone" },
+    { id: "lead-gen", label: "Lead Generation", icon: ContactPage, description: "Capture leads" },
+    { id: "handoff", label: "Human Handoff", icon: PersonAdd, description: "Escalation rules" },
 ];
 
 // Deep equality helper for comparing states
@@ -379,7 +380,7 @@ export default function BehaviourPage() {
                                         : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                                 )}
                             >
-                                <Icon className="h-4 w-4 shrink-0" />
+                                <Icon sx={{ fontSize: 16 }} />
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2">
                                         <p className={cn("text-sm font-medium leading-none", isActive ? "text-primary" : "text-foreground")}>{tab.label}</p>
@@ -397,7 +398,7 @@ export default function BehaviourPage() {
                 {/* AI Summary Card */}
                 <div className="mx-3 mt-2 rounded-lg border border-border bg-muted/30 p-3 flex-shrink-0">
                     <div className="flex items-center gap-2 mb-2.5">
-                        <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <AutoAwesome sx={{ fontSize: 14, color: "var(--primary)" }} />
                         <span className="text-xs font-semibold text-foreground">Your AI will:</span>
                     </div>
                     <ul className="space-y-1.5">
@@ -409,8 +410,8 @@ export default function BehaviourPage() {
                         ].map((item) => (
                             <li key={item.label} className="flex items-center gap-1.5 text-xs text-foreground">
                                 {item.enabled
-                                    ? <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0" />
-                                    : <XCircle className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+                                    ? <CheckCircle sx={{ fontSize: 12, color: "rgb(34 197 94)" }} />
+                                    : <Cancel sx={{ fontSize: 12, color: "var(--muted-foreground)", opacity: 0.5 }} />
                                 }
                                 <span className={item.enabled ? "" : "text-muted-foreground"}>{item.label}</span>
                             </li>
@@ -424,11 +425,11 @@ export default function BehaviourPage() {
                 {/* Info Banner + Save */}
                 <div className="p-3 border-t border-border flex-shrink-0 space-y-2">
                     <div className="flex items-start gap-1.5 px-2 py-1.5 bg-primary/5 border border-primary/20 rounded-md">
-                        <Sparkles className="h-3 w-3 text-primary shrink-0 mt-0.5" />
+                        <AutoAwesome sx={{ fontSize: 12, color: "var(--primary)", mt: 0.5 }} />
                         <span className="text-[10px] text-primary leading-tight">Write in plain language — we'll craft the perfect prompt!</span>
                     </div>
                     <Button onClick={handleSave} disabled={!anyChanges || isSaving} className="w-full h-9" size="sm">
-                        {isSaving ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-2 h-3.5 w-3.5" />}
+                        {isSaving ? <CircularProgress size={14} sx={{ mr: 1 }} /> : <Save sx={{ fontSize: 14, mr: 1 }} />}
                         Save Changes
                     </Button>
                 </div>
@@ -498,7 +499,7 @@ export default function BehaviourPage() {
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5 text-amber-500" />
+                            <Warning sx={{ fontSize: 20, color: "rgb(245 158 11)" }} />
                             Generate Optimized Prompt{pendingSectionsToGenerate.length > 1 ? "s" : ""}?
                         </DialogTitle>
                         <DialogDescription className="pt-2">
@@ -531,7 +532,7 @@ export default function BehaviourPage() {
                             Save Only
                         </Button>
                         <Button onClick={generateAllNeededPrompts} disabled={isSaving} className="gap-2">
-                            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                            {isSaving ? <CircularProgress size={16} /> : <AutoAwesome sx={{ fontSize: 16 }} />}
                             Generate{pendingSectionsToGenerate.length > 1 ? " All" : ""} & Save
                         </Button>
                     </DialogFooter>

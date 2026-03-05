@@ -22,7 +22,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, MoreVertical, Filter } from 'lucide-react';
+import { Search, Add, MoreVert, FilterList } from '@mui/icons-material';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     DropdownMenu,
@@ -98,11 +98,11 @@ export default function WhatsAppTemplatesPage() {
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto">
                         <Button variant="outline" onClick={handleSync} disabled={isSyncing} className="gap-2 flex-1 sm:flex-none">
-                            <Plus className="w-4 h-4" />
+                            <Add sx={{ fontSize: 16 }} />
                             {isSyncing ? 'Syncing...' : 'Sync from Meta'}
                         </Button>
                         <Button onClick={() => router.push(`${basePath}/templates/new`)} className="gap-2 flex-1 sm:flex-none">
-                            <Plus className="w-4 h-4" />
+                            <Add sx={{ fontSize: 16 }} />
                             Create Template
                         </Button>
                     </div>
@@ -111,7 +111,7 @@ export default function WhatsAppTemplatesPage() {
                 {/* Filters */}
                 <div className="p-4 border-b flex flex-col md:flex-row items-stretch md:items-center gap-4 bg-card/10">
                     <div className="relative w-full md:w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Search sx={{ fontSize: 16 }} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                         <Input placeholder="Search templates..." className="pl-9 bg-background" />
                     </div>
 
@@ -140,7 +140,7 @@ export default function WhatsAppTemplatesPage() {
                     </div>
 
                     <Button variant="outline" className="md:ml-auto gap-2">
-                        <Filter className="w-4 h-4" />
+                        <FilterList sx={{ fontSize: 16 }} />
                         More Filters
                     </Button>
                 </div>
@@ -205,7 +205,7 @@ export default function WhatsAppTemplatesPage() {
                                                             <DropdownMenu>
                                                                 <DropdownMenuTrigger asChild>
                                                                     <Button variant="ghost" size="icon">
-                                                                        <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                                                                        <MoreVert sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                                                     </Button>
                                                                 </DropdownMenuTrigger>
                                                                 <DropdownMenuContent align="end">

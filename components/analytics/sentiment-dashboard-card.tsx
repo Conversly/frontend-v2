@@ -7,7 +7,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { chartsGridClasses } from "@mui/x-charts/ChartsGrid";
-import { PieChart as PieChartIcon, TrendingUp, Smile } from "lucide-react";
+import { ShowChart, TrendingUp, InsertEmoticon } from "@mui/icons-material";
 import { useMemo } from "react";
 import type { DashboardData } from "@/types/analytics";
 
@@ -107,7 +107,7 @@ export function SentimentDashboardCard({
           <div className="flex items-start justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Smile className="h-4 w-4 text-muted-foreground" />
+                <InsertEmoticon sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 Sentiment
               </CardTitle>
               <div className="text-sm text-muted-foreground mt-1">
@@ -117,11 +117,11 @@ export function SentimentDashboardCard({
 
             <TabsList>
               <TabsTrigger value="line" className="text-xs">
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp sx={{ fontSize: 14 }} />
                 Line
               </TabsTrigger>
               <TabsTrigger value="pie" className="text-xs">
-                <PieChartIcon className="h-3.5 w-3.5" />
+                <ShowChart sx={{ fontSize: 14 }} />
                 Pie
               </TabsTrigger>
             </TabsList>

@@ -3,7 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, Mail, ArrowLeft, Sparkles, CheckCircle2, Loader2, ArrowRight, KeyRound, Users } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { ChevronRight, ExpandMore, Mail, ArrowBack, AutoAwesome, CheckCircle, ArrowForward, Key, People } from "@mui/icons-material";
 import { GoogleAuth } from "@/components/auth";
 import { useAuth } from "@/store/auth";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
@@ -170,7 +171,7 @@ export default function LoginPage() {
                 {verificationSent ? (
                   <div className="text-center">
                     <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Mail className="w-8 h-8 text-primary" />
+                      <Mail sx={{ fontSize: 32, color: "var(--primary)" }} />
                     </div>
                     <h1 className="text-2xl font-bold text-foreground md:text-3xl">
                       Check your email
@@ -204,7 +205,7 @@ export default function LoginPage() {
                     }}
                     className="w-full py-2 px-4 bg-background border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium flex items-center justify-center"
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowBack sx={{ fontSize: 16, mr: 1 }} />
                     Back to Login
                   </button>
                   <p className="text-center text-sm text-muted-foreground">
@@ -336,7 +337,7 @@ export default function LoginPage() {
                 rel="noreferrer"
               >
                 Explore how it works
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight sx={{ fontSize: 16, ml: 0.5 }} />
               </a>
             </div>
             <div className="relative h-[280px] w-full bg-cover bg-center bg-no-repeat z-10">
@@ -386,7 +387,7 @@ export default function LoginPage() {
                 className="flex cursor-pointer items-center rounded-lg border border-gray-100 bg-white p-1 px-4 py-2 hover:shadow transition-shadow"
               >
                 <span className="ml-2">🇺🇸 English</span>
-                <ChevronDown className="ml-1 h-4 w-4" />
+                <ExpandMore sx={{ fontSize: 16, ml: 0.5 }} />
               </button>
 
               {showLangDropdown && (

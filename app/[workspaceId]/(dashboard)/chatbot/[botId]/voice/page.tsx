@@ -17,16 +17,16 @@ import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { CircularProgress } from "@mui/material";
 import {
-    Loader2,
-    Sparkles,
+    AutoAwesome,
     Headset,
-    CheckCircle2,
+    CheckCircle,
     Phone,
-    BarChart3,
-    Megaphone,
-    Zap,
-} from "lucide-react";
+    BarChart,
+    Campaign,
+    Bolt,
+} from "@mui/icons-material";
 
 // Dynamic import for visual component
 const VoiceVisual = dynamic(() => import('@/components/voice/VoiceVisual'), {
@@ -98,7 +98,7 @@ export default function VoicePage() {
                         {/* Left side - Content */}
                         <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center relative z-10">
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
-                                <Headset className="h-8 w-8 text-white" />
+                                <Headset sx={{ fontSize: 32, color: "white" }} />
                             </div>
 
                             <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
@@ -113,8 +113,8 @@ export default function VoicePage() {
                             <div className="flex flex-wrap justify-center gap-3 mb-10">
                                 {[
                                     { icon: Phone, label: "Inbound & Outbound" },
-                                    { icon: BarChart3, label: "Real-time Analytics" },
-                                    { icon: Megaphone, label: "Campaigns" },
+                                    { icon: BarChart, label: "Real-time Analytics" },
+                                    { icon: Campaign, label: "Campaigns" },
                                 ].map((feature, idx) => (
                                     <div
                                         key={idx}
@@ -131,7 +131,7 @@ export default function VoicePage() {
                                 className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
                                 onClick={() => setIsRequestModalOpen(true)}
                             >
-                                <Sparkles className="w-5 h-5 mr-2" />
+                                <AutoAwesome sx={{ fontSize: 20, mr: 1 }} />
                                 Request Access
                             </Button>
                         </div>
@@ -165,7 +165,7 @@ export default function VoicePage() {
                                 <div className="p-6 pb-0">
                                     <DialogHeader className="mb-6 space-y-3">
                                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
-                                            <Sparkles className="w-6 h-6 text-primary" />
+                                            <AutoAwesome sx={{ fontSize: 24, color: "var(--primary)" }} />
                                         </div>
                                         <DialogTitle className="text-2xl font-bold">
                                             Request Early Access
@@ -221,7 +221,7 @@ export default function VoicePage() {
                                     <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-primary/20">
                                         {isRequestSubmitting ? (
                                             <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                <CircularProgress size={16} sx={{ mr: 1 }} />
                                                 Sending...
                                             </>
                                         ) : (
@@ -240,7 +240,7 @@ export default function VoicePage() {
                                 className="flex flex-col items-center justify-center py-8 text-center"
                             >
                                 <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                                    <CheckCircle2 className="w-10 h-10" />
+                                    <CheckCircle sx={{ fontSize: 40 }} />
                                 </div>
                                 <h3 className="text-2xl font-bold mb-3">Request Received!</h3>
                                 <p className="text-muted-foreground max-w-[300px] mb-8">

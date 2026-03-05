@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Plus } from "lucide-react";
+import { Add } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CollapsibleSection } from "./CollapsibleSection";
@@ -43,7 +43,7 @@ export function AnalysisConfig({ config, onChange }: AnalysisConfigProps) {
                         Define schemas to extract structured data from calls.
                     </p>
                     <Button variant="outline" className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Add Schema
                     </Button>
                 </div>

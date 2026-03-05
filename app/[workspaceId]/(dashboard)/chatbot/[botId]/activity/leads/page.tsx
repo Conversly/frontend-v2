@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Search, Calendar as CalendarIcon, Filter, X } from "lucide-react";
+import { Search, CalendarMonth, FilterList, Close } from "@mui/icons-material";
 import { useGetLeadsInfinite } from "@/services/leads";
 import { useTopicsQuery } from "@/services/chatbot";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHoriz } from "@mui/icons-material";
 import { ConversationViewer } from "@/components/chatbot/activity/ConversationViewer";
 import { useMessagesQuery } from "@/services/activity";
 import { LeadResponse } from "@/types/leads";
@@ -171,7 +171,7 @@ export default function LeadsPage() {
           <div className="w-full md:w-64 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Search</Label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search sx={{ position: "absolute", left: 10, top: 10, fontSize: 16, color: "var(--muted-foreground)" }} />
               <Input
                 placeholder="Search name, email..."
                 value={search}
@@ -255,7 +255,7 @@ export default function LeadsPage() {
               onClick={clearFilters}
               className="h-9 px-2 text-muted-foreground hover:text-foreground ml-auto md:ml-0"
             >
-              <X className="w-4 h-4 mr-1" /> Clear
+              <Close sx={{ fontSize: 16, mr: 0.5 }} /> Clear
             </Button>
           )}
         </div>
@@ -343,7 +343,7 @@ export default function LeadsPage() {
                               variant="ghost"
                               className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
                             >
-                              <MoreHorizontal className="h-4 w-4" />
+                              <MoreHoriz sx={{ fontSize: 16 }} />
                               <span className="sr-only">Open menu</span>
                             </Button>
                           </DropdownMenuTrigger>

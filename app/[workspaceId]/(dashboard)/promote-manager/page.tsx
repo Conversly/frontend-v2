@@ -4,7 +4,7 @@ import React from "react";
 import { getMyProducts } from "@/lib/api/promote";
 import { ProductLaunchData } from "@/types/promote";
 import { Button } from "@/components/ui/button";
-import { Plus, ExternalLink, Edit } from "lucide-react";
+import { Add, OpenInNew, Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +46,7 @@ export default function PromoteManagerPage() {
                 {products.length > 0 && (
                     <Link href={`/${workspaceId}/promote-manager/create`}>
                         <Button>
-                            <Plus className="w-4 h-4 mr-2" /> Create New
+                            <Add sx={{ fontSize: 16 }} className="mr-2" /> Create New
                         </Button>
                     </Link>
                 )}
@@ -56,11 +56,11 @@ export default function PromoteManagerPage() {
                 <EmptyState
                     title="No products yet"
                     description="Create your first product launch page to showcase your AI agent to the world."
-                    icon={<Plus />}
+                    icon={<Add sx={{ fontSize: 16 }} />}
                     primaryAction={{
                         label: "Create your first launch page",
                         href: `/${workspaceId}/promote-manager/create`,
-                        icon: <Plus />,
+                        icon: <Add sx={{ fontSize: 16 }} />,
                     }}
                     className="min-h-[400px] border-dashed"
                 />
@@ -94,12 +94,12 @@ export default function PromoteManagerPage() {
                                 <div className="flex gap-2">
                                     <Link href={`/${workspaceId}/promote-manager/${product.id}`} className="flex-1">
                                         <Button variant="outline" className="w-full">
-                                            <Edit className="w-4 h-4 mr-2" /> Edit
+                                            <Edit sx={{ fontSize: 16 }} className="mr-2" /> Edit
                                         </Button>
                                     </Link>
                                     <Link href={`/${workspaceId}/promote/${product.id}`} className="flex-1">
                                         <Button variant="secondary" className="w-full">
-                                            <ExternalLink className="w-4 h-4 mr-2" /> View
+                                            <OpenInNew sx={{ fontSize: 16 }} className="mr-2" /> View
                                         </Button>
                                     </Link>
                                 </div>

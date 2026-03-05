@@ -3,7 +3,8 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAssistant } from "@/services/voice-assistant-service";
-import { Loader2, Copy, ArrowLeft } from "lucide-react";
+import { ContentCopy, ArrowBack } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,7 +50,7 @@ import { useAssistants } from "@/services/voice-assistant-service";
 function VoiceWidgetLoader({ botId, workspaceId }: { botId: string, workspaceId: string }) {
     const { data: assistants, isLoading } = useAssistants(botId);
 
-    if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return <div className="flex justify-center p-10"><CircularProgress /></div>;
 
     if (!assistants || assistants.length === 0) {
         return <div className="p-10 text-center">No Voice Assistant found. Please create one first.</div>;
@@ -71,7 +72,7 @@ function VoiceWidgetContent({ botId, workspaceId, assistant }: { botId: string, 
             <div className="flex items-center justify-between border-b px-6 py-3">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => router.push(`/${workspaceId}/chatbot/${botId}/voice`)}>
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowBack sx={{ fontSize: 16 }} />
                     </Button>
                     <div>
                         <div className="flex items-center gap-2">
@@ -128,7 +129,7 @@ function VoiceWidgetContent({ botId, workspaceId, assistant }: { botId: string, 
                                             toast.success("Copied to clipboard");
                                         }}
                                     >
-                                        <Copy className="h-4 w-4" />
+                                        <ContentCopy sx={{ fontSize: 16 }} />
                                     </Button>
                                 </div>
                                 <p className="text-sm text-muted-foreground mt-2">

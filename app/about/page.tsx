@@ -1,7 +1,11 @@
 import { Metadata } from 'next';
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import { Bot, Cpu, Globe, Zap, ArrowRight } from "lucide-react";
+import SmartToy from "@mui/icons-material/SmartToy";
+import Memory from "@mui/icons-material/Memory";
+import Public from "@mui/icons-material/Public";
+import Bolt from "@mui/icons-material/Bolt";
+import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import LeadGeneration from "./lead-generation";
@@ -29,17 +33,17 @@ const valueCardsData = [
     {
         title: "2-Minute Setup",
         desc: "No complex integrations. Copy one line of code and your AI agent is live. Works with your existing tools.",
-        icon: <Zap className="w-6 h-6" />
+        icon: <Bolt sx={{ fontSize: 24 }} />
     },
     {
         title: "Bank-Level Security",
         desc: "SOC 2 certified, GDPR compliant, data encryption at rest and in transit. Your customer data is fortress-protected.",
-        icon: <Globe className="w-6 h-6" />
+        icon: <Public sx={{ fontSize: 24 }} />
     },
     {
         title: "Scale Infinitely",
         desc: "Handle 10 conversations or 10,000 simultaneously. 99.9% uptime SLA. Black Friday traffic? No problem.",
-        icon: <Cpu className="w-6 h-6" />
+        icon: <Memory sx={{ fontSize: 24 }} />
     }
 ];
 
@@ -65,7 +69,7 @@ export default function AboutPage() {
                         <div className="grid lg:grid-cols-2 gap-16 items-center relative z-10">
                             <AnimatedMissionSection>
                                 <div className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-500/10 px-3 py-1 text-sm font-medium text-orange-600 dark:text-orange-400">
-                                    <Zap className="mr-2 h-4 w-4" />
+                                    <Bolt sx={{ fontSize: 16 }} className="mr-2" />
                                     Why we exist
                                 </div>
                                 <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
@@ -86,7 +90,7 @@ export default function AboutPage() {
                                     <Link href="/solutions">
                                         <Button size="lg" className="group text-base px-8 h-14 rounded-full shadow-lg hover:shadow-primary/25 transition-all duration-300">
                                             Explore our solutions
-                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                            <ArrowForward sx={{ fontSize: 16 }} className="ml-2 group-hover:translate-x-1 transition-transform" />
                                         </Button>
                                     </Link>
                                 </div>

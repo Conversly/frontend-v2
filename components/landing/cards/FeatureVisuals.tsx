@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Phone, MessageCircle, Bot, User, Mic } from "lucide-react";
+import { Phone, Chat, SmartToy, Person, Mic } from "@mui/icons-material";
 
 export const VoiceAgentVisual = () => {
   const [step, setStep] = useState(0);
@@ -89,11 +89,11 @@ export const VoiceAgentVisual = () => {
         <div className="relative">
           <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
             <div className="bg-blue-100 p-2 rounded-full">
-              <User size={24} className="text-blue-600" />
+              <Person sx={{ fontSize: 24 }} className="text-blue-600" />
             </div>
             {/* Headset indicator */}
             <div className="absolute -right-1 -top-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100">
-              <Mic size={10} className="text-blue-500" />
+              <Mic sx={{ fontSize: 10 }} className="text-blue-500" />
             </div>
           </div>
           <span className="text-2xs text-gray-500 text-center block mt-1">AI Agent</span>
@@ -117,7 +117,7 @@ export const VoiceAgentVisual = () => {
         <div className="relative">
           <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center relative z-10">
             <div className="bg-gray-100 p-2 rounded-full">
-              <Phone size={24} className="text-gray-600" />
+              <Phone sx={{ fontSize: 24 }} className="text-gray-600" />
             </div>
           </div>
           <span className="text-2xs text-gray-500 text-center block mt-1">Caller</span>
@@ -165,7 +165,7 @@ export const WhatsAppVisual = () => {
         {/* Status Bar */}
         <div className="h-7 bg-[#075E54] flex items-center px-3 gap-2 flex-shrink-0">
           <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
-            <Bot size={10} className="text-white" />
+            <SmartToy sx={{ fontSize: 10 }} className="text-white" />
           </div>
           <div className="flex-1">
             <div className="h-1.5 w-12 bg-white/40 rounded-full mb-0.5"></div>
@@ -291,7 +291,7 @@ export const WebsiteWidgetVisual = () => {
                 {/* Chat Header */}
                 <div className="flex items-center gap-2 border-b border-gray-50 pb-2 mb-2">
                   <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
-                    <Bot size={12} className="text-purple-600" />
+                    <SmartToy sx={{ fontSize: 12 }} className="text-purple-600" />
                   </div>
                   <div>
                     <div className="text-2xs font-semibold text-gray-800">Support Agent</div>
@@ -354,7 +354,7 @@ export const WebsiteWidgetVisual = () => {
                   exit={{ rotate: -90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <MessageCircle size={20} />
+                  <Chat sx={{ fontSize: 20 }} />
                 </motion.div>
               )}
             </AnimatePresence>

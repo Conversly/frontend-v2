@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Search, FileEdit, Code } from 'lucide-react';
+import { ArrowBack, Search, Edit, Code } from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import { HttpMethod } from '@/types/customActions';
 
@@ -20,7 +20,7 @@ interface SkillTypeConfig {
 const SKILL_TYPES: SkillTypeConfig[] = [
     {
         type: 'fetch',
-        icon: <Search className="h-6 w-6" />,
+        icon: <Search sx={{ fontSize: 24 }} />,
         emoji: '🔍',
         title: 'Fetch data from my API',
         description: 'Look up information like prices, availability, order status',
@@ -29,7 +29,7 @@ const SKILL_TYPES: SkillTypeConfig[] = [
     },
     {
         type: 'submit',
-        icon: <FileEdit className="h-6 w-6" />,
+        icon: <Edit sx={{ fontSize: 24 }} />,
         emoji: '📝',
         title: 'Submit info to my API',
         description: 'Send data like form submissions, orders, or bookings',
@@ -38,7 +38,7 @@ const SKILL_TYPES: SkillTypeConfig[] = [
     },
     {
         type: 'advanced',
-        icon: <Code className="h-6 w-6" />,
+        icon: <Code sx={{ fontSize: 24 }} />,
         emoji: '🔗',
         title: 'Advanced API call',
         description: 'Full control over method, headers, body, and response',
@@ -58,7 +58,7 @@ export const SkillTypeSelector: React.FC<Props> = ({ onSelect, onCancel }) => {
             {/* Header */}
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" onClick={onCancel}>
-                    <ArrowLeft className="h-4 w-4" />
+                    <ArrowBack sx={{ fontSize: 16 }} />
                 </Button>
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">

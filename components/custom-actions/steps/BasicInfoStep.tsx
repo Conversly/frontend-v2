@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, X, Sparkles } from 'lucide-react';
+import { Add, Close, AutoAwesome } from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import type { ActionFormErrors } from '@/utils/customActionValidation';
 
@@ -136,7 +136,7 @@ export const BasicInfoStep: React.FC<Props> = ({
                     {/* Example Good Description */}
                     <div className="rounded-lg bg-muted/50 p-4 border border-border/50">
                         <div className="flex items-center gap-2 font-semibold text-foreground mb-1.5 text-sm">
-                            <Sparkles className="h-4 w-4 text-primary" />
+                            <AutoAwesome sx={{ fontSize: 16, color: "var(--primary)" }} />
                             Example of a good description
                         </div>
                         <p className="type-body-muted italic leading-relaxed">
@@ -165,7 +165,7 @@ export const BasicInfoStep: React.FC<Props> = ({
                                             onClick={() => removeExample(index)}
                                             className="h-4 w-4 rounded-full hover:bg-destructive hover:text-white flex items-center justify-center transition-colors"
                                         >
-                                            <X className="h-2.5 w-2.5" />
+                                            <Close sx={{ fontSize: 10 }} />
                                         </button>
                                     </div>
                                 ))}
@@ -187,7 +187,7 @@ export const BasicInfoStep: React.FC<Props> = ({
                                 disabled={!newExample.trim()}
                                 className="h-10"
                             >
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Add sx={{ fontSize: 16, mr: 1 }} />
                                 Add
                             </Button>
                         </div>

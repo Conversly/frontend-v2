@@ -7,27 +7,23 @@ import {
   Mic,
   MicOff,
   Monitor,
-  Loader2,
-  Video,
-  VideoOff,
-} from 'lucide-react';
+  Videocam,
+  VideocamOff,
+} from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { Toggle } from '@/components/voice/livekit/toggle';
 import { cn } from '@/lib/utils';
 
-function getSourceIcon(source: Track.Source, enabled: boolean, pending = false) {
-  if (pending) {
-    return Loader2;
-  }
-
+function getSourceIcon(source: Track.Source, enabled: boolean): React.ComponentType<{ className?: string; sx?: object }> {
   switch (source) {
     case Track.Source.Microphone:
       return enabled ? Mic : MicOff;
     case Track.Source.Camera:
-      return enabled ? Video : VideoOff;
+      return enabled ? Videocam : VideocamOff;
     case Track.Source.ScreenShare:
       return Monitor;
     default:
-      return React.Fragment;
+      return React.Fragment as React.ComponentType<{ className?: string; sx?: object }>;
   }
 }
 
@@ -37,11 +33,11 @@ export type TrackToggleProps = React.ComponentProps<typeof Toggle> & {
 };
 
 export function TrackToggle({ source, pressed, pending, className, ...props }: TrackToggleProps) {
-  const IconComponent = getSourceIcon(source, pressed ?? false, pending);
+  const IconComponent = getSourceIcon(source, pressed ?? false);
 
   return (
     <Toggle pressed={pressed} aria-label={`Toggle ${source}`} className={cn(className)} {...props}>
-      <IconComponent className={cn('h-4 w-4', pending && 'animate-spin')} />
+      {pending ? <CircularProgress size={16} className="animate-spin" /> : <IconComponent sx={{ fontSize: 16 }} />}
       {props.children}
     </Toggle>
   );

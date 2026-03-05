@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Timer } from "lucide-react";
+import { Timer } from "@mui/icons-material";
 import { useMemo } from "react";
 
 import type { TimeToHumanPoint } from "@/lib/dummy/escalation-analytics";
@@ -51,7 +51,7 @@ export function TimeToHumanCard({ isLoading, points, formatDate }: TimeToHumanCa
     <Card className="shadow-sm border-border/50 h-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Timer className="h-4 w-4 text-muted-foreground" />
+          <Timer sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
           Time to Human (minutes)
         </CardTitle>
         <div className="text-sm text-muted-foreground mt-1">

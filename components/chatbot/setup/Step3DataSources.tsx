@@ -10,7 +10,8 @@ import {
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
-import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Description, Message, Public, Help, OpenInNew, InsertDriveFile, Warning } from "@mui/icons-material";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { useAccessControl } from "@/hooks/useAccessControl";
@@ -31,10 +32,10 @@ interface Step3DataSourcesProps {
 }
 
 const SOURCE_CONFIG: Record<SourceType, { icon: React.ReactNode; label: string; plural: string }> = {
-  url: { icon: <Globe className="h-5 w-5" />, label: "Website", plural: "Websites" },
-  file: { icon: <FileText className="h-5 w-5" />, label: "File", plural: "Files" },
-  text: { icon: <MessageSquare className="h-5 w-5" />, label: "Text", plural: "Text snippets" },
-  qa: { icon: <HelpCircle className="h-5 w-5" />, label: "Q&A", plural: "Q&A pairs" },
+  url: { icon: <Public sx={{ fontSize: 20 }} />, label: "Website", plural: "Websites" },
+  file: { icon: <Description sx={{ fontSize: 20 }} />, label: "File", plural: "Files" },
+  text: { icon: <Message sx={{ fontSize: 20 }} />, label: "Text", plural: "Text snippets" },
+  qa: { icon: <Help sx={{ fontSize: 20 }} />, label: "Q&A", plural: "Q&A pairs" },
 };
 
 export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
@@ -103,7 +104,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
 
         <div className="flex flex-col gap-3">
           <SourceRow
-            icon={<Globe className="h-5 w-5" />}
+            icon={<Public sx={{ fontSize: 20 }} />}
             label="Website"
             count={websiteSources.length}
             selectedCount={selectedWebsites.length}
@@ -111,7 +112,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             onClick={() => setOpenType("url")}
           />
           <SourceRow
-            icon={<FileText className="h-5 w-5" />}
+            icon={<Description sx={{ fontSize: 20 }} />}
             label="File"
             count={fileSources.length}
             selectedCount={selectedFiles.length}
@@ -119,7 +120,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             onClick={() => setOpenType("file")}
           />
           <SourceRow
-            icon={<MessageSquare className="h-5 w-5" />}
+            icon={<Message sx={{ fontSize: 20 }} />}
             label="Text"
             count={textSources.length}
             selectedCount={selectedTexts.length}
@@ -127,7 +128,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             onClick={() => setOpenType("text")}
           />
           <SourceRow
-            icon={<HelpCircle className="h-5 w-5" />}
+            icon={<Help sx={{ fontSize: 20 }} />}
             label="Q&A"
             count={0}
             onClick={() => setOpenType("qa")}
@@ -136,7 +137,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
 
         {isOverLimit && (
           <Alert variant="destructive" className="py-2">
-            <AlertCircle className="h-4 w-4" />
+            <Warning sx={{ fontSize: 16 }} />
             <AlertDescription>
               You have selected {totalSelected} sources, but your plan allows up to {datasourcesLimit}. Please deselect {totalSelected - (datasourcesLimit as number)} source{totalSelected - (datasourcesLimit as number) > 1 ? "s" : ""} to continue.
             </AlertDescription>
@@ -149,7 +150,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
         >
           {isTraining ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <CircularProgress size={16} sx={{ mr: 1 }} />
               Training...
             </>
           ) : (
@@ -307,9 +308,9 @@ function SourceListItem({ source, type, isSelected, onToggle }: SourceListItemPr
       />
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
         {isUrl ? (
-          <Globe className="h-4 w-4 text-muted-foreground" />
+          <Public sx={{ fontSize: 16 }} className="text-muted-foreground" />
         ) : (
-          <File className="h-4 w-4 text-muted-foreground" />
+          <InsertDriveFile sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         )}
       </div>
       <div className="min-w-0 flex-1">
@@ -321,8 +322,8 @@ function SourceListItem({ source, type, isSelected, onToggle }: SourceListItemPr
         )}
       </div>
       {isUrl && (
-        <ExternalLink
-          className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+        <OpenInNew
+          sx={{ fontSize: 16, flexShrink: 0, color: "var(--muted-foreground)", opacity: 0, transition: "opacity", cursor: "pointer", "&:hover": { opacity: 1 } }}
           onClick={handleExternalClick}
         />
       )}

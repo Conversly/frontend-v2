@@ -5,15 +5,15 @@ import { useState, useEffect } from "react";
 import {
     Save,
     Send,
-    ArrowRight,
-    CheckCircle2,
-    Clock,
-    Zap,
-    MessageSquare,
+    ArrowForward,
+    CheckCircle,
+    AccessTime,
+    Bolt,
+    Chat,
     Settings,
-    Users,
-    Globe
-} from "lucide-react";
+    People,
+    Public
+} from "@mui/icons-material";
 
 const BackgroundPattern = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
     <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 border-l border-border/50 ${className}`}>
@@ -47,10 +47,10 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
     }, [isDeploying]);
 
     const configItems = [
-        { icon: <MessageSquare size={14} />, label: "Prompts" },
-        { icon: <Settings size={14} />, label: "Config" },
-        { icon: <Zap size={14} />, label: "Actions" },
-        { icon: <Globe size={14} />, label: "Domains" },
+        { icon: <Chat sx={{ fontSize: 14 }} />, label: "Prompts" },
+        { icon: <Settings sx={{ fontSize: 14 }} />, label: "Config" },
+        { icon: <Bolt sx={{ fontSize: 14 }} />, label: "Actions" },
+        { icon: <Public sx={{ fontSize: 14 }} />, label: "Domains" },
     ];
 
     return (
@@ -85,7 +85,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                             animate={isDeploying ? { rotate: 360 } : {}}
                             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                         >
-                            <Save size={40} />
+                            <Save sx={{ fontSize: 40 }} />
                         </motion.div>
                         {isDeploying && (
                             <motion.div
@@ -107,7 +107,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                         animate={isDeploying ? { scaleX: 1 } : { scaleX: 0 }}
                     />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2">
-                        <ArrowRight className={isDeploying ? "text-blue-500" : "text-muted-foreground"} size={20} />
+                        <ArrowForward sx={{ fontSize: 20, color: isDeploying ? "rgb(59 130 246)" : "var(--muted-foreground)" }} />
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                 >
                     <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl border-2 border-emerald-500/20 flex items-center justify-center relative overflow-hidden">
                         <div className="text-emerald-500 relative z-10">
-                            {isDeploying ? <Clock size={40} className="animate-pulse" /> : <Globe size={40} />}
+                            {isDeploying ? <AccessTime sx={{ fontSize: 40 }} /> : <Public sx={{ fontSize: 40 }} />}
                         </div>
                         <AnimatePresence>
                             {!isDeploying && (
@@ -129,7 +129,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                                     animate={{ scale: 1 }}
                                     className="absolute -top-1 -right-1"
                                 >
-                                    <CheckCircle2 size={24} className="text-emerald-500 fill-white" />
+                                    <CheckCircle sx={{ fontSize: 24, color: "rgb(16 185 129)" }} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -169,7 +169,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                             className="flex flex-col items-center gap-2"
                         >
                             <div className="text-muted-foreground font-medium flex items-center gap-2">
-                                <Users size={16} /> Ready for deployment
+                                <People sx={{ fontSize: 16 }} /> Ready for deployment
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 Your changes are safe in draft mode until you choose to go live.

@@ -1,34 +1,34 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Zap, Users, Globe, Cpu } from "lucide-react";
+import { Bolt, People, Public, Memory } from "@mui/icons-material";
 
 const stats = [
   {
     value: "99.9%",
     label: "Uptime SLA",
-    icon: Zap,
+    icon: Bolt,
     gradient: "from-pink-500/10 via-purple-500/10 to-blue-500/10",
     iconColor: "text-pink-500",
   },
   {
     value: "150K+",
     label: "Active Users",
-    icon: Users,
+    icon: People,
     gradient: "from-blue-500/10 via-purple-500/10 to-pink-500/10",
     iconColor: "text-blue-500",
   },
   {
     value: "50ms",
     label: "Response Time",
-    icon: Globe,
+    icon: Public,
     gradient: "from-purple-500/10 via-pink-500/10 to-blue-500/10",
     iconColor: "text-purple-500",
   },
   {
     value: "1B+",
     label: "API Requests",
-    icon: Cpu,
+    icon: Memory,
     gradient: "from-pink-500/10 via-blue-500/10 to-purple-500/10",
     iconColor: "text-pink-500",
   },
@@ -85,7 +85,7 @@ export default function ScalabilitySection() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-            <Cpu className="w-4 h-4 text-primary" />
+            <Memory sx={{ fontSize: 16 }} className="text-primary" />
             <span className="text-sm font-medium text-primary font-heading">
               Enterprise Ready
             </span>
@@ -122,7 +122,7 @@ export default function ScalabilitySection() {
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center bg-primary/10 mx-auto mb-4"
                 >
-                  <stat.icon className="w-6 h-6 text-primary" />
+                  <stat.icon sx={{ fontSize: 24 }} className="text-primary" />
                 </div>
                 <motion.span
                   className="text-3xl font-bold text-foreground block mb-2 font-heading"

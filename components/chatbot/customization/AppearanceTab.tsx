@@ -4,16 +4,16 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Bot,
-  MessageCircle,
-  HelpCircle,
-  MessageSquare,
-  BrainCircuit,
+  SmartToy,
+  Chat,
+  Help,
+  Message,
+  Psychology,
   Upload,
-  Frame,
+  AspectRatio,
   Palette,
-  Layout,
-} from 'lucide-react';
+  ViewModule,
+} from '@mui/icons-material';
 import {
   Tooltip,
   TooltipContent,
@@ -52,7 +52,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               <label className="font-sans text-sm text-foreground">Theme Color</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -82,7 +82,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               <label className="font-sans text-sm text-foreground">Widget Header</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -105,7 +105,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
         <SectionHeader
           title="Icon Settings"
           description="Choose or upload a custom icon for your chat widget"
-          icon={Layout}
+          icon={ViewModule}
         />
 
         <div className="space-y-6">
@@ -125,7 +125,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
                 htmlFor="customIconUpload"
                 className="cursor-pointer p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors"
               >
-                <Upload className="w-6 h-6 text-muted-foreground" />
+                <Upload sx={{ fontSize: 24, color: "var(--muted-foreground)" }} />
               </label>
               <input
                 id="customIconUpload"
@@ -141,7 +141,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
           </div>
 
           <div className="flex items-center gap-2 text-muted-foreground">
-            <HelpCircle className="w-4 h-4" />
+            <Help sx={{ fontSize: 16 }} />
             <p className="font-sans text-sm">
               Select a preset icon or upload your own. Custom icons will override presets.
             </p>
@@ -153,7 +153,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
         <SectionHeader
           title="Size & Position"
           description="Configure the dimensions and placement of your widget"
-          icon={Frame}
+          icon={AspectRatio}
         />
 
         <div className="flex gap-4">
@@ -182,7 +182,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
         <SectionHeader
           title="Button Settings"
           description="Customize the chat button appearance"
-          icon={MessageSquare}
+          icon={Message}
         />
 
         <div className="space-y-6">
@@ -216,7 +216,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               <label className="font-sans text-sm text-foreground">Show Button Text</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">Display text next to the chat button</p>

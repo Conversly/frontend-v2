@@ -9,7 +9,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Upload, FileText, AlertTriangle, Check, X, Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { CloudUpload, Description, Warning, Check, Close } from '@mui/icons-material';
 import { toast } from 'sonner';
 import Papa from 'papaparse';
 import { Progress } from '@/components/ui/progress';
@@ -207,7 +208,7 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <div className="bg-primary/10 p-4 rounded-full mb-4">
-                                <Upload className="w-8 h-8 text-primary" />
+                                <CloudUpload sx={{ fontSize: 32, color: "var(--primary)" }} />
                             </div>
                             <h3 className="font-semibold text-lg mb-1">Click to upload or drag and drop</h3>
                             <p className="text-sm text-muted-foreground mb-4">
@@ -220,12 +221,12 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
                                 ref={fileInputRef}
                                 onChange={handleFileSelect}
                             />
-                            {isProcessing && <Loader2 className="w-6 h-6 animate-spin text-primary mt-4" />}
+                            {isProcessing && <CircularProgress size={24} sx={{ color: "var(--primary)", mt: 1.5 }} />}
                         </div>
 
                         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 text-left">
                             <h4 className="font-medium text-sm text-slate-900 mb-3 flex items-center gap-2">
-                                <FileText className="w-4 h-4 text-slate-500" />
+                                <Description sx={{ fontSize: 16, color: "rgb(100 116 139)" }} />
                                 CSV Format Guidelines
                             </h4>
                             <div className="grid gap-4 sm:grid-cols-2">
@@ -271,7 +272,7 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
                         <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border">
                             <div className="flex items-center gap-3">
                                 <div className="bg-green-100 p-2 rounded">
-                                    <FileText className="w-5 h-5 text-green-600" />
+                                    <Description sx={{ fontSize: 20, color: "rgb(22 163 74)" }} />
                                 </div>
                                 <div>
                                     <p className="font-medium text-sm">{file?.name}</p>
@@ -312,7 +313,7 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
 
                         {warnings.length > 0 && (
                             <Alert variant="destructive" className="bg-amber-50 border-amber-200 text-amber-800">
-                                <AlertTriangle className="h-4 w-4 text-amber-600 !text-amber-600" />
+                                <Warning sx={{ fontSize: 16, color: "rgb(217 119 6)" }} />
                                 <AlertTitle className="text-amber-800">Validation Warnings</AlertTitle>
                                 <AlertDescription className="text-amber-700 text-xs">
                                     Found {warnings.length} issues in the first 50 rows.
@@ -336,7 +337,7 @@ export function CsvImportDialog({ open, onOpenChange, chatbotId, onSuccess }: Cs
 
                 {step === 'uploading' && (
                     <div className="py-12 flex flex-col items-center justify-center space-y-4">
-                        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                        <CircularProgress size={40} sx={{ color: "var(--primary)" }} />
                         <div className="text-center">
                             <p className="font-medium">Uploading contacts...</p>
                             <p className="text-sm text-muted-foreground">This may take a moment.</p>

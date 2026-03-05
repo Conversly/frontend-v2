@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Sparkles, ArrowRight,
-  Headphones, Briefcase, Users, Building2, HeartPulse, ShoppingBag,
-  Book, HelpCircle, Newspaper, ChevronDown
-} from "lucide-react";
+  AutoAwesome, ArrowForward,
+  Headphones, Work, People, Business, Favorite, ShoppingCart,
+  MenuBook, Help, Article, ExpandMore
+} from "@mui/icons-material";
 import {
   Popover,
   PopoverContent,
@@ -138,7 +138,7 @@ export default function Navbar() {
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
                   Solutions
-                  <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+                  <ExpandMore className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" sx={{ fontSize: 12 }} />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
@@ -155,12 +155,12 @@ export default function Navbar() {
                         <Link href="/solutions?filter=support" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 group-hover:bg-blue-100 transition-colors shadow-sm selection:bg-blue-100">
-                              <Headphones className="w-5 h-5" />
+                              <Headphones sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 Customer Service
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Automate & personalize customer support with 24/7 AI agents.</p>
                             </div>
@@ -171,12 +171,12 @@ export default function Navbar() {
                         <Link href="/solutions?filter=internal" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-900/20 group-hover:bg-purple-100 transition-colors shadow-sm">
-                              <Briefcase className="w-5 h-5" />
+                              <Work sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 Employee Experience
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Enrich & elevate employee experience with internal helpdesk bots.</p>
                             </div>
@@ -187,12 +187,12 @@ export default function Navbar() {
                         <Link href="/solutions?filter=commerce" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 group-hover:bg-indigo-100 transition-colors shadow-sm">
-                              <Users className="w-5 h-5" />
+                              <People sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 Marketing Automation
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Engage customers with personalized campaigns and proactive outreach.</p>
                             </div>
@@ -210,12 +210,12 @@ export default function Navbar() {
                         <Link href="/solutions?industry=bfsi" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 group-hover:bg-emerald-100 transition-colors shadow-sm">
-                              <Building2 className="w-5 h-5" />
+                              <Business sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 BFSI
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Banking, Financial Services & Insurance automation solutions.</p>
                             </div>
@@ -226,12 +226,12 @@ export default function Navbar() {
                         <Link href="/solutions?industry=healthcare" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 group-hover:bg-rose-100 transition-colors shadow-sm">
-                              <HeartPulse className="w-5 h-5" />
+                              <Favorite sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 Healthcare
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Patient engagement, appointment scheduling & support.</p>
                             </div>
@@ -242,12 +242,12 @@ export default function Navbar() {
                         <Link href="/solutions?industry=retail" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                           <div className="flex items-start gap-4">
                             <div className="mt-1 p-2.5 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-900/20 group-hover:bg-amber-100 transition-colors shadow-sm">
-                              <ShoppingBag className="w-5 h-5" />
+                              <ShoppingCart sx={{ fontSize: 20 }} />
                             </div>
                             <div>
                               <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                                 Retail & E-commerce
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                                <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-2 mt-1">Drive sales, recovery carts & support shoppers instantly.</p>
                             </div>
@@ -273,7 +273,7 @@ export default function Navbar() {
                         <h4 className="font-bold text-xl mb-2 leading-tight">Voice AI Agents</h4>
                         <p className="text-sm text-gray-200 mb-4 line-clamp-3">Deploy human-like voice assistants that can handle complex calls in minutes.</p>
                         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-white/20 hover:bg-white/30 backdrop-blur-md px-4 py-2 rounded-lg transition-colors border border-white/10">
-                          Watch Demo <ArrowRight className="w-3 h-3" />
+                          Watch Demo <ArrowForward sx={{ fontSize: 12 }} />
                         </div>
                       </div>
                     </div>
@@ -286,7 +286,7 @@ export default function Navbar() {
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
                   Resources
-                  <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+                  <ExpandMore className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" sx={{ fontSize: 12 }} />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
@@ -304,7 +304,7 @@ export default function Navbar() {
                           Building the intelligence layer for global customer support.
                         </p>
                         <div className="absolute right-[-20px] top-[-20px] opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-                          <Sparkles className="w-32 h-32 text-white" />
+                          <AutoAwesome sx={{ fontSize: 128, color: "white" }} />
                         </div>
                         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
                       </Link>
@@ -313,12 +313,12 @@ export default function Navbar() {
                       <Link href="/docs" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                         <div className="flex items-start gap-4">
                           <div className="mt-1 p-2 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 group-hover:bg-blue-100 transition-colors shadow-sm">
-                            <Book className="w-4 h-4" />
+                            <MenuBook sx={{ fontSize: 16 }} />
                           </div>
                           <div>
                             <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                               Documentation
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                               Guides, API Reference, and SDKs.
@@ -331,12 +331,12 @@ export default function Navbar() {
                       <Link href="/faq" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                         <div className="flex items-start gap-4">
                           <div className="mt-1 p-2 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/20 group-hover:bg-purple-100 transition-colors shadow-sm">
-                            <HelpCircle className="w-4 h-4" />
+                            <Help sx={{ fontSize: 16 }} />
                           </div>
                           <div>
                             <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                               Help Center
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                               FAQs and support for common issues.
@@ -349,12 +349,12 @@ export default function Navbar() {
                       <Link href="/blog" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                         <div className="flex items-start gap-4">
                           <div className="mt-1 p-2 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 group-hover:bg-orange-100 transition-colors shadow-sm">
-                            <Newspaper className="w-4 h-4" />
+                            <Article sx={{ fontSize: 16 }} />
                           </div>
                           <div>
                             <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
                               Blog
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                              <ArrowForward sx={{ fontSize: 12 }} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                               Latest updates and industry insights.
@@ -395,7 +395,7 @@ export default function Navbar() {
                   <Button className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary via-blue-400 to-primary bg-[length:200%_100%] animate-[shimmer_2.5s_linear_infinite] px-6 font-semibold text-primary-foreground shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 hover:scale-[1.02]">
                     <span className="relative z-10 flex items-center gap-2">
                       Get started
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <ArrowForward sx={{ fontSize: 16 }} className="transition-transform group-hover:translate-x-1" />
                     </span>
                   </Button>
                 </Link>

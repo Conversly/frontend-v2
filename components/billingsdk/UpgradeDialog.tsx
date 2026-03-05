@@ -15,7 +15,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Lock } from "lucide-react";
+import { Lock } from "@mui/icons-material";
 
 export interface UpgradeDialogProps {
     open: boolean;
@@ -219,7 +219,7 @@ export function UpgradeDialog({
                 <DialogHeader className="pb-2">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 shrink-0">
-                            <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                            <Lock sx={{ fontSize: 16, color: "rgb(217 119 6)" }} />
                         </div>
                         <div>
                             <DialogTitle className="text-lg">{title}</DialogTitle>

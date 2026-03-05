@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Search, Filter, X, MoreHorizontal, MessageSquare, Download } from "lucide-react";
+import { Search, FilterList, Close, MoreHoriz, Chat, Download } from "@mui/icons-material";
 import { useGetLeadsInfinite } from "@/services/leads";
 import {
   DropdownMenu,
@@ -172,7 +172,7 @@ export default function ContactsPage() {
           </div>
           {/* Export button placeholder */}
           <Button variant="outline" size="sm" className="hidden sm:flex" disabled>
-            <Download className="mr-2 h-4 w-4" /> Export
+            <Download sx={{ fontSize: 16, mr: 1 }} /> Export
           </Button>
         </div>
 
@@ -182,7 +182,7 @@ export default function ContactsPage() {
           <div className="w-full md:w-64 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Search</Label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search sx={{ fontSize: 16, position: "absolute", left: 10, top: 10, color: "var(--muted-foreground)" }} />
               <Input
                 placeholder="Search name, email..."
                 value={search}
@@ -244,7 +244,7 @@ export default function ContactsPage() {
               onClick={clearFilters}
               className="h-9 px-2 text-muted-foreground hover:text-foreground ml-auto md:ml-0"
             >
-              <X className="w-4 h-4 mr-1" /> Clear
+              <Close sx={{ fontSize: 16, mr: 0.5 }} /> Clear
             </Button>
           )}
         </div>
@@ -323,7 +323,7 @@ export default function ContactsPage() {
                               variant="ghost"
                               className="flex h-8 w-8 p-0"
                             >
-                              <MoreHorizontal className="h-4 w-4" />
+                              <MoreHoriz sx={{ fontSize: 16 }} />
                               <span className="sr-only">Open menu</span>
                             </Button>
                           </DropdownMenuTrigger>
@@ -332,7 +332,7 @@ export default function ContactsPage() {
                               onClick={() => setSelectedLead(lead)}
                               disabled={!lead.conversationId}
                             >
-                              <MessageSquare className="mr-2 h-4 w-4" />
+                              <Chat sx={{ fontSize: 16, mr: 1 }} />
                               View conversation
                             </DropdownMenuItem>
                           </DropdownMenuContent>

@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FileText, MessageSquare, Database, Lock, Plus, AlertCircle, Globe, Cloud, Briefcase, Mail, ArrowRight, X, Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { Description, Chat, Storage, Lock, Add, Warning, Public, Cloud, Business, Mail, ArrowForward, Close } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { documentSchema, urlSchema } from '@/utils/datasource-validation';
 import { motion } from 'framer-motion';
@@ -22,21 +23,21 @@ const PRODUCTIVITY_SOURCES = [
     id: 'document',
     name: 'Document',
     description: 'Upload document files containing text (PDF, Word, TXT, etc)',
-    icon: FileText,
+    icon: Description,
     available: true
   },
   {
     id: 'qa',
     name: 'Q&A',
     description: 'Finetune your bot by providing common questions and answers',
-    icon: MessageSquare,
+    icon: Chat,
     available: true
   },
   {
     id: 'text',
     name: 'Text',
     description: 'Add custom text content directly to train your chatbot',
-    icon: FileText,
+    icon: Description,
     available: true
   },
 ];
@@ -46,14 +47,14 @@ const WEB_SOURCES = [
     id: 'url',
     name: 'Single URL',
     description: 'Answer from the content from a single webpage',
-    icon: Globe,
+    icon: Public,
     available: true
   },
   {
     id: 'sitemap',
     name: 'Sitemap',
     description: 'Answer from all content on a website referenced by its XML sitemap',
-    icon: Database,
+    icon: Storage,
     available: false
   }
 ];
@@ -80,7 +81,7 @@ const BUSINESS_SOURCES = [
     id: 'zendesk',
     name: 'Zendesk',
     description: 'Answer questions from Zendesk Help Center articles',
-    icon: Briefcase,
+    icon: Business,
     available: false
   },
   {
@@ -157,13 +158,13 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
 
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
-                <Icon className="w-6 h-6 text-pink-500" />
+                <Icon sx={{ fontSize: 24, color: "rgb(236 72 153)" }} />
               </div>
               <h3 className="font-heading text-lg font-semibold text-white mb-2">
                 {source.name}
                 {!source.available && (
                   <span className="ml-2 inline-flex items-center">
-                    <Lock className="w-4 h-4 text-gray-400" />
+                    <Lock sx={{ fontSize: 16, color: "rgb(156 163 175)" }} />
                   </span>
                 )}
               </h3>
@@ -180,7 +181,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                       onClick={() => !isLiveMode && document.getElementById(`file-upload-${source.id}`)?.click()}
                       disabled={isLiveMode}
                     >
-                      <FileText className="w-4 h-4 mr-2" />
+                      <Description sx={{ fontSize: 16, mr: 1 }} />
                       Upload Document
                       <input
                         id={`file-upload-${source.id}`}
@@ -196,7 +197,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                       />
                     </Button>
                     <div className="flex items-start gap-2 mt-2 text-xs text-gray-400">
-                      <AlertCircle className="w-3 h-3 mt-0.5" />
+                      <Warning sx={{ fontSize: 12, mt: 0.5 }} />
                       <span>Supports PDF, Word, TXT, MD. Max 10MB</span>
                     </div>
                   </div>
@@ -207,7 +208,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                     className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group disabled:opacity-50"
                   >
                     Add Q&A Pairs
-                    <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
+                    <Add sx={{ fontSize: 16, ml: 1 }} className="group-hover:rotate-90 transition-transform" />
                   </Button>
                 ) : source.id === 'text' ? (
                   <Link href={workspaceId ? `/${workspaceId}/chatbot/${chatbotId}/sources/text` : "#"}>
@@ -215,7 +216,7 @@ export function ProductivityDataSources({ chatbotId }: ProductivityDataSourcesPr
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group"
                     >
                       Add Text Content
-                      <Plus className="ml-2 w-4 h-4 group-hover:rotate-90 transition-transform" />
+                      <Add sx={{ fontSize: 16, ml: 1 }} className="group-hover:rotate-90 transition-transform" />
                     </Button>
                   </Link>
                 ) : null
@@ -274,13 +275,13 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
 
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
-                <Icon className="w-6 h-6 text-pink-500" />
+                <Icon sx={{ fontSize: 24, color: "rgb(236 72 153)" }} />
               </div>
               <h3 className="font-heading text-lg font-semibold text-white mb-2">
                 {source.name}
                 {!source.available && (
                   <span className="ml-2 inline-flex items-center">
-                    <Lock className="w-4 h-4 text-gray-400" />
+                    <Lock sx={{ fontSize: 16, color: "rgb(156 163 175)" }} />
                   </span>
                 )}
               </h3>
@@ -311,12 +312,12 @@ export function WebDataSources({ chatbotId }: DataSourcesProps) {
                         className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl group disabled:opacity-50"
                         disabled={isLiveMode}
                       >
-                        <Globe className="w-4 h-4 mr-2" />
+                        <Public sx={{ fontSize: 16, mr: 1 }} />
                         Add URL
                       </Button>
                     </form>
                     <div className="flex items-start gap-2 mt-2 text-xs text-gray-400">
-                      <AlertCircle className="w-3 h-3 mt-0.5" />
+                      <Warning sx={{ fontSize: 12, mt: 0.5 }} />
                       <span>Enter a valid webpage URL to extract content</span>
                     </div>
                   </div>
@@ -353,13 +354,13 @@ export function CloudDataSources({ chatbotId }: DataSourcesProps) {
 
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
-                <Icon className="w-6 h-6 text-pink-500" />
+                <Icon sx={{ fontSize: 24, color: "rgb(236 72 153)" }} />
               </div>
               <h3 className="font-heading text-lg font-semibold text-white mb-2">
                 {source.name}
                 {!source.available && (
                   <span className="ml-2 inline-flex items-center">
-                    <Lock className="w-4 h-4 text-gray-400" />
+                    <Lock sx={{ fontSize: 16, color: "rgb(156 163 175)" }} />
                   </span>
                 )}
               </h3>
@@ -396,13 +397,13 @@ export function BusinessDataSources({ chatbotId }: DataSourcesProps) {
 
             <div className="relative bg-gray-900/60 backdrop-blur-sm border border-gray-800/60 rounded-2xl p-6 h-full transition-all duration-300 hover:border-pink-500/20">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 mb-4">
-                <Icon className="w-6 h-6 text-pink-500" />
+                <Icon sx={{ fontSize: 24, color: "rgb(236 72 153)" }} />
               </div>
               <h3 className="font-heading text-lg font-semibold text-white mb-2">
                 {source.name}
                 {!source.available && (
                   <span className="ml-2 inline-flex items-center">
-                    <Lock className="w-4 h-4 text-gray-400" />
+                    <Lock sx={{ fontSize: 16, color: "rgb(156 163 175)" }} />
                   </span>
                 )}
               </h3>

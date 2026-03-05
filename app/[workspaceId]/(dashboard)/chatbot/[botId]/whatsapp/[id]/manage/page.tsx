@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Trash2, AlertTriangle, Eye, EyeOff, Copy, Check } from 'lucide-react';
+import { Delete, Warning, Visibility, VisibilityOff, ContentCopy, Check } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { getWhatsAppIntegration, deleteWhatsAppIntegration, updateWhatsAppIntegration } from '@/lib/api/whatsapp';
 import { WhatsAppIntegrationResponse } from '@/types/integration';
 import { toast } from 'sonner';
@@ -146,7 +147,7 @@ export default function WhatsAppManagePage() {
                     basePath={basePath}
                 />
                 <div className="flex-1 flex items-center justify-center bg-background">
-                    <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                    <CircularProgress size={32} className="text-muted-foreground" />
                 </div>
             </div>
         );
@@ -195,7 +196,7 @@ export default function WhatsAppManagePage() {
                                             Cancel
                                         </Button>
                                         <Button size="sm" onClick={handleSaveClick} disabled={isSubmitting}>
-                                            {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                                            {isSubmitting && <CircularProgress size={16} className="mr-2" />}
                                             Save Changes
                                         </Button>
                                     </div>
@@ -215,7 +216,7 @@ export default function WhatsAppManagePage() {
                                             <div className="flex gap-2">
                                                 <Input readOnly value={integration?.phoneNumberId || ''} className="font-mono bg-muted/50" />
                                                 <Button variant="outline" size="icon" onClick={() => handleCopy(integration?.phoneNumberId || '', 'Phone Number ID')}>
-                                                    {copiedField === 'Phone Number ID' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                    {copiedField === 'Phone Number ID' ? <Check sx={{ fontSize: 16 }} /> : <ContentCopy sx={{ fontSize: 16 }} />}
                                                 </Button>
                                             </div>
                                         )}
@@ -232,7 +233,7 @@ export default function WhatsAppManagePage() {
                                             <div className="flex gap-2">
                                                 <Input readOnly value={integration?.whatsappBusinessId || integration?.businessAccountId || 'Not set'} className="font-mono bg-muted/50" />
                                                 <Button variant="outline" size="icon" onClick={() => handleCopy(integration?.whatsappBusinessId || integration?.businessAccountId || '', 'WABA ID')}>
-                                                    {copiedField === 'WABA ID' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                    {copiedField === 'WABA ID' ? <Check sx={{ fontSize: 16 }} /> : <ContentCopy sx={{ fontSize: 16 }} />}
                                                 </Button>
                                             </div>
                                         )}
@@ -263,11 +264,11 @@ export default function WhatsAppManagePage() {
                                                             className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                                                             onClick={() => setShowToken(!showToken)}
                                                         >
-                                                            {showToken ? <EyeOff className="w-4 h-4 text-muted-foreground" /> : <Eye className="w-4 h-4 text-muted-foreground" />}
+                                                            {showToken ? <VisibilityOff sx={{ fontSize: 16 }} className="text-muted-foreground" /> : <Visibility sx={{ fontSize: 16 }} className="text-muted-foreground" />}
                                                         </Button>
                                                     </div>
                                                     <Button variant="outline" size="icon" onClick={() => handleCopy(integration?.accessToken || '', 'Access Token')}>
-                                                        {copiedField === 'Access Token' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                        {copiedField === 'Access Token' ? <Check sx={{ fontSize: 16 }} /> : <ContentCopy sx={{ fontSize: 16 }} />}
                                                     </Button>
                                                 </div>
                                                 <p className="text-xs text-muted-foreground">This token is used to authenticate requests to the WhatsApp Cloud API.</p>
@@ -314,7 +315,7 @@ export default function WhatsAppManagePage() {
                                     <div className="flex gap-2">
                                         <Input readOnly value={integration?.webhookUrl || 'Not set'} className="bg-muted/50 font-mono text-sm" />
                                         <Button variant="outline" size="icon" onClick={() => handleCopy(integration?.webhookUrl || '', 'Webhook URL')}>
-                                            {copiedField === 'Webhook URL' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                            {copiedField === 'Webhook URL' ? <Check sx={{ fontSize: 16 }} /> : <ContentCopy sx={{ fontSize: 16 }} />}
                                         </Button>
                                     </div>
                                 </div>
@@ -323,7 +324,7 @@ export default function WhatsAppManagePage() {
                                     <div className="flex gap-2">
                                         <Input readOnly value={integration?.verifyToken || 'Not set'} className="bg-muted/50 font-mono text-sm" />
                                         <Button variant="outline" size="icon" onClick={() => handleCopy(integration?.verifyToken || '', 'Verify Token')}>
-                                            {copiedField === 'Verify Token' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                            {copiedField === 'Verify Token' ? <Check sx={{ fontSize: 16 }} /> : <ContentCopy sx={{ fontSize: 16 }} />}
                                         </Button>
                                     </div>
                                     <p className="text-sm text-muted-foreground">Use this token when configuring the webhook in your Meta App settings.</p>
@@ -336,7 +337,7 @@ export default function WhatsAppManagePage() {
                             <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle className="flex items-center gap-2">
-                                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                        <Warning sx={{ fontSize: 20 }} className="text-amber-500" />
                                         Confirm Update
                                     </DialogTitle>
                                     <DialogDescription className="pt-2">
@@ -363,7 +364,7 @@ export default function WhatsAppManagePage() {
                                     >
                                         {isSubmitting ? (
                                             <>
-                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                <CircularProgress size={16} className="mr-2" />
                                                 Updating...
                                             </>
                                         ) : (
@@ -391,14 +392,14 @@ export default function WhatsAppManagePage() {
                                     <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                                         <DialogTrigger asChild>
                                             <Button variant="destructive">
-                                                <Trash2 className="w-4 h-4 mr-2" />
+                                                <Delete sx={{ fontSize: 16 }} className="mr-2" />
                                                 Remove Integration
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
                                                 <DialogTitle className="flex items-center gap-2">
-                                                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                                                    <Warning sx={{ fontSize: 20 }} className="text-destructive" />
                                                     Remove WhatsApp Integration?
                                                 </DialogTitle>
                                                 <DialogDescription className="pt-2">
@@ -426,7 +427,7 @@ export default function WhatsAppManagePage() {
                                                 >
                                                     {isDeleting ? (
                                                         <>
-                                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                            <CircularProgress size={16} className="mr-2" />
                                                             Removing...
                                                         </>
                                                     ) : (

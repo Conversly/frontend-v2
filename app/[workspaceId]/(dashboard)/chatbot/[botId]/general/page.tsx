@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 import { UpdateChatbotInput } from "@/types/chatbot";
 
 // Recreating the schema from the user request since we can't import it from backend
@@ -94,7 +94,7 @@ export default function GeneralSettingsPage() {
     if (isLoading) {
         return (
             <div className="flex h-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
             </div>
         );
     }
@@ -264,7 +264,7 @@ export default function GeneralSettingsPage() {
 
                         <div className="flex justify-end">
                             <Button type="submit" disabled={isUpdating || !form.formState.isDirty}>
-                                {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isUpdating && <CircularProgress size={16} sx={{ mr: 1 }} />}
                                 Save Changes
                             </Button>
                         </div>

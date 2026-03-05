@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Twitter, Github, Linkedin, Globe, MessageCircle, Youtube } from "lucide-react";
+import { Favorite, Share, Code, Work, Public, Chat, PlayCircle } from "@mui/icons-material";
 import { ProductLaunchData } from "@/types/promote";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -34,27 +34,27 @@ export function ProductLaunchCard({ product }: ProductLaunchCardProps) {
         <div className="flex items-center gap-3">
             {socialLinks?.twitter && (
                 <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Twitter className="w-5 h-5" />
+                    <Share sx={{ fontSize: 20 }} />
                 </a>
             )}
             {socialLinks?.github && (
                 <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Github className="w-5 h-5" />
+                    <Code sx={{ fontSize: 20 }} />
                 </a>
             )}
             {socialLinks?.discord && (
                 <a href={socialLinks.discord} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <MessageCircle className="w-5 h-5" />
+                    <Chat sx={{ fontSize: 20 }} />
                 </a>
             )}
             {socialLinks?.youtube && (
                 <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Youtube className="w-5 h-5" />
+                    <PlayCircle sx={{ fontSize: 20 }} />
                 </a>
             )}
             {socialLinks?.website && (
                 <a href={socialLinks.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Globe className="w-5 h-5" />
+                    <Public sx={{ fontSize: 20 }} />
                 </a>
             )}
         </div>
@@ -77,7 +77,7 @@ export function ProductLaunchCard({ product }: ProductLaunchCardProps) {
                 )}
                 onClick={handleLike}
             >
-                <Heart className={cn("mr-2 w-6 h-6", liked && "fill-current text-red-500")} strokeWidth={3} />
+                <Favorite className={cn("mr-2 w-6 h-6", liked && "fill-current text-red-500")} strokeWidth={3} />
                 {liked ? "Loved by" : "Love this"}
                 <span className="ml-2 opacity-90">{likesCount}</span>
             </Button>

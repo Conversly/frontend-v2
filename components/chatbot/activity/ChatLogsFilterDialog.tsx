@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { CalendarIcon, ChevronDown } from "lucide-react";
+import { CalendarMonth, ExpandMore } from "@mui/icons-material";
 import { cn } from "@/lib/utils";
 
 export type ChatLogsFilters = {
@@ -83,7 +83,7 @@ export function ChatLogsFilterDialog({
                 </div>
               </div>
               <div className="sm:col-span-3 text-xs text-muted-foreground flex items-center gap-2">
-                <CalendarIcon className="h-3.5 w-3.5" />
+                <CalendarMonth sx={{ fontSize: 14 }} />
                 <span className="truncate">{dateLabel}</span>
               </div>
             </div>
@@ -95,7 +95,7 @@ export function ChatLogsFilterDialog({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   {value.confidence ? value.confidence : "Select score"}
-                  <ChevronDown className="h-4 w-4 opacity-50" />
+                  <ExpandMore sx={{ fontSize: 16, opacity: 0.5 }} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
@@ -117,7 +117,7 @@ export function ChatLogsFilterDialog({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   {value.source ? value.source : "Select source"}
-                  <ChevronDown className="h-4 w-4 opacity-50" />
+                  <ExpandMore sx={{ fontSize: 16, opacity: 0.5 }} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
@@ -139,7 +139,7 @@ export function ChatLogsFilterDialog({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   {value.feedback ? value.feedback : "Select feedback"}
-                  <ChevronDown className="h-4 w-4 opacity-50" />
+                  <ExpandMore sx={{ fontSize: 16, opacity: 0.5 }} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">

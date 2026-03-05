@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { BellRing, MessageSquareWarning } from "lucide-react";
+import { Notifications, ReportProblem } from "@mui/icons-material";
 
 import { useWebSocketRoom } from "@/hooks/use-websocket-room";
 import { cn } from "@/lib/utils";
@@ -84,14 +84,14 @@ export function EscalationNotifier() {
             >
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 shrink-0">
-                  <MessageSquareWarning className="h-5 w-5 text-amber-700 dark:text-amber-300" />
+                  <ReportProblem sx={{ fontSize: 20 }} className="text-amber-700 dark:text-amber-300" />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <div className="text-sm font-semibold">New escalated chat</div>
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-200/70 text-amber-950 px-2 py-0.5 text-[11px] font-medium dark:bg-amber-900/40 dark:text-amber-100">
-                      <BellRing className="h-3.5 w-3.5" />
+                      <Notifications sx={{ fontSize: 14 }} />
                       Attention
                     </span>
                   </div>

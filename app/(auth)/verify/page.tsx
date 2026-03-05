@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { verifyEmail } from "@/lib/api/auth";
-import { Loader2, CheckCircle, XCircle, ChevronRight, ChevronDown } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { CheckCircle, Cancel, ChevronRight, ExpandMore } from "@mui/icons-material";
 import Image from "next/image";
 
 export default function VerifyEmailPage() {
@@ -55,7 +56,7 @@ export default function VerifyEmailPage() {
                                 {status === 'loading' && (
                                     <>
                                         <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                                            <CircularProgress size={32} sx={{ color: "var(--primary)" }} />
                                         </div>
                                         <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
                                             Verifying...
@@ -69,7 +70,7 @@ export default function VerifyEmailPage() {
                                 {status === 'success' && (
                                     <>
                                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <CheckCircle className="w-8 h-8 text-green-600" />
+                                            <CheckCircle sx={{ fontSize: 32, color: "rgb(22 163 74)" }} />
                                         </div>
                                         <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
                                             Your email is verified
@@ -83,7 +84,7 @@ export default function VerifyEmailPage() {
                                 {status === 'error' && (
                                     <>
                                         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <XCircle className="w-8 h-8 text-red-600" />
+                                            <Cancel sx={{ fontSize: 32, color: "rgb(220 38 38)" }} />
                                         </div>
                                         <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
                                             Verification Failed
@@ -155,7 +156,7 @@ export default function VerifyEmailPage() {
                                 rel="noreferrer"
                             >
                                 Explore how it works
-                                <ChevronRight className="h-4 w-4 ml-1" />
+                                <ChevronRight sx={{ fontSize: 16, ml: 0.5 }} />
                             </a>
                         </div>
                         <div className="relative h-[280px] w-full bg-cover bg-center bg-no-repeat z-10">
@@ -205,7 +206,7 @@ export default function VerifyEmailPage() {
                                 className="flex cursor-pointer items-center rounded-lg border border-gray-100 bg-white p-1 px-4 py-2 hover:shadow transition-shadow"
                             >
                                 <span className="ml-2">🇺🇸 English</span>
-                                <ChevronDown className="ml-1 h-4 w-4" />
+                                <ExpandMore sx={{ fontSize: 16, ml: 0.5 }} />
                             </button>
 
                             {showLangDropdown && (

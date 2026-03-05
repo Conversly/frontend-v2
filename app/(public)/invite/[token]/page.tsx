@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle2, XCircle, Building2, User, Mail } from "lucide-react";
+import { CheckCircle, Cancel, Business, Person, Mail } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { getInvitationByToken, acceptInvitation, type InvitationDetails } from "@/lib/api/workspaces";
 import { toast } from "sonner";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
@@ -119,7 +120,7 @@ export default function InviteAcceptancePage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <CircularProgress size={32} className="text-primary mx-auto" />
           <p className="text-muted-foreground">Loading invitation...</p>
         </div>
       </div>
@@ -131,7 +132,7 @@ export default function InviteAcceptancePage() {
       <div className="flex items-center justify-center min-h-screen p-4">
         <Card className="max-w-md w-full p-8">
           <div className="flex flex-col items-center text-center space-y-4">
-            <XCircle className="h-12 w-12 text-destructive" />
+            <Cancel sx={{ fontSize: 48 }} className="text-destructive" />
             <div>
               <h2 className="text-xl font-semibold mb-2">Invalid Invitation</h2>
               <p className="text-sm text-muted-foreground">
@@ -152,7 +153,7 @@ export default function InviteAcceptancePage() {
       <div className="flex items-center justify-center min-h-screen p-4">
         <Card className="max-w-md w-full p-8">
           <div className="flex flex-col items-center text-center space-y-4">
-            <CheckCircle2 className="h-12 w-12 text-green-500" />
+            <CheckCircle sx={{ fontSize: 48 }} className="text-green-500" />
             <div>
               <h2 className="text-xl font-semibold mb-2">Invitation Accepted!</h2>
               <p className="text-sm text-muted-foreground">
@@ -174,7 +175,7 @@ export default function InviteAcceptancePage() {
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-              <Building2 className="h-8 w-8 text-primary" />
+              <Business sx={{ fontSize: 32 }} className="text-primary" />
             </div>
             <h1 className="text-2xl font-bold">You've been invited!</h1>
             <p className="text-muted-foreground">
@@ -186,7 +187,7 @@ export default function InviteAcceptancePage() {
           <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <Business sx={{ fontSize: 16 }} className="text-muted-foreground" />
                 <span className="text-sm font-medium">Workspace</span>
               </div>
               <span className="font-semibold">{invitation.workspaceName}</span>
@@ -194,7 +195,7 @@ export default function InviteAcceptancePage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
+                <Mail sx={{ fontSize: 16 }} className="text-muted-foreground" />
                 <span className="text-sm font-medium">Email</span>
               </div>
               <span className="text-sm">{invitation.email}</span>
@@ -202,7 +203,7 @@ export default function InviteAcceptancePage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
+                <Person sx={{ fontSize: 16 }} className="text-muted-foreground" />
                 <span className="text-sm font-medium">Role</span>
               </div>
               {getRoleBadge(invitation.role)}
@@ -234,7 +235,7 @@ export default function InviteAcceptancePage() {
               >
                 {isAccepting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <CircularProgress size={16} className="mr-2" />
                     Accepting...
                   </>
                 ) : (

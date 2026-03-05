@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AlertCircle, Clock, CheckCircle2, Rocket, Plus, Pencil, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Warning, CheckCircle, RocketLaunch, Add, Edit, Delete, ArrowBack, ArrowForward } from "@mui/icons-material";
 import { toast } from "sonner";
 
 // ============================================================================
@@ -122,9 +123,9 @@ function formatDisplayValue(val: any): string {
 
 function changeBadge(type: string) {
     switch (type) {
-        case "CREATED": return <Badge className="bg-emerald-500 hover:bg-emerald-600 gap-1 text-xs"><Plus className="w-3 h-3" />New</Badge>;
-        case "DELETED": return <Badge variant="destructive" className="gap-1 text-xs"><Trash2 className="w-3 h-3" />Removed</Badge>;
-        case "UPDATED": return <Badge className="bg-amber-500 hover:bg-amber-600 gap-1 text-xs"><Pencil className="w-3 h-3" />Modified</Badge>;
+        case "CREATED": return <Badge className="bg-emerald-500 hover:bg-emerald-600 gap-1 text-xs"><Add sx={{ fontSize: 12 }} />New</Badge>;
+        case "DELETED": return <Badge variant="destructive" className="gap-1 text-xs"><Delete sx={{ fontSize: 12 }} />Removed</Badge>;
+        case "UPDATED": return <Badge className="bg-amber-500 hover:bg-amber-600 gap-1 text-xs"><Edit sx={{ fontSize: 12 }} />Modified</Badge>;
         default: return null;
     }
 }
@@ -261,17 +262,17 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
                     <div className="flex items-center gap-4 mt-3">
                         {created > 0 && (
                             <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
-                                <Plus className="w-3 h-3" /> {created} new
+                                <Add sx={{ fontSize: 12 }} /> {created} new
                             </span>
                         )}
                         {updated > 0 && (
                             <span className="flex items-center gap-1.5 text-xs font-medium text-amber-600">
-                                <Pencil className="w-3 h-3" /> {updated} modified
+                                <Edit sx={{ fontSize: 12 }} /> {updated} modified
                             </span>
                         )}
                         {deleted > 0 && (
                             <span className="flex items-center gap-1.5 text-xs font-medium text-red-600">
-                                <Trash2 className="w-3 h-3" /> {deleted} removed
+                                <Delete sx={{ fontSize: 12 }} /> {deleted} removed
                             </span>
                         )}
                     </div>
@@ -282,18 +283,18 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
             <CardContent className="flex-1 overflow-y-auto p-4 min-h-0">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-4">
-                        <Clock className="w-8 h-8 animate-spin text-blue-500" />
+                        <CircularProgress size={32} sx={{ color: "rgb(59 130 246)" }} />
                         <p className="text-muted-foreground text-sm">Calculating differences…</p>
                     </div>
                 ) : error ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3 text-red-500">
-                        <AlertCircle className="w-8 h-8" />
+                        <Warning sx={{ fontSize: 32 }} />
                         <p className="text-sm">{error}</p>
                         <Button variant="outline" onClick={fetchDiff} size="sm">Retry</Button>
                     </div>
                 ) : !hasChanges && diffResult ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3 text-emerald-600">
-                        <CheckCircle2 className="w-10 h-10" />
+                        <CheckCircle sx={{ fontSize: 40 }} />
                         <p className="font-medium text-lg">Everything is up to date</p>
                         <p className="text-sm opacity-80 text-center max-w-sm">
                             No differences found between DEV and LIVE.
@@ -417,7 +418,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
             {/* Footer with actions */}
             <CardFooter className="border-t bg-muted/10 px-4 py-3 flex items-center justify-between">
                 <Button variant="ghost" size="sm" onClick={onBack} disabled={isDeploying}>
-                    <ArrowLeft className="w-4 h-4 mr-1.5" />
+                    <ArrowBack sx={{ fontSize: 16, mr: 0.75 }} />
                     Back
                 </Button>
                 <Button
@@ -426,7 +427,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
                     className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
                     size="sm"
                 >
-                    <Rocket className="w-4 h-4" />
+                    <RocketLaunch sx={{ fontSize: 16 }} />
                     {isDeploying ? "Deploying…" : isFirstDeploy ? "Deploy Now" : "Confirm & Deploy"}
                 </Button>
             </CardFooter>

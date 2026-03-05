@@ -2,7 +2,9 @@
 
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2, Image as ImageIcon, FileVideo } from 'lucide-react';
+import Upload from "@mui/icons-material/Upload";
+import Close from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -88,7 +90,7 @@ export function FileUpload({
                         size="icon"
                         onClick={() => onChange('')}
                     >
-                        <X className="w-4 h-4" />
+                        <Close sx={{ fontSize: 16 }} />
                     </Button>
                     <Button
                         variant="secondary"
@@ -125,9 +127,9 @@ export function FileUpload({
 
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                 {isUploading ? (
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    <CircularProgress size={32} sx={{ color: "var(--primary)" }} />
                 ) : (
-                    <Upload className="w-8 h-8" />
+                    <Upload sx={{ fontSize: 32 }} />
                 )}
                 <p className="text-sm font-medium">
                     {isUploading ? "Uploading..." : label}

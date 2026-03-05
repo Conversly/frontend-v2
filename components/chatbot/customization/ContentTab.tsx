@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  MessageSquare,
-  HelpCircle,
-  Plus,
-  X,
-  PhoneCall,
-  Bell,
-} from 'lucide-react';
+  Message,
+  Help,
+  Add,
+  Close,
+  PhoneInTalk,
+  Notifications,
+} from '@mui/icons-material';
 import {
   Tooltip,
   TooltipContent,
@@ -66,7 +66,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
         <SectionHeader
           title="Initial Message"
           description="The first message users see when they open the chat"
-          icon={MessageSquare}
+          icon={Message}
         />
 
         <div className="space-y-4">
@@ -96,7 +96,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
         <SectionHeader
           title="Starter Questions"
           description="Quick action buttons to help users get started"
-          icon={HelpCircle}
+          icon={Help}
         />
 
         <div className="space-y-3">
@@ -119,7 +119,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
                   onClick={() => handleRemoveQuestion(index)}
                   className="text-destructive hover:text-destructive/80"
                 >
-                  <X className="w-4 h-4" />
+                  <Close sx={{ fontSize: 16 }} />
                 </Button>
               )}
             </div>
@@ -131,7 +131,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               onClick={handleAddQuestion}
               className="w-full border-border text-foreground hover:bg-muted/50"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Add sx={{ fontSize: 16, mr: 1 }} />
               Add Question
             </Button>
           )}
@@ -151,7 +151,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               <label className="font-sans text-sm text-foreground">Message Placeholder</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">Placeholder text shown in the message input field</p>
@@ -172,7 +172,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               <label className="font-sans text-sm text-foreground">Footer Text</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">Optional text displayed at the bottom of the chat widget</p>
@@ -192,7 +192,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               <label className="font-sans text-sm text-foreground">Keep Showing Suggested Messages</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -216,7 +216,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
         <SectionHeader
           title="Calls & Attention"
           description="Voice entrypoints + optional popup/sound nudges"
-          icon={PhoneCall}
+          icon={PhoneInTalk}
         />
 
         <div className="space-y-4">
@@ -225,7 +225,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               <label className="font-sans text-sm text-foreground">Enable Calls</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -245,12 +245,12 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-muted-foreground" />
+                <Notifications sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 <label className="font-sans text-sm text-foreground">Message Popup</label>
               </div>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -272,7 +272,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               <label className="font-sans text-sm text-foreground">Popup Sound</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -296,7 +296,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
                 <label className="font-sans text-sm text-foreground">Sound URL (optional)</label>
                 <Tooltip>
                   <TooltipTrigger>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                    <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="font-sans text-sm">

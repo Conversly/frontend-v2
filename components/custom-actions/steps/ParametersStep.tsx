@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Trash2, Plus, ChevronRight, Sparkles, Info } from 'lucide-react';
+import { Delete, Add, KeyboardArrowRight, AutoAwesome, Info } from '@mui/icons-material';
 
 interface Props {
     formData: CustomAction;
@@ -336,7 +336,7 @@ export const ParametersStep: React.FC<Props> = ({
             {hasLegacyTemplates && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between gap-4">
                     <div className="flex gap-3">
-                        <Info className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
+                        <Info sx={{ fontSize: 20, color: "rgb(202 138 4)", flexShrink: 0, mt: 0.5 }} />
                         <div>
                             <p className="text-sm font-semibold text-yellow-900">Legacy templates detected</p>
                             <p className="text-sm text-yellow-800 leading-relaxed mt-0.5">
@@ -359,7 +359,7 @@ export const ParametersStep: React.FC<Props> = ({
             {(missingPathParams.length > 0 || missingLegacyVariables.length > 0) && (
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-center justify-between gap-4">
                     <div className="flex gap-3">
-                        <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <AutoAwesome sx={{ fontSize: 20, color: "var(--primary)", flexShrink: 0, mt: 0.5 }} />
                         <div>
                             <p className="text-sm font-semibold text-primary">
                                 {missingPathParams.length + missingLegacyVariables.length} variable
@@ -380,7 +380,7 @@ export const ParametersStep: React.FC<Props> = ({
                         onClick={addDetectedParameters}
                         className="shrink-0"
                     >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Add All
                     </Button>
                 </div>
@@ -390,14 +390,14 @@ export const ParametersStep: React.FC<Props> = ({
                 missingPathParams.length === 0 &&
                 missingLegacyVariables.length === 0 && (
                     <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/50">
-                        <Info className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                        <Info sx={{ fontSize: 32, color: "var(--muted-foreground)", mx: "auto", mb: 1.5 }} />
                         <p className="text-muted-foreground mb-2">No parameters needed?</p>
                         <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
                             If your API doesn't require any dynamic values, you can skip this step.
                             Otherwise, add parameters that the AI will extract from conversations.
                         </p>
                         <Button variant="outline" onClick={addParameter}>
-                            <Plus className="h-4 w-4 mr-2" />
+                            <Add sx={{ fontSize: 16, mr: 1 }} />
                             Add Parameter Manually
                         </Button>
                     </div>
@@ -412,7 +412,7 @@ export const ParametersStep: React.FC<Props> = ({
                             className="absolute right-3 top-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={() => removeParameter(index)}
                         >
-                            <Trash2 className="h-4 w-4" />
+                            <Delete sx={{ fontSize: 16 }} />
                         </Button>
 
                         <CardHeader className="pb-4">
@@ -614,7 +614,7 @@ export const ParametersStep: React.FC<Props> = ({
                             <Collapsible>
                                 <CollapsibleTrigger asChild>
                                     <Button variant="ghost" size="sm" className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
-                                        <ChevronRight className="h-4 w-4 mr-1" />
+                                        <KeyboardArrowRight sx={{ fontSize: 16, mr: 0.5 }} />
                                         Advanced Validation
                                     </Button>
                                 </CollapsibleTrigger>
@@ -684,7 +684,7 @@ export const ParametersStep: React.FC<Props> = ({
 
             {formData.parameters.length > 0 && (
                 <Button variant="outline" onClick={addParameter} className="w-full border-dashed">
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Add sx={{ fontSize: 16, mr: 1 }} />
                     Add Another Parameter
                 </Button>
             )}

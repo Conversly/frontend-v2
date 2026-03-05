@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+import { CalendarMonth } from "@mui/icons-material";
 
 interface TimePeriodSelectorProps {
   selectedDays: number;
@@ -19,7 +19,7 @@ export function TimePeriodSelector({
     <Card className="p-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="flex items-center space-x-2">
-          <Calendar className="h-3.5 w-3.5" />
+          <CalendarMonth sx={{ fontSize: 14 }} />
           <span className="text-sm font-medium">Time Period:</span>
           <div className="flex space-x-1.5">
             <Button

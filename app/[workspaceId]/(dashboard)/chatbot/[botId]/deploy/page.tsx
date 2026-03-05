@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DeploySidebar } from "@/components/deploy/DeploySidebar";
 import { DeployPreview } from "@/components/deploy/DeployPreview";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { OpenInNew } from "@mui/icons-material";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
@@ -76,7 +76,7 @@ export default function DeployPage() {
             </div>
             <Link href={`/deploy/${botId}`} target="_blank">
               <Button variant="outline" className="shadow-sm bg-background">
-                <ExternalLink className="w-4 h-4 mr-2" />
+                <OpenInNew sx={{ fontSize: 16, mr: 1 }} />
                 View Public Page
               </Button>
             </Link>

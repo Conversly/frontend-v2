@@ -1,6 +1,7 @@
 'use client';
 
-import { Globe, FileText, MessageSquare, X, ArrowRight, Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { Public, Description, Chat, Close, ArrowForward } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { usePendingSources, useDataSourcesStore, useIsLoading } from '@/store/chatbot/data-sources';
 import { useProcessDataSource } from '@/services/datasource';
@@ -15,13 +16,13 @@ interface SourcesSidebarProps {
 const getSourceIcon = (type: string) => {
   switch (type) {
     case 'Website':
-      return Globe;
+      return Public;
     case 'Document':
-      return FileText;
+      return Description;
     case 'QandA':
-      return MessageSquare;
+      return Chat;
     default:
-      return FileText;
+      return Description;
   }
 };
 
@@ -133,7 +134,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
                     animate={{ opacity: 1, x: 0 }}
                     className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg group hover:bg-muted/70 transition-colors"
                   >
-                    <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    <Icon sx={{ fontSize: 16, color: "var(--muted-foreground)", flexShrink: 0, mt: 0.5 }} />
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-muted-foreground mb-1">
                         {getSourceTypeLabel(source.type)}
@@ -148,7 +149,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
                       onClick={() => removePendingSource(source.id)}
                       className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                     >
-                      <X className="w-3 h-3" />
+                      <Close sx={{ fontSize: 12 }} />
                     </Button>
                   </motion.div>
                 );
@@ -158,7 +159,7 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
         ) : (
           <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
             <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-muted-foreground" />
+              <Description sx={{ fontSize: 20, color: "var(--muted-foreground)" }} />
               <span className="text-sm text-muted-foreground">No sources added</span>
             </div>
           </div>
@@ -186,13 +187,13 @@ export function SourcesSidebar({ chatbotId }: SourcesSidebarProps) {
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <CircularProgress size={16} sx={{ mr: 1 }} />
               Processing...
             </>
           ) : (
             <>
               Process All Sources
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowForward sx={{ fontSize: 16, ml: 1 }} className="group-hover:translate-x-1 transition-transform" />
             </>
           )}
         </Button>

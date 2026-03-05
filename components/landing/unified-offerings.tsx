@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import {
-  MessageCircle,
-  MessageSquare,
+  Chat,
+  Message,
   Mic,
   Settings,
-  GitCompare,
-  ArrowUpRight,
-  BarChart3,
-  Sparkles,
-} from "lucide-react";
+  CompareArrows,
+  OpenInNew,
+  BarChart,
+  AutoAwesome,
+} from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
@@ -47,7 +47,7 @@ export default function UnifiedOfferings() {
     {
       title: "Website Chat",
       tagline: "Create your AI chatbot for your website — engage visitors 24/7, answer questions instantly, and convert browsers into customers automatically",
-      icon: <MessageSquare size={18} />,
+      icon: <Message sx={{ fontSize: 18 }} />,
       visual: <WebsiteWidgetVisual />,
       accent: "text-purple-600",
       bgAccent: "bg-purple-500/10 border-purple-500/20",
@@ -56,7 +56,7 @@ export default function UnifiedOfferings() {
     {
       title: "WhatsApp AI",
       tagline: "Meet customers on their favorite app — automate conversations, confirm bookings, and close deals on WhatsApp at scale",
-      icon: <MessageCircle size={18} />,
+      icon: <Chat sx={{ fontSize: 18 }} />,
       visual: <WhatsAppVisual />,
       accent: "text-emerald-600",
       bgAccent: "bg-emerald-500/10 border-emerald-500/20",
@@ -64,7 +64,7 @@ export default function UnifiedOfferings() {
     {
       title: "Voice AI",
       tagline: "Answer every call instantly with natural AI voices — qualify leads, book appointments, and provide support without hiring more staff",
-      icon: <Mic size={18} />,
+      icon: <Mic sx={{ fontSize: 18 }} />,
       visual: <VoiceAgentVisual />,
       accent: "text-blue-600",
       bgAccent: "bg-blue-500/10 border-blue-500/20",
@@ -82,7 +82,7 @@ export default function UnifiedOfferings() {
     {
       title: "Smart AI Switching",
       tagline: "Get the best AI responses at the lowest cost — save up to 90% on AI expenses",
-      icon: <GitCompare size={18} />,
+      icon: <CompareArrows sx={{ fontSize: 18 }} />,
       visual: <ModelComparisonVisual />,
       accent: "text-sky-600",
       bgAccent: "bg-sky-500/10 border-sky-500/20",
@@ -91,7 +91,7 @@ export default function UnifiedOfferings() {
     {
       title: "Human Handoff",
       tagline: "Seamless transition to human agents when needed — AI handles common questions, your team handles complex or sensitive issues",
-      icon: <ArrowUpRight size={18} />,
+      icon: <OpenInNew sx={{ fontSize: 18 }} />,
       visual: <SmartEscalationVisual />,
       accent: "text-rose-600",
       bgAccent: "bg-rose-500/10 border-rose-500/20",
@@ -100,7 +100,7 @@ export default function UnifiedOfferings() {
     {
       title: "Actionable Insights",
       tagline: "Know exactly what customers want — improve satisfaction by 40% with data-driven decisions",
-      icon: <BarChart3 size={18} />,
+      icon: <BarChart sx={{ fontSize: 18 }} />,
       visual: <AnalyticsVisual />,
       accent: "text-amber-600",
       bgAccent: "bg-amber-500/10 border-amber-500/20",

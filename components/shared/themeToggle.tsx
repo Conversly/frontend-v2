@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Sun } from "lucide-react"
+import { DarkMode, LightMode } from "@mui/icons-material"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,7 +29,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <Button variant="outline" size="icon" className="h-9 w-9">
-        <Sun className="h-4 w-4" />
+        <LightMode sx={{ fontSize: 16 }} />
         <span className="sr-only">Toggle theme</span>
       </Button>
     )
@@ -39,8 +39,8 @@ export function ThemeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="h-9 w-9">
-          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <LightMode sx={{ fontSize: 16 }} className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <DarkMode sx={{ fontSize: 16 }} className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
@@ -49,14 +49,14 @@ export function ThemeToggle() {
           onClick={() => setTheme("light")}
           className={theme === "light" ? "bg-primary/10 text-primary" : ""}
         >
-          <Sun className="mr-2 h-4 w-4" />
+          <LightMode sx={{ fontSize: 16 }} className="mr-2" />
           <span>Light</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setTheme("dark")}
           className={theme === "dark" ? "bg-primary/10 text-primary" : ""}
         >
-          <Moon className="mr-2 h-4 w-4" />
+          <DarkMode sx={{ fontSize: 16 }} className="mr-2" />
           <span>Dark</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
@@ -99,8 +99,8 @@ export function ThemeToggleButton() {
       className="h-9 w-9"
       aria-label="Toggle theme"
     >
-      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <LightMode sx={{ fontSize: 16 }} className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <DarkMode sx={{ fontSize: 16 }} className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
     </Button>
   )
 }

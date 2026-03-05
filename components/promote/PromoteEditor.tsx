@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Plus, Trash2, Video, Image as ImageIcon, Wand2, Twitter, Linkedin, Github, Globe, Megaphone, Timer, Share2 } from 'lucide-react';
+import { Close, Add, Delete, Videocam, Image as ImageIcon, AutoAwesome, Share, Work, Code, Public, Campaign, Timer } from '@mui/icons-material';
 import { FileUpload } from '@/components/ui/file-upload';
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -390,7 +390,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                         <Badge key={tag} variant="secondary" className="px-2 py-1 text-sm flex items-center gap-1">
                                                             {tag}
                                                             <button onClick={() => handleRemoveTag(tag)} className="hover:text-destructive">
-                                                                <X className="w-3 h-3" />
+                                                                <Close sx={{ fontSize: 14 }} />
                                                             </button>
                                                         </Badge>
                                                     ))}
@@ -477,7 +477,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                                 size="icon"
                                                                 onClick={() => handleRemoveKeyFeature(index)}
                                                             >
-                                                                <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                                                                <Delete sx={{ fontSize: 16 }} className="text-muted-foreground hover:text-destructive" />
                                                             </Button>
                                                         </div>
                                                     ))}
@@ -487,7 +487,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                         onClick={handleAddKeyFeature}
                                                         className="w-full border-dashed"
                                                     >
-                                                        <Plus className="w-4 h-4 mr-2" /> Add Feature
+                                                        <Add sx={{ fontSize: 16 }} className="mr-2" /> Add Feature
                                                     </Button>
                                                 </div>
                                             </div>
@@ -507,7 +507,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                     <div className="flex justify-between items-start">
                                                         <div className="flex items-center gap-2">
                                                             <div className="p-2 bg-background rounded-md border">
-                                                                {item.type === 'video' ? <Video className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
+                                                                {item.type === 'video' ? <Videocam sx={{ fontSize: 16 }} /> : <ImageIcon sx={{ fontSize: 16 }} />}
                                                             </div>
                                                             <h4 className="font-medium">Media Item {index + 1}</h4>
                                                         </div>
@@ -517,7 +517,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                             onClick={() => handleRemoveMedia(item.id)}
                                                             className="h-8 w-8 text-muted-foreground hover:text-destructive"
                                                         >
-                                                            <Trash2 className="w-4 h-4" />
+                                                            <Delete sx={{ fontSize: 16 }} />
                                                         </Button>
                                                     </div>
 
@@ -599,7 +599,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                             onClick={() => handleRemoveTeamMember(member.id)}
                                                             className="h-8 w-8 text-muted-foreground hover:text-destructive"
                                                         >
-                                                            <Trash2 className="w-4 h-4" />
+                                                            <Delete sx={{ fontSize: 16 }} />
                                                         </Button>
                                                     </div>
 
@@ -642,7 +642,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                                         else alert("Add a social link (Twitter/GitHub) first!");
                                                                     }}
                                                                 >
-                                                                    <Wand2 className="w-4 h-4" />
+                                                                    <AutoAwesome sx={{ fontSize: 16 }} />
                                                                 </Button>
                                                             </div>
                                                         </div>
@@ -652,7 +652,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                         <Label>Social Links</Label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             <div className="flex items-center gap-2">
-                                                                <Twitter className="w-4 h-4 text-muted-foreground" />
+                                                                <Share sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                                                 <Input
                                                                     value={member.socials?.twitter || ''}
                                                                     onChange={(e) => handleUpdateTeamMember(member.id, 'socials', { twitter: e.target.value })}
@@ -661,7 +661,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                                 />
                                                             </div>
                                                             <div className="flex items-center gap-2">
-                                                                <Linkedin className="w-4 h-4 text-muted-foreground" />
+                                                                <Work sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                                                 <Input
                                                                     value={member.socials?.linkedin || ''}
                                                                     onChange={(e) => handleUpdateTeamMember(member.id, 'socials', { linkedin: e.target.value })}
@@ -670,7 +670,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                                 />
                                                             </div>
                                                             <div className="flex items-center gap-2">
-                                                                <Github className="w-4 h-4 text-muted-foreground" />
+                                                                <Code sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                                                 <Input
                                                                     value={member.socials?.github || ''}
                                                                     onChange={(e) => handleUpdateTeamMember(member.id, 'socials', { github: e.target.value })}
@@ -679,7 +679,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                                                 />
                                                             </div>
                                                             <div className="flex items-center gap-2">
-                                                                <Globe className="w-4 h-4 text-muted-foreground" />
+                                                                <Public sx={{ fontSize: 16 }} className="text-muted-foreground" />
                                                                 <Input
                                                                     value={member.socials?.website || ''}
                                                                     onChange={(e) => handleUpdateTeamMember(member.id, 'socials', { website: e.target.value })}
@@ -693,7 +693,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                             ))}
 
                                             <Button onClick={handleAddTeamMember} className="w-full" variant="outline">
-                                                <Plus className="w-4 h-4 mr-2" /> Add Team Member
+                                                <Add sx={{ fontSize: 16 }} className="mr-2" /> Add Team Member
                                             </Button>
                                         </CardContent>
                                     </Card>
@@ -710,7 +710,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                             <div className="space-y-4 border p-4 rounded-xl">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
-                                                        <Megaphone className="w-5 h-5 text-primary" />
+                                                        <Campaign sx={{ fontSize: 20 }} className="text-primary" />
                                                         <Label className="text-base">Announcement Banner</Label>
                                                     </div>
                                                     <Switch
@@ -905,7 +905,7 @@ export function PromoteEditor({ productId }: PromoteEditorProps) {
                                             {/* Social Links */}
                                             <div className="space-y-4 border p-4 rounded-xl">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <Share2 className="w-5 h-5 text-primary" />
+                                                    <Share sx={{ fontSize: 20 }} className="text-primary" />
                                                     <Label className="text-base">Social Links</Label>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

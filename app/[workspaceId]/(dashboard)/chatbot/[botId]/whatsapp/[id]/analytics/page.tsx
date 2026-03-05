@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
 import { Card } from '@/components/ui/card';
-import { Loader2, MessageCircle, Users, TrendingUp, Clock } from 'lucide-react';
+import { Chat, People, TrendingUp, AccessTime } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { getWhatsAppIntegration, getWhatsAppAnalytics, getWhatsAppAnalyticsPerDay } from '@/lib/api/whatsapp';
 import { toast } from 'sonner';
 
@@ -61,7 +62,7 @@ export default function WhatsAppAnalyticsPage() {
           basePath={basePath}
         />
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin" />
+          <CircularProgress size={32} />
         </div>
       </div>
     );
@@ -84,7 +85,7 @@ export default function WhatsAppAnalyticsPage() {
           <div className="bg-gradient-to-br from-card via-card to-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
+                <TrendingUp sx={{ fontSize: 24 }} className="text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-heading font-bold text-foreground">
@@ -113,7 +114,7 @@ export default function WhatsAppAnalyticsPage() {
                   </div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-green-500" />
+                  <Chat sx={{ fontSize: 24 }} className="text-green-500" />
                 </div>
               </div>
             </Card>
@@ -130,7 +131,7 @@ export default function WhatsAppAnalyticsPage() {
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-500" />
+                  <People sx={{ fontSize: 24 }} className="text-blue-500" />
                 </div>
               </div>
             </Card>
@@ -147,7 +148,7 @@ export default function WhatsAppAnalyticsPage() {
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-purple-500" />
+                  <AccessTime sx={{ fontSize: 24 }} className="text-purple-500" />
                 </div>
               </div>
             </Card>

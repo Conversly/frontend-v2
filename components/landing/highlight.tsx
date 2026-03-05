@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, MessageCircle, MessageSquare, Mic, Users, Zap } from "lucide-react";
+import { AccessTime, Chat, Mic, People, Bolt } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { FeatureCardProps } from "./types";
 
@@ -19,38 +19,38 @@ export default function HighlightsSection() {
       title: "AI Voice Agents",
       description:
         "Next-gen voice AI that understands context, sentiment, and nuance. Create natural-sounding agents in minutes without coding. Deflect up to 80% of calls and provide instant answers.",
-      icon: <Mic size={24} />,
+      icon: <Mic sx={{ fontSize: 24 }} />,
       visual: <VoiceAgentVisual />,
       primaryButtonText: "Try Voice Demo",
       primaryDisabled: true,
       secondaryButtonText: "",
       tagLabel: "Easy Creation",
-      tagIcon: <Zap size={14} />,
+      tagIcon: <Bolt sx={{ fontSize: 14 }} />,
       accentColor: "blue" as const,
     },
     {
       title: "WhatsApp Chatbots",
       description:
         "Engage customers on their preferred messaging app. Build automated flows for FAQs, order tracking, and bookings. Rich media support for images, videos, and documents.",
-      icon: <MessageCircle size={24} />,
+      icon: <Chat sx={{ fontSize: 24 }} />,
       visual: <WhatsAppVisual />,
       primaryButtonText: "See Examples",
       secondaryButtonText: "",
       tagLabel: "24/7 Availability",
-      tagIcon: <Clock size={14} />,
+      tagIcon: <AccessTime sx={{ fontSize: 14 }} />,
       accentColor: "green" as const,
     },
     {
       title: "Website Widget Chatbots",
       description:
         "Turn website visitors into leads with intelligent, proactive chat. Highly customizable widget to match your brand. Capture lead information, schedule appointments, and offer instant help.",
-      icon: <MessageSquare size={24} />,
+      icon: <Chat sx={{ fontSize: 24 }} />,
       visual: <WebsiteWidgetVisual />,
       primaryButtonText: "Live Preview",
       primaryButtonAction: () => setIsChatWidgetOpen(true),
       secondaryButtonText: "",
       tagLabel: "Lead Generation",
-      tagIcon: <Users size={14} />,
+      tagIcon: <People sx={{ fontSize: 14 }} />,
       accentColor: "purple" as const,
     },
   ];

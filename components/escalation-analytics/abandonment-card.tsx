@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, UserX } from "lucide-react";
+import { TrendingUp, PersonRemove } from "@mui/icons-material";
 import { useMemo } from "react";
 
 import type { AbandonmentPoint } from "@/lib/dummy/escalation-analytics";
@@ -53,7 +53,7 @@ export function AbandonmentCard({ isLoading, points, formatDate }: AbandonmentCa
           <div className="flex items-start justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <UserX className="h-4 w-4 text-muted-foreground" />
+                <PersonRemove sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 User Abandonment
               </CardTitle>
               <div className="text-sm text-muted-foreground mt-1">
@@ -63,11 +63,11 @@ export function AbandonmentCard({ isLoading, points, formatDate }: AbandonmentCa
 
             <TabsList>
               <TabsTrigger value="count" className="text-xs">
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp sx={{ fontSize: 14 }} />
                 Count
               </TabsTrigger>
               <TabsTrigger value="rate" className="text-xs">
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp sx={{ fontSize: 14 }} />
                 Rate
               </TabsTrigger>
             </TabsList>

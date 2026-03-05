@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
+import { ShowChart, TrendingUp } from "@mui/icons-material";
 import { useMemo } from "react";
 
 import type { BreakdownSeries, BreakdownTotals } from "@/lib/dummy/escalation-analytics";
@@ -135,11 +135,11 @@ export function BreakdownTabsCard({
 
             <TabsList>
               <TabsTrigger value="line" className="text-xs">
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp sx={{ fontSize: 14 }} />
                 Line
               </TabsTrigger>
               <TabsTrigger value="pie" className="text-xs">
-                <PieChartIcon className="h-3.5 w-3.5" />
+                <ShowChart sx={{ fontSize: 14 }} />
                 Pie
               </TabsTrigger>
             </TabsList>

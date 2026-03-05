@@ -4,7 +4,7 @@ import { CustomAction } from '@/types/customActions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Plus, MoreVertical, Play, Zap, Globe, Database } from 'lucide-react';
+import { Edit, Delete, Add, MoreVert, PlayArrow, Bolt, Public, Storage } from '@mui/icons-material';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -46,7 +46,7 @@ export const ActionList: React.FC<Props> = ({
                     {/* Left side - Content */}
                     <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
-                            <Zap className="h-7 w-7 text-white" />
+                            <Bolt sx={{ fontSize: 28, color: "white" }} />
                         </div>
                         <h3 className="text-2xl font-bold text-foreground mb-3">
                             Your bot doesn't have any skills yet
@@ -58,15 +58,15 @@ export const ActionList: React.FC<Props> = ({
                         {/* Feature highlights */}
                         <div className="flex flex-wrap justify-center gap-3 mb-8">
                             {[
-                                { icon: Globe, label: "Call APIs" },
-                                { icon: Database, label: "Query Databases" },
-                                { icon: Zap, label: "Trigger Actions" },
+                                { icon: Public, label: "Call APIs" },
+                                { icon: Storage, label: "Query Databases" },
+                                { icon: Bolt, label: "Trigger Actions" },
                             ].map((feature, idx) => (
                                 <div
                                     key={idx}
                                     className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-sm"
                                 >
-                                    <feature.icon className="h-3.5 w-3.5" />
+                                    <feature.icon sx={{ fontSize: 14 }} />
                                     {feature.label}
                                 </div>
                             ))}
@@ -74,7 +74,7 @@ export const ActionList: React.FC<Props> = ({
 
                         <FeatureGuard feature="actions" currentUsage={actions.length}>
                             <Button size="lg" onClick={onCreate} className="shadow-lg">
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Add sx={{ fontSize: 16, mr: 1 }} />
                                 Teach Your First Skill
                             </Button>
                         </FeatureGuard>
@@ -96,7 +96,7 @@ export const ActionList: React.FC<Props> = ({
                 <h2 className="text-xl font-semibold">Your Skills ({actions.length})</h2>
                 <FeatureGuard feature="actions" currentUsage={actions.length}>
                     <Button onClick={onCreate}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Teach New Skill
                     </Button>
                 </FeatureGuard>
@@ -116,17 +116,17 @@ export const ActionList: React.FC<Props> = ({
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="icon" className="-mr-2">
-                                            <MoreVertical className="h-4 w-4" />
+                                            <MoreVert sx={{ fontSize: 16 }} />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <FeatureGuard feature="actions">
                                             <DropdownMenuItem onClick={() => onEdit(action)}>
-                                                <Edit className="h-4 w-4 mr-2" />
+                                                <Edit sx={{ fontSize: 16, mr: 1 }} />
                                                 Edit
                                             </DropdownMenuItem>
                                             <DropdownMenuItem className="text-destructive" onClick={() => action.id && onDelete(action.id)}>
-                                                <Trash2 className="h-4 w-4 mr-2" />
+                                                <Delete sx={{ fontSize: 16, mr: 1 }} />
                                                 Delete
                                             </DropdownMenuItem>
                                         </FeatureGuard>

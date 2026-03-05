@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 import { toast } from "sonner";
 
 interface CreateWorkspaceDialogProps {
@@ -99,7 +99,7 @@ export function CreateWorkspaceDialog({ open, onOpenChange }: CreateWorkspaceDia
             onClick={handleCreate}
             disabled={createWorkspace.isPending || !name.trim()}
           >
-            {createWorkspace.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {createWorkspace.isPending && <CircularProgress size={16} sx={{ mr: 1 }} />}
             Create Workspace
           </Button>
         </DialogFooter>

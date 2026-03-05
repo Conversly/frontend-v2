@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Comment } from "@/types/promote";
-import { MessageCircle, ThumbsUp, Flag, Share2, MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
+import { Chat, ThumbUp, Flag, Share, MoreHoriz, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { addComment, replyToComment, upvoteComment } from "@/lib/api/promote";
@@ -96,15 +96,15 @@ function CommentItem({ comment, isReply = false, productId }: { comment: Comment
 
                     <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
                         <button onClick={handleUpvote} className="flex items-center gap-1 hover:text-foreground transition-colors">
-                            <ChevronUp className="w-4 h-4" />
+                            <ExpandLess sx={{ fontSize: 16 }} />
                             <span>Upvote ({comment.upvotes})</span>
                         </button>
                         <button onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-1 hover:text-foreground transition-colors">
-                            <MessageCircle className="w-3.5 h-3.5" />
+                            <Chat sx={{ fontSize: 14 }} />
                             <span>Reply</span>
                         </button>
                         <button className="flex items-center gap-1 hover:text-foreground transition-colors">
-                            <Share2 className="w-3.5 h-3.5" />
+                            <Share sx={{ fontSize: 14 }} />
                             <span>Share</span>
                         </button>
                         <span>{new Date(comment.createdAt).toLocaleDateString()}</span>

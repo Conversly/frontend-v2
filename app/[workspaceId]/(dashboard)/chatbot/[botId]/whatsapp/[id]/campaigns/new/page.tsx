@@ -17,7 +17,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowRight, Check, ChevronLeft, Search, FileText, Users, Send } from 'lucide-react';
+import { ArrowForward, Check, ChevronLeft, Search, Description, People, Send } from '@mui/icons-material';
 import {
     getWhatsAppTemplates,
     getWhatsAppContactsList,
@@ -144,7 +144,7 @@ export default function NewCampaignPage() {
                 <div className="h-16 border-b bg-background flex items-center justify-between px-6 flex-shrink-0">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon" onClick={handleBack} disabled={isSubmitting}>
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft sx={{ fontSize: 20 }} />
                         </Button>
                         <h1 className="font-semibold text-lg">New Campaign</h1>
                     </div>
@@ -168,7 +168,7 @@ export default function NewCampaignPage() {
 
                     <div>
                         <Button onClick={handleNext} disabled={(step === 1 && !selectedTemplate) || (step === 2 && selectedContacts.length === 0) || isSubmitting}>
-                            {isSubmitting ? 'Launching...' : step === 3 ? 'Launch Campaign' : 'Next Step'} <ArrowRight className="w-4 h-4 ml-2" />
+                            {isSubmitting ? 'Launching...' : step === 3 ? 'Launch Campaign' : 'Next Step'} <ArrowForward sx={{ fontSize: 16 }} className="ml-2" />
                         </Button>
                     </div>
                 </div>
@@ -186,7 +186,7 @@ export default function NewCampaignPage() {
                                 </div>
 
                                 <div className="relative mb-6">
-                                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                    <Search sx={{ fontSize: 16 }} className="absolute left-3 top-3 text-muted-foreground" />
                                     <Input className="pl-10 h-10" placeholder="Search templates..." />
                                 </div>
 
@@ -199,9 +199,9 @@ export default function NewCampaignPage() {
                                         >
                                             <div className="flex items-start justify-between mb-2">
                                                 <div className="p-2 bg-slate-100 rounded-lg">
-                                                    <FileText className="w-5 h-5 text-slate-600" />
+                                                    <Description sx={{ fontSize: 20 }} className="text-slate-600" />
                                                 </div>
-                                                {selectedTemplate === tmpl.id && <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white"><Check className="w-3 h-3" /></div>}
+                                                {selectedTemplate === tmpl.id && <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white"><Check sx={{ fontSize: 14 }} /></div>}
                                             </div>
                                             <h3 className="font-semibold">{tmpl.name}</h3>
                                             <div className="flex items-center gap-2 mt-2">
@@ -231,7 +231,7 @@ export default function NewCampaignPage() {
                                             <span className="text-sm text-muted-foreground">{selectedContacts.length} selected</span>
                                         </div>
                                         <div className="relative w-64">
-                                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Search sx={{ fontSize: 16 }} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                                             <Input className="pl-8 h-9" placeholder="Search contacts..." />
                                         </div>
                                     </div>
@@ -272,7 +272,7 @@ export default function NewCampaignPage() {
                             <div className="space-y-6">
                                 <div className="text-center mb-8">
                                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Send className="w-8 h-8 text-primary" />
+                                        <Send sx={{ fontSize: 32 }} className="text-primary" />
                                     </div>
                                     <h2 className="text-2xl font-bold">Ready to Launch?</h2>
                                     <p className="text-muted-foreground">Review your campaign details before sending.</p>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, Clock, DollarSign, Globe, Zap, Users, Shield, Briefcase, Calendar, TrendingUp, BarChart3, Lock } from "lucide-react";
+import { Check, Close, AccessTime, AttachMoney, Public, Bolt, People } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const comparisonData = [
   {
     category: "Cost Efficiency",
-    icon: DollarSign,
+    icon: AttachMoney,
     human: {
       title: "Costly Scaling",
       value: "$15/hr",
@@ -31,7 +31,7 @@ const comparisonData = [
   },
   {
     category: "Availability",
-    icon: Clock,
+    icon: AccessTime,
     human: {
       title: "Limited Hours",
       value: "40 hrs/wk",
@@ -52,7 +52,7 @@ const comparisonData = [
   },
   {
     category: "Response Time",
-    icon: Zap,
+    icon: Bolt,
     human: {
       title: "Wait Times",
       value: "15 mins",
@@ -73,7 +73,7 @@ const comparisonData = [
   },
   {
     category: "Capacity",
-    icon: Users,
+    icon: People,
     human: {
       title: "Bottlenecks",
       value: "1 at a time",
@@ -94,7 +94,7 @@ const comparisonData = [
   },
   {
     category: "Global Reach",
-    icon: Globe,
+    icon: Public,
     human: {
       title: "Language Barrier",
       value: "1 Lang",
@@ -236,7 +236,7 @@ export default function ComparisonSection() {
                       {/* Badge */}
                       <div className="flex items-center gap-2 mb-6">
                         <div className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
-                          <Users className="w-5 h-5" />
+                          <People sx={{ fontSize: 20 }} />
                         </div>
                         <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Traditional</span>
                       </div>
@@ -271,7 +271,7 @@ export default function ComparisonSection() {
                           <span className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
                             {comparisonData[activeIndex].human.value}
                           </span>
-                          <X className="w-6 h-6 text-slate-300" />
+                          <Close sx={{ fontSize: 24 }} className="text-slate-300" />
                         </div>
                       </div>
                     </div>
@@ -291,7 +291,7 @@ export default function ComparisonSection() {
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">
                           <div className="p-2 rounded-full bg-primary/10 text-primary">
-                            <Zap className="w-5 h-5 fill-primary" />
+                            <Bolt sx={{ fontSize: 20 }} className="fill-primary" />
                           </div>
                           <span className="text-sm font-bold text-primary uppercase tracking-widest">VerlyAI Agent</span>
                         </div>
@@ -339,7 +339,7 @@ export default function ComparisonSection() {
                             {comparisonData[activeIndex].ai.value}
                           </span>
                           <div className="bg-green-100 dark:bg-green-900/30 text-green-600 p-1 rounded-full">
-                            <Check className="w-5 h-5" />
+                            <Check sx={{ fontSize: 20 }} />
                           </div>
                         </div>
                       </div>

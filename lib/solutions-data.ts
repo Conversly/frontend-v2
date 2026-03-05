@@ -1,17 +1,15 @@
-import {
-    ShoppingCart,
-    Laptop,
-    Heart,
-    Utensils,
-    Building,
-    GraduationCap,
-    Plane,
-    Briefcase,
-    LucideIcon
-} from "lucide-react";
+import type { SvgIconComponent } from "@mui/icons-material";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
+import Laptop from "@mui/icons-material/Laptop";
+import Favorite from "@mui/icons-material/Favorite";
+import Restaurant from "@mui/icons-material/Restaurant";
+import Business from "@mui/icons-material/Business";
+import School from "@mui/icons-material/School";
+import Flight from "@mui/icons-material/Flight";
+import Work from "@mui/icons-material/Work";
 
 export interface Solution {
-    icon: LucideIcon;
+    icon: SvgIconComponent;
     title: string;
     category: string;
     description: string;
@@ -52,7 +50,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: Heart,
+        icon: Favorite,
         title: "Healthcare",
         category: "Voice",
         description: "Never miss a patient call again. AI handles appointment scheduling, insurance verification, and routine inquiries — HIPAA compliant.",
@@ -67,7 +65,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: Utensils,
+        icon: Restaurant,
         title: "Restaurants & Hospitality",
         category: "Voice",
         description: "Handle reservations, menu inquiries, and customer feedback for restaurants and hotels.",
@@ -82,7 +80,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: Building,
+        icon: Business,
         title: "Real Estate",
         category: "Sales",
         description: "Capture every lead — even at 2am. AI qualifies prospects, schedules viewings, and answers property questions while you sleep.",
@@ -97,7 +95,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: GraduationCap,
+        icon: School,
         title: "Education",
         category: "Support",
         description: "Support students and parents with course information, admissions, and campus services.",
@@ -112,7 +110,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: Plane,
+        icon: Flight,
         title: "Travel & Tourism",
         category: "Voice",
         description: "Assist travelers with bookings, itinerary changes, and destination information.",
@@ -127,7 +125,7 @@ export const solutions: Solution[] = [
         ]
     },
     {
-        icon: Briefcase,
+        icon: Work,
         title: "Professional Services",
         category: "Internal",
         description: "Schedule consultations, answer service inquiries, and manage client communications.",

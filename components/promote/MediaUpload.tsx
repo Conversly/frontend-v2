@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2, Image as ImageIcon, FileVideo, AlertCircle } from 'lucide-react';
+import { Upload, Close, Image as ImageIcon, VideoFile, Warning } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -97,9 +98,9 @@ export function MediaUpload({ onUpload, className }: MediaUploadProps) {
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                         {isUploading ? (
-                            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                            <CircularProgress size={24} className="text-primary" />
                         ) : (
-                            <Upload className="w-6 h-6 text-muted-foreground" />
+                            <Upload sx={{ fontSize: 24 }} className="text-muted-foreground" />
                         )}
                     </div>
                     <div>

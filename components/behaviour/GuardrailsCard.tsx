@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, Lock } from "lucide-react";
+import { Warning, Lock } from "@mui/icons-material";
 import {
     Card,
     CardContent,
@@ -19,7 +19,7 @@ export function GuardrailsCard() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-500/10 text-gray-600">
-                            <ShieldAlert className="h-4 w-4" />
+                            <Warning sx={{ fontSize: 16 }} />
                         </div>
                         <div>
                             <CardTitle className="text-base">Guardrails</CardTitle>

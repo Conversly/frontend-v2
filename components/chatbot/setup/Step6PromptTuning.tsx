@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface Step6PromptTuningProps {
@@ -50,7 +50,7 @@ export function Step6PromptTuning({ onConfirm, draftPrompt, setDraftPrompt, isLo
       <Button className="w-full shrink-0 shadow-card" onClick={onConfirm} disabled={isLoading}>
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <CircularProgress size={16} sx={{ mr: 1 }} />
             Processing...
           </>
         ) : (

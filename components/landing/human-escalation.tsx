@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { User, Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, MessageSquare, ThumbsDown, Activity } from "lucide-react";
+import { Person, SmartToy, HeadsetMic, CheckCircle, Warning, ArrowForward, AutoAwesome, Bolt, Chat, ThumbDown, TrendingUp } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -179,7 +179,7 @@ export default function HumanEscalationSection() {
                             viewport={{ once: true }}
                             className="inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/50 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-blue-600 w-fit shadow-sm"
                         >
-                            <Zap size={16} className="fill-blue-600" />
+                            <Bolt sx={{ fontSize: 16 }} className="fill-blue-600" />
                             <span>Smart Escalation Handling</span>
                         </motion.div>
 
@@ -219,9 +219,9 @@ export default function HumanEscalationSection() {
                             className="space-y-4"
                         >
                             {[
-                                { text: "Sentiment-triggered escalation", icon: <Sparkles size={18} /> },
-                                { text: "Full conversation history transfer", icon: <ArrowRight size={18} /> },
-                                { text: "Zero wait-time handoffs", icon: <CheckCircle2 size={18} /> }
+                                { text: "Sentiment-triggered escalation", icon: <AutoAwesome sx={{ fontSize: 18 }} /> },
+                                { text: "Full conversation history transfer", icon: <ArrowForward sx={{ fontSize: 18 }} /> },
+                                { text: "Zero wait-time handoffs", icon: <CheckCircle sx={{ fontSize: 18 }} /> }
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group">
                                     <div className="h-10 w-10 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-blue-100 transition-all duration-300">
@@ -243,7 +243,7 @@ export default function HumanEscalationSection() {
                         >
                             <Link href="/login">
                                 <Button size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-14 text-lg shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
-                                    Start Building <ArrowRight className="ml-2 w-5 h-5" />
+                                    Start Building <ArrowForward sx={{ fontSize: 20 }} className="ml-2" />
                                 </Button>
                             </Link>
                         </motion.div>
@@ -284,7 +284,7 @@ export default function HumanEscalationSection() {
                                             <AnimatePresence mode="wait">
                                                 {isEscalating ? (
                                                     <motion.div key="alert" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 180 }}>
-                                                        <AlertCircle size={20} className="text-amber-600" />
+                                                        <Warning sx={{ fontSize: 20 }} className="text-amber-600" />
                                                     </motion.div>
                                                 ) : isResolved ? (
                                                     <motion.img
@@ -298,7 +298,7 @@ export default function HumanEscalationSection() {
                                                     />
                                                 ) : (
                                                     <motion.div key="bot" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 180 }}>
-                                                        <Bot size={20} className="text-blue-600" />
+                                                        <SmartToy sx={{ fontSize: 20 }} className="text-blue-600" />
                                                     </motion.div>
                                                 )}
                                             </AnimatePresence>
@@ -379,7 +379,7 @@ export default function HumanEscalationSection() {
                                                         {msg.text}
                                                         {msg.role === 'agent' && (
                                                             <div className="absolute -left-2 -top-2 bg-green-500 text-white p-1 rounded-full shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300">
-                                                                <CheckCircle2 size={10} />
+                                                                <CheckCircle sx={{ fontSize: 10 }} />
                                                             </div>
                                                         )}
                                                     </div>
@@ -408,7 +408,7 @@ export default function HumanEscalationSection() {
                                 <div className="h-12 bg-slate-50 border border-slate-200 rounded-full flex items-center px-4 justify-between group focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
                                     <span className="text-slate-400 text-sm font-medium">Message...</span>
                                     <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform cursor-pointer">
-                                        <ArrowRight size={16} className="text-white" />
+                                        <ArrowForward sx={{ fontSize: 16 }} className="text-white" />
                                     </div>
                                 </div>
                             </div>
@@ -434,11 +434,11 @@ export default function HumanEscalationSection() {
                                         <AnimatePresence mode="wait">
                                             {satisfactionScore < 85 ? (
                                                 <motion.div key="sad" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                    <ThumbsDown size={20} />
+                                                    <ThumbDown sx={{ fontSize: 20 }} />
                                                 </motion.div>
                                             ) : (
                                                 <motion.div key="happy" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                    <CheckCircle2 size={24} />
+                                                    <CheckCircle sx={{ fontSize: 24 }} />
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
@@ -483,7 +483,7 @@ export default function HumanEscalationSection() {
                                     <AnimatePresence mode="wait">
                                         {isEscalating ? (
                                             <motion.div key="activity" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                <Activity size={20} className="text-amber-500" />
+                                                <TrendingUp sx={{ fontSize: 20 }} className="text-amber-500" />
                                             </motion.div>
                                         ) : isResolved ? (
                                             <motion.img
@@ -497,7 +497,7 @@ export default function HumanEscalationSection() {
                                             />
                                         ) : (
                                             <motion.div key="bot" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                <Headphones size={20} />
+                                                <HeadsetMic sx={{ fontSize: 20 }} />
                                             </motion.div>
                                         )}
                                     </AnimatePresence>

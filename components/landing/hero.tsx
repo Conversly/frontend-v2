@@ -4,22 +4,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
-  ArrowRight,
-  Bot,
-  Clock,
-  Play,
-  PhoneCall,
-  MoveRight,
-  Linkedin,
-  Calendar,
+  ArrowForward,
+  SmartToy,
+  Schedule,
+  PlayArrow,
+  PhoneInTalk,
+  CalendarMonth,
   Mic,
   MicOff,
-  Volume2,
+  VolumeUp,
   Phone,
-  MessageCircle,
+  Chat,
   Check,
-  CheckCheck,
-} from "lucide-react";
+  Work,
+} from "@mui/icons-material";
 import { useState, useEffect, useCallback } from "react";
 import { NoiseBackground } from "@/components/ui/noise-background";
 import { VideoModal } from "@/components/ui/video-modal";
@@ -144,7 +142,7 @@ function VoiceCallUI() {
       <div className="px-4 py-4 flex flex-col items-center gap-3 border-b border-slate-100">
         <div className="relative">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <Bot className="w-8 h-8 text-white" />
+            <SmartToy sx={{ fontSize: 32, color: "white" }} />
           </div>
           {callState !== "ringing" && (
             <motion.div
@@ -226,13 +224,13 @@ function VoiceCallUI() {
       <div className="px-6 py-5 border-t border-slate-100 bg-white">
         <div className="flex items-center justify-center gap-6">
           <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all shadow-sm">
-            <MicOff className="w-5 h-5" />
+            <MicOff sx={{ fontSize: 20 }} />
           </button>
           <button className="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-all shadow-lg shadow-red-500/30 hover:shadow-red-500/40 hover:scale-105 active:scale-95">
             <Phone className="w-6 h-6 rotate-[135deg]" />
           </button>
           <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all shadow-sm">
-            <Volume2 className="w-5 h-5" />
+            <VolumeUp sx={{ fontSize: 20 }} />
           </button>
         </div>
       </div>
@@ -279,12 +277,12 @@ function WhatsAppChatUI() {
       {/* WhatsApp header */}
       <div className="px-3 py-2.5 flex items-center gap-3 bg-[#075e54]">
         <button className="text-white/80 hover:text-white p-1">
-          <ArrowRight className="w-5 h-5 rotate-180" />
+          <ArrowForward sx={{ fontSize: 20 }} className="rotate-180" />
         </button>
         <div className="flex items-center gap-3 flex-1">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+              <SmartToy sx={{ fontSize: 20, color: "white" }} />
             </div>
           </div>
           <div className="flex-1">
@@ -344,7 +342,7 @@ function WhatsAppChatUI() {
               </p>
               <div className="flex items-center justify-end gap-1 mt-1">
                 <span className="text-xs text-gray-500">10:43 AM</span>
-                <CheckCheck className="w-4 h-4 text-blue-500" />
+                <Check sx={{ fontSize: 16, color: "rgb(59 130 246)" }} />
               </div>
             </div>
           </motion.div>
@@ -421,7 +419,7 @@ function WhatsAppChatUI() {
           />
         </div>
         <button className="text-gray-500 p-2 hover:text-gray-600 transition-colors">
-          <Mic className="w-6 h-6" />
+          <Mic sx={{ fontSize: 24 }} />
         </button>
       </div>
     </div>
@@ -467,7 +465,7 @@ function ChatUI() {
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary/10 ring-2 ring-primary/20">
-              <Bot className="w-5 h-5 text-primary" />
+              <SmartToy sx={{ fontSize: 20, color: "var(--primary)" }} />
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-card" />
           </div>
@@ -499,7 +497,7 @@ function ChatUI() {
             className="flex items-start gap-2"
           >
             <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-primary/10 flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary" />
+              <SmartToy sx={{ fontSize: 14, color: "var(--primary)" }} />
             </div>
             <div className="bg-muted/60 text-foreground rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
               <p className="text-sm leading-relaxed">
@@ -534,7 +532,7 @@ function ChatUI() {
             className="flex items-start gap-2"
           >
             <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-primary/10 flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary" />
+              <SmartToy sx={{ fontSize: 14, color: "var(--primary)" }} />
             </div>
             <div className="bg-muted/60 rounded-2xl rounded-tl-sm p-3">
               <div className="flex gap-1">
@@ -555,7 +553,7 @@ function ChatUI() {
             className="flex items-start gap-2"
           >
             <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-primary/10 flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary" />
+              <SmartToy sx={{ fontSize: 14, color: "var(--primary)" }} />
             </div>
             <div className="bg-muted/60 text-foreground rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
               <p className="text-sm leading-relaxed">
@@ -576,7 +574,7 @@ function ChatUI() {
             className="flex-1 bg-muted/40 text-foreground placeholder:text-muted-foreground rounded-xl px-3 py-2 text-sm border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
           />
           <button className="bg-primary text-primary-foreground rounded-xl p-2 hover:opacity-90 transition-all">
-            <ArrowRight className="w-4 h-4" />
+            <ArrowForward sx={{ fontSize: 16 }} />
           </button>
         </div>
       </div>
@@ -593,7 +591,7 @@ function OfferingSwitcher({
   onSwitch: (offering: OfferingType) => void;
 }) {
   const offerings: { type: OfferingType; icon: React.ReactNode; label: string }[] = [
-    { type: "chat", icon: <MessageCircle className="w-4 h-4" />, label: "Web Chat" },
+    { type: "chat", icon: <Chat sx={{ fontSize: 16 }} />, label: "Web Chat" },
     { type: "voice", icon: <Phone className="w-4 h-4" />, label: "Voice" },
     { type: "whatsapp", icon: <WhatsAppIcon className="w-4 h-4" />, label: "WhatsApp" },
   ];
@@ -735,7 +733,7 @@ export default function Hero() {
                       }
                     }}
                   >
-                    <Calendar className="w-4 h-4" />
+                    <CalendarMonth sx={{ fontSize: 16 }} />
                     Schedule a meet
                   </button>
                 </NoiseBackground>
@@ -753,7 +751,7 @@ export default function Hero() {
                   onClick={() => setIsVideoOpen(true)}
                 >
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary/10 to-indigo-500/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-indigo-500/20 transition-colors">
-                    <Play className="w-3 h-3 text-primary fill-current ml-0.5" />
+                    <PlayArrow sx={{ fontSize: 12, color: "var(--primary)", ml: 0.5 }} />
                   </div>
                   Watch Demo
                 </Button>
@@ -789,7 +787,7 @@ export default function Hero() {
                   rel="noopener noreferrer"
                   className="group relative flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-card shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <Linkedin className="w-5 h-5 text-foreground transition-transform duration-300 group-hover:scale-110 group-hover:text-[#0a66c2]" />
+                  <Work sx={{ fontSize: 20, color: "var(--foreground)" }} className="transition-transform duration-300 group-hover:scale-110 group-hover:text-[#0a66c2]" />
                 </a>
               </div>
             </div>

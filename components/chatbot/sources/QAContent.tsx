@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Bold, Italic, Strikethrough, List, ListOrdered, Link as LinkIcon, Smile, X } from 'lucide-react';
+import { Add, FormatBold, FormatItalic, FormatStrikethrough, FormatListBulleted, FormatListNumbered, Link as LinkIcon, InsertEmoticon, Close } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
 import { Button } from '@/components/ui/button';
@@ -110,7 +110,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
                 onClick={() => handleRemoveQuestion(index)}
                 className="h-9 w-9 text-muted-foreground hover:text-destructive"
               >
-                <X className="w-4 h-4" />
+                <Close sx={{ fontSize: 16 }} />
               </Button>
             </div>
           )
@@ -139,7 +139,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
             onClick={handleAddQuestion}
             className="text-muted-foreground hover:text-foreground whitespace-nowrap cursor-pointer"
           >
-            <Plus className="w-4 h-4 mr-1" />
+            <Add sx={{ fontSize: 16, mr: 0.5 }} />
             Add question
           </Button>
         </div>
@@ -162,27 +162,27 @@ export function QAContent({ onSuccess }: QAContentProps) {
         {/* Rich Text Toolbar */}
         <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Bold className="w-4 h-4" />
+            <FormatBold sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Italic className="w-4 h-4" />
+            <FormatItalic sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Strikethrough className="w-4 h-4" />
+            <FormatStrikethrough sx={{ fontSize: 16 }} />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <List className="w-4 h-4" />
+            <FormatListBulleted sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <ListOrdered className="w-4 h-4" />
+            <FormatListNumbered sx={{ fontSize: 16 }} />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
             <LinkIcon className="w-4 h-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Smile className="w-4 h-4" />
+            <InsertEmoticon sx={{ fontSize: 16 }} />
           </Button>
         </div>
 

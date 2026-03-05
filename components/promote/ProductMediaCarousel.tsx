@@ -3,7 +3,7 @@
 import React from "react";
 import { MediaItem } from "@/types/promote";
 import { cn } from "@/lib/utils";
-import { Play } from "lucide-react";
+import { PlayArrow } from "@mui/icons-material";
 
 interface ProductMediaCarouselProps {
     media: MediaItem[];
@@ -93,7 +93,7 @@ export function ProductMediaCarousel({ media }: ProductMediaCarouselProps) {
                         />
                         {item.type === "video" && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                <Play className="w-4 h-4 text-white fill-white" />
+                                <PlayArrow sx={{ fontSize: 16 }} className="text-white fill-white" />
                             </div>
                         )}
                     </button>

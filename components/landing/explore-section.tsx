@@ -4,49 +4,49 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Code2, Settings2, Database, BarChart3, MessageSquare, Wrench } from "lucide-react";
+import { Code, Settings, Storage, BarChart, Message, Build } from "@mui/icons-material";
 
 const TABS = [
     {
         id: "playground",
         label: "Playground",
         description: "Test and experiment with your AI agent",
-        icon: <Code2 className="h-4 w-4" />,
+        icon: <Code sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Playground.webp",
     },
     {
         id: "sources",
         label: "Sources",
         description: "Connect your knowledge base",
-        icon: <Database className="h-4 w-4" />,
+        icon: <Storage sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Sources.webp",
     },
     {
         id: "customization",
         label: "Customization",
         description: "Personalize your agent's behavior",
-        icon: <Wrench className="h-4 w-4" />,
+        icon: <Build sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Customize.webp",
     },
     {
         id: "analytics",
         label: "Analytics",
         description: "Monitor performance metrics",
-        icon: <BarChart3 className="h-4 w-4" />,
+        icon: <BarChart sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/analytics.webp",
     },
     {
         id: "chatlogs",
         label: "Chat Logs",
         description: "Review conversation history",
-        icon: <MessageSquare className="h-4 w-4" />,
+        icon: <Message sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/chatlogs.webp",
     },
     {
         id: "setup",
         label: "Setup",
         description: "Configure your integration",
-        icon: <Settings2 className="h-4 w-4" />,
+        icon: <Settings sx={{ fontSize: 16 }} />,
         image: "https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/landingpage%20images/Setup.webp",
     },
 ];

@@ -246,8 +246,8 @@ Use `.shadow-card-hover` — it handles both the base shadow and the lifted hove
 
 ## 9. Iconography
 
-- Use `lucide-react` icons throughout (already installed).
-- Standard icon size in text context: `h-4 w-4` (16px).
+- Use `@mui/icons-material` for icons (already installed with `@mui/material`).
+- Standard icon size in text context: `sx={{ fontSize: 16 }}` (16px). Use `CircularProgress` from `@mui/material` for loading states.
 - Icon + button: `h-4 w-4` with `gap-2` between icon and label.
 - Standalone action icon: `h-5 w-5` (20px).
 - Never color icons with raw hex — use `text-muted-foreground`, `text-primary`, `text-destructive`.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Zap, Star } from "lucide-react";
+import { Check, Bolt, Star } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plan } from "@/lib/billingsdk-config";
@@ -190,11 +190,11 @@ export function PricingTableSix({ plans, onPlanSelect }: PricingTableSixProps) {
                                                 <div className="bg-primary-foreground mt-0.5 mr-3 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full">
                                                     {/* Render icon based on feature.icon string */}
                                                     {feature.icon === "check" ? (
-                                                        <Check className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
+                                                        <Check sx={{ fontSize: 10, color: feature.iconColor ? "inherit" : "var(--foreground)" }} className={feature.iconColor} />
                                                     ) : feature.icon === "start" ? (
-                                                        <Star className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
+                                                        <Star sx={{ fontSize: 10 }} className={feature.iconColor} />
                                                     ) : (
-                                                        <Check className={`h-2.5 w-2.5 ${feature.iconColor || "text-foreground"}`} />
+                                                        <Check sx={{ fontSize: 10, color: feature.iconColor ? "inherit" : "var(--foreground)" }} className={feature.iconColor} />
                                                     )}
                                                 </div>
                                                 <span className="text-foreground text-sm leading-relaxed">

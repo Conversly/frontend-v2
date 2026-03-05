@@ -3,17 +3,13 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
-    Headset,
+    HeadsetMic,
     Phone,
-    BarChart3,
-    Megaphone,
-    Mic,
-    Globe,
-    Zap,
-    Sparkles,
-    MessageSquare,
-    Users,
-} from "lucide-react";
+    BarChart,
+    Campaign,
+    AutoAwesome,
+    Description,
+} from "@mui/icons-material";
 
 // Tool types with colors and icons for Voice context
 const nodes = [
@@ -30,7 +26,7 @@ const nodes = [
     {
         id: "analytics",
         name: "Analytics",
-        icon: BarChart3,
+        icon: BarChart,
         color: "from-emerald-500 to-green-500",
         bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
         borderColor: "border-emerald-200 dark:border-emerald-800",
@@ -40,7 +36,7 @@ const nodes = [
     {
         id: "outbound",
         name: "Campaigns",
-        icon: Megaphone,
+        icon: Campaign,
         color: "from-purple-500 to-pink-500",
         bgColor: "bg-purple-50 dark:bg-purple-900/20",
         borderColor: "border-purple-200 dark:border-purple-800",
@@ -50,7 +46,7 @@ const nodes = [
     {
         id: "transcription",
         name: "Transcription",
-        icon: FileText,
+        icon: Description,
         color: "from-orange-500 to-red-500",
         bgColor: "bg-orange-50 dark:bg-orange-900/20",
         borderColor: "border-orange-200 dark:border-orange-800",
@@ -59,7 +55,6 @@ const nodes = [
     },
 ];
 
-import { FileText } from "lucide-react";
 
 // Animated connection line component
 const ConnectionLine = ({ active, delay }: { active: boolean; delay: number }) => (
@@ -154,7 +149,7 @@ const NodeItem = ({
                 }}
                 transition={{ duration: 0.6 }}
             >
-                <Icon className={`w-5 h-5 ${node.textColor}`} />
+                <Icon sx={{ fontSize: 20 }} className={node.textColor} />
             </motion.div>
             <span className="text-2xs font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap bg-white/80 dark:bg-slate-900/80 px-2 py-0.5 rounded-full backdrop-blur-sm border border-slate-100 dark:border-slate-800">
                 {node.name}
@@ -207,7 +202,7 @@ const VoiceAINode = ({ activeNodeIndex }: { activeNodeIndex: number }) => {
                     ease: "easeInOut",
                 }}
             >
-                <Headset className="w-10 h-10 text-white" />
+                <HeadsetMic sx={{ fontSize: 40 }} className="text-white" />
 
                 {/* Orbiting Sparkle */}
                 <motion.div
@@ -221,7 +216,7 @@ const VoiceAINode = ({ activeNodeIndex }: { activeNodeIndex: number }) => {
                         ease: "easeInOut",
                     }}
                 >
-                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <AutoAwesome sx={{ fontSize: 16 }} className="text-amber-500" />
                 </motion.div>
             </motion.div>
 

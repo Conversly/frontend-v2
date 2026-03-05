@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, PieChart as PieChartIcon, MessageSquare } from "lucide-react";
+import { TrendingUp, ShowChart, Chat } from "@mui/icons-material";
 import { useMemo, useState } from "react";
 import type { DashboardData } from "@/types/analytics";
 import { TopicPieChart } from "@/components/analytics/topic-pie-chart";
@@ -71,7 +71,7 @@ export function TopicsDashboardCard({
           <div className="flex items-start justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                <Chat sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 Topics
               </CardTitle>
               <div className="text-sm text-muted-foreground mt-1">
@@ -81,11 +81,11 @@ export function TopicsDashboardCard({
 
             <TabsList>
               <TabsTrigger value="line" className="text-xs">
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp sx={{ fontSize: 14 }} />
                 Line
               </TabsTrigger>
               <TabsTrigger value="pie" className="text-xs">
-                <PieChartIcon className="h-3.5 w-3.5" />
+                <ShowChart sx={{ fontSize: 14 }} />
                 Pie
               </TabsTrigger>
             </TabsList>

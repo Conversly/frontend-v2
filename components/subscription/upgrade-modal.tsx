@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { SubscriptionPlan } from "@/lib/api/subscription";
-import { Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -75,7 +75,7 @@ export function UpgradeModal({ open, onOpenChange, plan, billingPeriod }: Upgrad
                     <Button onClick={handleUpgrade} disabled={isLoading}>
                         {isLoading ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <CircularProgress size={16} sx={{ mr: 1 }} />
                                 Processing...
                             </>
                         ) : (

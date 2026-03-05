@@ -23,7 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Settings, Plus, Edit, Trash2, MessageSquare, AlertTriangle } from "lucide-react";
+import { Settings, Add, Edit, Delete, Chat, Warning } from "@mui/icons-material";
 
 interface Topic {
   id: string;
@@ -83,13 +83,13 @@ export function TopicManagement({
     <Card className="p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
-          <Settings className="h-4 w-4" />
+          <Settings sx={{ fontSize: 16 }} />
           <h3 className="text-base font-semibold">Topic Management</h3>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              <Add sx={{ fontSize: 14, mr: 0.75 }} />
               Add Topic
             </Button>
           </DialogTrigger>
@@ -170,7 +170,7 @@ export function TopicManagement({
                     onClick={() => setEditingTopic({ id: topic.id, name: topic.name })}
                     className="h-7 text-xs"
                   >
-                    <Edit className="h-3 w-3 mr-1" />
+                    <Edit sx={{ fontSize: 12, mr: 0.5 }} />
                     Edit
                   </Button>
                   <Button
@@ -179,7 +179,7 @@ export function TopicManagement({
                     onClick={() => setDeletingTopicId(topic.id)}
                     className="h-7 text-xs text-destructive hover:text-destructive"
                   >
-                    <Trash2 className="h-3 w-3 mr-1" />
+                    <Delete sx={{ fontSize: 12, mr: 0.5 }} />
                     Delete
                   </Button>
                 </div>
@@ -189,13 +189,13 @@ export function TopicManagement({
         </ScrollArea>
       ) : (
         <div className="text-center py-6">
-          <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+          <Chat sx={{ fontSize: 40, mx: "auto", color: "var(--muted-foreground)", mb: 1.5 }} />
           <h4 className="text-sm font-medium mb-1.5">No topics yet</h4>
           <p className="text-xs text-muted-foreground mb-3">
             Create your first topic to start tracking conversation themes.
           </p>
           <Button size="sm" onClick={() => setIsCreateDialogOpen(true)}>
-            <Plus className="h-3.5 w-3.5 mr-1.5" />
+            <Add sx={{ fontSize: 14, mr: 0.75 }} />
             Add Your First Topic
           </Button>
         </div>
@@ -246,7 +246,7 @@ export function TopicManagement({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-lg">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <Warning sx={{ fontSize: 20, color: "var(--destructive)" }} />
               Delete Topic
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm">

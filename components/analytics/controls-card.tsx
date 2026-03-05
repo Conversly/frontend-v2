@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Settings } from "lucide-react";
+import { CalendarMonth, Settings } from "@mui/icons-material";
 
 interface ControlsCardProps {
   selectedDays: number;
@@ -20,7 +20,7 @@ export function ControlsCard({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <Calendar className="h-3.5 w-3.5" />
+            <CalendarMonth sx={{ fontSize: 14 }} />
             <span className="text-sm font-medium">Charts Period:</span>
             <div className="flex space-x-1.5">
               <Button
@@ -44,7 +44,7 @@ export function ControlsCard({
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <Settings className="h-3.5 w-3.5" />
+            <Settings sx={{ fontSize: 14 }} />
             <span className="text-sm font-medium">Feedback Limit:</span>
             <div className="flex space-x-1.5">
               <Button

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Bold, Italic, Strikethrough, List, ListOrdered, Link as LinkIcon, Smile } from 'lucide-react';
+import { FormatBold, FormatItalic, FormatStrikethrough, FormatListBulleted, FormatListNumbered, Link as LinkIcon, InsertEmoticon } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
 
@@ -70,27 +70,27 @@ export function TextContent({ onSuccess }: TextContentProps) {
         {/* Rich Text Toolbar */}
         <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Bold className="w-4 h-4" />
+            <FormatBold sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Italic className="w-4 h-4" />
+            <FormatItalic sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Strikethrough className="w-4 h-4" />
+            <FormatStrikethrough sx={{ fontSize: 16 }} />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <List className="w-4 h-4" />
+            <FormatListBulleted sx={{ fontSize: 16 }} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <ListOrdered className="w-4 h-4" />
+            <FormatListNumbered sx={{ fontSize: 16 }} />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
             <LinkIcon className="w-4 h-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-            <Smile className="w-4 h-4" />
+            <InsertEmoticon sx={{ fontSize: 16 }} />
           </Button>
         </div>
 

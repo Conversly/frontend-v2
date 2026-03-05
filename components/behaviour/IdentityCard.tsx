@@ -1,6 +1,7 @@
 "use client";
 
-import { User, MessageSquare, Sparkles, Loader2, RefreshCw, ChevronDown } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Person, Message, AutoAwesome, Refresh, ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,7 +55,7 @@ export function IdentityCard({
             {/* 1. IDENTITY SECTION */}
             <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2 mb-2">
-                    <User className="h-4 w-4 text-primary" />
+                    <Person sx={{ fontSize: 16, color: "var(--primary)" }} />
                     <h3 className="text-sm font-semibold text-muted-foreground">1. Identity</h3>
                 </div>
 
@@ -115,7 +116,7 @@ export function IdentityCard({
             {/* 2. STYLE SECTION */}
             <div className="p-6 space-y-4 bg-muted/20">
                 <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare className="h-4 w-4 text-primary" />
+                    <Message sx={{ fontSize: 16, color: "var(--primary)" }} />
                     <h3 className="text-sm font-semibold text-muted-foreground">2. Conversation Style</h3>
                 </div>
 
@@ -178,7 +179,7 @@ export function IdentityCard({
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="flex w-full items-center justify-between p-0 h-auto font-normal text-muted-foreground hover:bg-transparent hover:text-foreground">
                             <span className="text-xs">Advanced instructions for tone...</span>
-                            <ChevronDown className={`h-4 w-4 transition-transform ${isAdvancedStyleOpen ? "rotate-180" : ""}`} />
+                            <ExpandMore sx={{ fontSize: 16 }} className={`transition-transform ${isAdvancedStyleOpen ? "rotate-180" : ""}`} />
                         </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-2">
@@ -196,7 +197,7 @@ export function IdentityCard({
             <div className="p-6 bg-primary/5">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
+                        <AutoAwesome sx={{ fontSize: 20, color: "var(--primary)" }} />
                         <div>
                             <Label className="text-foreground font-semibold block">Master Instruction (System Prompt)</Label>
                             <span className="text-[10px] text-muted-foreground">The "brain" of your AI widget.</span>
@@ -207,7 +208,7 @@ export function IdentityCard({
                         disabled={isGenerating}
                         className="h-9"
                     >
-                        {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                        {isGenerating ? <CircularProgress size={16} sx={{ mr: 1 }} /> : <Refresh sx={{ fontSize: 16, mr: 1 }} />}
                         Generate Brain
                     </Button>
                 </div>
@@ -220,7 +221,7 @@ export function IdentityCard({
                         placeholder="Click generate to create instructions from your settings..."
                     />
                     <div className="flex items-start gap-2 text-[11px] text-primary bg-primary/5 p-2 rounded border border-primary/20">
-                        <Sparkles className="h-3 w-3 mt-0.5 shrink-0" />
+                        <AutoAwesome sx={{ fontSize: 12, mt: 0.5 }} />
                         <span>This prompt is auto-generated based on your identity and style settings. You can manually edit it if you need specific tweaks.</span>
                     </div>
                 </div>

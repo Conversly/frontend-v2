@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Plus } from "lucide-react";
+import { Add } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { SectionDivider } from "./SectionDivider";
@@ -25,7 +25,7 @@ export function AdvancedConfig({ config, onChange }: AdvancedConfigProps) {
                         No metadata configured.
                     </p>
                     <Button variant="outline" className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Add Metadata
                     </Button>
                 </div>
@@ -41,7 +41,7 @@ export function AdvancedConfig({ config, onChange }: AdvancedConfigProps) {
                         No secrets configured.
                     </p>
                     <Button variant="outline" className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Add Secret
                     </Button>
                 </div>

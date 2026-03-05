@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Paperclip, Mic } from "lucide-react";
+import { Send, SmartToy, Person, AttachFile, Mic } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -74,7 +74,7 @@ export function HelpChat() {
             {/* Chat Header */}
             <div className="p-4 border-b bg-muted/30 flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-full">
-                    <Bot className="w-5 h-5 text-primary" />
+                    <SmartToy sx={{ fontSize: 20 }} className="text-primary" />
                 </div>
                 <div>
                     <h3 className="font-semibold">AI Support Assistant</h3>
@@ -101,12 +101,12 @@ export function HelpChat() {
                                     {message.role === "assistant" ? (
                                         <>
                                             <AvatarImage src="/bot-avatar.png" />
-                                            <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="w-4 h-4" /></AvatarFallback>
+                                            <AvatarFallback className="bg-primary text-primary-foreground"><SmartToy sx={{ fontSize: 16 }} /></AvatarFallback>
                                         </>
                                     ) : (
                                         <>
                                             <AvatarImage src="/user-avatar.png" />
-                                            <AvatarFallback className="bg-muted"><User className="w-4 h-4" /></AvatarFallback>
+                                            <AvatarFallback className="bg-muted"><Person sx={{ fontSize: 16 }} /></AvatarFallback>
                                         </>
                                     )}
                                 </Avatar>
@@ -134,7 +134,7 @@ export function HelpChat() {
                                 className="flex items-start gap-3 mr-auto max-w-[80%]"
                             >
                                 <Avatar className="w-8 h-8 border">
-                                    <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="w-4 h-4" /></AvatarFallback>
+                                    <AvatarFallback className="bg-primary text-primary-foreground"><SmartToy sx={{ fontSize: 16 }} /></AvatarFallback>
                                 </Avatar>
                                 <div className="bg-muted/50 border p-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
@@ -153,7 +153,7 @@ export function HelpChat() {
                 <div className="relative flex items-center">
                     <div className="absolute left-2 flex gap-1">
                         <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-full">
-                            <Paperclip className="w-4 h-4" />
+                            <AttachFile sx={{ fontSize: 16 }} />
                         </Button>
                     </div>
                     <Input
@@ -166,7 +166,7 @@ export function HelpChat() {
                     <div className="absolute right-2 flex gap-1 items-center">
                         {!inputValue && (
                             <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-full">
-                                <Mic className="w-4 h-4" />
+                                <Mic sx={{ fontSize: 16 }} />
                             </Button>
                         )}
                         <Button
@@ -175,7 +175,7 @@ export function HelpChat() {
                             disabled={!inputValue.trim()}
                             className={cn("h-8 w-8 rounded-full transition-all duration-200", inputValue.trim() ? "bg-primary text-primary-foreground shadow-md hover:shadow-lg" : "bg-muted text-muted-foreground")}
                         >
-                            <Send className="w-4 h-4" />
+                            <Send sx={{ fontSize: 16 }} />
                         </Button>
                     </div>
                 </div>

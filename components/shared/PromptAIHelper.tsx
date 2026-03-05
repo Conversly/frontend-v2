@@ -3,7 +3,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Wand2, RefreshCw, ChevronDown, Loader2 } from 'lucide-react';
+import { AutoAwesome, Refresh, ExpandMore } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -164,7 +165,7 @@ export function PromptAIHelper({
             className="text-xs"
             title={!canModify ? 'Save chatbot first to modify existing prompt' : undefined}
           >
-            <Wand2 className="h-3 w-3 mr-1" />
+            <AutoAwesome sx={{ fontSize: 12 }} className="mr-1" />
             Modify
           </Button>
           <Button
@@ -174,7 +175,7 @@ export function PromptAIHelper({
             onClick={() => setMode('generate')}
             className="text-xs"
           >
-            <RefreshCw className="h-3 w-3 mr-1" />
+            <Refresh sx={{ fontSize: 12 }} className="mr-1" />
             New
           </Button>
         </div>
@@ -202,7 +203,7 @@ export function PromptAIHelper({
                   onClick={handleModifyExisting}
                   disabled={disabled || isLoading || !modifyDescription.trim()}
                 >
-                  {isModifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                  {isModifying ? <CircularProgress size={16} /> : <AutoAwesome sx={{ fontSize: 16 }} />}
                 </Button>
               </div>
             </motion.div>
@@ -237,7 +238,7 @@ export function PromptAIHelper({
                   onClick={handleGenerateFromScratch}
                   disabled={disabled || isLoading || !businessDescription.trim()}
                 >
-                  {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                  {isGenerating ? <CircularProgress size={16} /> : <Refresh sx={{ fontSize: 16 }} />}
                 </Button>
               </div>
             </motion.div>
@@ -260,10 +261,10 @@ export function PromptAIHelper({
           disabled={disabled}
         >
           <span className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
+            <AutoAwesome sx={{ fontSize: 16 }} className="text-primary" />
             <span className="font-medium">AI Prompt Assistant</span>
           </span>
-          <ChevronDown className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')} />
+          <ExpandMore sx={{ fontSize: 16 }} className={cn('transition-transform', isOpen && 'rotate-180')} />
         </Button>
       </CollapsibleTrigger>
 
@@ -288,7 +289,7 @@ export function PromptAIHelper({
                 !canModify && 'opacity-50 cursor-not-allowed'
               )}
             >
-              <Wand2 className="h-4 w-4" />
+              <AutoAwesome sx={{ fontSize: 16 }} />
               Modify Current
             </button>
             <button
@@ -301,7 +302,7 @@ export function PromptAIHelper({
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <RefreshCw className="h-4 w-4" />
+              <Refresh sx={{ fontSize: 16 }} />
               Generate New
             </button>
           </div>
@@ -351,12 +352,12 @@ export function PromptAIHelper({
                 >
                   {isModifying ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <CircularProgress size={16} className="mr-2" />
                       Modifying...
                     </>
                   ) : (
                     <>
-                      <Wand2 className="mr-2 h-4 w-4" />
+                      <AutoAwesome sx={{ fontSize: 16 }} className="mr-2" />
                       Apply Changes
                     </>
                   )}
@@ -417,12 +418,12 @@ export function PromptAIHelper({
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <CircularProgress size={16} className="mr-2" />
                       Generating...
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="mr-2 h-4 w-4" />
+                      <Refresh sx={{ fontSize: 16 }} className="mr-2" />
                       Generate New Prompt
                     </>
                   )}

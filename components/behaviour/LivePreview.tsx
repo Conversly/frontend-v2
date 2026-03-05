@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlaygroundWidget } from "@/components/PlaygroundWidget";
-import { RefreshCcw } from "lucide-react";
+import { Refresh } from "@mui/icons-material";
 import { toast } from "sonner";
 
 interface LivePreviewProps {
@@ -72,7 +72,7 @@ export function LivePreview({ chatbotId, config, systemPrompt }: LivePreviewProp
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Quick Tests</span>
                         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleReset} title="Reset Conversation">
-                            <RefreshCcw className="h-3 w-3" />
+                            <Refresh sx={{ fontSize: 12 }} />
                         </Button>
                     </div>
 

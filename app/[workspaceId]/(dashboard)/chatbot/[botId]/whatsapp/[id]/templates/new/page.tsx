@@ -13,12 +13,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
-import {
-    ChevronLeft,
-    MousePointer2,
-    X,
-    Plus,
-} from 'lucide-react';
+import { ChevronLeft, Close, Add, TouchApp } from '@mui/icons-material';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
 import { useCreateTemplate } from '@/services/template';
@@ -304,7 +299,7 @@ export default function CreateTemplatePage() {
                 <div className="h-16 border-b bg-white flex items-center justify-between px-6 flex-shrink-0 z-20">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon" onClick={() => router.back()}>
-                            <ChevronLeft className="w-5 h-5 text-gray-600" />
+                            <ChevronLeft sx={{ fontSize: 20 }} className="text-gray-600" />
                         </Button>
                         <div className="flex items-center gap-4">
                             <h3 className="text-xl font-semibold text-gray-800">New Template Message</h3>
@@ -629,7 +624,7 @@ export default function CreateTemplatePage() {
                                                                 const newButtons = buttons.filter((_: any, i: number) => i !== idx);
                                                                 setValue('buttons', newButtons);
                                                             }}>
-                                                                <X className="w-4 h-4 text-gray-400" />
+                                                                <Close sx={{ fontSize: 16 }} className="text-gray-400" />
                                                             </Button>
                                                         </div>
                                                     </div>
@@ -645,7 +640,7 @@ export default function CreateTemplatePage() {
                                                     }}
                                                     disabled={buttons.filter((b: any) => b.type !== 'QUICK_REPLY').length >= 2}
                                                 >
-                                                    <Plus className="w-4 h-4 mr-2" /> Add Call to Action
+                                                    <Add sx={{ fontSize: 16 }} className="mr-2" /> Add Call to Action
                                                 </Button>
                                             </div>
                                         )}
@@ -653,7 +648,7 @@ export default function CreateTemplatePage() {
                                         <div className="mt-4 pt-4 border-t flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm text-gray-700">Enable Click Tracking</span>
-                                                <MousePointer2 className="w-4 h-4 text-gray-400" />
+                                                <TouchApp sx={{ fontSize: 16 }} className="text-gray-400" />
                                                 <Switch checked={clickTracking} onCheckedChange={setClickTracking} disabled />
                                                 <Badge className="bg-[#713ce2] hover:bg-[#713ce2]">PRO ✨</Badge>
                                             </div>

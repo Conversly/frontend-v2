@@ -11,7 +11,7 @@ import {
   useUpdateCustomAction,
   useDeleteCustomAction,
 } from '@/services/actions';
-import { Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
 import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
 export default function ActionsPage() {
@@ -74,7 +74,7 @@ export default function ActionsPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
       </div>
     );
   }

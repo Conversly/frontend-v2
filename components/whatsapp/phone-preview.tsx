@@ -1,4 +1,4 @@
-import { Image as ImageIcon, Plus, CornerDownRight, Phone } from 'lucide-react';
+import { Image as ImageIcon, Add, SubdirectoryArrowRight, Phone } from '@mui/icons-material';
 import { cn } from "@/lib/utils";
 
 interface PhonePreviewProps {
@@ -49,7 +49,7 @@ export function PhonePreview({
                         {templateType === 'IMAGE' && (
                             <div className="p-1">
                                 <div className="bg-slate-200 h-32 rounded flex items-center justify-center text-slate-400">
-                                    <ImageIcon className="w-8 h-8" />
+                                    <ImageIcon sx={{ fontSize: 32 }} />
                                 </div>
                             </div>
                         )}
@@ -87,8 +87,8 @@ export function PhonePreview({
                             <div className="border-t border-gray-100">
                                 {buttons.map((btn, idx) => (
                                     <div key={idx} className="h-10 flex items-center justify-center text-[#00a5f4] text-sm font-medium border-b border-gray-100 last:border-none cursor-pointer hover:bg-gray-50 transition-colors">
-                                        {btn.type === 'URL' && <CornerDownRight className="w-3.5 h-3.5 mr-2" />}
-                                        {btn.type === 'PHONE' && <Phone className="w-3.5 h-3.5 mr-2" />}
+                                        {btn.type === 'URL' && <SubdirectoryArrowRight sx={{ fontSize: 14, mr: 1 }} />}
+                                        {btn.type === 'PHONE' && <Phone sx={{ fontSize: 14, mr: 1 }} />}
                                         {btn.text || 'Button'}
                                     </div>
                                 ))}
@@ -99,7 +99,7 @@ export function PhonePreview({
 
                 {/* Input Box Fake */}
                 <div className="h-12 bg-[#F0F2F5] flex items-center px-2 gap-2 shrink-0">
-                    <Plus className="w-6 h-6 text-[#54656F]" />
+                    <Add sx={{ fontSize: 24, color: "#54656F" }} />
                     <div className="flex-1 h-9 bg-white rounded-lg border-none"></div>
                     <div className="w-6 h-6 text-[#54656F]">🎤</div>
                 </div>

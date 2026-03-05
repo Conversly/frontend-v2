@@ -8,19 +8,19 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import {
-  MessageSquare,
-  BarChart3,
-  FileText,
-  Zap,
+  Chat,
+  BarChart,
+  Description,
+  Bolt,
   Settings,
-  LayoutDashboard,
-  Megaphone,
-  Users,
+  Dashboard,
+  Campaign,
+  People,
   CreditCard,
-  Workflow,
-  Puzzle,
+  AccountTree,
+  Extension,
   FolderOpen
-} from 'lucide-react';
+} from '@mui/icons-material';
 import {
   Tooltip,
   TooltipContent,
@@ -37,18 +37,18 @@ interface IntegrationSidebarProps {
 
 // Icon mapping
 const iconMap: Record<string, React.ComponentType<any>> = {
-  MessageSquare,
-  BarChart3, // Analytics
-  FileText, // Templates (History/FileText)
-  Zap, // Automation
-  Settings, // Manage
-  LayoutDashboard, // Dashboard
-  Megaphone, // Campaigns
-  Users, // Contacts
-  CreditCard, // WA Pay
-  Workflow, // Flows
-  Puzzle, // Integrations
-  FolderOpen, // All Projects
+  MessageSquare: Chat,
+  BarChart3: BarChart,
+  FileText: Description,
+  Zap: Bolt,
+  Settings,
+  LayoutDashboard: Dashboard,
+  Megaphone: Campaign,
+  Users: People,
+  CreditCard,
+  Workflow: AccountTree,
+  Puzzle: Extension,
+  FolderOpen,
 };
 
 export function IntegrationSidebar({
@@ -82,7 +82,7 @@ export function IntegrationSidebar({
       <ScrollArea className="flex-1 w-full">
         <div className="flex flex-col items-center py-2 gap-1 px-1">
           {items.map((item) => {
-            const IconComponent = iconMap[item.icon as keyof typeof iconMap] || MessageSquare;
+            const IconComponent = iconMap[item.icon as keyof typeof iconMap] || Chat;
             const fullPath = `${basePath}${item.path}`;
             const isActive = pathname === fullPath || pathname?.startsWith(fullPath + '/');
 
@@ -97,7 +97,7 @@ export function IntegrationSidebar({
                       : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
                   )}
                 >
-                  <IconComponent className="w-5 h-5" />
+                  <IconComponent sx={{ fontSize: 20 }} />
                   <span className="text-[length:var(--font-xsmall)] font-medium leading-tight text-center">{item.label}</span>
 
                   {item.badge && (
