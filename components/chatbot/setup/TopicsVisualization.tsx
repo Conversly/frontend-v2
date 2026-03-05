@@ -3,17 +3,17 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
-    MessageSquare,
-    Tag,
-    BarChart3,
-    PieChart,
-    ThumbsUp,
-    ThumbsDown,
-    Sparkles,
+    Chat,
+    Label,
+    BarChart,
+    ShowChart,
+    ThumbUp,
+    ThumbDown,
+    AutoAwesome,
     TrendingUp,
-    Zap,
-    Bot,
-} from "lucide-react";
+    Bolt,
+    SmartToy,
+} from "@mui/icons-material";
 
 // Background pattern component matching BroadcastVisuals style
 const BackgroundPattern = ({ children }: { children?: React.ReactNode }) => (
@@ -100,21 +100,21 @@ export const TopicsVisualization = () => {
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-8 -left-8 text-violet-500/10 z-0"
             >
-                <Tag size={72} />
+                <Label sx={{ fontSize: 72 }} />
             </motion.div>
             <motion.div
                 animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 className="absolute top-1/3 -right-12 text-emerald-500/10 z-0"
             >
-                <BarChart3 size={64} />
+                <BarChart sx={{ fontSize: 64 }} />
             </motion.div>
             <motion.div
                 animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.15, 0.1] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute bottom-12 -left-6 text-blue-500/10 z-0"
             >
-                <Sparkles size={48} />
+                <AutoAwesome sx={{ fontSize: 48 }} />
             </motion.div>
 
             {/* Main Card */}
@@ -122,7 +122,7 @@ export const TopicsVisualization = () => {
                 {/* Header */}
                 <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white">
-                        <Bot size={20} />
+                        <SmartToy sx={{ fontSize: 20 }} />
                     </div>
                     <div className="flex-1">
                         <div className="text-white text-sm font-semibold">AI Topic Classification</div>
@@ -154,7 +154,7 @@ export const TopicsVisualization = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                 >
                                     <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full">
-                                        <MessageSquare size={14} className="text-slate-500" />
+                                        <Chat sx={{ fontSize: 14 }} className="text-slate-500" />
                                         <span className="text-xs font-medium text-slate-600">
                                             {stage === 0 ? "Incoming Questions" : "Classifying..."}
                                         </span>
@@ -165,7 +165,7 @@ export const TopicsVisualization = () => {
                                             animate={{ scale: 1 }}
                                             className="flex items-center gap-1 px-2 py-1 bg-violet-100 rounded-full"
                                         >
-                                            <Zap size={12} className="text-violet-600" />
+                                            <Bolt sx={{ fontSize: 12 }} className="text-violet-600" />
                                             <span className="text-2xs font-medium text-violet-600">AI</span>
                                         </motion.div>
                                     )}
@@ -207,7 +207,7 @@ export const TopicsVisualization = () => {
                                                                     borderColor: `${msg.color}30`,
                                                                 }}
                                                             >
-                                                                <Tag size={12} style={{ color: msg.color }} />
+                                                                <Label sx={{ fontSize: 12 }} style={{ color: msg.color }} />
                                                                 <span
                                                                     className="text-xs font-semibold"
                                                                     style={{ color: msg.color }}
@@ -241,11 +241,11 @@ export const TopicsVisualization = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                 >
                                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">
-                                        <BarChart3 size={14} className="text-emerald-600" />
+                                        <BarChart sx={{ fontSize: 14 }} className="text-emerald-600" />
                                         <span className="text-xs font-medium text-emerald-700">Topic Analytics</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-2xs text-slate-400">
-                                        <TrendingUp size={12} className="text-emerald-500" />
+                                        <TrendingUp sx={{ fontSize: 12 }} className="text-emerald-500" />
                                         <span>Live insights</span>
                                     </div>
                                 </motion.div>
@@ -259,7 +259,7 @@ export const TopicsVisualization = () => {
                                         className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-3 border border-violet-100"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <PieChart size={14} className="text-violet-600" />
+                                            <ShowChart sx={{ fontSize: 14 }} className="text-violet-600" />
                                             <span className="text-2xs font-medium text-violet-600">Total Questions</span>
                                         </div>
                                         <motion.div
@@ -278,7 +278,7 @@ export const TopicsVisualization = () => {
                                         className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-3 border border-emerald-100"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Tag size={14} className="text-emerald-600" />
+                                            <Label sx={{ fontSize: 14 }} className="text-emerald-600" />
                                             <span className="text-2xs font-medium text-emerald-600">Topics Tagged</span>
                                         </div>
                                         <motion.div
@@ -302,11 +302,11 @@ export const TopicsVisualization = () => {
                                         <span className="text-xs font-semibold text-slate-700">Topic Distribution</span>
                                         <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1">
-                                                <ThumbsUp size={10} className="text-emerald-500" />
+                                                <ThumbUp sx={{ fontSize: 10 }} className="text-emerald-500" />
                                                 <span className="text-2xs text-emerald-600">89%</span>
                                             </div>
                                             <div className="flex items-center gap-1">
-                                                <ThumbsDown size={10} className="text-red-400" />
+                                                <ThumbDown sx={{ fontSize: 10 }} className="text-red-400" />
                                                 <span className="text-2xs text-red-500">11%</span>
                                             </div>
                                         </div>
@@ -349,7 +349,7 @@ export const TopicsVisualization = () => {
                                     transition={{ delay: 1 }}
                                     className="flex items-center justify-center gap-2 py-2 px-4 bg-gradient-to-r from-violet-500/10 to-emerald-500/10 rounded-lg border border-violet-100"
                                 >
-                                    <Sparkles size={14} className="text-violet-500" />
+                                    <AutoAwesome sx={{ fontSize: 14 }} className="text-violet-500" />
                                     <span className="text-xs text-slate-600">
                                         <span className="font-semibold text-violet-600">Pricing</span> is your most asked topic
                                     </span>

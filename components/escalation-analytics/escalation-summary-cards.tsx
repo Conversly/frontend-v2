@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle, Gauge, Timer, UserX } from "lucide-react";
+import { Warning, Speed, Timer, PersonRemove } from "@mui/icons-material";
 
 interface EscalationSummaryCardsProps {
   summary?: {
@@ -24,7 +24,7 @@ export function EscalationSummaryCards({
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Total Escalations</p>
-          <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          <Warning sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
@@ -43,7 +43,7 @@ export function EscalationSummaryCards({
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Escalation Rate</p>
-          <Gauge className="h-4 w-4 text-muted-foreground" />
+          <Speed sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
@@ -66,7 +66,7 @@ export function EscalationSummaryCards({
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Avg. Time to Human</p>
-          <Timer className="h-4 w-4 text-muted-foreground" />
+          <Timer sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
@@ -83,7 +83,7 @@ export function EscalationSummaryCards({
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">User Abandonment</p>
-          <UserX className="h-4 w-4 text-muted-foreground" />
+          <PersonRemove sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (

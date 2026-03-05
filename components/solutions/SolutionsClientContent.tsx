@@ -1,7 +1,9 @@
 'use client';
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
+import AutoAwesome from "@mui/icons-material/AutoAwesome";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -22,11 +24,11 @@ function SolutionCard({ solution }: { solution: Solution }) {
             className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-border p-8 rounded-3xl hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 group flex flex-col h-full relative overflow-hidden"
         >
             <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none">
-                <solution.icon className="w-32 h-32 -mr-16 -mt-16 rotate-12" />
+                <solution.icon sx={{ fontSize: 128 }} className="-mr-16 -mt-16 rotate-12" />
             </div>
 
             <div className={`w-14 h-14 rounded-2xl ${solution.bg} flex items-center justify-center ${solution.color} mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                <solution.icon className="w-7 h-7" />
+                <solution.icon sx={{ fontSize: 28 }} />
             </div>
 
             <div className="mb-4">
@@ -48,7 +50,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
                     {solution.features.slice(0, 3).map((feature, i) => (
                         <li key={i} className="flex items-start gap-2.5 type-body-muted">
                             <div className={`mt-1 rounded-full p-0.5 ${solution.bg}`}>
-                                <CheckCircle2 className={`w-3 h-3 ${solution.color}`} />
+                                <CheckCircle sx={{ fontSize: 12 }} className={solution.color} />
                             </div>
                             {feature}
                         </li>
@@ -59,12 +61,12 @@ function SolutionCard({ solution }: { solution: Solution }) {
                     <Link href="/login" className="flex-1">
                         <Button className="w-full rounded-xl bg-white dark:bg-slate-800 text-foreground border border-border hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm font-semibold group/btn">
                             Get Started
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                            <ArrowForward sx={{ fontSize: 16 }} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
                     <Link href="/docs">
                         <Button variant="ghost" size="icon" className="rounded-xl border border-transparent hover:border-border hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <Sparkles className="w-4 h-4 text-muted-foreground" />
+                            <AutoAwesome sx={{ fontSize: 16 }} className="text-muted-foreground" />
                         </Button>
                     </Link>
                 </div>
@@ -81,7 +83,7 @@ export function SolutionsHero() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
             >
-                <Sparkles className="w-4 h-4" />
+                <AutoAwesome sx={{ fontSize: 16 }} />
                 <span>Infinite Possibilities</span>
             </motion.div>
             <motion.h1

@@ -1,7 +1,7 @@
-import { LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
 const CrimsonIcons = {
-  ChefHat: (props: LucideProps) => (
+  ChefHat: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -16,7 +16,7 @@ const CrimsonIcons = {
       />
     </svg>
   ),
-  Crown: (props: LucideProps) => (
+  Crown: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -30,7 +30,7 @@ const CrimsonIcons = {
       />
     </svg>
   ),
-  Aim: (props: LucideProps) => (
+  Aim: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}

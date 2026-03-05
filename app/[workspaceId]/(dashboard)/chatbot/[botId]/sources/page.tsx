@@ -4,24 +4,24 @@ import { useState, useMemo, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FileText,
-  Globe,
-  MessageSquare,
-  AlignLeft,
+  Description,
+  Public,
+  Message,
+  FormatAlignLeft,
   Search,
-  Trash2,
-  Edit3,
-  Copy,
+  Delete,
+  Edit,
+  ContentCopy,
   Check,
-  Calendar,
-  Database,
-  AlertCircle,
-  AlertTriangle,
-  Eye,
-  MoreVertical,
-  Plus,
+  CalendarMonth,
+  Storage,
+  Warning,
+  ReportProblem,
+  Visibility,
+  MoreVert,
+  Add,
   Lock
-} from 'lucide-react';
+} from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -73,12 +73,12 @@ import {
 import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
 const DATA_SOURCE_ICONS = {
-  URL: Globe,
-  WEBSITE: Globe,
-  DOCUMENT: FileText,
-  PDF: FileText,
-  QNA: MessageSquare,
-  TXT: AlignLeft,
+  URL: Public,
+  WEBSITE: Public,
+  DOCUMENT: Description,
+  PDF: Description,
+  QNA: Message,
+  TXT: FormatAlignLeft,
 } as const;
 
 const DATA_SOURCE_COLORS = {
@@ -151,9 +151,9 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
           className="opacity-0 group-hover:opacity-100 transition-opacity"
         >
           {copied ? (
-            <Check className="w-3 h-3 text-green-400" />
+            <Check sx={{ fontSize: 12, color: "rgb(74 222 128)" }} />
           ) : (
-            <Copy className="w-3 h-3" />
+            <ContentCopy sx={{ fontSize: 12 }} />
           )}
         </Button>
       </div>
@@ -174,7 +174,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
 }
 
 function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem; onClose: () => void }) {
-  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
+  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || Description;
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
@@ -182,7 +182,7 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
         <DialogHeader className="p-6 pb-4 border-b border-border">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <Icon className="w-5 h-5 text-primary" />
+              <Icon sx={{ fontSize: 20, color: "var(--primary)" }} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
@@ -215,7 +215,7 @@ function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem;
 
         <div className="flex-1 overflow-y-auto p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Database className="w-4 h-4 text-primary" />
+            <Storage sx={{ fontSize: 16, color: "var(--primary)" }} />
             <h4 className="type-micro-heading">
               Embedding Chunks
             </h4>
@@ -240,7 +240,7 @@ function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
   if (!embeddings || embeddings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+        <Warning sx={{ fontSize: 32, color: "var(--muted-foreground)", mb: 1.5 }} />
         <p className="text-sm text-muted-foreground">
           No embeddings found. They may still be processing.
         </p>
@@ -315,7 +315,7 @@ function DataSourceCard({
   isLiveMode: boolean;
 }) {
   const normalizedType = (dataSource.type || 'DOCUMENT').toUpperCase() as keyof typeof DATA_SOURCE_ICONS;
-  const Icon = DATA_SOURCE_ICONS[normalizedType] || FileText;
+  const Icon = DATA_SOURCE_ICONS[normalizedType] || Description;
   const badgeColor = DATA_SOURCE_BADGE_COLORS[normalizedType as keyof typeof DATA_SOURCE_BADGE_COLORS] || DATA_SOURCE_BADGE_COLORS.DOCUMENT;
   const colorClass = DATA_SOURCE_COLORS[normalizedType as keyof typeof DATA_SOURCE_COLORS] || DATA_SOURCE_COLORS.DOCUMENT;
 
@@ -332,7 +332,7 @@ function DataSourceCard({
             'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-gradient-to-br',
             colorClass
           )}>
-            <Icon className="h-5 w-5" />
+            <Icon sx={{ fontSize: 20 }} />
           </div>
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-foreground truncate" title={dataSource.name}>
@@ -349,12 +349,12 @@ function DataSourceCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground">
-              <MoreVertical className="h-4 w-4" />
+              <MoreVert sx={{ fontSize: 16 }} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={onViewChunks}>
-              <Eye className="w-4 h-4 mr-2" />
+              <Visibility sx={{ fontSize: 16, mr: 1 }} />
               View chunks
             </DropdownMenuItem>
             <FeatureGuard feature="datasources">
@@ -362,7 +362,7 @@ function DataSourceCard({
                 onClick={onEditCitation}
                 disabled={isLiveMode}
               >
-                <Edit3 className="w-4 h-4 mr-2" />
+                <Edit sx={{ fontSize: 16, mr: 1 }} />
                 Edit citation
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -370,7 +370,7 @@ function DataSourceCard({
                 disabled={isLiveMode}
                 className="text-destructive focus:text-destructive"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
+                <Delete sx={{ fontSize: 16, mr: 1 }} />
                 Delete
               </DropdownMenuItem>
             </FeatureGuard>
@@ -381,7 +381,7 @@ function DataSourceCard({
       {/* Footer / Status */}
       <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Calendar className="h-3.5 w-3.5" />
+          <CalendarMonth sx={{ fontSize: 14 }} />
           <span>{dataSource.createdAt ? new Date(dataSource.createdAt).toLocaleDateString() : 'N/A'}</span>
         </div>
         <div className="flex gap-2">
@@ -463,11 +463,11 @@ function DataSourcesContent({
               <EmptyState
                 title="No knowledge sources yet"
                 description="Add websites, documents, Q&A pairs, or text to train your AI chatbot."
-                icon={<Database />}
+                icon={<Storage />}
                 primaryAction={accessControl.datasources.canManage ? {
                   label: "Add Knowledge",
                   onClick: () => {},
-                  icon: isLocked ? <Lock /> : <Plus />,
+                  icon: isLocked ? <Lock /> : <Add />,
                 } : undefined}
                 className="border-dashed bg-card/30"
               />
@@ -626,7 +626,7 @@ export default function DataSourcesPage() {
                           variant={!isLocked ? "default" : "outline"}
                           className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
                         >
-                          {isLocked ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                          {isLocked ? <Lock sx={{ fontSize: 16, mr: 1 }} /> : <Add sx={{ fontSize: 16, mr: 1 }} />}
                           Add Knowledge
                         </Button>
                       )}
@@ -639,7 +639,7 @@ export default function DataSourcesPage() {
 
           {/* Search */}
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search sx={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 16, color: "var(--muted-foreground)" }} />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -697,7 +697,7 @@ export default function DataSourcesPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="type-section-title flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <ReportProblem sx={{ fontSize: 20, color: "var(--destructive)" }} />
               Delete Data Source
             </AlertDialogTitle>
             <AlertDialogDescription>

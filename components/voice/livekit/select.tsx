@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ExpandMore, ExpandLess, Check } from '@mui/icons-material';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +49,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="h-4 w-4 transition-colors" />
+        <ExpandMore sx={{ fontSize: 16 }} className="transition-colors" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -133,7 +133,7 @@ function SelectItem({
     >
       <span className="absolute right-2 flex size-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4" />
+          <Check sx={{ fontSize: 16 }} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -164,7 +164,7 @@ function SelectScrollUpButton({
       className={cn('flex cursor-default items-center justify-center py-1', className)}
       {...props}
     >
-      <ChevronUp className="h-4 w-4" />
+      <ExpandLess sx={{ fontSize: 16 }} />
     </SelectPrimitive.ScrollUpButton>
   );
 }
@@ -179,7 +179,7 @@ function SelectScrollDownButton({
       className={cn('flex cursor-default items-center justify-center py-1', className)}
       {...props}
     >
-      <ChevronDown className="h-4 w-4" />
+      <ExpandMore sx={{ fontSize: 16 }} />
     </SelectPrimitive.ScrollDownButton>
   );
 }

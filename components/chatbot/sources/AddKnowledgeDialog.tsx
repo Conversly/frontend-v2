@@ -9,13 +9,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
-  Globe,
-  FileText,
-  MessageSquare,
-  AlignLeft,
-  ArrowLeft,
-  X
-} from 'lucide-react';
+  Public,
+  Description,
+  Message,
+  FormatAlignLeft,
+  ArrowBack,
+  Close
+} from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import { FileUploadContent } from './FileUploadContent';
 import { WebsiteContent } from './WebsiteContent';
@@ -36,28 +36,28 @@ const sourceOptions = [
     id: 'files' as const,
     label: 'Files',
     description: 'Upload PDFs, Word docs, and text files',
-    icon: FileText,
+    icon: Description,
     color: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   },
   {
     id: 'website' as const,
     label: 'Website',
     description: 'Crawl web pages or add individual URLs',
-    icon: Globe,
+    icon: Public,
     color: 'bg-green-500/10 text-green-500 border-green-500/20',
   },
   {
     id: 'qa' as const,
     label: 'Q&A',
     description: 'Add question and answer pairs',
-    icon: MessageSquare,
+    icon: Message,
     color: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   },
   {
     id: 'text' as const,
     label: 'Text',
     description: 'Add plain text content directly',
-    icon: AlignLeft,
+    icon: FormatAlignLeft,
     color: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
   },
 ];
@@ -109,7 +109,7 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
                     'w-10 h-10 rounded-lg flex items-center justify-center border',
                     option.color
                   )}>
-                    <Icon className="w-5 h-5" />
+                    <Icon sx={{ fontSize: 20 }} />
                   </div>
                   <div className="text-left">
                     <h3 className="text-sm font-semibold text-foreground">{option.label}</h3>
@@ -140,7 +140,7 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
           onClick={handleClose}
           className="absolute top-4 right-4 h-8 w-8 z-[60] bg-background/50 backdrop-blur-sm hover:bg-muted"
         >
-          <X className="w-4 h-4" />
+          <Close sx={{ fontSize: 16 }} />
         </Button>
 
         <div className="flex w-full h-full max-h-[85vh]">
@@ -155,7 +155,7 @@ export function AddKnowledgeDialog({ open, onOpenChange, chatbotId }: AddKnowled
                     onClick={handleBack}
                     className="h-8 w-8"
                   >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowBack sx={{ fontSize: 16 }} />
                   </Button>
                 )}
                 <DialogTitle className="type-section-title flex-1">{getDialogTitle()}</DialogTitle>

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, RefreshCw, Info, PlayCircle } from "lucide-react";
+import { Search, FilterList, Refresh, Info, PlayCircle } from "@mui/icons-material";
 import {
     AreaChart,
     Area,
@@ -87,7 +87,7 @@ export default function VoiceAnalytics() {
                 <h1 className="text-2xl font-bold">Telephony Analytics</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" className="gap-2" onClick={fetchLogs}>
-                        <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
+                        <Refresh sx={{ fontSize: 14 }} className={loading ? 'animate-spin' : ''} />
                         Refresh
                     </Button>
                     <Button variant="outline" size="sm">
@@ -156,7 +156,7 @@ export default function VoiceAnalytics() {
                                         <TableCell>
                                             {log.recordingUrl ? (
                                                 <a href={log.recordingUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-500 hover:underline">
-                                                    <PlayCircle className="h-4 w-4" /> Play
+                                                    <PlayCircle sx={{ fontSize: 16 }} /> Play
                                                 </a>
                                             ) : (
                                                 <span className="text-muted-foreground text-xs">-</span>

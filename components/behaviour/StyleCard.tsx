@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { Message, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useState } from "react";
 import {
     Card,
@@ -40,7 +40,7 @@ export function StyleCard({ state, onChange }: StyleCardProps) {
             <CardHeader>
                 <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                        <MessageSquare className="h-4 w-4" />
+                        <Message sx={{ fontSize: 16 }} />
                     </div>
                     <div>
                         <CardTitle className="text-base">How should it talk?</CardTitle>
@@ -123,7 +123,7 @@ export function StyleCard({ state, onChange }: StyleCardProps) {
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="flex w-full items-center justify-between p-0 h-auto font-normal text-muted-foreground hover:bg-transparent hover:text-foreground">
                             <span>Advanced instructions</span>
-                            {isAdvancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                            {isAdvancedOpen ? <ExpandLess sx={{ fontSize: 16 }} /> : <ExpandMore sx={{ fontSize: 16 }} />}
                         </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-2">

@@ -21,7 +21,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Plus } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 
@@ -85,7 +86,7 @@ export function CreateVoiceAssistantDialog({ botId, children, onSuccess }: Creat
             <DialogTrigger asChild>
                 {children || (
                     <Button>
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Create Assistant
                     </Button>
                 )}
@@ -131,7 +132,7 @@ export function CreateVoiceAssistantDialog({ botId, children, onSuccess }: Creat
                         Cancel
                     </Button>
                     <Button onClick={handleCreate} disabled={createAssistant.isPending}>
-                        {createAssistant.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {createAssistant.isPending && <CircularProgress size={16} sx={{ mr: 1 }} />}
                         Create Assistant
                     </Button>
                 </DialogFooter>

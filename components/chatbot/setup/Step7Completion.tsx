@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle2, Globe, MessageSquare, Settings, BarChart3, Zap } from "lucide-react";
+import { CheckCircle, Public, Message, Settings, BarChart, Bolt } from "@mui/icons-material";
 import { useParams } from "next/navigation";
 import { useUpdateChatbotMutation } from "@/services/chatbot";
 
@@ -67,26 +67,26 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
   const quickLinks = [
     {
       href: `${base}/customize`,
-      icon: Globe,
+      icon: Public,
       title: "Deploy to Website",
       description: "Get embed code for your site",
       primary: true,
     },
     {
       href: `${base}/whatsapp`,
-      icon: MessageSquare,
+      icon: Message,
       title: "Connect WhatsApp",
       description: "Deploy on WhatsApp Business",
     },
     {
       href: `${base}/playground`,
-      icon: Zap,
+      icon: Bolt,
       title: "Test Your Bot",
       description: "Try it in the playground",
     },
     {
       href: `${base}/analytics`,
-      icon: BarChart3,
+      icon: BarChart,
       title: "View Analytics",
       description: "Monitor conversations",
     },
@@ -107,7 +107,7 @@ export function Step7Completion({ chatbotId, chatbotName }: Step7CompletionProps
           transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
         >
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-            <CheckCircle2 className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle sx={{ fontSize: 40, color: "rgb(5 150 105)" }} />
           </div>
         </motion.div>
 

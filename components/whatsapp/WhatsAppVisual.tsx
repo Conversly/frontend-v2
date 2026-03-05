@@ -3,22 +3,19 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
-    MessageCircle,
-    MessageSquare,
-    Users,
-    Zap,
-    Megaphone,
-    Search,
-    Sparkles,
-    Smartphone,
-} from "lucide-react";
+    Chat,
+    People,
+    Bolt,
+    Campaign,
+    PhoneAndroid,
+} from "@mui/icons-material";
 
 // Tool types with colors and icons for WhatsApp context
 const nodes = [
     {
         id: "messages",
         name: "2-Way Chat",
-        icon: MessageSquare,
+        icon: Chat,
         color: "from-green-500 to-emerald-500",
         bgColor: "bg-green-50 dark:bg-green-900/20",
         borderColor: "border-green-200 dark:border-green-800",
@@ -28,7 +25,7 @@ const nodes = [
     {
         id: "automation",
         name: "Auto-Reply",
-        icon: Zap,
+        icon: Bolt,
         color: "from-amber-500 to-yellow-500",
         bgColor: "bg-amber-50 dark:bg-amber-900/20",
         borderColor: "border-amber-200 dark:border-amber-800",
@@ -38,7 +35,7 @@ const nodes = [
     {
         id: "broadcasts",
         name: "Broadcasts",
-        icon: Megaphone,
+        icon: Campaign,
         color: "from-blue-500 to-cyan-500",
         bgColor: "bg-blue-50 dark:bg-blue-900/20",
         borderColor: "border-blue-200 dark:border-blue-800",
@@ -48,7 +45,7 @@ const nodes = [
     {
         id: "contacts",
         name: "User Data",
-        icon: Users,
+        icon: People,
         color: "from-purple-500 to-violet-500",
         bgColor: "bg-purple-50 dark:bg-purple-900/20",
         borderColor: "border-purple-200 dark:border-purple-800",
@@ -109,7 +106,7 @@ const NodeItem = ({
                 }}
                 transition={{ duration: 0.6 }}
             >
-                <Icon className={`w-5 h-5 ${node.textColor}`} />
+                <Icon sx={{ fontSize: 20 }} className={node.textColor} />
             </motion.div>
             <span className="text-2xs font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap bg-white/80 dark:bg-slate-900/80 px-2 py-0.5 rounded-full backdrop-blur-sm border border-slate-100 dark:border-slate-800">
                 {node.name}
@@ -162,7 +159,7 @@ const WhatsAppNode = ({ activeNodeIndex }: { activeNodeIndex: number }) => {
                     ease: "easeInOut",
                 }}
             >
-                <MessageCircle className="w-12 h-12 text-white fill-white/20" />
+                <Chat sx={{ fontSize: 48 }} className="text-white fill-white/20" />
 
                 {/* Orbiting Sparkle */}
                 <motion.div
@@ -176,7 +173,7 @@ const WhatsAppNode = ({ activeNodeIndex }: { activeNodeIndex: number }) => {
                         ease: "easeInOut",
                     }}
                 >
-                    <Smartphone className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <PhoneAndroid sx={{ fontSize: 16 }} className="text-green-600 dark:text-green-400" />
                 </motion.div>
             </motion.div>
 

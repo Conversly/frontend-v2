@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star, TrendingUp, Clock, DollarSign, Users } from "lucide-react";
+import { Star, TrendingUp, AccessTime, AttachMoney, People } from "@mui/icons-material";
 import Image from "next/image";
 
 interface Testimonial {
@@ -27,9 +27,9 @@ const testimonials: Testimonial[] = [
     company: "CloudPeak",
     avatar: "/avatars/michael.jpg", // Replace with actual avatar
     stats: [
-      { icon: <DollarSign className="w-4 h-4" />, value: "$12.4K", label: "Monthly Savings" },
-      { icon: <Users className="w-4 h-4" />, value: "18K", label: "Conversations" },
-      { icon: <Clock className="w-4 h-4" />, value: "8 days", label: "ROI Payback" },
+      { icon: <AttachMoney sx={{ fontSize: 16 }} />, value: "$12.4K", label: "Monthly Savings" },
+      { icon: <People sx={{ fontSize: 16 }} />, value: "18K", label: "Conversations" },
+      { icon: <AccessTime sx={{ fontSize: 16 }} />, value: "8 days", label: "ROI Payback" },
     ],
     industry: "SaaS • 120 employees",
   },
@@ -40,9 +40,9 @@ const testimonials: Testimonial[] = [
     company: "LuxeHome Realty",
     avatar: "/avatars/jessica.jpg",
     stats: [
-      { icon: <TrendingUp className="w-4 h-4" />, value: "200+", label: "Extra Leads" },
-      { icon: <TrendingUp className="w-4 h-4" />, value: "18%", label: "Higher Close Rate" },
-      { icon: <Users className="w-4 h-4" />, value: "100%", label: "Call Answer Rate" },
+      { icon: <TrendingUp sx={{ fontSize: 16 }} />, value: "200+", label: "Extra Leads" },
+      { icon: <TrendingUp sx={{ fontSize: 16 }} />, value: "18%", label: "Higher Close Rate" },
+      { icon: <People sx={{ fontSize: 16 }} />, value: "100%", label: "Call Answer Rate" },
     ],
     industry: "Real Estate • 25 agents",
   },
@@ -53,9 +53,9 @@ const testimonials: Testimonial[] = [
     company: "Brew & Bold",
     avatar: "/avatars/david.jpg",
     stats: [
-      { icon: <TrendingUp className="w-4 h-4" />, value: "23%", label: "Conversion Lift" },
-      { icon: <DollarSign className="w-4 h-4" />, value: "$15K", label: "Extra Revenue" },
-      { icon: <Clock className="w-4 h-4" />, value: "24/7", label: "Lead Capture" },
+      { icon: <TrendingUp sx={{ fontSize: 16 }} />, value: "23%", label: "Conversion Lift" },
+      { icon: <AttachMoney sx={{ fontSize: 16 }} />, value: "$15K", label: "Extra Revenue" },
+      { icon: <AccessTime sx={{ fontSize: 16 }} />, value: "24/7", label: "Lead Capture" },
     ],
     industry: "E-commerce • Shopify",
   },
@@ -80,7 +80,7 @@ export default function EnhancedTestimonials() {
         >
           <div className="flex items-center justify-center gap-2 mb-4">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <Star key={i} sx={{ fontSize: 20 }} className="fill-yellow-400 text-yellow-400" />
             ))}
           </div>
           <p className="text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground">
@@ -199,7 +199,7 @@ export default function EnhancedTestimonials() {
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <Star key={i} sx={{ fontSize: 16 }} className="fill-yellow-400 text-yellow-400" />
               ))}
             </div>
             <div className="text-sm text-muted-foreground">4.9/5 Average Rating</div>

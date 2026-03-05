@@ -3,7 +3,7 @@
 import { type HTMLAttributes, useCallback, useState } from 'react';
 import { Track } from 'livekit-client';
 import { useChat, useRemoteParticipants } from '@livekit/components-react';
-import { MessageSquare, PhoneOff } from 'lucide-react';
+import { Chat, CallEnd } from '@mui/icons-material';
 import { TrackToggle } from '@/components/voice/livekit/agent-control-bar/track-toggle';
 import { Button } from '@/components/voice/livekit/button';
 import { Toggle } from '@/components/voice/livekit/toggle';
@@ -149,7 +149,7 @@ export function AgentControlBar({
             pressed={chatOpen}
             onPressedChange={handleToggleTranscript}
           >
-            <MessageSquare className="h-4 w-4" />
+            <Chat sx={{ fontSize: 16 }} />
           </Toggle>
         </div>
 
@@ -161,7 +161,7 @@ export function AgentControlBar({
             disabled={!isConnected}
             className="font-mono"
           >
-            <PhoneOff className="h-4 w-4" />
+            <CallEnd sx={{ fontSize: 16 }} />
             <span className="hidden md:inline">END CALL</span>
             <span className="inline md:hidden">END</span>
           </Button>

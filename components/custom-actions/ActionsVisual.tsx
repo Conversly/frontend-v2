@@ -3,25 +3,25 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
-    Bot,
-    Database,
-    Globe,
-    FileText,
+    SmartToy,
+    Storage,
+    Public,
+    Description,
     CreditCard,
     Mail,
-    Calendar,
+    CalendarMonth,
     ShoppingCart,
-    Zap,
-    ArrowRight,
-    Sparkles,
-} from "lucide-react";
+    Bolt,
+    ArrowForward,
+    AutoAwesome,
+} from "@mui/icons-material";
 
 // Tool types with colors and icons
 const tools = [
     {
         id: "api",
         name: "REST APIs",
-        icon: Globe,
+        icon: Public,
         color: "from-blue-500 to-cyan-500",
         bgColor: "bg-blue-50",
         borderColor: "border-blue-200",
@@ -31,7 +31,7 @@ const tools = [
     {
         id: "database",
         name: "Database",
-        icon: Database,
+        icon: Storage,
         color: "from-emerald-500 to-green-500",
         bgColor: "bg-emerald-50",
         borderColor: "border-emerald-200",
@@ -61,7 +61,7 @@ const tools = [
     {
         id: "calendar",
         name: "Calendar",
-        icon: Calendar,
+        icon: CalendarMonth,
         color: "from-teal-500 to-cyan-500",
         bgColor: "bg-teal-50",
         borderColor: "border-teal-200",
@@ -222,7 +222,7 @@ const ChatbotNode = ({ activeToolIndex }: { activeToolIndex: number }) => {
                     ease: "easeInOut",
                 }}
             >
-                <Bot className="w-9 h-9 text-white" />
+                <SmartToy sx={{ fontSize: 36, color: "white" }} />
 
                 {/* Sparkle animation */}
                 <motion.div
@@ -237,7 +237,7 @@ const ChatbotNode = ({ activeToolIndex }: { activeToolIndex: number }) => {
                         ease: "linear",
                     }}
                 >
-                    <Sparkles className="w-4 h-4 text-yellow-400" />
+                    <AutoAwesome sx={{ fontSize: 16, color: "rgb(250 204 21)" }} />
                 </motion.div>
             </motion.div>
 
@@ -375,7 +375,7 @@ const ActionPopup = ({ tool, visible }: { tool: typeof tools[0]; visible: boolea
                     </div>
                     <span className="text-xs text-slate-500">Fetching data for your conversation</span>
                 </div>
-                <Zap className="w-4 h-4 text-amber-500" />
+                <Bolt sx={{ fontSize: 16, color: "rgb(245 158 11)" }} />
             </div>
         </motion.div>
     );
@@ -417,14 +417,14 @@ export const ActionsVisual = () => {
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute top-4 right-8 text-blue-500/10 z-0"
             >
-                <Globe size={60} />
+                <Public sx={{ fontSize: 60 }} />
             </motion.div>
             <motion.div
                 animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 className="absolute bottom-8 left-4 text-emerald-500/10 z-0"
             >
-                <Database size={50} />
+                <Storage sx={{ fontSize: 50 }} />
             </motion.div>
 
             {/* Main visualization container */}

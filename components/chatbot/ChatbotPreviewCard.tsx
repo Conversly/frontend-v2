@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, Ellipsis, Loader2, Bot, MessageSquare, ArrowRight } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Delete, MoreVert, SmartToy, Message, ArrowForward } from "@mui/icons-material";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -54,7 +55,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
       {isNavigating && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-card/60 backdrop-blur-[2px]">
           <div className="flex items-center gap-2 rounded-md bg-card px-3 py-2 text-xs text-muted-foreground shadow-md border border-border">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <CircularProgress size={16} />
             Opening…
           </div>
         </div>
@@ -90,7 +91,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
               className="h-full w-full object-cover"
             />
           ) : (
-            <Bot className="h-6 w-6" style={{ color: baseColor }} />
+            <SmartToy sx={{ fontSize: 24, color: baseColor }} />
           )}
         </div>
 
@@ -117,7 +118,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
               Conversations
             </p>
             <div className="flex items-center gap-1.5">
-              <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+              <Message sx={{ fontSize: 14, color: "var(--muted-foreground)" }} />
               <p className="text-sm font-medium text-foreground">
                 {chatbot.conversationCount ?? 0}
               </p>
@@ -159,12 +160,12 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
             }}
           >
             Manage
-            <ArrowRight className="h-3.5 w-3.5" />
+            <ArrowForward sx={{ fontSize: 14 }} />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="h-9 w-9 shrink-0">
-                <Ellipsis className="h-4 w-4 text-muted-foreground" />
+                <MoreVert sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -172,7 +173,7 @@ export function ChatbotPreviewCard({ chatbot, onDelete }: ChatbotPreviewCardProp
                 className="text-destructive"
                 onClick={() => onDelete(chatbot.id)}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Delete sx={{ fontSize: 16, mr: 1 }} />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

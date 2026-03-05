@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { sendWhatsAppMessage, getWhatsAppTemplates } from '@/lib/api/whatsapp';
 import type { WhatsAppContactMessageItem } from "@/types/whatsapp";
 
-import { Loader2, Send, FileText, X } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { Send, Description, Close } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -163,7 +164,7 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                     <div className="flex items-center justify-between">
                         <label className="text-xs font-medium text-muted-foreground">Select Template</label>
                         <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setMessageType('text')}>
-                            <X className="w-3 h-3 mr-1" /> Cancel
+                            <Close sx={{ fontSize: 12, mr: 0.5 }} /> Cancel
                         </Button>
                     </div>
                     <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
@@ -211,7 +212,7 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                         onClick={() => setMessageType('template')}
                         title="Use Template"
                     >
-                        <FileText className="w-4 h-4" />
+                        <Description sx={{ fontSize: 16 }} />
                         <span className="sr-only sm:not-sr-only sm:inline-block">Templates</span>
                     </Button>
                 )}
@@ -252,7 +253,7 @@ export const WhatsAppMessageSender: React.FC<WhatsAppMessageSenderProps> = ({
                                 : "bg-muted text-muted-foreground hover:bg-muted"
                         )}
                     >
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
+                        {loading ? <CircularProgress size={16} /> : <Send sx={{ fontSize: 16, ml: 0.5 }} />}
                     </Button>
                 </div>
             </div>

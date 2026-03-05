@@ -6,7 +6,8 @@ import { DataExtractionSection } from './steps/ExtractDataStep';
 import { APIConfigSection } from './steps/APIConfigStep';
 import { TestSection } from './steps/TestAndSaveStep';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, Zap, Database, Globe, Play, Save, Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { ArrowBack, Bolt, Storage, Public, PlayArrow, Save } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -19,10 +20,10 @@ interface Props {
 }
 
 const SECTIONS = [
-    { id: 'trigger', label: 'Trigger', icon: Zap },
-    { id: 'data', label: 'Data', icon: Database },
-    { id: 'api', label: 'API', icon: Globe },
-    { id: 'test', label: 'Test', icon: Play },
+    { id: 'trigger', label: 'Trigger', icon: Bolt },
+    { id: 'data', label: 'Data', icon: Storage },
+    { id: 'api', label: 'API', icon: Public },
+    { id: 'test', label: 'Test', icon: PlayArrow },
 ] as const;
 
 type SectionId = typeof SECTIONS[number]['id'];
@@ -173,7 +174,7 @@ export const SkillWizard: React.FC<Props> = ({
             <div className="flex items-center justify-between mb-6 px-1">
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="icon" onClick={onCancel} className="h-9 w-9">
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowBack sx={{ fontSize: 16 }} />
                     </Button>
                     <div>
                         <h1 className="type-section-title">
@@ -221,12 +222,12 @@ export const SkillWizard: React.FC<Props> = ({
                     >
                         {saving ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <CircularProgress size={16} sx={{ mr: 1 }} />
                                 Saving...
                             </>
                         ) : (
                             <>
-                                <Save className="mr-2 h-4 w-4" />
+                                <Save sx={{ fontSize: 16, mr: 1 }} />
                                 Save Action
                             </>
                         )}

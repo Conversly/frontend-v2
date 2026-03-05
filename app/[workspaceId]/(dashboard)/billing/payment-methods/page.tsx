@@ -4,7 +4,7 @@ import { useWorkspace } from "@/contexts/workspace-context";
 import { AccessGuard } from "@/components/auth/access-guard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Plus } from "lucide-react";
+import { CreditCard, Add } from "@mui/icons-material";
 
 export default function PaymentMethodsPage() {
   const { workspaceName } = useWorkspace();
@@ -28,7 +28,7 @@ export default function PaymentMethodsPage() {
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center">
-                  <CreditCard className="h-5 w-5" />
+                  <CreditCard sx={{ fontSize: 20 }} />
                 </div>
                 <div>
                   <p className="font-medium">Visa ending in 4242</p>
@@ -39,7 +39,7 @@ export default function PaymentMethodsPage() {
             </div>
 
             <Button variant="outline" className="w-full">
-              <Plus className="mr-2 h-4 w-4" />
+              <Add sx={{ fontSize: 16, mr: 1 }} />
               Add Payment Method
             </Button>
           </CardContent>

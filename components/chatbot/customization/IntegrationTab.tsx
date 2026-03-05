@@ -4,18 +4,18 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { CircularProgress } from '@mui/material';
 import {
   Code,
-  Globe,
+  Public,
   Key,
-  Copy,
-  Trash2,
-  Loader2,
-  HelpCircle,
-  ExternalLink,
-  Play,
+  ContentCopy,
+  Delete,
+  Help,
+  OpenInNew,
+  PlayArrow,
   Terminal,
-} from 'lucide-react';
+} from '@mui/icons-material';
 import {
   Tooltip,
   TooltipContent,
@@ -146,7 +146,7 @@ Script:
                   className="h-8 w-8 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm backdrop-blur-sm transition-all duration-200"
                   onClick={handleCopyEmbedCode}
                 >
-                  <Copy className="h-4 w-4" />
+                  <ContentCopy sx={{ fontSize: 16 }} />
                 </Button>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg border border-border/50 min-h-[100px]">
@@ -157,7 +157,7 @@ Script:
             </div>
 
             <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
-              <HelpCircle className="w-4 h-4 text-primary mt-0.5" />
+              <Help sx={{ fontSize: 16, color: "var(--primary)", mt: 0.5 }} />
               <div className="flex-1">
                 <p className="font-sans text-xs text-foreground mb-1 font-medium">
                   Paste this code before the closing &lt;/body&gt; tag on your website.
@@ -181,7 +181,7 @@ Script:
               </video>
             </div>
             <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
-              <Play className="w-4 h-4 text-muted-foreground mt-0.5" />
+              <PlayArrow sx={{ fontSize: 16, color: "var(--muted-foreground)", mt: 0.5 }} />
               <p className="font-sans text-xs text-muted-foreground">
                 Watch this quick tutorial to learn how to integrate the chatbot into your website.
               </p>
@@ -197,7 +197,7 @@ Script:
                   className="h-8 w-8 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm backdrop-blur-sm transition-all duration-200"
                   onClick={handleCopyCursorPrompt}
                 >
-                  <Copy className="h-4 w-4" />
+                  <ContentCopy sx={{ fontSize: 16 }} />
                 </Button>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg border border-border/50 min-h-[100px]">
@@ -208,7 +208,7 @@ Script:
             </div>
 
             <div className="flex items-start gap-2 p-3 bg-muted/50 border border-border/50 rounded-lg">
-              <Terminal className="w-4 h-4 text-primary mt-0.5" />
+              <Terminal sx={{ fontSize: 16, color: "var(--primary)", mt: 0.5 }} />
               <div className="flex-1">
                 <p className="font-sans text-xs text-foreground mb-1 font-medium">
                   Using Cursor or another AI editor?
@@ -233,7 +233,7 @@ Script:
         <div className="space-y-4">
           {isLoadingApiKey ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <CircularProgress size={20} sx={{ color: "var(--muted-foreground)" }} />
             </div>
           ) : apiKey ? (
             <div className="space-y-3">
@@ -248,11 +248,11 @@ Script:
                   onClick={handleCopyApiKey}
                   className="border-border text-foreground hover:bg-muted/50"
                 >
-                  <Copy className="w-4 h-4" />
+                  <ContentCopy sx={{ fontSize: 16 }} />
                 </Button>
               </div>
               <div className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <HelpCircle className="w-4 h-4 text-destructive mt-0.5" />
+                <Help sx={{ fontSize: 16, color: "var(--destructive)", mt: 0.5 }} />
                 <p className="font-sans text-xs text-destructive">
                   Keep this key secret. Do not share it publicly or commit it to version control.
                 </p>
@@ -261,7 +261,7 @@ Script:
           ) : (
             <div className="space-y-3">
               <div className="text-center py-6 text-muted-foreground">
-                <Key className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <Key sx={{ fontSize: 32, mx: "auto", mb: 1, opacity: 0.5 }} />
                 <p className="font-sans text-sm">No API key generated</p>
                 <p className="font-sans text-xs mt-1">Generate a key to start using the API</p>
               </div>
@@ -272,7 +272,7 @@ Script:
               >
                 {isCreatingApiKey ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <CircularProgress size={16} sx={{ mr: 1 }} />
                     Generating...
                   </>
                 ) : (
@@ -290,13 +290,13 @@ Script:
         <SectionHeader
           title="Domain Allowlist"
           description="Restrict widget access to specific domains"
-          icon={Globe}
+          icon={Public}
         />
 
         <div className="space-y-4">
           {isLoadingDomains ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <CircularProgress size={20} sx={{ color: "var(--muted-foreground)" }} />
             </div>
           ) : domains.length > 0 ? (
             <div className="space-y-2">
@@ -306,18 +306,18 @@ Script:
                   className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border/50"
                 >
                   <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-muted-foreground" />
+                    <Public sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                     <span className="font-sans text-sm text-foreground">{domain.domain}</span>
                   </div>
                   <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive/80">
-                    <Trash2 className="w-4 h-4" />
+                    <Delete sx={{ fontSize: 16 }} />
                   </Button>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              <Globe className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <Public sx={{ fontSize: 32, mx: "auto", mb: 1, opacity: 0.5 }} />
               <p className="font-sans text-sm">No domains added yet</p>
               <p className="font-sans text-xs mt-1">Add domains to restrict widget access</p>
             </div>
@@ -338,7 +338,7 @@ Script:
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSavingDomain ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <CircularProgress size={16} />
               ) : (
                 'Add'
               )}
@@ -346,7 +346,7 @@ Script:
           </div>
 
           <div className="flex items-center gap-2 text-muted-foreground">
-            <HelpCircle className="w-4 h-4" />
+            <Help sx={{ fontSize: 16 }} />
             <p className="font-sans text-xs">
               Enter domains without protocol (e.g., example.com, not https://example.com)
             </p>

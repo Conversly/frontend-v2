@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronDown, Lock, Plus } from "lucide-react";
+import { Check, ExpandMore, Lock, Add } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -48,7 +48,7 @@ export function WorkspaceSwitcher() {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
             <span className="truncate">{workspaceCtx.workspaceName}</span>
-            <ChevronDown className="ml-2 h-4 w-4" />
+            <ExpandMore sx={{ fontSize: 16, ml: 1 }} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56">
@@ -59,7 +59,7 @@ export function WorkspaceSwitcher() {
             >
               <span className="flex-1 truncate">{ws.workspaceName}</span>
               {ws.workspaceId === workspaceCtx.workspaceId && (
-                <Check className="h-4 w-4 text-primary" />
+                <Check sx={{ fontSize: 16, color: "var(--primary)" }} />
               )}
             </DropdownMenuItem>
           ))}
@@ -69,9 +69,9 @@ export function WorkspaceSwitcher() {
             className={isAtLimit ? "text-muted-foreground" : undefined}
           >
             {isAtLimit ? (
-              <Lock className="mr-2 h-4 w-4 text-amber-500" />
+              <Lock sx={{ fontSize: 16, mr: 1, color: "rgb(245 158 11)" }} />
             ) : (
-              <Plus className="mr-2 h-4 w-4" />
+              <Add sx={{ fontSize: 16, mr: 1 }} />
             )}
             <span>Create new workspace</span>
             {isAtLimit && (

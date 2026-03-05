@@ -1,7 +1,9 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { X, Minimize2, Maximize2 } from "lucide-react";
+import Close from "@mui/icons-material/Close";
+import Minimize from "@mui/icons-material/Minimize";
+import Fullscreen from "@mui/icons-material/Fullscreen";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -59,7 +61,7 @@ export function VideoModal({ open, onOpenChange, videoSrc = "https://rle3ob7wdla
                             onClick={() => setIsMinimized(false)}
                             title="Maximize"
                         >
-                            <Maximize2 className="h-4 w-4" />
+                            <Fullscreen sx={{ fontSize: 16 }} />
                         </Button>
                         <Button
                             variant="secondary"
@@ -68,7 +70,7 @@ export function VideoModal({ open, onOpenChange, videoSrc = "https://rle3ob7wdla
                             onClick={() => onOpenChange(false)}
                             title="Close"
                         >
-                            <X className="h-4 w-4" />
+                            <Close sx={{ fontSize: 16 }} />
                         </Button>
                     </div>
 
@@ -111,7 +113,7 @@ export function VideoModal({ open, onOpenChange, videoSrc = "https://rle3ob7wdla
                             onClick={() => setIsMinimized(true)}
                             title="Minimize"
                         >
-                            <Minimize2 className="h-4.5 w-4.5" />
+                            <Minimize sx={{ fontSize: 18 }} />
                         </Button>
                         <Button
                             variant="secondary"
@@ -120,7 +122,7 @@ export function VideoModal({ open, onOpenChange, videoSrc = "https://rle3ob7wdla
                             onClick={() => onOpenChange(false)}
                             title="Close"
                         >
-                            <X className="h-4.5 w-4.5" />
+                            <Close sx={{ fontSize: 18 }} />
                         </Button>
                     </div>
 

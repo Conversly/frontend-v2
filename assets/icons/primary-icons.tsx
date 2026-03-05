@@ -1,7 +1,7 @@
-import { LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
 const PrimaryIcons = {
-  Copy: (props: LucideProps) => (
+  Copy: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -15,7 +15,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Share: (props: LucideProps) => (
+  Share: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={14}
@@ -30,7 +30,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Star: (props: LucideProps) => (
+  Star: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={20}
@@ -45,7 +45,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Price: (props: LucideProps) => (
+  Price: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={16}
@@ -60,7 +60,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Box: (props: LucideProps) => (
+  Box: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -75,7 +75,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Ghost: (props: LucideProps) => (
+  Ghost: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={15}
@@ -90,7 +90,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Search: (props: LucideProps) => (
+  Search: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="12"
       height="12"
@@ -107,7 +107,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Gear: (props: LucideProps) => (
+  Gear: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={12}
@@ -129,7 +129,7 @@ const PrimaryIcons = {
       </defs>
     </svg>
   ),
-  StarOutline: (props: LucideProps) => (
+  StarOutline: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -146,7 +146,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  StarFill: (props: LucideProps) => (
+  StarFill: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={24}
@@ -162,7 +162,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Table: (props: LucideProps) => (
+  Table: (props: SVGProps<SVGSVGElement>) => (
     <svg width={16} height={16} viewBox="0 0 16 16" fill="none" {...props}>
       <path
         d="M2.72754 1.92688H7.93555C7.89645 2.0943 7.875 2.26684 7.875 2.44153V13.5587C7.875 13.7334 7.89643 13.9059 7.93555 14.0734H2.72754C2.18745 14.0733 1.75009 13.6359 1.75 13.0958V2.90442C1.75003 2.39793 2.13462 1.98169 2.62793 1.93176L2.72754 1.92688Z"
@@ -175,7 +175,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Config: (props: LucideProps) => (
+  Config: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="16"
@@ -192,7 +192,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Wallet: (props: LucideProps) => (
+  Wallet: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -209,7 +209,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Briefcase: (props: LucideProps) => (
+  Briefcase: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="16"
       height="14"
@@ -224,7 +224,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  AutomationFlow: (props: LucideProps) => (
+  AutomationFlow: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="18"
       height="18"
@@ -239,7 +239,7 @@ const PrimaryIcons = {
       />
     </svg>
   ),
-  Radar: (props: LucideProps) => (
+  Radar: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="18"
       height="18"

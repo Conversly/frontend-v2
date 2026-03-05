@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sun, Moon, Upload as UploadIcon, X } from "lucide-react";
+import { LightMode, DarkMode, Upload, Close } from "@mui/icons-material";
 import { useCustomizationStore } from "@/store/chatbot/customization";
 import { toast } from "sonner";
 import { useRef } from "react";
@@ -82,7 +82,7 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
               size="sm"
               onClick={() => setDraftConfig({ ...draftConfig, appearance: "light" })}
             >
-              <Sun className="mr-2 h-4 w-4" />
+              <LightMode sx={{ fontSize: 16, mr: 1 }} />
               Light
             </Button>
             <Button
@@ -91,7 +91,7 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
               size="sm"
               onClick={() => setDraftConfig({ ...draftConfig, appearance: "dark" })}
             >
-              <Moon className="mr-2 h-4 w-4" />
+              <DarkMode sx={{ fontSize: 16, mr: 1 }} />
               Dark
             </Button>
           </div>
@@ -129,12 +129,12 @@ export function Step4UIConfig({ onSubmit }: Step4UIConfigProps) {
                   onClick={() => setDraftConfig({ ...draftConfig, PrimaryIcon: '' })}
                   className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <X className="h-3 w-3" />
+                  <Close sx={{ fontSize: 12 }} />
                 </button>
               </div>
             ) : (
               <div className="h-16 w-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/30">
-                <UploadIcon className="h-6 w-6 text-muted-foreground/50" />
+                <Upload sx={{ fontSize: 24, color: "var(--muted-foreground)", opacity: 0.5 }} />
               </div>
             )}
             <div className="flex flex-col gap-2">

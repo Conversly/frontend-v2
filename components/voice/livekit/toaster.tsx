@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { Toaster as Sonner, ToasterProps } from 'sonner';
-import { AlertTriangle } from 'lucide-react';
+import { Warning } from '@mui/icons-material';
 
 export function Toaster({ ...props }: ToasterProps) {
   const { theme = 'system' } = useTheme();
@@ -13,7 +13,7 @@ export function Toaster({ ...props }: ToasterProps) {
       className="toaster group"
       position="top-center"
       icons={{
-        warning: <AlertTriangle className="h-4 w-4" />,
+        warning: <Warning sx={{ fontSize: 16 }} />,
       }}
       style={
         {

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from "framer-motion";
-import { Cpu, Globe, Bot, Zap } from "lucide-react";
+import { Memory, Public, SmartToy, Bolt } from "@mui/icons-material";
 
 interface AboutClientAnimationsProps {
     children: React.ReactNode;
@@ -45,10 +45,10 @@ export function AnimatedHero() {
 
 export function AnimatedFeatureCards() {
     const features = [
-        { icon: Cpu, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30", title: "LLM Native", delay: 0.2 },
-        { icon: Globe, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30", title: "Multi-Channel", delay: 0.3, className: "mt-12" },
-        { icon: Bot, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30", title: "Agentic AI", delay: 0.4 },
-        { icon: Zap, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-900/30", title: "Real-time", delay: 0.5, className: "mt-12" }
+        { icon: Memory, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30", title: "LLM Native", delay: 0.2 },
+        { icon: Public, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30", title: "Multi-Channel", delay: 0.3, className: "mt-12" },
+        { icon: SmartToy, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30", title: "Agentic AI", delay: 0.4 },
+        { icon: Bolt, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-900/30", title: "Real-time", delay: 0.5, className: "mt-12" }
     ];
 
     return (
@@ -63,7 +63,7 @@ export function AnimatedFeatureCards() {
                     className={`col-span-1 bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1 ${item.className || ''}`}
                 >
                     <div className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center ${item.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                        <item.icon className="w-7 h-7" />
+                        <item.icon sx={{ fontSize: 28 }} />
                     </div>
                     <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{item.title}</h3>
                 </motion.div>

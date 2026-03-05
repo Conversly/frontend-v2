@@ -2,7 +2,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Linkedin, Mail, Phone, Calendar } from "lucide-react"
+import { Work, Mail, CalendarMonth } from "@mui/icons-material"
 import { Button } from "@/components/ui/button"
 
 const teamContacts = [
@@ -30,7 +30,7 @@ const legalLinks = [
 
 const socialLinks = [
   { name: "X", icon: XIcon, href: "https://x.com/VerlyAI" },
-  { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/verlyai/" },
+  { name: "LinkedIn", icon: Work, href: "https://www.linkedin.com/company/verlyai/" },
 ]
 
 function XIcon({ className }: { className?: string }) {
@@ -94,7 +94,7 @@ export default function Footer() {
                     }
                   }}
                 >
-                  <Calendar className="w-5 h-5" />
+                  <CalendarMonth sx={{ fontSize: 20 }} />
                   Schedule a meet
                 </button>
               </Button>
@@ -125,7 +125,7 @@ export default function Footer() {
                       href={`mailto:${contact.email}`}
                       className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors mb-2 break-all"
                     >
-                      <Mail className="w-4 h-4" />
+                      <Mail sx={{ fontSize: 16 }} />
                       {contact.email}
                     </a>
 
@@ -148,7 +148,7 @@ export default function Footer() {
                           rel="noopener noreferrer"
                           className="text-white/40 hover:text-white transition-colors"
                         >
-                          <Linkedin className="w-4 h-4" />
+                          <Work sx={{ fontSize: 16 }} />
                         </a>
                       )}
                     </div>
@@ -160,7 +160,7 @@ export default function Footer() {
                     href="mailto:team@verlyai.xyz"
                     className="text-white/50 hover:text-white text-sm flex items-center gap-2 transition-colors"
                   >
-                    <Mail className="w-4 h-4" />
+                    <Mail sx={{ fontSize: 16 }} />
                     team@verlyai.xyz
                   </a>
                 </div>

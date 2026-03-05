@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Loader2 } from 'lucide-react';
+import { Send } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import { Button } from '@/components/voice/livekit/button';
 
 const MOTION_PROPS = {
@@ -90,9 +91,9 @@ export function ChatInput({
           className="self-start"
         >
           {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <CircularProgress size={16} />
           ) : (
-            <Send className="h-4 w-4" />
+            <Send sx={{ fontSize: 16 }} />
           )}
         </Button>
       </form>

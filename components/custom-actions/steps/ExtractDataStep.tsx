@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Trash2, Plus, Sparkles, Database } from 'lucide-react';
+import { Delete, Add, AutoAwesome, Storage } from '@mui/icons-material';
 
 interface Props {
     formData: CustomAction;
@@ -107,7 +107,7 @@ export const DataExtractionSection: React.FC<Props> = ({
         <div className="space-y-4">
             <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Database className="h-4 w-4 text-primary" />
+                    <Storage sx={{ fontSize: 16 }} className="text-primary" />
                 </div>
                 <div>
                     <h3 className="text-sm font-semibold">Data Extraction</h3>
@@ -122,7 +122,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                 {missingVariables.length > 0 && (
                     <div className="flex items-center justify-between p-2.5 rounded-md border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20 border text-xs">
                         <div className="flex items-center gap-2">
-                            <Sparkles className="h-3.5 w-3.5 text-green-600 dark:text-green-400 flex-shrink-0" />
+                            <AutoAwesome sx={{ fontSize: 14, color: "rgb(22 163 74)", flexShrink: 0 }} />
                             <span className="text-green-800 dark:text-green-200">
                                 {missingVariables.length} variable{missingVariables.length !== 1 ? 's' : ''} detected: {missingVariables.map(v => `{{${v}}}`).join(', ')}
                             </span>
@@ -133,7 +133,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                             onClick={addMissingVariables}
                             className="h-7 text-xs border-green-300 text-green-700 hover:bg-green-100 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900"
                         >
-                            <Plus className="h-3 w-3 mr-1" />
+                            <Add sx={{ fontSize: 12, mr: 0.5 }} />
                             Add
                         </Button>
                     </div>
@@ -196,7 +196,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                                 className="h-7 w-7 text-muted-foreground hover:text-destructive"
                                 onClick={() => removeParameter(index)}
                             >
-                                <Trash2 className="h-3.5 w-3.5" />
+                                <Delete sx={{ fontSize: 14 }} />
                             </Button>
                         </div>
                     ))}
@@ -209,7 +209,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                     onClick={addParameter}
                     className="border-dashed text-xs h-8"
                 >
-                    <Plus className="h-3.5 w-3.5 mr-1" />
+                    <Add sx={{ fontSize: 14, mr: 0.5 }} />
                     Add Variable
                 </Button>
 

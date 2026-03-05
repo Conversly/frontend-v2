@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Bot, Loader2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { ArrowBack, SmartToy } from "@mui/icons-material";
 import Link from "next/link";
 import { useCreateChatbot } from "@/services/chatbot";
 import { useUpsertChannelPrompt } from "@/services/prompt";
@@ -87,7 +88,7 @@ export default function CreateChatbotPage() {
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-primary/10 rounded-lg">
-                <Bot className="h-6 w-6 text-primary" />
+                <SmartToy sx={{ fontSize: 24, color: "var(--primary)" }} />
               </div>
               <CardTitle className="text-xl">Create New Chatbot</CardTitle>
             </div>
@@ -185,12 +186,12 @@ export default function CreateChatbotPage() {
                 <Button type="submit" disabled={isCreating} className="min-w-32">
                   {isCreating ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <CircularProgress size={16} sx={{ mr: 1 }} />
                       Creating...
                     </>
                   ) : (
                     <>
-                      <Bot className="mr-2 h-4 w-4" />
+                      <SmartToy sx={{ fontSize: 16, mr: 1 }} />
                       Create Chatbot
                     </>
                   )}

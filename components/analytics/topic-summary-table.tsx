@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquare } from "lucide-react";
+import { Message } from "@mui/icons-material";
 
 interface TopicData {
   name: string;
@@ -21,7 +21,7 @@ export function TopicSummaryTable({ topics, isLoading }: TopicSummaryTableProps)
   return (
     <Card className="p-4">
       <div className="flex items-center mb-3">
-        <MessageSquare className="h-4 w-4 mr-2" />
+        <Message sx={{ fontSize: 16, mr: 1 }} />
         <h3 className="text-base font-semibold">Topic Summary</h3>
       </div>
       {isLoading ? (

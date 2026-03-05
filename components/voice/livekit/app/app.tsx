@@ -8,7 +8,7 @@ import { ViewController } from '@/components/voice/livekit/app/view-controller';
 import { Toaster } from '@/components/voice/livekit/toaster';
 import { useAgentErrors } from '@/hooks/useAgentErrors';
 import { useDebugMode } from '@/hooks/useDebug';
-import { Phone, Mic } from 'lucide-react';
+import { Phone, Mic } from '@mui/icons-material';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PhoneCallInput } from './phone-call-input';
 import { useGenerateVoiceToken } from '@/services/voice';
@@ -55,11 +55,11 @@ function StartCallScreen({
         <Tabs defaultValue="voice" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="voice" className="flex items-center gap-2">
-              <Mic className="h-4 w-4" />
+              <Mic sx={{ fontSize: 16 }} />
               Browser Call
             </TabsTrigger>
             <TabsTrigger value="phone" className="flex items-center gap-2">
-              <Phone className="h-4 w-4" />
+              <Phone sx={{ fontSize: 16 }} />
               Phone Call
             </TabsTrigger>
           </TabsList>

@@ -1,6 +1,6 @@
-import { LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
-const FileList = (props: LucideProps) => (
+const FileList = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={16}
     height={16}

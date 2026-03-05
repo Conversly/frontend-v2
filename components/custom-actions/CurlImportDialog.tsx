@@ -21,7 +21,7 @@ import {
     headersToRecord
 } from '@/utils/curlParser';
 import { ApiConfig } from '@/types/customActions';
-import { Terminal, AlertTriangle, Check, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Code, Warning, Check, Close, ExpandMore, ExpandLess } from '@mui/icons-material';
 
 interface Props {
     onImport: (config: Partial<ApiConfig>, classifiedHeaders: ClassifiedHeader[]) => void;
@@ -110,7 +110,7 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
                     trigger
                 ) : (
                     <Button variant="outline" className="gap-2">
-                        <Terminal className="h-4 w-4" />
+                        <Code sx={{ fontSize: 16 }} />
                         Import from cURL
                     </Button>
                 )}
@@ -168,7 +168,7 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
                                     {essentialHeaders.length > 0 && (
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                <Check className="h-3 w-3 text-green-500" />
+                                                <Check sx={{ fontSize: 12, color: "rgb(34 197 94)" }} />
                                                 Essential ({essentialHeaders.length})
                                             </div>
                                             {essentialHeaders.map(h => (
@@ -186,7 +186,7 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
                                     {optionalHeaders.length > 0 && (
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                <AlertTriangle className="h-3 w-3 text-yellow-500" />
+                                                <Warning sx={{ fontSize: 12, color: "rgb(234 179 8)" }} />
                                                 Optional ({optionalHeaders.length})
                                             </div>
                                             {optionalHeaders.map(h => (
@@ -208,12 +208,12 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
                                                 onClick={() => setShowBrowserHeaders(!showBrowserHeaders)}
                                                 className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full"
                                             >
-                                                <X className="h-3 w-3 text-red-400" />
+                                                <Close sx={{ fontSize: 12, color: "rgb(248 113 113)" }} />
                                                 <span>Browser headers ({browserHeaders.length}) - typically not needed</span>
                                                 {showBrowserHeaders ? (
-                                                    <ChevronUp className="h-3 w-3 ml-auto" />
+                                                    <ExpandLess sx={{ fontSize: 12, ml: "auto" }} />
                                                 ) : (
-                                                    <ChevronDown className="h-3 w-3 ml-auto" />
+                                                    <ExpandMore sx={{ fontSize: 12, ml: "auto" }} />
                                                 )}
                                             </button>
                                             {showBrowserHeaders && (

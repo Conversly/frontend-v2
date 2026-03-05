@@ -42,17 +42,17 @@ import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/a
 
 import {
   Search,
-  MessageCircle,
-  MessageSquare,
+  Chat,
+  Message,
   Mail,
-  Globe,
-  Hash,
+  Public,
+  Tag,
   Check,
   Info,
-  Copy,
-  X,
+  ContentCopy,
+  Close,
   Send,
-} from "lucide-react";
+} from "@mui/icons-material";
 import { toast } from "sonner";
 
 function shortId(id: string) {
@@ -76,15 +76,15 @@ function getChannelIcon(channel?: string) {
   const c = (channel || "").toUpperCase();
   switch (c) {
     case "WHATSAPP":
-      return <MessageSquare className="h-3.5 w-3.5 text-green-600" />;
+      return <Message sx={{ fontSize: 14, color: "rgb(22 163 74)" }} />;
     case "WIDGET":
-      return <MessageCircle className="h-3.5 w-3.5 text-blue-600" />;
+      return <Chat sx={{ fontSize: 14, color: "rgb(37 99 235)" }} />;
     case "SMS":
-      return <Hash className="h-3.5 w-3.5 text-purple-600" />;
+      return <Tag sx={{ fontSize: 14, color: "rgb(147 51 234)" }} />;
     case "EMAIL":
       return <Mail className="h-3.5 w-3.5 text-orange-600" />;
     default:
-      return <Globe className="h-3.5 w-3.5 text-muted-foreground" />;
+      return <Public sx={{ fontSize: 14, color: "var(--muted-foreground)" }} />;
   }
 }
 
@@ -766,7 +766,7 @@ export default function InboxPage() {
                           }}
                           aria-label="Copy conversation id"
                         >
-                          <Copy className="h-4 w-4" />
+                          <ContentCopy sx={{ fontSize: 16 }} />
                         </Button>
                         {canClaim && (
                           <Button
@@ -851,7 +851,7 @@ export default function InboxPage() {
                       onClick={() => closeConversationTab(activeConversationId)}
                       aria-label="Close tab"
                     >
-                      <X className="h-4 w-4" />
+                      <Close sx={{ fontSize: 16 }} />
                     </Button>
                   </>
                 )}
@@ -894,7 +894,7 @@ export default function InboxPage() {
                           closeConversationTab(id);
                         }}
                       >
-                        <X className="h-3.5 w-3.5" />
+                        <Close sx={{ fontSize: 14 }} />
                       </span>
                     </button>
                   );
@@ -980,7 +980,7 @@ export default function InboxPage() {
                     aria-label="Close info"
                     onClick={() => setInfoOpen(false)}
                   >
-                    <X className="h-4 w-4" />
+                    <Close sx={{ fontSize: 16 }} />
                   </Button>
                 </div>
 
@@ -1000,7 +1000,7 @@ export default function InboxPage() {
                               aria-label="Copy conversation id"
                               onClick={() => copyText(activeConversationId)}
                             >
-                              <Copy className="h-4 w-4" />
+                              <ContentCopy sx={{ fontSize: 16 }} />
                             </Button>
                           </div>
                         </div>
@@ -1016,7 +1016,7 @@ export default function InboxPage() {
                                 aria-label="Copy escalation id"
                                 onClick={() => copyText(activeEscalationId)}
                               >
-                                <Copy className="h-4 w-4" />
+                                <ContentCopy sx={{ fontSize: 16 }} />
                               </Button>
                             </div>
                           </div>

@@ -1,7 +1,8 @@
 import 'client-only';
 
 import { useState } from 'react';
-import { Globe, FileText, MessageSquare, X, ArrowRight, Loader2, Database } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { Public, Description, Message, Close, ArrowForward, Storage } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { usePendingSources, useDataSourcesStore, useIsLoading } from '@/store/chatbot/data-sources';
 import { useProcessDataSource } from '@/services/datasource';
@@ -19,13 +20,13 @@ interface PendingSourcesPanelProps {
 const getSourceIcon = (type: string) => {
   switch (type) {
     case 'Website':
-      return Globe;
+      return Public;
     case 'Document':
-      return FileText;
+      return Description;
     case 'QandA':
-      return MessageSquare;
+      return Message;
     default:
-      return FileText;
+      return Description;
   }
 };
 
@@ -122,7 +123,7 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
       return (
         <div className="flex flex-col flex-1 items-center justify-center bg-transparent w-full text-center text-muted-foreground py-8">
           <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-3">
-            <Database className="w-5 h-5 opacity-50" />
+            <Storage sx={{ fontSize: 20, opacity: 0.5 }} />
           </div>
           <p className="text-xs font-medium text-foreground">No pending sources</p>
         </div>
@@ -175,7 +176,7 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
                   onClick={() => removePendingSource(source.id)}
                   className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                 >
-                  <X className="w-3 h-3" />
+                  <Close sx={{ fontSize: 12 }} />
                 </Button>
               </motion.div>
             );
@@ -206,13 +207,13 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <CircularProgress size={16} sx={{ mr: 1 }} />
               Processing...
             </>
           ) : (
             <>
               Process All Sources
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowForward sx={{ fontSize: 16, ml: 1 }} className="group-hover:translate-x-1 transition-transform" />
             </>
           )}
         </Button>
@@ -244,7 +245,7 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
                 variant="default"
                 className="w-full gap-2 justify-start px-4 h-11"
               >
-                <Database className="w-4 h-4" />
+                <Storage sx={{ fontSize: 16 }} />
                 <span className="flex-1 text-left">Pending Sources</span>
                 <span className="bg-primary-foreground/20 text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                   {pendingSources.length}

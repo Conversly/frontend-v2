@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { IntegrationSidebar } from '@/components/chatbot/integration';
 import { getIntegrationSidebarItems } from '@/lib/constants/integrations';
-import { Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
 
 export default function WhatsAppIntegrationPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string; id: string }>();
@@ -35,7 +35,7 @@ export default function WhatsAppIntegrationPage() {
         basePath={basePath}
       />
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <CircularProgress size={32} />
       </div>
     </div>
   );

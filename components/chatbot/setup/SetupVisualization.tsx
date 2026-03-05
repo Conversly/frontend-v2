@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Check, Loader2, Globe, Palette, Link as LinkIcon, Wand2 } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Check, Public, Palette, Link, AutoAwesome } from "@mui/icons-material";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -109,7 +110,7 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
                                 {stage === "idle" ? (
                                     <div className="p-6">
                                         <div className="flex items-center gap-2 rounded-lg border border-border bg-[--surface-secondary] px-3 py-2">
-                                            <Globe className="h-4 w-4 text-muted-foreground" />
+                                            <Public sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                                             <span className="text-sm text-muted-foreground truncate">
                                                 {url || "https://your-website.com"}
                                             </span>
@@ -118,22 +119,22 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
                                 ) : (
                                     <div className="p-6 space-y-4">
                                         <StatusItem
-                                            icon={<Globe className="h-4 w-4" />}
+                                            icon={<Public sx={{ fontSize: 16 }} />}
                                             label="Fetching links"
                                             status={getStepStatus("crawl", stage)}
                                         />
                                         <StatusItem
-                                            icon={<Palette className="h-4 w-4" />}
+                                            icon={<Palette sx={{ fontSize: 16 }} />}
                                             label="Fetching brand color"
                                             status={getStepStatus("logo", stage)}
                                         />
                                         <StatusItem
-                                            icon={<LinkIcon className="h-4 w-4" />}
+                                            icon={<Link sx={{ fontSize: 16 }} />}
                                             label="Fetching logo"
                                             status={getStepStatus("topics", stage)}
                                         />
                                         <StatusItem
-                                            icon={<Wand2 className="h-4 w-4" />}
+                                            icon={<AutoAwesome sx={{ fontSize: 16 }} />}
                                             label="Adjusting prompt"
                                             status={getStepStatus("tuning", stage)}
                                         />
@@ -169,8 +170,8 @@ function StatusItem({ icon, label, status }: { icon: React.ReactNode, label: str
                 </span>
             </div>
             <div>
-                {status === "completed" && <Check className="h-4 w-4 text-green-500" />}
-                {status === "active" && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
+                {status === "completed" && <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} />}
+                {status === "active" && <CircularProgress size={16} sx={{ color: "rgb(59 130 246)" }} />}
             </div>
         </div>
     )

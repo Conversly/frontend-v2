@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { toast as sonnerToast } from 'sonner';
-import { AlertTriangle } from 'lucide-react';
+import { Warning } from '@mui/icons-material';
 import { Alert, AlertDescription, AlertTitle } from '@/components/voice/livekit/alert';
 
 interface ToastProps {
@@ -23,7 +23,7 @@ export function AlertToast(props: ToastProps) {
 
   return (
     <Alert onClick={() => sonnerToast.dismiss(id)} className="bg-accent w-full md:w-[364px]">
-      <AlertTriangle className="h-4 w-4" />
+      <Warning sx={{ fontSize: 16 }} />
       <AlertTitle>{title}</AlertTitle>
       {description && <AlertDescription>{description}</AlertDescription>}
     </Alert>

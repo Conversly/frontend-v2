@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Plus } from "lucide-react";
+import { Add } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { toast } from "sonner";
 
 interface ImportNumberDialogProps {
@@ -64,7 +65,7 @@ export function ImportNumberDialog({ botId }: ImportNumberDialogProps) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <Plus className="mr-2 h-4 w-4" />
+                    <Add sx={{ fontSize: 16 }} className="mr-2" />
                     Import Twilio Number
                 </Button>
             </DialogTrigger>
@@ -120,7 +121,7 @@ export function ImportNumberDialog({ botId }: ImportNumberDialogProps) {
                         Cancel
                     </Button>
                     <Button onClick={handleImport} disabled={importNumber.isPending}>
-                        {importNumber.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {importNumber.isPending && <CircularProgress size={16} className="mr-2" />}
                         Import Number
                     </Button>
                 </DialogFooter>

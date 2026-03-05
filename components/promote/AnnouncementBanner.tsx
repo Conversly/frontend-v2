@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, ArrowRight, Timer } from "lucide-react";
+import { Close, ArrowForward, Timer } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -76,7 +76,7 @@ export function AnnouncementBanner({
 
             {countdownTarget && timeLeft && (
                 <div className="relative z-10 flex items-center gap-1.5 bg-white/10 px-2.5 py-0.5 rounded-full font-mono text-xs font-bold tracking-wide border border-white/10 shadow-sm">
-                    <Timer className="w-3.5 h-3.5 opacity-80" />
+                    <Timer sx={{ fontSize: 14 }} className="opacity-80" />
                     {timeLeft}
                 </div>
             )}
@@ -91,7 +91,7 @@ export function AnnouncementBanner({
                     <span className="underline decoration-white/30 underline-offset-4 group-hover:decoration-white/80 transition-all">
                         Check it out
                     </span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowForward sx={{ fontSize: 14 }} className="ml-1.5 transition-transform group-hover:translate-x-0.5" />
                 </a>
             )}
 
@@ -102,7 +102,7 @@ export function AnnouncementBanner({
                 style={{ color: textColor || '#ffffff' }}
                 onClick={() => setIsVisible(false)}
             >
-                <X className="w-3.5 h-3.5" />
+                <Close sx={{ fontSize: 14 }} />
             </Button>
         </div>
     );

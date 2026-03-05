@@ -1,7 +1,7 @@
-import { LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
 const Flags = {
-  China: (props: LucideProps) => (
+  China: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={36}
@@ -19,7 +19,7 @@ const Flags = {
       />
     </svg>
   ),
-  Australia: (props: LucideProps) => (
+  Australia: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={36}

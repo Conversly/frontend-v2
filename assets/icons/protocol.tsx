@@ -1,7 +1,7 @@
-import { type LucideProps } from "lucide-react";
+import type { SVGProps } from "react";
 
 const ProtocolIcons = {
-  PumpFun: (props: LucideProps) => (
+  PumpFun: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -60,7 +60,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  PumpFunAMM: (props: LucideProps) => (
+  PumpFunAMM: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -175,7 +175,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  PumpFunAMMGraduated: (props: LucideProps) => (
+  PumpFunAMMGraduated: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -290,7 +290,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  RaydiumAMM: (props: LucideProps) => (
+  RaydiumAMM: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -371,7 +371,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  RaydiumAMMGraduated: (props: LucideProps) => (
+  RaydiumAMMGraduated: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -445,7 +445,7 @@ const ProtocolIcons = {
     </svg>
   ),
   Launchlab: (
-    props: LucideProps & { primaryColor: string; secondaryColor: string },
+    props: SVGProps<SVGSVGElement> & { primaryColor: string; secondaryColor: string },
   ) => (
     <svg
       width="14"
@@ -488,7 +488,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  Moonshot: (props: LucideProps) => (
+  Moonshot: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -515,7 +515,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  Bonk: (props: LucideProps) => (
+  Bonk: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"
@@ -607,7 +607,7 @@ const ProtocolIcons = {
       </defs>
     </svg>
   ),
-  BonkGraduated: (props: LucideProps) => (
+  BonkGraduated: (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="14"
       height="14"

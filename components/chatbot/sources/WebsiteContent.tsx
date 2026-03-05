@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Globe, ChevronDown, ChevronUp, Info, Loader2, CheckSquare, Square } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { Public, ExpandMore, ExpandLess, Info, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -164,14 +165,14 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
               />
             </div>
             <div className="flex items-start gap-2 text-xs text-muted-foreground">
-              <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
+              <Info sx={{ fontSize: 12, mt: 0.5, flexShrink: 0 }} />
               <span className="type-caption">Links found during crawling or sitemap retrieval may be updated if new links are discovered or some links are invalid.</span>
             </div>
           </div>
 
           <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
             <CollapsibleTrigger className="flex items-center gap-2 type-body-muted hover:text-foreground transition-colors">
-              {isAdvancedOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {isAdvancedOpen ? <ExpandLess sx={{ fontSize: 16 }} /> : <ExpandMore sx={{ fontSize: 16 }} />}
               Advanced options
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-4 space-y-4">
@@ -188,7 +189,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
           >
             {isFetching ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <CircularProgress size={16} sx={{ mr: 1 }} />
                 Fetching...
               </>
             ) : (
@@ -211,12 +212,12 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
                 >
                   {selectedPages.size === fetchedPages.length ? (
                     <>
-                      <CheckSquare className="w-3.5 h-3.5 mr-1" />
+                      <CheckBox sx={{ fontSize: 14, mr: 0.5 }} />
                       Deselect all
                     </>
                   ) : (
                     <>
-                      <Square className="w-3.5 h-3.5 mr-1" />
+                      <CheckBoxOutlineBlank sx={{ fontSize: 14, mr: 0.5 }} />
                       Select all
                     </>
                   )}
@@ -260,7 +261,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
 
         <TabsContent value="sitemap" className="space-y-4">
           <div className="p-8 text-center bg-muted/50 rounded-lg">
-            <Globe className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+            <Public sx={{ fontSize: 48, mx: "auto", mb: 1.5, color: "var(--muted-foreground)" }} />
             <p className="text-sm text-muted-foreground">Sitemap support coming soon</p>
           </div>
         </TabsContent>

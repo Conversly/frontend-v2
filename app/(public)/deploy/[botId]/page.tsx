@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ArrowRight, MessageSquare, Mail, Phone, Globe, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Search, ArrowForward, Message, Mail, Phone, Public, Share, Work, PhotoCamera } from "@mui/icons-material";
 import { getChatbotPublic } from "@/lib/api/chatbot";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { UIConfigInput } from "@/types/customization";
@@ -151,13 +151,13 @@ export default function HelpPage() {
                     <div className="relative max-w-xl mx-auto w-full group">
                         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative flex items-center bg-white dark:bg-zinc-900 border rounded-full px-6 py-4 shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-black/5 dark:ring-white/10">
-                            <Search className="w-5 h-5 text-muted-foreground mr-4" />
+                            <Search sx={{ fontSize: 20, color: "var(--muted-foreground)", mr: 1.5 }} />
                             <input
                                 className="flex-1 bg-transparent border-none outline-none text-base placeholder:text-muted-foreground"
                                 placeholder="Search for articles, guides, and help..."
                             />
                             <Button size="sm" className="rounded-full h-10 w-10 p-0 ml-2 shadow-sm" style={{ backgroundColor: pageConfig.theme.primaryColor }}>
-                                <ArrowRight className="w-5 h-5 text-white" />
+                                <ArrowForward sx={{ fontSize: 20, color: "white" }} />
                             </Button>
                         </div>
                     </div>
@@ -169,7 +169,7 @@ export default function HelpPage() {
                         <Card className="hover:border-primary/50 transition-all duration-300 group cursor-pointer border-dashed border-2 hover:shadow-lg bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
                             <CardContent className="p-8 flex flex-col items-center text-center space-y-6">
                                 <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                                    <MessageSquare className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                                    <Message sx={{ fontSize: 32, color: "rgb(37 99 235)" }} />
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="font-bold text-xl">AI Assistant</h3>
@@ -192,7 +192,7 @@ export default function HelpPage() {
                         <Card className="hover:border-primary/50 transition-all duration-300 group cursor-pointer hover:shadow-lg bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
                             <CardContent className="p-8 flex flex-col items-center text-center space-y-6">
                                 <div className="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                                    <Mail className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                                    <Mail sx={{ fontSize: 32, color: "rgb(147 51 234)" }} />
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="font-bold text-xl">Email Configuration</h3>
@@ -215,7 +215,7 @@ export default function HelpPage() {
                         <Card className="hover:border-primary/50 transition-all duration-300 group cursor-pointer hover:shadow-lg bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
                             <CardContent className="p-8 flex flex-col items-center text-center space-y-6">
                                 <div className="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                                    <Phone className="w-8 h-8 text-green-600 dark:text-green-400" />
+                                    <Phone sx={{ fontSize: 32, color: "rgb(22 163 74)" }} />
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="font-bold text-xl">Voice Agent</h3>
@@ -242,22 +242,22 @@ export default function HelpPage() {
                         <div className="flex items-center gap-6">
                             {socials.website && (
                                 <a href={socials.website} target="_blank" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-full">
-                                    <Globe className="w-5 h-5" />
+                                    <Public sx={{ fontSize: 20 }} />
                                 </a>
                             )}
                             {socials.twitter && (
                                 <a href={`https://twitter.com/${socials.twitter.replace('@', '')}`} target="_blank" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-full">
-                                    <Twitter className="w-5 h-5" />
+                                    <Share sx={{ fontSize: 20 }} />
                                 </a>
                             )}
                             {socials.linkedin && (
                                 <a href={socials.linkedin} target="_blank" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-full">
-                                    <Linkedin className="w-5 h-5" />
+                                    <Work sx={{ fontSize: 20 }} />
                                 </a>
                             )}
                             {socials.instagram && (
                                 <a href={`https://instagram.com/${socials.instagram.replace('@', '')}`} target="_blank" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-full">
-                                    <Instagram className="w-5 h-5" />
+                                    <PhotoCamera sx={{ fontSize: 20 }} />
                                 </a>
                             )}
                         </div>

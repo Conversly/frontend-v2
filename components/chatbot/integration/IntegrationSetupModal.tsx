@@ -9,13 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
-  CheckCircle2, 
-  Copy, 
-  ExternalLink, 
-  ChevronDown,
+  CheckCircle, 
+  ContentCopy, 
+  OpenInNew, 
+  ExpandMore,
   Info,
-  HelpCircle,
-} from 'lucide-react';
+  Help,
+} from '@mui/icons-material';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import {
@@ -186,7 +186,7 @@ export function IntegrationSetupModal({
                           )}
                         >
                           {completedSteps.includes(step.id) ? (
-                            <CheckCircle2 className="w-5 h-5" />
+                            <CheckCircle sx={{ fontSize: 20 }} />
                           ) : (
                             <span className="text-sm font-bold">{step.id}</span>
                           )}
@@ -203,7 +203,7 @@ export function IntegrationSetupModal({
                               )}>
                                 {step.title}
                               </h4>
-                              <ChevronDown className={cn(
+                              <ExpandMore className={cn(
                                 "w-4 h-4 transition-transform",
                                 expandedSteps.includes(step.id) && "rotate-180"
                               )} />
@@ -219,7 +219,7 @@ export function IntegrationSetupModal({
                               {step.tip && (
                                 <div className="bg-muted/50 rounded-lg p-3 text-xs">
                                   <p className="font-medium mb-1 flex items-center gap-1">
-                                    <Info className="w-3 h-3" />
+                                    <Info sx={{ fontSize: 12 }} />
                                     Quick tip:
                                   </p>
                                   <p className="text-muted-foreground">{step.tip}</p>
@@ -234,7 +234,7 @@ export function IntegrationSetupModal({
                                   className="inline-flex items-center gap-1 text-xs text-blue-500 hover:underline"
                                 >
                                   {step.externalLink.label}
-                                  <ExternalLink className="w-3 h-3" />
+                                  <OpenInNew sx={{ fontSize: 12 }} />
                                 </a>
                               )}
                             </div>
@@ -345,7 +345,7 @@ function CredentialFieldInput({ field, value, onChange, onCopy }: CredentialFiel
         {field.helpText && (
           <Tooltip>
             <TooltipTrigger>
-              <HelpCircle className="w-4 h-4 text-muted-foreground" />
+              <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
               <p>{field.helpText}</p>
@@ -367,7 +367,7 @@ function CredentialFieldInput({ field, value, onChange, onCopy }: CredentialFiel
             size="icon"
             onClick={() => onCopy(value)}
           >
-            <Copy className="w-4 h-4" />
+            <ContentCopy sx={{ fontSize: 16 }} />
           </Button>
         </div>
       ) : (

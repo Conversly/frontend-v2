@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { type Plan } from "@/lib/billingsdk-config";
 import { cn } from "@/lib/utils";
-import { X, Circle } from "lucide-react";
+import { Close, RadioButtonUnchecked } from "@mui/icons-material";
 import { useThemeStyles } from "@/lib/theme/hooks";
 
 export interface CancelSubscriptionDialogProps {
@@ -156,7 +156,7 @@ export function CancelSubscriptionDialog({
           className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none"
           onClick={handleDialogClose}
         >
-          <X className="h-4 w-4" />
+          <Close sx={{ fontSize: 16 }} />
           <span className="sr-only">Close</span>
         </DialogClose>
         {leftPanelImageUrl && (
@@ -210,7 +210,7 @@ export function CancelSubscriptionDialog({
               <div className="flex flex-col gap-2">
                 {plan.features.slice(0, 4).map((feature, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <Circle className="fill-primary text-primary h-2 w-2" />
+                    <RadioButtonUnchecked sx={{ fill: "var(--primary)", color: "var(--primary)", fontSize: 8 }} />
                     <span className="text-muted-foreground text-sm">
                       {feature.name}
                     </span>

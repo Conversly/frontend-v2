@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Sparkles, History, MousePointer2, Reply } from 'lucide-react';
+import { AutoAwesome, History, TouchApp, Reply } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
 import { useGenerateTemplates } from "@/services/template";
@@ -75,7 +75,7 @@ export function AIGenerator({ onGenerate, category, language }: AIGeneratorProps
     return (
         <div className="bg-white p-4 rounded-lg border border-dashed border-gray-300 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-[#0a474c]">
-                <Sparkles className="w-5 h-5 fill-[#0a474c]" />
+                <AutoAwesome sx={{ fontSize: 20 }} className="fill-[#0a474c]" />
                 <div>
                     <h3 className="font-medium text-lg text-gray-900">Generate with AI</h3>
                     <p className="text-xs text-gray-500">Create customized variations with AI</p>
@@ -87,7 +87,7 @@ export function AIGenerator({ onGenerate, category, language }: AIGeneratorProps
                     <div className="flex justify-between items-center">
                         <h4 className="text-sm font-medium text-gray-700">Write your prompt*</h4>
                         <Button variant="ghost" size="sm" className="text-xs h-6 px-2 text-gray-500">
-                            <History className="w-3 h-3 mr-1" /> Previous prompts
+                            <History sx={{ fontSize: 14 }} className="mr-1" /> Previous prompts
                         </Button>
                     </div>
                     <Textarea
@@ -133,7 +133,7 @@ export function AIGenerator({ onGenerate, category, language }: AIGeneratorProps
                                     : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
                             )}
                         >
-                            <MousePointer2 className="w-3.5 h-3.5" />
+                            <TouchApp sx={{ fontSize: 14 }} />
                             Click Rate
                         </div>
                         <div
@@ -145,7 +145,7 @@ export function AIGenerator({ onGenerate, category, language }: AIGeneratorProps
                                     : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
                             )}
                         >
-                            <Reply className="w-3.5 h-3.5" />
+                            <Reply sx={{ fontSize: 14 }} />
                             Reply Rate
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export function AIGenerator({ onGenerate, category, language }: AIGeneratorProps
                     disabled={isGenerating}
                     className="w-full bg-[#0a474c] hover:bg-[#083a3e] text-white"
                 >
-                    {isGenerating ? <Sparkles className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                    {isGenerating ? <AutoAwesome sx={{ fontSize: 16 }} className="animate-spin mr-2" /> : <AutoAwesome sx={{ fontSize: 16 }} className="mr-2" />}
                     Generate ({2} free generations left)
                 </Button>
 

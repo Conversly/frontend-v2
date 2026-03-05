@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp } from "@mui/icons-material";
 import { useMemo } from "react";
 
 import type { DayCount } from "@/lib/dummy/escalation-analytics";
@@ -60,7 +60,7 @@ export function EscalationVolumeCard({
     <Card className="shadow-sm border-border/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <TrendingUp sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
           Volume (Conversations vs Escalations)
         </CardTitle>
         <div className="text-sm text-muted-foreground mt-1">

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { CollapsibleSectionProps } from "./types";
 
 export function CollapsibleSection({
@@ -30,9 +30,9 @@ export function CollapsibleSection({
                     </div>
                 </div>
                 {isOpen ? (
-                    <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                    <ExpandLess sx={{ fontSize: 20, color: "var(--muted-foreground)" }} />
                 ) : (
-                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                    <ExpandMore sx={{ fontSize: 20, color: "var(--muted-foreground)" }} />
                 )}
             </button>
             {isOpen && (

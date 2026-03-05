@@ -33,23 +33,22 @@ import {
   createPortalSession,
 } from "@/lib/api/subscription";
 import { toast } from "sonner";
+import { CircularProgress } from "@mui/material";
 import {
-  Loader2,
   CreditCard,
   History,
-  DollarSign,
+  AttachMoney,
   Check,
-  X,
-  Zap,
-  ArrowUpRight,
-  AlertCircle,
+  Close,
+  Bolt,
+  OpenInNew,
+  Warning,
   Download,
-  Gift,
-  RefreshCw,
-  ShieldCheck,
-  WalletCards,
-  AlertTriangle,
-} from "lucide-react";
+  CardGiftcard,
+  Refresh,
+  VerifiedUser,
+  AccountBalanceWallet,
+} from "@mui/icons-material";
 import { cn } from "@/lib/utils";
 
 export default function BillingPage() {
@@ -155,13 +154,13 @@ export default function BillingPage() {
   };
 
   const getTransactionIcon = (tx: UserInvoice) => {
-    if (tx.paymentStatus === "failed") return <AlertTriangle className="h-4 w-4 text-destructive" />;
-    if (tx.type === "payment") return <WalletCards className="h-4 w-4 text-muted-foreground" />;
-    if (tx.description?.includes("Renewal")) return <RefreshCw className="h-4 w-4 text-blue-500" />;
+    if (tx.paymentStatus === "failed") return <Warning sx={{ fontSize: 16, color: "var(--destructive)" }} />;
+    if (tx.type === "payment") return <AccountBalanceWallet sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />;
+    if (tx.description?.includes("Renewal")) return <Refresh sx={{ fontSize: 16, color: "rgb(59 130 246)" }} />;
     if (tx.description?.includes("Bonus") || tx.description?.includes("Welcome"))
-      return <Gift className="h-4 w-4 text-purple-500" />;
-    if (tx.description?.includes("Purchase")) return <ShieldCheck className="h-4 w-4 text-green-500" />;
-    return <CreditCard className="h-4 w-4 text-muted-foreground" />;
+      return <CardGiftcard sx={{ fontSize: 16, color: "rgb(168 85 247)" }} />;
+    if (tx.description?.includes("Purchase")) return <VerifiedUser sx={{ fontSize: 16, color: "rgb(34 197 94)" }} />;
+    return <CreditCard sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />;
   };
 
   const getStatusBadge = (tx: UserInvoice) => {
@@ -195,7 +194,7 @@ export default function BillingPage() {
 
         {isPageLoading ? (
           <div className="flex h-60 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
           </div>
         ) : (
           <>
@@ -243,7 +242,7 @@ export default function BillingPage() {
                     onClick={handleManageSubscription}
                   >
                     {isOpeningPortal
-                      ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Opening portal…</>
+                      ? <><CircularProgress size={16} sx={{ mr: 1 }} />Opening portal…</>
                       : "Manage Subscription"
                     }
                   </Button>
@@ -258,7 +257,7 @@ export default function BillingPage() {
                           disabled={isCancelling}
                         >
                           {isCancelling
-                            ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Cancelling…</>
+                            ? <><CircularProgress size={16} sx={{ mr: 1 }} />Cancelling…</>
                             : "Cancel Plan"
                           }
                         </Button>
@@ -294,7 +293,7 @@ export default function BillingPage() {
                       onClick={handleResumePlan}
                     >
                       {isResuming
-                        ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Resuming…</>
+                        ? <><CircularProgress size={16} sx={{ mr: 1 }} />Resuming…</>
                         : "↩ Resume Plan"
                       }
                     </Button>
@@ -306,7 +305,7 @@ export default function BillingPage() {
               <Card className="flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Wallet Balance</CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <AttachMoney sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="text-2xl font-bold">
@@ -314,7 +313,7 @@ export default function BillingPage() {
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Available credits for usage</p>
                   <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                    <Zap className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                    <Bolt sx={{ fontSize: 16, color: "rgb(234 179 8)" }} />
                     <span>Auto-recharge disabled</span>
                   </div>
                 </CardContent>
@@ -324,7 +323,7 @@ export default function BillingPage() {
               <Card className="flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Usage</CardTitle>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+                  <OpenInNew sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4">
                   <div>
@@ -366,11 +365,11 @@ export default function BillingPage() {
                       <h3 className="font-medium">Integrations</h3>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-center gap-2">
-                          {currentPlan.entitlements.allowWhatsApp ? <Check className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-muted-foreground" />}
+                          {currentPlan.entitlements.allowWhatsApp ? <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} /> : <Close sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />}
                           WhatsApp Integration
                         </li>
                         <li className="flex items-center gap-2">
-                          {currentPlan.entitlements.allowWebhooks ? <Check className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-muted-foreground" />}
+                          {currentPlan.entitlements.allowWebhooks ? <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} /> : <Close sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />}
                           Webhooks
                         </li>
                       </ul>
@@ -379,11 +378,11 @@ export default function BillingPage() {
                       <h3 className="font-medium">Advanced</h3>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-center gap-2">
-                          {currentPlan.entitlements.allowAPI ? <Check className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-muted-foreground" />}
+                          {currentPlan.entitlements.allowAPI ? <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} /> : <Close sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />}
                           API Access
                         </li>
                         <li className="flex items-center gap-2">
-                          {currentPlan.entitlements.allowCustomBranding ? <Check className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-muted-foreground" />}
+                          {currentPlan.entitlements.allowCustomBranding ? <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} /> : <Close sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />}
                           Custom Branding
                         </li>
                       </ul>
@@ -392,7 +391,7 @@ export default function BillingPage() {
                       <h3 className="font-medium">Support</h3>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-center gap-2">
-                          {currentPlan.entitlements.prioritySupport ? <Check className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-muted-foreground" />}
+                          {currentPlan.entitlements.prioritySupport ? <Check sx={{ fontSize: 16, color: "rgb(34 197 94)" }} /> : <Close sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />}
                           Priority Support
                         </li>
                         {currentPlan.entitlements.sla && (
@@ -422,7 +421,7 @@ export default function BillingPage() {
               <CardContent>
                 {invoices.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                    <AlertCircle className="h-10 w-10 mb-4 opacity-20" />
+                    <Warning sx={{ fontSize: 40, mb: 1.5, opacity: 0.2 }} />
                     <p className="font-medium">No transactions yet</p>
                     <p className="text-sm mt-1">Your billing history will appear here once you have activity.</p>
                   </div>
@@ -491,7 +490,7 @@ export default function BillingPage() {
                                   title="Download Invoice PDF"
                                 >
                                   {downloadingId === tx.dodoPaymentId
-                                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                    ? <CircularProgress size={14} />
                                     : <Download className="h-3.5 w-3.5" />
                                   }
                                 </Button>

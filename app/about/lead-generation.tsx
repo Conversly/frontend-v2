@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import CheckCircle from "@mui/icons-material/CheckCircle";
 
 const LeadGeneration = () => {
   return (
@@ -108,7 +109,7 @@ const FeatureList = () => (
       <ul className="space-y-3">
         {["Lead Qualification", "Payment Processing", "Follow-up Sequences"].map((feature, index) => (
           <li key={index} className="flex items-center text-sm text-muted-foreground">
-            <CheckCircle2 className="w-4 h-4 text-primary mr-2" />
+            <CheckCircle sx={{ fontSize: 16 }} className="text-primary mr-2" />
             {feature}
           </li>
         ))}

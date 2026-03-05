@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Bot, Headset, BookOpen, TrendingUp, Check } from "lucide-react";
+import { SmartToy, Headset, MenuBook, TrendingUp, Check } from "@mui/icons-material";
 import { cn } from "@/lib/utils";
 
 const USE_CASES = [
@@ -12,7 +12,7 @@ const USE_CASES = [
     id: "General AI Agent",
     title: "General AI Agent",
     description: "Versatile assistant for any inquiry",
-    icon: Bot,
+    icon: SmartToy,
     gradient: "from-violet-500/20 to-purple-500/20",
     iconBg: "bg-violet-500/10",
     iconColor: "text-violet-600",
@@ -34,7 +34,7 @@ const USE_CASES = [
     id: "Documentation Assistant",
     title: "Docs Assistant",
     description: "Finds answers from your knowledge base",
-    icon: BookOpen,
+    icon: MenuBook,
     gradient: "from-sky-500/20 to-blue-500/20",
     iconBg: "bg-sky-500/10",
     iconColor: "text-sky-600",
@@ -151,14 +151,14 @@ export function Step1UrlAndUsecase({
                       "absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full",
                       item.checkBg
                     )}>
-                      <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+                      <Check sx={{ fontSize: 10, color: "white" }} />
                     </div>
                   )}
                   <div className={cn(
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
                     item.iconBg
                   )}>
-                    <Icon className={cn("h-4 w-4", item.iconColor)} />
+                    <Icon sx={{ fontSize: 16 }} className={item.iconColor} />
                   </div>
                   <div className="flex flex-col gap-0 min-w-0">
                     <span className="text-xs font-semibold text-foreground truncate">{item.title}</span>

@@ -39,26 +39,25 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { CircularProgress } from "@mui/material";
 import {
-    Loader2,
-    UserPlus,
+    PersonAdd,
     Mail,
-    Trash2,
-    Shield,
-    User,
-    AlertTriangle,
+    Delete,
+    Security,
+    Person,
+    Warning,
     Key,
-    Copy,
+    ContentCopy,
     Save,
-    Users,
-    Building2,
-    Calendar,
+    People,
+    Business,
+    CalendarMonth,
     Settings as SettingsIcon,
-    Crown,
-    Shield as ShieldIcon,
-    ArrowRight,
+    WorkspacePremium,
+    ArrowForward,
     Lock,
-} from "lucide-react";
+} from "@mui/icons-material";
 import {
     getWorkspaceMembers,
     createInvitation,
@@ -255,7 +254,7 @@ export default function ManagePage() {
                 <Tabs defaultValue="members" className="w-full">
                     <TabsList className="mb-4">
                         <TabsTrigger value="members" className="gap-2">
-                            <User className="h-4 w-4" />
+                            <Person sx={{ fontSize: 16 }} />
                             Members
                         </TabsTrigger>
                         <TabsTrigger value="invitations" className="gap-2">
@@ -268,11 +267,11 @@ export default function ManagePage() {
                             )}
                         </TabsTrigger>
                         <TabsTrigger value="settings" className="gap-2">
-                            <SettingsIcon className="h-4 w-4" />
+                            <SettingsIcon sx={{ fontSize: 16 }} />
                             Settings
                         </TabsTrigger>
                         <TabsTrigger value="security" className="gap-2">
-                            <Shield className="h-4 w-4" />
+                            <Security sx={{ fontSize: 16 }} />
                             Security
                         </TabsTrigger>
                     </TabsList>
@@ -293,7 +292,7 @@ export default function ManagePage() {
                                                 onClick={() => setIsInviteOpen(true)}
                                             >
                                                 {!isLocked ? (
-                                                    <UserPlus className="h-4 w-4" />
+                                                    <PersonAdd sx={{ fontSize: 16 }} />
                                                 ) : (
                                                     <Lock className="h-4 w-4" />
                                                 )}
@@ -348,7 +347,7 @@ export default function ManagePage() {
                                         <Button onClick={handleInvite} disabled={isInviting || !inviteEmail}>
                                             {isInviting ? (
                                                 <>
-                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    <CircularProgress size={16} sx={{ mr: 1 }} />
                                                     Sending...
                                                 </>
                                             ) : (
@@ -364,7 +363,7 @@ export default function ManagePage() {
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <Users className="h-5 w-5" />
+                                        <People sx={{ fontSize: 20 }} />
                                         Workspace Members
                                     </CardTitle>
                                     <CardDescription>People with access to this workspace.</CardDescription>
@@ -372,7 +371,7 @@ export default function ManagePage() {
                                 <CardContent>
                                     {isMembersLoading ? (
                                         <div className="flex h-40 items-center justify-center">
-                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                            <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
                                         </div>
                                     ) : (
                                         <div className="space-y-3">
@@ -391,13 +390,13 @@ export default function ManagePage() {
                                                                 <p className="font-medium leading-none">{member.displayName}</p>
                                                                 {member.role === "OWNER" && (
                                                                     <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-200">
-                                                                        <Crown className="w-3 h-3 mr-1" />
+                                                                        <WorkspacePremium sx={{ fontSize: 12, mr: 0.5 }} />
                                                                         Owner
                                                                     </Badge>
                                                                 )}
                                                                 {member.role === "ADMIN" && (
                                                                     <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-200">
-                                                                        <ShieldIcon className="w-3 h-3 mr-1" />
+                                                                        <Security sx={{ fontSize: 12, mr: 0.5 }} />
                                                                         Admin
                                                                     </Badge>
                                                                 )}
@@ -412,7 +411,7 @@ export default function ManagePage() {
                                                     </div>
                                                     <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-4 sm:mt-0">
                                                         <div className="text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                                                            <Calendar className="w-3 h-3" />
+                                                            <CalendarMonth sx={{ fontSize: 12 }} />
                                                             Joined {formatDate(member.joinedAt)}
                                                         </div>
                                                         {/* Add Remove Button if applicable (not removing self, maybe checking permission) */}
@@ -425,7 +424,7 @@ export default function ManagePage() {
                                                             className="text-muted-foreground hover:text-destructive"
                                                             onClick={() => handleRemoveClick(member.userId)}
                                                         >
-                                                            <Trash2 className="w-4 h-4" />
+                                                            <Delete sx={{ fontSize: 16 }} />
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -447,7 +446,7 @@ export default function ManagePage() {
                             <CardContent>
                                 {isInvitationsLoading ? (
                                     <div className="flex h-40 items-center justify-center">
-                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                        <CircularProgress size={32} sx={{ color: "var(--muted-foreground)" }} />
                                     </div>
                                 ) : invitations.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
@@ -486,7 +485,7 @@ export default function ManagePage() {
                                                         className="text-muted-foreground hover:text-destructive"
                                                         onClick={() => handleRevokeClick(invite.id)}
                                                     >
-                                                        <Trash2 className="h-4 w-4 mr-2" />
+                                                        <Delete sx={{ fontSize: 16, mr: 1 }} />
                                                         Revoke
                                                     </Button>
                                                 </div>
@@ -520,7 +519,7 @@ export default function ManagePage() {
                                 <Button onClick={handleSaveSettings} disabled={isSavingSettings || name === workspaceName}>
                                     {isSavingSettings ? (
                                         <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            <CircularProgress size={16} sx={{ mr: 1 }} />
                                             Saving...
                                         </>
                                     ) : (
@@ -536,7 +535,7 @@ export default function ManagePage() {
                         <Card className="border-red-200">
                             <CardHeader>
                                 <CardTitle className="text-red-600 flex items-center gap-2">
-                                    <AlertTriangle className="h-5 w-5" />
+                                    <Warning sx={{ fontSize: 20 }} />
                                     Danger Zone
                                 </CardTitle>
                                 <CardDescription>Irreversible actions for this workspace.</CardDescription>
@@ -551,7 +550,7 @@ export default function ManagePage() {
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button variant="destructive" disabled={isDeletingWorkspace}>
-                                            <Trash2 className="mr-2 h-4 w-4" />
+                                            <Delete sx={{ fontSize: 16, mr: 1 }} />
                                             Delete Workspace
                                         </Button>
                                     </AlertDialogTrigger>
@@ -597,7 +596,7 @@ export default function ManagePage() {
                                     <div className="flex gap-2">
                                         <Input value="sk_live_1234567890abcdef................" readOnly className="font-mono bg-muted" />
                                         <Button variant="outline" size="icon" onClick={handleCopyKey}>
-                                            <Copy className="h-4 w-4" />
+                                            <ContentCopy sx={{ fontSize: 16 }} />
                                         </Button>
                                     </div>
                                     <p className="text-xs text-muted-foreground">Created on Jan 15, 2026 by You</p>
@@ -609,7 +608,7 @@ export default function ManagePage() {
                         <Card>
                             <CardHeader>
                                 <div className="flex items-center gap-2">
-                                    <Shield className="h-5 w-5 text-primary" />
+                                    <Security sx={{ fontSize: 20, color: "var(--primary)" }} />
                                     <CardTitle>Two-Factor Authentication</CardTitle>
                                 </div>
                                 <CardDescription>

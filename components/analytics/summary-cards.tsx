@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquare, BarChart3, ThumbsUp, Clock } from "lucide-react";
+import { Message, BarChart, ThumbUp, Schedule } from "@mui/icons-material";
 import { useSubscription } from "@/contexts/subscription-context";
 
 interface SummaryCardsProps {
@@ -29,7 +29,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Messages Used</p>
-          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+          <Message sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isSubscriptionLoading ? (
@@ -56,7 +56,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Avg. Messages / Conv.</p>
-          <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          <BarChart sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
@@ -71,7 +71,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Like Rate</p>
-          <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+          <ThumbUp sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (
@@ -88,7 +88,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
       <Card className="p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Avg. Session Duration</p>
-          <Clock className="h-4 w-4 text-muted-foreground" />
+          <Schedule sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
         </div>
         <div className="flex items-baseline space-x-2">
           {isLoading ? (

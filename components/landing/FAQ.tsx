@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import { ExpandMore, Chat } from "@mui/icons-material";
 
 const faqs = [
   {
@@ -116,7 +116,7 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
                     transition={{ duration: 0.2 }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                    <ExpandMore sx={{ fontSize: 20, color: "var(--muted-foreground)" }} />
                   </motion.div>
                 </button>
 
@@ -154,7 +154,7 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
               href="mailto:team@verlyai.xyz"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
             >
-              <MessageCircle className="w-4 h-4" />
+              <Chat sx={{ fontSize: 16 }} />
               Contact Support
             </a>
           </motion.div>

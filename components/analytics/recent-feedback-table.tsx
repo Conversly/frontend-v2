@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquare } from "lucide-react";
+import { Chat } from "@mui/icons-material";
 import type { FeedbackItem } from "@/types/analytics";
 
 interface RecentFeedbackTableProps {
@@ -17,7 +17,7 @@ export function RecentFeedbackTable({
   return (
     <Card className="p-4">
       <div className="flex items-center mb-3">
-        <MessageSquare className="h-4 w-4 mr-2" />
+        <Chat sx={{ fontSize: 16, mr: 1 }} />
         <h3 className="text-base font-semibold">Recent Feedback</h3>
       </div>
       {isLoading ? (

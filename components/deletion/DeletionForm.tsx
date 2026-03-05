@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { CheckCircle2, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Warning } from '@mui/icons-material';
 
 export default function DeletionForm() {
   const [formData, setFormData] = useState({
@@ -47,7 +47,7 @@ export default function DeletionForm() {
       <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm p-8 md:p-12 text-center">
         <div className="flex justify-center mb-6">
           <div className="h-20 w-20 bg-green-500/10 rounded-full flex items-center justify-center">
-            <CheckCircle2 className="w-10 h-10 text-green-500" />
+            <CheckCircle sx={{ fontSize: 40, color: "rgb(34 197 94)" }} />
           </div>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Request Submitted</h1>
@@ -130,7 +130,7 @@ export default function DeletionForm() {
         <div className="space-y-4 pt-4">
           <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-5">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
+              <Warning sx={{ fontSize: 20, color: "rgb(239 68 68)", mt: 0.5 }} />
               <div>
                 <h3 className="font-semibold text-red-600 dark:text-red-400 mb-1">Warning: Irreversible Action</h3>
                 <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">

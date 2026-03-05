@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { MessageSquare, MessageCircle, Mic, Check } from "lucide-react"
+import { Chat, Mic, Check } from "@mui/icons-material"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from "next/image"
 
@@ -237,13 +237,13 @@ const voiceFeatures: Feature[] = [
 const tabs = [
   {
     value: "chatbot",
-    icon: MessageSquare,
+    icon: Chat,
     label: "Chatbot",
     features: chatbotFeatures,
   },
   {
     value: "whatsapp",
-    icon: MessageCircle,
+    icon: Chat,
     label: "WhatsApp",
     features: whatsappFeatures,
   },
@@ -318,7 +318,7 @@ export default function HowItWorks() {
                       className="group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-300 hover:bg-muted/50"
                     >
                       <Icon className="h-4 w-4 shrink-0 group-data-[state=active]:hidden transition-transform group-hover:scale-110" />
-                      <Check className="h-4 w-4 shrink-0 hidden group-data-[state=active]:block" />
+                      <Check sx={{ fontSize: 16 }} className="shrink-0 hidden group-data-[state=active]:block" />
                       {tab.label}
                     </TabsTrigger>
                   </motion.div>

@@ -3,10 +3,7 @@
 import { motion } from 'framer-motion';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Button } from '@/components/ui/button';
-import {
-  BrainCircuit,
-  HelpCircle,
-} from 'lucide-react';
+import { Psychology, Help } from '@mui/icons-material';
 import {
   Tooltip,
   TooltipContent,
@@ -54,7 +51,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
         <SectionHeader
           title="System Prompt"
           description="Define how your AI assistant behaves and responds"
-          icon={BrainCircuit}
+          icon={Psychology}
         />
 
         <div className="space-y-4">
@@ -63,7 +60,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
               <label className="font-sans text-sm text-foreground">Prompt Instructions</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -119,7 +116,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
               <label className="font-sans text-sm text-foreground">Collect User Feedback</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">
@@ -142,7 +139,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
               <label className="font-sans text-sm text-foreground">Allow Message Regeneration</label>
               <Tooltip>
                 <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                  <Help sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sans text-sm">

@@ -1,5 +1,5 @@
 import React from "react";
-import { Mic, X } from "lucide-react";
+import { Mic, Close } from "@mui/icons-material";
 
 interface VoiceAgentModalProps {
   isOpen: boolean;
@@ -18,12 +18,12 @@ const VoiceAgentModal: React.FC<VoiceAgentModalProps> = ({ isOpen, onClose }) =>
           className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500"
           aria-label="Close voice demo modal"
         >
-          <X size={20} />
+          <Close sx={{ fontSize: 20 }} />
         </button>
 
         <div className="mb-6">
           <div className="w-24 h-24 rounded-full flex items-center justify-center bg-gray-100">
-            <Mic size={40} className="text-gray-400" />
+            <Mic sx={{ fontSize: 40 }} className="text-gray-400" />
           </div>
         </div>
 

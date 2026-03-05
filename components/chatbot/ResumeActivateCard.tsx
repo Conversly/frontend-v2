@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, Ellipsis, Bot, ArrowRight } from "lucide-react";
+import { Delete, MoreVert, SmartToy, ArrowForward } from "@mui/icons-material";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -100,7 +100,7 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
             <div className="relative flex flex-1 flex-col px-5 pb-5 pt-0">
                 {/* Avatar Icon (straddles header/body) — dashed border */}
                 <div className="-mt-7 mb-3 flex h-14 w-14 items-center justify-center rounded-lg border-2 border-dashed border-amber-300 bg-amber-50 shadow-md ring-[3px] ring-card z-10">
-                    <Bot className="h-6 w-6 text-amber-500" />
+                    <SmartToy sx={{ fontSize: 24, color: "rgb(245 158 11)" }} />
                 </div>
 
                 {/* Title + Subtitle */}
@@ -120,7 +120,7 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
                                 size="icon"
                                 className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
                             >
-                                <Ellipsis className="h-4 w-4" />
+                                <MoreVert sx={{ fontSize: 16 }} />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -128,7 +128,7 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
                                 className="text-destructive"
                                 onClick={() => onDelete(chatbot.id)}
                             >
-                                <Trash2 className="mr-2 h-4 w-4" />
+                                <Delete sx={{ fontSize: 16, mr: 1 }} />
                                 Delete
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -167,7 +167,7 @@ export function ResumeActivateCard({ chatbot, onDelete }: ResumeActivateCardProp
                         onClick={handleActivate}
                     >
                         {isNavigating ? "Opening…" : "Resume Setup"}
-                        {!isNavigating && <ArrowRight className="h-3.5 w-3.5" />}
+                        {!isNavigating && <ArrowForward sx={{ fontSize: 14 }} />}
                     </Button>
                 </div>
             </div>

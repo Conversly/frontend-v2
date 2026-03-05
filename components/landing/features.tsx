@@ -1,5 +1,5 @@
 'use client';
-import { User } from 'lucide-react';
+import { Person } from '@mui/icons-material';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 

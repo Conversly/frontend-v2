@@ -1,5 +1,3 @@
-import { Check, Zap, Star } from "lucide-react";
-
 export interface Plan {
   id: string;
   monthlyProductId?: string;

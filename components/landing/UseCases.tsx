@@ -2,18 +2,18 @@
 
 import { motion } from "framer-motion";
 import {
-  Building2,
+  Business,
   ShoppingCart,
-  HeartPulse,
+  Favorite,
   Home,
-  GraduationCap,
-  Plane,
-  ArrowRight
-} from "lucide-react";
+  School,
+  Flight,
+  ArrowForward
+} from "@mui/icons-material";
 
 const useCases = [
   {
-    icon: Building2,
+    icon: Business,
     title: "B2B SaaS Customer Support",
     description: "AI agents handle technical onboarding, feature explanations, and troubleshooting for software companies. Reduce support ticket volume by 80% while providing instant answers to complex product questions.",
     stats: "80% ticket reduction",
@@ -29,7 +29,7 @@ const useCases = [
     link: "/solutions?industry=retail"
   },
   {
-    icon: HeartPulse,
+    icon: Favorite,
     title: "Healthcare Appointment Scheduling",
     description: "Voice AI agents handle appointment bookings, reminders, and follow-ups. Reduce no-shows by 40% with automated reminders while freeing staff to focus on patient care instead of administrative tasks.",
     stats: "40% fewer no-shows",
@@ -45,7 +45,7 @@ const useCases = [
     link: "/solutions?filter=commerce"
   },
   {
-    icon: GraduationCap,
+    icon: School,
     title: "Education & Course Support",
     description: "Answer student questions about courses, assignments, and admissions 24/7. Scale educational support without increasing staff while providing personalized learning assistance.",
     stats: "95% satisfaction rate",
@@ -53,7 +53,7 @@ const useCases = [
     link: "/solutions"
   },
   {
-    icon: Plane,
+    icon: Flight,
     title: "Travel & Hospitality Booking",
     description: "Handle booking inquiries, itinerary changes, and travel recommendations across multiple channels. Provide instant support in 95+ languages for global travelers.",
     stats: "Support in 95+ languages",
@@ -104,7 +104,7 @@ export default function UseCases() {
             >
               {/* Icon */}
               <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${useCase.color}`}>
-                <useCase.icon className="w-6 h-6" />
+                <useCase.icon sx={{ fontSize: 24 }} />
               </div>
 
               {/* Title as H3 for SEO */}
@@ -123,7 +123,7 @@ export default function UseCases() {
                   {useCase.stats}
                 </span>
                 <span className="flex items-center gap-1 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                  Learn more <ArrowRight className="w-4 h-4" />
+                  Learn more <ArrowForward sx={{ fontSize: 16 }} />
                 </span>
               </div>
             </motion.a>
@@ -145,7 +145,7 @@ export default function UseCases() {
             href="/solutions"
             className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
           >
-            Explore all solutions <ArrowRight className="w-4 h-4" />
+            Explore all solutions <ArrowForward sx={{ fontSize: 16 }} />
           </a>
         </motion.div>
       </div>

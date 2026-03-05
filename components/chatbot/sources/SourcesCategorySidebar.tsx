@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
-import { Loader2, Plus, Sparkles, CheckCircle2, Globe, FileText, MessageSquare, AlignLeft } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Add, AutoAwesome, CheckCircle, Public, Description, Message, FormatAlignLeft } from "@mui/icons-material";
 import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
@@ -36,11 +37,11 @@ interface SourcesCategorySidebarProps {
 }
 
 const categories = [
-  { id: 'all' as const, label: 'All Sources', icon: FileText },
-  { id: 'URL' as const, label: 'Websites', icon: Globe },
-  { id: 'DOCUMENT' as const, label: 'Documents', icon: FileText },
-  { id: 'QNA' as const, label: 'Q&A', icon: MessageSquare },
-  { id: 'TXT' as const, label: 'Text', icon: AlignLeft },
+  { id: 'all' as const, label: 'All Sources', icon: Description },
+  { id: 'URL' as const, label: 'Websites', icon: Public },
+  { id: 'DOCUMENT' as const, label: 'Documents', icon: Description },
+  { id: 'QNA' as const, label: 'Q&A', icon: Message },
+  { id: 'TXT' as const, label: 'Text', icon: FormatAlignLeft },
 ];
 
 export function SourcesCategorySidebar({
@@ -122,7 +123,7 @@ export function SourcesCategorySidebar({
                     : 'text-muted-foreground hover:bg-[--sidebar-accent] hover:text-foreground'
                 )}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
+                <Icon sx={{ fontSize: 16, flexShrink: 0 }} />
                 <span className="flex-1 text-left">{category.label}</span>
                 {count > 0 && (
                   <span className={cn(
@@ -144,7 +145,7 @@ export function SourcesCategorySidebar({
             className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-[--sidebar-accent]"
             onClick={() => setIsRequestModalOpen(true)}
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Add sx={{ fontSize: 16, mr: 1 }} />
             <span className="type-body font-medium">Request Integration</span>
           </Button>
         </div>
@@ -174,7 +175,7 @@ export function SourcesCategorySidebar({
                 <div className="p-6 pb-0">
                   <DialogHeader className="mb-6 space-y-3">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
-                      <Sparkles className="w-6 h-6 text-primary" />
+                      <AutoAwesome sx={{ fontSize: 24, color: "var(--primary)" }} />
                     </div>
                     <DialogTitle className="type-page-title">
                       Request Integration
@@ -230,7 +231,7 @@ export function SourcesCategorySidebar({
                   <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white transition-all">
                     {isRequestSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <CircularProgress size={16} sx={{ mr: 1 }} />
                         Sending...
                       </>
                     ) : (
@@ -249,7 +250,7 @@ export function SourcesCategorySidebar({
                 className="flex flex-col items-center justify-center py-8 text-center"
               >
                 <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                  <CheckCircle2 className="w-10 h-10" />
+                  <CheckCircle sx={{ fontSize: 40 }} />
                 </div>
                 <h3 className="text-2xl font-bold mb-3">Request Received!</h3>
                 <p className="text-muted-foreground max-w-[300px] mb-8">

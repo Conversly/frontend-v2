@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Laptop, Moon, Sun, User, Mail, Shield, CreditCard, Crown, Zap, Building2, Sparkles, Loader2, ArrowRight, Briefcase, UserCog, ArrowUpRight } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Computer, DarkMode, LightMode, Person, Mail, Security, CreditCard, WorkspacePremium, Bolt, Business, AutoAwesome, ArrowForward, Work, Settings, OpenInNew } from "@mui/icons-material";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -46,10 +47,10 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
-    FREE: <Sparkles className="w-4 h-4" />,
-    PERSONAL: <Zap className="w-4 h-4" />,
-    PRO: <Crown className="w-4 h-4" />,
-    ENTERPRISE: <Building2 className="w-4 h-4" />,
+    FREE: <AutoAwesome sx={{ fontSize: 16 }} />,
+    PERSONAL: <Bolt sx={{ fontSize: 16 }} />,
+    PRO: <WorkspacePremium sx={{ fontSize: 16 }} />,
+    ENTERPRISE: <Business sx={{ fontSize: 16 }} />,
 };
 
 export default function ProfilePage() {
@@ -158,7 +159,7 @@ export default function ProfilePage() {
                             <div className="space-y-2">
                                 <Label htmlFor="name">Display Name</Label>
                                 <div className="relative">
-                                    <User className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Person sx={{ fontSize: 16, position: "absolute", left: 8, top: 10, color: "var(--muted-foreground)" }} />
                                     <Input
                                         id="name"
                                         placeholder="Your name"
@@ -172,7 +173,7 @@ export default function ProfilePage() {
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email / Username</Label>
                                 <div className="relative">
-                                    <Mail className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Mail sx={{ fontSize: 16, position: "absolute", left: 8, top: 10, color: "var(--muted-foreground)" }} />
                                     <Input
                                         id="email"
                                         value={user?.username || ""}
@@ -202,7 +203,7 @@ export default function ProfilePage() {
                             <div className="space-y-2">
                                 <Label>Password</Label>
                                 <Button variant="outline" className="w-full sm:w-auto" onClick={() => toast.info("Password reset email sent")}>
-                                    <Shield className="mr-2 h-4 w-4" />
+                                    <Security sx={{ fontSize: 16, mr: 1 }} />
                                     Change Password
                                 </Button>
                             </div>
@@ -215,7 +216,7 @@ export default function ProfilePage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Briefcase className="w-5 h-5" />
+                                <Work sx={{ fontSize: 20 }} />
                                 My Workspaces
                             </CardTitle>
                             <CardDescription>
@@ -240,10 +241,10 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="flex items-center justify-between text-sm text-muted-foreground">
                                             <div className="flex items-center gap-1.5">
-                                                <UserCog className="w-3.5 h-3.5" />
+                                                <Settings sx={{ fontSize: 14 }} />
                                                 <span className="capitalize">{ws.role.toLowerCase()}</span>
                                             </div>
-                                            <ArrowUpRight className="w-4 h-4 opacity-50" />
+                                            <OpenInNew sx={{ fontSize: 16, opacity: 0.5 }} />
                                         </div>
                                     </div>
                                 ))}
@@ -255,7 +256,7 @@ export default function ProfilePage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <CreditCard className="w-5 h-5" />
+                                <CreditCard sx={{ fontSize: 20 }} />
                                 Subscription Plan
                             </CardTitle>
                             <CardDescription>
@@ -265,7 +266,7 @@ export default function ProfilePage() {
                         <CardContent className="space-y-4">
                             {subscriptionLoading ? (
                                 <div className="flex items-center justify-center py-8">
-                                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                    <CircularProgress size={24} sx={{ color: "var(--primary)" }} />
                                     <p className="ml-3 text-muted-foreground">Loading subscription...</p>
                                 </div>
                             ) : currentSubscription ? (
@@ -368,15 +369,15 @@ export default function ProfilePage() {
                                             onClick={() => router.push("/plans")}
                                             disabled={!isOwner}
                                         >
-                                            <CreditCard className="mr-2 h-4 w-4" />
+                                            <CreditCard sx={{ fontSize: 16, mr: 1 }} />
                                             Manage Subscription
-                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                            <ArrowForward sx={{ fontSize: 16, ml: 1 }} />
                                         </Button>
 
                                         <Dialog open={isRequestCreditOpen} onOpenChange={setIsRequestCreditOpen}>
                                             <DialogTrigger asChild>
                                                 <Button variant="secondary" className="w-full">
-                                                    <CreditCard className="mr-2 h-4 w-4" />
+                                                    <CreditCard sx={{ fontSize: 16, mr: 1 }} />
                                                     Request Credits
                                                 </Button>
                                             </DialogTrigger>
@@ -397,7 +398,7 @@ export default function ProfilePage() {
                                                             <SelectContent className="z-[99999]">
                                                                 {isChatbotsLoading ? (
                                                                     <div className="flex items-center justify-center p-2">
-                                                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                                                        <CircularProgress size={16} sx={{ mr: 1 }} />
                                                                         Loading chatbots...
                                                                     </div>
                                                                 ) : (
@@ -439,7 +440,7 @@ export default function ProfilePage() {
                                                     >
                                                         {creditRequestMutation.isPending ? (
                                                             <>
-                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                <CircularProgress size={16} sx={{ mr: 1 }} />
                                                                 Submitting...
                                                             </>
                                                         ) : (
@@ -464,9 +465,9 @@ export default function ProfilePage() {
                                         onClick={() => router.push("/plans")}
                                         disabled={!isOwner}
                                     >
-                                        <Crown className="mr-2 h-4 w-4" />
+                                        <WorkspacePremium sx={{ fontSize: 16, mr: 1 }} />
                                         View Plans & Upgrade
-                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                        <ArrowForward sx={{ fontSize: 16, ml: 1 }} />
                                     </Button>
                                 </div>
                             )}
@@ -499,7 +500,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center p-2">
-                                            <Sun className="mr-2 h-4 w-4" />
+                                            <LightMode sx={{ fontSize: 16, mr: 1 }} />
                                             <span className="text-sm font-medium">Light</span>
                                         </div>
                                     </div>
@@ -519,7 +520,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center p-2">
-                                            <Moon className="mr-2 h-4 w-4" />
+                                            <DarkMode sx={{ fontSize: 16, mr: 1 }} />
                                             <span className="text-sm font-medium">Dark</span>
                                         </div>
                                     </div>
@@ -539,7 +540,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center p-2">
-                                            <Laptop className="mr-2 h-4 w-4" />
+                                            <Computer sx={{ fontSize: 16, mr: 1 }} />
                                             <span className="text-sm font-medium">System</span>
                                         </div>
                                     </div>

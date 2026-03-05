@@ -7,7 +7,7 @@ import { ParametersStep } from './steps/ParametersStep';
 import { TestAndSaveStep } from './steps/TestAndSaveStep';
 import { DataAccessStep } from './steps/DataAccessStep';
 import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { Check } from '@mui/icons-material';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
@@ -308,7 +308,7 @@ export const CustomActionForm: React.FC<Props> = ({
                                                             : "bg-muted border border-border group-hover:border-primary/50"
                                                 )}
                                             >
-                                                {isCompleted ? <Check className="h-4 w-4" /> : step}
+                                                {isCompleted ? <Check sx={{ fontSize: 16 }} /> : step}
                                             </div>
                                             <span className={cn(
                                                 "text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap hidden sm:block",

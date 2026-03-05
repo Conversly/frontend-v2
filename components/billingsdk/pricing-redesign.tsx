@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCheck } from "lucide-react";
+import { Check } from "@mui/icons-material";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
@@ -284,7 +284,7 @@ export function PricingRedesign({ plans, currentPlanId, currentPlanName, onPlanS
                                             {plan.features.map((feature, featureIndex) => (
                                                 <li key={featureIndex} className="flex items-start">
                                                     <span className={`h-4 w-4 rounded-full flex place-content-center items-center mr-3 shrink-0`}>
-                                                        <CheckCheck className={`h-3 w-3 ${plan.highlight ? 'text-blue-500' : 'text-blue-500'}`} />
+                                                        <Check sx={{ fontSize: 12, color: "rgb(59 130 246)" }} />
                                                     </span>
                                                     <span className="text-[10px] sm:text-xs text-muted-foreground leading-snug">{feature.name}</span>
                                                 </li>

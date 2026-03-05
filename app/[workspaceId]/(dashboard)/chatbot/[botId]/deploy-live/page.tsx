@@ -15,15 +15,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
-    Rocket,
-    RotateCcw,
-    AlertTriangle,
-    CheckCircle2,
-    Clock,
-    ShieldAlert,
+    RocketLaunch,
+    RestartAlt,
+    Warning,
+    CheckCircle,
+    Schedule,
     Info,
-    ArrowLeft
-} from "lucide-react";
+    ArrowBack
+} from "@mui/icons-material";
 import { toast } from "sonner";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -208,7 +207,7 @@ export default function DeployLivePage() {
                 <div className="lg:col-span-2 space-y-6">
                     {pageView === "default" && isLocked && (
                         <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
-                            <ShieldAlert className="h-5 w-5" />
+                            <Warning sx={{ fontSize: 20 }} />
                             <AlertTitle>Deployment Locked</AlertTitle>
                             <AlertDescription>
                                 Your chatbot configuration is currently locked due to a previous deployment failure.
@@ -219,7 +218,7 @@ export default function DeployLivePage() {
 
                     {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
                         <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                            <CheckCircle sx={{ fontSize: 20, color: "rgb(5 150 105)" }} />
                             <AlertTitle>All changes synced</AlertTitle>
                             <AlertDescription>
                                 Your LIVE chatbot is currently running the latest version of your configuration.
@@ -300,7 +299,7 @@ export default function DeployLivePage() {
                     <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying && pageView === "default" ? 'border-blue-500 shadow-blue-100 shadow-lg' : 'opacity-70'}`}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-blue-500" />
+                                <RocketLaunch sx={{ fontSize: 20, color: "rgb(59 130 246)" }} />
                                 Push to Live
                             </CardTitle>
                             <CardDescription>
@@ -309,11 +308,11 @@ export default function DeployLivePage() {
                         </CardHeader>
                         <CardContent className="pb-4">
                             <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 text-xs text-blue-600 dark:text-blue-400 flex gap-3">
-                                <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                <Info sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
                                 <p>This will deploy all the changes which you have done on your live chatbot. User will be affected.</p>
                             </div>
                             <div className="mt-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20 text-xs text-orange-600 dark:text-orange-400 flex gap-3">
-                                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                <Warning sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
                                 <p>Your chatbot will be inactive for a short duration (1-2 minutes) during deployment.</p>
                             </div>
                         </CardContent>
@@ -340,7 +339,7 @@ export default function DeployLivePage() {
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                                     >
-                                        <Rocket className="w-10 h-10 text-blue-500" />
+                                        <RocketLaunch sx={{ fontSize: 40, color: "rgb(59 130 246)" }} />
                                     </motion.div>
                                     <h4 className="mt-4 font-bold text-foreground">Pushing Changes</h4>
                                     <p className="text-xs text-muted-foreground mt-1">Please wait until the sync is complete. This usually takes less than a minute.</p>
@@ -353,7 +352,7 @@ export default function DeployLivePage() {
                     <Card className={status?.liveVersion === 0 ? 'opacity-50 cursor-not-allowed' : ''}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <RotateCcw className="w-5 h-5 text-muted-foreground" />
+                                <RestartAlt sx={{ fontSize: 20, color: "var(--muted-foreground)" }} />
                                 Reset Changes
                             </CardTitle>
                             <CardDescription>
@@ -362,7 +361,7 @@ export default function DeployLivePage() {
                         </CardHeader>
                         <CardContent className="pb-4">
                             <div className="p-3 bg-muted/50 rounded-lg border border-border text-xs text-muted-foreground flex gap-3">
-                                <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                <Warning sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
                                 <p>This will remove all your changes to the current live stage. Your draft will be replaced by the current production configuration.</p>
                             </div>
                         </CardContent>

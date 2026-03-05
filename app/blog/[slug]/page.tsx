@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Clock, Calendar, User, Tag } from "lucide-react";
+import Person from "@mui/icons-material/Person";
+import Schedule from "@mui/icons-material/Schedule";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import Link from "next/link";
 import { getBlogPost, BLOG_DATA } from "@/lib/blog-data";
 
@@ -51,15 +53,15 @@ export default async function BlogPostPage({ params }: Props) {
 
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm text-muted-foreground pt-4 border-t border-border mt-8">
                             <div className="flex items-center gap-2">
-                                <User className="w-4 h-4" />
+                                <Person sx={{ fontSize: 16 }} />
                                 <span className="font-medium text-foreground">{post.author}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4" />
+                                <CalendarMonth sx={{ fontSize: 16 }} />
                                 <span className="font-medium text-foreground">{post.date}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Clock className="w-4 h-4" />
+                                <Schedule sx={{ fontSize: 16 }} />
                                 <span>{post.readTime}</span>
                             </div>
                         </div>

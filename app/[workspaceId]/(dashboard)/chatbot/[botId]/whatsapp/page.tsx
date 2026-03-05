@@ -26,7 +26,7 @@
 //   Zap,
 //   Smartphone,
 //   Users,
-// } from "lucide-react";
+// } from "@mui/icons-material";
 
 // // Dynamic import for visual component
 // const WhatsAppVisual = dynamic(() => import('@/components/whatsapp/WhatsAppVisual'), {
@@ -272,7 +272,8 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { getWhatsAppIntegration, createWhatsAppIntegration, exchangeWhatsAppToken, onboardWhatsAppClient } from '@/lib/api/whatsapp';
-import { Loader2, ArrowLeft, Copy, CheckCircle2, MessageCircle, ExternalLink, Check } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { ArrowBack, ContentCopy, CheckCircle, Chat, OpenInNew, Check } from '@mui/icons-material';
 import Link from 'next/link';
 import { WHATSAPP_SETUP_GUIDE } from '@/lib/constants/integrations';
 import { cn } from '@/lib/utils';
@@ -626,7 +627,7 @@ export default function WhatsAppSetupPage() {
           >
             {isEmbeddedSignupLoading ? (
               <span className="flex items-center gap-2 justify-center">
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <CircularProgress size={16} />
                 <span>Connecting...</span>
               </span>
             ) : (
@@ -657,7 +658,7 @@ export default function WhatsAppSetupPage() {
                 <div className="space-y-6">
                   <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4">
                     <h3 className="text-sm font-medium flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
-                      <ExternalLink className="w-4 h-4" />
+                      <OpenInNew sx={{ fontSize: 16 }} />
                       Meta Developer Console
                     </h3>
                     <p className="text-sm text-muted-foreground mb-3">
@@ -672,7 +673,7 @@ export default function WhatsAppSetupPage() {
                       <div className="flex gap-2">
                         <Input readOnly value={webhookUrl} className="bg-muted font-mono text-xs" />
                         <Button type="button" size="icon" variant="outline" onClick={() => copyToClipboard(webhookUrl, 'Webhook URL')}>
-                          <Copy className="w-4 h-4" />
+                          <ContentCopy sx={{ fontSize: 16 }} />
                         </Button>
                       </div>
                     </div>
@@ -683,7 +684,7 @@ export default function WhatsAppSetupPage() {
                           placeholder="Generate a token..." />
                         {credentials.verifyToken ? (
                           <Button type="button" size="icon" variant="outline" onClick={() => copyToClipboard(credentials.verifyToken, 'Verify Token')}>
-                            <Copy className="w-4 h-4" />
+                            <ContentCopy sx={{ fontSize: 16 }} />
                           </Button>
                         ) : (
                           <Button type="button" variant="secondary" onClick={generateVerifyToken} className="whitespace-nowrap px-3">
@@ -770,7 +771,7 @@ export default function WhatsAppSetupPage() {
                 disabled={isSubmitting}
                 className="bg-[#25D366] hover:bg-[#25D366]/90 text-white min-w-[160px] shadow-md"
               >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                {isSubmitting ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
                 Connect WhatsApp
               </Button>
             </div>

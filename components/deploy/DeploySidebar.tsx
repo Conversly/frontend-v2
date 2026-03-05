@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Palette, MessageSquare, Mail, Phone, Globe, Save, Megaphone, Code, Copy, Check, ExternalLink } from "lucide-react";
+import { Palette, Chat, Mail, Phone, Public, Save, Campaign, Code, ContentCopy, Check, OpenInNew } from "@mui/icons-material";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
 
@@ -110,7 +110,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                     <p className="text-xs text-muted-foreground">Customize your support page</p>
                 </div>
                 <Button size="sm" onClick={onSave} disabled={isSaving}>
-                    {isSaving ? "Saving..." : <><Save className="w-4 h-4 mr-2" /> Save</>}
+                    {isSaving ? "Saving..." : <><Save sx={{ fontSize: 16, mr: 1 }} /> Save</>}
                 </Button>
             </div>
 
@@ -167,7 +167,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
 
                             <div className="space-y-4">
                                 <h3 className="font-medium text-sm text-foreground flex items-center gap-2">
-                                    <Globe className="w-4 h-4" /> Social Media
+                                    <Public sx={{ fontSize: 16 }} /> Social Media
                                 </h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-1.5">
@@ -230,7 +230,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                 <CardHeader className="p-4 pb-2">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-base flex items-center gap-2">
-                                            <MessageSquare className="w-4 h-4 text-blue-500" />
+                                            <Chat sx={{ fontSize: 16, color: "rgb(59 130 246)" }} />
                                             AI Chatbot
                                         </CardTitle>
                                         <Switch
@@ -250,7 +250,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                 <CardHeader className="p-4 pb-2">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-base flex items-center gap-2">
-                                            <Mail className="w-4 h-4 text-purple-500" />
+                                            <Mail sx={{ fontSize: 16, color: "rgb(168 85 247)" }} />
                                             Email Ticketing
                                         </CardTitle>
                                         <Switch
@@ -270,7 +270,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                 <CardHeader className="p-4 pb-2">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-base flex items-center gap-2">
-                                            <Phone className="w-4 h-4 text-green-500" />
+                                            <Phone sx={{ fontSize: 16, color: "rgb(34 197 94)" }} />
                                             Voice Agent
                                         </CardTitle>
                                         <Switch
@@ -307,7 +307,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-medium text-sm text-foreground flex items-center gap-2">
-                                        <Megaphone className="w-4 h-4" /> Announcement Bar
+                                        <Campaign sx={{ fontSize: 16 }} /> Announcement Bar
                                     </h3>
                                     <Switch
                                         checked={announcement.enabled}
@@ -342,7 +342,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                             <div className="space-y-4">
                                 <div className="space-y-1">
                                     <h3 className="font-medium text-sm flex items-center gap-2">
-                                        <Code className="w-4 h-4 text-primary" />
+                                        <Code sx={{ fontSize: 16, color: "var(--primary)" }} />
                                         Iframe Embed
                                     </h3>
                                     <p className="text-xs text-muted-foreground">
@@ -360,7 +360,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                                 onClick={() => copyToClipboard(iframeCode)}
                                                 className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-background/50"
                                             >
-                                                {copiedIframe ? <Check className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3" />}
+                                                {copiedIframe ? <Check sx={{ fontSize: 12, color: "var(--primary)" }} /> : <ContentCopy sx={{ fontSize: 12 }} />}
                                             </Button>
                                         </div>
                                         <div className="overflow-x-auto custom-scrollbar">
@@ -376,7 +376,7 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                         className="w-full text-xs h-8"
                                         onClick={() => window.open(`https://verlyai.xyz/deploy/${botId}`, '_blank')}
                                     >
-                                        <ExternalLink className="w-3 h-3 mr-2" />
+                                        <OpenInNew sx={{ fontSize: 12, mr: 1 }} />
                                         Test Public URL
                                     </Button>
                                 </div>

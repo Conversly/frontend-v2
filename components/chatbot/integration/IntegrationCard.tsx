@@ -4,17 +4,17 @@ import { IntegrationConfig } from '@/types/integration';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-  CheckCircle2,
+  CheckCircle,
   Lock,
-  ExternalLink,
-  MessageCircle,
-  Slack,
+  OpenInNew,
+  Chat,
+  Share,
   CreditCard,
-  Calendar,
-  FileText,
+  CalendarMonth,
+  Description,
   Cloud,
-  ArrowRight,
-} from 'lucide-react';
+  ArrowForward,
+} from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -30,16 +30,16 @@ interface IntegrationCardProps {
 
 // Icon mapping
 const iconMap: Record<string, React.ComponentType<any>> = {
-  MessageCircle,
-  Slack,
+  MessageCircle: Chat,
+  Slack: Share,
   CreditCard,
-  Calendar,
-  FileText,
+  Calendar: CalendarMonth,
+  FileText: Description,
   Cloud,
 };
 
 export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) {
-  const IconComponent = iconMap[integration.icon] || MessageCircle;
+  const IconComponent = iconMap[integration.icon] || Chat;
   const isConnected = integration.status === 'connected';
   const isComingSoon = integration.status === 'coming-soon';
 
@@ -86,7 +86,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
               )}
               whileHover={{ scale: 1.1, rotate: 5 }}
             >
-              <IconComponent className="w-7 h-7" />
+              <IconComponent sx={{ fontSize: 28 }} />
             </motion.div>
 
             {isConnected && (
@@ -96,7 +96,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
               >
-                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                <CheckCircle sx={{ fontSize: 16, color: "rgb(34 197 94)" }} />
                 <span className="text-xs font-semibold text-green-600 dark:text-green-400">
                   Connected
                 </span>
@@ -105,7 +105,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
 
             {isComingSoon && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                <Lock className="w-4 h-4 text-blue-500" />
+                <Lock sx={{ fontSize: 16, color: "rgb(59 130 246)" }} />
                 <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
                   Request Access
                 </span>
@@ -143,7 +143,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
                     ? 'Request Access'
                     : 'Set Up Integration'}
                 {!isConnected && (
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowForward sx={{ fontSize: 16 }} />
                 )}
               </span>
             </Button>
@@ -157,7 +157,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
                     onClick={() => window.open(integration.docsUrl, '_blank')}
                     className="h-10 w-10 border-border hover:bg-muted/50"
                   >
-                    <ExternalLink className="w-4 h-4" />
+                    <OpenInNew sx={{ fontSize: 16 }} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>

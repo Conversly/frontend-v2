@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, CreditCard } from "lucide-react";
+import { CalendarMonth, CreditCard } from "@mui/icons-material";
 import { CurrentPlan } from "@/lib/billingsdk-config";
 import { cn } from "@/lib/utils";
 import {
@@ -40,7 +40,7 @@ export function SubscriptionManagement({
         <CardHeader className="px-4 pb-4 sm:px-6 sm:pb-6">
           <CardTitle className="flex items-center gap-2 text-lg sm:gap-3 sm:text-xl">
             <div className="bg-primary/10 ring-primary/20 rounded-lg p-1.5 ring-1 sm:p-2">
-              <CreditCard className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
+              <CreditCard sx={{ color: "var(--primary)", fontSize: 16 }} />
             </div>
             Current Subscription
           </CardTitle>
@@ -99,7 +99,7 @@ export function SubscriptionManagement({
           <div className="space-y-3 sm:space-y-4">
             <h4 className="flex items-center gap-2 text-base font-medium sm:text-lg">
               <div className="bg-muted ring-border/50 rounded-md p-1 ring-1 sm:p-1.5">
-                <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                <CalendarMonth sx={{ fontSize: 14 }} />
               </div>
               Billing Information
             </h4>

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Shield, ShieldCheck } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Security, VerifiedUser } from "@mui/icons-material";
 import { cn } from "@/lib/utils";
 
 type DataAccess = "full" | "limited";
@@ -134,7 +135,7 @@ export const DataAccessStep: React.FC<Props> = ({
       <Card className="shadow-none border-border bg-[--surface-secondary]">
         <CardHeader>
           <CardTitle className="type-h3 flex items-center gap-3">
-            <ShieldCheck className="h-5 w-5 text-primary" />
+            <VerifiedUser sx={{ fontSize: 20, color: "var(--primary)" }} />
             Security & Access Level
           </CardTitle>
           <CardDescription className="type-body-muted italic leading-relaxed">Choose whether the agent sees the full result or just a specific part.</CardDescription>
@@ -194,7 +195,7 @@ export const DataAccessStep: React.FC<Props> = ({
 
           <div className="rounded-md bg-muted p-3">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-              <Shield className="h-3.5 w-3.5" />
+              <Security sx={{ fontSize: 14 }} />
               Preview (from last test)
             </div>
 
@@ -231,7 +232,7 @@ export const DataAccessStep: React.FC<Props> = ({
         >
           {saving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <CircularProgress size={16} sx={{ mr: 1 }} />
               Saving Action...
             </>
           ) : (

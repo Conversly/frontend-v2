@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, ThumbsUp, Calendar } from "lucide-react";
+import { TrendingUp, ThumbUp, CalendarMonth } from "@mui/icons-material";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -79,7 +79,7 @@ export function ChartsSection({
       <Card className="col-span-4 shadow-sm border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
             Total Income
           </CardTitle>
           <CardDescription>
@@ -121,7 +121,7 @@ export function ChartsSection({
       <Card className="col-span-3 flex flex-col shadow-sm border-border/50">
         <CardHeader className="items-center pb-0">
           <CardTitle className="flex items-center gap-2">
-            <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+            <ThumbUp sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
             Feedback
           </CardTitle>
           <CardDescription>User satisfaction overview</CardDescription>
@@ -162,7 +162,7 @@ export function ChartsSection({
       <Card className="col-span-7 shadow-sm border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CalendarMonth sx={{ fontSize: 16, color: "var(--muted-foreground)" }} />
             Conversations
           </CardTitle>
           <CardDescription>Volume trend</CardDescription>

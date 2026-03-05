@@ -3,7 +3,9 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Calendar, Clock } from "lucide-react";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
+import Schedule from "@mui/icons-material/Schedule";
 import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog-data";
 
@@ -51,11 +53,11 @@ export default function BlogPage() {
                                     <CardHeader className="space-y-2">
                                         <div className="flex items-center text-xs text-muted-foreground gap-4">
                                             <div className="flex items-center gap-1">
-                                                <Calendar className="w-3 h-3" />
+                                                <CalendarMonth sx={{ fontSize: 12 }} />
                                                 {post.date}
                                             </div>
                                             <div className="flex items-center gap-1">
-                                                <Clock className="w-3 h-3" />
+                                                <Schedule sx={{ fontSize: 12 }} />
                                                 {post.readTime}
                                             </div>
                                         </div>
@@ -68,7 +70,7 @@ export default function BlogPage() {
                                             {post.excerpt}
                                         </CardDescription>
                                         <div className="flex items-center text-sm font-medium text-primary pt-2">
-                                            Read Article <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                                            Read Article <ArrowForward sx={{ fontSize: 16 }} className="ml-1 group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </CardContent>
                                 </Card>

@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Plus, X, Sparkles, Terminal } from 'lucide-react';
+import { ExpandMore, KeyboardArrowRight, Add, Close, AutoAwesome, Code } from '@mui/icons-material';
 import { CurlImportDialog } from '../CurlImportDialog';
 import CodeMirror from '@uiw/react-codemirror';
 import { json } from '@codemirror/lang-json';
@@ -184,7 +184,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     onImport={(imported) => handleCurlImport(imported)}
                     trigger={
                         <Button type="button" variant="outline" className="h-10 gap-2 shrink-0">
-                            <Terminal className="h-4 w-4" />
+                            <Code sx={{ fontSize: 16 }} />
                             Import from cURL
                         </Button>
                     }
@@ -197,7 +197,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     <Label className="type-label">HTTPS URL</Label>
                     {detectedPathParams.length > 0 && (
                         <div className="flex items-center gap-2 text-[11px] font-semibold text-primary uppercase tracking-wider">
-                            <Sparkles className="h-3.5 w-3.5" />
+                            <AutoAwesome sx={{ fontSize: 14 }} />
                             <span>Path params: {detectedPathParams.map((v) => `{${v}}`).join(', ')}</span>
                         </div>
                     )}
@@ -234,7 +234,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     </div>
 
                     <Button type="button" variant="outline" className="h-11 shrink-0 px-4 border-dashed hover:bg-muted" onClick={handleAddPathParam}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Add sx={{ fontSize: 16, mr: 1 }} />
                         Add path param
                     </Button>
                 </div>
@@ -344,7 +344,7 @@ export const APIConfigSection: React.FC<Props> = ({
                                 updateField('apiConfig.endpoint', buildEndpoint(endpointParts.pathname, { ...staticQueryParams, '': '' }))
                             }
                         >
-                            <Plus className="h-4 w-4 mr-2" />
+                            <Add sx={{ fontSize: 16, mr: 1 }} />
                             Add key value pair
                         </Button>
                         <KeyValueEditor
@@ -374,7 +374,7 @@ export const APIConfigSection: React.FC<Props> = ({
                                 })
                             }
                         >
-                            <Plus className="h-4 w-4 mr-2" />
+                            <Add sx={{ fontSize: 16, mr: 1 }} />
                             Add key value pair
                         </Button>
                         <HeaderEditor
@@ -484,9 +484,9 @@ export const APIConfigSection: React.FC<Props> = ({
                         className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
                     >
                         {showAdvanced ? (
-                            <ChevronDown className="h-3 w-3 mr-1" />
+                            <ExpandMore sx={{ fontSize: 12, mr: 0.5 }} />
                         ) : (
-                            <ChevronRight className="h-3 w-3 mr-1" />
+                            <KeyboardArrowRight sx={{ fontSize: 12, mr: 0.5 }} />
                         )}
                         Advanced Options
                     </Button>
@@ -593,7 +593,7 @@ const HeaderEditor: React.FC<{
     if (pairs.length === 0) {
         return (
             <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-8">
-                <Plus className="h-3 w-3 mr-1" />
+                <Add sx={{ fontSize: 12, mr: 0.5 }} />
                 {addLabel}
             </Button>
         );
@@ -622,12 +622,12 @@ const HeaderEditor: React.FC<{
                         onClick={() => removePair(index)}
                         className="h-7 w-7 text-muted-foreground hover:text-destructive"
                     >
-                        <X className="h-3 w-3" />
+                        <Close sx={{ fontSize: 12 }} />
                     </Button>
                 </div>
             ))}
             <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-7">
-                <Plus className="h-3 w-3 mr-1" />
+                <Add sx={{ fontSize: 12, mr: 0.5 }} />
                 {addLabel}
             </Button>
         </div>
@@ -681,12 +681,12 @@ const KeyValueEditor: React.FC<{
                         onClick={() => removePair(index)}
                         className="h-7 w-7"
                     >
-                        <X className="h-3 w-3" />
+                        <Close sx={{ fontSize: 12 }} />
                     </Button>
                 </div>
             ))}
             <Button type="button" variant="outline" size="sm" onClick={addPair} className="border-dashed text-xs h-7">
-                <Plus className="h-3 w-3 mr-1" />
+                <Add sx={{ fontSize: 12, mr: 0.5 }} />
                 {addLabel}
             </Button>
         </div>

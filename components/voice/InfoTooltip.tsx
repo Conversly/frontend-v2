@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Info } from "lucide-react";
+import { Info } from "@mui/icons-material";
 import {
     Tooltip,
     TooltipContent,
@@ -12,7 +12,7 @@ export function InfoTooltip({ content }: { content: string }) {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    <Info sx={{ fontSize: 14, color: "var(--muted-foreground)", cursor: "help" }} />
                 </TooltipTrigger>
                 <TooltipContent>
                     <p className="max-w-xs text-sm">{content}</p>

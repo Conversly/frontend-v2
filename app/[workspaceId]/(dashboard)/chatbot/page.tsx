@@ -9,7 +9,7 @@ import { useSetupStore } from "@/store/chatbot/setup";
 import { useBranchStore } from "@/store/branch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bot, Lock, Plus } from "lucide-react";
+import { SmartToy, Lock, Add } from "@mui/icons-material";
 import { ChatbotPreviewCard } from "@/components/chatbot/ChatbotPreviewCard";
 import { ResumeActivateCard } from "@/components/chatbot/ResumeActivateCard";
 import { EmptyState } from "@/components/shared";
@@ -67,7 +67,7 @@ function ChatbotListContent({ workspaceId, onDelete, onCreateChatbot }: ChatbotL
             primaryAction={{
               label: "Create chatbot",
               onClick: onCreateChatbot,
-              icon: <Plus />,
+              icon: <Add />,
             }}
           />
         )}
@@ -107,7 +107,7 @@ function ChatbotListError({ error, reset }: { error: Error; reset: () => void })
         <Card className="mx-auto max-w-md p-12">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="rounded-full bg-destructive/10 p-4">
-              <Bot className="h-12 w-12 text-destructive" />
+              <SmartToy sx={{ fontSize: 48, color: "var(--destructive)" }} />
             </div>
             <div className="space-y-2">
               <h3 className="text-xl font-semibold">Error loading chatbots</h3>
@@ -219,7 +219,7 @@ export default function WorkspaceChatbotsPage() {
                           : ""
                       }
                     >
-                      {isLocked ? <Lock className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
+                      {isLocked ? <Lock sx={{ fontSize: 16, mr: 1 }} /> : <Add sx={{ fontSize: 16, mr: 1 }} />}
                       Create chatbot
                       {isLocked && (
                         <span className="ml-2 text-[10px] font-medium bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full">

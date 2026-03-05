@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Check, Edit2, Loader2, Plus, Trash2, X } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Check, Edit, Add, Delete, Close } from "@mui/icons-material";
 import {
   useCreateTopicMutation,
   useDeleteTopicMutation,
@@ -113,7 +114,7 @@ export default function TopicsPage() {
 
         {!isCreateMode ? (
           <Button size="sm" onClick={() => setIsCreateMode(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
+            <Add sx={{ fontSize: 16 }} />
             Add topic
           </Button>
         ) : null}
@@ -141,9 +142,9 @@ export default function TopicsPage() {
                 className="h-9 gap-2"
               >
                 {createTopicMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <CircularProgress size={16} />
                 ) : (
-                  <Check className="h-4 w-4" />
+                  <Check sx={{ fontSize: 16 }} />
                 )}
                 Create
               </Button>
@@ -156,7 +157,7 @@ export default function TopicsPage() {
                 }}
                 className="h-9 gap-2"
               >
-                <X className="h-4 w-4" />
+                <Close sx={{ fontSize: 16 }} />
                 Cancel
               </Button>
             </div>
@@ -208,9 +209,9 @@ export default function TopicsPage() {
                               className="h-9 w-10 px-0"
                             >
                               {updateTopicMutation.isPending ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <CircularProgress size={16} />
                               ) : (
-                                <Check className="h-4 w-4" />
+                                <Check sx={{ fontSize: 16 }} />
                               )}
                             </Button>
                             <Button
@@ -219,7 +220,7 @@ export default function TopicsPage() {
                               onClick={() => setEditingTopicId(null)}
                               className="h-9 w-10 px-0"
                             >
-                              <X className="h-4 w-4" />
+                              <Close sx={{ fontSize: 16 }} />
                             </Button>
                           </div>
                         ) : (
@@ -264,9 +265,9 @@ export default function TopicsPage() {
                                 className="h-9 gap-2"
                               >
                                 {deleteTopicMutation.isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  <CircularProgress size={16} />
                                 ) : (
-                                  <Trash2 className="h-4 w-4" />
+                                  <Delete sx={{ fontSize: 16 }} />
                                 )}
                                 Confirm
                               </Button>
@@ -279,7 +280,7 @@ export default function TopicsPage() {
                                 onClick={() => startEditing(topic)}
                                 className="h-9 gap-2"
                               >
-                                <Edit2 className="h-4 w-4" />
+                                <Edit sx={{ fontSize: 16 }} />
                                 Edit
                               </Button>
                               <Button
@@ -291,7 +292,7 @@ export default function TopicsPage() {
                                 }}
                                 className="h-9 gap-2"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Delete sx={{ fontSize: 16 }} />
                                 Delete
                               </Button>
                             </>

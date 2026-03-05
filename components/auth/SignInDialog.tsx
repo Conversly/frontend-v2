@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bot } from "lucide-react";
+import { Close, SmartToy } from "@mui/icons-material";
 import { GoogleAuth } from "@/components/auth";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
@@ -55,7 +55,7 @@ export function SignInDialog({ isOpen, onClose }: SignInDialogProps) {
               className="absolute right-4 top-4 z-10"
               onClick={onClose}
             >
-              <X className="h-4 w-4" />
+              <Close sx={{ fontSize: 16 }} />
               <span className="sr-only">Close</span>
             </Button>
 
@@ -66,7 +66,7 @@ export function SignInDialog({ isOpen, onClose }: SignInDialogProps) {
               className="bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 text-center"
             >
               <div className="mx-auto w-12 h-12 mb-4 text-primary">
-                <Bot size={48} />
+                <SmartToy sx={{ fontSize: 48 }} />
               </div>
               <h2 className="text-2xl font-semibold mb-2">Welcome to VerlyAI</h2>
               <p className="text-muted-foreground">

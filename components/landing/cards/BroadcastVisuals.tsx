@@ -3,19 +3,19 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
-    MessageSquare,
-    Tag,
+    Chat,
+    Label,
     Percent,
-    ShoppingBag,
-    Calendar,
-    Clock,
+    ShoppingCart,
+    CalendarMonth,
+    AccessTime,
     Check,
-    ArrowRight,
-    MousePointer2,
-    Zap,
-    Bell,
-    Shield
-} from "lucide-react";
+    ArrowForward,
+    TouchApp,
+    Bolt,
+    Notifications,
+    Security
+} from "@mui/icons-material";
 
 const BackgroundPattern = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
     <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 border-l border-slate-100 ${className}`}>
@@ -39,7 +39,7 @@ export const MessagingCategoriesVisual = () => {
     const messages = [
         {
             type: "Marketing",
-            icon: <Percent size={14} />,
+            icon: <Percent sx={{ fontSize: 14 }} />,
             color: "bg-orange-100 text-orange-600",
             title: "Flash Sale Alert! 🔥",
             body: "Get 50% off on all sneakers today. Limited time only!",
@@ -47,7 +47,7 @@ export const MessagingCategoriesVisual = () => {
         },
         {
             type: "Utility",
-            icon: <ShoppingBag size={14} />,
+            icon: <ShoppingCart sx={{ fontSize: 14 }} />,
             color: "bg-blue-100 text-blue-600",
             title: "Order Confirmed 📦",
             body: "Your order #8291 has been shipped. Track it here.",
@@ -55,7 +55,7 @@ export const MessagingCategoriesVisual = () => {
         },
         {
             type: "Carousel",
-            icon: <Tag size={14} />,
+            icon: <Label sx={{ fontSize: 14 }} />,
             color: "bg-purple-100 text-purple-600",
             title: "New Arrivals ✨",
             body: "Check out our summer collection. Swipe to view ->",
@@ -63,7 +63,7 @@ export const MessagingCategoriesVisual = () => {
         },
         {
             type: "Auth",
-            icon: <MessageSquare size={14} />,
+            icon: <Chat sx={{ fontSize: 14 }} />,
             color: "bg-green-100 text-green-600",
             title: "Verify Account 🔐",
             body: "Your OTP is 4829. Do not share this with anyone.",
@@ -79,14 +79,14 @@ export const MessagingCategoriesVisual = () => {
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-12 -left-12 text-emerald-500/10 z-0"
             >
-                <MessageSquare size={80} />
+                <Chat sx={{ fontSize: 80 }} />
             </motion.div>
             <motion.div
                 animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 className="absolute top-1/2 -right-16 text-blue-500/10 z-0"
             >
-                <Zap size={60} />
+                <Bolt sx={{ fontSize: 60 }} />
             </motion.div>
 
             <div className="relative w-full bg-white rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden h-[380px]">
@@ -155,14 +155,14 @@ export const CTAVisual = () => {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-8 right-0 text-orange-500/10 z-0"
             >
-                <ShoppingBag size={72} />
+                <ShoppingCart sx={{ fontSize: 72 }} />
             </motion.div>
             <motion.div
                 animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                 className="absolute bottom-12 -left-10 text-emerald-500/10 z-0"
             >
-                <MousePointer2 size={64} />
+                <TouchApp sx={{ fontSize: 64 }} />
             </motion.div>
 
             <div className="relative w-full bg-white rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden h-[380px] flex flex-col">
@@ -196,7 +196,7 @@ export const CTAVisual = () => {
                         {/* Buttons */}
                         <div className="border-t border-slate-100 mt-2">
                             <button className="w-full py-2.5 text-[#00a884] font-medium text-sm hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 border-b border-slate-100">
-                                <ShoppingBag size={14} /> Shop Now
+                                <ShoppingCart sx={{ fontSize: 14 }} /> Shop Now
                             </button>
                             <button className="w-full py-2.5 text-[#00a884] font-medium text-sm hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 relative">
                                 Stop Promotions
@@ -217,7 +217,7 @@ export const CTAVisual = () => {
                         }}
                         transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
                     >
-                        <MousePointer2 className="fill-black text-white w-6 h-6 drop-shadow-md" />
+                        <TouchApp sx={{ fontSize: 24 }} className="fill-black text-white drop-shadow-md" />
                     </motion.div>
 
                     {/* Click Effect Ripple */}
@@ -245,20 +245,20 @@ export const SchedulingVisual = () => {
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute -top-6 -right-6 text-slate-900/5 z-0"
             >
-                <Clock size={100} />
+                <AccessTime sx={{ fontSize: 100 }} />
             </motion.div>
             <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute bottom-6 left-6 text-emerald-600/10 z-0"
             >
-                <Calendar size={60} />
+                <CalendarMonth sx={{ fontSize: 60 }} />
             </motion.div>
 
             <div className="bg-white rounded-xl shadow-xl border border-slate-200 p-6 w-full max-w-xs relative overflow-hidden z-10">
                 <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
-                        <Calendar size={20} />
+                        <CalendarMonth sx={{ fontSize: 20 }} />
                     </div>
                     <div>
                         <h4 className="font-semibold text-slate-800">Schedule Broadcast</h4>
@@ -294,7 +294,7 @@ export const SchedulingVisual = () => {
 
                 {/* Time Picker */}
                 <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-3 border border-slate-100 mb-6">
-                    <Clock size={16} className="text-slate-400" />
+                    <AccessTime sx={{ fontSize: 16 }} className="text-slate-400" />
                     <motion.span
                         className="text-sm font-medium text-slate-700"
                         initial={{ opacity: 0 }}
@@ -311,7 +311,7 @@ export const SchedulingVisual = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                 >
-                    <Check size={16} /> Schedule Message
+                    <Check sx={{ fontSize: 16 }} /> Schedule Message
                 </motion.button>
 
                 {/* Success Notification */}

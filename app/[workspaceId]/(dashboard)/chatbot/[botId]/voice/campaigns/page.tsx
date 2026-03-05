@@ -32,7 +32,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Play, Pause, Eye, Upload, CheckCircle2, ArrowRight, ArrowLeft, Rocket, Loader2 } from "lucide-react";
+import { Add, PlayArrow, Pause, Visibility, Upload, CheckCircle, ArrowForward, ArrowBack, RocketLaunch } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { toast } from "sonner";
 import Papa from "papaparse";
 import { format } from "date-fns";
@@ -203,7 +204,7 @@ export default function VoiceCampaigns() {
                                 : "bg-muted text-muted-foreground"
                             }`}
                     >
-                        {step < currentStep ? <CheckCircle2 className="h-4 w-4" /> : step}
+                        {step < currentStep ? <CheckCircle sx={{ fontSize: 16 }} /> : step}
                     </div>
                     {step < 4 && (
                         <div
@@ -227,7 +228,7 @@ export default function VoiceCampaigns() {
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button className="gap-2">
-                            <Plus className="h-4 w-4" />
+                            <Add sx={{ fontSize: 16 }} />
                             Create Campaign
                         </Button>
                     </DialogTrigger>
@@ -322,7 +323,7 @@ export default function VoiceCampaigns() {
                                                 id="csv-upload"
                                             />
                                             <label htmlFor="csv-upload" className="cursor-pointer block">
-                                                <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                                                <Upload sx={{ fontSize: 40 }} className="text-muted-foreground mx-auto mb-4" />
                                                 <p className="text-sm font-medium mb-1">
                                                     {campaignData.contactsFile ? campaignData.contactsFile.name : "Click to upload CSV"}
                                                 </p>
@@ -334,7 +335,7 @@ export default function VoiceCampaigns() {
                                         {campaignData.parsedContacts.length > 0 && campaignData.contactsMethod === 'csv' && (
                                             <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
                                                 <div className="flex items-center gap-2 text-green-600">
-                                                    <CheckCircle2 className="h-4 w-4" />
+                                                    <CheckCircle sx={{ fontSize: 16 }} />
                                                     <span className="text-sm font-medium">Verified {campaignData.parsedContacts.length} contacts</span>
                                                 </div>
                                             </div>
@@ -394,18 +395,18 @@ export default function VoiceCampaigns() {
                                 disabled={currentStep === 1}
                                 className="gap-2"
                             >
-                                <ArrowLeft className="h-4 w-4" />
+                                <ArrowBack sx={{ fontSize: 16 }} />
                                 Back
                             </Button>
                             {currentStep < totalSteps ? (
                                 <Button onClick={handleNext} className="gap-2">
                                     Next
-                                    <ArrowRight className="h-4 w-4" />
+                                    <ArrowForward sx={{ fontSize: 16 }} />
                                 </Button>
                             ) : (
                                 <Button onClick={handleCreateAndLaunch} disabled={createCampaign.isPending || launchCampaign.isPending} className="gap-2">
-                                    {(createCampaign.isPending || launchCampaign.isPending) && <Loader2 className="h-4 w-4 animate-spin" />}
-                                    <Rocket className="h-4 w-4" />
+                                    {(createCampaign.isPending || launchCampaign.isPending) && <CircularProgress size={16} />}
+                                    <RocketLaunch sx={{ fontSize: 16 }} />
                                     Launch Campaign
                                 </Button>
                             )}
@@ -433,7 +434,7 @@ export default function VoiceCampaigns() {
                             {isLoadingCampaigns ? (
                                 <TableRow>
                                     <TableCell colSpan={7} className="text-center py-8">
-                                        <Loader2 className="h-6 w-6 animate-spin mx-auto opacity-50" />
+                                        <CircularProgress size={24} className="mx-auto opacity-50" />
                                     </TableCell>
                                 </TableRow>
                             ) : campaigns && campaigns.length > 0 ? (
@@ -480,11 +481,11 @@ export default function VoiceCampaigns() {
                                         <TableCell className="text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <Button variant="ghost" size="icon">
-                                                    <Eye className="h-4 w-4" />
+                                                    <Visibility sx={{ fontSize: 16 }} />
                                                 </Button>
                                                 {campaign.status === "DRAFT" && (
                                                     <Button variant="ghost" size="icon" onClick={() => launchCampaign.mutate(campaign.id)}>
-                                                        <Play className="h-4 w-4" />
+                                                        <PlayArrow sx={{ fontSize: 16 }} />
                                                     </Button>
                                                 )}
                                             </div>

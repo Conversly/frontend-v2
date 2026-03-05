@@ -4,7 +4,7 @@ import { getDeployStatus } from "@/lib/api/deploy";
 import { toast } from 'sonner';
 import { useBranch, Branch } from '@/store/branch';
 import { cn } from '@/lib/utils';
-import { GitBranch, Circle, Info } from 'lucide-react';
+import { AccountTree, FiberManualRecord, Info } from '@mui/icons-material';
 import {
     Tooltip,
     TooltipContent,
@@ -77,7 +77,7 @@ export function BranchSwitcher({ className }: BranchSwitcherProps) {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <div className="flex items-center gap-1 text-xs text-amber-500">
-                                <Circle className="h-2 w-2 fill-amber-500" />
+                                <FiberManualRecord sx={{ fontSize: 8, color: "rgb(245 158 11)" }} />
                                 <span className="hidden sm:inline">Unpublished</span>
                             </div>
                         </TooltipTrigger>
@@ -114,7 +114,7 @@ export function BranchSwitcher({ className }: BranchSwitcherProps) {
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle className="flex items-center gap-2">
-                                <Info className="h-5 w-5 text-primary" />
+                                <Info sx={{ fontSize: 20, color: "var(--primary)" }} />
                                 Switch to {pendingBranch} mode?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
@@ -184,7 +184,7 @@ function BranchButton({ branch, isActive, onClick, disabled, tooltip }: BranchBu
                         (disabled || isActive) && 'cursor-default'
                     )}
                 >
-                    <GitBranch className="h-3 w-3" />
+                    <AccountTree sx={{ fontSize: 12 }} />
                     {branch}
                 </button>
             </TooltipTrigger>

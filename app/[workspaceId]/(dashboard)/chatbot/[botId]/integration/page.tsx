@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, ExternalLink, Filter, Sparkles } from 'lucide-react';
+import { Help, OpenInNew, FilterList, AutoAwesome } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { IntegrationCard, IntegrationSetupModal, IntegrationSidebar } from '@/components/chatbot/integration';
 import {
@@ -28,7 +28,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Plus, Mail, MessageSquare, ArrowRight } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Add, Mail, Message, ArrowForward } from "@mui/icons-material";
 
 export default function IntegrationPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
@@ -229,7 +230,7 @@ export default function IntegrationPage() {
             {/* Category Filter */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground whitespace-nowrap">
-                <Filter className="w-4 h-4" />
+                <FilterList sx={{ fontSize: 16 }} />
                 <span>Filter by:</span>
               </div>
               <Tabs value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -310,7 +311,7 @@ export default function IntegrationPage() {
                   >
                     <div className="p-6 space-y-4 flex flex-col h-full">
                       <div className="w-14 h-14 rounded-xl flex items-center justify-center border-2 border-dashed border-muted-foreground/20 group-hover:border-primary/30 bg-muted/30 group-hover:bg-primary/5 transition-all duration-300">
-                        <Plus className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <Add sx={{ fontSize: 28, color: "var(--muted-foreground)" }} className="group-hover:text-primary transition-colors" />
                       </div>
 
                       <div className="space-y-2 flex-1">
@@ -328,7 +329,7 @@ export default function IntegrationPage() {
                           className="w-full justify-between group-hover:border-primary/30 group-hover:text-primary"
                         >
                           Request Access
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                          <ArrowForward sx={{ fontSize: 16 }} className="transition-transform group-hover:translate-x-1" />
                         </Button>
                       </div>
                     </div>
@@ -338,7 +339,7 @@ export default function IntegrationPage() {
             ) : (
               <div className="text-center py-12 px-4">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-8 h-8 text-muted-foreground" />
+                  <AutoAwesome sx={{ fontSize: 32, color: "var(--muted-foreground)" }} />
                 </div>
                 <h3 className="type-section-title mb-2">
                   All integrations connected!
@@ -387,7 +388,7 @@ export default function IntegrationPage() {
               >
                 <DialogHeader className="mb-4">
                   <DialogTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <AutoAwesome sx={{ fontSize: 20, color: "var(--primary)" }} />
                     Request Integration
                   </DialogTitle>
                   <DialogDescription>
@@ -398,7 +399,7 @@ export default function IntegrationPage() {
                 <div className="grid gap-4 py-2">
                   <div className="grid gap-2">
                     <Label htmlFor="int-name" className="text-sm font-semibold flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4" />
+                      <Message sx={{ fontSize: 16 }} />
                       Integration Name <span className="text-destructive">*</span>
                     </Label>
                     <Input
@@ -413,7 +414,7 @@ export default function IntegrationPage() {
 
                   <div className="grid gap-2">
                     <Label htmlFor="req-email" className="text-sm font-semibold flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
+                      <Mail sx={{ fontSize: 16 }} />
                       Email Address <span className="text-destructive">*</span>
                     </Label>
                     <Input
@@ -441,7 +442,7 @@ export default function IntegrationPage() {
                   <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} className="min-w-[100px]">
                     {isRequestSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <CircularProgress size={16} sx={{ mr: 1 }} />
                         Sending...
                       </>
                     ) : (
@@ -460,7 +461,7 @@ export default function IntegrationPage() {
                 className="flex flex-col items-center justify-center py-6 text-center"
               >
                 <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                  <Sparkles className="w-8 h-8" />
+                  <AutoAwesome sx={{ fontSize: 32 }} />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Request Received!</h3>
                 <p className="text-muted-foreground max-w-[280px] mb-6 text-sm">

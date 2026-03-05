@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Globe, FileText, MessageSquare, AlignLeft, Shield, Zap, Lock } from 'lucide-react';
+import { Public, Description, Chat, FormatAlignLeft, Security, Bolt, Lock } from '@mui/icons-material';
 
 const BackgroundPattern = ({ children }: { children: React.ReactNode }) => (
     <div className="w-full h-full relative overflow-hidden flex items-center justify-center p-6">
@@ -17,11 +17,11 @@ const BackgroundPattern = ({ children }: { children: React.ReactNode }) => (
 
 export function LiveModeOverlay() {
     const icons = [
-        { Icon: Globe, color: 'text-primary/20', size: 80, x: -120, y: -100, delay: 0 },
-        { Icon: FileText, color: 'text-blue-500/10', size: 60, x: 140, y: -80, delay: 1 },
-        { Icon: MessageSquare, color: 'text-emerald-500/10', size: 70, x: -100, y: 120, delay: 0.5 },
-        { Icon: AlignLeft, color: 'text-orange-500/10', size: 50, x: 120, y: 140, delay: 1.5 },
-        { Icon: Zap, color: 'text-yellow-500/10', size: 40, x: 0, y: -150, delay: 2 },
+        { Icon: Public, color: 'text-primary/20', size: 80, x: -120, y: -100, delay: 0 },
+        { Icon: Description, color: 'text-blue-500/10', size: 60, x: 140, y: -80, delay: 1 },
+        { Icon: Chat, color: 'text-emerald-500/10', size: 70, x: -100, y: 120, delay: 0.5 },
+        { Icon: FormatAlignLeft, color: 'text-orange-500/10', size: 50, x: 120, y: 140, delay: 1.5 },
+        { Icon: Bolt, color: 'text-yellow-500/10', size: 40, x: 0, y: -150, delay: 2 },
     ];
 
     return (
@@ -56,7 +56,7 @@ export function LiveModeOverlay() {
                             className={`absolute ${color} z-0 pointer-events-none`}
                             style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
                         >
-                            <Icon size={size} />
+                            <Icon sx={{ fontSize: size }} />
                         </motion.div>
                     ))}
 
@@ -68,7 +68,7 @@ export function LiveModeOverlay() {
                         className="bg-card border border-border rounded-3xl p-8 shadow-2xl relative z-10"
                     >
                         <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 mx-auto">
-                            <Lock className="w-8 h-8 text-primary animate-pulse" />
+                            <Lock sx={{ fontSize: 32, color: "var(--primary)" }} />
                         </div>
 
                         <h2 className="text-2xl font-semibold text-foreground mb-3">
@@ -81,7 +81,7 @@ export function LiveModeOverlay() {
 
                         <div className="p-4 bg-muted/50 rounded-xl flex items-center gap-3 text-left">
                             <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center border border-border">
-                                <Shield className="w-5 h-5 text-emerald-500" />
+                                <Security sx={{ fontSize: 20, color: "rgb(16 185 129)" }} />
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-foreground">Protected State</div>
@@ -97,7 +97,7 @@ export function LiveModeOverlay() {
                         transition={{ delay: 1 }}
                         className="mt-8 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium flex items-center gap-2"
                     >
-                        <Zap size={12} className="fill-primary" />
+                        <Bolt sx={{ fontSize: 12, color: "var(--primary)" }} />
                         Visualization Mode
                     </motion.div>
                 </div>

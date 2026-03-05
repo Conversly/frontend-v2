@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Send, MessageSquare, Minimize2 } from 'lucide-react';
+import { Close, Send, Chat, Remove } from '@mui/icons-material';
 
 interface ChatWidgetProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose }) => {
       <div className="bg-indigo-600 p-4 flex items-center justify-between text-white">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-500 rounded-full">
-            <MessageSquare size={18} fill="currentColor" />
+            <Chat sx={{ fontSize: 18 }} />
           </div>
           <div>
             <h4 className="font-semibold text-sm">Support Bot</h4>
@@ -30,7 +30,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose }) => {
         </div>
         <div className="flex gap-2">
             <button onClick={onClose} className="p-1 hover:bg-indigo-500 rounded text-indigo-100">
-                <Minimize2 size={18} />
+                <Remove sx={{ fontSize: 18 }} />
             </button>
         </div>
       </div>
@@ -66,7 +66,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose }) => {
             disabled
             className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-400 text-white rounded-lg opacity-60 cursor-not-allowed"
           >
-            <Send size={16} />
+            <Send sx={{ fontSize: 16 }} />
           </button>
         </div>
         <div className="text-center mt-2">

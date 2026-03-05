@@ -1,5 +1,6 @@
 'use client';
-import { Check, Info, Star, Loader2 } from "lucide-react"
+import { CircularProgress } from "@mui/material";
+import { Check, Info, Star } from "@mui/icons-material"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useState } from "react";
@@ -222,7 +223,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                       animate={{ y: 0, opacity: 1 }}
                       className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-1.5 rounded-full text-sm font-semibold shadow-lg shadow-primary/25"
                     >
-                      <Star className="w-3.5 h-3.5 fill-current" />
+                      <Star sx={{ fontSize: 14 }} />
                       Most Popular
                     </motion.div>
                   </div>
@@ -262,7 +263,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-sm">
                         <div className="mt-0.5 p-1 rounded-full bg-primary/10 flex-shrink-0">
-                          <Check className="w-3.5 h-3.5 text-primary" />
+                          <Check sx={{ fontSize: 14, color: "var(--primary)" }} />
                         </div>
                         <div className="flex items-start gap-2 min-w-0">
                           <span className="text-muted-foreground group-hover:text-foreground transition-colors">
@@ -275,7 +276,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                                 aria-label={`More info about: ${feature.text}`}
                                 className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground/70 hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                               >
-                                <Info className="h-4 w-4" />
+                                <Info sx={{ fontSize: 16 }} />
                               </button>
                               <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-lg border border-border/60 bg-background/95 px-3 py-2 text-xs leading-snug text-foreground shadow-lg opacity-0 backdrop-blur-md transition-opacity duration-150 [span:has(button:hover)_&]:opacity-100 [span:has(button:focus-visible)_&]:opacity-100">
                                 {feature.info}
@@ -305,7 +306,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                     <span className="relative z-10 flex items-center gap-2">
                       {loadingPlan === plan.key ? (
                         <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <CircularProgress size={16} />
                           Processing...
                         </>
                       ) : (

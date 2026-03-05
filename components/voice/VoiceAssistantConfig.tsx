@@ -3,7 +3,8 @@
 import * as React from "react";
 import { useAssistant, useUpdateAssistant, useUpdateBehavior, useUpdateProvider } from "@/services/voice-assistant-service";
 import { usePhoneNumbers, useUpdatePhoneNumber } from "@/services/phone-number-service";
-import { Loader2, ArrowLeft, Save, Play, Mic, Phone } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { ArrowBack, Save, PlayArrow, Mic, Phone } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -124,7 +125,7 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
     const [isDirty, setIsDirty] = React.useState(false);
 
     if (isLoading) {
-        return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+        return <div className="flex justify-center p-10"><CircularProgress /></div>;
     }
 
     if (!assistant) {
@@ -202,7 +203,7 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
                             router.push(`/${workspaceId}/chatbot/${botId}/voice`);
                         }}
                     >
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowBack sx={{ fontSize: 16 }} />
                     </Button>
                     <div>
                         <div className="flex items-center gap-2">
@@ -276,7 +277,7 @@ export function VoiceAssistantConfig({ botId, assistantId }: VoiceAssistantConfi
                                             toast.success("Instructions saved successfully");
                                         }}
                                     >
-                                        <Save className="w-4 h-4 mr-2" />
+                                        <Save sx={{ fontSize: 16, mr: 1 }} />
                                         Save
                                     </Button>
                                 </CardHeader>

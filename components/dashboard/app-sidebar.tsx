@@ -31,19 +31,12 @@ import {
     DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    ChevronsUpDown,
-    LogOut,
-    Settings,
-    User,
-    Bot,
-    Moon,
-    Sun,
-    Laptop,
-    Megaphone,
-    MoreVertical,
-    PanelLeft,
-} from "lucide-react";
+import Person from "@mui/icons-material/Person";
+import DarkMode from "@mui/icons-material/DarkMode";
+import LightMode from "@mui/icons-material/LightMode";
+import Computer from "@mui/icons-material/Computer";
+import MoreVert from "@mui/icons-material/MoreVert";
+import Logout from "@mui/icons-material/Logout";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -233,18 +226,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 isActive={isActive}
                                                 tooltip={item.title}
                                                 className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200"
-                                            >
-                                                <Link
-                                                    href={item.url}
-                                                    onMouseEnter={() => handleNavItemHover(item.url)}
-                                                    prefetch={true}
-                                                >
-                                                    <div className={`p-1.5 rounded-lg flex items-center justify-center shrink-0 ${item.colorClass || "text-muted-foreground bg-muted/20"}`}>
-                                                        <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
-                                                    </div>
-                                                    <span>{item.title}</span>
-                                                </Link>
-                                            </SidebarMenuButton>
+                                                    >
+                                                    <Link
+                                                        href={item.url}
+                                                        onMouseEnter={() => handleNavItemHover(item.url)}
+                                                        prefetch={true}
+                                                        className="flex items-center gap-3"
+                                                    >
+                                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${item.colorClass || "text-muted-foreground bg-muted/20"}`}>
+                                                            <item.icon sx={{ fontSize: 14 }} />
+                                                        </div>
+                                                        <span>{item.title}</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
                                         </SidebarMenuItem>
                                     );
                                 })}
@@ -270,7 +264,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         <span className="truncate font-semibold">{getUserDisplayName()}</span>
                                         <span className="truncate text-xs">{getUserEmail()}</span>
                                     </div>
-                                    <MoreVertical className="ml-auto size-4" /> {/* Changed to MoreVertical (ellipsis) as requested */}
+                                    <MoreVert className="ml-auto" sx={{ fontSize: 16 }} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
@@ -294,15 +288,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link href={workspaceCtx ? `/${workspaceCtx.workspaceId}/profile` : "/"}>
-                                        <User className="mr-2 h-4 w-4" />
+                                        <Person sx={{ fontSize: 16 }} className="mr-2" />
                                         Profile
                                     </Link>
                                 </DropdownMenuItem>
 
                                 <DropdownMenuSub>
                                     <DropdownMenuSubTrigger>
-                                        <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                        <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                                        <LightMode className="mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" sx={{ fontSize: 16 }} />
+                                        <DarkMode className="absolute mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" sx={{ fontSize: 16 }} />
                                         <span>Theme</span>
                                     </DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>
@@ -311,21 +305,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 onClick={() => setTheme("light")}
                                                 className={theme === "light" ? "bg-primary/10 text-primary" : ""}
                                             >
-                                                <Sun className="mr-2 h-4 w-4" />
+                                                <LightMode sx={{ fontSize: 16 }} className="mr-2" />
                                                 <span>Light</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() => setTheme("dark")}
                                                 className={theme === "dark" ? "bg-primary/10 text-primary" : ""}
                                             >
-                                                <Moon className="mr-2 h-4 w-4" />
+                                                <DarkMode sx={{ fontSize: 16 }} className="mr-2" />
                                                 <span>Dark</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() => setTheme("system")}
                                                 className={theme === "system" ? "bg-primary/10 text-primary" : ""}
                                             >
-                                                <Laptop className="mr-2 h-4 w-4" />
+                                                <Computer sx={{ fontSize: 16 }} className="mr-2" />
                                                 <span>System</span>
                                             </DropdownMenuItem>
                                         </DropdownMenuSubContent>
@@ -333,7 +327,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 </DropdownMenuSub>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleLogout}>
-                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <Logout sx={{ fontSize: 16 }} className="mr-2" />
                                     Log out
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

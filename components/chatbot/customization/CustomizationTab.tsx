@@ -5,16 +5,15 @@ import { useEffect, useState } from 'react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
 import {
-  Bot,
-  MessageCircle,
-  HelpCircle,
-  MessageSquare,
-  BrainCircuit,
-  Settings2,
+  SmartToy,
+  Chat,
+  Help,
+  Psychology,
+  Settings,
   Code,
   Palette,
-  Sparkles,
-} from 'lucide-react';
+  AutoAwesome,
+} from '@mui/icons-material';
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
@@ -58,11 +57,11 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
   // Icons array for widget customization
   const icons = [
-    { id: 'chat', component: <MessageCircle className="w-6 h-6" /> },
-    { id: 'bot', component: <Bot className="w-6 h-6" /> },
-    { id: 'brain', component: <BrainCircuit className="w-6 h-6" /> },
-    { id: 'help', component: <HelpCircle className="w-6 h-6" /> },
-    { id: 'message', component: <MessageSquare className="w-6 h-6" /> },
+    { id: 'chat', component: <Chat sx={{ fontSize: 24 }} /> },
+    { id: 'bot', component: <SmartToy sx={{ fontSize: 24 }} /> },
+    { id: 'brain', component: <Psychology sx={{ fontSize: 24 }} /> },
+    { id: 'help', component: <Help sx={{ fontSize: 24 }} /> },
+    { id: 'message', component: <Chat sx={{ fontSize: 24 }} /> },
   ];
 
   // Pull centralized draft + actions from the store
@@ -218,28 +217,28 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 value="content"
                 className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
-                <Settings2 className="w-4 h-4 mr-2" />
+                <Settings sx={{ fontSize: 16, mr: 1 }} />
                 Content
               </TabsTrigger>
               <TabsTrigger
                 value="appearance"
                 className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
-                <Palette className="w-4 h-4 mr-2" />
+                <Palette sx={{ fontSize: 16, mr: 1 }} />
                 Appearance
               </TabsTrigger>
               <TabsTrigger
                 value="ai"
                 className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
-                <BrainCircuit className="w-4 h-4 mr-2" />
+                <Psychology sx={{ fontSize: 16, mr: 1 }} />
                 AI
               </TabsTrigger>
               <TabsTrigger
                 value="integration"
                 className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
-                <Code className="w-4 h-4 mr-2" />
+                <Code sx={{ fontSize: 16, mr: 1 }} />
                 Integration
               </TabsTrigger>
             </TabsList>
@@ -333,7 +332,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 <SectionHeader
                   title="Live Preview"
                   description="See how your chatbot will appear on your website"
-                  icon={Sparkles}
+                  icon={AutoAwesome}
                 />
                 {/* Preview container with fixed height */}
                 <div className="mt-4 h-[900px]">

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, AlertCircle, Loader2 } from 'lucide-react';
+import { CircularProgress } from '@mui/material';
+import { CloudUpload, Warning } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { documentSchema } from '@/utils/datasource-validation';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
@@ -79,7 +80,7 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
     <div className="space-y-4">
       {/* Warning Banner */}
       <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-        <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+        <Warning sx={{ fontSize: 20, color: "var(--destructive)", flexShrink: 0, mt: 0.5 }} />
         <p className="type-body-muted text-destructive">
           If you are uploading a PDF, make sure you can select/highlight the text.
         </p>
@@ -108,9 +109,9 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
             {isUploading ? (
-              <Loader2 className="w-6 h-6 text-primary animate-spin" />
+              <CircularProgress size={24} sx={{ color: "var(--primary)" }} />
             ) : (
-              <Upload className="w-6 h-6 text-muted-foreground" />
+              <CloudUpload sx={{ fontSize: 24, color: "var(--muted-foreground)" }} />
             )}
           </div>
           <div>

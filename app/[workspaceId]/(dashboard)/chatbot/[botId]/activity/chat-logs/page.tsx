@@ -16,7 +16,7 @@ import {
   ACTIVITY_PAGE_ROOT_CLASSNAME,
 } from "@/components/chatbot/activity/layout-constants";
 import { ConversationViewer } from "@/components/chatbot/activity/ConversationViewer";
-import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
+import { Download, FilterList, Search, Chat, Message, Mail, Public, Tag } from "@mui/icons-material";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -93,11 +93,11 @@ export default function ChatLogsPage() {
   const getChannelIcon = (channel?: string) => {
     const c = (channel || "").toUpperCase();
     switch (c) {
-      case "WHATSAPP": return <MessageSquare className="h-3.5 w-3.5 text-green-600" />;
-      case "WIDGET": return <MessageCircle className="h-3.5 w-3.5 text-blue-600" />;
-      case "SMS": return <Hash className="h-3.5 w-3.5 text-purple-600" />;
+      case "WHATSAPP": return <Message sx={{ fontSize: 14, color: "rgb(22 163 74)" }} />;
+      case "WIDGET": return <Chat sx={{ fontSize: 14, color: "rgb(37 99 235)" }} />;
+      case "SMS": return <Tag sx={{ fontSize: 14, color: "rgb(147 51 234)" }} />;
       case "EMAIL": return <Mail className="h-3.5 w-3.5 text-orange-600" />;
-      default: return <Globe className="h-3.5 w-3.5 text-muted-foreground" />;
+      default: return <Public sx={{ fontSize: 14, color: "var(--muted-foreground)" }} />;
     }
   };
 
@@ -263,7 +263,7 @@ export default function ChatLogsPage() {
                   onClick={() => setIsFilterOpen(true)}
                   className="gap-2 bg-background hover:bg-accent"
                 >
-                  <Filter className="h-4 w-4" />
+                  <FilterList sx={{ fontSize: 16 }} />
                   Filter
                 </Button>
                 <Button
@@ -283,7 +283,7 @@ export default function ChatLogsPage() {
                     downloadJsonFile(`chat-${botId}-${selectedConvId}.json`, payload);
                   }}
                 >
-                  <Download className="h-4 w-4" />
+                  <Download sx={{ fontSize: 16 }} />
                   Download JSON
                 </Button>
               </div>

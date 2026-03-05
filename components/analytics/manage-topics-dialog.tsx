@@ -13,7 +13,8 @@ import {
     DialogFooter
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Settings, Plus, Edit2, Trash2, X, Check, Loader2, AlertTriangle } from "lucide-react";
+import { CircularProgress } from "@mui/material";
+import { Settings, Add, Edit, Delete, Close, Check, Warning } from "@mui/icons-material";
 import { toast } from "sonner";
 import {
     useTopicsQuery,
@@ -91,7 +92,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="gap-2">
-                    <Settings className="h-4 w-4" />
+                    <Settings sx={{ fontSize: 16 }} />
                     Manage Topics
                 </Button>
             </DialogTrigger>
@@ -110,7 +111,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                         </h4>
                         {!isCreateMode && (
                             <Button size="sm" onClick={() => setIsCreateMode(true)} className="gap-1.5">
-                                <Plus className="h-3.5 w-3.5" />
+                                <Add sx={{ fontSize: 14 }} />
                                 Add Topic
                             </Button>
                         )}
@@ -135,7 +136,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                 disabled={createTopicMutation.isPending}
                                 className="h-8 px-2"
                             >
-                                {createTopicMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                                {createTopicMutation.isPending ? <CircularProgress size={16} /> : <Check sx={{ fontSize: 16 }} />}
                             </Button>
                             <Button
                                 size="sm"
@@ -143,7 +144,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                 onClick={() => setIsCreateMode(false)}
                                 className="h-8 px-2"
                             >
-                                <X className="h-4 w-4" />
+                                <Close sx={{ fontSize: 16 }} />
                             </Button>
                         </div>
                     )}
@@ -181,7 +182,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                                     disabled={updateTopicMutation.isPending}
                                                     className="h-8 px-2"
                                                 >
-                                                    {updateTopicMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                                                    {updateTopicMutation.isPending ? <CircularProgress size={16} /> : <Check sx={{ fontSize: 16 }} />}
                                                 </Button>
                                                 <Button
                                                     size="sm"
@@ -189,14 +190,14 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                                     onClick={() => setEditingTopicId(null)}
                                                     className="h-8 px-2"
                                                 >
-                                                    <X className="h-4 w-4" />
+                                                    <Close sx={{ fontSize: 16 }} />
                                                 </Button>
                                             </div>
                                         ) : deletingTopicId === topic.id ? (
                                             /* INLINE DELETE CONFIRMATION */
                                             <div className="flex-1 flex items-center justify-between bg-destructive/10 -m-3 p-3 rounded-lg animate-in fade-in">
                                                 <div className="flex items-center gap-2 text-destructive text-sm font-medium">
-                                                    <AlertTriangle className="h-4 w-4" />
+                                                    <Warning sx={{ fontSize: 16 }} />
                                                     Delete "{topic.name}"?
                                                 </div>
                                                 <div className="flex items-center gap-2">
@@ -215,7 +216,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                                         disabled={deleteTopicMutation.isPending}
                                                         className="h-7 text-xs"
                                                     >
-                                                        {deleteTopicMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : "Confirm"}
+                                                        {deleteTopicMutation.isPending ? <CircularProgress size={12} /> : "Confirm"}
                                                     </Button>
                                                 </div>
                                             </div>
@@ -236,7 +237,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                                         className="h-8 w-8 p-0"
                                                         onClick={() => startEditing(topic)}
                                                     >
-                                                        <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+                                                        <Edit sx={{ fontSize: 14, color: "var(--muted-foreground)" }} />
                                                     </Button>
                                                     <Button
                                                         variant="ghost"
@@ -244,7 +245,7 @@ export function ManageTopicsDialog({ botId }: ManageTopicsDialogProps) {
                                                         className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                                                         onClick={() => setDeletingTopicId(topic.id)}
                                                     >
-                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                        <Delete sx={{ fontSize: 14 }} />
                                                     </Button>
                                                 </div>
                                             </>

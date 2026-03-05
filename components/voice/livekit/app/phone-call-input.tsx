@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { Phone } from 'lucide-react';
+import { Phone } from '@mui/icons-material';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ export function PhoneCallInput({ onCall, isLoading, disabled }: PhoneCallInputPr
                     </span>
                 ) : (
                     <span className="flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
+                        <Phone sx={{ fontSize: 16 }} />
                         Call Phone
                     </span>
                 )}

@@ -3,7 +3,7 @@
 import React from "react";
 import { TeamMember } from "@/types/promote";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Github, Linkedin, Globe } from "lucide-react";
+import { Code, Work, Public } from "@mui/icons-material";
 
 interface ProductTeamSectionProps {
     team: TeamMember[];
@@ -36,17 +36,17 @@ export function ProductTeamSection({ team }: ProductTeamSectionProps) {
                                     )}
                                     {member.socials.linkedin && (
                                         <a href={member.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                                            <Linkedin className="w-3 h-3" />
+                                            <Work sx={{ fontSize: 12 }} />
                                         </a>
                                     )}
                                     {member.socials.github && (
                                         <a href={member.socials.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                                            <Github className="w-3 h-3" />
+                                            <Code sx={{ fontSize: 12 }} />
                                         </a>
                                     )}
                                     {member.socials.website && (
                                         <a href={member.socials.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                                            <Globe className="w-3 h-3" />
+                                            <Public sx={{ fontSize: 12 }} />
                                         </a>
                                     )}
                                 </div>
