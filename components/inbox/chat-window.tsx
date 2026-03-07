@@ -145,10 +145,31 @@ export function ChatWindow({
 
     if (!activeConversationId) {
         return (
-            <main className="flex-1 flex flex-col bg-[--surface-secondary] justify-center items-center text-muted-foreground">
-                <div className="flex flex-col items-center gap-3">
-                    <MessageCircle className="size-10 text-muted" />
-                    <p>Select a conversation to view chat history.</p>
+            <main className="flex-1 flex flex-col bg-white border-r border-border shrink-0">
+                {/* Header */}
+                <div className="h-16 px-4 sm:px-6 bg-white border-b border-border flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className="size-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                            <MessageCircle className="size-4 text-muted-foreground" />
+                        </div>
+                        <div className="min-w-0">
+                            <h2 className="text-base font-bold text-foreground truncate">Active Chat</h2>
+                            <p className="text-xs text-muted-foreground truncate">No conversation selected</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Empty state content */}
+                <div className="flex-1 flex flex-col justify-center items-center bg-white text-muted-foreground">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="size-16 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+                            <MessageCircle className="size-8 text-gray-300" />
+                        </div>
+                        <div className="text-center">
+                            <p className="text-sm font-medium text-foreground">No conversation selected</p>
+                            <p className="text-xs text-muted-foreground mt-1">Select a chat from the left to view and reply.</p>
+                        </div>
+                    </div>
                 </div>
             </main>
         );
@@ -182,7 +203,8 @@ export function ChatWindow({
                             {isLoadingHistory ? (
                                 <div className="space-y-4">
                                     {Array.from({ length: 4 }).map((_, i) => (
-                                        <div key={i} className={cn("flex items-start gap-3", i % 2 ? "justify-start" : "flex-row-reverse ml-auto")}>
+                                        // Skeleton: even indices (0, 2) = AI/Agent on left, odd indices (1, 3) = User on right
+                                        <div key={i} className={cn("flex items-start gap-3", i % 2 === 0 ? "justify-start" : "flex-row-reverse ml-auto")}>
                                             <Skeleton className="size-8 rounded-full shrink-0" />
                                             <Skeleton className="h-16 w-64 rounded-xl" />
                                         </div>
@@ -207,8 +229,12 @@ export function ChatWindow({
                                         );
                                     }
 
+                                    // AI and Agent messages on left, User messages on right
+                                    const isLeftSide = isAssistant || isAgent;
+                                    const isRightSide = isUser;
+
                                     return (
-                                        <div key={m.id || idx} className={cn("flex items-start gap-3 max-w-[80%]", isUser || isAssistant ? "justify-start" : "flex-row-reverse ml-auto")}>
+                                        <div key={m.id || idx} className={cn("flex items-start gap-3 max-w-[80%]", isRightSide ? "flex-row-reverse ml-auto" : "justify-start")}>
                                             {/* Avatar */}
                                             {isUser && (
                                                 <Avatar className="size-8 border">
@@ -229,11 +255,11 @@ export function ChatWindow({
                                                 </Avatar>
                                             )}
 
-                                            <div className={cn("space-y-1 items-start flex flex-col min-w-0", isAgent && "items-end")}>
+                                            <div className={cn("space-y-1 items-start flex flex-col min-w-0", isRightSide && "items-end")}>
                                                 <div className={cn(
                                                     "p-3 rounded-xl shadow-sm border",
-                                                    isUser && "bg-white rounded-tl-none border border-border",
-                                                    isAgent && "bg-primary text-primary-foreground rounded-tr-none border-primary",
+                                                    isUser && "bg-primary text-primary-foreground rounded-tr-none border-primary",
+                                                    isAgent && "bg-white rounded-tl-none border border-border",
                                                     isAssistant && "bg-[--surface-secondary] rounded-tl-none border border-border text-foreground"
                                                 )}>
                                                     {isAssistant && (
@@ -243,13 +269,13 @@ export function ChatWindow({
                                                             </span>
                                                         </div>
                                                     )}
-                                                    <div className={cn("text-sm break-words whitespace-pre-wrap", isAgent && "font-medium")}>
+                                                    <div className={cn("text-sm break-words whitespace-pre-wrap", isUser && "font-medium")}>
                                                         <MarkdownRenderer>{m.text}</MarkdownRenderer>
                                                     </div>
                                                 </div>
                                                 <span className="text-[10px] text-muted-foreground px-1">
                                                     {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                                    {isAgent && " • Sent"}
+                                                    {isUser && " • Sent"}
                                                 </span>
                                             </div>
                                         </div>

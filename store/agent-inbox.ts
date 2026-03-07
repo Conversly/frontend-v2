@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { ConversationItem, ConversationMessageItem, EscalationItem } from "@/types/activity";
 import type { WebSocketBroadcastEvent, WebSocketCommandResponse } from "@/types/websocket";
+import { markEscalationRead } from "@/lib/api/activity";
 
 export type SenderType = "USER" | "AGENT" | "ASSISTANT" | "SYSTEM";
 
@@ -221,7 +222,10 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
     const history: ChatMessage[] = items.map((m) => {
       const sentAt = m.createdAt ? new Date(m.createdAt) : new Date();
       const senderType: SenderType =
-        m.type === "user" ? "USER" : m.type === "assistant" ? "ASSISTANT" : m.type === "system" ? "SYSTEM" : "SYSTEM";
+        m.type === "user" ? "USER" :
+        m.type === "assistant" ? "ASSISTANT" :
+        m.type === "agent" ? "AGENT" :
+        m.type === "system" ? "SYSTEM" : "SYSTEM";
 
       return {
         id: m.id,
@@ -364,6 +368,8 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
         assignedAgentDisplayName: agentDisplayName,
         assignedAgentAvatarUrl: agentAvatarUrl,
       });
+      // Fire and forget read update now that assignment is verified
+      markEscalationRead(escalationId).catch(() => { });
     }
   },
 

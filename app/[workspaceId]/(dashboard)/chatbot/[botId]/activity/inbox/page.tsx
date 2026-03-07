@@ -37,7 +37,6 @@ import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/a
 import { toast } from "sonner";
 
 // New specialized components
-import { SupportSidebar } from "../../../../../../../components/inbox/support-sidebar";
 import { EscalationsList } from "../../../../../../../components/inbox/escalations-list";
 import { ChatWindow } from "../../../../../../../components/inbox/chat-window";
 import { EscalationDetails } from "../../../../../../../components/inbox/escalation-details";
@@ -177,6 +176,7 @@ export default function InboxPage() {
   const upsertStateUpdate = useAgentInboxStore((s) => s.upsertStateUpdate);
 
   const activeQueue = useAgentInboxStore((s) => s.activeQueue);
+  const setActiveQueue = useAgentInboxStore((s) => s.setActiveQueue);
   const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
   const escalationsById = useAgentInboxStore((s) => s.escalationsById);
   const escalationIdByConversationId = useAgentInboxStore((s) => s.escalationIdByConversationId);
@@ -295,13 +295,17 @@ export default function InboxPage() {
     async (conversationId: string) => {
       const escalationId = escalationIdByConversationId[conversationId];
       if (!escalationId) return;
+
+      const escalation = escalationsById[escalationId];
+      if (!escalation || escalation.agentUserId !== agentUserId) return;
+
       try {
         await markEscalationRead(escalationId);
       } catch {
         await refetchMyEscalations();
       }
     },
-    [escalationIdByConversationId, refetchMyEscalations],
+    [escalationIdByConversationId, escalationsById, agentUserId, refetchMyEscalations],
   );
 
   // Compute stats for Sidebars
@@ -414,7 +418,6 @@ export default function InboxPage() {
       const room = conversationRoomId(targetConversationId);
       openConversation(targetConversationId);
       setActiveConversation(targetConversationId);
-      void markConversationRead(targetConversationId);
 
       sendMessage({
         action: WebSocketMessageType.CLAIM,
@@ -427,7 +430,7 @@ export default function InboxPage() {
       });
       toast.success("Claiming chat...");
     },
-    [activeConversationId, agentUserId, escalationIdByConversationId, markConversationRead, openConversation, sendMessage, setActiveConversation],
+    [activeConversationId, agentUserId, escalationIdByConversationId, openConversation, sendMessage, setActiveConversation],
   );
 
   const onSend = useCallback((text: string) => {
@@ -552,34 +555,31 @@ export default function InboxPage() {
     <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden text-foreground bg-background font-sans">
       <OpenConversationSubscribers />
 
-      {/* 1. Far Left: Unified Queues */}
-      <SupportSidebar className="w-64" counts={counts} />
+      {/* 1. Left: Conversation List with Integrated Queue Tabs */}
+      <EscalationsList
+        inboxItems={inboxItems}
+        isLoading={isLoadingInbox}
+        agentUserId={agentUserId}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSelectRow={onSelectRow}
+        onClaim={onClaim}
+        counts={counts}
+        activeQueue={activeQueue}
+        onQueueChange={setActiveQueue}
+      />
 
-      {/* Middle Container */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* 2. Middle-Left: Conversation List Snippets */}
-        <EscalationsList
-          inboxItems={inboxItems}
-          isLoading={isLoadingInbox}
-          agentUserId={agentUserId}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onSelectRow={onSelectRow}
-          onClaim={onClaim}
-        />
-
-        {/* 3. Middle-Right: Active Chat Window */}
-        <ChatWindow
-          agentUserId={agentUserId}
-          onSend={onSend}
-          onClaim={() => onClaim()}
-          onResolve={onResolve}
-          onClose={onClose}
-          onTransfer={onTransfer}
-          onTicket={onTicket}
-          isLoadingHistory={isLoadingHistory}
-        />
-      </div>
+      {/* 2. Right: Active Chat Window */}
+      <ChatWindow
+        agentUserId={agentUserId}
+        onSend={onSend}
+        onClaim={() => onClaim()}
+        onResolve={onResolve}
+        onClose={onClose}
+        onTransfer={onTransfer}
+        onTicket={onTicket}
+        isLoadingHistory={isLoadingHistory}
+      />
 
       {/* 4. Far Right: Contact / Escalation Context (Sheet) */}
       <Sheet

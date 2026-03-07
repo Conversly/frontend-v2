@@ -204,6 +204,12 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 icon: Inbox,
                 colorClass: "text-sky-600 bg-sky-100/80 dark:text-sky-500 dark:bg-sky-500/15",
             },
+            {
+                title: "Tickets",
+                url: `/${workspaceId}/chatbot/${botId}/tickets`,
+                icon: FileText,
+                colorClass: "text-amber-600 bg-amber-100/80 dark:text-amber-500 dark:bg-amber-500/15",
+            },
         ],
     },
     {

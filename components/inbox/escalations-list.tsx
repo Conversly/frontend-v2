@@ -1,12 +1,40 @@
 "use client";
 
-import { useAgentInboxStore } from "@/store/agent-inbox";
+import { useAgentInboxStore, type InboxQueue } from "@/store/agent-inbox";
 import { type EscalationItem } from "@/types/activity";
 import { cn } from "@/lib/utils";
 import { Search, Timer, Check, MessageCircle, MessageSquare, Hash, Mail, Globe, Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+
+interface Counts {
+    userWaiting: number;
+    unassigned: number;
+    mine: number;
+    waitingForUser: number;
+    resolved: number;
+    all: number;
+}
+
+interface EscalationsListProps {
+    inboxItems: EscalationItem[];
+    isLoading: boolean;
+    agentUserId: string;
+    searchQuery: string;
+    setSearchQuery: (q: string) => void;
+    onSelectRow: (conversationId: string) => void;
+    onClaim: (e: EscalationItem) => void;
+    counts: Counts;
+    activeQueue: InboxQueue;
+    onQueueChange: (queue: InboxQueue) => void;
+}
+
+interface QueueTab {
+    id: InboxQueue;
+    label: string;
+    count: number;
+}
 
 function getChannelIcon(channel?: string) {
     const c = (channel || "").toUpperCase();
@@ -35,15 +63,6 @@ function formatWaitTimer(ts: string) {
     return `${days}d`;
 }
 
-interface EscalationsListProps {
-    inboxItems: EscalationItem[];
-    isLoading: boolean;
-    agentUserId: string;
-    searchQuery: string;
-    setSearchQuery: (q: string) => void;
-    onSelectRow: (conversationId: string) => void;
-    onClaim: (e: EscalationItem) => void;
-}
 
 export function EscalationsList({
     inboxItems,
@@ -53,15 +72,32 @@ export function EscalationsList({
     setSearchQuery,
     onSelectRow,
     onClaim,
+    counts,
+    activeQueue,
+    onQueueChange,
 }: EscalationsListProps) {
     const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
     const unreadCountByConversationId = useAgentInboxStore((s) => s.unreadCountByConversationId);
     const messagesByConversationId = useAgentInboxStore((s) => s.messagesByConversationId);
     const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
 
+    const tabs: QueueTab[] = [
+        { id: "all", label: "All", count: counts.all },
+        { id: "unassigned", label: "Unassigned", count: counts.unassigned },
+        { id: "mine", label: "Mine", count: counts.mine },
+        { id: "user-waiting", label: "Waiting", count: counts.userWaiting },
+        { id: "waiting-for-user", label: "User Reply", count: counts.waitingForUser },
+        { id: "resolved", label: "Resolved", count: counts.resolved },
+    ];
+
     return (
-        <div className="w-80 border-r border-border flex flex-col overflow-y-auto bg-[--surface-secondary] shrink-0">
-            <div className="p-3">
+        <div className="w-[clamp(360px,35vw,560px)] border-r border-border flex flex-col bg-[--surface-secondary] shrink-0">
+            {/* Header */}
+            <div className="h-16 border-b border-border flex items-center px-4 sm:px-6 flex-shrink-0 bg-card">
+                <h1 className="text-lg font-bold tracking-tight truncate">Live support</h1>
+            </div>
+
+            <div className="p-3 space-y-3">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
                     <input
@@ -70,6 +106,34 @@ export function EscalationsList({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                </div>
+
+                {/* Queue Filter Tabs */}
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => onQueueChange(tab.id)}
+                            className={cn(
+                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 border",
+                                activeQueue === tab.id
+                                    ? "bg-primary text-primary-foreground border-primary"
+                                    : "bg-white text-foreground border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                            )}
+                        >
+                            {tab.label}
+                            {tab.count > 0 && (
+                                <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded-full font-semibold",
+                                    activeQueue === tab.id
+                                        ? "bg-primary-foreground/20 text-primary-foreground"
+                                        : "bg-gray-100 text-foreground"
+                                )}>
+                                    {tab.count}
+                                </span>
+                            )}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -116,10 +180,10 @@ export function EscalationsList({
                                 key={e.escalationId}
                                 onClick={() => onSelectRow(e.conversationId)}
                                 className={cn(
-                                    "p-4 border-l-4 shadow-sm cursor-pointer group transition-colors flex flex-col gap-2 relative",
+                                    "p-4 border-l-4 shadow-sm cursor-pointer group transition-colors flex flex-col gap-2 relative bg-card",
                                     isActive
-                                        ? "border-primary bg-card"
-                                        : "border-transparent hover:bg-card/50"
+                                        ? "border-primary"
+                                        : "border-transparent hover:border-gray-300"
                                 )}
                             >
                                 <div className="flex justify-between items-start mb-0.5">
@@ -140,12 +204,6 @@ export function EscalationsList({
                                 </p>
 
                                 <div className="flex items-center justify-between mt-0.5 relative z-10">
-                                    <div className="flex items-center gap-1.5">
-                                        {getChannelIcon(e.channel)}
-                                        <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
-                                            {channelName}
-                                        </span>
-                                    </div>
 
                                     <div className="flex items-center gap-2">
                                         {isMine && !isActive && <Check className="size-3 text-green-600" />}
@@ -192,11 +250,23 @@ export function EscalationsList({
                         );
                     })
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-10 text-center px-4">
-                        <p className="text-sm font-medium">No escalations</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Chats assigned to this queue will appear here.
-                        </p>
+                    // Empty state with skeleton placeholders
+                    <div className="flex flex-col">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="flex items-center gap-3 px-4 py-4 border-b border-border/50">
+                                <div className="min-w-0 flex-1 space-y-2">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <Skeleton className="h-4 w-32 bg-gray-200" />
+                                        <Skeleton className="h-3 w-10 bg-gray-200" />
+                                    </div>
+                                    <Skeleton className="h-3 w-full bg-gray-200" />
+                                    <div className="flex items-center gap-1.5 pt-1">
+                                        <Skeleton className="h-3 w-3 rounded-full bg-gray-200" />
+                                        <Skeleton className="h-2.5 w-12 bg-gray-200" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
