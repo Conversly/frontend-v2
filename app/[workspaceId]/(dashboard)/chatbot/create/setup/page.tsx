@@ -24,6 +24,11 @@ import { LivePreviewWidget } from "@/components/chatbot/customization/LivePrevie
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
+type TuningSubstep =
+  | { type: "analyzing"; current: number; total: number }
+  | { type: "processing"; current: number; total: number }
+  | { type: "finalizing"; current: number; total: number };
+
 function useStagedProgress(active: boolean) {
   const [stage, setStage] = useState<Stage>("idle");
   useEffect(() => {
@@ -39,6 +44,45 @@ function useStagedProgress(active: boolean) {
     };
   }, [active]);
   return stage;
+}
+
+// Hook to simulate granular tuning substeps during the tuning phase
+// Messages loop continuously so users never feel stuck
+function useTuningSubsteps(stage: Stage) {
+  const [substep, setSubstep] = useState<TuningSubstep>({ type: "analyzing", current: 1, total: 6 });
+
+  useEffect(() => {
+    if (stage !== "tuning") {
+      setSubstep({ type: "analyzing", current: 1, total: 6 });
+      return;
+    }
+
+    // Total messages: 20 (6 + 8 + 6)
+    // We'll cycle through all of them in a loop until the stage changes
+    let globalIndex = 0;
+
+    const interval = setInterval(() => {
+      globalIndex = (globalIndex + 1) % 20; // Loop back to 0 after reaching 19
+
+      // Determine which phase and position based on global index
+      if (globalIndex < 6) {
+        // Phase 1: Analyzing (indices 0-5)
+        setSubstep({ type: "analyzing", current: globalIndex + 1, total: 6 });
+      } else if (globalIndex < 14) {
+        // Phase 2: Processing (indices 6-13)
+        setSubstep({ type: "processing", current: globalIndex - 6 + 1, total: 8 });
+      } else {
+        // Phase 3: Finalizing (indices 14-19)
+        setSubstep({ type: "finalizing", current: globalIndex - 14 + 1, total: 6 });
+      }
+    }, 1800); // ~1.8 seconds per message for smooth progression
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [stage]);
+
+  return substep;
 }
 
 export default function SetupWizardPage() {
@@ -130,6 +174,7 @@ export default function SetupWizardPage() {
 
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
+  const tuningSubstep = useTuningSubsteps(stage);
 
   // We intentionally removed the anti-refresh redirect here so users 
   // can refresh the page safely without losing their session if a backend step times out.
@@ -402,7 +447,7 @@ export default function SetupWizardPage() {
 
           {/* RIGHT PANEL (Visualization) */}
           <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l border-border bg-[--surface-secondary] lg:flex">
-            <SetupVisualization url={composedUrl} stage={stage}>
+            <SetupVisualization url={composedUrl} stage={stage} tuningSubstep={tuningSubstep}>
               {step === 4 && draftConfig && (
                 <div className="w-[400px] h-[650px] rounded-lg overflow-hidden shadow-lg">
                   <LivePreviewWidget
