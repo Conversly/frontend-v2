@@ -17,7 +17,7 @@ export type MessageChannel =
   | (string & {});
 
 // Matches backend `messages.type` (lowercase in the current API).
-export type MessageType = "user" | "assistant" | "system" | "tool";
+export type MessageType = "user" | "assistant" | "agent" | "system";
 
 export type EscalationStatus =
   | "REQUESTED"
