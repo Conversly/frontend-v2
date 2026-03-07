@@ -103,8 +103,7 @@ export function ChatWindow({
     const canSend = Boolean(agentUserId) && assigned === agentUserId && connectionState === ConnectionState.CONNECTED;
 
     const waitingForAgent =
-        ((activeEscalation?.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
-            (activeEscalation?.status || "").toUpperCase() === "REQUESTED") &&
+        (activeEscalation?.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" &&
         !assigned;
 
     // ── Handlers ─────────────────────────────────────────────────────────────

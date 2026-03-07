@@ -315,18 +315,17 @@ export default function InboxPage() {
 
     Object.values(escalationsById).forEach((e) => {
       allCount++;
-      const status = (e.status || "").toUpperCase();
+      const state = (e.conversationState || "").toUpperCase();
 
-      if (status === "WAITING_FOR_AGENT" || status === "REQUESTED") {
+      if (state === "ESCALATED_UNASSIGNED") {
         userWaiting++;
         if (!e.agentUserId) unassigned++;
       }
-      if (status === "ASSIGNED" || status === "HUMAN_ACTIVE") {
+      if (state === "ASSIGNED" || state === "HUMAN_WAITING_USER" || state === "USER_WAITING_HUMAN") {
         if (agentUserId && e.agentUserId === agentUserId) mine++;
-        // Mocking waiting for user state logic until fully supported in schema
-        if (e.reason?.includes("waiting for user")) waitingForUser++;
+        if (state === "HUMAN_WAITING_USER") waitingForUser++;
       }
-      if (status === "RESOLVED") resolved++;
+      if (state === "RESOLVED" || state === "CLOSED") resolved++;
     });
 
     return { userWaiting, unassigned, mine, waitingForUser, resolved, all: allCount };
@@ -336,9 +335,9 @@ export default function InboxPage() {
     // Source list is server-driven + local merged
     const list = Object.values(escalationsById);
     const filtered = list.filter((e) => {
-      const status = (e.status || "").toUpperCase();
-      const isWaiting = status === "WAITING_FOR_AGENT" || status === "REQUESTED";
-      const isClosed = status === "CANCELLED" || status === "TIMED_OUT" || status === "RESOLVED";
+      const state = (e.conversationState || "").toUpperCase();
+      const isWaiting = state === "ESCALATED_UNASSIGNED";
+      const isClosed = state === "RESOLVED" || state === "CLOSED";
       const isMine = e.agentUserId === agentUserId;
 
       if (activeQueue === "unassigned") {
@@ -346,9 +345,9 @@ export default function InboxPage() {
       } else if (activeQueue === "mine") {
         if (!isMine || isClosed) return false;
       } else if (activeQueue === "user-waiting") {
-        if (!isWaiting) return false;
+        if (state !== "USER_WAITING_HUMAN") return false;
       } else if (activeQueue === "resolved") {
-        if (status !== "RESOLVED") return false;
+        if (state !== "RESOLVED" && state !== "CLOSED") return false;
       } else if (activeQueue === "all") {
         // Show all
       } else {
@@ -373,8 +372,8 @@ export default function InboxPage() {
 
     // Sort: waiting first, then by requestedAt desc.
     filtered.sort((a, b) => {
-      const aWaiting = (a.status || "").toUpperCase() === "WAITING_FOR_AGENT" ? 0 : 1;
-      const bWaiting = (b.status || "").toUpperCase() === "WAITING_FOR_AGENT" ? 0 : 1;
+      const aWaiting = (a.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" ? 0 : 1;
+      const bWaiting = (b.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" ? 0 : 1;
       if (aWaiting !== bWaiting) return aWaiting - bWaiting;
       return new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime();
     });

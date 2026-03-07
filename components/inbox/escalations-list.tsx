@@ -93,8 +93,7 @@ export function EscalationsList({
                         const isAssigned = Boolean(e.agentUserId);
 
                         const waitingForAgent =
-                            (e.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
-                            (e.status || "").toUpperCase() === "REQUESTED";
+                            (e.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED";
 
                         const canClaim = waitingForAgent && !isAssigned;
                         const unread = unreadCountByConversationId[e.conversationId] ?? 0;

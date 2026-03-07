@@ -7,6 +7,16 @@
 
 export type ConversationStatus = "OPEN" | "CLOSED";
 
+// Keep this in sync with backend `ConversationState` enum.
+export type ConversationState =
+  | "AI_ACTIVE"
+  | "ESCALATED_UNASSIGNED"
+  | "ASSIGNED"
+  | "HUMAN_WAITING_USER"
+  | "USER_WAITING_HUMAN"
+  | "RESOLVED"
+  | "CLOSED";
+
 // Keep this in sync with backend `MessageChannel` enum.
 export type MessageChannel =
   | "WIDGET"
@@ -18,16 +28,6 @@ export type MessageChannel =
 
 // Matches backend `messages.type` (lowercase in the current API).
 export type MessageType = "user" | "assistant" | "agent" | "system";
-
-export type EscalationStatus =
-  | "REQUESTED"
-  | "WAITING_FOR_AGENT"
-  | "ASSIGNED"
-  | "HUMAN_ACTIVE"
-  | "RESOLVED"
-  | "TIMED_OUT"
-  | "CANCELLED"
-  | (string & {});
 
 export const Feedback = {
   None: 0,
@@ -85,7 +85,6 @@ export interface CloseConversationResponse {
 export interface EscalationItem {
   escalationId: string;
   conversationId: string;
-  status: EscalationStatus;
   requestedAt: string;
   acceptedAt: string | null;
   resolvedAt: string | null;
@@ -96,6 +95,9 @@ export interface EscalationItem {
   agentDisplayName?: string | null;
   agentAvatarUrl?: string | null;
   assignedAt: string | null;
+
+  // Conversation state is the source of truth for escalation status
+  conversationState?: ConversationState;
 
   // Optional (when escalations endpoint includes conversation fields)
   channel?: MessageChannel;
@@ -120,7 +122,7 @@ export interface GetEscalationResponse {
     escalation: EscalationItem;
     conversation: {
       conversationId: string;
-      status: ConversationStatus;
+      state: ConversationState;
       channel: MessageChannel;
       createdAt: string;
       updatedAt: string;

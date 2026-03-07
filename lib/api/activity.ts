@@ -4,9 +4,9 @@ import type {
   CloseConversationResponse,
   ConversationItem,
   ConversationMessageItem,
+  ConversationState,
   ConversationStatus,
   EscalationItem,
-  EscalationStatus,
   GetConversationMessagesResponse,
   GetConversationsResponse,
   GetEscalationResponse,
@@ -96,7 +96,7 @@ export async function closeConversation(conversationId: string): Promise<CloseCo
 export async function listEscalations(params: {
   chatbotId: string;
   mine?: boolean;
-  status?: EscalationStatus;
+  status?: ConversationState;
   limit?: number;
 }): Promise<EscalationItem[]> {
   try {

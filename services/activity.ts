@@ -9,8 +9,8 @@ import {
 import type {
   ConversationItem,
   ConversationMessageItem,
+  ConversationState,
   EscalationItem,
-  EscalationStatus,
 } from "@/types/activity";
 
 export const useChatlogsQuery = (chatbotId: string) =>
@@ -39,7 +39,7 @@ export const useConversationsQuery = (chatbotId: string) =>
 
 export const useEscalationsQuery = (
   chatbotId: string,
-  params?: { mine?: boolean; status?: EscalationStatus; limit?: number },
+  params?: { mine?: boolean; status?: ConversationState; limit?: number },
 ) =>
   useQuery<EscalationItem[]>({
     queryKey: [QUERY_KEY.ACTIVITY_ESCALATIONS, chatbotId, params?.mine, params?.status, params?.limit],

@@ -43,8 +43,7 @@ export function EscalationHeadbar({
     const assigned = activeEscalation?.agentUserId ?? activeState?.assignedAgentUserId ?? null;
 
     const waitingForAgent =
-        ((activeEscalation?.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
-            (activeEscalation?.status || "").toUpperCase() === "REQUESTED") &&
+        (activeEscalation?.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" &&
         !assigned;
 
     const headerTitle = activeEscalation?.lastUserMessage || activeEscalation?.reason || "Select a chat";
