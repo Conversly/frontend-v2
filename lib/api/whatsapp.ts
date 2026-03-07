@@ -197,7 +197,7 @@ export const getWhatsAppContactMessages = async (
   const rawMessages: any[] = Array.isArray(payload) ? payload : (payload?.data ?? []);
 
   const normalizeType = (t: unknown) => {
-    if (t === "user" || t === "assistant" || t === "system" || t === "tool") return t;
+    if (t === "user" || t === "assistant" || t === "system") return t;
     if (t === "agent") return "assistant";
     return "assistant";
   };
