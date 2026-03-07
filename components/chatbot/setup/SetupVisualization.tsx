@@ -6,13 +6,20 @@ import { Check, Loader2, Globe, Palette, Link as LinkIcon, Wand2 } from "lucide-
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
+// Substeps for the tuning phase to show granular progress
+type TuningSubstep =
+  | { type: "analyzing"; current: number; total: number }
+  | { type: "processing"; current: number; total: number }
+  | { type: "finalizing"; current: number; total: number };
+
 interface SetupVisualizationProps {
     url: string;
     stage: Stage;
     children?: React.ReactNode;
+    tuningSubstep?: TuningSubstep;
 }
 
-export function SetupVisualization({ url, stage, children }: SetupVisualizationProps) {
+export function SetupVisualization({ url, stage, children, tuningSubstep }: SetupVisualizationProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // Filter out false/null/undefined from conditional JSX children
@@ -132,10 +139,11 @@ export function SetupVisualization({ url, stage, children }: SetupVisualizationP
                                             label="Fetching logo"
                                             status={getStepStatus("topics", stage)}
                                         />
-                                        <StatusItem
+                                        <TuningStatusItem
                                             icon={<Wand2 className="h-4 w-4" />}
                                             label="Adjusting prompt"
                                             status={getStepStatus("tuning", stage)}
+                                            substep={tuningSubstep}
                                         />
                                     </div>
                                 )}
@@ -166,6 +174,88 @@ function StatusItem({ icon, label, status }: { icon: React.ReactNode, label: str
                     (status === "active" || status === "completed") && "text-foreground font-medium"
                 )}>
                     {label}
+                </span>
+            </div>
+            <div>
+                {status === "completed" && <Check className="h-4 w-4 text-green-500" />}
+                {status === "active" && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
+            </div>
+        </div>
+    )
+}
+
+// Pre-defined clear messages to show granular progress during prompt tuning
+const TUNING_MESSAGES = [
+  // Phase 1: Analyzing (6 messages)
+  "Analyzing your website content...",
+  "Scanning page structure and layout...",
+  "Extracting key information blocks...",
+  "Understanding your business context...",
+  "Identifying important topics...",
+  "Categorizing content sections...",
+  // Phase 2: Processing (8 messages)
+  "Processing discovered content...",
+  "Learning your communication style...",
+  "Building knowledge framework...",
+  "Understanding your target audience...",
+  "Mapping customer journey touchpoints...",
+  "Analyzing tone and voice patterns...",
+  "Synthesizing key messaging themes...",
+  "Extracting product/service details...",
+  // Phase 3: Finalizing (6 messages)
+  "Crafting your agent's personality...",
+  "Fine-tuning response patterns...",
+  "Optimizing for your use case...",
+  "Building conversation flow...",
+  "Applying final adjustments...",
+  "Finalizing agent configuration...",
+] as const;
+
+function TuningStatusItem({
+    icon,
+    label,
+    status,
+    substep
+}: {
+    icon: React.ReactNode;
+    label: string;
+    status: "pending" | "active" | "completed";
+    substep?: TuningSubstep;
+}) {
+    // Get the appropriate message based on substep - no counters to avoid confusion
+    const getProgressMessage = (): string => {
+        if (status !== "active" || !substep) return label;
+
+        const { type, current } = substep;
+
+        // Calculate message index based on substep type and progress
+        let messageIndex = 0;
+        if (type === "analyzing") {
+            messageIndex = Math.min(current - 1, 5); // First 6 messages
+        } else if (type === "processing") {
+            messageIndex = Math.min(6 + (current - 1), 13); // Messages 7-14
+        } else {
+            messageIndex = Math.min(14 + (current - 1), 19); // Messages 15-20
+        }
+
+        return TUNING_MESSAGES[messageIndex];
+    };
+
+    return (
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-sm">
+                <span className={cn(
+                    "text-muted-foreground transition-colors",
+                    (status === "active" || status === "completed") && "text-foreground"
+                )}>
+                    {icon}
+                </span>
+                <span className={cn(
+                    "text-muted-foreground transition-colors",
+                    status === "active" && "text-foreground font-medium",
+                    status === "completed" && "text-foreground"
+                )}>
+                    {getProgressMessage()}
                 </span>
             </div>
             <div>
