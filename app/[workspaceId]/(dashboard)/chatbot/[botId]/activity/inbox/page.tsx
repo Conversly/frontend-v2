@@ -40,7 +40,28 @@ import { toast } from "sonner";
 import { EscalationsList } from "../../../../../../../components/inbox/escalations-list";
 import { ChatWindow } from "../../../../../../../components/inbox/chat-window";
 import { EscalationDetails } from "../../../../../../../components/inbox/escalation-details";
+import { EscalationHeadbar } from "../../../../../../../components/inbox/escalation-headbar";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArrowRightLeft, Ticket, Loader2 } from "lucide-react";
 
 function normalizeSenderType(s: string): SenderType {
   const u = (s || "").toUpperCase();
@@ -184,6 +205,22 @@ export default function InboxPage() {
   const appendLiveMessage = useAgentInboxStore((s) => s.appendLiveMessage);
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Dialog states for headbar actions
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [ticketOpen, setTicketOpen] = useState(false);
+  const [isResolving, setIsResolving] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Transfer dialog state
+  const [transferAgentId, setTransferAgentId] = useState("");
+  const [isTransferring, setIsTransferring] = useState(false);
+
+  // Ticket dialog state
+  const [ticketTitle, setTicketTitle] = useState("");
+  const [ticketDesc, setTicketDesc] = useState("");
+  const [ticketPriority, setTicketPriority] = useState<TicketPriority>("MEDIUM");
+  const [isCreatingTicket, setIsCreatingTicket] = useState(false);
 
   // Escalate mutation hooks
   const resolveEscalationMutation = useResolveEscalation();
@@ -463,6 +500,7 @@ export default function InboxPage() {
       toast.error("Missing escalation id");
       return;
     }
+    setIsResolving(true);
     try {
       await resolveEscalationMutation.mutateAsync({ escalationId });
       upsertEscalationDelta({
@@ -481,11 +519,14 @@ export default function InboxPage() {
       closeConversationTab(activeConversationId);
     } catch (err: any) {
       toast.error(err?.message || "Failed to resolve conversation");
+    } finally {
+      setIsResolving(false);
     }
   }, [activeConversationId, closeConversationTab, escalationIdByConversationId, queryClient, resolveEscalationMutation, upsertEscalationDelta, upsertStateUpdate]);
 
   const onClose = useCallback(async () => {
     if (!activeConversationId) return;
+    setIsClosing(true);
     try {
       // Use the activity close endpoint to mark conversation as CLOSED
       await closeConversation(activeConversationId);
@@ -507,6 +548,8 @@ export default function InboxPage() {
       closeConversationTab(activeConversationId);
     } catch (err: any) {
       toast.error(err?.message || "Failed to close conversation");
+    } finally {
+      setIsClosing(false);
     }
   }, [activeConversationId, closeConversationTab, escalationIdByConversationId, queryClient, upsertEscalationDelta, upsertStateUpdate]);
 
@@ -552,34 +595,49 @@ export default function InboxPage() {
 
   // New Live Chat Layout Container
   return (
-    <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden text-foreground bg-background font-sans">
+    <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden text-foreground bg-background font-sans">
       <OpenConversationSubscribers />
 
-      {/* 1. Left: Conversation List with Integrated Queue Tabs */}
-      <EscalationsList
-        inboxItems={inboxItems}
-        isLoading={isLoadingInbox}
+      {/* Unified Header - Full Width */}
+      <EscalationHeadbar
         agentUserId={agentUserId}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        onSelectRow={onSelectRow}
-        onClaim={onClaim}
-        counts={counts}
-        activeQueue={activeQueue}
-        onQueueChange={setActiveQueue}
-      />
-
-      {/* 2. Right: Active Chat Window */}
-      <ChatWindow
-        agentUserId={agentUserId}
-        onSend={onSend}
         onClaim={() => onClaim()}
         onResolve={onResolve}
         onClose={onClose}
-        onTransfer={onTransfer}
-        onTicket={onTicket}
-        isLoadingHistory={isLoadingHistory}
+        onTransferClick={() => setTransferOpen(true)}
+        onTicketClick={() => setTicketOpen(true)}
+        isResolving={isResolving}
+        isClosing={isClosing}
       />
+
+      {/* Content Area - Side by Side */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* 1. Left: Conversation List with Integrated Queue Tabs */}
+        <EscalationsList
+          inboxItems={inboxItems}
+          isLoading={isLoadingInbox}
+          agentUserId={agentUserId}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSelectRow={onSelectRow}
+          onClaim={onClaim}
+          counts={counts}
+          activeQueue={activeQueue}
+          onQueueChange={setActiveQueue}
+        />
+
+        {/* 2. Right: Active Chat Window */}
+        <ChatWindow
+          agentUserId={agentUserId}
+          onSend={onSend}
+          onClaim={() => onClaim()}
+          onResolve={onResolve}
+          onClose={onClose}
+          onTransfer={onTransfer}
+          onTicket={onTicket}
+          isLoadingHistory={isLoadingHistory}
+        />
+      </div>
 
       {/* 4. Far Right: Contact / Escalation Context (Sheet) */}
       <Sheet
@@ -594,6 +652,141 @@ export default function InboxPage() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Transfer Dialog */}
+      <Dialog open={transferOpen} onOpenChange={setTransferOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ArrowRightLeft className="size-4" /> Transfer Conversation
+            </DialogTitle>
+            <DialogDescription>
+              Enter the Agent User ID you want to transfer this conversation to.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="transfer-agent-id">Target Agent ID</Label>
+              <Input
+                id="transfer-agent-id"
+                placeholder="e.g. agent_abc123"
+                value={transferAgentId}
+                onChange={(e) => setTransferAgentId(e.target.value)}
+                disabled={isTransferring}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setTransferOpen(false)} disabled={isTransferring}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!transferAgentId.trim()) return;
+                setIsTransferring(true);
+                try {
+                  await onTransfer(transferAgentId.trim());
+                  setTransferOpen(false);
+                  setTransferAgentId("");
+                } finally {
+                  setIsTransferring(false);
+                }
+              }}
+              disabled={!transferAgentId.trim() || isTransferring}
+            >
+              {isTransferring ? <Loader2 className="size-4 animate-spin mr-2" /> : <ArrowRightLeft className="size-4 mr-2" />}
+              Transfer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Ticket Dialog */}
+      <Dialog open={ticketOpen} onOpenChange={setTicketOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ticket className="size-4" /> Convert to Support Ticket
+            </DialogTitle>
+            <DialogDescription>
+              Create a support ticket from this conversation so it can be tracked and resolved outside the live chat flow.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="ticket-title">
+                Title <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="ticket-title"
+                placeholder="Brief summary of the issue"
+                value={ticketTitle}
+                onChange={(e) => setTicketTitle(e.target.value)}
+                disabled={isCreatingTicket}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ticket-description">Description</Label>
+              <Textarea
+                id="ticket-description"
+                placeholder="Detailed description of the issue (optional)"
+                value={ticketDesc}
+                onChange={(e) => setTicketDesc(e.target.value)}
+                disabled={isCreatingTicket}
+                rows={4}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ticket-priority">Priority</Label>
+              <Select
+                value={ticketPriority}
+                onValueChange={(v) => setTicketPriority(v as TicketPriority)}
+                disabled={isCreatingTicket}
+              >
+                <SelectTrigger id="ticket-priority">
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                  <SelectItem value="URGENT">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setTicketOpen(false)} disabled={isCreatingTicket}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!ticketTitle.trim()) return;
+                setIsCreatingTicket(true);
+                try {
+                  await onTicket({ title: ticketTitle.trim(), description: ticketDesc.trim() || undefined, priority: ticketPriority });
+                  setTicketOpen(false);
+                  setTicketTitle("");
+                  setTicketDesc("");
+                  setTicketPriority("MEDIUM");
+                } finally {
+                  setIsCreatingTicket(false);
+                }
+              }}
+              disabled={!ticketTitle.trim() || isCreatingTicket}
+            >
+              {isCreatingTicket ? <Loader2 className="size-4 animate-spin mr-2" /> : <Ticket className="size-4 mr-2" />}
+              Create Ticket
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

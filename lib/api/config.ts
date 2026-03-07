@@ -265,7 +265,7 @@ export const API = {
     },
     ESCALATE: {
       BASE_URL: () => "/escalate",
-      HANDLE_ABSENCE: allMode(() => "/handle-absence"),
+      HANDLE_ABSENCE: allMode(() => "/escalate/handle-absence"),
       CLAIM: allMode(() => "/:escalationId/claim"),
       RESOLVE: allMode(() => "/:escalationId/resolve"),
       TRANSFER: allMode(() => "/:escalationId/transfer"),

@@ -91,12 +91,7 @@ export function EscalationsList({
     ];
 
     return (
-        <div className="w-[clamp(360px,35vw,560px)] border-r border-border flex flex-col bg-[--surface-secondary] shrink-0">
-            {/* Header */}
-            <div className="h-16 border-b border-border flex items-center px-4 sm:px-6 flex-shrink-0 bg-card">
-                <h1 className="text-lg font-bold tracking-tight truncate">Live support</h1>
-            </div>
-
+        <div className="w-[clamp(360px,35vw,560px)] flex flex-col bg-[--surface-secondary] shrink-0">
             <div className="p-3 space-y-3">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
