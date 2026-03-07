@@ -32,6 +32,11 @@ export default function RootLayout({
       <head>
         <meta name="facebook-domain-verification" content="zq5gdmewsckb4auh452okb9sadoojz" />
         <meta name="google-site-verification" content="9XuDInfIUwvzXqkGdpiv9lcsQ0kIRvymv3wuCRlkQG0" />
+        {/* Material Symbols Outlined – variable icon font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
         {/* Structured Data for SEO and LLMs */}
         <script
           type="application/ld+json"

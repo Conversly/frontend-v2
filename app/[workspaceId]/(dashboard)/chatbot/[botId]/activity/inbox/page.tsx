@@ -4,19 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
-import { cn } from "@/lib/utils";
-import {
-  ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
-  ACTIVITY_PAGE_ROOT_CLASSNAME,
-} from "@/components/chatbot/activity/layout-constants";
-
 import { useAuth } from "@/store/auth";
 import { useSocketStore } from "@/store/websocket";
 import { useWebSocketRoom } from "@/hooks/use-websocket-room";
@@ -36,80 +23,32 @@ import {
   useEscalationsQuery,
   useMessagesQuery,
 } from "@/services/activity";
+import {
+  useResolveEscalation,
+  useCloseEscalation,
+  useTransferEscalation,
+  useConvertToTicket,
+} from "@/services/escalate";
 import { closeConversation, markEscalationRead } from "@/lib/api/activity";
 import type { EscalationItem } from "@/types/activity";
+import type { TicketPriority } from "@/types/escalate";
 import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/agent-inbox";
 
-import {
-  Search,
-  MessageCircle,
-  MessageSquare,
-  Mail,
-  Globe,
-  Hash,
-  Check,
-  Info,
-  Copy,
-  X,
-  Send,
-} from "lucide-react";
 import { toast } from "sonner";
 
-function shortId(id: string) {
-  return id.length <= 10 ? id : `${id.slice(0, 6)}…${id.slice(-4)}`;
-}
+// New specialized components
+import { SupportSidebar } from "../../../../../../../components/inbox/support-sidebar";
+import { EscalationsList } from "../../../../../../../components/inbox/escalations-list";
+import { ChatWindow } from "../../../../../../../components/inbox/chat-window";
+import { EscalationDetails } from "../../../../../../../components/inbox/escalation-details";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
-function formatRelative(ts: string) {
-  const d = new Date(ts);
-  const diff = Date.now() - d.getTime();
-  const s = Math.max(0, Math.floor(diff / 1000));
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h`;
-  const days = Math.floor(h / 24);
-  return `${days}d`;
-}
-
-function getChannelIcon(channel?: string) {
-  const c = (channel || "").toUpperCase();
-  switch (c) {
-    case "WHATSAPP":
-      return <MessageSquare className="h-3.5 w-3.5 text-green-600" />;
-    case "WIDGET":
-      return <MessageCircle className="h-3.5 w-3.5 text-blue-600" />;
-    case "SMS":
-      return <Hash className="h-3.5 w-3.5 text-purple-600" />;
-    case "EMAIL":
-      return <Mail className="h-3.5 w-3.5 text-orange-600" />;
-    default:
-      return <Globe className="h-3.5 w-3.5 text-muted-foreground" />;
-  }
-}
-
-function statusUi(status?: string) {
-  const s = (status || "").toUpperCase();
-  if (s === "WAITING_FOR_AGENT" || s === "REQUESTED") {
-    return { label: "Waiting", dotClass: "bg-blue-500" };
-  }
-  if (s === "ASSIGNED" || s === "HUMAN_ACTIVE") {
-    return { label: "Active", dotClass: "bg-green-500" };
-  }
-  if (s === "CANCELLED" || s === "TIMED_OUT" || s === "RESOLVED" || s === "CLOSED") {
-    return { label: "Closed", dotClass: "bg-muted-foreground/50" };
-  }
-  if (!s) return { label: "—", dotClass: "bg-muted-foreground/30" };
-  return { label: "Other", dotClass: "bg-muted-foreground/40" };
-}
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    toast.success("Copied");
-  } catch {
-    toast.error("Copy failed");
-  }
+function normalizeSenderType(s: string): SenderType {
+  const u = (s || "").toUpperCase();
+  if (u === "USER") return "USER";
+  if (u === "AGENT") return "AGENT";
+  if (u === "ASSISTANT") return "ASSISTANT";
+  return "SYSTEM";
 }
 
 function conversationRoomId(conversationId: string) {
@@ -122,14 +61,6 @@ function isBroadcastEvent(msg: WebSocketInboundMessage): msg is WebSocketBroadca
 
 function isCommandResponse(msg: WebSocketInboundMessage): msg is WebSocketCommandResponse {
   return Boolean((msg as any)?.status);
-}
-
-function normalizeSenderType(s: string): SenderType {
-  const u = (s || "").toUpperCase();
-  if (u === "USER") return "USER";
-  if (u === "AGENT") return "AGENT";
-  if (u === "ASSISTANT") return "ASSISTANT";
-  return "SYSTEM";
 }
 
 function ConversationRoomSubscriber({ conversationId }: { conversationId: string }) {
@@ -196,7 +127,6 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
           typeof data.sentAtUnix === "number" ? new Date(data.sentAtUnix * 1000) : new Date();
 
         const m: ChatMessage = {
-          // Backend currently sends messageId. Use any provided id to allow dedupe/upgrades.
           id: (data as any).messageId || "",
           conversationId: data.conversationId,
           senderType: normalizeSenderType(data.senderType),
@@ -246,22 +176,22 @@ export default function InboxPage() {
   const upsertEscalationDelta = useAgentInboxStore((s) => s.upsertEscalationDelta);
   const upsertStateUpdate = useAgentInboxStore((s) => s.upsertStateUpdate);
 
-  const openConversationIds = useAgentInboxStore((s) => s.openConversationIds);
+  const activeQueue = useAgentInboxStore((s) => s.activeQueue);
   const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
-  const unreadCountByConversationId = useAgentInboxStore((s) => s.unreadCountByConversationId);
-  const messagesByConversationId = useAgentInboxStore((s) => s.messagesByConversationId);
-  const stateByConversationId = useAgentInboxStore((s) => s.stateByConversationId);
   const escalationsById = useAgentInboxStore((s) => s.escalationsById);
   const escalationIdByConversationId = useAgentInboxStore((s) => s.escalationIdByConversationId);
-  const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
   const setHistoryFromApi = useAgentInboxStore((s) => s.setHistoryFromApi);
   const appendLiveMessage = useAgentInboxStore((s) => s.appendLiveMessage);
 
-  const [activeTab, setActiveTab] = useState<"all" | "waiting" | "mine">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [infoOpen, setInfoOpen] = useState(false);
 
-  // All/Waiting tabs are mine=false; Mine tab is mine=true.
+  // Escalate mutation hooks
+  const resolveEscalationMutation = useResolveEscalation();
+  const closeEscalationMutation = useCloseEscalation();
+  const transferEscalationMutation = useTransferEscalation();
+  const convertToTicketMutation = useConvertToTicket();
+
+  // Data fetching
   const { data: escalationsAll, isLoading: isLoadingEscalationsAll } = useEscalationsQuery(botId, {
     mine: false,
     limit: 200,
@@ -273,17 +203,11 @@ export default function InboxPage() {
   } = useEscalationsQuery(botId, { mine: true, limit: 200 });
 
   useEffect(() => {
-    if (escalationsAll) {
-      hydrateSnapshots({ escalations: escalationsAll });
-    }
+    if (escalationsAll) hydrateSnapshots({ escalations: escalationsAll });
   }, [escalationsAll, hydrateSnapshots]);
 
   useEffect(() => {
     if (!myEscalations) return;
-    // IMPORTANT:
-    // If backend intentionally returns `agentUserId: null` when `mine=false`,
-    // the "Mine" tab filter (e.agentUserId === me) will never match unless we also
-    // hydrate from the `mine=true` payload.
     hydrateSnapshots({ escalations: myEscalations });
     setUnreadCountsFromInbox(
       myEscalations.map((e) => ({
@@ -303,11 +227,9 @@ export default function InboxPage() {
     enabled: Boolean(notificationsRoomId),
     onMessage: (msg) => {
       if (!isBroadcastEvent(msg)) return;
-
       const eventType = msg.eventType;
       const data = (msg as any).data ?? {};
 
-      // Backend-backed unread events (optional). We only track unread for escalations assigned to me.
       if (eventType === "USER_MESSAGE" || eventType === "UNREAD_INCREMENT") {
         const conversationId = data.conversationId;
         const escalationId = data.escalationId;
@@ -324,13 +246,13 @@ export default function InboxPage() {
         }
         return;
       }
+
       if (eventType === "UNREAD_RESET") {
         const conversationId = data.conversationId;
         if (conversationId) clearUnread(conversationId);
         return;
       }
 
-      // Minimal handling: treat all notifications as escalation deltas where possible.
       if (
         eventType === WebSocketEventType.NEW_ESCALATION ||
         eventType === WebSocketEventType.CHAT_CLAIMED ||
@@ -339,7 +261,7 @@ export default function InboxPage() {
         const escalationId = data.escalationId || data.id;
         const conversationId = data.conversationId;
         if (escalationId) {
-          useAgentInboxStore.getState().upsertEscalationDelta({
+          upsertEscalationDelta({
             escalationId,
             conversationId,
             status: data.status,
@@ -360,7 +282,6 @@ export default function InboxPage() {
     },
   });
 
-  // Reconnect safety: on WS reconnect, rehydrate unread from backend.
   const lastConnRef = useRef(connectionState);
   useEffect(() => {
     const prev = lastConnRef.current;
@@ -383,27 +304,56 @@ export default function InboxPage() {
     [escalationIdByConversationId, refetchMyEscalations],
   );
 
+  // Compute stats for Sidebars
+  const counts = useMemo(() => {
+    let unassigned = 0;
+    let mine = 0;
+    let userWaiting = 0;
+    let waitingForUser = 0;
+    let resolved = 0;
+    let allCount = 0;
+
+    Object.values(escalationsById).forEach((e) => {
+      allCount++;
+      const status = (e.status || "").toUpperCase();
+
+      if (status === "WAITING_FOR_AGENT" || status === "REQUESTED") {
+        userWaiting++;
+        if (!e.agentUserId) unassigned++;
+      }
+      if (status === "ASSIGNED" || status === "HUMAN_ACTIVE") {
+        if (agentUserId && e.agentUserId === agentUserId) mine++;
+        // Mocking waiting for user state logic until fully supported in schema
+        if (e.reason?.includes("waiting for user")) waitingForUser++;
+      }
+      if (status === "RESOLVED") resolved++;
+    });
+
+    return { userWaiting, unassigned, mine, waitingForUser, resolved, all: allCount };
+  }, [escalationsById, agentUserId]);
+
   const inboxItems = useMemo(() => {
-    // Source list is server-driven by tab:
-    // - all/waiting: mine=false list
-    // - mine: mine=true list
-    const list = (activeTab === "mine" ? myEscalations : escalationsAll) ?? [];
+    // Source list is server-driven + local merged
+    const list = Object.values(escalationsById);
     const filtered = list.filter((e) => {
       const status = (e.status || "").toUpperCase();
       const isWaiting = status === "WAITING_FOR_AGENT" || status === "REQUESTED";
       const isClosed = status === "CANCELLED" || status === "TIMED_OUT" || status === "RESOLVED";
+      const isMine = e.agentUserId === agentUserId;
 
-      // Only hide when the escalation is explicitly closed.
-      // We intentionally do NOT hide based on conversationStatus because backend can close a conversation
-      // while an escalation is still active (ASSIGNED/HUMAN_ACTIVE), which would incorrectly hide it.
-      if (isClosed) return false;
-
-      if (activeTab === "waiting" && !isWaiting) return false;
-      // Mine tab is sourced from `mine=true` backend query, but we still guard it client-side
-      // once auth hydration completes. This prevents backend/edge-case pollution where `mine=true`
-      // can include escalations assigned to other agents.
-      if (activeTab === "mine" && agentUserId) {
-        if (e.agentUserId !== agentUserId) return false;
+      if (activeQueue === "unassigned") {
+        if (!isWaiting || e.agentUserId) return false;
+      } else if (activeQueue === "mine") {
+        if (!isMine || isClosed) return false;
+      } else if (activeQueue === "user-waiting") {
+        if (!isWaiting) return false;
+      } else if (activeQueue === "resolved") {
+        if (status !== "RESOLVED") return false;
+      } else if (activeQueue === "all") {
+        // Show all
+      } else {
+        // Fallback default hide closed unless in specific queue
+        if (isClosed) return false;
       }
 
       if (searchQuery) {
@@ -430,19 +380,7 @@ export default function InboxPage() {
     });
 
     return filtered;
-  }, [activeTab, agentUserId, escalationsAll, myEscalations, searchQuery]);
-
-  const activeEscalationId = activeConversationId ? escalationIdByConversationId[activeConversationId] : undefined;
-  const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
-  const activeState = activeConversationId ? stateByConversationId[activeConversationId] : undefined;
-  const activeHeaderStatus = statusUi(String(activeEscalation?.status ?? activeState?.status ?? ""));
-
-  const canSendInActiveConversation = useMemo(() => {
-    if (!activeConversationId) return false;
-    // Allow sending only when the escalation is assigned to me (or state says assigned to me).
-    const assigned = activeEscalation?.agentUserId ?? activeState?.assignedAgentUserId ?? null;
-    return Boolean(agentUserId) && assigned === agentUserId;
-  }, [activeConversationId, activeEscalation?.agentUserId, activeState?.assignedAgentUserId, agentUserId]);
+  }, [activeQueue, agentUserId, escalationsById, searchQuery]);
 
   const { data: activeHistory, isLoading: isLoadingHistory } = useMessagesQuery(
     botId,
@@ -455,13 +393,6 @@ export default function InboxPage() {
     setHistoryFromApi(activeConversationId, activeHistory);
   }, [activeConversationId, activeHistory, setHistoryFromApi]);
 
-  const activeMessages = activeConversationId
-    ? messagesByConversationId[activeConversationId] ?? []
-    : [];
-
-  const [draft, setDraft] = useState("");
-  const [isPreview, setIsPreview] = useState(false);
-
   const onSelectRow = useCallback(
     (conversationId: string) => {
       openConversation(conversationId);
@@ -473,43 +404,42 @@ export default function InboxPage() {
   );
 
   const onClaim = useCallback(
-    (e: EscalationItem) => {
-      if (!agentUserId) {
-        toast.error("Missing agent user id");
-        return;
-      }
-      const room = conversationRoomId(e.conversationId);
-      openConversation(e.conversationId);
-      setActiveConversation(e.conversationId);
-      void markConversationRead(e.conversationId);
+    (e?: EscalationItem) => {
+      if (!agentUserId) return toast.error("Missing agent user id");
+      const targetConversationId = e ? e.conversationId : activeConversationId;
+      if (!targetConversationId) return;
+
+      const escalationId = e ? e.escalationId : escalationIdByConversationId[targetConversationId];
+      if (!escalationId) return toast.error("Missing escalation id");
+
+      const room = conversationRoomId(targetConversationId);
+      openConversation(targetConversationId);
+      setActiveConversation(targetConversationId);
+      void markConversationRead(targetConversationId);
 
       sendMessage({
         action: WebSocketMessageType.CLAIM,
         room,
         data: {
-          conversationId: e.conversationId,
-          escalationId: e.escalationId,
+          conversationId: targetConversationId,
+          escalationId,
           agentUserId,
         },
       });
+      toast.success("Claiming chat...");
     },
-    [agentUserId, markConversationRead, openConversation, sendMessage, setActiveConversation],
+    [activeConversationId, agentUserId, escalationIdByConversationId, markConversationRead, openConversation, sendMessage, setActiveConversation],
   );
 
-  const onSend = useCallback(() => {
-    if (!activeConversationId) return;
-    if (!draft.trim()) return;
-
+  const onSend = useCallback((text: string) => {
+    if (!activeConversationId || !text.trim()) return;
     const room = conversationRoomId(activeConversationId);
-    const text = draft.trim();
-    setDraft("");
 
-    // Optimistic append for snappy UI; server will broadcast authoritative message too.
     appendLiveMessage({
       id: "",
       conversationId: activeConversationId,
       senderType: "AGENT",
-      text,
+      text: text.trim(),
       sentAt: new Date(),
     }, { bumpUnread: false });
 
@@ -519,660 +449,152 @@ export default function InboxPage() {
       data: {
         conversationId: activeConversationId,
         senderType: "AGENT",
-        text,
+        text: text.trim(),
       },
     });
-  }, [activeConversationId, appendLiveMessage, draft, sendMessage]);
+  }, [activeConversationId, appendLiveMessage, sendMessage]);
 
-  const onCloseChat = useCallback(async () => {
+  const onResolve = useCallback(async () => {
+    if (!activeConversationId) return;
+    const escalationId = escalationIdByConversationId[activeConversationId];
+    if (!escalationId) {
+      toast.error("Missing escalation id");
+      return;
+    }
+    try {
+      await resolveEscalationMutation.mutateAsync({ escalationId });
+      upsertEscalationDelta({
+        escalationId,
+        conversationId: activeConversationId,
+        status: "RESOLVED" as any,
+        resolvedAt: new Date().toISOString(),
+      } as any);
+      upsertStateUpdate({
+        conversationId: activeConversationId,
+        escalationId,
+        status: "RESOLVED",
+      });
+      toast.success("Conversation resolved");
+      queryClient.invalidateQueries();
+      closeConversationTab(activeConversationId);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to resolve conversation");
+    }
+  }, [activeConversationId, closeConversationTab, escalationIdByConversationId, queryClient, resolveEscalationMutation, upsertEscalationDelta, upsertStateUpdate]);
+
+  const onClose = useCallback(async () => {
     if (!activeConversationId) return;
     try {
+      // Use the activity close endpoint to mark conversation as CLOSED
       await closeConversation(activeConversationId);
-
-      // Immediately reflect closure locally so the inbox + header update deterministically.
       const escalationId = escalationIdByConversationId[activeConversationId] || "";
       if (escalationId) {
         upsertEscalationDelta({
           escalationId,
           conversationId: activeConversationId,
-          status: "RESOLVED" as any,
-          resolvedAt: new Date().toISOString(),
+          status: "CLOSED" as any,
         } as any);
         upsertStateUpdate({
           conversationId: activeConversationId,
           escalationId,
-          status: "RESOLVED",
+          status: "CLOSED",
         });
       }
-
       toast.success("Conversation closed");
       queryClient.invalidateQueries();
       closeConversationTab(activeConversationId);
     } catch (err: any) {
       toast.error(err?.message || "Failed to close conversation");
     }
-  }, [
-    activeConversationId,
-    closeConversationTab,
-    escalationIdByConversationId,
-    queryClient,
-    upsertEscalationDelta,
-    upsertStateUpdate,
-  ]);
+  }, [activeConversationId, closeConversationTab, escalationIdByConversationId, queryClient, upsertEscalationDelta, upsertStateUpdate]);
 
-  const isLoadingInbox =
-    (activeTab === "mine" ? isLoadingMyEscalations : isLoadingEscalationsAll);
+  const onTransfer = useCallback(async (targetAgentUserId: string) => {
+    if (!activeConversationId) return;
+    const escalationId = escalationIdByConversationId[activeConversationId];
+    if (!escalationId) {
+      toast.error("Missing escalation id");
+      return;
+    }
+    try {
+      await transferEscalationMutation.mutateAsync({ escalationId, targetAgentUserId });
+      toast.success("Conversation transferred");
+      queryClient.invalidateQueries();
+      closeConversationTab(activeConversationId);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to transfer conversation");
+    }
+  }, [activeConversationId, closeConversationTab, escalationIdByConversationId, queryClient, transferEscalationMutation]);
 
+  const onTicket = useCallback(async (payload: { title: string; description?: string; priority?: TicketPriority }) => {
+    if (!activeConversationId) return;
+    const escalationId = escalationIdByConversationId[activeConversationId];
+    if (!escalationId) {
+      toast.error("Missing escalation id");
+      return;
+    }
+    try {
+      await convertToTicketMutation.mutateAsync({
+        escalationId,
+        title: payload.title,
+        subject: payload.title,
+        description: payload.description,
+        priority: payload.priority,
+      });
+      toast.success("Ticket created successfully");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create ticket");
+    }
+  }, [activeConversationId, convertToTicketMutation, escalationIdByConversationId]);
+
+  const isLoadingInbox = activeQueue === "mine" ? isLoadingMyEscalations : isLoadingEscalationsAll;
+
+  // New Live Chat Layout Container
   return (
-    <div className={ACTIVITY_PAGE_ROOT_CLASSNAME}>
+    <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden text-foreground bg-background font-sans">
       <OpenConversationSubscribers />
 
-      {/* Left: Inbox */}
-      <div className={ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME}>
-        <div className="px-4 py-3 border-b space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="type-subtitle font-semibold text-foreground">Inbox</h2>
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-              {inboxItems.length}
-            </span>
-          </div>
+      {/* 1. Far Left: Unified Queues */}
+      <SupportSidebar className="w-64" counts={counts} />
 
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search message or reason..."
-              className="pl-8 h-8 text-xs"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+      {/* Middle Container */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* 2. Middle-Left: Conversation List Snippets */}
+        <EscalationsList
+          inboxItems={inboxItems}
+          isLoading={isLoadingInbox}
+          agentUserId={agentUserId}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSelectRow={onSelectRow}
+          onClaim={onClaim}
+        />
 
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-7 p-0.5">
-              <TabsTrigger value="all" className="text-xs h-6 px-1">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="waiting" className="text-xs h-6 px-1">
-                Waiting
-              </TabsTrigger>
-              <TabsTrigger value="mine" className="text-xs h-6 px-1">
-                Mine
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">
-              WS:{" "}
-              <span className={cn(connectionState === ConnectionState.CONNECTED ? "text-green-600" : "text-muted-foreground")}>
-                {connectionState}
-              </span>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => queryClient.invalidateQueries()}
-            >
-              Refresh
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
-          <div className="min-w-0 divide-y">
-            {isLoadingInbox ? (
-              Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-4">
-                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
-                  <div className="min-w-0 flex-1 space-y-2">
-                    <div className="flex items-center justify-between gap-3">
-                      <Skeleton className="h-4 w-40" />
-                      <Skeleton className="h-3 w-14" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Skeleton className="h-4 w-4" />
-                      <Skeleton className="h-4 w-full" />
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : inboxItems.length > 0 ? (
-              inboxItems.map((e) => {
-                const isActive = activeConversationId === e.conversationId;
-                const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
-                const isAssigned = Boolean(e.agentUserId);
-                const claimedByLabel = (e.agentDisplayName || e.agentUserId || "").trim();
-                const ui = statusUi(String(e.status));
-                const waitingForAgent =
-                  (e.status || "").toUpperCase() === "WAITING_FOR_AGENT" ||
-                  (e.status || "").toUpperCase() === "REQUESTED";
-                const canClaim = waitingForAgent && !isAssigned;
-                const unread = unreadCountByConversationId[e.conversationId] ?? 0;
-                const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
-                const lastMsg = lastMsgList.length ? lastMsgList[lastMsgList.length - 1] : undefined;
-                const primaryReason = (e.reason || "").trim();
-                const lastMsgText = (lastMsg?.text || "").trim();
-                const title = String(e.lastUserMessage || "").trim() || lastMsgText || primaryReason || "Open chat";
-                const previewText =
-                  lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
-                    ? lastMsgText
-                    : "Open chat";
-                const ts =
-                  e.lastUserMessageAt ||
-                  e.lastMessageAt ||
-                  (lastMsg ? lastMsg.sentAt.toISOString() : e.requestedAt);
-                const claimErr = lastClaimErrorByConversationId[e.conversationId];
-
-                return (
-                  <button
-                    key={e.escalationId}
-                    onClick={() => onSelectRow(e.conversationId)}
-                    className={cn(
-                      "group/item relative flex w-full min-w-0 cursor-pointer items-center gap-3 px-4 py-4 text-left transition-colors",
-                      "hover:bg-muted",
-                      isActive ? "bg-muted" : "bg-transparent",
-                    )}
-                  >
-                    {/* Avatar (channel) + status dot */}
-                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/60">
-                      <span className="scale-[1.05]" title={String(e.channel || "WIDGET").toUpperCase()}>
-                        {getChannelIcon(e.channel)}
-                      </span>
-                      <span
-                        className={cn(
-                          "absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background",
-                          ui.dotClass,
-                        )}
-                        aria-hidden="true"
-                      />
-                    </div>
-
-                    {/* Main content */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex min-w-0 items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-2">
-                          <span className="truncate text-sm font-medium text-foreground">
-                            {title}
-                          </span>
-                          {isMine && !isActive && (
-                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-                              Mine
-                            </span>
-                          )}
-                          {waitingForAgent && !isAssigned && (
-                            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-600">
-                              Waiting
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-muted-foreground flex-none text-xs tabular-nums">
-                          {formatRelative(ts)}
-                        </span>
-                      </div>
-
-                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                        {canClaim ? (
-                          <span className="text-muted-foreground shrink-0 text-xs">Unassigned</span>
-                        ) : isMine ? (
-                          <Check className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
-                        ) : isAssigned ? (
-                          <Check className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                        ) : null}
-
-                        <span
-                          className={cn(
-                            "min-w-0 truncate text-sm text-muted-foreground",
-                            claimErr ? "text-destructive" : "",
-                          )}
-                        >
-                          {claimErr ? `Claim failed: ${claimErr}` : previewText}
-                        </span>
-
-                        {unread > 0 && (
-                          <div className="ms-auto flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary px-2 text-[11px] font-medium text-primary-foreground tabular-nums">
-                            {unread}
-                          </div>
-                        )}
-                      </div>
-
-                      {!isMine && isAssigned && claimedByLabel && (
-                        <div className="mt-1 text-[11px] text-muted-foreground">
-                          Claimed by{" "}
-                          <span className="font-medium text-foreground/70">
-                            {e.agentDisplayName ? e.agentDisplayName : shortId(e.agentUserId || "")}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Hover actions */}
-                    <div
-                      className={cn(
-                        "pointer-events-none absolute inset-y-0 right-0 flex items-center bg-gradient-to-l from-muted from-50% px-3 opacity-0 transition-opacity",
-                        "group-hover/item:opacity-100",
-                      )}
-                      aria-hidden="true"
-                    >
-                      <div className="pointer-events-auto flex items-center gap-1.5">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-9 w-9 rounded-full"
-                          onClick={(evt) => {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                            void copyText(e.conversationId);
-                          }}
-                          aria-label="Copy conversation id"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        {canClaim && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-9 rounded-full px-3 text-xs"
-                            onClick={(evt) => {
-                              evt.preventDefault();
-                              evt.stopPropagation();
-                              onClaim(e);
-                            }}
-                          >
-                            Claim
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })
-            ) : (
-              <div className="flex flex-col items-center justify-center py-10 text-center px-4">
-                <p className="text-sm font-medium">No escalations</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Waiting chats will appear here in real-time.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* 3. Middle-Right: Active Chat Window */}
+        <ChatWindow
+          agentUserId={agentUserId}
+          onSend={onSend}
+          onClaim={() => onClaim()}
+          onResolve={onResolve}
+          onClose={onClose}
+          onTransfer={onTransfer}
+          onTicket={onTicket}
+          isLoadingHistory={isLoadingHistory}
+        />
       </div>
 
-      {/* Right: Chat */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background p-4 overflow-hidden">
-        <div className="bg-card flex-1 flex flex-col rounded-xl border shadow-sm overflow-hidden ring-1 ring-black/5">
-          <div className="border-b bg-card px-6 py-2.5">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex items-center gap-2">
-                {activeConversationId ? (
-                  <>
-                    <span
-                      className={cn(
-                        "h-2 w-2 rounded-full shrink-0",
-                        activeHeaderStatus.dotClass,
-                      )}
-                      aria-hidden="true"
-                    />
-                    <span className="text-xs text-muted-foreground shrink-0">{activeHeaderStatus.label}</span>
-                    <span className="shrink-0" title={String(activeEscalation?.channel || "WIDGET").toUpperCase()}>
-                      {getChannelIcon(activeEscalation?.channel)}
-                    </span>
-                    {activeEscalation?.reason ? (
-                      <span className="text-xs text-muted-foreground truncate">
-                        {activeEscalation.reason}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground truncate">—</span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-xs text-muted-foreground">Select an escalation from the inbox</span>
-                )}
-              </div>
-
-              <div className="flex items-center gap-1.5 shrink-0">
-                {activeConversationId && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={infoOpen ? "Hide info" : "Show info"}
-                      onClick={() => setInfoOpen((v) => !v)}
-                    >
-                      <Info className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={onCloseChat}>
-                      Close
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => closeConversationTab(activeConversationId)}
-                      aria-label="Close tab"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Tabs for open chats */}
-            {openConversationIds.length > 0 && (
-              <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-                {openConversationIds.map((id) => {
-                  const unread = unreadCountByConversationId[id] ?? 0;
-                  const isActive = id === activeConversationId;
-                  const escId = escalationIdByConversationId[id];
-                  const label =
-                    (escId ? escalationsById[escId]?.lastUserMessage : undefined)?.trim() || shortId(id);
-                  return (
-                    <button
-                      key={id}
-                      onClick={() => {
-                        setActiveConversation(id);
-                        clearUnread(id);
-                        void markConversationRead(id);
-                      }}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs shrink-0",
-                        isActive ? "bg-muted border-border" : "bg-background hover:bg-muted/40 border-border/60",
-                      )}
-                    >
-                      <span className="font-medium">{label}</span>
-                      {unread > 0 && (
-                        <span className="text-[10px] bg-primary text-primary-foreground rounded-full px-2 py-0.5 tabular-nums">
-                          {unread}
-                        </span>
-                      )}
-                      <span
-                        className="opacity-60 hover:opacity-100"
-                        onClick={(evt) => {
-                          evt.preventDefault();
-                          evt.stopPropagation();
-                          closeConversationTab(id);
-                        }}
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+      {/* 4. Far Right: Contact / Escalation Context (Sheet) */}
+      <Sheet
+        open={useAgentInboxStore((s) => s.isDetailsOpen)}
+        onOpenChange={(open) => useAgentInboxStore.getState().setDetailsOpen(open)}
+      >
+        <SheetContent className="w-96 sm:w-[400px] p-0 border-l border-border [&>button]:hidden flex flex-col h-full bg-card">
+          <SheetTitle className="sr-only">Escalation Details</SheetTitle>
+          <SheetDescription className="sr-only">Details about the active escalation</SheetDescription>
+          <div className="h-full w-full overflow-hidden flex flex-col">
+            <EscalationDetails />
           </div>
-
-          <div className="flex-1 overflow-hidden flex min-w-0 bg-card">
-            <div className="flex-1 overflow-hidden min-w-0">
-              <ScrollArea className="h-full">
-                <div className="p-6 space-y-4">
-                  {!activeConversationId ? (
-                    <p className="type-body-muted">Choose an escalation from the left.</p>
-                  ) : isLoadingHistory ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className={cn("flex", i % 2 ? "justify-end" : "justify-start")}>
-                          <Skeleton className="h-6 w-80 rounded-2xl" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : activeMessages.length === 0 ? (
-                    <p className="type-body-muted">No messages yet.</p>
-                  ) : (
-                    activeMessages.map((m, idx) => {
-                      const isUser = m.senderType === "USER";
-                      const isAgent = m.senderType === "AGENT";
-                      const isAssistant = m.senderType === "ASSISTANT";
-                      const isSystem = m.senderType === "SYSTEM";
-
-                      return (
-                        <div
-                          key={m.id || `${m.conversationId}-${m.sentAt.getTime()}-${idx}`}
-                          className={cn(
-                            "flex",
-                            isUser ? "justify-start" : "justify-end",
-                          )}
-                        >
-                          <div
-                            className={cn(
-                              "max-w-[85%] rounded-2xl px-4 py-3 text-base font-medium leading-relaxed shadow-sm",
-                              isUser && "bg-card border rounded-tl-sm",
-                              isAgent && "bg-primary text-primary-foreground rounded-tr-sm",
-                              isAssistant && "bg-muted text-foreground border",
-                              isSystem && "bg-background text-muted-foreground border border-dashed text-xs",
-                            )}
-                          >
-                            <div className="whitespace-pre-wrap break-words">
-                              <MarkdownRenderer>{m.text}</MarkdownRenderer>
-                            </div>
-                            <div
-                              className={cn(
-                                "mt-1 text-[10px] opacity-70 tabular-nums",
-                                isAgent ? "text-primary-foreground/80 text-right" : "text-muted-foreground",
-                              )}
-                            >
-                              {m.senderType} •{" "}
-                              {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-
-            <div
-              className={cn(
-                "shrink-0 overflow-hidden transition-all duration-200",
-                infoOpen && activeConversationId ? "w-80 border-l" : "w-0",
-              )}
-              aria-hidden={!infoOpen}
-            >
-              <div className="h-full bg-background">
-                <div className="px-4 py-3 border-b flex items-center justify-between">
-                  <div className="text-sm font-medium">Info</div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close info"
-                    onClick={() => setInfoOpen(false)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <ScrollArea className="h-full">
-                  <div className="p-4 space-y-4 text-sm">
-                    {!activeConversationId ? (
-                      <div className="text-xs text-muted-foreground">No conversation selected.</div>
-                    ) : (
-                      <>
-                        <div className="space-y-2">
-                          <div className="text-xs text-muted-foreground">Conversation</div>
-                          <div className="flex items-center justify-between gap-2">
-                            <code className="text-xs break-all">{activeConversationId}</code>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              aria-label="Copy conversation id"
-                              onClick={() => copyText(activeConversationId)}
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-
-                        {activeEscalationId && (
-                          <div className="space-y-2">
-                            <div className="text-xs text-muted-foreground">Escalation</div>
-                            <div className="flex items-center justify-between gap-2">
-                              <code className="text-xs break-all">{activeEscalationId}</code>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                aria-label="Copy escalation id"
-                                onClick={() => copyText(activeEscalationId)}
-                              >
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <div className="text-xs text-muted-foreground">Channel</div>
-                            <div className="mt-1 flex items-center gap-2">
-                              {getChannelIcon(activeEscalation?.channel)}
-                              <span className="text-xs">
-                                {String(activeEscalation?.channel || "WIDGET").toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-muted-foreground">Status</div>
-                            <div className="mt-1 text-xs">
-                              {String(activeEscalation?.status ?? activeState?.status ?? "—")}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <div className="text-xs text-muted-foreground">Assigned agent</div>
-                            <div className="mt-1 text-xs">
-                              {activeEscalation?.agentUserId
-                                ? shortId(activeEscalation.agentUserId)
-                                : activeState?.assignedAgentUserId
-                                  ? shortId(activeState.assignedAgentUserId)
-                                  : "—"}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-muted-foreground">WS</div>
-                            <div className="mt-1 text-xs">{connectionState}</div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="text-xs text-muted-foreground">Reason</div>
-                          <div className="text-xs whitespace-pre-wrap break-words">
-                            {activeEscalation?.reason || activeState?.reason || "—"}
-                          </div>
-                        </div>
-
-                        {activeEscalation && (
-                          <div className="space-y-2">
-                            <div className="text-xs text-muted-foreground">Timestamps</div>
-                            <div className="text-xs space-y-1">
-                              <div>
-                                Requested:{" "}
-                                <span className="text-muted-foreground">
-                                  {activeEscalation.requestedAt ? new Date(activeEscalation.requestedAt).toLocaleString() : "—"}
-                                </span>
-                              </div>
-                              <div>
-                                Accepted:{" "}
-                                <span className="text-muted-foreground">
-                                  {(activeEscalation as any).acceptedAt
-                                    ? new Date((activeEscalation as any).acceptedAt).toLocaleString()
-                                    : "—"}
-                                </span>
-                              </div>
-                              <div>
-                                Resolved:{" "}
-                                <span className="text-muted-foreground">
-                                  {(activeEscalation as any).resolvedAt
-                                    ? new Date((activeEscalation as any).resolvedAt).toLocaleString()
-                                    : "—"}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t bg-card px-6 py-4">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("h-7 px-2 text-xs", !isPreview && "bg-muted")}
-                  onClick={() => setIsPreview(false)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("h-7 px-2 text-xs", isPreview && "bg-muted")}
-                  onClick={() => setIsPreview(true)}
-                >
-                  Preview
-                </Button>
-              </div>
-            </div>
-            <div className="flex items-end gap-2">
-              <div className="flex-1">
-                {isPreview ? (
-                  <div className="min-h-[80px] rounded-md border bg-muted/30 p-3 text-sm">
-                    <MarkdownRenderer>{draft || "*No content to preview*"}</MarkdownRenderer>
-                  </div>
-                ) : (
-                  <Textarea
-                    placeholder={
-                      activeConversationId
-                        ? canSendInActiveConversation
-                          ? "Type a message…"
-                          : "Claim this chat to reply"
-                        : "Select a conversation"
-                    }
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    disabled={!activeConversationId || !canSendInActiveConversation}
-                    className="min-h-[80px] resize-none"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        onSend();
-                      }
-                    }}
-                  />
-                )}
-              </div>
-              <Button
-                className="gap-2"
-                disabled={
-                  !activeConversationId ||
-                  !canSendInActiveConversation ||
-                  !draft.trim() ||
-                  connectionState !== ConnectionState.CONNECTED
-                }
-                onClick={onSend}
-              >
-                <Send className="h-4 w-4" />
-                Send
-              </Button>
-            </div>
-            {activeConversationId && (
-              <div className="mt-2 text-xs text-muted-foreground">
-                Channel: <span className="font-medium">{String(activeEscalation?.channel || "WIDGET").toUpperCase()}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
-

@@ -141,23 +141,28 @@ export default function ContactsPage() {
     endDate !== "";
 
   // Helper to extract system fields or fallback
-  const getFieldValue = (lead: LeadResponse, systemField: string, fallbackKey?: string) => {
-    const field = lead.responses?.find(r => r.systemField === systemField);
-    if (field) return field.value;
+  const getFieldValue = (lead: LeadResponse, key: string, directField?: keyof LeadResponse) => {
+    // First check direct field on lead (e.g., displayName, email, phoneNumber)
+    if (directField && lead[directField]) {
+      return lead[directField] as string;
+    }
 
-    // Fallback for legacy data if keys are at root (casting as any since type definition might be strict)
-    if (fallbackKey && (lead as any)[fallbackKey]) return (lead as any)[fallbackKey];
+    // Then check attributes array
+    const field = lead.attributes?.find(r => r.key === key);
+    if (field) return field.value;
 
     return null;
   };
 
   const getOtherFields = (lead: LeadResponse) => {
-    return lead.responses?.filter(r => !r.systemField || r.systemField === 'none') || [];
+    // Filter out common system fields from attributes to get custom fields
+    const systemKeys = ['name', 'email', 'phone', 'phoneNumber'];
+    return lead.attributes?.filter(r => !systemKeys.includes(r.key)) || [];
   };
 
-  const getName = (lead: LeadResponse) => getFieldValue(lead, 'name', 'name') || "Anonymous";
-  const getEmail = (lead: LeadResponse) => getFieldValue(lead, 'email', 'email');
-  const getPhone = (lead: LeadResponse) => getFieldValue(lead, 'phone', 'phoneNumber');
+  const getName = (lead: LeadResponse) => lead.displayName || getFieldValue(lead, 'name') || "Anonymous";
+  const getEmail = (lead: LeadResponse) => lead.email || getFieldValue(lead, 'email');
+  const getPhone = (lead: LeadResponse) => lead.phoneNumber || getFieldValue(lead, 'phone') || getFieldValue(lead, 'phoneNumber');
 
   return (
     <div className="flex h-full flex-col bg-background">
@@ -299,7 +304,7 @@ export default function ContactsPage() {
                           {otherFields.length > 0 ? (
                             otherFields.slice(0, 3).map((field, idx) => (
                               <Badge key={idx} variant="secondary" className="font-normal text-xs">
-                                {field.label}: {field.value}
+                                {field.key}: {String(field.value)}
                               </Badge>
                             ))
                           ) : (

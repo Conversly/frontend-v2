@@ -263,6 +263,23 @@ export const API = {
       USAGE: allMode(() => "/usage/:accountId"),
       PLANS: allMode(() => "/plans"),
     },
+    ESCALATE: {
+      BASE_URL: () => "/escalate",
+      HANDLE_ABSENCE: allMode(() => "/handle-absence"),
+      CLAIM: allMode(() => "/:escalationId/claim"),
+      RESOLVE: allMode(() => "/:escalationId/resolve"),
+      TRANSFER: allMode(() => "/:escalationId/transfer"),
+      CONVERT_TO_TICKET: allMode(() => "/:escalationId/ticket"),
+    },
+    TICKETS: {
+      BASE_URL: () => "/tickets",
+      LIST: allMode(() => "/"),
+      GET: allMode(() => "/:ticketId"),
+      UPDATE: allMode(() => "/:ticketId"),
+      ASSIGN: allMode(() => "/:ticketId/assign"),
+      RESOLVE: allMode(() => "/:ticketId/resolve"),
+      CLOSE: allMode(() => "/:ticketId/close"),
+    },
   },
 };
 

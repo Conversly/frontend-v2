@@ -313,9 +313,9 @@ export default function LeadsPage() {
                 </TableRow>
               ) : (
                 leads.map((lead) => {
-                  const name = lead.responses?.find(r => r.systemField === 'name')?.value || "Anonymous";
-                  const email = lead.responses?.find(r => r.systemField === 'email')?.value;
-                  const phone = lead.responses?.find(r => r.systemField === 'phone' || r.systemField === 'phoneNumber')?.value;
+                  const name = lead.displayName || lead.attributes?.find(r => r.key === 'name')?.value || "Anonymous";
+                  const email = lead.email || lead.attributes?.find(r => r.key === 'email')?.value;
+                  const phone = lead.phoneNumber || lead.attributes?.find(r => r.key === 'phone' || r.key === 'phoneNumber')?.value;
                   return (
                     <TableRow key={lead.id}>
                       <TableCell className="font-medium">{name}</TableCell>
@@ -332,9 +332,7 @@ export default function LeadsPage() {
                       <TableCell className="text-muted-foreground text-sm">
                         {lead.createdAt
                           ? format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")
-                          : lead.createdAtStr
-                            ? format(new Date(lead.createdAtStr), "MMM d, yyyy h:mm a")
-                            : "-"}
+                          : "-"}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -388,7 +386,7 @@ export default function LeadsPage() {
             {selectedLead && (
               <div className="text-sm text-muted-foreground">
                 Lead: <span className="font-medium text-foreground">
-                  {selectedLead.responses?.find(r => r.systemField === 'name')?.value || "Anonymous"}
+                  {selectedLead.displayName || selectedLead.attributes?.find(r => r.key === 'name')?.value || "Anonymous"}
                 </span>
               </div>
             )}

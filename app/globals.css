@@ -3,6 +3,33 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── Material Symbols Outlined ─────────────────────────────────────────────
+ * Variable icon font loaded in app/layout.tsx via Google Fonts.
+ * These defaults give a clean, outlined look at weight 400.
+ * Override per-instance via `font-variation-settings` or the style prop.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* default render size */
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
 /**
  * Theme Configuration
  * 
@@ -104,8 +131,8 @@
   --destructive-foreground: oklch(1 0 0);
 
   /* Borders & Inputs */
-  --border: oklch(0.9276 0.0058 264.53);
-  --input: oklch(0.9276 0.0058 264.53);
+  --border: oklch(0.8700 0.0080 264.53);
+  --input: oklch(0.8700 0.0080 264.53);
   --ring: oklch(0.5461 0.2152 262.88);
 
   /* Chart colors — Blue gradient */
@@ -124,7 +151,7 @@
   --sidebar-accent: oklch(0.9842 0.0034 247.86);
   /* blue-tinted gray for hover */
   --sidebar-accent-foreground: oklch(0.5461 0.2152 262.88);
-  --sidebar-border: oklch(0.9276 0.0058 264.53);
+  --sidebar-border: oklch(0.8700 0.0080 264.53);
   --sidebar-ring: oklch(0.5461 0.2152 262.88);
 
   /* Input Backgrounds — slightly off-white for contrast */
@@ -161,9 +188,9 @@
   --destructive: oklch(0.65 0.20 25);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders (Zinc 800) */
-  --border: oklch(0.27 0.006 286);
-  --input: oklch(0.27 0.006 286);
+  /* Borders (Zinc 700) */
+  --border: oklch(0.35 0.008 286);
+  --input: oklch(0.35 0.008 286);
   --ring: oklch(0.63 0.20 260);
 
   /* Chart colors - Blue gradient */
@@ -181,7 +208,7 @@
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.27 0.006 286);
   --sidebar-accent-foreground: oklch(0.98 0.01 286);
-  --sidebar-border: oklch(0.27 0.006 286);
+  --sidebar-border: oklch(0.35 0.008 286);
   --sidebar-ring: oklch(0.63 0.20 260);
 
   --input-background: oklch(0.145 0.005 286);
@@ -320,9 +347,9 @@
   --muted-foreground: oklch(0.551 0.0234 264.36);
 
   /* Borders */
-  --border: oklch(0.9276 0.0058 264.53);
-  --input: oklch(0.9276 0.0058 264.53);
-  --sidebar-border: oklch(0.9276 0.0058 264.53);
+  --border: oklch(0.8700 0.0080 264.53);
+  --input: oklch(0.8700 0.0080 264.53);
+  --sidebar-border: oklch(0.8700 0.0080 264.53);
 
   /* Primary — Brand Blue */
   --primary: oklch(0.5461 0.2152 262.88);
@@ -369,9 +396,9 @@
   /* Match main background */
 
   /* Borders */
-  --border: oklch(0.27 0.006 286);
-  --input: oklch(0.27 0.006 286);
-  --sidebar-border: oklch(0.27 0.006 286);
+  --border: oklch(0.35 0.008 286);
+  --input: oklch(0.35 0.008 286);
+  --sidebar-border: oklch(0.35 0.008 286);
 
   /* Primary */
   --primary: oklch(0.63 0.20 260);

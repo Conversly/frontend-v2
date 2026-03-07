@@ -4,6 +4,8 @@ import type { WebSocketBroadcastEvent, WebSocketCommandResponse } from "@/types/
 
 export type SenderType = "USER" | "AGENT" | "ASSISTANT" | "SYSTEM";
 
+export type InboxQueue = "user-waiting" | "unassigned" | "mine" | "waiting-for-user" | "resolved" | "all";
+
 export type ChatMessage = {
   id: string;
   conversationId: string;
@@ -26,18 +28,18 @@ export type ConversationStateSnapshot = {
 
 export type AgentInboxNotificationEvent =
   | WebSocketBroadcastEvent<{
-      conversationId: string;
-      escalationId: string;
-      status?: string;
-      reason?: string | null;
-      requestedAt?: string;
-      assignedAgentUserId?: string | null;
-      assignedAgentDisplayName?: string | null;
-      assignedAgentAvatarUrl?: string | null;
-      agentUserId?: string | null;
-      agentDisplayName?: string | null;
-      agentAvatarUrl?: string | null;
-    }>
+    conversationId: string;
+    escalationId: string;
+    status?: string;
+    reason?: string | null;
+    requestedAt?: string;
+    assignedAgentUserId?: string | null;
+    assignedAgentDisplayName?: string | null;
+    assignedAgentAvatarUrl?: string | null;
+    agentUserId?: string | null;
+    agentDisplayName?: string | null;
+    agentAvatarUrl?: string | null;
+  }>
   | WebSocketCommandResponse;
 
 type AgentInboxState = {
@@ -49,7 +51,9 @@ type AgentInboxState = {
   // UI state
   openConversationIds: string[];
   activeConversationId: string | null;
+  activeQueue: InboxQueue;
   unreadCountByConversationId: Record<string, number>;
+  isDetailsOpen: boolean;
 
   // Chat state
   messagesByConversationId: Record<string, ChatMessage[]>;
@@ -67,9 +71,11 @@ type AgentInboxState = {
   openConversation: (conversationId: string) => void;
   closeConversationTab: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
+  setActiveQueue: (queue: InboxQueue) => void;
   clearUnread: (conversationId: string) => void;
   setUnreadCountsFromInbox: (items: { conversationId: string; unreadCount: number }[]) => void;
   incrementUnread: (conversationId: string, by?: number) => void;
+  setDetailsOpen: (open: boolean) => void;
 
   setHistoryFromApi: (conversationId: string, items: ConversationMessageItem[]) => void;
   appendLiveMessage: (message: ChatMessage, opts?: { bumpUnread?: boolean }) => void;
@@ -102,7 +108,9 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
 
   openConversationIds: [],
   activeConversationId: null,
+  activeQueue: "user-waiting",
   unreadCountByConversationId: {},
+  isDetailsOpen: false,
 
   messagesByConversationId: {},
   stateByConversationId: {},
@@ -170,10 +178,18 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
     if (conversationId) get().clearUnread(conversationId);
   },
 
+  setActiveQueue: (queue) => {
+    set({ activeQueue: queue });
+  },
+
   clearUnread: (conversationId) => {
     set((state) => ({
       unreadCountByConversationId: { ...state.unreadCountByConversationId, [conversationId]: 0 },
     }));
+  },
+
+  setDetailsOpen: (open) => {
+    set({ isDetailsOpen: open });
   },
 
   setUnreadCountsFromInbox: (items) => {
@@ -253,9 +269,9 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
         state.activeConversationId !== message.conversationId;
       const unreadCountByConversationId = bumpUnread
         ? {
-            ...state.unreadCountByConversationId,
-            [message.conversationId]: (state.unreadCountByConversationId[message.conversationId] ?? 0) + 1,
-          }
+          ...state.unreadCountByConversationId,
+          [message.conversationId]: (state.unreadCountByConversationId[message.conversationId] ?? 0) + 1,
+        }
         : state.unreadCountByConversationId;
 
       return { messagesByConversationId, unreadCountByConversationId };
