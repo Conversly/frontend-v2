@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/store/auth";
 import { useSocketStore } from "@/store/websocket";
 import { useWebSocketRoom } from "@/hooks/use-websocket-room";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import {
   WebSocketEventType,
@@ -16,6 +17,7 @@ import {
   type WebSocketCommandResponse,
   type WsChatMessagePayload,
   type WsStateUpdatePayload,
+  type WsPresenceUpdatePayload,
   ConnectionState,
 } from "@/types/websocket";
 
@@ -29,7 +31,8 @@ import {
   useTransferEscalation,
   useConvertToTicket,
 } from "@/services/escalate";
-import { closeConversation, markEscalationRead } from "@/lib/api/activity";
+import { closeConversation } from "@/lib/api/activity";
+import { markEscalationRead } from "@/lib/api/escalate";
 import type { EscalationItem } from "@/types/activity";
 import type { TicketPriority } from "@/types/escalate";
 import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/agent-inbox";
@@ -89,6 +92,7 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
   const appendLiveMessage = useAgentInboxStore((s) => s.appendLiveMessage);
   const handleClaimResponse = useAgentInboxStore((s) => s.handleClaimResponse);
   const upsertEscalationDelta = useAgentInboxStore((s) => s.upsertEscalationDelta);
+  const updatePresence = useAgentInboxStore((s) => s.updatePresence);
 
   useWebSocketRoom<WebSocketInboundMessage>({
     roomId,
@@ -156,6 +160,13 @@ function ConversationRoomSubscriber({ conversationId }: { conversationId: string
         appendLiveMessage(m);
         return;
       }
+
+      if (msg.eventType === WebSocketEventType.PRESENCE_UPDATE) {
+        const data = msg.data as WsPresenceUpdatePayload;
+        if (!data?.conversationId) return;
+        updatePresence(data.conversationId, data.isUserOnline, data.activeAgents || []);
+        return;
+      }
     },
   });
 
@@ -178,6 +189,7 @@ export default function InboxPage() {
   const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
 
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const agentUserId = user?.id || "";
 
@@ -637,21 +649,30 @@ export default function InboxPage() {
           onTicket={onTicket}
           isLoadingHistory={isLoadingHistory}
         />
-      </div>
 
-      {/* 4. Far Right: Contact / Escalation Context (Sheet) */}
-      <Sheet
-        open={useAgentInboxStore((s) => s.isDetailsOpen)}
-        onOpenChange={(open) => useAgentInboxStore.getState().setDetailsOpen(open)}
-      >
-        <SheetContent className="w-96 sm:w-[400px] p-0 border-l border-border [&>button]:hidden flex flex-col h-full bg-card">
-          <SheetTitle className="sr-only">Escalation Details</SheetTitle>
-          <SheetDescription className="sr-only">Details about the active escalation</SheetDescription>
-          <div className="h-full w-full overflow-hidden flex flex-col">
+        {/* 3. Far Right: Contact / Escalation Context (Desktop) */}
+        {!isMobile && useAgentInboxStore((s) => s.isDetailsOpen) && (
+          <div className="w-[300px] shrink-0 border-l border-border flex flex-col h-full bg-card animate-in slide-in-from-right-8 duration-300">
             <EscalationDetails />
           </div>
-        </SheetContent>
-      </Sheet>
+        )}
+      </div>
+
+      {/* 4. Far Right: Contact / Escalation Context (Mobile Sheet) */}
+      {isMobile && (
+        <Sheet
+          open={useAgentInboxStore((s) => s.isDetailsOpen)}
+          onOpenChange={(open) => useAgentInboxStore.getState().setDetailsOpen(open)}
+        >
+          <SheetContent className="w-11/12 max-w-sm sm:w-[400px] p-0 border-l border-border [&>button]:hidden flex flex-col h-full bg-card">
+            <SheetTitle className="sr-only">Escalation Details</SheetTitle>
+            <SheetDescription className="sr-only">Details about the active escalation</SheetDescription>
+            <div className="h-full w-full overflow-hidden flex flex-col">
+              <EscalationDetails />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
 
       {/* Transfer Dialog */}
       <Dialog open={transferOpen} onOpenChange={setTransferOpen}>

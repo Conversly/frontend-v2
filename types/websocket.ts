@@ -4,9 +4,9 @@
 // 1) command responses: { status, room, ... } (direct replies to join/leave/claim/stats/message)
 // 2) broadcast events:  { roomId, eventType, data } (fanout per room)
 
-export enum RoomCategory {}
+export enum RoomCategory { }
 
-export enum RoomSubCategory {}
+export enum RoomSubCategory { }
 
 export enum ConnectionState {
   DISCONNECTED = "disconnected",
@@ -37,6 +37,7 @@ export enum WebSocketEventType {
   STATE_UPDATE = "STATE_UPDATE",
   CHAT_MESSAGE = "CHAT_MESSAGE",
   ERROR = "ERROR",
+  PRESENCE_UPDATE = "PRESENCE_UPDATE",
 }
 
 // Payloads (MVP). Keep fields optional: backend may evolve without breaking UI.
@@ -57,6 +58,18 @@ export type WsChatMessagePayload = {
   text: string;
   messageId?: string;
   sentAtUnix?: number;
+};
+
+export type AgentPresenceInfo = {
+  agentUserId: string;
+  agentDisplayName?: string;
+  agentAvatarUrl?: string;
+};
+
+export type WsPresenceUpdatePayload = {
+  conversationId: string;
+  isUserOnline: boolean;
+  activeAgents: AgentPresenceInfo[];
 };
 
 // Outbound command envelope (what we send with ws.send()).
@@ -91,7 +104,7 @@ export type WebSocketBroadcastEvent<T = unknown> = {
 export type WebSocketInboundMessage =
   | WebSocketCommandResponse
   | WebSocketBroadcastEvent
-  | { error?: string; roomId?: string; room?: string; [key: string]: unknown };
+  | { error?: string; roomId?: string; room?: string;[key: string]: unknown };
 
 // Backwards-compat alias used by the existing socket store.
 export type WebSocketMessage<T = unknown> = WebSocketInboundMessage & {

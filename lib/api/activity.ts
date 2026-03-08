@@ -4,14 +4,9 @@ import type {
   CloseConversationResponse,
   ConversationItem,
   ConversationMessageItem,
-  ConversationState,
   ConversationStatus,
-  EscalationItem,
   GetConversationMessagesResponse,
   GetConversationsResponse,
-  GetEscalationResponse,
-  GetEscalationsResponse,
-  MarkEscalationReadResponse,
   MessageChannel,
 } from "@/types/activity";
 
@@ -59,6 +54,24 @@ export async function listConversations(params: {
   }
 }
 
+export async function listContactConversations(contactId: string, limit?: number): Promise<ConversationItem[]> {
+  try {
+    if (!contactId || contactId.trim() === "") {
+      throw new Error("contactId is required");
+    }
+
+    const endpoint =
+      API.ENDPOINTS.ACTIVITY.BASE_URL() + "/conversations/by-contact";
+    const url = `${endpoint}${buildQuery({ contactId, limit })}`;
+
+    const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetConversationsResponse;
+    return res.data;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error(error.message || "Failed to fetch contact conversations");
+  }
+}
+
 export async function getConversationMessages(conversationId: string): Promise<ConversationMessageItem[]> {
   try {
     if (!conversationId || !conversationId.trim()) {
@@ -90,65 +103,6 @@ export async function closeConversation(conversationId: string): Promise<CloseCo
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message || "Failed to close conversation");
-  }
-}
-
-export async function listEscalations(params: {
-  chatbotId: string;
-  mine?: boolean;
-  status?: ConversationState;
-  limit?: number;
-}): Promise<EscalationItem[]> {
-  try {
-    const { chatbotId, mine, status, limit } = params;
-    if (!chatbotId || chatbotId.trim() === "") {
-      throw new Error("chatbotId is required");
-    }
-
-    const endpoint =
-      API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.LIST_ESCALATIONS.path();
-    const url = `${endpoint}${buildQuery({ chatbotId, mine: mine ? "true" : undefined, status, limit })}`;
-
-    const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetEscalationsResponse;
-    return res.data;
-  } catch (error: any) {
-    console.error(error);
-    throw new Error(error.message || "Failed to fetch escalations");
-  }
-}
-
-export async function getEscalation(escalationId: string): Promise<GetEscalationResponse["data"]> {
-  try {
-    if (!escalationId || !escalationId.trim()) {
-      throw new Error("escalationId is required");
-    }
-
-    const endpoint =
-      API.ENDPOINTS.ACTIVITY.BASE_URL() +
-      fillPath(API.ENDPOINTS.ACTIVITY.GET_ESCALATION.path(), { escalationId });
-    const res = (await fetch(endpoint, { method: "GET" }).then((r) => r.data)) as GetEscalationResponse;
-    return res.data;
-  } catch (error: any) {
-    console.error(error);
-    throw new Error(error.message || "Failed to fetch escalation");
-  }
-}
-
-export async function markEscalationRead(escalationId: string): Promise<MarkEscalationReadResponse["data"]> {
-  try {
-    if (!escalationId || !escalationId.trim()) {
-      throw new Error("escalationId is required");
-    }
-
-    const endpoint =
-      API.ENDPOINTS.ACTIVITY.BASE_URL() +
-      fillPath(API.ENDPOINTS.ACTIVITY.MARK_ESCALATION_READ.path(), { escalationId });
-
-    const res = (await fetch(endpoint, { method: "POST", data: {} }).then((r) => r.data)) as MarkEscalationReadResponse;
-    return res.data;
-  } catch (error: any) {
-    console.error(error);
-    throw new Error(error.message || "Failed to mark escalation read");
   }
 }
 

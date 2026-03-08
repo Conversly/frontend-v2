@@ -109,6 +109,10 @@ export interface EscalationItem {
   lastUserMessage?: string | null;
   lastUserMessageAt?: string | null;
   unreadCount?: number | null;
+  contactName?: string | null;
+  contactCountryCode?: string | null;
+  contactEmail?: string | null;
+  contactId?: string | null;
 }
 
 export interface GetEscalationsResponse {

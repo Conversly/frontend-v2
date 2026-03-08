@@ -1,4 +1,4 @@
-import { guardedFetch } from "./axios";
+import { guardedFetch, fetch } from "./axios";
 import { API } from "./config";
 import type {
     HandleAbsenceInput,
@@ -14,6 +14,13 @@ import type {
     CloseEscalationInput,
     CloseEscalationResponse,
 } from "@/types/escalate";
+import type {
+    ConversationState,
+    EscalationItem,
+    GetEscalationResponse,
+    GetEscalationsResponse,
+    MarkEscalationReadResponse,
+} from "@/types/activity";
 
 /**
  * Fill path parameters in an API template.
@@ -121,3 +128,74 @@ export const closeEscalation = async (input: CloseEscalationInput) => {
         }
     );
 };
+
+// ─── Escalation Listing & Details (moved from activity.ts) ──────────────────
+
+function buildQuery(params: Record<string, string | number | undefined | null>): string {
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) {
+        if (v === undefined || v === null || v === "") continue;
+        qs.set(k, String(v));
+    }
+    const s = qs.toString();
+    return s ? `?${s}` : "";
+}
+
+export async function listEscalations(params: {
+    chatbotId: string;
+    mine?: boolean;
+    status?: ConversationState;
+    limit?: number;
+}): Promise<EscalationItem[]> {
+    try {
+        const { chatbotId, mine, status, limit } = params;
+        if (!chatbotId || chatbotId.trim() === "") {
+            throw new Error("chatbotId is required");
+        }
+
+        const endpoint =
+            API.ENDPOINTS.ESCALATE.BASE_URL() + API.ENDPOINTS.ESCALATE.LIST.path();
+        const url = `${endpoint}${buildQuery({ chatbotId, mine: mine ? "true" : undefined, status, limit })}`;
+
+        const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetEscalationsResponse;
+        return res.data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(error.message || "Failed to fetch escalations");
+    }
+}
+
+export async function getEscalation(escalationId: string): Promise<GetEscalationResponse["data"]> {
+    try {
+        if (!escalationId || !escalationId.trim()) {
+            throw new Error("escalationId is required");
+        }
+
+        const endpoint =
+            API.ENDPOINTS.ESCALATE.BASE_URL() +
+            fillPath(API.ENDPOINTS.ESCALATE.GET.path(), { escalationId });
+        const res = (await fetch(endpoint, { method: "GET" }).then((r) => r.data)) as GetEscalationResponse;
+        return res.data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(error.message || "Failed to fetch escalation");
+    }
+}
+
+export async function markEscalationRead(escalationId: string): Promise<MarkEscalationReadResponse["data"]> {
+    try {
+        if (!escalationId || !escalationId.trim()) {
+            throw new Error("escalationId is required");
+        }
+
+        const endpoint =
+            API.ENDPOINTS.ESCALATE.BASE_URL() +
+            fillPath(API.ENDPOINTS.ESCALATE.MARK_READ.path(), { escalationId });
+
+        const res = (await fetch(endpoint, { method: "POST", data: {} }).then((r) => r.data)) as MarkEscalationReadResponse;
+        return res.data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(error.message || "Failed to mark escalation read");
+    }
+}

@@ -72,8 +72,8 @@ export function EscalationHeadbar({
                         <Button
                             onClick={onResolve}
                             disabled={isResolving || isClosing}
-                            variant="secondary"
-                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg"
+                            variant="ghost"
+                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg border border-emerald-500/30 text-emerald-600 bg-emerald-500/10 hover:bg-emerald-500/20 hover:border-emerald-500/50 hover:text-emerald-700 dark:border-emerald-400/30 dark:text-emerald-400 dark:hover:border-emerald-400/50 dark:hover:text-emerald-300"
                         >
                             {isResolving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
                             Resolve
@@ -83,7 +83,7 @@ export function EscalationHeadbar({
                             onClick={onClose}
                             disabled={isResolving || isClosing}
                             variant="ghost"
-                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg border border-rose-500/30 text-rose-600 bg-rose-500/10 hover:bg-rose-500/20 hover:border-rose-500/50 hover:text-rose-700 dark:border-rose-400/30 dark:text-rose-400 dark:hover:border-rose-400/50 dark:hover:text-rose-300"
                         >
                             {isClosing ? <Loader2 className="size-4 animate-spin" /> : <X className="size-4" />}
                             Close
@@ -91,8 +91,8 @@ export function EscalationHeadbar({
 
                         <Button
                             onClick={onTransferClick}
-                            variant="secondary"
-                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg"
+                            variant="ghost"
+                            className="flex items-center gap-2 h-8 px-3 text-sm rounded-lg border border-amber-500/30 text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 hover:border-amber-500/50 hover:text-amber-700 dark:border-amber-400/30 dark:text-amber-400 dark:hover:border-amber-400/50 dark:hover:text-amber-300"
                         >
                             <ArrowRightLeft className="size-4" /> Transfer
                         </Button>
@@ -101,9 +101,9 @@ export function EscalationHeadbar({
 
                 <Button
                     onClick={onTicketClick}
-                    variant="secondary"
+                    variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-lg"
+                    className="h-8 w-8 rounded-lg border border-indigo-500/30 text-indigo-600 bg-indigo-500/10 hover:bg-indigo-500/20 hover:border-indigo-500/50 hover:text-indigo-700 dark:border-indigo-400/30 dark:text-indigo-400 dark:hover:border-indigo-400/50 dark:hover:text-indigo-300"
                     title="Convert to Ticket"
                 >
                     <Ticket className="size-4" />

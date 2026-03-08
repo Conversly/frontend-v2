@@ -4,8 +4,8 @@ import {
   getChatlogs,
   getMessages,
   listConversations,
-  listEscalations,
 } from "@/lib/api/activity";
+import { listEscalations } from "@/lib/api/escalate";
 import type {
   ConversationItem,
   ConversationMessageItem,

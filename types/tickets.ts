@@ -6,6 +6,7 @@ export type TicketSource = 'ESCALATION' | 'AI_AUTOMATION' | 'MANUAL_AGENT' | 'EM
 
 export interface ListTicketsQuery {
     workspaceId: string;
+    contactId?: string;
     status?: TicketStatus;
     priority?: TicketPriority;
     assignedAgentUserId?: string;

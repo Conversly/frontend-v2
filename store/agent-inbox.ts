@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { ConversationItem, ConversationMessageItem, EscalationItem } from "@/types/activity";
 import type { WebSocketBroadcastEvent, WebSocketCommandResponse } from "@/types/websocket";
-import { markEscalationRead } from "@/lib/api/activity";
+import { markEscalationRead } from "@/lib/api/escalate";
 
 export type SenderType = "USER" | "AGENT" | "ASSISTANT" | "SYSTEM";
 
@@ -56,9 +56,12 @@ type AgentInboxState = {
   unreadCountByConversationId: Record<string, number>;
   isDetailsOpen: boolean;
 
-  // Chat state
   messagesByConversationId: Record<string, ChatMessage[]>;
   stateByConversationId: Record<string, ConversationStateSnapshot>;
+
+  // Presence state
+  viewersByConversationId: Record<string, Array<{ agentUserId: string; agentDisplayName?: string }>>;
+  userOnlineByConversationId: Record<string, boolean>;
 
   // Optimistic local flags / errors
   lastClaimErrorByConversationId: Record<string, string | null>;
@@ -82,6 +85,7 @@ type AgentInboxState = {
   appendLiveMessage: (message: ChatMessage, opts?: { bumpUnread?: boolean }) => void;
   upsertStateUpdate: (snapshot: ConversationStateSnapshot) => void;
   handleClaimResponse: (conversationId: string, res: WebSocketCommandResponse) => void;
+  updatePresence: (conversationId: string, isUserOnline: boolean, activeAgents: Array<{ agentUserId: string; agentDisplayName?: string }>) => void;
 
   // Notification deltas
   upsertEscalationDelta: (delta: Partial<EscalationItem> & { escalationId: string }) => void;
@@ -115,6 +119,9 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
 
   messagesByConversationId: {},
   stateByConversationId: {},
+
+  viewersByConversationId: {},
+  userOnlineByConversationId: {},
 
   lastClaimErrorByConversationId: {},
 
@@ -223,9 +230,9 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
       const sentAt = m.createdAt ? new Date(m.createdAt) : new Date();
       const senderType: SenderType =
         m.type === "user" ? "USER" :
-        m.type === "assistant" ? "ASSISTANT" :
-        m.type === "agent" ? "AGENT" :
-        m.type === "system" ? "SYSTEM" : "SYSTEM";
+          m.type === "assistant" ? "ASSISTANT" :
+            m.type === "agent" ? "AGENT" :
+              m.type === "system" ? "SYSTEM" : "SYSTEM";
 
       return {
         id: m.id,
@@ -371,6 +378,19 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
       // Fire and forget read update now that assignment is verified
       markEscalationRead(escalationId).catch(() => { });
     }
+  },
+
+  updatePresence: (conversationId, isUserOnline, activeAgents) => {
+    set((state) => ({
+      userOnlineByConversationId: {
+        ...state.userOnlineByConversationId,
+        [conversationId]: isUserOnline,
+      },
+      viewersByConversationId: {
+        ...state.viewersByConversationId,
+        [conversationId]: activeAgents,
+      },
+    }));
   },
 
   upsertEscalationDelta: (delta) => {
