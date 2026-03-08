@@ -199,15 +199,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-transparent"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-transparent group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
                         >
-                            <div className="flex aspect-square size-10 items-center justify-center">
+                            <div className="flex aspect-square size-8 group-data-[state=expanded]:size-10 items-center justify-center">
                                 <Image
                                     src="/verly_logo.png"
                                     alt="Verly"
                                     width={40}
                                     height={40}
-                                    className="object-contain drop-shadow-sm"
+                                    className="object-contain drop-shadow-sm group-data-[state=collapsed]:w-8 group-data-[state=collapsed]:h-8"
                                 />
                             </div>
                             <div className="grid flex-1 text-left leading-tight ml-2">
@@ -232,7 +232,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 asChild
                                                 isActive={isActive}
                                                 tooltip={item.title}
-                                                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200"
+                                                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200 group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
                                             >
                                                 <Link
                                                     href={item.url}
