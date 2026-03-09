@@ -222,11 +222,14 @@ export default function BehaviourPage() {
                             keywordTriggers: behaviour.leadGen.leadConfig.keywords.split(",").map(s => s.trim()).filter(Boolean),
                         },
                         fields: (behaviour.leadGen.form.fields ?? []).map((f, i) => ({
-                            ...f, position: i,
+                            label: f.label,
+                            type: f.type,
+                            required: f.required,
+                            position: i,
                             id: f.id.startsWith("temp_") ? undefined : f.id,
                             placeholder: f.placeholder || undefined,
                             options: f.options || undefined,
-                            systemField: f.systemField || undefined,
+                            systemFieldKey: f.systemField === 'none' ? null : f.systemField,
                         })),
                         triggers: (behaviour.leadGen.form.triggers ?? []).map(t => ({ ...t, id: t.id.startsWith("temp_") ? undefined : t.id })),
                     }));

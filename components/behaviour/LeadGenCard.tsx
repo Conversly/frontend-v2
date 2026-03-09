@@ -1,6 +1,6 @@
 "use client";
 
-import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw } from "lucide-react";
+import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw, User, Mail, Phone, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,14 @@ import {
 } from "@/components/ui/select";
 import { LeadForm, LeadFormField } from "@/types/lead-forms";
 import { Separator } from "@/components/ui/separator";
+
+// Predefined system fields configuration
+const PREDEFINED_FIELDS = [
+    { key: 'name', label: 'Name', icon: User, type: 'text', required: true },
+    { key: 'email', label: 'Email', icon: Mail, type: 'email', required: true },
+    { key: 'phone', label: 'Phone', icon: Phone, type: 'phone', required: false },
+    { key: 'company', label: 'Company', icon: Building2, type: 'text', required: false },
+] as const;
 
 interface LeadGenCardProps {
     state: LeadGenState;
@@ -63,6 +71,47 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         if (!form) return;
         const newFields = form.fields.filter((_, i) => i !== index);
         updateForm({ fields: newFields });
+    };
+
+    // Check if a predefined field is already added
+    const isPredefinedFieldAdded = (systemFieldKey: string) => {
+        if (!form) return false;
+        return form.fields.some(f => f.systemField === systemFieldKey);
+    };
+
+    // Add a predefined system field
+    const addPredefinedField = (systemFieldKey: string) => {
+        if (!form) return;
+        const predefined = PREDEFINED_FIELDS.find(f => f.key === systemFieldKey);
+        if (!predefined) return;
+
+        // Add the field
+        const newField: LeadFormField = {
+            id: `temp_${Date.now()}_${systemFieldKey}`,
+            formId: form.id,
+            label: predefined.label,
+            type: predefined.type as 'text' | 'email' | 'phone' | 'textarea' | 'select',
+            required: predefined.required,
+            position: form.fields.length,
+            systemField: systemFieldKey as 'name' | 'email' | 'phone' | 'company',
+        };
+        updateForm({ fields: [...form.fields, newField] });
+    };
+
+    // Remove a predefined system field
+    const removePredefinedField = (systemFieldKey: string) => {
+        if (!form) return;
+        const newFields = form.fields.filter(f => f.systemField !== systemFieldKey);
+        updateForm({ fields: newFields });
+    };
+
+    // Toggle a predefined field
+    const togglePredefinedField = (systemFieldKey: string, checked: boolean) => {
+        if (checked) {
+            addPredefinedField(systemFieldKey);
+        } else {
+            removePredefinedField(systemFieldKey);
+        }
     };
 
     if (!form) {
@@ -295,130 +344,169 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 <h3 className="text-sm font-semibold text-muted-foreground">Form Fields</h3>
                             </div>
                             <Button variant="outline" size="sm" onClick={addField}>
-                                <Plus className="h-3 w-3 mr-1" /> Add Field
+                                <Plus className="h-3 w-3 mr-1" /> Add Custom Field
                             </Button>
                         </div>
 
-                        <div className="space-y-3">
-                            {form.fields.map((field, index) => (
-                                <div key={field.id || index} className="flex items-start gap-3 p-3 bg-muted/40 border border-border rounded-md group">
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
-                                        <div className="md:col-span-4 space-y-1">
-                                            <Label className="text-xs text-muted-foreground">Label</Label>
-                                            <Input
-                                                value={field.label}
-                                                onChange={(e) => updateField(index, { label: e.target.value })}
-                                                className="h-8"
+                        {/* Predefined System Fields - Simple Checkboxes */}
+                        <div className="p-4 bg-muted/30 border border-border rounded-lg space-y-3">
+                            <p className="text-sm font-medium text-foreground">Predefined Fields</p>
+                            <p className="text-xs text-muted-foreground">Select the fields you want to collect from leads</p>
+                            <div className="flex flex-wrap gap-3">
+                                {PREDEFINED_FIELDS.map((field) => {
+                                    const Icon = field.icon;
+                                    const isAdded = isPredefinedFieldAdded(field.key);
+                                    return (
+                                        <div
+                                            key={field.key}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-md border cursor-pointer transition-all ${isAdded
+                                                ? 'bg-primary/10 border-primary'
+                                                : 'bg-card border-border hover:bg-muted/50'
+                                                }`}
+                                            onClick={() => togglePredefinedField(field.key, !isAdded)}
+                                        >
+                                            <Checkbox
+                                                checked={isAdded}
+                                                onCheckedChange={(c) => togglePredefinedField(field.key, c as boolean)}
+                                                onClick={(e) => e.stopPropagation()}
                                             />
+                                            <Icon className={`h-4 w-4 ${isAdded ? 'text-primary' : 'text-muted-foreground'}`} />
+                                            <span className={`text-sm ${isAdded ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                                                {field.label}
+                                            </span>
+                                            {field.required && (
+                                                <span className="text-[10px] text-muted-foreground">(required)</span>
+                                            )}
                                         </div>
-                                        <div className="md:col-span-3 space-y-1">
-                                            <Label className="text-xs text-muted-foreground">Type</Label>
-                                            <Select
-                                                value={field.type}
-                                                onValueChange={(value: any) => updateField(index, { type: value })}
-                                            >
-                                                <SelectTrigger className="h-8">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="text">Text</SelectItem>
-                                                    <SelectItem value="email">Email</SelectItem>
-                                                    <SelectItem value="phone">Phone</SelectItem>
-                                                    <SelectItem value="textarea">Text Area</SelectItem>
-                                                    <SelectItem value="select">Select (Dropdown)</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="md:col-span-3 space-y-1">
-                                            <Label className="text-xs text-muted-foreground">Placeholder</Label>
-                                            <Input
-                                                value={field.placeholder || ""}
-                                                onChange={(e) => updateField(index, { placeholder: e.target.value })}
-                                                className="h-8"
-                                                placeholder="Placeholder..."
-                                            />
-                                        </div>
-                                        <div className="md:col-span-2 space-y-1 flex flex-col justify-end pb-1">
-                                            <div className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`req-${index}`}
-                                                    checked={field.required}
-                                                    onCheckedChange={(c) => updateField(index, { required: c as boolean })}
-                                                />
-                                                <Label htmlFor={`req-${index}`} className="text-xs font-normal">Required</Label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => removeField(index)}
-                                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-
-                            {form.fields.length === 0 && (
-                                <div className="text-center py-8 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
-                                    No fields added yet.
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* 4. Magic Prompt — same style as HandoffCard */}
-                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Sparkles className="h-4 w-4 text-primary" />
-                                <Label className="text-primary font-medium">Magic Prompt</Label>
+                                    );
+                                })}
                             </div>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    if (!form.isEnabled) {
-                                        toast.error("Please enable Lead Generation first to generate a prompt.");
-                                        return;
-                                    }
-                                    onGenerate();
-                                }}
-                                disabled={isGenerating}
-                                className="h-8 border-primary/20 text-primary hover:bg-primary/10 hover:text-primary"
-                            >
-                                {isGenerating ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <RefreshCw className="mr-2 h-3 w-3" />}
-                                Generate from Settings
-                            </Button>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label className="text-xs text-muted-foreground">Generated System Prompt</Label>
-                            <Textarea
-                                value={state.systemPrompt}
-                                onChange={(e) => updateState({ systemPrompt: e.target.value })}
-                                className="min-h-[120px] font-mono text-sm bg-card border-border"
-                                placeholder="Click generate to create a prompt from your settings..."
-                            />
-                            <p className="text-[10px] text-muted-foreground italic">
-                                This prompt is used ONLY during the lead generation flow.
-                            </p>
-                        </div>
+                        {/* Custom Fields - Editable */}
+                        {/* Only show custom fields (non-system fields) in the editable list */}
+                        {form.fields.filter(f => !f.systemField || f.systemField === 'none').length > 0 && (
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-muted-foreground">Custom Fields</p>
+                                <div className="space-y-3">
+                                    {form.fields
+                                        .filter(f => !f.systemField || f.systemField === 'none')
+                                        .map((field, index) => {
+                                            // Get the actual index in the full fields array for updates
+                                            const actualIndex = form.fields.findIndex(f => f.id === field.id);
+                                            return (
+                                                <div key={field.id || actualIndex} className="flex items-start gap-3 p-3 bg-muted/40 border border-border rounded-md group">
+                                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
+                                                        <div className="md:col-span-4 space-y-1">
+                                                            <Label className="text-xs text-muted-foreground">Label</Label>
+                                                            <Input
+                                                                value={field.label}
+                                                                onChange={(e) => updateField(actualIndex, { label: e.target.value })}
+                                                                className="h-8"
+                                                            />
+                                                        </div>
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <Label className="text-xs text-muted-foreground">Type</Label>
+                                                            <Select
+                                                                value={field.type}
+                                                                onValueChange={(value: any) => updateField(actualIndex, { type: value })}
+                                                            >
+                                                                <SelectTrigger className="h-8">
+                                                                    <SelectValue />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="text">Text</SelectItem>
+                                                                    <SelectItem value="email">Email</SelectItem>
+                                                                    <SelectItem value="phone">Phone</SelectItem>
+                                                                    <SelectItem value="textarea">Text Area</SelectItem>
+                                                                    <SelectItem value="select">Select (Dropdown)</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <Label className="text-xs text-muted-foreground">Placeholder</Label>
+                                                            <Input
+                                                                value={field.placeholder || ""}
+                                                                onChange={(e) => updateField(actualIndex, { placeholder: e.target.value })}
+                                                                className="h-8"
+                                                                placeholder="Placeholder..."
+                                                            />
+                                                        </div>
+                                                        <div className="md:col-span-2 space-y-1 flex flex-col justify-end pb-1">
+                                                            <div className="flex items-center space-x-2">
+                                                                <Checkbox
+                                                                    id={`req-${actualIndex}`}
+                                                                    checked={field.required}
+                                                                    onCheckedChange={(c) => updateField(actualIndex, { required: c as boolean })}
+                                                                />
+                                                                <Label htmlFor={`req-${actualIndex}`} className="text-xs font-normal">Required</Label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => removeField(actualIndex)}
+                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                            </div>
+                        )}
+
+                        {form.fields.filter(f => !f.systemField || f.systemField === 'none').length === 0 && (
+                            <div className="text-center py-6 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
+                                No custom fields added yet. Click &ldquo;Add Custom Field&rdquo; to create one.
+                            </div>
+                        )}
                     </div>
-
                 </div>
             )}
 
-            {!form.isEnabled && (
-                <div className="py-12 flex flex-col items-center justify-center gap-3 text-center text-muted-foreground">
-                    <Magnet className="h-8 w-8 text-muted-foreground/40" />
-                    <div>
-                        <p className="font-medium text-sm text-foreground">Lead Generation is disabled</p>
-                        <p className="text-xs mt-1">Enable the toggle above to configure lead capture settings.</p>
+            {/* 4. Magic Prompt — same style as HandoffCard */}
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <Label className="text-primary font-medium">Magic Prompt</Label>
                     </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                            if (!form.isEnabled) {
+                                toast.error("Please enable Lead Generation first to generate a prompt.");
+                                return;
+                            }
+                            onGenerate();
+                        }}
+                        disabled={isGenerating}
+                        className="h-8 border-primary/20 text-primary hover:bg-primary/10 hover:text-primary"
+                    >
+                        {isGenerating ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <RefreshCw className="mr-2 h-3 w-3" />}
+                        Generate from Settings
+                    </Button>
                 </div>
-            )}
+
+                <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Generated System Prompt</Label>
+                    <Textarea
+                        value={state.systemPrompt}
+                        onChange={(e) => updateState({ systemPrompt: e.target.value })}
+                        className="min-h-[120px] font-mono text-sm bg-card border-border"
+                        placeholder="Click generate to create a prompt from your settings..."
+                    />
+                    <p className="text-[10px] text-muted-foreground italic">
+                        This prompt is used ONLY during the lead generation flow.
+                    </p>
+                </div>
+            </div>
         </div>
-    );
+    )
 }
+
+
