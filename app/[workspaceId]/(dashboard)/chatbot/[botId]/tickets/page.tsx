@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useGetTickets } from "@/services/tickets";
-import { TicketStatus } from "@/types/tickets";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useGetTickets, useGetTicketCounts, useAssignTicket, useResolveTicket, useCloseTicket, useUpdateTicket } from "@/services/tickets";
+import { useGetWorkspaceMembers } from "@/services/workspace";
+import { TicketStatus, TicketPriority } from "@/types/tickets";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-import { Search, Plus, History, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Plus, History, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, CheckCircle2, UserPlus, XCircle } from "lucide-react";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
     Table,
@@ -34,11 +44,22 @@ const TABS: { label: string; value: TabValue }[] = [
 export default function TicketsOverviewPage() {
     const params = useParams<{ workspaceId: string; botId: string }>();
     const workspaceId = Array.isArray(params.workspaceId) ? params.workspaceId[0] : params.workspaceId;
+    const botId = Array.isArray(params.botId) ? params.botId[0] : params.botId;
+    const router = useRouter();
 
     const [activeTab, setActiveTab] = useState<TabValue>("ALL");
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 400);
     const [page, setPage] = useState(1);
-    const limit = 20;
+    const limit = 15;
+
+    // Sort parameters
+    type SortField = 'id' | 'status' | 'assignedAgentUserId' | 'updatedAt' | 'priority';
+    const [sortField, setSortField] = useState<SortField>('updatedAt');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+    // Premium UI: Keyboard shortcut focus tracking
+    const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
     // Resolve API status from tab
     const getApiStatus = (): TicketStatus | undefined => {
@@ -47,17 +68,100 @@ export default function TicketsOverviewPage() {
         return activeTab as TicketStatus;
     };
 
+    const { data: countsData } = useGetTicketCounts(workspaceId);
+
     const { data: ticketsData, isLoading } = useGetTickets({
         workspaceId,
         status: getApiStatus(),
-        search: searchQuery,
+        search: debouncedSearch,
         page,
         limit,
+        sort: sortField,
+        order: sortOrder,
     });
+
+    const { data: workspaceMembersData } = useGetWorkspaceMembers(workspaceId);
+    const workspaceMembers = workspaceMembersData || [];
+
+    const assignTicketMutation = useAssignTicket();
+    const resolveTicketMutation = useResolveTicket();
+    const closeTicketMutation = useCloseTicket();
+    const updateTicketMutation = useUpdateTicket();
+    const { toast } = useToast();
+
+    // Handlers
+    const handleAssign = (ticketId: string, agentUserId: string) => {
+        assignTicketMutation.mutate({ ticketId, input: { agentUserId } }, {
+            onSuccess: () => toast({ title: "Ticket assigned" })
+        });
+    };
+
+    const handleResolve = (ticketId: string) => {
+        resolveTicketMutation.mutate(ticketId, {
+            onSuccess: () => toast({ title: "Ticket resolved" })
+        });
+    };
+
+    const handleClose = (ticketId: string) => {
+        closeTicketMutation.mutate(ticketId, {
+            onSuccess: () => toast({ title: "Ticket closed" })
+        });
+    };
+
+    const handleStatusUpdate = (ticketId: string, status: TicketStatus) => {
+        updateTicketMutation.mutate({ ticketId, data: { status } }, {
+            onSuccess: () => toast({ title: "Ticket status updated" })
+        });
+    };
+
+    const handlePriorityUpdate = (ticketId: string, priority: TicketPriority) => {
+        updateTicketMutation.mutate({ ticketId, data: { priority } }, {
+            onSuccess: () => toast({ title: "Ticket priority updated" })
+        });
+    };
 
     const tickets = ticketsData?.data || [];
     const totalTickets = ticketsData?.total || 0;
     const totalPages = Math.ceil(totalTickets / limit);
+
+    // Premium Shortcuts J/K/E/A
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Only trigger if focus is on body (not inside inputs)
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+            if (e.key === 'j') {
+                e.preventDefault();
+                setFocusedIndex(prev => Math.min(prev + 1, tickets.length - 1));
+            } else if (e.key === 'k') {
+                e.preventDefault();
+                setFocusedIndex(prev => Math.max(prev - 1, 0));
+            } else if (e.key === 'e' || e.key === 'E') {
+                if (focusedIndex >= 0 && focusedIndex < tickets.length) {
+                    e.preventDefault();
+                    handleResolve(tickets[focusedIndex].id);
+                }
+            } else if (e.key === 'a' || e.key === 'A') {
+                if (focusedIndex >= 0 && focusedIndex < tickets.length) {
+                    e.preventDefault();
+                    document.getElementById(`assign-trigger-${tickets[focusedIndex].id}`)?.click();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [tickets, focusedIndex]);
+
+    // Get count for a tab
+    const getTabCount = (tabValue: TabValue) => {
+        if (!countsData) return 0;
+        if (tabValue === "ALL") return countsData.ALL || 0;
+        if (tabValue === "PENDING") {
+            return (countsData.PENDING_USER || 0) + (countsData.PENDING_INTERNAL || 0);
+        }
+        return countsData[tabValue as keyof typeof countsData] || 0;
+    };
 
     // Badge Style Helper
     const getStatusBadgeStyles = (status: TicketStatus) => {
@@ -87,6 +191,44 @@ export default function TicketsOverviewPage() {
         }
     };
 
+    const getPriorityStyles = (priority: TicketPriority | null) => {
+        switch (priority) {
+            case "URGENT": return "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400";
+            case "HIGH": return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400";
+            case "MEDIUM": return "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400";
+            case "LOW": return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400";
+            default: return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400";
+        }
+    };
+
+    // Sortable Header Component
+    const TableHeaderSortable = ({ label, field, className }: { label: string; field: SortField; className?: string }) => {
+        return (
+            <TableHead
+                className={cn("font-bold text-xs tracking-wider text-muted-foreground uppercase cursor-pointer hover:text-foreground transition-colors group/header", className)}
+                onClick={() => {
+                    if (sortField === field) {
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                    } else {
+                        setSortField(field);
+                        setSortOrder('desc');
+                    }
+                }}
+            >
+                <div className={cn("flex items-center gap-1", className?.includes("text-right") ? "justify-end" : "justify-start")}>
+                    {label}
+                    <div className="flex flex-col opacity-0 group-hover/header:opacity-50 transition-opacity aria-[sort=ascending]:opacity-100 aria-[sort=descending]:opacity-100" aria-sort={sortField === field ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                        {sortField === field ? (
+                            sortOrder === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                        ) : (
+                            <ArrowDown className="h-3 w-3" />
+                        )}
+                    </div>
+                </div>
+            </TableHead>
+        );
+    };
+
     return (
         <div className="flex flex-col h-full bg-background p-6 max-w-[1280px] mx-auto w-full gap-6 overflow-y-auto">
             {/* Header */}
@@ -97,10 +239,16 @@ export default function TicketsOverviewPage() {
                         Managing all incoming support requests
                     </p>
                 </div>
-                <Button className="bg-primary text-primary-foreground font-medium rounded-md px-4 py-2 hover:opacity-90 transition-opacity">
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Ticket
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" className="text-sm font-semibold border-border hover:bg-[--surface-secondary] rounded-md px-4 py-2">
+                        <History className="h-4 w-4 mr-2" />
+                        Activity Log
+                    </Button>
+                    <Button className="bg-primary text-primary-foreground font-semibold rounded-md px-4 py-2 hover:opacity-90 transition-opacity">
+                        <Plus className="h-4 w-4 mr-2" />
+                        New Ticket
+                    </Button>
+                </div>
             </div>
 
             {/* Tabs & Search */}
@@ -108,6 +256,27 @@ export default function TicketsOverviewPage() {
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto hidescrollbar">
                     {TABS.map((tab) => {
                         const isActive = activeTab === tab.value;
+                        const count = getTabCount(tab.value);
+
+                        let activeStyle = "bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-semibold";
+                        let inactiveStyle = "bg-transparent text-muted-foreground border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50";
+
+                        if (isActive) {
+                            switch (tab.value) {
+                                case "OPEN": activeStyle = "bg-blue-100/80 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"; break;
+                                case "PENDING": activeStyle = "bg-amber-100/80 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"; break;
+                                case "RESOLVED": activeStyle = "bg-emerald-100/80 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50"; break;
+                                case "CLOSED": activeStyle = "bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:border-slate-700/50"; break;
+                            }
+                        } else {
+                            switch (tab.value) {
+                                case "OPEN": inactiveStyle = "bg-transparent text-blue-600/70 border-transparent hover:bg-blue-50 dark:text-blue-400/70 dark:hover:bg-blue-900/20"; break;
+                                case "PENDING": inactiveStyle = "bg-transparent text-amber-600/70 border-transparent hover:bg-amber-50 dark:text-amber-400/70 dark:hover:bg-amber-900/20"; break;
+                                case "RESOLVED": inactiveStyle = "bg-transparent text-emerald-600/70 border-transparent hover:bg-emerald-50 dark:text-emerald-400/70 dark:hover:bg-emerald-900/20"; break;
+                                case "CLOSED": inactiveStyle = "bg-transparent text-slate-500/70 border-transparent hover:bg-slate-50 dark:text-slate-400/70 dark:hover:bg-slate-800/40"; break;
+                            }
+                        }
+
                         return (
                             <button
                                 key={tab.value}
@@ -116,13 +285,19 @@ export default function TicketsOverviewPage() {
                                     setPage(1);
                                 }}
                                 className={cn(
-                                    "px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors border",
-                                    isActive
-                                        ? "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white"
-                                        : "bg-background text-foreground border-border hover:bg-[--surface-secondary]"
+                                    "px-4 py-1.5 text-sm font-semibold rounded-full whitespace-nowrap transition-colors border flex items-center gap-1.5",
+                                    isActive ? activeStyle : inactiveStyle
                                 )}
                             >
                                 {tab.label}
+                                <span className={cn(
+                                    "text-[10px] rounded-sm px-1.5 py-0 min-w-[20px] inline-flex items-center justify-center font-bold",
+                                    isActive
+                                        ? "bg-white/60 text-current dark:bg-black/40"
+                                        : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                                )}>
+                                    {count}
+                                </span>
                             </button>
                         );
                     })}
@@ -137,7 +312,7 @@ export default function TicketsOverviewPage() {
                             setSearchQuery(e.target.value);
                             setPage(1);
                         }}
-                        className="pl-9 bg-[--input-background] border-border"
+                        className="pl-9 bg-white dark:bg-slate-950 border-border"
                     />
                 </div>
             </div>
@@ -147,30 +322,38 @@ export default function TicketsOverviewPage() {
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
-                            <TableHead className="w-[120px] font-bold text-xs tracking-wider text-muted-foreground uppercase">Ticket ID</TableHead>
-                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase">Subject</TableHead>
-                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase">Requester</TableHead>
-                            <TableHead className="w-[120px] font-bold text-xs tracking-wider text-muted-foreground uppercase">Status</TableHead>
-                            <TableHead className="w-[180px] font-bold text-xs tracking-wider text-muted-foreground uppercase">Assigned Agent</TableHead>
-                            <TableHead className="w-[140px] font-bold text-xs tracking-wider text-muted-foreground uppercase text-right">Last Updated</TableHead>
+                            <TableHeaderSortable label="Ticket ID" field="id" className="w-[120px]" />
+                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase leading-none mt-4">Subject</TableHead>
+                            <TableHeaderSortable label="Priority" field="priority" className="w-[100px]" />
+                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase leading-none mt-4">Requester</TableHead>
+                            <TableHeaderSortable label="Status" field="status" className="w-[120px]" />
+                            <TableHeaderSortable label="Assigned Agent" field="assignedAgentUserId" className="w-[180px]" />
+                            <TableHeaderSortable label="Last Updated" field="updatedAt" className="w-[140px] text-right" />
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                                     Loading tickets...
                                 </TableCell>
                             </TableRow>
                         ) : tickets.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                                     No tickets found.
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            tickets.map((ticket) => (
-                                <TableRow key={ticket.id} className="group hover:bg-[--surface-secondary] transition-colors cursor-pointer">
+                            tickets.map((ticket, index) => (
+                                <TableRow
+                                    key={ticket.id}
+                                    className={cn(
+                                        "group hover:bg-[--surface-secondary] transition-colors cursor-pointer",
+                                        focusedIndex === index && "bg-[--surface-secondary] ring-1 ring-inset ring-primary"
+                                    )}
+                                    onClick={() => router.push(`/${workspaceId}/chatbot/${botId}/tickets/${ticket.id}`)}
+                                >
                                     <TableCell className="font-medium text-primary">
                                         #{ticket.id.slice(0, 8)}
                                     </TableCell>
@@ -181,30 +364,93 @@ export default function TicketsOverviewPage() {
                                             </span>
                                         </div>
                                     </TableCell>
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button className="flex items-center hover:opacity-80 transition-opacity">
+                                                    <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md min-w-min uppercase tracking-wider text-center", getPriorityStyles(ticket.priority))}>
+                                                        {ticket.priority || 'MEDIUM'}
+                                                    </div>
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="start" className="w-[180px] p-1.5 flex flex-col gap-0.5">
+                                                {(["URGENT", "HIGH", "MEDIUM", "LOW"] as TicketPriority[]).map((priority) => (
+                                                    <DropdownMenuItem
+                                                        key={priority}
+                                                        onClick={() => handlePriorityUpdate(ticket.id, priority)}
+                                                        className="cursor-pointer focus:bg-slate-100 dark:focus:bg-slate-800"
+                                                    >
+                                                        <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getPriorityStyles(priority))}>
+                                                            {priority}
+                                                        </span>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
                                     <TableCell className="text-foreground">
                                         {ticket.contact?.email || ticket.contact?.displayName || "Unknown User"}
                                     </TableCell>
-                                    <TableCell>
-                                        <Badge className={cn("font-medium", getStatusBadgeStyles(ticket.status))}>
-                                            {getStatusLabel(ticket.status)}
-                                        </Badge>
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button className="flex items-center hover:opacity-80 transition-opacity">
+                                                    <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getStatusBadgeStyles(ticket.status))}>
+                                                        {getStatusLabel(ticket.status)}
+                                                    </span>
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="start" className="w-[180px] p-1.5 flex flex-col gap-0.5">
+                                                {/* Only display 4 distinct selectable statuses to avoid duplicates visually */}
+                                                {(["OPEN", "PENDING_USER", "RESOLVED", "CLOSED"] as TicketStatus[]).map((status) => (
+                                                    <DropdownMenuItem
+                                                        key={status}
+                                                        onClick={() => handleStatusUpdate(ticket.id, status)}
+                                                        className="cursor-pointer focus:bg-slate-100 dark:focus:bg-slate-800"
+                                                    >
+                                                        <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getStatusBadgeStyles(status))}>
+                                                            {getStatusLabel(status)}
+                                                        </span>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
-                                    <TableCell>
-                                        {ticket.assignedAgent ? (
-                                            <div className="flex items-center gap-2">
-                                                <Avatar className="h-6 w-6">
-                                                    <AvatarImage src={ticket.assignedAgent.avatarUrl || undefined} />
-                                                    <AvatarFallback className="text-[10px] bg-slate-900 text-white dark:bg-white dark:text-slate-900">
-                                                        {ticket.assignedAgent.displayName?.[0]?.toUpperCase() || "A"}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <span className="font-medium text-foreground truncate max-w-[120px]">
-                                                    {ticket.assignedAgent.displayName}
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <span className="text-muted-foreground italic text-sm">Unassigned</span>
-                                        )}
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button id={`assign-trigger-${ticket.id}`} className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-md transition-colors w-full text-left">
+                                                    {ticket.assignedAgent ? (
+                                                        <>
+                                                            <Avatar className="h-5 w-5">
+                                                                <AvatarImage src={ticket.assignedAgent.avatarUrl || undefined} />
+                                                                <AvatarFallback className="text-[9px] bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+                                                                    {ticket.assignedAgent.displayName?.[0]?.toUpperCase() || "A"}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <span className="font-medium text-sm text-foreground truncate max-w-[120px]">
+                                                                {ticket.assignedAgent.displayName}
+                                                            </span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-muted-foreground font-medium text-sm">Unassigned</span>
+                                                    )}
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="start" className="w-[200px]">
+                                                {workspaceMembers.map((member: any) => (
+                                                    <DropdownMenuItem key={member.user.id} onClick={() => handleAssign(ticket.id, member.user.id)}>
+                                                        <Avatar className="h-5 w-5 mr-2">
+                                                            <AvatarImage src={member.user.avatarUrl || undefined} />
+                                                            <AvatarFallback className="text-[9px] bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+                                                                {member.user.displayName?.[0]?.toUpperCase() || "A"}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                        <span className="truncate">{member.user.displayName}</span>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
                                     <TableCell className="text-muted-foreground text-right whitespace-nowrap">
                                         {ticket.updatedAt ? formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true }) : "-"}
@@ -219,35 +465,52 @@ export default function TicketsOverviewPage() {
             {/* Footer Controls */}
             <div className="flex flex-col sm:flex-row justify-between items-center mt-2 gap-4 pb-4">
                 <p className="text-sm text-muted-foreground">
-                    Showing <span className="font-semibold text-foreground">{tickets.length > 0 ? (page - 1) * limit + 1 : 0} - {Math.min(page * limit, totalTickets)}</span> of <span className="font-semibold text-foreground">{totalTickets}</span> tickets
+                    Showing <span className="font-semibold text-foreground">{tickets.length > 0 ? (page - 1) * limit + 1 : 0} – {Math.min(page * limit, totalTickets)}</span> of <span className="font-semibold text-foreground">{totalTickets}</span> tickets
                 </p>
 
-                <div className="flex items-center gap-4">
-                    <Button variant="outline" className="text-sm font-medium border-border hover:bg-[--surface-secondary]">
-                        <History className="h-4 w-4 mr-2" />
-                        View Activity Log
+                <div className="flex items-center gap-1">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-border"
+                        disabled={page === 1}
+                        onClick={() => setPage(page - 1)}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
                     </Button>
 
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 border-border"
-                            disabled={page === 1}
-                            onClick={() => setPage(page - 1)}
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 border-border"
-                            disabled={page >= totalPages || totalPages === 0}
-                            onClick={() => setPage(page + 1)}
-                        >
-                            <ChevronRight className="h-4 w-4" />
-                        </Button>
+                    <div className="flex items-center gap-1 px-1">
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum = page - 2 + i;
+                            if (page < 3) pageNum = i + 1;
+                            else if (page > totalPages - 2) pageNum = totalPages - 4 + i;
+
+                            if (pageNum > 0 && pageNum <= totalPages) {
+                                return (
+                                    <Button
+                                        key={pageNum}
+                                        variant={page === pageNum ? "default" : "outline"}
+                                        size="sm"
+                                        className={cn("h-8 min-w-8 px-2 font-medium border", page === pageNum ? "bg-primary text-primary-foreground" : "bg-transparent hover:bg-muted text-foreground font-normal")}
+                                        onClick={() => setPage(pageNum)}
+                                    >
+                                        {pageNum}
+                                    </Button>
+                                );
+                            }
+                            return null;
+                        })}
                     </div>
+
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-border"
+                        disabled={page >= totalPages || totalPages === 0}
+                        onClick={() => setPage(page + 1)}
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </div>
             </div>
         </div>

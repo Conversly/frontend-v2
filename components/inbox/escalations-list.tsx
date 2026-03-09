@@ -117,7 +117,7 @@ export function EscalationsList({
                             key={tab.id}
                             onClick={() => onQueueChange(tab.id)}
                             className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 border",
+                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all shrink-0 border",
                                 activeQueue === tab.id
                                     ? "bg-primary text-primary-foreground border-primary"
                                     : "bg-white text-foreground border-gray-300 hover:border-gray-400 hover:bg-gray-50"

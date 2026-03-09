@@ -129,7 +129,7 @@ export function FileUpload({
                 ) : (
                     <Upload className="w-8 h-8" />
                 )}
-                <p className="text-sm font-medium">
+                <p className="text-sm font-semibold">
                     {isUploading ? "Uploading..." : label}
                 </p>
                 <p className="text-xs">

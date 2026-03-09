@@ -5,6 +5,7 @@ import {
     assignTicket,
     resolveTicket,
     closeTicket,
+    getTicketCounts,
 } from "@/lib/api/tickets";
 import { QUERY_KEY } from "@/utils/query-key";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ import type {
     GetTicketResponse,
     UpdateTicketInput,
     AssignTicketInput,
+    GetTicketCountsResponse,
 } from "@/types/tickets";
 
 export const useGetTickets = (query: ListTicketsQuery) => {
@@ -26,7 +28,9 @@ export const useGetTickets = (query: ListTicketsQuery) => {
             query.assignedAgentUserId,
             query.search,
             query.page,
-            query.limit
+            query.limit,
+            query.sort,
+            query.order
         ],
         queryFn: async () => {
             const res = await listTickets(query);
@@ -93,6 +97,18 @@ export const useCloseTicket = () => {
         onSuccess: (_, ticketId) => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_TICKETS] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_TICKET, ticketId] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_TICKET_COUNTS] });
         },
+    });
+};
+
+export const useGetTicketCounts = (workspaceId: string) => {
+    return useQuery<GetTicketCountsResponse["data"]>({
+        queryKey: [QUERY_KEY.GET_TICKET_COUNTS, workspaceId],
+        queryFn: async () => {
+            const res = await getTicketCounts(workspaceId);
+            return res.data.data;
+        },
+        enabled: !!workspaceId,
     });
 };

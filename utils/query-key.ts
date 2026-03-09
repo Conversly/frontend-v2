@@ -67,4 +67,5 @@ export enum QUERY_KEY {
   // Support Tickets
   GET_TICKETS = "GET_TICKETS",
   GET_TICKET = "GET_TICKET",
+  GET_TICKET_COUNTS = "GET_TICKET_COUNTS",
 }

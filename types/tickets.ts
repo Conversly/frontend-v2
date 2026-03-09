@@ -13,6 +13,8 @@ export interface ListTicketsQuery {
     search?: string;         // searches subject / description / contact email
     page?: number;
     limit?: number;
+    sort?: 'id' | 'status' | 'assignedAgentUserId' | 'updatedAt' | 'priority';
+    order?: 'asc' | 'desc';
 }
 
 export interface TicketListItem {
@@ -100,4 +102,13 @@ export interface ResolveTicketResponse {
 export interface CloseTicketResponse {
     success: boolean;
     data: { ticketId: string; closedAt: string };
+}
+
+// ─── Counts ──────────────────────────────────────────────────────────────────
+
+export type TicketCountsData = Record<TicketStatus | 'ALL', number>;
+
+export interface GetTicketCountsResponse {
+    success: boolean;
+    data: TicketCountsData;
 }

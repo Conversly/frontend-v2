@@ -10,6 +10,7 @@ import type {
     AssignTicketResponse,
     ResolveTicketResponse,
     CloseTicketResponse,
+    GetTicketCountsResponse,
 } from "@/types/tickets";
 
 /**
@@ -105,6 +106,22 @@ export const closeTicket = async (ticketId: string) => {
         {
             method: "POST",
             data: {},
+        }
+    );
+};
+
+export const getTicketCounts = async (workspaceId: string) => {
+    // Reusing the base TICKETS URL approach but appending /counts manually or doing it in the guardedFetch
+    // Since API.ENDPOINTS.TICKETS doesn't have a specific COUNTS endpoint defined in config.ts yet,
+    // we can construct it dynamically or just use a relative string if possible.
+    // Assuming API.ENDPOINTS.TICKETS.BASE_URL() is /v1/tickets
+    const baseUrl = API.ENDPOINTS.TICKETS.BASE_URL();
+    return guardedFetch<GetTicketCountsResponse>(
+        { path: () => `${baseUrl}/counts`, mode: "ALL" },
+        "", // no base needed since we provided full path in 'path' endpoint obj conceptually
+        {
+            method: "GET",
+            params: { workspaceId },
         }
     );
 };

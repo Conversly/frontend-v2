@@ -130,13 +130,13 @@ export default function Navbar() {
           {/* Navigation Links */}
           {/* Mega Menu Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/about" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/about" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
               About
             </Link>
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
                   Solutions
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
@@ -284,7 +284,7 @@ export default function Navbar() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
                   Resources
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
@@ -403,8 +403,8 @@ export default function Navbar() {
               </>
             )}
           </div>
-        </div>
-      </nav>
+        </div >
+      </nav >
     )
   );
 }
