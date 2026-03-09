@@ -21,6 +21,7 @@ interface Counts {
     mine: number;
     waitingForUser: number;
     resolved: number;
+    closed: number;
     all: number;
 }
 
@@ -35,6 +36,9 @@ interface EscalationsListProps {
     counts: Counts;
     activeQueue: InboxQueue;
     onQueueChange: (queue: InboxQueue) => void;
+    onLoadMore?: () => void;
+    isFetchingMore?: boolean;
+    hasMore?: boolean;
 }
 
 interface QueueTab {
@@ -73,6 +77,9 @@ export function EscalationsList({
     counts,
     activeQueue,
     onQueueChange,
+    onLoadMore,
+    isFetchingMore,
+    hasMore,
 }: EscalationsListProps) {
     const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
     const unreadCountByConversationId = useAgentInboxStore((s) => s.unreadCountByConversationId);
@@ -80,10 +87,11 @@ export function EscalationsList({
     const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
 
     const tabs: QueueTab[] = [
-        { id: "all", label: "Active", count: counts.all - counts.resolved },
+        { id: "all", label: "Active", count: counts.all - counts.resolved - counts.closed },
         { id: "unassigned", label: "Unassigned", count: counts.unassigned },
         { id: "mine", label: "Mine", count: counts.mine },
         { id: "resolved", label: "Resolved", count: counts.resolved },
+        { id: "closed", label: "Closed", count: counts.closed },
     ];
 
     const isDetailsOpen = useAgentInboxStore((s) => s.isDetailsOpen);
@@ -103,9 +111,14 @@ export function EscalationsList({
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
                         <input
                             className="w-full pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-1 focus:ring-primary outline-none transition-shadow"
-                            placeholder="Search chats..."
+                            placeholder="Search by ID or Exact Email (Press Enter)..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && onLoadMore) {
+                                    // Let parent handle search
+                                }
+                            }}
                         />
                     </div>
                 </div>
@@ -313,6 +326,24 @@ export function EscalationsList({
                         <p className="text-xs text-muted-foreground mt-1">
                             Everything is caught up. Have a coffee! ☕️
                         </p>
+                    </div>
+                )}
+
+                {inboxItems.length > 0 && hasMore && (
+                    <div className="p-4 flex justify-center">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={onLoadMore}
+                            disabled={isFetchingMore}
+                            className="w-full bg-muted/50 text-muted-foreground hover:bg-muted"
+                        >
+                            {isFetchingMore ? (
+                                <span className="flex items-center gap-2">
+                                    <span className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin" /> Loading...
+                                </span>
+                            ) : "Load More"}
+                        </Button>
                     </div>
                 )}
             </div>

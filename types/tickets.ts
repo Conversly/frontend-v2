@@ -28,6 +28,7 @@ export interface TicketListItem {
     firstResponseAt: string | null;
     resolvedAt: string | null;
     closedAt: string | null;
+    conversationId: string | null;
     contact: {
         id: string;
         displayName: string | null;

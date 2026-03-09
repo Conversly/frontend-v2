@@ -146,16 +146,18 @@ export async function listEscalations(params: {
     mine?: boolean;
     status?: ConversationState;
     limit?: number;
+    offset?: number;
+    search?: string;
 }): Promise<EscalationItem[]> {
     try {
-        const { chatbotId, mine, status, limit } = params;
+        const { chatbotId, mine, status, limit, offset, search } = params;
         if (!chatbotId || chatbotId.trim() === "") {
             throw new Error("chatbotId is required");
         }
 
         const endpoint =
             API.ENDPOINTS.ESCALATE.BASE_URL() + API.ENDPOINTS.ESCALATE.LIST.path();
-        const url = `${endpoint}${buildQuery({ chatbotId, mine: mine ? "true" : undefined, status, limit })}`;
+        const url = `${endpoint}${buildQuery({ chatbotId, mine: mine ? "true" : undefined, status, limit, offset, search })}`;
 
         const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetEscalationsResponse;
         return res.data;

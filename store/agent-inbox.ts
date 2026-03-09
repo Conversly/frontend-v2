@@ -5,7 +5,7 @@ import { markEscalationRead } from "@/lib/api/escalate";
 
 export type SenderType = "USER" | "AGENT" | "ASSISTANT" | "SYSTEM";
 
-export type InboxQueue = "user-waiting" | "unassigned" | "mine" | "waiting-for-user" | "resolved" | "all";
+export type InboxQueue = "user-waiting" | "unassigned" | "mine" | "waiting-for-user" | "resolved" | "closed" | "all";
 
 export type ChatMessage = {
   id: string;
@@ -113,7 +113,7 @@ export const useAgentInboxStore = create<AgentInboxState>((set, get) => ({
 
   openConversationIds: [],
   activeConversationId: null,
-  activeQueue: "user-waiting",
+  activeQueue: "unassigned",
   unreadCountByConversationId: {},
   isDetailsOpen: false,
 

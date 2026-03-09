@@ -352,7 +352,13 @@ export default function TicketsOverviewPage() {
                                         "group hover:bg-[--surface-secondary] transition-colors cursor-pointer",
                                         focusedIndex === index && "bg-[--surface-secondary] ring-1 ring-inset ring-primary"
                                     )}
-                                    onClick={() => router.push(`/${workspaceId}/chatbot/${botId}/tickets/${ticket.id}`)}
+                                    onClick={() => {
+                                        if (ticket.conversationId) {
+                                            router.push(`/${workspaceId}/chatbot/${botId}/activity/inbox?c=${ticket.conversationId}`);
+                                        } else {
+                                            router.push(`/${workspaceId}/chatbot/${botId}/tickets/${ticket.id}`);
+                                        }
+                                    }}
                                 >
                                     <TableCell className="font-medium text-primary">
                                         #{ticket.id.slice(0, 8)}

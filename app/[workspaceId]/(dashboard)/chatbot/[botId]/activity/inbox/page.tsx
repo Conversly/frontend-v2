@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "@/store/auth";
@@ -188,6 +188,8 @@ export default function InboxPage() {
   const routeParams = useParams<{ workspaceId: string; botId: string }>();
   const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const isMobile = useIsMobile();
   const { user } = useAuth();
@@ -216,6 +218,53 @@ export default function InboxPage() {
   const setHistoryFromApi = useAgentInboxStore((s) => s.setHistoryFromApi);
   const appendLiveMessage = useAgentInboxStore((s) => s.appendLiveMessage);
 
+  // Single Two-Way Sync Effect to prevent race conditions / infinite loops
+  const prevCParam = useRef(searchParams.get("c"));
+  const prevStateC = useRef(activeConversationId);
+
+  useEffect(() => {
+    const currentParam = searchParams.get("c");
+
+    // 1. Did URL change via browser navigation? (URL wins)
+    if (currentParam !== prevCParam.current) {
+      if (currentParam !== activeConversationId) {
+        if (currentParam) {
+          openConversation(currentParam);
+          setActiveConversation(currentParam);
+        } else {
+          setActiveConversation(null);
+        }
+      }
+      prevCParam.current = currentParam;
+      prevStateC.current = currentParam;
+      return;
+    }
+
+    // 2. Did State change via user interaction? (State wins)
+    if (activeConversationId !== prevStateC.current) {
+      if (activeConversationId !== currentParam) {
+        const params = new URLSearchParams(searchParams.toString());
+        if (activeConversationId) {
+          params.set("c", activeConversationId);
+        } else {
+          params.delete("c");
+        }
+        const queryStr = params.toString() ? `?${params.toString()}` : "";
+        router.replace(`/${workspaceId}/chatbot/${botId}/activity/inbox${queryStr}`, { scroll: false });
+      }
+      prevStateC.current = activeConversationId;
+      prevCParam.current = activeConversationId; // Expected param for next render
+    }
+  }, [
+    searchParams,
+    activeConversationId,
+    openConversation,
+    setActiveConversation,
+    router,
+    workspaceId,
+    botId,
+  ]);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Dialog states for headbar actions
@@ -223,6 +272,11 @@ export default function InboxPage() {
   const [ticketOpen, setTicketOpen] = useState(false);
   const [isResolving, setIsResolving] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+
+  // Pagination & Search States
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMoreItems, setHasMoreItems] = useState(true);
+  const [serverSearchQuery, setServerSearchQuery] = useState("");
 
   // Transfer dialog state
   const [transferAgentId, setTransferAgentId] = useState("");
@@ -244,12 +298,17 @@ export default function InboxPage() {
   const { data: escalationsAll, isLoading: isLoadingEscalationsAll } = useEscalationsQuery(botId, {
     mine: false,
     limit: 200,
+    search: serverSearchQuery || undefined,
   });
   const {
     data: myEscalations,
     refetch: refetchMyEscalations,
     isLoading: isLoadingMyEscalations,
-  } = useEscalationsQuery(botId, { mine: true, limit: 200 });
+  } = useEscalationsQuery(botId, {
+    mine: true,
+    limit: 200,
+    search: serverSearchQuery || undefined,
+  });
 
   useEffect(() => {
     if (escalationsAll) hydrateSnapshots({ escalations: escalationsAll });
@@ -364,6 +423,7 @@ export default function InboxPage() {
     let userWaiting = 0;
     let waitingForUser = 0;
     let resolved = 0;
+    let closed = 0;
     let allCount = 0;
 
     Object.values(escalationsById).forEach((e) => {
@@ -378,10 +438,11 @@ export default function InboxPage() {
         if (agentUserId && e.agentUserId === agentUserId) mine++;
         if (state === "HUMAN_WAITING_USER") waitingForUser++;
       }
-      if (state === "RESOLVED" || state === "CLOSED") resolved++;
+      if (state === "RESOLVED") resolved++;
+      if (state === "CLOSED") closed++;
     });
 
-    return { userWaiting, unassigned, mine, waitingForUser, resolved, all: allCount };
+    return { userWaiting, unassigned, mine, waitingForUser, resolved, closed, all: allCount };
   }, [escalationsById, agentUserId]);
 
   const inboxItems = useMemo(() => {
@@ -400,7 +461,9 @@ export default function InboxPage() {
       } else if (activeQueue === "user-waiting") {
         if (state !== "USER_WAITING_HUMAN") return false;
       } else if (activeQueue === "resolved") {
-        if (state !== "RESOLVED" && state !== "CLOSED") return false;
+        if (state !== "RESOLVED") return false;
+      } else if (activeQueue === "closed") {
+        if (state !== "CLOSED") return false;
       } else if (activeQueue === "all") {
         // Show all
       } else {
@@ -433,6 +496,55 @@ export default function InboxPage() {
 
     return filtered;
   }, [activeQueue, agentUserId, escalationsById, searchQuery]);
+
+  // Handle explicitly searching on enter
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setServerSearchQuery(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  const handleLoadMore = useCallback(async () => {
+    if (isFetchingMore || !hasMoreItems) return;
+    setIsFetchingMore(true);
+
+    try {
+      // Determine what queue to fetch
+      const isMineQueue = activeQueue === "mine";
+      let statusParam: string | undefined;
+
+      if (activeQueue === "unassigned") statusParam = "ESCALATED_UNASSIGNED";
+      else if (activeQueue === "user-waiting") statusParam = "USER_WAITING_HUMAN";
+      else if (activeQueue === "resolved") statusParam = "RESOLVED";
+      else if (activeQueue === "closed") statusParam = "CLOSED";
+
+      const currentOffset = inboxItems.length;
+
+      const { listEscalations } = await import("@/lib/api/escalate");
+      const moreItems = await listEscalations({
+        chatbotId: botId,
+        limit: 50,
+        offset: currentOffset,
+        mine: isMineQueue,
+        status: statusParam as any,
+        search: serverSearchQuery || undefined,
+      });
+
+      if (moreItems && moreItems.length > 0) {
+        hydrateSnapshots({ escalations: moreItems });
+        if (moreItems.length < 50) setHasMoreItems(false);
+      } else {
+        setHasMoreItems(false);
+      }
+    } catch (err) {
+      console.error("Failed to load more escalations", err);
+      toast.error("Failed to load more items");
+    } finally {
+      setIsFetchingMore(false);
+    }
+  }, [activeQueue, botId, hasMoreItems, hydrateSnapshots, inboxItems.length, isFetchingMore, serverSearchQuery]);
 
   const { data: activeHistory, isLoading: isLoadingHistory } = useMessagesQuery(
     botId,
@@ -635,7 +747,13 @@ export default function InboxPage() {
           onClaim={onClaim}
           counts={counts}
           activeQueue={activeQueue}
-          onQueueChange={setActiveQueue}
+          onQueueChange={(q) => {
+            setActiveQueue(q);
+            setHasMoreItems(true); // Reset hasMore when queue changes
+          }}
+          onLoadMore={handleLoadMore}
+          isFetchingMore={isFetchingMore}
+          hasMore={hasMoreItems && inboxItems.length >= 50}
         />
 
         {/* 2. Right: Active Chat Window */}

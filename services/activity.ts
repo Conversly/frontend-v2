@@ -39,11 +39,11 @@ export const useConversationsQuery = (chatbotId: string) =>
 
 export const useEscalationsQuery = (
   chatbotId: string,
-  params?: { mine?: boolean; status?: ConversationState; limit?: number },
+  params?: { mine?: boolean; status?: ConversationState; limit?: number; offset?: number; search?: string },
 ) =>
   useQuery<EscalationItem[]>({
-    queryKey: [QUERY_KEY.ACTIVITY_ESCALATIONS, chatbotId, params?.mine, params?.status, params?.limit],
-    queryFn: () => listEscalations({ chatbotId, mine: params?.mine, status: params?.status, limit: params?.limit }),
+    queryKey: [QUERY_KEY.ACTIVITY_ESCALATIONS, chatbotId, params?.mine, params?.status, params?.limit, params?.offset, params?.search],
+    queryFn: () => listEscalations({ chatbotId, mine: params?.mine, status: params?.status, limit: params?.limit, offset: params?.offset, search: params?.search }),
     staleTime: 10_000,
     enabled: Boolean(chatbotId),
   });
