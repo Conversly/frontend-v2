@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { conversationStateIconMap } from "@/components/icons/conversation-icons";
 
 interface Counts {
     userWaiting: number;
@@ -182,9 +183,10 @@ export function EscalationsList({
                         const canClaim = waitingForAgent && !isAssigned;
                         const unread = Math.max(0, (unreadCountByConversationId[e.conversationId] ?? 0) + (e.unreadCount ?? 0));
                         const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
-                        const lastMsg = lastMsgList.length ? lastMsgList[lastMsgList.length - 1] : undefined;
+                        // Find the last message that is specifically from the user
+                        const lastUserMsg = [...lastMsgList].reverse().find(m => m.senderType === "USER");
                         const primaryReason = (e.reason || "").trim();
-                        const lastMsgText = (lastMsg?.text || "").trim();
+                        const lastMsgText = (lastUserMsg?.text || "").trim();
 
                         const messagePreview =
                             lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
@@ -225,14 +227,29 @@ export function EscalationsList({
                                 {/* Top Row - Identity, Reason Pill & Wait Time */}
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2 min-w-0 pr-2">
-                                        <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                            <span className="text-xs font-semibold text-primary">
-                                                {contactName.charAt(0).toUpperCase()}
-                                            </span>
-                                        </div>
+                                        {(() => {
+                                            const stateConfig = conversationStateIconMap[e.conversationState || ""] || conversationStateIconMap.CLOSED;
+                                            return (
+                                                <div className={stateConfig.wrapperClass} title={e.conversationState || "CLOSED"}>
+                                                    <div
+                                                        className="size-4 bg-current"
+                                                        style={{
+                                                            WebkitMaskImage: `url(/icons/${stateConfig.icon}.svg)`,
+                                                            WebkitMaskSize: 'contain',
+                                                            WebkitMaskRepeat: 'no-repeat',
+                                                            WebkitMaskPosition: 'center',
+                                                            maskImage: `url(/icons/${stateConfig.icon}.svg)`,
+                                                            maskSize: 'contain',
+                                                            maskRepeat: 'no-repeat',
+                                                            maskPosition: 'center'
+                                                        }}
+                                                    />
+                                                </div>
+                                            );
+                                        })()}
                                         <span className="text-sm font-semibold truncate text-foreground">{contactName}</span>
                                         {primaryReason && (
-                                            <span className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-1.5 py-0.5 rounded-md truncate max-w-[100px]" title={primaryReason}>
+                                            <span className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-1.5 py-0.5 rounded-md truncate max-w-[200px]" title={primaryReason}>
                                                 {primaryReason}
                                             </span>
                                         )}
