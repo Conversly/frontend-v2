@@ -458,9 +458,9 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                             </div>
                         )}
 
-                        {form.fields.filter(f => !f.systemField || f.systemField === 'none').length === 0 && (
+                        {form.fields.length === 0 && (
                             <div className="text-center py-6 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
-                                No custom fields added yet. Click &ldquo;Add Custom Field&rdquo; to create one.
+                                No fields added yet. Select predefined fields above or click &ldquo;Add Custom Field&rdquo; to create one.
                             </div>
                         )}
                     </div>

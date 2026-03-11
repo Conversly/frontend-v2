@@ -229,7 +229,7 @@ export default function BehaviourPage() {
                             id: f.id.startsWith("temp_") ? undefined : f.id,
                             placeholder: f.placeholder || undefined,
                             options: f.options || undefined,
-                            systemFieldKey: f.systemField === 'none' ? null : f.systemField,
+                            systemField: f.systemField === 'none' || f.systemField === null ? undefined : f.systemField,
                         })),
                         triggers: (behaviour.leadGen.form.triggers ?? []).map(t => ({ ...t, id: t.id.startsWith("temp_") ? undefined : t.id })),
                     }));

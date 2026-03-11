@@ -23,7 +23,7 @@ export default function BlogPage() {
             <Navbar />
 
             {/* Latest Articles Grid */}
-            <section className="py-24 px-6 bg-background">
+            <section className="pt-[100px] lg:pt-[120px] pb-24 px-6 bg-background">
                 <div className="max-w-7xl mx-auto space-y-12">
                     <div className="text-center space-y-4">
                         <Badge variant="secondary">Latest Updates</Badge>
