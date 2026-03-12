@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Check, Loader2, Globe, Palette, Link as LinkIcon, Wand2 } from "lucide-react";
+import { SetupLoader } from "./SetupLoader";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -17,9 +18,23 @@ interface SetupVisualizationProps {
     stage: Stage;
     children?: React.ReactNode;
     tuningSubstep?: TuningSubstep;
+    /**
+     * Whether to use the new immersive loader for the crawl/tuning stages.
+     * Set to true for the redesigned loading experience.
+     */
+    useImmersiveLoader?: boolean;
+    /**
+     * Optional real-time events from backend for live updates.
+     * Pass crawl logs, progress, and stage updates here.
+     */
+    realTimeEvents?: {
+        logs?: { id: string; message: string; timestamp: Date; type: "success" | "info" | "processing" }[];
+        progress?: { processed: number; total: number };
+        stage?: string;
+    };
 }
 
-export function SetupVisualization({ url, stage, children, tuningSubstep }: SetupVisualizationProps) {
+export function SetupVisualization({ url, stage, children, tuningSubstep, useImmersiveLoader = true, realTimeEvents }: SetupVisualizationProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // Filter out false/null/undefined from conditional JSX children
@@ -103,54 +118,59 @@ export function SetupVisualization({ url, stage, children, tuningSubstep }: Setu
 
                 {validChildren.length > 0 ? validChildren : (
                     <>
-                        {/* Main Card */}
-                        <div className="relative w-full max-w-md">
-                            {/* Gradient Border Effect */}
-                            <div className={cn(
-                                "absolute -inset-[2px] rounded-xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-0 transition-opacity duration-500",
-                                stage !== "idle" && "opacity-100"
-                            )} />
-
-                            <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-                                {/* Header / URL Bar */}
-                                {stage === "idle" ? (
-                                    <div className="p-6">
-                                        <div className="flex items-center gap-2 rounded-lg border border-border bg-[--surface-secondary] px-3 py-2">
-                                            <Globe className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-sm text-muted-foreground truncate">
-                                                {url || "https://your-website.com"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="p-6 space-y-4">
-                                        <StatusItem
-                                            icon={<Globe className="h-4 w-4" />}
-                                            label="Fetching links"
-                                            status={getStepStatus("crawl", stage)}
-                                        />
-                                        <StatusItem
-                                            icon={<Palette className="h-4 w-4" />}
-                                            label="Fetching brand color"
-                                            status={getStepStatus("logo", stage)}
-                                        />
-                                        <StatusItem
-                                            icon={<LinkIcon className="h-4 w-4" />}
-                                            label="Fetching logo"
-                                            status={getStepStatus("topics", stage)}
-                                        />
-                                        <TuningStatusItem
-                                            icon={<Wand2 className="h-4 w-4" />}
-                                            label="Adjusting prompt"
-                                            status={getStepStatus("tuning", stage)}
-                                            substep={tuningSubstep}
-                                        />
-                                    </div>
-                                )}
+                        {/* Use immersive loader for active crawling/processing stages */}
+                        {useImmersiveLoader && stage !== "idle" && stage !== "completed" ? (
+                            <div className="relative w-full max-w-xl">
+                                <SetupLoader url={url} realTimeEvents={realTimeEvents} />
                             </div>
-                        </div>
+                        ) : (
+                            /* Legacy static loader for idle/completed */
+                            <div className="relative w-full max-w-md">
+                                {/* Gradient Border Effect */}
+                                <div className={cn(
+                                    "absolute -inset-[2px] rounded-xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-0 transition-opacity duration-500",
+                                    stage !== "idle" && "opacity-100"
+                                )} />
 
-
+                                <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                                    {/* Header / URL Bar */}
+                                    {stage === "idle" ? (
+                                        <div className="p-6">
+                                            <div className="flex items-center gap-2 rounded-lg border border-border bg-[--surface-secondary] px-3 py-2">
+                                                <Globe className="h-4 w-4 text-muted-foreground" />
+                                                <span className="text-sm text-muted-foreground truncate">
+                                                    {url || "https://your-website.com"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="p-6 space-y-4">
+                                            <StatusItem
+                                                icon={<Globe className="h-4 w-4" />}
+                                                label="Fetching links"
+                                                status={getStepStatus("crawl", stage)}
+                                            />
+                                            <StatusItem
+                                                icon={<Palette className="h-4 w-4" />}
+                                                label="Fetching brand color"
+                                                status={getStepStatus("logo", stage)}
+                                            />
+                                            <StatusItem
+                                                icon={<LinkIcon className="h-4 w-4" />}
+                                                label="Fetching logo"
+                                                status={getStepStatus("topics", stage)}
+                                            />
+                                            <TuningStatusItem
+                                                icon={<Wand2 className="h-4 w-4" />}
+                                                label="Adjusting prompt"
+                                                status={getStepStatus("tuning", stage)}
+                                                substep={tuningSubstep}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
 

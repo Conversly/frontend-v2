@@ -46,6 +46,13 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         updateState({ form: { ...form, ...updates } });
     };
 
+    // Check if a predefined field is already added
+    const isPredefinedFieldAdded = (systemFieldKey: string) => {
+        if (!form) return false;
+        return form.fields.some(f => f.systemField === systemFieldKey);
+    };
+
+    // Update a custom field (only for non-system fields)
     const updateField = (index: number, updates: Partial<LeadFormField>) => {
         if (!form) return;
         const newFields = [...form.fields];
@@ -53,30 +60,26 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         updateForm({ fields: newFields });
     };
 
-    const addField = () => {
+    // Add a custom field
+    const addCustomField = () => {
         if (!form) return;
         const newField: LeadFormField = {
             id: `temp_${Date.now()}`,
             formId: form.id,
             label: "New Field",
             type: "text",
-            required: true,
+            required: false,
             position: form.fields.length,
             systemField: "none",
         };
         updateForm({ fields: [...form.fields, newField] });
     };
 
+    // Remove a field (works for both system and custom fields)
     const removeField = (index: number) => {
         if (!form) return;
         const newFields = form.fields.filter((_, i) => i !== index);
         updateForm({ fields: newFields });
-    };
-
-    // Check if a predefined field is already added
-    const isPredefinedFieldAdded = (systemFieldKey: string) => {
-        if (!form) return false;
-        return form.fields.some(f => f.systemField === systemFieldKey);
     };
 
     // Add a predefined system field
@@ -85,8 +88,8 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         const predefined = PREDEFINED_FIELDS.find(f => f.key === systemFieldKey);
         if (!predefined) return;
 
-        // Add the field
-        const newField: LeadFormField = {
+        // Add the field (using LeadFormField type)
+        const newField = {
             id: `temp_${Date.now()}_${systemFieldKey}`,
             formId: form.id,
             label: predefined.label,
@@ -95,7 +98,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
             position: form.fields.length,
             systemField: systemFieldKey as 'name' | 'email' | 'phone' | 'company',
         };
-        updateForm({ fields: [...form.fields, newField] });
+        updateForm({ fields: [...form.fields, newField as any] });
     };
 
     // Remove a predefined system field
@@ -343,15 +346,15 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 <GripVertical className="h-4 w-4 text-primary" />
                                 <h3 className="text-sm font-semibold text-muted-foreground">Form Fields</h3>
                             </div>
-                            <Button variant="outline" size="sm" onClick={addField}>
+                            <Button variant="outline" size="sm" onClick={addCustomField}>
                                 <Plus className="h-3 w-3 mr-1" /> Add Custom Field
                             </Button>
                         </div>
 
-                        {/* Predefined System Fields - Simple Checkboxes */}
+                        {/* System Fields - Checkbox Selection (Read-only) */}
                         <div className="p-4 bg-muted/30 border border-border rounded-lg space-y-3">
-                            <p className="text-sm font-medium text-foreground">Predefined Fields</p>
-                            <p className="text-xs text-muted-foreground">Select the fields you want to collect from leads</p>
+                            <p className="text-sm font-medium text-foreground">Predefined System Fields</p>
+                            <p className="text-xs text-muted-foreground">Select which system fields to include (cannot be modified)</p>
                             <div className="flex flex-wrap gap-3">
                                 {PREDEFINED_FIELDS.map((field) => {
                                     const Icon = field.icon;
@@ -375,7 +378,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                                 {field.label}
                                             </span>
                                             {field.required && (
-                                                <span className="text-[10px] text-muted-foreground">(required)</span>
+                                                <span className="text-[10px] text-primary">(required)</span>
                                             )}
                                         </div>
                                     );
@@ -383,84 +386,116 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                             </div>
                         </div>
 
-                        {/* Custom Fields - Editable */}
-                        {/* Only show custom fields (non-system fields) in the editable list */}
-                        {form.fields.filter(f => !f.systemField || f.systemField === 'none').length > 0 && (
+                        {/* Selected Fields List - System fields (read-only), Custom fields (editable) */}
+                        {form.fields.length > 0 && (
                             <div className="space-y-2">
-                                <p className="text-sm font-medium text-muted-foreground">Custom Fields</p>
+                                <p className="text-sm font-medium text-muted-foreground">Field Configuration</p>
                                 <div className="space-y-3">
-                                    {form.fields
-                                        .filter(f => !f.systemField || f.systemField === 'none')
-                                        .map((field, index) => {
-                                            // Get the actual index in the full fields array for updates
-                                            const actualIndex = form.fields.findIndex(f => f.id === field.id);
+                                    {form.fields.map((field, index) => {
+                                        const isSystemField = field.systemField && field.systemField !== 'none';
+                                        const predefinedConfig = isSystemField
+                                            ? PREDEFINED_FIELDS.find(p => p.key === field.systemField)
+                                            : null;
+
+                                        // System fields are displayed as read-only cards
+                                        if (isSystemField) {
+                                            const Icon = predefinedConfig?.icon || User;
                                             return (
-                                                <div key={field.id || actualIndex} className="flex items-start gap-3 p-3 bg-muted/40 border border-border rounded-md group">
-                                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
-                                                        <div className="md:col-span-4 space-y-1">
-                                                            <Label className="text-xs text-muted-foreground">Label</Label>
-                                                            <Input
-                                                                value={field.label}
-                                                                onChange={(e) => updateField(actualIndex, { label: e.target.value })}
-                                                                className="h-8"
-                                                            />
+                                                <div key={field.id || index} className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-md">
+                                                    <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
+                                                        <Icon className="h-4 w-4 text-primary" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-sm font-medium">{field.label}</span>
+                                                            <span className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">System</span>
+                                                            {field.required && (
+                                                                <span className="text-[10px] text-muted-foreground">(required)</span>
+                                                            )}
                                                         </div>
-                                                        <div className="md:col-span-3 space-y-1">
-                                                            <Label className="text-xs text-muted-foreground">Type</Label>
-                                                            <Select
-                                                                value={field.type}
-                                                                onValueChange={(value: any) => updateField(actualIndex, { type: value })}
-                                                            >
-                                                                <SelectTrigger className="h-8">
-                                                                    <SelectValue />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectItem value="text">Text</SelectItem>
-                                                                    <SelectItem value="email">Email</SelectItem>
-                                                                    <SelectItem value="phone">Phone</SelectItem>
-                                                                    <SelectItem value="textarea">Text Area</SelectItem>
-                                                                    <SelectItem value="select">Select (Dropdown)</SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
-                                                        </div>
-                                                        <div className="md:col-span-3 space-y-1">
-                                                            <Label className="text-xs text-muted-foreground">Placeholder</Label>
-                                                            <Input
-                                                                value={field.placeholder || ""}
-                                                                onChange={(e) => updateField(actualIndex, { placeholder: e.target.value })}
-                                                                className="h-8"
-                                                                placeholder="Placeholder..."
-                                                            />
-                                                        </div>
-                                                        <div className="md:col-span-2 space-y-1 flex flex-col justify-end pb-1">
-                                                            <div className="flex items-center space-x-2">
-                                                                <Checkbox
-                                                                    id={`req-${actualIndex}`}
-                                                                    checked={field.required}
-                                                                    onCheckedChange={(c) => updateField(actualIndex, { required: c as boolean })}
-                                                                />
-                                                                <Label htmlFor={`req-${actualIndex}`} className="text-xs font-normal">Required</Label>
-                                                            </div>
-                                                        </div>
+                                                        <p className="text-xs text-muted-foreground">Type: {field.type}</p>
                                                     </div>
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => removeField(actualIndex)}
-                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        onClick={() => removeField(index)}
+                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
                                             );
-                                        })}
+                                        }
+
+                                        // Custom fields are fully editable
+                                        return (
+                                            <div key={field.id || index} className="flex items-start gap-3 p-3 bg-muted/40 border border-border rounded-md group">
+                                                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
+                                                    <div className="md:col-span-4 space-y-1">
+                                                        <Label className="text-xs text-muted-foreground">Label</Label>
+                                                        <Input
+                                                            value={field.label}
+                                                            onChange={(e) => updateField(index, { label: e.target.value })}
+                                                            className="h-8"
+                                                            placeholder="Field label"
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-3 space-y-1">
+                                                        <Label className="text-xs text-muted-foreground">Type</Label>
+                                                        <Select
+                                                            value={field.type}
+                                                            onValueChange={(value: any) => updateField(index, { type: value })}
+                                                        >
+                                                            <SelectTrigger className="h-8">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="text">Text</SelectItem>
+                                                                <SelectItem value="email">Email</SelectItem>
+                                                                <SelectItem value="phone">Phone</SelectItem>
+                                                                <SelectItem value="textarea">Text Area</SelectItem>
+                                                                <SelectItem value="select">Select (Dropdown)</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="md:col-span-3 space-y-1">
+                                                        <Label className="text-xs text-muted-foreground">Placeholder</Label>
+                                                        <Input
+                                                            value={field.placeholder || ""}
+                                                            onChange={(e) => updateField(index, { placeholder: e.target.value })}
+                                                            className="h-8"
+                                                            placeholder="Placeholder..."
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-2 space-y-1 flex flex-col justify-end pb-1">
+                                                        <div className="flex items-center space-x-2">
+                                                            <Checkbox
+                                                                id={`req-${index}`}
+                                                                checked={field.required}
+                                                                onCheckedChange={(c) => updateField(index, { required: c as boolean })}
+                                                            />
+                                                            <Label htmlFor={`req-${index}`} className="text-xs font-normal">Required</Label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => removeField(index)}
+                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
 
                         {form.fields.length === 0 && (
-                            <div className="text-center py-6 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
-                                No fields added yet. Select predefined fields above or click &ldquo;Add Custom Field&rdquo; to create one.
+                            <div className="text-center py-8 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
+                                No fields added yet. Select predefined system fields above or click &ldquo;Add Custom Field&rdquo; to create custom ones.
                             </div>
                         )}
                     </div>
