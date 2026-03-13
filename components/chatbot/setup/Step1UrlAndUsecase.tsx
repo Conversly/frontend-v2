@@ -7,11 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Bot, Headset, BookOpen, TrendingUp, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const USE_CASES = [
+// Assistant type options — wording for business owners, no jargon
+const ASSISTANT_TYPES = [
   {
     id: "General AI Agent",
-    title: "General AI Agent",
-    description: "Versatile assistant for any inquiry",
+    title: "General assistant",
+    description: "Answers any question about your business",
     icon: Bot,
     gradient: "from-violet-500/20 to-purple-500/20",
     iconBg: "bg-violet-500/10",
@@ -21,8 +22,8 @@ const USE_CASES = [
   },
   {
     id: "Customer Support",
-    title: "Customer Support",
-    description: "Empathetic help for support teams",
+    title: "Customer support",
+    description: "Helps visitors with questions and issues",
     icon: Headset,
     gradient: "from-emerald-500/20 to-teal-500/20",
     iconBg: "bg-emerald-500/10",
@@ -32,8 +33,8 @@ const USE_CASES = [
   },
   {
     id: "Documentation Assistant",
-    title: "Docs Assistant",
-    description: "Finds answers from your knowledge base",
+    title: "Docs & help",
+    description: "Finds answers from your docs and FAQs",
     icon: BookOpen,
     gradient: "from-sky-500/20 to-blue-500/20",
     iconBg: "bg-sky-500/10",
@@ -43,8 +44,8 @@ const USE_CASES = [
   },
   {
     id: "Sales",
-    title: "Sales Agent",
-    description: "Persuasive assistance for conversions",
+    title: "Sales & conversion",
+    description: "Helps visitors learn about your products or services",
     icon: TrendingUp,
     gradient: "from-amber-500/20 to-orange-500/20",
     iconBg: "bg-amber-500/10",
@@ -80,20 +81,20 @@ export function Step1UrlAndUsecase({
   onManualSetup,
 }: Step1UrlAndUsecaseProps) {
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <div className="flex flex-col items-center justify-center gap-2 lg:items-start lg:justify-start">
+    <form onSubmit={onSubmit} className="flex flex-col gap-6">
+      <div className="flex flex-col items-center justify-center gap-1 lg:items-start lg:justify-start">
         <h1 className="type-page-title text-pretty text-center lg:text-left">
-          Let&apos;s start with a link
+          Create an AI assistant from your website
         </h1>
-        <p className="type-body-muted text-center lg:text-left">
-          Share your website link, and we&apos;ll automatically build an AI agent trained on your content.
+        <p className="type-body-muted text-center lg:text-left text-sm">
+          Enter your website to get started.
         </p>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="url" className="pl-0.5 type-label">
-            Your website URL
+            Website address
           </Label>
           <div className="flex h-11 w-full items-center rounded-lg border border-input bg-background text-foreground shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
             <button
@@ -107,7 +108,7 @@ export function Step1UrlAndUsecase({
             <div className="h-full w-px shrink-0 bg-border" />
             <Input
               id="url"
-              placeholder="verly.ai"
+              placeholder="e.g. yourcompany.com"
               className="h-11 w-full rounded-l-none border-none shadow-none focus-visible:ring-0"
               value={host}
               onChange={(e) => {
@@ -126,9 +127,9 @@ export function Step1UrlAndUsecase({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label className="pl-0.5 type-label">Select a use-case</Label>
+          <Label className="pl-0.5 type-label">What&apos;s this assistant for?</Label>
           <div className="grid grid-cols-2 gap-2">
-            {USE_CASES.map((item) => {
+            {ASSISTANT_TYPES.map((item) => {
               const isSelected = useCase === item.id;
               const Icon = item.icon;
               return (
@@ -171,13 +172,13 @@ export function Step1UrlAndUsecase({
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-center gap-5">
+      <div className="flex w-full flex-col items-center gap-3">
         <Button
           className="w-full h-11 text-base font-medium shadow-card"
           type="submit"
           disabled={!isValidHost(host) || isSubmitting}
         >
-          {isSubmitting ? "Processing..." : "Continue"}
+          {isSubmitting ? "Creating your assistant…" : "Create my assistant"}
         </Button>
         <div className="flex w-full items-center gap-3">
           <div className="h-px flex-1 bg-border" />
