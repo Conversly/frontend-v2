@@ -11,7 +11,7 @@ export default function WorkspaceDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider className="fixed inset-0 h-svh w-full overflow-hidden bg-background">
+    <SidebarProvider className="relative h-full w-full overflow-hidden bg-background">
       <SocketBootstrap />
       <AppSidebar />
       <SidebarInset className="app-shell h-full overflow-hidden">

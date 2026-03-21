@@ -124,6 +124,12 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 colorClass: "text-purple-600 bg-purple-100/80 dark:text-purple-500 dark:bg-purple-500/15",
             },
             {
+                title: "AI Assistant",
+                url: `/${workspaceId}/chatbot/${botId}/assistant`,
+                icon: Bot,
+                colorClass: "text-blue-600 bg-blue-100/80 dark:text-blue-500 dark:bg-blue-500/15",
+            },
+            {
                 title: "Customize",
                 url: `/${workspaceId}/chatbot/${botId}/customize`,
                 icon: Palette,

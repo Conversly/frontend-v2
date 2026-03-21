@@ -9,6 +9,7 @@ import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
 import { CalendlyWidget } from "@/components/landing/calendly-widget";
 import { defaultMetadata, organizationSchema, websiteSchema } from "@/lib/metadata";
+import { DashboardSidePanel } from "@/components/shared/DashboardSidePanel";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -64,20 +65,18 @@ export default function RootLayout({
         >
           <ThemeProvider attribute="class" enableSystem>
             <AppContextProvider>
-              <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
-                {children}
+              {/* Flex row container so the side panel sits next to the main scroll area */}
+              <div className="flex h-full w-full relative overflow-hidden">
+                <div className="flex-1 overflow-y-auto h-full relative transition-all" id="main-scroll-container">
+                  {children}
+                </div>
+
+                {/* Internal Dashboard Side Panel Widget */}
+                <DashboardSidePanel />
               </div>
             </AppContextProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
-        <script
-          src="https://widget.verlyai.xyz/embed.js"
-          data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
-          data-position="bottom-right" // optional
-          data-primary-color="#4F46E5" // optional
-          data-testing="false" // optional, flag for testing if true then use default configuration no db call
-        ></script>
-
         <CalendlyWidget />
       </body>
     </html>
