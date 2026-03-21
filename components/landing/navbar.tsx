@@ -346,7 +346,7 @@ export default function Navbar() {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/blog" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                      <Link href="/blogs" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                         <div className="flex items-start gap-4">
                           <div className="mt-1 p-2 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 group-hover:bg-orange-100 transition-colors shadow-sm">
                             <Newspaper className="w-4 h-4" />

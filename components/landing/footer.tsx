@@ -45,7 +45,7 @@ function XIcon({ className }: { className?: string }) {
 const quickLinks = [
   { name: "Solutions", href: "/solutions" },
   { name: "About Us", href: "/about" },
-  { name: "Blog", href: "/blog" },
+  { name: "Blog", href: "/blogs" },
   { name: "Documentation", href: "/docs" },
 ]
 

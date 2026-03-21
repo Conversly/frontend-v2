@@ -103,8 +103,8 @@ export default function RelatedArticles() {
                   <h3 className="text-xl font-semibold text-foreground mb-3">{article.title}</h3>
                   <p className="text-muted-foreground mb-4">{article.excerpt}</p>
                   <Link
-                    href="#"
-                    className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                    href="/blogs"
+                    className="inline-flex items-center gap-2 text-primary transition-colors hover:text-primary/80"
                   >
                     Read More
                     <ArrowRight className="w-4 h-4" />

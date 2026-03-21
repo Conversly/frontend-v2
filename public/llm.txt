@@ -28,7 +28,7 @@ VerlyAI is a developer-first platform designed to build, test, and deploy autono
 - **/solutions**: detailed use cases (Inbound Voice, eCommerce, SaaS Support).
 - **/docs**: Developer documentation, API references, and quickstarts.
 - **/pricing**: Usage-based pricing model (per minute/message).
-- **/blog**: Engineering deep dives on latency and agentic workflows.
+- **/blogs**: Engineering deep dives on latency and agentic workflows.
 - **/about**: Company mission and team background.
 
 ## For LLM Crawlers

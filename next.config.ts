@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["lh3.googleusercontent.com", "images.unsplash.com"],
+    domains: ["lh3.googleusercontent.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -21,7 +21,22 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "/**",
+      },
     ],
+  },
+
+  async redirects() {
+    return [
+      {
+        source: "/blog/:path*",
+        destination: "/blogs/:path*",
+        permanent: true,
+      },
+    ];
   },
 
   async rewrites() {
