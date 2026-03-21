@@ -87,6 +87,24 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
   frameborder="0"
 ></iframe>`;
 
+    const appEmbedCode = `// 1. Add this to your sidebar navigation:
+import Link from "next/link";
+// ...
+<Link href="/ai-assistant">AI Assistant</Link>
+
+// 2. Create the AI Assistant page in your app:
+export default function AIAssistantPage() {
+  return (
+    <div className="w-full h-[calc(100vh-64px)] overflow-hidden">
+      <iframe 
+        src="https://widget.verly.ai/chat/${botId}" 
+        className="w-full h-full border-none"
+        allow="microphone; camera"
+      />
+    </div>
+  )
+}`;
+
     const copyToClipboard = async (text: string) => {
         try {
             await navigator.clipboard.writeText(text);
@@ -366,6 +384,35 @@ export function DeploySidebar({ config, setConfig, onSave, isSaving }: DeploySid
                                         <div className="overflow-x-auto custom-scrollbar">
                                             <pre className="p-3 text-xs font-mono leading-relaxed text-foreground whitespace-pre">
                                                 {iframeCode}
+                                            </pre>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 space-y-1">
+                                        <h3 className="font-medium text-sm flex items-center gap-2">
+                                            <Code className="w-4 h-4 text-purple-500" />
+                                            App Dashboard Embed
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground">
+                                            Integrate into your SaaS app's sidebar.
+                                        </p>
+                                    </div>
+
+                                    <div className="relative group rounded-lg border border-border bg-muted/50 shadow-sm overflow-hidden">
+                                        <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-muted">
+                                            <span className="text-2xs uppercase font-semibold tracking-wider text-muted-foreground">React / Next.js</span>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                onClick={() => copyToClipboard(appEmbedCode)}
+                                                className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-background/50"
+                                            >
+                                                {copiedIframe ? <Check className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3" />}
+                                            </Button>
+                                        </div>
+                                        <div className="overflow-x-auto custom-scrollbar">
+                                            <pre className="p-3 text-xs font-mono leading-relaxed text-foreground whitespace-pre">
+                                                {appEmbedCode}
                                             </pre>
                                         </div>
                                     </div>
