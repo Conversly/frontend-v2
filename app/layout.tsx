@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="facebook-domain-verification" content="zq5gdmewsckb4auh452okb9sadoojz" />
-        <meta name="google-site-verification" content="9XuDInfIUwvzXqkGdpiv9lcsQ0kIRvymv3wuCRlkQG0" />
+        <meta name="google-site-verification" content="zBbV7e5e39RUzbHZUeXcfcjhwYpsMQG9RTHpay76_sg" />
         {/* Material Symbols Outlined – variable icon font */}
         <link
           rel="stylesheet"
