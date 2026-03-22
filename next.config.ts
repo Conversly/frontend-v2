@@ -3,6 +3,29 @@ import type { NextConfig } from "next";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/noise.webp",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/verly_logo.png",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+    ];
+  },
+
   images: {
     domains: ["lh3.googleusercontent.com"],
     remotePatterns: [

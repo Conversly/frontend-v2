@@ -64,15 +64,14 @@ export const defaultMetadata: Metadata = {
     images: [
       {
         url: siteConfig.ogImage,
-        width: 512,
-        height: 512,
+        width: 560,
+        height: 374,
         alt: 'VerlyAI - AI Customer Support Platform',
       },
     ],
   },
   twitter: {
-    // Using summary card because the current og image is a square logo (512x512).
-    // Upgrade to summary_large_image once a proper 1200x630 og image is added to /public/.
+    // Summary card fits the horizontal logo. Use summary_large_image after adding a 1200×630 OG image.
     card: 'summary',
     title: 'VerlyAI - AI Agent for Customer Support',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
@@ -109,8 +108,8 @@ export const organizationSchema = {
   logo: {
     '@type': 'ImageObject',
     url: 'https://verlyai.xyz/verly_logo.png',
-    width: 512,
-    height: 512,
+    width: 560,
+    height: 374,
   },
   description:
     'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration.',
