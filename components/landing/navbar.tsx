@@ -138,6 +138,10 @@ export default function Navbar() {
               Pricing
             </Link>
 
+            <Link href="/compare" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+              Compare
+            </Link>
+
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
