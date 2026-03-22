@@ -5,6 +5,9 @@ import Footer from "@/components/landing/footer";
 export const metadata: Metadata = {
   title: 'Privacy Policy | VerlyAI',
   description: 'VerlyAI privacy policy. Learn how we collect, use, and protect your data. GDPR compliant, SOC 2 certified, and HIPAA-ready for healthcare use cases.',
+  alternates: {
+    canonical: '/privacy',
+  },
   openGraph: {
     title: 'Privacy Policy | VerlyAI',
     description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA regulations.',
@@ -232,7 +235,7 @@ export default function PrivacyPolicyPage() {
                 <h2 className="text-2xl font-bold text-foreground">14. Contact Us</h2>
                 <p>For questions or data requests, contact:</p>
                 <p>
-                  📧 <a href="mailto:support@verly.ai" className="text-primary hover:underline">support@verly.ai</a>
+                  📧 <a href="mailto:team@verlyai.xyz" className="text-primary hover:underline">team@verlyai.xyz</a>
                 </p>
                 <p>
                   🏢 <strong>[Your Company Address]</strong>

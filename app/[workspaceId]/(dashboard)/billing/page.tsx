@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 
-export default async function BillingPage({ params }: { params: { workspaceId: string } }) {
-    const { workspaceId } = await params;
-    await redirect(`/${workspaceId}/billing/overview`);
+interface BillingPageProps {
+  params: Promise<{ workspaceId: string }>;
+}
+
+export default async function BillingPage({ params }: BillingPageProps) {
+  const { workspaceId } = await params;
+
+  redirect(`/${workspaceId}/billing/overview`);
 }

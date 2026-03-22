@@ -7,6 +7,7 @@ import { BlogPostSidebar } from "@/components/blog/blog-post-sidebar";
 import Footer from "@/components/landing/footer";
 import Navbar from "@/components/landing/navbar";
 import { Badge } from "@/components/ui/badge";
+import { siteConfig } from "@/lib/metadata";
 import { getAllPostsSlugs, getPostBySlug } from "@/lib/sanity/client";
 import {
   extractBlogTocFromBody,
@@ -34,14 +35,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description =
     post.excerpt || "Read the latest blog post from the VerlyAI team.";
+  const canonical = `${siteConfig.url}/blogs/${slug}`;
+  const image = urlForImage(post.mainImage);
+  const imageAlt = post.mainImage?.alt || post.title;
 
   return {
     title: `${post.title} | VerlyAI Blog`,
     description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
+      type: "article",
       title: `${post.title} | VerlyAI Blog`,
       description,
-      url: `https://verlyai.xyz/blogs/${slug}`,
+      url: canonical,
+      publishedTime: post.publishedAt ?? post.date,
+      authors: [post.author?.name || "VerlyAI"],
+      section: post.categories?.[0]?.title || "Blog",
+      images: image
+        ? [
+            {
+              url: image.src,
+              width: image.width,
+              height: image.height,
+              alt: imageAlt,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title: `${post.title} | VerlyAI Blog`,
+      description,
+      images: image ? [image.src] : undefined,
     },
   };
 }
@@ -70,6 +97,64 @@ function buildTocItems(
   ];
 }
 
+function buildBlogPostingStructuredData({
+  slug,
+  post,
+  image,
+}: {
+  slug: string;
+  post: NonNullable<Awaited<ReturnType<typeof getPostBySlug>>>;
+  image?: ReturnType<typeof urlForImage>;
+}) {
+  const canonical = `${siteConfig.url}/blogs/${slug}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": canonical,
+    headline: post.title,
+    description:
+      post.excerpt || "Read the latest blog post from the VerlyAI team.",
+    datePublished: post.publishedAt ?? post.date,
+    dateModified: (post as unknown as { _updatedAt?: string })._updatedAt ?? post.publishedAt ?? post.date,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonical,
+    },
+    url: canonical,
+    articleSection: post.categories?.[0]?.title || "Blog",
+    keywords: post.categories?.map((c) => c.title ?? '').filter(Boolean).join(", "),
+    inLanguage: "en-US",
+    author: {
+      "@type": "Person",
+      name: post.author?.name || "VerlyAI",
+    },
+    publisher: {
+      "@id": "https://verlyai.xyz/#organization",
+    },
+    image: image
+      ? {
+          "@type": "ImageObject",
+          url: image.src,
+          width: image.width,
+          height: image.height,
+        }
+      : undefined,
+  };
+}
+
+function buildBreadcrumbSchema(slug: string, title: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://verlyai.xyz" },
+      { "@type": "ListItem", position: 2, name: "Blog", item: "https://verlyai.xyz/blogs" },
+      { "@type": "ListItem", position: 3, name: title, item: `https://verlyai.xyz/blogs/${slug}` },
+    ],
+  };
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
@@ -82,9 +167,19 @@ export default async function BlogPostPage({ params }: Props) {
   const bodyToc = extractBlogTocFromBody(post.body);
   const tocItems = buildTocItems(post.title, bodyToc);
   const tocAnchors = bodyToc.map(({ id, level }) => ({ id, level }));
+  const blogPostingStructuredData = buildBlogPostingStructuredData({ slug, post, image });
+  const breadcrumbStructuredData = buildBreadcrumbSchema(slug, post.title);
 
   return (
     <main className="relative flex min-h-screen flex-col bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
       <Navbar />
 
       <article className="flex-1 pb-20 pt-20">

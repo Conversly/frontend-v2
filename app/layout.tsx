@@ -7,8 +7,7 @@ import Script from "next/script";
 import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
-import { CalendlyWidget } from "@/components/landing/calendly-widget";
-import { defaultMetadata, organizationSchema, websiteSchema } from "@/lib/metadata";
+import { defaultMetadata, organizationSchema, softwareApplicationSchema, websiteSchema } from "@/lib/metadata";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -32,6 +31,10 @@ export default function RootLayout({
       <head>
         <meta name="facebook-domain-verification" content="zq5gdmewsckb4auh452okb9sadoojz" />
         <meta name="google-site-verification" content="zBbV7e5e39RUzbHZUeXcfcjhwYpsMQG9RTHpay76_sg" />
+        {/* Preconnect to third-party origins for faster resource loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.sanity.io" />
         {/* Material Symbols Outlined – variable icon font */}
         <link
           rel="stylesheet"
@@ -41,6 +44,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema) }}
         />
         <script
           type="application/ld+json"
@@ -77,8 +84,6 @@ export default function RootLayout({
           data-primary-color="#4F46E5" // optional
           data-testing="false" // optional, flag for testing if true then use default configuration no db call
         ></script>
-
-        <CalendlyWidget />
       </body>
     </html>
   );

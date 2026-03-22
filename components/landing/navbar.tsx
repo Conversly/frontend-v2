@@ -335,7 +335,7 @@ export default function Navbar() {
                           </div>
                           <div>
                             <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                              Help Center
+                              FAQ Center
                               <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">

@@ -19,8 +19,10 @@ export const defaultMetadata: Metadata = {
   description: 'Automate customer support with VerlyAI. Deploy intelligent AI agents for Voice, WhatsApp, and Web Chat in minutes. Reduce support costs by 80% and handle unlimited conversations simultaneously.',
   keywords: [
     'AI customer support',
+    'AI customer support platform',
     'Voice AI agents',
     'WhatsApp automation',
+    'WhatsApp chatbot',
     'Customer service chatbot',
     'VerlyAI',
     'Automated support platform',
@@ -30,6 +32,18 @@ export const defaultMetadata: Metadata = {
     'Real-time AI agents',
     'Enterprise GenAI',
     'Inbound call automation',
+    'omnichannel customer support',
+    'AI help desk',
+    'chatbot for website',
+    'automated customer service',
+    'conversational AI',
+    'customer support automation',
+    'AI agent platform',
+    'support ticket automation',
+    'self-service customer support',
+    'e-commerce customer support AI',
+    'healthcare chatbot',
+    'SaaS customer support automation',
   ],
   authors: [{ name: 'VerlyAI Team' }],
   creator: 'VerlyAI',
@@ -40,27 +54,26 @@ export const defaultMetadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(siteConfig.url),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
-    title: '',
+    title: 'VerlyAI - AI Agent for Customer Support',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web. Start for free.',
     siteName: siteConfig.name,
     images: [
       {
         url: siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: 'VerlyAI Dashboard - AI Support Platform',
+        width: 512,
+        height: 512,
+        alt: 'VerlyAI - AI Customer Support Platform',
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
+    // Using summary card because the current og image is a square logo (512x512).
+    // Upgrade to summary_large_image once a proper 1200x630 og image is added to /public/.
+    card: 'summary',
     title: 'VerlyAI - AI Agent for Customer Support',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
     images: [siteConfig.ogImage],
@@ -86,8 +99,37 @@ export const defaultMetadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-// Structured data for the organization
+// Organization schema — primary entity recognized by Google Knowledge Graph
 export const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://verlyai.xyz/#organization',
+  name: 'VerlyAI',
+  url: 'https://verlyai.xyz',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://verlyai.xyz/verly_logo.png',
+    width: 512,
+    height: 512,
+  },
+  description:
+    'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration.',
+  foundingDate: '2025',
+  areaServed: 'Global',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: 'support@verlyai.xyz',
+    availableLanguage: 'English',
+  },
+  sameAs: [
+    'https://x.com/VerlyAI',
+    'https://www.linkedin.com/company/verlyai/',
+  ],
+};
+
+// SoftwareApplication schema — helps appear in Google's software/app results
+export const softwareApplicationSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'VerlyAI',
@@ -104,20 +146,8 @@ export const organizationSchema = {
     name: 'Free Starter Plan',
     description: 'Start for free with 50 messages included per month.',
   },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    ratingCount: '124',
-  },
   creator: {
-    '@type': 'Organization',
-    name: 'VerlyAI',
-    url: 'https://verlyai.xyz',
-    logo: 'https://verlyai.xyz/verly_logo.png',
-    sameAs: [
-      'https://x.com/VerlyAI',
-      'https://www.linkedin.com/company/verlyai/',
-    ],
+    '@id': 'https://verlyai.xyz/#organization',
   },
   featureList: [
     'AI-powered chatbots for website',
@@ -140,32 +170,19 @@ export const organizationSchema = {
 export const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': 'https://verlyai.xyz/#website',
   name: 'VerlyAI - AI Customer Support Agents',
   url: 'https://verlyai.xyz',
   description: 'Deploy AI agents across Website chat, Voice & WhatsApp in minutes. Automate 80% of customer support tickets with intelligent AI that handles unlimited conversations simultaneously.',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: 'https://verlyai.xyz/solutions?q={search_term_string}',
-    },
-    'query-input': 'required name=search_term_string',
-  },
   publisher: {
-    '@type': 'Organization',
-    name: 'VerlyAI',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://verlyai.xyz/verly_logo.png',
-    },
+    '@id': 'https://verlyai.xyz/#organization',
   },
   mainEntity: {
     '@type': 'Service',
     name: 'AI Customer Support Automation',
     description: 'AI-powered customer support agents that work across Voice, WhatsApp, and Web Chat to handle unlimited conversations 24/7.',
     provider: {
-      '@type': 'Organization',
-      name: 'VerlyAI',
+      '@id': 'https://verlyai.xyz/#organization',
     },
     areaServed: 'Global',
     hasOfferCatalog: {

@@ -4,6 +4,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { Linkedin, Mail, Phone, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { openCalendlyPopup } from "@/lib/calendly";
 
 const teamContacts = [
   {
@@ -46,6 +47,8 @@ const quickLinks = [
   { name: "Solutions", href: "/solutions" },
   { name: "About Us", href: "/about" },
   { name: "Blog", href: "/blogs" },
+  { name: "FAQ", href: "/faq" },
+  { name: "Help", href: "/help" },
   { name: "Documentation", href: "/docs" },
 ]
 
@@ -87,11 +90,7 @@ export default function Footer() {
                 <button
                   className="flex items-center gap-2"
                   onClick={() => {
-                    // @ts-ignore
-                    if (window.Calendly) {
-                      // @ts-ignore
-                      window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
-                    }
+                    void openCalendlyPopup();
                   }}
                 >
                   <Calendar className="w-5 h-5" />

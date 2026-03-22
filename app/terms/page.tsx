@@ -5,6 +5,9 @@ import Footer from "@/components/landing/footer";
 export const metadata: Metadata = {
   title: 'Terms of Service | VerlyAI',
   description: 'VerlyAI Terms of Service. Read our terms for using AI customer support agents, WhatsApp automation, and voice AI services.',
+  alternates: {
+    canonical: '/terms',
+  },
   openGraph: {
     title: 'Terms of Service | VerlyAI',
     description: 'Terms and conditions for using VerlyAI platform, including WhatsApp automation and AI customer support services.',
@@ -118,7 +121,7 @@ export default function TermsOfServicePage() {
                   For legal inquiries or questions about these Terms, please contact us at:
                 </p>
                 <p>
-                  📧 <a href="mailto:support@verly.ai" className="text-primary hover:underline">support@verly.ai</a>
+                  📧 <a href="mailto:team@verlyai.xyz" className="text-primary hover:underline">team@verlyai.xyz</a>
                 </p>
               </section>
             </div>

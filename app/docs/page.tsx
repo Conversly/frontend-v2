@@ -4,8 +4,20 @@ import { Badge } from "@/components/ui/badge";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Documentation - SDKs & API Reference | VerlyAI",
-    description: "Complete developer guides for VerlyAI. Access Python & Node.js SDKs, REST API references, Webhook events, and tutorials for building custom RAG pipelines and Voice agents.",
+    title: "Documentation Coming Soon | VerlyAI",
+    description: "VerlyAI documentation is on the way. Browse the blog, FAQ, or contact our team while we prepare API references and implementation guides.",
+    alternates: {
+        canonical: "/docs",
+    },
+    robots: {
+        index: false,
+        follow: true,
+    },
+    openGraph: {
+        title: "Documentation Coming Soon | VerlyAI",
+        description: "VerlyAI documentation is on the way. Browse the blog, FAQ, or contact our team while we prepare API references and implementation guides.",
+        url: "https://verlyai.xyz/docs",
+    },
 };
 
 export default function DocsPage() {

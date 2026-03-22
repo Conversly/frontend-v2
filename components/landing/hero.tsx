@@ -23,6 +23,7 @@ import {
 import { useState, useEffect, useCallback } from "react";
 import { NoiseBackground } from "@/components/ui/noise-background";
 import { VideoModal } from "@/components/ui/video-modal";
+import { openCalendlyPopup } from "@/lib/calendly";
 
 type OfferingType = "chat" | "voice" | "whatsapp";
 
@@ -728,11 +729,7 @@ export default function Hero() {
                   <button
                     className="cursor-pointer rounded-full bg-gradient-to-r from-neutral-100 via-neutral-100 to-white px-6 py-3 text-black font-medium shadow-[0px_2px_0px_0px_var(--color-neutral-50)_inset,0px_0.5px_1px_0px_var(--color-neutral-400)] transition-all duration-100 active:scale-98 flex items-center gap-2"
                     onClick={() => {
-                      // @ts-ignore
-                      if (window.Calendly) {
-                        // @ts-ignore
-                        window.Calendly.initPopupWidget({ url: 'https://calendly.com/rdhakad2002/30min' });
-                      }
+                      void openCalendlyPopup();
                     }}
                   >
                     <Calendar className="w-4 h-4" />

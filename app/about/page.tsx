@@ -13,13 +13,29 @@ import {
     AnimatedValueCards
 } from "@/components/about/AboutClientAnimations";
 
+const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://verlyai.xyz' },
+        { '@type': 'ListItem', position: 2, name: 'About', item: 'https://verlyai.xyz/about' },
+    ],
+};
+
 export const metadata: Metadata = {
     title: 'About Us - AI Customer Support Platform | VerlyAI',
     description: 'Learn about VerlyAI, the leading AI customer support platform. Build voice AI agents, WhatsApp chatbots, and omnichannel support solutions that scale without headcount.',
+    alternates: {
+        canonical: '/about',
+    },
     openGraph: {
         title: 'About Us - AI Customer Support Platform | VerlyAI',
         description: 'Discover how VerlyAI helps businesses deploy AI agents across voice, chat & WhatsApp to handle 10X more conversations at a fraction of the cost.',
         url: 'https://verlyai.xyz/about',
+    },
+    twitter: {
+        title: 'About Us - AI Customer Support Platform | VerlyAI',
+        description: 'Discover how VerlyAI helps businesses deploy AI agents across voice, chat & WhatsApp to handle 10X more conversations at a fraction of the cost.',
     },
 };
 
@@ -46,6 +62,10 @@ const valueCardsData = [
 export default function AboutPage() {
     return (
         <main className="bg-background relative min-h-screen font-sans selection:bg-primary/20">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
             {/* Global Grid Background */}
             <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 

@@ -177,7 +177,6 @@ export function SolutionsClientContent() {
 
     return (
         <>
-            <SolutionsHero />
             <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
             <SolutionsGrid activeCategory={activeCategory} />
             <TestimonialSection />

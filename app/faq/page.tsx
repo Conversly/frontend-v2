@@ -8,12 +8,24 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://verlyai.xyz' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://verlyai.xyz/faq' },
+  ],
+};
+
 export const metadata: Metadata = {
-  title: 'FAQ - Developer Guide & Platform Questions | VerlyAI',
-  description: 'Technical FAQs about VerlyAI: Latency specs, LLM model support, data isolation, and API integration details for developers.',
+  title: 'FAQ - VerlyAI AI Customer Support Questions & Answers',
+  description: 'Answers to common questions about VerlyAI, including pricing, security, integrations, chatbot training, WhatsApp automation, and voice AI support.',
+  alternates: {
+    canonical: '/faq',
+  },
   openGraph: {
-    title: 'FAQ - Developer Guide & Platform Questions | VerlyAI',
-    description: 'Technical FAQs about VerlyAI: Latency specs, LLM model support, and API integration.',
+    title: 'FAQ - VerlyAI Platform Questions & Answers',
+    description: 'Answers to common questions about VerlyAI, including pricing, security, integrations, chatbot training, and automation workflows.',
     url: 'https://verlyai.xyz/faq',
   },
 };
@@ -121,9 +133,32 @@ const faqCategories = [
   }
 ];
 
+const faqStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqCategories.flatMap((category) =>
+    category.questions.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  ),
+};
+
 const FaqPage = () => {
   return (
     <div className="min-h-screen bg-background relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
       <div className="relative z-10">

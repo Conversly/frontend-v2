@@ -1,24 +1,30 @@
 import { Metadata } from 'next';
 import { HelpChat } from "@/components/help/HelpChat";
-import { Mail, MessageCircle, Phone } from "lucide-react";
+import { Mail, MessageCircle, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import Navbar from "@/components/landing/navbar";
+import Footer from "@/components/landing/footer";
 
 export const metadata: Metadata = {
   title: 'Help & Support | VerlyAI',
-  description: 'Get help with VerlyAI. Contact our support team via email, live chat, or WhatsApp. Access documentation and FAQs for AI customer support agents.',
+  description: 'Get help with VerlyAI through our support assistant, FAQ, blog resources, and email support for AI customer support agents.',
+  alternates: {
+    canonical: '/help',
+  },
   openGraph: {
     title: 'Help & Support | VerlyAI',
-    description: 'Get support for VerlyAI platform. Contact us via email, live chat, or WhatsApp.',
+    description: 'Get support for VerlyAI through our support assistant, FAQ, blog resources, and email support.',
     url: 'https://verlyai.xyz/help',
   },
 };
 
 export default function HelpPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 animate-in fade-in duration-500">
-            <div className="container max-w-6xl mx-auto py-12 px-4 space-y-16">
+        <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 animate-in fade-in duration-500">
+            <Navbar />
+            <div className="container max-w-6xl mx-auto px-4 py-24 space-y-16">
 
                 {/* Hero / Chat Section */}
                 <section className="space-y-6 text-center">
@@ -27,7 +33,7 @@ export default function HelpPage() {
                             How can we help?
                         </h1>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            Ask our AI assistant below or browse our support channels for more personalized help.
+                            Ask our AI assistant below or browse the FAQ, blog, and support channels for fast answers.
                         </p>
                     </div>
 
@@ -41,7 +47,7 @@ export default function HelpPage() {
                     <div className="text-center space-y-2">
                         <h2 className="text-2xl font-semibold tracking-tight">Still need help?</h2>
                         <p className="text-muted-foreground">
-                            Our team is available through these channels
+                            Reach the right resource for setup questions, product guidance, and support
                         </p>
                     </div>
 
@@ -58,47 +64,46 @@ export default function HelpPage() {
                             </CardHeader>
                             <CardContent>
                                 <Button className="w-full" variant="outline" asChild>
-                                    <Link href="mailto:support@conversly.ai">
+                                    <Link href="mailto:team@verlyai.xyz">
                                         Send an Email
                                     </Link>
                                 </Button>
                             </CardContent>
                         </Card>
 
-                        {/* Live Chat Channel */}
+                        {/* Help Center */}
                         <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader>
                                 <div className="mb-4 w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
                                     <MessageCircle className="w-6 h-6" />
                                 </div>
-                                <CardTitle>Live Chat</CardTitle>
-                                <CardDescription>Chat with our support team</CardDescription>
+                                <CardTitle>Help Center</CardTitle>
+                                <CardDescription>Browse frequently asked questions</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Button className="w-full" variant="outline" asChild>
-                                    {/* Placeholder for live chat trigger - typically opens a widget */}
-                                    <Link href="#">
-                                        Start Chat
+                                    <Link href="/faq">
+                                        View FAQs
                                     </Link>
                                 </Button>
                             </CardContent>
                         </Card>
 
-                        {/* WhatsApp Channel */}
+                        {/* Blog Channel */}
                         <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader>
                                 <div className="mb-4 w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform duration-300">
-                                    <Phone className="w-6 h-6" />
+                                    <Newspaper className="w-6 h-6" />
                                 </div>
-                                <CardTitle>WhatsApp</CardTitle>
-                                <CardDescription>Instant answers on your phone</CardDescription>
+                                <CardTitle>Latest Guides</CardTitle>
+                                <CardDescription>Read product updates and implementation guides</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Button className="w-full" variant="outline" asChild>
-                                    <Link href="https://wa.me/1234567890" target="_blank">
-                                        Message us
+                                    <Link href="/blogs">
+                                        Visit the Blog
                                     </Link>
                                 </Button>
                             </CardContent>
@@ -107,6 +112,7 @@ export default function HelpPage() {
                 </section>
 
             </div>
-        </div>
+            <Footer />
+        </main>
     );
 }

@@ -1,12 +1,23 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
+
+import { siteConfig } from "@/lib/metadata";
 
 export default function robots(): MetadataRoute.Robots {
-    return {
-        rules: {
-            userAgent: '*',
-            allow: '/',
-            disallow: ['/private/', '/dashboard/'],
-        },
-        sitemap: 'https://verlyai.xyz/sitemap.xml',
-    };
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: [
+        "/api/",
+        "/chatbot/",
+        "/workspace/",
+        "/profile/",
+        "/promote-manager/",
+        "/auth/",
+        "/login",
+      ],
+    },
+    sitemap: `${siteConfig.url}/sitemap.xml`,
+    host: siteConfig.url,
+  };
 }

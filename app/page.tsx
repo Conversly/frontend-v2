@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 // Server Component - renders static HTML for SEO
 import Navbar from "@/components/landing/navbar";
 import Hero from "@/components/landing/hero";
@@ -10,6 +12,25 @@ import ExploreSection from "@/components/landing/explore-section";
 import UseCases from "@/components/landing/UseCases";
 import FAQ from "@/components/landing/FAQ";
 import ClientAuthRedirect from "@/components/landing/ClientAuthRedirect";
+import { siteConfig } from "@/lib/metadata";
+
+export const metadata: Metadata = {
+  title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+  description: 'Automate customer support with VerlyAI. Deploy intelligent AI agents for Voice, WhatsApp, and Web Chat in minutes. Reduce support costs by 80% and handle unlimited conversations simultaneously.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+    description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web. Start for free.',
+    url: siteConfig.url,
+    type: 'website',
+  },
+  twitter: {
+    title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+    description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
+  },
+};
 
 // Single source of truth for content width
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";

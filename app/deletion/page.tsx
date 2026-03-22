@@ -6,6 +6,9 @@ import DeletionForm from "@/components/deletion/DeletionForm";
 export const metadata: Metadata = {
   title: 'Data Deletion Request | VerlyAI',
   description: 'Request the deletion of your personal data from VerlyAI. We respect your privacy rights under GDPR and CCPA regulations.',
+  alternates: {
+    canonical: '/deletion',
+  },
   openGraph: {
     title: 'Data Deletion Request | VerlyAI',
     description: 'Submit a request to permanently delete your personal data from VerlyAI systems.',
