@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 // Server Component - renders static HTML for SEO
 import Navbar from "@/components/landing/navbar";
 import Hero from "@/components/landing/hero";
-import PricingSection from "@/components/landing/pricing";
+
 import Footer from "@/components/landing/footer";
 import UnifiedOfferings from "@/components/landing/unified-offerings";
 import HumanEscalationSection from "@/components/landing/human-escalation";
@@ -67,9 +67,6 @@ export default function Home() {
 
           {/* Use Cases Section - SEO content for different industries */}
           <UseCases />
-
-          {/* Pricing Section */}
-          <PricingSection />
 
           {/* FAQ Section - Structured data for SEO */}
           <FAQ />

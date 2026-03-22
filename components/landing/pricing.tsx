@@ -24,7 +24,7 @@ const pricingPlans = [
       { text: "10 data sources", info: "Maximum 10 data sources per chatbot." },
       { text: "1 team member", info: "Just for you." },
     ],
-    gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
+    gradient: "from-primary/10 via-accent/10 to-primary/5",
     stats: "100",
     statsLabel: "Messages / month",
     cta: "Get Started",
@@ -42,7 +42,7 @@ const pricingPlans = [
       { text: "2 team members", info: "Invite a teammate." },
       { text: "AI Actions (3 per bot)", info: "Access to custom actions/tools." },
     ],
-    gradient: "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10",
+    gradient: "from-chart-2/10 via-chart-3/10 to-chart-4/10",
     stats: "3k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
@@ -62,7 +62,7 @@ const pricingPlans = [
       { text: "AI Actions (5 per bot)", info: "Access to custom actions/tools." },
       { text: "Remove branding", info: "Ability to remove 'Powered by' branding." },
     ],
-    gradient: "from-blue-500/10 via-cyan-500/10 to-teal-500/10",
+    gradient: "from-primary/10 via-accent/10 to-primary/5",
     stats: "12k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
@@ -81,7 +81,7 @@ const pricingPlans = [
       { text: "AI Actions (10 per bot)", info: "Access to custom actions/tools." },
       { text: "Remove branding", info: "Ability to remove 'Powered by' branding." },
     ],
-    gradient: "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
+    gradient: "from-chart-3/10 via-chart-4/10 to-chart-5/10",
     stats: "60k",
     statsLabel: "Messages / month",
     cta: "Start a free trial",
@@ -148,7 +148,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px]"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px]"
         />
         <motion.div
           animate={{
@@ -161,7 +161,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
             ease: "easeInOut",
             delay: 1
           }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px]"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[100px]"
         />
       </div>
 
@@ -187,7 +187,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Start free. Pay only for what you use. <span className="text-foreground font-medium">Cancel anytime.</span>{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 font-medium">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent font-medium">
               Save $9,600/month vs hiring support agents.
             </span>
           </p>
@@ -220,7 +220,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                     <motion.div
                       initial={{ y: 10, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-1.5 rounded-full text-sm font-semibold shadow-lg shadow-primary/25"
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-accent text-primary-foreground px-5 py-1.5 rounded-full text-sm font-semibold shadow-lg shadow-primary/25"
                     >
                       <Star className="w-3.5 h-3.5 fill-current" />
                       Most Popular
@@ -245,7 +245,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                 </div>
 
                 {/* Stats */}
-                <div className="mb-8 p-4 rounded-2xl bg-muted/30 border border-white/5 backdrop-blur-sm">
+                <div className="mb-8 p-4 rounded-2xl bg-muted/30 border border-border/10 backdrop-blur-sm">
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
                       {plan.stats}
@@ -298,7 +298,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                      transition-all duration-300 relative overflow-hidden group/button
                      ${plan.popular
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
-                        : "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:border-slate-800 dark:hover:bg-slate-800"
+                        : "bg-card text-foreground border border-border hover:border-border/80 hover:bg-secondary shadow-sm hover:scale-[1.02]"
                       }
                    `}
                   >
@@ -330,7 +330,7 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
                       transition-all duration-300 relative overflow-hidden group/button
                       ${plan.popular
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]"
-                        : "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:border-slate-800 dark:hover:bg-slate-800"
+                        : "bg-card text-foreground border border-border hover:border-border/80 hover:bg-secondary shadow-sm hover:scale-[1.02]"
                       }
                     `}
                   >
@@ -359,12 +359,12 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
           viewport={{ once: true }}
         >
           {[
-            { text: "24/7 Priority Support", color: "bg-emerald-500" },
-            { text: "99.9% Uptime SLA", color: "bg-blue-500" },
-            { text: "Automatic Updates", color: "bg-purple-500" },
-            { text: "GDPR Compliant", color: "bg-orange-500" }
+            { text: "24/7 Priority Support", color: "bg-chart-1" },
+            { text: "99.9% Uptime SLA", color: "bg-chart-2" },
+            { text: "Automatic Updates", color: "bg-chart-3" },
+            { text: "GDPR Compliant", color: "bg-chart-4" }
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-card/40 border border-white/5 backdrop-blur-md shadow-sm">
+            <div key={i} className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-card/40 border border-border/10 backdrop-blur-md shadow-sm">
               <div className={`w-2 h-2 rounded-full ${item.color} shadow-[0_0_10px_currentColor]`} />
               <span className="text-sm font-medium text-muted-foreground">
                 {item.text}
@@ -376,4 +376,3 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
     </section>
   )
 }
-
