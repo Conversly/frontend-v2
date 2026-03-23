@@ -21,6 +21,7 @@ import { Step7Completion } from "@/components/chatbot/setup/Step7Completion";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { SetupVisualization } from "@/components/chatbot/setup/SetupVisualization";
 import { LivePreviewWidget } from "@/components/chatbot/customization/LivePreviewWidget";
+import WaitingAnimation from "@/components/animation/WaitingAnimation";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -32,7 +33,10 @@ type TuningSubstep =
 function useStagedProgress(active: boolean) {
   const [stage, setStage] = useState<Stage>("idle");
   useEffect(() => {
-    if (!active) return;
+    if (!active) {
+      setStage("idle");
+      return;
+    }
     setStage("crawl");
     const t1 = setTimeout(() => setStage("logo"), 2000);
     const t2 = setTimeout(() => setStage("topics"), 4000);
@@ -201,6 +205,7 @@ export default function SetupWizardPage() {
   const { mutateAsync: savePrompt } = useUpsertChannelPrompt();
   // Seed from the in-memory inferred prompt so Step 6 shows the prompt immediately
   const [draftPrompt, setDraftPrompt] = useState(inferredPrompt);
+  const [hasStep2Failed, setHasStep2Failed] = useState(false);
 
   // Sync draft prompt: prefer in-memory inferredPrompt first, then fall back to fetched value.
   // This runs once when widgetPrompt arrives from the API (e.g. on resume flow).
@@ -283,6 +288,7 @@ export default function SetupWizardPage() {
     if (isSubmitting) {
       return;
     }
+    setHasStep2Failed(false);
     // Move heavy work to Step 2 (Processing)
     setStep(2);
   };
@@ -316,9 +322,11 @@ export default function SetupWizardPage() {
         // Invalidate chatbots cache since a new chatbot was created
         queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
         toast.success("Initial setup complete");
+        setHasStep2Failed(false);
         setStep(3);
       } catch (err: any) {
         if (!cancelled) {
+          setHasStep2Failed(true);
           toast.error(err?.message || "Setup failed");
           setStep(1);
         }
@@ -447,7 +455,17 @@ export default function SetupWizardPage() {
 
           {/* RIGHT PANEL (Visualization) */}
           <section className="hidden h-full w-full flex-col justify-center overflow-hidden border-l border-border bg-[--surface-secondary] lg:flex">
-            <SetupVisualization url={composedUrl} stage={stage} tuningSubstep={tuningSubstep}>
+            <SetupVisualization
+              url={composedUrl}
+              stage={stage}
+              tuningSubstep={tuningSubstep}
+              useImmersiveLoader={false}
+            >
+              {step === 2 && (
+                <div className="h-full w-full p-6">
+                  {!hasStep2Failed ? <WaitingAnimation /> : null}
+                </div>
+              )}
               {step === 4 && draftConfig && (
                 <div className="w-[400px] h-[650px] rounded-lg overflow-hidden shadow-lg">
                   <LivePreviewWidget

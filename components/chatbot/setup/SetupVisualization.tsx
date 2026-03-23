@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Check, Loader2, Globe, Palette, Link as LinkIcon, Wand2 } from "lucide-react";
-import { SetupLoader } from "./SetupLoader";
+import WaitingAnimation from "@/components/animation/WaitingAnimation";
 
 type Stage = "idle" | "crawl" | "logo" | "topics" | "tuning" | "completed";
 
@@ -121,7 +121,7 @@ export function SetupVisualization({ url, stage, children, tuningSubstep, useImm
                         {/* Use immersive loader for active crawling/processing stages */}
                         {useImmersiveLoader && stage !== "idle" && stage !== "completed" ? (
                             <div className="relative w-full max-w-xl">
-                                <SetupLoader url={url} realTimeEvents={realTimeEvents} />
+                                <WaitingAnimation />
                             </div>
                         ) : (
                             /* Legacy static loader for idle/completed */

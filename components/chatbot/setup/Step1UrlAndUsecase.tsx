@@ -83,18 +83,16 @@ export function Step1UrlAndUsecase({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col items-center justify-center gap-1 lg:items-start lg:justify-start">
-        <h1 className="type-page-title text-pretty text-center lg:text-left">
-          Create an AI assistant from your website
-        </h1>
+        <h1 className="type-page-title text-pretty text-center lg:tex-left">Your website now talks to your customers — automatically</h1>
         <p className="type-body-muted text-center lg:text-left text-sm">
-          Enter your website to get started.
-        </p>
+          Just add your website link. Your assistant will be ready in 2 minutes.
+        </p> 
       </div>
 
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="url" className="pl-0.5 type-label">
-            Website address
+            Your website link
           </Label>
           <div className="flex h-11 w-full items-center rounded-lg border border-input bg-background text-foreground shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
             <button
@@ -108,7 +106,7 @@ export function Step1UrlAndUsecase({
             <div className="h-full w-px shrink-0 bg-border" />
             <Input
               id="url"
-              placeholder="e.g. yourcompany.com"
+              placeholder="yourcompany.com"
               className="h-11 w-full rounded-l-none border-none shadow-none focus-visible:ring-0"
               value={host}
               onChange={(e) => {
@@ -178,7 +176,7 @@ export function Step1UrlAndUsecase({
           type="submit"
           disabled={!isValidHost(host) || isSubmitting}
         >
-          {isSubmitting ? "Creating your assistant…" : "Create my assistant"}
+          {isSubmitting ? "Creating your assistant…" : "Let's start →"}
         </Button>
         <div className="flex w-full items-center gap-3">
           <div className="h-px flex-1 bg-border" />
