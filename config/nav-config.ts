@@ -136,7 +136,7 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 colorClass: "text-slate-600 bg-slate-100/80 dark:text-slate-400 dark:bg-slate-500/15",
             },
             {
-                title: "Deploy",
+                title: "Go Live",
                 url: `/${workspaceId}/chatbot/${botId}/deploy-live`,
                 icon: Rocket,
                 colorClass: "text-purple-600 bg-purple-100/80 dark:text-purple-500 dark:bg-purple-500/15",
@@ -164,8 +164,8 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
         label: "Analytics",
         items: [
             {
-                title: "Statistic",
-                url: `/${workspaceId}/chatbot/${botId}/analytics/statistic`,
+                title: "Reports",
+                url: `/${workspaceId}/chatbot/${botId}/analytics/statistics`,
                 icon: BarChart3,
                 colorClass: "text-cyan-600 bg-cyan-100/80 dark:text-cyan-500 dark:bg-cyan-500/15",
             },
@@ -176,13 +176,13 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 colorClass: "text-rose-600 bg-rose-100/80 dark:text-rose-500 dark:bg-rose-500/15",
             },
             {
-                title: "Chats",
+                title: "Conversations",
                 url: `/${workspaceId}/chatbot/${botId}/activity/chat-logs`,
                 icon: MessagesSquare,
                 colorClass: "text-rose-600 bg-rose-100/80 dark:text-rose-500 dark:bg-rose-500/15",
             },
             {
-                title: "Leads",
+                title: "Interested Visitors",
                 url: `/${workspaceId}/chatbot/${botId}/activity/leads`,
                 icon: Users,
                 colorClass: "text-fuchsia-600 bg-fuchsia-100/80 dark:text-fuchsia-500 dark:bg-fuchsia-500/15",
@@ -193,13 +193,13 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
         label: "Human Escalations",
         items: [
             {
-                title: "Escalation Analytics",
+                title: "Human Handoff Reports",
                 url: `/${workspaceId}/chatbot/${botId}/escalation-analytics`,
                 icon: BarChart3,
                 colorClass: "text-cyan-600 bg-cyan-100/80 dark:text-cyan-500 dark:bg-cyan-500/15",
             },
             {
-                title: "Live Inbox",
+                title: "Live Support Inbox",
                 url: `/${workspaceId}/chatbot/${botId}/activity/inbox`,
                 icon: Inbox,
                 colorClass: "text-sky-600 bg-sky-100/80 dark:text-sky-500 dark:bg-sky-500/15",
@@ -228,7 +228,7 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
                 colorClass: "text-blue-600 bg-blue-100/80 dark:text-blue-500 dark:bg-blue-500/15",
             },
             {
-                title: "Integrations",
+                title: "Connect Other Apps",
                 url: `/${workspaceId}/chatbot/${botId}/integration`,
                 icon: Plug,
                 colorClass: "text-violet-600 bg-violet-100/80 dark:text-violet-500 dark:bg-violet-500/15",

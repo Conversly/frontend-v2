@@ -64,8 +64,8 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       {/* Initial Message */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
-          title="Initial Message"
-          description="The first message users see when they open the chat"
+          title="First Chat Message"
+          description="The message shown when someone opens the chat"
           icon={MessageSquare}
         />
 
@@ -94,8 +94,8 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       {/* Starter Questions */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
-          title="Starter Questions"
-          description="Quick action buttons to help users get started"
+          title="Buttons to Start"
+          description="Short prompts users can tap to begin"
           icon={HelpCircle}
         />
 
@@ -141,8 +141,8 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       {/* Message Settings */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
-          title="Message Settings"
-          description="Customize message input and display options"
+          title="Chat Box Options"
+          description="Control what users see when they message you"
         />
 
         <div className="space-y-4">
@@ -214,15 +214,15 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       {/* Calls + Attention */}
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
-          title="Calls & Attention"
-          description="Voice entrypoints + optional popup/sound nudges"
+          title="Pop-ups and Alert Sound"
+          description="Optional pop-up and sound (and voice calling if enabled)"
           icon={PhoneCall}
         />
 
         <div className="space-y-4">
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Enable Calls</label>
+              <label className="font-sans text-sm text-foreground">Allow Voice Calls</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -269,7 +269,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Popup Sound</label>
+              <label className="font-sans text-sm text-foreground">Play Alert Sound</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
@@ -293,7 +293,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
           {(attention.messagePopupEnabled || attention.popupSoundEnabled) && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="font-sans text-sm text-foreground">Sound URL (optional)</label>
+                <label className="font-sans text-sm text-foreground">Custom Alert Sound Link</label>
                 <Tooltip>
                   <TooltipTrigger>
                     <HelpCircle className="w-4 h-4 text-muted-foreground" />
