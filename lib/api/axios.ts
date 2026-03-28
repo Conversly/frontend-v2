@@ -94,6 +94,23 @@ export async function guardedFetch<T = unknown>(
 }
 
 /**
+ * Like {@link guardedFetch}, but uses a fully resolved URL path relative to the API client baseURL.
+ * Use this when the route contains dynamic segments (e.g. assistant IDs); {@link guardedFetch}
+ * only supports `baseUrl + endpoint.path()` with a static template and must not be given a
+ * baseUrl that already includes the resolved path.
+ */
+export async function guardedFetchByUrl<T = unknown>(
+  endpoint: ApiEndpoint,
+  url: string,
+  config: AxiosRequestConfig
+): Promise<AxiosResponse<T>> {
+  if (!(await isEndpointAccessible(endpoint))) {
+    throw new ApiModeError(endpoint.path());
+  }
+  return fetch<T>(url, config);
+}
+
+/**
  * Helper to get the path from an endpoint.
  * Works with both new ApiEndpoint objects and legacy function format.
  */

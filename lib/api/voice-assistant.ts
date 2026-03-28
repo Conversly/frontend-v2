@@ -1,4 +1,4 @@
-import { fetch, guardedFetch } from "@/lib/api/axios";
+import { fetch, guardedFetch, guardedFetchByUrl } from "@/lib/api/axios";
 import { API, ApiResponse } from "@/lib/api/config";
 import {
     VoiceAssistant,
@@ -35,61 +35,51 @@ export const getAssistant = async (assistantId: string): Promise<VoiceAssistantF
 };
 
 export const updateAssistant = async (assistantId: string, data: UpdateVoiceAssistantInput): Promise<VoiceAssistant> => {
-    const endpointPath = API.ENDPOINTS.VOICE.UPDATE_ASSISTANT.path().replace(":assistantId", assistantId);
-    // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const res = await guardedFetch(
-        API.ENDPOINTS.VOICE.UPDATE_ASSISTANT,
-        API.ENDPOINTS.VOICE.BASE_URL() + endpointPath.replace(API.ENDPOINTS.VOICE.UPDATE_ASSISTANT.path(), ''),
-        { method: "PATCH", data }
-    ).then(res => res.data) as ApiResponse<VoiceAssistant, Error>;
+    const url =
+        API.ENDPOINTS.VOICE.BASE_URL() + API.ENDPOINTS.VOICE.UPDATE_ASSISTANT.path().replace(":assistantId", assistantId);
+    const res = await guardedFetchByUrl(API.ENDPOINTS.VOICE.UPDATE_ASSISTANT, url, { method: "PATCH", data }).then(
+        (res) => res.data
+    ) as ApiResponse<VoiceAssistant, Error>;
     if (!res.success) throw new Error(res.message);
     return res.data;
 };
 
 export const updateBehavior = async (assistantId: string, data: UpdateVoiceAssistantBehaviorInput): Promise<{ behavior: any }> => {
-    const endpointPath = API.ENDPOINTS.VOICE.UPDATE_BEHAVIOR.path().replace(":assistantId", assistantId);
-    // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const res = await guardedFetch(
-        API.ENDPOINTS.VOICE.UPDATE_BEHAVIOR,
-        API.ENDPOINTS.VOICE.BASE_URL() + endpointPath.replace(API.ENDPOINTS.VOICE.UPDATE_BEHAVIOR.path(), ''),
-        { method: "PATCH", data }
-    ).then(res => res.data) as ApiResponse<{ behavior: any }, Error>;
+    const url =
+        API.ENDPOINTS.VOICE.BASE_URL() + API.ENDPOINTS.VOICE.UPDATE_BEHAVIOR.path().replace(":assistantId", assistantId);
+    const res = await guardedFetchByUrl(API.ENDPOINTS.VOICE.UPDATE_BEHAVIOR, url, { method: "PATCH", data }).then(
+        (res) => res.data
+    ) as ApiResponse<{ behavior: any }, Error>;
     if (!res.success) throw new Error(res.message);
     return res.data;
 };
 
 export const updateProvider = async (assistantId: string, data: UpdateVoiceAssistantProviderInput): Promise<{ provider: any }> => {
-    const endpointPath = API.ENDPOINTS.VOICE.UPDATE_PROVIDER.path().replace(":assistantId", assistantId);
-    // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const res = await guardedFetch(
-        API.ENDPOINTS.VOICE.UPDATE_PROVIDER,
-        API.ENDPOINTS.VOICE.BASE_URL() + endpointPath.replace(API.ENDPOINTS.VOICE.UPDATE_PROVIDER.path(), ''),
-        { method: "PATCH", data }
-    ).then(res => res.data) as ApiResponse<{ provider: any }, Error>;
+    const url =
+        API.ENDPOINTS.VOICE.BASE_URL() + API.ENDPOINTS.VOICE.UPDATE_PROVIDER.path().replace(":assistantId", assistantId);
+    const res = await guardedFetchByUrl(API.ENDPOINTS.VOICE.UPDATE_PROVIDER, url, { method: "PATCH", data }).then(
+        (res) => res.data
+    ) as ApiResponse<{ provider: any }, Error>;
     if (!res.success) throw new Error(res.message);
     return res.data;
 };
 
 export const makeOutboundCall = async (assistantId: string, phoneNumber: string): Promise<any> => {
-    // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const endpoint = `${API.ENDPOINTS.VOICE.BASE_URL()}/assistants/${assistantId}/call`;
-    const res = await guardedFetch(
-        API.ENDPOINTS.VOICE.MAKE_CALL,
-        endpoint.replace(API.ENDPOINTS.VOICE.MAKE_CALL.path(), ''),
-        { method: "POST", data: { phoneNumber } }
-    ).then(res => res.data) as ApiResponse<any, Error>;
+    const url = `${API.ENDPOINTS.VOICE.BASE_URL()}/assistants/${assistantId}/call`;
+    const res = await guardedFetchByUrl(API.ENDPOINTS.VOICE.MAKE_CALL, url, {
+        method: "POST",
+        data: { phoneNumber },
+    }).then((res) => res.data) as ApiResponse<any, Error>;
     if (!res.success) throw new Error(res.message);
     return res.data;
 };
 
 export const generateAssistantToken = async (assistantId: string): Promise<{ accessToken: string; url: string }> => {
-    const endpointPath = API.ENDPOINTS.VOICE.GENERATE_TOKEN.path().replace(":assistantId", assistantId);
-    // DEV_ONLY - Uses guardedFetch for automatic mode checking
-    const res = await guardedFetch(
-        API.ENDPOINTS.VOICE.GENERATE_TOKEN,
-        API.ENDPOINTS.VOICE.BASE_URL() + endpointPath.replace(API.ENDPOINTS.VOICE.GENERATE_TOKEN.path(), ''),
-        { method: "POST" }
-    ).then(res => res.data) as ApiResponse<{ accessToken: string; url: string }, Error>;
+    const url =
+        API.ENDPOINTS.VOICE.BASE_URL() + API.ENDPOINTS.VOICE.GENERATE_TOKEN.path().replace(":assistantId", assistantId);
+    const res = await guardedFetchByUrl(API.ENDPOINTS.VOICE.GENERATE_TOKEN, url, { method: "POST" }).then(
+        (res) => res.data
+    ) as ApiResponse<{ accessToken: string; url: string }, Error>;
     if (!res.success) throw new Error(res.message);
     return res.data;
 };
