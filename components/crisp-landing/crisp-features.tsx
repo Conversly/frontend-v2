@@ -1,424 +1,532 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 
 const features = [
   {
     id: "helpdesk",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-      </svg>
-    ),
     label: "AI Helpdesk",
-    desc: "Give superpowers to your teams and customers.",
-    color: "#3E80F1",
-    content: {
-      title: "Give superpowers to your team",
-      subtitle: "AI Helpdesk",
-      description: "Resolve customer issues faster with AI-powered suggestions, automated responses, and smart routing. Your agents get real-time suggestions while your customers get instant answers.",
-      bullets: ["AI-powered reply suggestions", "Smart ticket routing", "Automated responses", "Real-time analytics"],
-    },
+    eyebrow: "Modern ticketing",
+    desc: "Deploy AI to resolve support tickets, suggest replies, and keep teams moving faster.",
+    accent: "from-[#67A4FF] via-[#4F7BF7] to-[#2B54D6]",
+    tint: "from-[#66A4FF] to-[#315EEA]",
+    stats: [
+      { value: "43%", label: "faster triage" },
+      { value: "128", label: "tickets/day" },
+      { value: "<1m", label: "first draft" },
+    ],
   },
   {
     id: "widget",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-      </svg>
-    ),
     label: "Chat Widget",
-    desc: "Support from your website & mobile apps.",
-    color: "#F59E0B",
-    content: {
-      title: "Engage visitors in real-time",
-      subtitle: "Chat Widget",
-      description: "Embed a beautiful, customizable chat widget on your website. Engage visitors proactively with targeted messages and convert them into customers.",
-      bullets: ["Customizable appearance", "Proactive messaging", "File sharing", "Typing indicators"],
-    },
+    eyebrow: "Website conversations",
+    desc: "Launch a branded support experience on your website with instant AI responses.",
+    accent: "from-[#FFBF7F] via-[#F8964A] to-[#E96A18]",
+    tint: "from-[#FDBA74] to-[#F97316]",
+    stats: [
+      { value: "24/7", label: "always on" },
+      { value: "91%", label: "self served" },
+      { value: "<30s", label: "reply time" },
+    ],
   },
   {
     id: "inbox",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-      </svg>
-    ),
     label: "Shared Inbox",
-    desc: "Centralize your inbound communications.",
-    color: "#3E80F1",
-    content: {
-      title: "Centralize all your inbound messages",
-      subtitle: "Shared Inbox",
-      description: "All your inbound conversations from all channels go into one collaborative inbox. Your team can access, manage, and respond to messages efficiently.",
-      bullets: ["Chat Widget", "Email", "WhatsApp", "Messenger"],
-    },
+    eyebrow: "Omnichannel queue",
+    desc: "Manage every incoming conversation from one place with priorities and ownership.",
+    accent: "from-[#8AA2FF] via-[#637CFF] to-[#315EEA]",
+    tint: "from-[#7C90FF] to-[#3B5CF0]",
+    stats: [
+      { value: "50%", label: "faster resolution" },
+      { value: "387 hrs", label: "saved/month" },
+      { value: "<2hrs", label: "to onboard" },
+    ],
   },
   {
-    id: "kb",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-      </svg>
-    ),
+    id: "knowledge",
     label: "Knowledge Base",
-    desc: "Make your customers more autonomous.",
-    color: "#10B981",
-    content: {
-      title: "Build a self-service knowledge base",
-      subtitle: "Knowledge Base",
-      description: "Create a comprehensive help center that empowers customers to find answers on their own. Reduce support volume by up to 50% with well-organized documentation.",
-      bullets: ["AI-powered search", "Multi-language support", "Rich text editor", "Analytics & feedback"],
-    },
+    eyebrow: "Self-serve help",
+    desc: "Give customers a searchable help center so they can solve common questions instantly.",
+    accent: "from-[#68D7B1] via-[#3ECF8E] to-[#129A63]",
+    tint: "from-[#4ADE80] to-[#059669]",
+    stats: [
+      { value: "1.8k", label: "articles indexed" },
+      { value: "72%", label: "deflection rate" },
+      { value: "24 hrs", label: "to publish" },
+    ],
   },
   {
     id: "crm",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-      </svg>
-    ),
     label: "Support CRM",
-    desc: "Organize your customer data in a CRM.",
-    color: "#EF4444",
-    content: {
-      title: "Know every customer by name",
-      subtitle: "Support CRM",
-      description: "Organize your customer data with a built-in CRM. Track interactions, segment contacts, and personalize every conversation with customer context.",
-      bullets: ["Contact management", "Custom segments", "Interaction history", "Data enrichment"],
-    },
+    eyebrow: "Customer context",
+    desc: "Keep plans, health, ownership, and conversation history attached to every profile.",
+    accent: "from-[#FF98AF] via-[#FB7185] to-[#E11D48]",
+    tint: "from-[#FB7185] to-[#E11D48]",
+    stats: [
+      { value: "360°", label: "customer view" },
+      { value: "$4.2k", label: "mrr tracked" },
+      { value: "47", label: "active tickets" },
+    ],
   },
   {
     id: "analytics",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-      </svg>
-    ),
     label: "Support Analytics",
-    desc: "Monitor and track your teams' performances.",
-    color: "#EC4899",
-    content: {
-      title: "Data-driven support decisions",
-      subtitle: "Support Analytics",
-      description: "Monitor and track your team's performance with real-time analytics dashboards. Identify trends, measure satisfaction, and optimize your support operations.",
-      bullets: ["Response time tracking", "CSAT scores", "Team performance", "Custom reports"],
-    },
+    eyebrow: "Performance dashboard",
+    desc: "Track SLA, CSAT, and team metrics with real-time views of support performance.",
+    accent: "from-[#FF9AD4] via-[#F472B6] to-[#DB2777]",
+    tint: "from-[#F472B6] to-[#DB2777]",
+    stats: [
+      { value: "+18%", label: "sla trend" },
+      { value: "4.8/5", label: "csat score" },
+      { value: "1.2m", label: "avg reply" },
+    ],
   },
 ];
 
 export default function CrispFeatures() {
-  const [active, setActive] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % features.length);
+    }, 4200);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const activeFeature = useMemo(() => features[activeIndex], [activeIndex]);
 
   return (
-    <section id="features" className="crisp-section-light">
-      <div className="crisp-container">
-        
-        {/* Exact Crisp Feature Tab Selector */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-16 max-w-5xl mx-auto">
-          {features.map((feat, idx) => (
-            <button
-              key={feat.id}
-              onClick={() => setActive(idx)}
-              className={active === idx ? "crisp-feature-tab-active" : "crisp-feature-tab"}
-            >
-              <div
-                className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0"
-                style={{
-                  backgroundColor: active === idx ? feat.color + "15" : "#F3F4F6",
-                  color: active === idx ? feat.color : "#9CA3AF",
-                }}
-              >
-                {feat.icon}
-              </div>
-              <div className="text-left leading-tight">
-                <div className={`text-[14px] ${active === idx ? "text-gray-900 font-extrabold" : "font-bold"}`}>
-                  {feat.label}
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
+    <section id="features" className="relative overflow-hidden bg-[#efefef] py-10 text-white md:py-14">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,#f6f6f6_0%,#ededed_100%)]" />
 
-        {/* Active Feature Content Container */}
-        <div className="max-w-[1000px] mx-auto">
+      <div className="relative mx-auto max-w-[1680px] px-5 md:px-8">
+        <div className="relative overflow-hidden rounded-[34px] bg-[#020202] px-6 py-7 shadow-[0_28px_80px_rgba(0,0,0,0.18)] md:px-10 md:py-8">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(109,75,255,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(77,116,255,0.12),transparent_28%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:56px_56px] opacity-20" />
+
+          <div className="relative mb-6 grid gap-4 md:mb-7 md:grid-cols-[minmax(0,1fr)_380px] md:items-end">
+            <div>
+              <div className="mb-3 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#a3a9bc]">
+                Platform Modules
+              </div>
+              <h2 className="max-w-[720px] font-[Georgia,Times,'Times_New_Roman',serif] text-[36px] font-normal leading-[1] tracking-[-0.03em] text-white md:text-[48px]">
+                Here&apos;s why teams love
+                <span className="block text-[#d9dcf1]">one AI platform.</span>
+              </h2>
+            </div>
+            <p className="max-w-[380px] text-sm font-medium leading-7 text-[#8f96aa] md:ml-auto md:text-[15px]">
+              One module is shown at a time in a sliding format, with a larger product preview
+              for each part of the support stack.
+            </p>
+          </div>
+
+          <div className="relative rounded-[32px] border border-white/10 bg-white/[0.02] p-2.5 md:p-3.5">
           <AnimatePresence mode="wait">
             <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, type: "spring", stiffness: 100, damping: 20 }}
-              className="crisp-card p-8"
+              key={activeIndex}
+              initial={{ opacity: 0, x: 70 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -70 }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+              className="mx-auto max-w-[1100px]"
             >
-              <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
-                {/* Left Text */}
-                <div>
-                  <div
-                    className="crisp-badge-tag mb-6"
-                    style={{
-                      backgroundColor: features[active].color + "10",
-                      color: features[active].color,
-                    }}
-                  >
-                    {features[active].icon}
-                    {features[active].content.subtitle.toUpperCase()}
-                  </div>
-                  <h2 className="crisp-title mb-6">
-                    {features[active].content.title}
-                  </h2>
-                  <p className="crisp-subtitle mb-8">
-                    {features[active].content.description}
-                  </p>
-                  
-                  {/* Bullets with Exact Crisp Icons */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mb-10">
-                    {features[active].content.bullets.map((bullet) => (
-                      <div key={bullet} className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0"
-                          style={{
-                            backgroundColor: features[active].color + "15",
-                            color: features[active].color,
-                          }}
-                        >
-                          {/* Green exact Checkmark */}
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                          </svg>
-                        </div>
-                        <span className="text-[14px] font-semibold text-[#111827]">{bullet}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full text-white text-[15px] font-bold transition-all hover:-translate-y-0.5 shadow-md"
-                    style={{ backgroundColor: features[active].color, boxShadow: `0 4px 14px ${features[active].color}40` }}
-                  >
-                    Learn more
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-
-                {/* Right: Feature Specific Visual Mockups (Exact Replicas) */}
-                <div
-                  className="rounded-[24px] p-2 flex items-center justify-center h-full min-h-[460px]"
-                  style={{ backgroundColor: features[active].color + "0A" }}
-                >
-                  <div className="w-full max-w-[360px] mx-auto scale-[0.95]">
-                    {active === 0 && <HelpdeskMockup />}
-                    {active === 1 && <ExactCrispWidgetMockup />}
-                    {active === 2 && (
-                      <Image
-                        src="/images/crisp/omnichannel-hub.png"
-                        alt="Omnichannel"
-                        width={400}
-                        height={400}
-                        className="w-full h-auto drop-shadow-xl"
-                      />
-                    )}
-                    {active === 3 && <KnowledgeBaseMockup />}
-                    {active === 4 && <CRMMockup />}
-                    {active === 5 && <AnalyticsMockup />}
-                  </div>
-                </div>
-              </div>
+              <FeatureCard
+                key={activeFeature.id}
+                label={activeFeature.label}
+                eyebrow={activeFeature.eyebrow}
+                desc={activeFeature.desc}
+                accent={activeFeature.accent}
+                tint={activeFeature.tint}
+                stats={activeFeature.stats}
+                type={activeFeature.id}
+              />
             </motion.div>
           </AnimatePresence>
+
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-4 px-1">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveIndex((current) => (current - 1 + features.length) % features.length)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 text-[#c3c8d6] transition-colors hover:border-white/25 hover:bg-white/10 hover:text-white"
+                aria-label="Previous slide"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveIndex((current) => (current + 1) % features.length)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 text-[#c3c8d6] transition-colors hover:border-white/25 hover:bg-white/10 hover:text-white"
+                aria-label="Next slide"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {features.map((feature, index) => (
+                <button
+                  key={feature.id}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={`rounded-none border-b px-1 pb-2 pt-1 text-[15px] font-medium transition-colors ${
+                    index === activeIndex
+                      ? "border-white text-white"
+                      : "border-transparent text-[#7f879b] hover:text-[#cfd4e3]"
+                  }`}
+                >
+                  {feature.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              {features.map((feature, index) => (
+                <button
+                  key={`${feature.id}-dot`}
+                  type="button"
+                  aria-label={`Show ${feature.label}`}
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    index === activeIndex ? "w-8 bg-white" : "w-2.5 bg-white/25"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </section>
   );
 }
 
-// EXACT Replica of Crisp Chat Widget
-function ExactCrispWidgetMockup() {
+function FeatureCard({
+  label,
+  eyebrow,
+  desc,
+  accent,
+  tint,
+  stats,
+  type,
+}: {
+  label: string;
+  eyebrow: string;
+  desc: string;
+  accent: string;
+  tint: string;
+  stats: Array<{ value: string; label: string }>;
+  type: string;
+}) {
   return (
-    <div className="w-[340px] bg-[#f5f8fa] rounded-[18px] shadow-[0_12px_44px_rgba(0,0,0,0.12)] border border-gray-200/50 flex flex-col overflow-hidden font-sans mx-auto relative transform transition-all hover:scale-105 cursor-default">
-      {/* Header */}
-      <div className="bg-[#1b75d0] px-5 py-4 flex flex-col justify-center relative">
-        <div className="flex justify-between items-center mb-1">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E] border-2 border-[#1b75d0]"></div>
-            <span className="text-white font-bold text-[16px] tracking-tight">VerlyAI</span>
+    <article className="overflow-hidden rounded-[28px] border border-white/10 bg-[#cfd2eb] shadow-[0_20px_60px_rgba(0,0,0,0.28)] transition-transform duration-300 hover:-translate-y-1">
+      <div className="grid grid-rows-[auto_1fr_auto]">
+      <div className="border-b border-black/8 bg-[#d8dbf0] px-5 pb-3.5 pt-3.5">
+        <div className="mb-3 flex items-start gap-3">
+          <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${tint} text-white shadow-lg shadow-black/15`}>
+            <FeatureIcon type={type} />
           </div>
-          <button className="text-white/80 hover:text-white pb-1">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-        <div className="text-white/80 text-[13px] font-medium">We typically reply in a few minutes</div>
-      </div>
-
-      {/* Chat Area */}
-      <div className="p-4 flex-1 space-y-4 pt-6 bg-white" style={{ backgroundImage: 'radial-gradient(circle at center, #f8fafc 0%, white 100%)' }}>
-        {/* Agent message */}
-        <div className="flex gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#1b75d0] bg-opacity-20 flex-shrink-0 flex items-center justify-center overflow-hidden">
-             <img src="https://i.pravatar.cc/100?img=5" alt="agent" className="w-full h-full object-cover" />
-          </div>
-          <div className="bg-[#f2f4f7] text-[#111827] rounded-[18px] rounded-tl-sm px-4 py-2.5 text-[14px]">
-            Hi there! 👋 How can I help you today?
-          </div>
-        </div>
-        
-        {/* User message */}
-        <div className="flex gap-3 justify-end items-end mt-2">
-          <div className="bg-[#1b75d0] text-white rounded-[18px] rounded-tr-sm px-4 py-2.5 text-[14px]">
-            Pricing for 5 agents?
-          </div>
-        </div>
-
-        {/* AI Typing Indicator / Next Message */}
-        <div className="flex gap-3">
-           <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
-             <img src="https://i.pravatar.cc/100?img=5" alt="agent" className="w-full h-full object-cover" />
-           </div>
-          <div className="bg-[#f2f4f7] text-[#111827] rounded-[18px] rounded-tl-sm px-4 py-2.5 text-[14px]">
-            For 5 agents, our Pro plan is <strong>$95/mo</strong> flat. Includes all omnichannel features!
-          </div>
-        </div>
-      </div>
-
-      {/* Composer Footer */}
-      <div className="bg-white px-3 py-3 border-t border-gray-100 flex items-center gap-2">
-         {/* Smiley */}
-        <button className="p-2 text-gray-400 hover:text-gray-600">
-           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        </button>
-        <div className="flex-1 text-[14px] text-gray-400 font-medium">
-          Compose your message...
-        </div>
-        <button className="p-2 text-gray-400 hover:text-gray-600">
-          <svg className="w-5 h-5" fill="none" transform="rotate(45)" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
-        </button>
-        <button className="p-2 text-[#1b75d0]">
-           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
-        </button>
-      </div>
-
-      {/* Powered by watermark */}
-      <div className="absolute -bottom-7 right-0 left-0 text-center text-[10px] text-gray-400">
-        Powered by VerlyAI
-      </div>
-    </div>
-  );
-}
-
-// Cleaned up sub-mockups
-function HelpdeskMockup() {
-  return (
-    <div className="space-y-4 transform hover:scale-105 transition-all">
-      <div className="bg-white rounded-2xl p-5 shadow-[0_8px_30px_rgba(34,197,94,0.12)] border border-green-100 relative">
-        <div className="absolute top-0 right-0 p-3 text-green-500">
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </div>
-        <div className="text-[13px] font-bold text-[#111827] mb-3 uppercase tracking-wider">AI Suggestions</div>
-        <div className="space-y-2">
-          <div className="bg-[#ECFDF5] border border-green-200/50 rounded-xl p-3 text-[13px] font-medium text-green-900 cursor-pointer shadow-sm">
-            The exchange has been processed. Replacement is on its way via FedEx.
-          </div>
-          <div className="bg-gray-50 border border-gray-100 rounded-xl p-3 text-[13px] text-gray-500 cursor-pointer hover:bg-[#ECFDF5] transition-colors">
-            Return label sent to customer email for the damaged product.
-          </div>
-        </div>
-      </div>
-      <div className="bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex items-center gap-3">
-        <div className="flex-1 bg-gray-50 rounded-[12px] px-4 py-3 text-[13px] text-gray-400 font-medium">Type a reply...</div>
-        <button className="w-11 h-11 bg-[#3E80F1] hover:bg-[#2B6CE0] rounded-[12px] flex items-center justify-center shadow-md transition-colors text-white">
-           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function KnowledgeBaseMockup() {
-  return (
-    <div className="bg-white rounded-[20px] shadow-[0_12px_44px_rgba(16,185,129,0.1)] border border-green-100 p-6 space-y-4">
-      <div className="bg-[#f2f4f7] rounded-[14px] px-4 py-3.5 flex items-center gap-3">
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <span className="text-[14px] text-gray-400 font-medium">Search knowledge base...</span>
-      </div>
-      <div className="space-y-1 mt-6">
-        {["Getting Started Guide", "Setting Up Your AI Agent", "Customizing Chat Widget"].map((article) => (
-          <div key={article} className="flex items-center gap-3 p-3 hover:bg-[#ECFDF5] rounded-xl cursor-pointer transition-colors group">
-            <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-[#10B981] opacity-70 group-hover:opacity-100" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/>
-              </svg>
+          <div className="flex-1">
+            <div className="mb-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#6b6f82]">
+              {eyebrow}
             </div>
-            <span className="text-[14px] font-bold text-[#111827] group-hover:text-[#10B981] transition-colors">{article}</span>
+            <div className="flex items-center gap-2">
+              <h3 className="text-[20px] font-semibold leading-none text-[#181b24]">{label}</h3>
+              <span className="text-xl text-[#8a8fa7]">→</span>
+            </div>
+            <p className="mt-1.5 max-w-[640px] text-sm leading-5 text-[#464b5c]">{desc}</p>
+          </div>
+        </div>
+      </div>
+      <div className="bg-[#d8dbf0] p-3.5 md:p-4">
+        <div className="mb-2.5 flex items-center justify-between rounded-[18px] border border-black/8 bg-white/40 px-4 py-2 text-sm text-[#444a5c]">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+            </div>
+            <span className="font-medium">verly.app/modules/{type}</span>
+          </div>
+          <span className="rounded-full bg-[#edf2ff] px-3 py-1 text-[11px] font-semibold text-[#315EEA]">
+            Preview
+          </span>
+        </div>
+
+        {type === "helpdesk" && <HelpdeskCard />}
+        {type === "widget" && <ChatWidgetCard />}
+        {type === "inbox" && <SharedInboxCard />}
+        {type === "knowledge" && <KnowledgeBaseCard />}
+        {type === "crm" && <SupportCRMCard />}
+        {type === "analytics" && <AnalyticsCard />}
+      </div>
+      <div className={`grid grid-cols-3 gap-px bg-black/8 bg-gradient-to-r ${accent}`}>
+        {stats.map((stat) => (
+          <div key={stat.label} className="bg-transparent px-4 py-3 text-center text-white md:px-6">
+            <div className="text-[24px] font-semibold leading-none md:text-[30px]">{stat.value}</div>
+            <div className="mt-1 text-[11px] font-medium tracking-[0.01em] text-white/85 md:text-[12px]">
+              {stat.label}
+            </div>
           </div>
         ))}
       </div>
+      </div>
+    </article>
+  );
+}
+
+function FeatureIcon({ type }: { type: string }) {
+  if (type === "helpdesk") {
+    return (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0Z" />
+      </svg>
+    );
+  }
+
+  if (type === "widget") {
+    return (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M8 10h8M8 14h4m-6.5 5.25 2.1-2.1c.3-.3.7-.46 1.12-.46h8.03A2.25 2.25 0 0019 14.44V6.75A2.25 2.25 0 0016.75 4.5h-9.5A2.25 2.25 0 005 6.75v10.91a1.59 1.59 0 00.5 1.59Z" />
+      </svg>
+    );
+  }
+
+  if (type === "inbox") {
+    return (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M3.75 7.5h16.5M6.75 4.5h10.5A2.25 2.25 0 0119.5 6.75v10.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 17.25V6.75A2.25 2.25 0 016.75 4.5Zm-2.25 8.25h4.125a1.5 1.5 0 011.342.83l.316.63c.254.508.772.83 1.34.83h.756c.568 0 1.086-.322 1.34-.83l.316-.63a1.5 1.5 0 011.342-.83H19.5" />
+      </svg>
+    );
+  }
+
+  if (type === "knowledge") {
+    return (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M12 6.25v11.5m0-11.5c-1.77-1.44-4.15-2.25-6.75-2.25v13c2.6 0 4.98.8 6.75 2.25m0-13c1.77-1.44 4.15-2.25 6.75-2.25v13c-2.6 0-4.98.8-6.75 2.25" />
+      </svg>
+    );
+  }
+
+  if (type === "crm") {
+    return (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M15 19.13c.84.24 1.73.37 2.63.37 1.47 0 2.86-.34 4.1-.96a4.12 4.12 0 00-7.53-2.49M15 19.13A12.3 12.3 0 018.62 21c-2.33 0-4.51-.64-6.37-1.76l-.01-.11a6.38 6.38 0 0111.97-3.07M12 6.38a3.38 3.38 0 11-6.75 0 3.38 3.38 0 016.75 0Zm8.25 2.24a2.63 2.63 0 11-5.25 0 2.63 2.63 0 015.25 0Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M4.5 19.5V11.25m7.5 8.25V4.5m7.5 15V8.25" />
+    </svg>
+  );
+}
+
+function HelpdeskCard() {
+  return (
+    <div className="space-y-3 rounded-[24px] bg-[#d8dbf0] p-3">
+      <div className="rounded-[20px] border border-black/8 bg-white/35 p-3.5">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <div className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#315EEA]">Ticket summary</div>
+            <div className="mt-1 text-[17px] font-semibold text-[#1f2b46]">Need help with billing</div>
+          </div>
+          <div className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-600">
+            AI Ready
+          </div>
+        </div>
+        <div className="mb-3 rounded-[18px] bg-white/55 p-3 text-[13px] leading-6 text-[#52586a]">
+          Hi, my business is currently facing financial challenges. I was wondering if
+          you could offer a short-term discount so we can continue using your subscription.
+        </div>
+        <div className="rounded-[18px] border border-black/8 bg-white/45 p-3 text-[13px] font-medium text-[#3f4556]">
+          Suggested action: offer discount policy details, route to billing owner, and
+          attach renewal context.
+        </div>
+      </div>
+      <div className="flex items-center gap-3 rounded-[20px] border border-black/8 bg-white/35 p-2.5">
+        <div className="flex-1 rounded-[16px] bg-white/55 px-4 py-3 text-[13px] text-[#6b7792]">
+          What’s the approved discount range?
+        </div>
+        <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[linear-gradient(135deg,#315EEA_0%,#5E7BFF_100%)] text-white shadow-md">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }
 
-function CRMMockup() {
+function ChatWidgetCard() {
   return (
-    <div className="bg-white rounded-[20px] shadow-[0_12px_44px_rgba(239,68,68,0.1)] border border-red-100 p-6 space-y-4">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-[18px] flex items-center justify-center text-[22px] font-bold text-white shadow-lg">BJ</div>
-        <div>
-          <div className="font-extrabold text-[18px] text-[#111827]">Beth Johnson</div>
-          <div className="text-[14px] text-gray-500 font-medium">beth@acme.com</div>
+    <div className="overflow-hidden rounded-[24px] border border-black/8 bg-white/35">
+      <div className="bg-[#1b2030] px-4 py-2.5">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-bold text-white">Verly Assistant</div>
+            <div className="mt-1 text-xs text-blue-100">Replies in under 30 seconds</div>
+          </div>
+          <div className="h-3 w-3 rounded-full bg-emerald-400" />
         </div>
+      </div>
+      <div className="space-y-2.5 bg-[#d8dbf0] p-3.5">
+        <div className="max-w-[82%] rounded-[18px] rounded-tl-sm bg-white/80 px-4 py-2.5 text-[13px] leading-5 text-[#42506b]">
+          Hi! Want pricing, demo booking, order updates, or onboarding help?
+        </div>
+        <div className="ml-auto max-w-[76%] rounded-[18px] rounded-tr-sm bg-[linear-gradient(135deg,#315EEA_0%,#5E7BFF_100%)] px-4 py-2.5 text-[13px] text-white">
+          Show me pricing for 5 agents.
+        </div>
+        <div className="rounded-[18px] bg-white/82 px-4 py-2.5 text-[13px] leading-5 text-[#5a6782]">
+          The Pro plan is best for your team size and includes chat, inbox, AI helpdesk,
+          and analytics.
+        </div>
+        <div className="flex items-center gap-2 rounded-2xl bg-white/78 px-4 py-2.5 text-[13px] text-[#7a89aa]">
+          <div className="flex gap-1">
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+          </div>
+          AI is typing...
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SharedInboxCard() {
+  const channels = [
+    { name: "Email", color: "bg-blue-500" },
+    { name: "WhatsApp", color: "bg-emerald-500" },
+    { name: "Instagram", color: "bg-pink-500" },
+    { name: "Messenger", color: "bg-indigo-500" },
+  ];
+
+  return (
+    <div className="rounded-[22px] border border-black/8 bg-white/35 p-3.5">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-bold text-[#1f2b46]">Unified Queue</div>
+          <div className="mt-1 text-xs text-[#75819d]">All conversations, one workflow</div>
+        </div>
+        <div className="rounded-full bg-white/55 px-3 py-1 text-[11px] font-bold text-[#315EEA]">24 open</div>
+      </div>
+      <div className="mb-3 grid grid-cols-4 gap-2">
+        {channels.map((channel) => (
+          <div key={channel.name} className="rounded-2xl bg-white/45 p-2 text-center">
+            <div className={`mx-auto mb-2 h-8 w-8 rounded-xl ${channel.color} shadow-sm`} />
+            <div className="text-[11px] font-semibold text-[#5c6c8b]">{channel.name}</div>
+          </div>
+        ))}
       </div>
       <div className="space-y-2">
         {[
-          { label: "Location", value: "London, UK" },
-          { label: "Plan", value: "Enterprise" },
-          { label: "Last Active", value: "2 hours ago" },
-          { label: "Total Conversations", value: "47" },
-        ].map((item) => (
-          <div key={item.label} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
-            <span className="text-[13px] text-gray-500 font-medium">{item.label}</span>
-            <span className="text-[13px] font-bold text-[#111827]">{item.value}</span>
+          ["Refund follow-up", "High"],
+          ["Billing question", "Medium"],
+          ["VIP handoff", "Urgent"],
+        ].map(([item, priority]) => (
+          <div key={item} className="flex items-center justify-between rounded-2xl bg-white/45 px-3 py-2.5">
+            <span className="text-[13px] font-medium text-[#42506b]">{item}</span>
+            <span className="text-[12px] font-bold text-[#96a5c3]">{priority}</span>
           </div>
         ))}
       </div>
-      <button className="w-full mt-4 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[13px] py-2.5 rounded-[10px] transition-colors">
-        View Full Profile
-      </button>
     </div>
   );
 }
 
-function AnalyticsMockup() {
+function KnowledgeBaseCard() {
   return (
-    <div className="bg-white rounded-[20px] shadow-[0_12px_44px_rgba(236,72,153,0.1)] border border-pink-100 p-6 space-y-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-extrabold text-[#111827] text-[16px]">Support Analytics</span>
-        <span className="text-[11px] uppercase tracking-wider bg-[#FDF2F8] text-[#EC4899] px-3 py-1.5 rounded-full font-bold">This week</span>
+    <div className="rounded-[22px] border border-black/8 bg-white/35 p-3.5">
+      <div className="mb-3 rounded-[18px] border border-black/8 bg-white/45 px-4 py-2.5 text-[13px] font-medium text-[#7c89a3]">
+        Search articles, answers, and guides...
       </div>
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="space-y-2">
         {[
-          { label: "Avg Response", value: "1.2m", change: "-15%" },
-          { label: "CSAT Score", value: "4.8/5", change: "+8%" },
-          { label: "Resolved", value: "847", change: "+23%" },
-          { label: "Active", value: "12", change: "—" },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-gray-100 shadow-sm rounded-[14px] p-4 text-center">
-            <div className="text-[12px] text-gray-500 font-semibold mb-1 uppercase tracking-wide">{stat.label}</div>
-            <div className="text-[20px] font-extrabold text-[#111827]">{stat.value}</div>
-            <div className={`text-[12px] font-bold mt-1 ${stat.change.startsWith("+") ? "text-green-500" : stat.change.startsWith("-") ? "text-red-500" : "text-gray-400"}`}>
-              {stat.change}
+          "Getting started with AI Helpdesk",
+          "Connect WhatsApp in 3 steps",
+          "Customize your widget theme",
+          "Train AI with your docs",
+        ].map((article, idx) => (
+          <div key={article} className="flex items-center gap-3 rounded-[18px] bg-white/45 px-3 py-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-[12px] font-bold text-emerald-600 shadow-sm">
+              {idx + 1}
             </div>
+            <div className="text-[13px] font-semibold text-[#42506b]">{article}</div>
           </div>
         ))}
       </div>
-      {/* Mini bar chart */}
-      <div className="flex items-end justify-between gap-1.5 h-16 pt-2">
-        {[40, 60, 35, 80, 55, 90, 70].map((h, i) => (
-          <div key={i} className="flex-1 rounded-t-[6px] bg-pink-500 opacity-80 hover:opacity-100 transition-opacity" style={{ height: `${h}%` }} />
+    </div>
+  );
+}
+
+function SupportCRMCard() {
+  return (
+    <div className="rounded-[22px] border border-black/8 bg-white/35 p-3.5">
+      <div className="mb-3 flex items-center gap-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-gradient-to-br from-rose-400 to-rose-600 text-xl font-bold text-white shadow-lg">
+          BJ
+        </div>
+        <div>
+          <div className="text-lg font-bold text-[#1f2b46]">Beth Johnson</div>
+          <div className="mt-1 text-sm text-[#75819d]">Enterprise account</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          ["Plan", "Premium"],
+          ["MRR", "$4,200"],
+          ["Health", "Strong"],
+          ["Tickets", "47"],
+        ].map(([label, value]) => (
+          <div key={label} className="rounded-[18px] bg-white/45 px-4 py-3">
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-rose-400">{label}</div>
+            <div className="mt-2 text-[15px] font-semibold text-[#42506b]">{value}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AnalyticsCard() {
+  const bars = [42, 58, 36, 74, 53, 84, 64];
+
+  return (
+    <div className="rounded-[22px] border border-black/8 bg-white/35 p-3.5">
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-bold text-[#1f2b46]">Weekly Support Metrics</div>
+          <div className="mt-1 text-xs text-[#75819d]">Live performance snapshot</div>
+        </div>
+        <div className="rounded-full bg-pink-50 px-3 py-1 text-[11px] font-bold text-pink-600">+18%</div>
+      </div>
+      <div className="mb-3 grid grid-cols-2 gap-3">
+        {[
+          ["Avg Reply", "1.2m"],
+          ["CSAT", "4.8/5"],
+          ["Resolved", "847"],
+          ["SLA Risk", "3"],
+        ].map(([label, value]) => (
+          <div key={label} className="rounded-[18px] bg-white/45 px-4 py-3">
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#97a4c2]">{label}</div>
+            <div className="mt-2 text-[16px] font-semibold text-[#1f2b46]">{value}</div>
+          </div>
+        ))}
+      </div>
+      <div className="flex h-20 items-end gap-2 rounded-[18px] bg-white/45 px-3 pb-3 pt-3">
+        {bars.map((bar, index) => (
+          <div
+            key={`${bar}-${index}`}
+            className="flex-1 rounded-t-[8px] bg-gradient-to-t from-pink-600 to-pink-400"
+            style={{ height: `${bar}%` }}
+          />
         ))}
       </div>
     </div>
