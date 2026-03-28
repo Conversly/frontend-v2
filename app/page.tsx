@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import CrispNavbar from "@/components/crisp-landing/crisp-navbar";
+import Navbar from "@/components/landing/navbar";
 import CrispHero from "@/components/crisp-landing/crisp-hero";
 import CrispFeatures from "@/components/crisp-landing/crisp-features";
 import CrispAIShowcase from "@/components/crisp-landing/crisp-ai-showcase";
@@ -34,7 +34,7 @@ export default function Home() {
       {/* Client-side auth redirect - does not affect server render */}
       <ClientAuthRedirect />
 
-      <CrispNavbar />
+      <Navbar />
       <CrispHero />
       <CrispFeatures />
       <CrispAIShowcase />
