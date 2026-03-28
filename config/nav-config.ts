@@ -165,7 +165,7 @@ export const getWorkspaceChatbotNavSections = (workspaceId: string, botId: strin
         items: [
             {
                 title: "Reports",
-                url: `/${workspaceId}/chatbot/${botId}/analytics/statistics`,
+                url: `/${workspaceId}/chatbot/${botId}/analytics/statistic`,
                 icon: BarChart3,
                 colorClass: "text-cyan-600 bg-cyan-100/80 dark:text-cyan-500 dark:bg-cyan-500/15",
             },
