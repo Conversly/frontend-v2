@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,19 +25,18 @@ import {
     Phone,
     BarChart3,
     Megaphone,
-    Zap,
 } from "lucide-react";
+import { VoiceAssistantsList } from "@/components/voice/VoiceAssistantsList";
 
-// Dynamic import for visual component
-const VoiceVisual = dynamic(() => import('@/components/voice/VoiceVisual'), {
+/** Set true to show the private-beta waitlist landing instead of voice assistant management. */
+const USE_VOICE_BETA_LANDING = false;
+
+const VoiceVisual = dynamic(() => import("@/components/voice/VoiceVisual"), {
     ssr: false,
-    loading: () => <div className="w-full h-full bg-slate-50 animate-pulse" />
+    loading: () => <div className="w-full h-full bg-slate-50 animate-pulse" />,
 });
 
-export default function VoicePage() {
-    const params = useParams();
-
-    // Request Modal State
+function VoiceBetaLandingPage() {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [requestEmail, setRequestEmail] = useState("");
     const [useCase, setUseCase] = useState("");
@@ -72,9 +71,10 @@ export default function VoicePage() {
             });
             setIsRequestSuccess(true);
             toast.success("Request submitted successfully!");
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to submit request";
             console.error("Voice request error:", error);
-            setRequestError(error.message || "Failed to submit request");
+            setRequestError(message);
             toast.error("Failed to submit request. Please try again.");
         } finally {
             setIsRequestSubmitting(false);
@@ -92,10 +92,7 @@ export default function VoicePage() {
         <div className="w-full h-full bg-background overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto">
                 <div className="container mx-auto px-6 py-6 max-w-[1920px] h-full flex flex-col justify-center">
-
                     <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-white dark:bg-slate-950 overflow-hidden min-h-[600px] shadow-sm dark:border-slate-800">
-
-                        {/* Left side - Content */}
                         <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center relative z-10">
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
                                 <Headset className="h-8 w-8 text-white" />
@@ -109,7 +106,6 @@ export default function VoicePage() {
                                 Deploy intelligent voice assistants that can handle inbound calls, run outbound campaigns, and engage customers with human-like personality.
                             </p>
 
-                            {/* Feature highlights */}
                             <div className="flex flex-wrap justify-center gap-3 mb-10">
                                 {[
                                     { icon: Phone, label: "Inbound & Outbound" },
@@ -136,21 +132,20 @@ export default function VoicePage() {
                             </Button>
                         </div>
 
-                        {/* Right side - Visual */}
                         <div className="hidden lg:block border-l border-slate-100 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 relative overflow-hidden">
                             <VoiceVisual />
                         </div>
-
                     </div>
-
                 </div>
             </div>
 
-            {/* Request Modal */}
-            <Dialog open={isRequestModalOpen} onOpenChange={(open) => {
-                setIsRequestModalOpen(open);
-                if (!open) setTimeout(resetRequestForm, 300);
-            }}>
+            <Dialog
+                open={isRequestModalOpen}
+                onOpenChange={(open) => {
+                    setIsRequestModalOpen(open);
+                    if (!open) setTimeout(resetRequestForm, 300);
+                }}
+            >
                 <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-border bg-background shadow-2xl gap-0">
                     <AnimatePresence mode="wait">
                         {!isRequestSuccess ? (
@@ -167,11 +162,9 @@ export default function VoicePage() {
                                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
                                             <Sparkles className="w-6 h-6 text-primary" />
                                         </div>
-                                        <DialogTitle className="text-2xl font-bold">
-                                            Request Early Access
-                                        </DialogTitle>
+                                        <DialogTitle className="text-2xl font-bold">Request Early Access</DialogTitle>
                                         <DialogDescription className="text-base leading-relaxed text-muted-foreground/80">
-                                            Voice Agents are currently in private beta. Tell us a bit about what you're building to get priority access.
+                                            Voice Agents are currently in private beta. Tell us a bit about what you&apos;re building to get priority access.
                                         </DialogDescription>
                                     </DialogHeader>
 
@@ -201,7 +194,13 @@ export default function VoicePage() {
                                                 value={requestEmail}
                                                 onChange={(e) => setRequestEmail(e.target.value)}
                                                 disabled={isRequestSubmitting}
-                                                className={`h-11 bg-muted/30 focus:bg-background transition-colors ${requestError && (!requestEmail || (requestEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestEmail))) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                                                className={`h-11 bg-muted/30 focus:bg-background transition-colors ${
+                                                    requestError &&
+                                                    (!requestEmail ||
+                                                        (requestEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestEmail)))
+                                                        ? "border-destructive focus-visible:ring-destructive"
+                                                        : ""
+                                                }`}
                                             />
                                         </div>
 
@@ -215,10 +214,20 @@ export default function VoicePage() {
                                 </div>
 
                                 <DialogFooter className="p-6 pt-8 bg-muted/20 mt-6 border-t border-border/50">
-                                    <Button variant="ghost" onClick={() => setIsRequestModalOpen(false)} disabled={isRequestSubmitting} className="mr-auto hover:bg-background">
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setIsRequestModalOpen(false)}
+                                        disabled={isRequestSubmitting}
+                                        className="mr-auto hover:bg-background"
+                                    >
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleRequestSubmit} disabled={isRequestSubmitting} size="lg" className="min-w-[140px] shadow-lg shadow-primary/20">
+                                    <Button
+                                        onClick={handleRequestSubmit}
+                                        disabled={isRequestSubmitting}
+                                        size="lg"
+                                        className="min-w-[140px] shadow-lg shadow-primary/20"
+                                    >
                                         {isRequestSubmitting ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -244,7 +253,8 @@ export default function VoicePage() {
                                 </div>
                                 <h3 className="text-2xl font-bold mb-3">Request Received!</h3>
                                 <p className="text-muted-foreground max-w-[300px] mb-8">
-                                    We've received your request for Voice Agents access. We'll be in touch with you shortly at <strong>{requestEmail}</strong>.
+                                    We&apos;ve received your request for Voice Agents access. We&apos;ll be in touch with you shortly at{" "}
+                                    <strong>{requestEmail}</strong>.
                                 </p>
                                 <Button onClick={() => setIsRequestModalOpen(false)} size="lg" className="w-full sm:w-auto min-w-[140px]">
                                     Done
@@ -258,27 +268,25 @@ export default function VoicePage() {
     );
 }
 
+export default function VoicePage() {
+    const params = useParams();
+    const botId = params.botId as string;
 
-// "use client";
+    if (USE_VOICE_BETA_LANDING) {
+        return <VoiceBetaLandingPage />;
+    }
 
-// import { useParams } from "next/navigation";
-// import { VoiceAssistantsList } from "@/components/voice/VoiceAssistantsList";
+    return (
+        <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+            <div className="mb-8">
+                <h1 className="type-page-title">Voice Configuration</h1>
+                <p className="type-body-muted mt-1">
+                    Create and manage voice assistants for your chatbot. Each assistant can have its own personality, voice, and
+                    behavior.
+                </p>
+            </div>
 
-// export default function VoicePage() {
-//     const params = useParams();
-//     const botId = params.botId as string;
-
-//     return (
-//         <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-//             <div className="mb-8">
-//                 <h1 className="type-page-title">Voice Configuration</h1>
-//                 <p className="type-body-muted mt-1">
-//                     Create and manage voice assistants for your chatbot.
-//                     Each assistant can have its own personality, voice, and behavior.
-//                 </p>
-//             </div>
-
-//             <VoiceAssistantsList botId={botId} />
-//         </div>
-//     );
-// }
+            <VoiceAssistantsList botId={botId} />
+        </div>
+    );
+}
