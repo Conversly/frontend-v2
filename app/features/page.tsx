@@ -1,7 +1,7 @@
 "use client";
 
-import Navbar from "@/components/crisp/Navbar";
-import Footer from "@/components/crisp/Footer";
+import Navbar from "@/components/crisp-landing/crisp-navbar";
+import Footer from "@/components/crisp-landing/crisp-footer";
 import { FEATURES_DATA } from "./constants";
 import "../landing-page.css"; // Ensure Crisp-specific styles are applied
 

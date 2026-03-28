@@ -112,8 +112,8 @@ export default function CrispFeatures() {
   const [active, setActive] = useState(0);
 
   return (
-    <section id="features" className="bg-[#EEF2FF] py-24">
-      <div className="max-w-[1200px] mx-auto px-6">
+    <section id="features" className="crisp-section-light">
+      <div className="crisp-container">
         
         {/* Exact Crisp Feature Tab Selector */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-16 max-w-5xl mx-auto">
@@ -121,11 +121,7 @@ export default function CrispFeatures() {
             <button
               key={feat.id}
               onClick={() => setActive(idx)}
-              className={`flex items-center gap-3 px-5 py-3.5 rounded-[14px] transition-all min-w-[180px] shadow-sm font-semibold border ${
-                active === idx
-                  ? "bg-white border-transparent shadow-[0_4px_16px_rgba(0,0,0,0.06)] scale-105 z-10"
-                  : "bg-white/50 border-gray-200/50 hover:bg-white text-gray-500 hover:text-gray-900"
-              }`}
+              className={active === idx ? "crisp-feature-tab-active" : "crisp-feature-tab"}
             >
               <div
                 className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0"
@@ -154,13 +150,13 @@ export default function CrispFeatures() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, type: "spring", stiffness: 100, damping: 20 }}
-              className="bg-white rounded-[32px] p-8 md:p-14 shadow-[0_2px_40px_rgba(0,0,0,0.04)] border border-gray-100/50"
+              className="crisp-card p-8"
             >
               <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
                 {/* Left Text */}
                 <div>
                   <div
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-bold mb-6 tracking-wide"
+                    className="crisp-badge-tag mb-6"
                     style={{
                       backgroundColor: features[active].color + "10",
                       color: features[active].color,
@@ -169,10 +165,10 @@ export default function CrispFeatures() {
                     {features[active].icon}
                     {features[active].content.subtitle.toUpperCase()}
                   </div>
-                  <h2 className="text-[32px] md:text-[44px] font-extrabold text-[#111827] leading-[1.1] mb-6 tracking-tight">
+                  <h2 className="crisp-title mb-6">
                     {features[active].content.title}
                   </h2>
-                  <p className="text-[#6B7280] text-[16px] font-medium leading-[1.7] mb-8">
+                  <p className="crisp-subtitle mb-8">
                     {features[active].content.description}
                   </p>
                   

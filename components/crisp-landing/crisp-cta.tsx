@@ -48,7 +48,7 @@ export default function CrispCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-10">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-3 bg-[#3e80f1] text-white text-[17px] font-bold px-8 py-4.5 rounded-full hover:bg-[#2b6ce0] transition-colors shadow-[0_4px_14px_rgba(62,128,241,0.4)] hover:shadow-[0_6px_20px_rgba(62,128,241,0.5)] transform hover:-translate-y-0.5"
+              className="crisp-btn-primary px-8 py-4 text-[17px] transform hover:-translate-y-0.5"
             >
               Start Free Trial
               <span className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">

@@ -7,6 +7,7 @@ import Script from "next/script";
 import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
+import "./landing-page.css";
 import { defaultMetadata, organizationSchema, softwareApplicationSchema, websiteSchema } from "@/lib/metadata";
 
 const lato = Lato({

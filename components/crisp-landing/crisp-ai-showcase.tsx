@@ -49,8 +49,8 @@ const showcaseBlocks = [
 
 export default function CrispAIShowcase() {
   return (
-    <section id="ai-showcase" className="bg-white py-24">
-      <div className="max-w-[1240px] mx-auto px-6">
+    <section id="ai-showcase" className="crisp-section">
+      <div className="crisp-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -58,7 +58,7 @@ export default function CrispAIShowcase() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-[44px] md:text-[56px] font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-8">
+          <h2 className="crisp-title-lg mb-8">
             The platform built for support <br />
             and sales teams. <span className="text-[#3E80F1]">All together.</span>
           </h2>
@@ -78,7 +78,7 @@ export default function CrispAIShowcase() {
               </button>
             ))}
           </div>
-          <p className="text-[16px] text-[#6B7280] font-medium mt-4">
+          <p className="crisp-subtitle mt-4">
             Cross-channel customer support experiences using modern messaging.
           </p>
         </motion.div>
@@ -126,10 +126,10 @@ export default function CrispAIShowcase() {
                 >
                   {block.badge}
                 </div>
-                <h3 className="text-[34px] md:text-[44px] font-extrabold text-[#111827] leading-[1.1] mb-6 tracking-tight">
+                <h3 className="crisp-title mb-6">
                   {block.title}
                 </h3>
-                <p className="text-[#6B7280] text-[17px] leading-[1.6] font-medium mb-8">
+                <p className="crisp-subtitle mb-8">
                   {block.description}
                 </p>
 
