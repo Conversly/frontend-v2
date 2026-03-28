@@ -1,220 +1,31 @@
+import fs from "node:fs";
+import path from "node:path";
+
 export const FEATURES_PAGE_CONTENT = {
   title: "Features | VerlyAI",
   intro:
     "Explore every VerlyAI feature in one place. Browse by category, compare capabilities, and open any feature to see how it helps your support team automate faster and serve customers better.",
 };
 
-type RawCategory = {
-  name: string;
-  summary: string;
-  features: string[];
-};
-
-const RAW_CATEGORIES: RawCategory[] = [
-  {
-    name: "AI Features for Customer Support",
-    summary: "Automate support with AI Chatbot and Answer Assistant.",
-    features: ["AI Answer Improver", "AI Chatbot", "AI Answer Composer"],
-  },
-  {
-    name: "Ticketing system features",
-    summary:
-      "Ticketing system features that bring together the essential building blocks of a modern support workflow.",
-    features: [
-      "Agent Collision Detection",
-      "Agents",
-      "Audit Log",
-      "Automated Ticket Distribution",
-      "Rules",
-      "Business hours",
-      "Canned Messages (Macros)",
-      "Contact Fields",
-      "Contact Form Gallery",
-      "Contact Forms",
-      "Contacts",
-      "Custom roles",
-      "Departments",
-      "Email forwarding",
-      "Email Notifications",
-      "Email templates",
-      "Hybrid ticket stream",
-      "Mass actions",
-      "Merge Tickets",
-      "Multiple ticket tabs",
-      "Notes",
-      "Online ticket history (URL)",
-      "Pause",
-      "Predefined answers",
-      "Responsibility",
-      "Search & Replace",
-      "Service Level Agreement (SLA)",
-      "Sounds",
-      "SPAM filters",
-      "Split Tickets",
-      "Tags",
-      "Ticket Export",
-      "Ticket fields",
-      "Ticket/Customer insights (CRM)",
-      "Filters",
-      "Time rules",
-      "Time tracking",
-      "To Solve Button",
-      "Universal inbox",
-      "WYSIWYG editor",
-      "Companies",
-      "Agent Ranking",
-      "Contact Groups",
-      "Attachments",
-      "Copy & Paste Images",
-      "GIFs in Tickets",
-    ],
-  },
-  {
-    name: "Live Chat Features",
-    summary:
-      "Real-time communication, customizable chat widgets, and visitor tracking for modern support teams.",
-    features: [
-      "Chat Button Animations",
-      "Chat Button",
-      "Chat Button Gallery",
-      "Chat Distribution",
-      "Chat Embedded Tracking",
-      "Chat History",
-      "Chat Invitation Gallery",
-      "Chat window docking",
-      "Chats Overview",
-      "Internal Chat",
-      "Max queue length",
-      "Online Visitors",
-      "Proactive Chat Invitations",
-      "Real-time Chat",
-      "Real-time typing view",
-      "Website Visitor Tracking",
-    ],
-  },
-  {
-    name: "Call center features",
-    summary:
-      "Call center operations with routing, recordings, IVR, and device support for voice-first support.",
-    features: [
-      "Automatic Callback",
-      "Call Button",
-      "Call Detail Records",
-      "Call device scheduling",
-      "Call routing",
-      "Call transfers",
-      "Internal calls",
-      "IVR (Interactive Voice Response)",
-      "Softphones",
-      "Supported call devices",
-      "Unlimited call recordings",
-      "Video call",
-    ],
-  },
-  {
-    name: "Customer service reports features",
-    summary:
-      "Reporting tools for performance, SLA compliance, and channel insights across support operations.",
-    features: [
-      "Agent availability",
-      "Agent ranking overview",
-      "Agent Report",
-      "Channel report",
-      "Department Report",
-      "Performance report",
-      "SLA compliance report",
-      "SLA Log Report",
-      "Tag Reports",
-      "Time Report",
-    ],
-  },
-  {
-    name: "Gamification features",
-    summary:
-      "Boost agent engagement, productivity, and collaboration through rewards and performance visibility.",
-    features: ["Benchmarks and leaderboards", "Levels", "Rewards & Badges"],
-  },
-  {
-    name: "Multilingual support features",
-    summary:
-      "Multilingual support capabilities that help your team adapt conversations and widgets for global audiences.",
-    features: ["Language adaptable widgets"],
-  },
-  {
-    name: "Customer portal features",
-    summary:
-      "Customer portal tools for self-service, knowledge sharing, feedback collection, and ticket submission.",
-    features: [
-      "Customer Forum",
-      "Feedback & Suggestions",
-      "Internal Knowledge Base",
-      "Multi Knowledge Base",
-      "WYSIWYG editor for articles",
-    ],
-  },
-  {
-    name: "Mobile help desk apps",
-    summary: "Mobile apps that keep support teams productive on Android and iOS.",
-    features: ["Android", "iOS"],
-  },
-  {
-    name: "Help Desk Security features",
-    summary:
-      "Security capabilities including access control, encryption, verification, and enterprise sign-on.",
-    features: [
-      "2-Step Verification",
-      "Ban IPs",
-      "GDPR",
-      "HTTPS Encryption",
-      "Multiple data centers",
-      "Password Validator and Audit Log",
-      "Single Sign-On (SSO)",
-    ],
-  },
-  {
-    name: "Web Contact Cards Features",
-    summary:
-      "Browser-based contact cards for displaying contact and business information inside the support workflow.",
-    features: ["Click to Email", "Click-to-call and click-to-dial buttons"],
-  },
-  {
-    name: "Help Desk Integrations",
-    summary:
-      "Integrations such as Slack, Zapier, API, CMS, and migration tooling that extend your support stack.",
-    features: [
-      "API",
-      "CMS",
-      "Computer Telephony Integration",
-      "Email marketing",
-      "Migration plugins",
-      "Project management",
-      "Slack",
-      "Zapier",
-    ],
-  },
-];
-
-const CATEGORY_THEMES = [
-  "purple",
-  "blue",
-  "teal",
-  "orange",
-  "green",
-  "violet",
-  "indigo",
-  "sky",
-  "slate",
-  "rose",
-  "amber",
-  "cyan",
-] as const;
-
-export type ThemeKey = (typeof CATEGORY_THEMES)[number];
+export type ThemeKey =
+  | "purple"
+  | "blue"
+  | "teal"
+  | "orange"
+  | "green"
+  | "violet"
+  | "indigo"
+  | "sky"
+  | "slate"
+  | "rose"
+  | "amber"
+  | "cyan";
 
 export type FeatureItem = {
   title: string;
   slug: string;
   shortDescription: string;
+  iconName?: string;
 };
 
 export type FeatureCategory = {
@@ -222,6 +33,7 @@ export type FeatureCategory = {
   slug: string;
   summary: string;
   theme: ThemeKey;
+  imagePath?: string;
   features: FeatureItem[];
 };
 
@@ -229,6 +41,7 @@ export type FeatureDetail = {
   title: string;
   slug: string;
   shortDescription: string;
+  iconName?: string;
   categoryName: string;
   categorySlug: string;
   categorySummary: string;
@@ -245,6 +58,7 @@ export type FeatureDetail = {
     name: string;
     description: string;
     imageAlt: string;
+    imagePath?: string;
     notes?: string[];
   }[];
   setupSteps: {
@@ -257,6 +71,57 @@ export type FeatureDetail = {
     question: string;
     answer: string;
   }[];
+  heroImagePath?: string;
+  heroImageAlt?: string;
+  overviewImagePath?: string;
+  workflowImagePaths: string[];
+};
+
+type FeatureMeta = {
+  description: string;
+  image: string;
+  link: string;
+  status: string;
+};
+
+type FeatureIconMeta = {
+  title: string;
+  iconName: string;
+};
+
+type ParsedCatalogFeature = Omit<
+  FeatureDetail,
+  "theme" | "categorySlug" | "categorySummary"
+>;
+
+const CATEGORY_THEMES: ThemeKey[] = [
+  "purple",
+  "blue",
+  "teal",
+  "orange",
+  "green",
+  "violet",
+  "indigo",
+  "sky",
+  "slate",
+  "rose",
+  "amber",
+  "cyan",
+];
+
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  "ai-features-for-customer-support": "/svg/feature_ai_chatbot.svg",
+  "ticketing-system-features": "/svg/feature_ticketing.svg",
+  "live-chat-features": "/svg/feature_live_chat.svg",
+  "call-center-features": "/svg/feature_call_center.svg",
+  "customer-service-reports-features": "/svg/feature_reports.svg",
+  "multilingual-support-features": "/svg/feature_knowledge_base.svg",
+  "customer-portal-features": "/svg/feature_knowledge_base.svg",
+  "help-desk-security-features": "/svg/feature_security.svg",
+  "help-desk-integrations": "/svg/feature_integrations.svg",
+  "gamification-features": "/svg/feature_reports.svg",
+  "mobile-help-desk-apps": "/svg/feature_live_chat.svg",
+  "web-contact-cards-features": "/svg/feature_sla_compliance.svg",
 };
 
 function slugify(value: string) {
@@ -269,234 +134,361 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function sentenceCaseSummary(summary: string) {
-  return summary.charAt(0).toLowerCase() + summary.slice(1).replace(/\.$/, "");
+function normalizeParagraphs(value: string) {
+  return value
+    .split(/\n\s*\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
 }
 
-function buildShortDescription(feature: string, category: RawCategory) {
-  return `${feature} helps support teams ${sentenceCaseSummary(category.summary)} while keeping the customer journey clear, fast, and consistent.`;
+function normalizeBullets(value: string) {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- "))
+    .map((line) => line.replace(/^- /, "").trim());
 }
 
-function buildOverview(feature: string, category: RawCategory) {
-  return `${feature} is part of VerlyAI's ${category.name.toLowerCase()} toolkit. It helps teams ${sentenceCaseSummary(
-    category.summary
-  )} so agents can move faster, customers get clearer outcomes, and operations stay easier to manage at scale.`;
+function extractImagePaths(value: string) {
+  return [...value.matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g)].map((match) => ({
+    alt: match[1].trim(),
+    path: match[2].trim(),
+  }));
 }
 
-function buildSubtitle(feature: string) {
-  return `Bring more consistency, speed, and confidence to your team with ${feature}.`;
+function extractBetween(source: string, start: string, end: string) {
+  const startIndex = source.indexOf(start);
+  if (startIndex === -1) return "";
+  const from = startIndex + start.length;
+  const endIndex = end ? source.indexOf(end, from) : -1;
+  return source.slice(from, endIndex === -1 ? undefined : endIndex).trim();
 }
 
-function buildTags(category: RawCategory) {
-  const tags = [category.name.replace(/ features$/i, ""), "Customer support", "VerlyAI"];
-  return Array.from(new Set(tags)).slice(0, 3);
+function parseFeaturesList() {
+  const filePath = path.resolve(process.cwd(), "../docs/FEATURES-LIST.md");
+  const content = fs.readFileSync(filePath, "utf8");
+  const lines = content.split("\n");
+  const categories: Array<{ name: string; summary: string; features: string[] }> = [];
+  let currentCategory: { name: string; summary: string; features: string[] } | null = null;
+
+  for (const line of lines) {
+    if (line.startsWith("## ")) {
+      if (currentCategory) categories.push(currentCategory);
+      currentCategory = { name: line.replace(/^## /, "").trim(), summary: "", features: [] };
+      continue;
+    }
+
+    if (!currentCategory) continue;
+
+    if (line.startsWith("*") && line.endsWith("*")) {
+      currentCategory.summary = line.replace(/^\*|\*$/g, "").trim();
+      continue;
+    }
+
+    if (line.startsWith("- ")) {
+      currentCategory.features.push(line.replace(/^- /, "").trim());
+    }
+  }
+
+  if (currentCategory) categories.push(currentCategory);
+  return categories;
 }
 
-function buildIntroParagraphs(feature: string, category: RawCategory) {
-  return [
-    `${feature} helps modern support teams ${sentenceCaseSummary(
-      category.summary
-    )}. It gives agents clearer workflows, stronger consistency, and a faster path to high-quality customer outcomes.`,
-    `Inside VerlyAI, ${feature.toLowerCase()} fits naturally into the broader ${category.name.toLowerCase()} experience. That means your team can use it without adding unnecessary operational overhead or disconnected tools.`,
-  ];
+function parseContentMeta() {
+  const filePath = path.resolve(process.cwd(), "content/features/content.md");
+  const content = fs.readFileSync(filePath, "utf8");
+  const matches = content.matchAll(
+    /- id:\s*([^\n]+)\n\s+title:\s*"([^"]+)"\n\s+description:\s*"([^"]+)"\n\s+image:\s*"([^"]+)"\n\s+link:\s*"([^"]+)"\n\s+status:\s*"([^"]+)"/g
+  );
+  const meta = new Map<string, FeatureMeta>();
+
+  for (const match of matches) {
+    const title = match[2].trim();
+    meta.set(slugify(title), {
+      description: match[3].trim(),
+      image: match[4].trim(),
+      link: match[5].trim(),
+      status: match[6].trim(),
+    });
+  }
+
+  return meta;
 }
 
-function buildDefinitionPoints(feature: string, category: RawCategory) {
-  return [
-    `${feature} is designed to support teams working across ${category.name.toLowerCase()}.`,
-    `It helps standardize execution so agents can move faster while customers receive a more predictable experience.`,
-    `The capability works best when paired with clear workflows, ownership, and the rest of your VerlyAI setup.`,
-    `This page gives you a structured overview, usage guidance, and implementation ideas for ${feature.toLowerCase()}.`,
-  ];
+function parseFeatureIcons() {
+  const filePath = path.resolve(process.cwd(), "docs/verly-features-icons.md");
+  const content = fs.readFileSync(filePath, "utf8");
+  const lines = content.split("\n");
+  const iconMap = new Map<string, FeatureIconMeta>();
+  let currentTitle: string | null = null;
+
+  for (const line of lines) {
+    if (line.startsWith("### ")) {
+      currentTitle = line.replace(/^### /, "").trim();
+      continue;
+    }
+
+    if (currentTitle && line.startsWith("**Lucide Icon:**")) {
+      const iconName = line.match(/`([^`]+)`/)?.[1]?.trim();
+      if (iconName) {
+        iconMap.set(slugify(currentTitle), { title: currentTitle, iconName });
+      }
+      currentTitle = null;
+    }
+  }
+
+  return iconMap;
 }
 
-function buildUsageList(feature: string, category: RawCategory) {
-  return [
-    `Use ${feature.toLowerCase()} to streamline everyday tasks inside your ${category.name.toLowerCase()} workflow.`,
-    `Apply it when your team needs clearer execution, faster turnaround, or more consistent customer communication.`,
-    `Combine it with your other VerlyAI processes so agents can work with less friction and fewer manual gaps.`,
-  ];
+function parseCatalog() {
+  const filePath = path.resolve(process.cwd(), "../docs/VERLY-FEATURES-CATALOG.md");
+  const content = fs.readFileSync(filePath, "utf8");
+  const sections = content.split(/^## /m).slice(1);
+  const catalog = new Map<string, ParsedCatalogFeature>();
+
+  for (const rawSection of sections) {
+    const [titleLine, ...restLines] = rawSection.split("\n");
+    const title = titleLine.trim();
+    if (!title || title === "Table of contents (categories)") continue;
+
+    const section = restLines.join("\n").trim();
+    const categoryName =
+      section.match(/- \*\*Category:\*\* (.+)/)?.[1]?.trim() ?? "Features";
+    const categorySlug =
+      section.match(/- \*\*Category slug:\*\* `([^`]+)`/)?.[1]?.trim() ??
+      slugify(categoryName);
+    const subtitle = section.match(/\*\*Subtitle:\*\* (.+)/)?.[1]?.trim() ?? "";
+    const tagsLine = section.match(/\*\*Tags:\*\* (.+)/)?.[1]?.trim() ?? "";
+    const tags = tagsLine
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    const shortDescriptionBlock = extractBetween(
+      section,
+      "### Q: What is the short description for listings?",
+      "### Q: What should readers know first (introduction)?"
+    );
+    const introBlock = extractBetween(
+      section,
+      "### Q: What should readers know first (introduction)?",
+      "---"
+    );
+    const whatIsBlock = extractBetween(
+      section,
+      "### Q: What is this feature?",
+      "### Q: How can my team use this feature?"
+    );
+    const definitionBlock = extractBetween(
+      whatIsBlock,
+      "**Definition highlights:**",
+      ""
+    );
+    const usageBlock = extractBetween(
+      section,
+      "### Q: How can my team use this feature?",
+      "### Q: What is the workflow hint?"
+    );
+    const workflowBlock = extractBetween(
+      section,
+      "### Q: What is the workflow hint?",
+      "### Q: How does this feature work?"
+    );
+    const howItWorksBlock = extractBetween(
+      section,
+      "### Q: How does this feature work?",
+      "### Q: How do I set this up?"
+    );
+    const setupBlock = extractBetween(
+      section,
+      "### Q: How do I set this up?",
+      "### Q: What outcomes or value should we expect?"
+    );
+    const valueBlock = extractBetween(
+      section,
+      "### Q: What outcomes or value should we expect?",
+      "### Q: Which teams or situations is this best for?"
+    );
+    const useCasesBlock = extractBetween(
+      section,
+      "### Q: Which teams or situations is this best for?",
+      "### Frequently asked questions (FAQ)"
+    );
+    const faqBlock = extractBetween(
+      section,
+      "### Frequently asked questions (FAQ)",
+      ""
+    );
+
+    const sectionImages = extractImagePaths(section);
+    const workflowImages = extractImagePaths(workflowBlock);
+    const overviewImages = extractImagePaths(whatIsBlock);
+
+    const functionPart = howItWorksBlock.split(/^#### Function: /m).slice(1);
+    const functionBlocks = functionPart.map((part) => {
+      const [nameLine, ...bodyLines] = part.split("\n");
+      const body = bodyLines.join("\n").trim();
+      const image = extractImagePaths(body)[0];
+      const notes = normalizeBullets(body);
+      const description = body
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(
+          (line) => line && !line.startsWith("- ") && !line.startsWith("![")
+        )
+        .join(" ")
+        .trim();
+
+      return {
+        name: nameLine.trim(),
+        description,
+        imageAlt: image?.alt ?? `${title} ${nameLine.trim()} image`,
+        imagePath: image?.path,
+        notes: notes.length > 0 ? notes : undefined,
+      };
+    });
+
+    const setupSteps = setupBlock
+      .split(/^#### /m)
+      .slice(1)
+      .map((part) => {
+        const [heading, ...bodyLines] = part.split("\n");
+        return {
+          title: heading.trim(),
+          items: normalizeBullets(bodyLines.join("\n")),
+        };
+      });
+
+    const faqItems = faqBlock
+      .split(/^#### Q: /m)
+      .slice(1)
+      .map((part) => {
+        const [questionLine, ...answerLines] = part.split("\n");
+        return {
+          question: questionLine.trim(),
+          answer: answerLines.join(" ").trim(),
+        };
+      });
+
+    catalog.set(slugify(title), {
+      title,
+      slug: slugify(title),
+      shortDescription:
+        normalizeBullets(shortDescriptionBlock)[0] ??
+        shortDescriptionBlock.replace(/\n/g, " ").trim(),
+      categoryName,
+      categorySlug,
+      shortDescriptionSource: shortDescriptionBlock,
+      subtitle,
+      tags,
+      overview: whatIsBlock
+        .split("**Definition highlights:**")[0]
+        .replace(/\n+/g, " ")
+        .trim(),
+      introParagraphs: normalizeParagraphs(introBlock),
+      definitionPoints: normalizeBullets(definitionBlock),
+      usageList: normalizeBullets(usageBlock),
+      workflowHint: workflowBlock
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith("!["))
+        .join(" ")
+        .trim(),
+      howItWorksIntro: normalizeParagraphs(
+        howItWorksBlock.split(/^#### Function: /m)[0]
+      ),
+      functionBlocks,
+      setupSteps,
+      valuePoints: normalizeBullets(valueBlock),
+      useCases: normalizeBullets(useCasesBlock),
+      faqItems,
+      heroImagePath: sectionImages[0]?.path,
+      heroImageAlt: sectionImages[0]?.alt,
+      overviewImagePath: overviewImages[0]?.path,
+      workflowImagePaths: workflowImages.map((image) => image.path),
+    } as ParsedCatalogFeature & { shortDescriptionSource?: string });
+  }
+
+  return catalog;
 }
 
-function buildWorkflowHint(feature: string) {
-  return `Open the relevant support workflow in VerlyAI, choose ${feature}, review the suggested action or configuration, and apply it where your team needs more speed or consistency.`;
-}
+const parsedCategories = parseFeaturesList();
+const contentMeta = parseContentMeta();
+const catalog = parseCatalog();
+const featureIcons = parseFeatureIcons();
 
-function buildHowItWorksIntro(feature: string, category: RawCategory) {
-  return [
-    `${feature} works inside the broader VerlyAI product flow for ${category.name.toLowerCase()}.`,
-    `Teams can use it to improve execution quality, reduce repetitive work, and create a smoother customer support experience.`,
-  ];
-}
-
-function buildFunctionBlocks(feature: string, category: RawCategory) {
-  return [
-    {
-      name: "Operational clarity",
-      description: `${feature} helps your team create a clearer and more repeatable process inside ${category.name.toLowerCase()}.`,
-      imageAlt: `${feature} operational clarity illustration placeholder`,
-    },
-    {
-      name: "Faster execution",
-      description: `Use ${feature.toLowerCase()} to reduce friction, move work forward faster, and keep support quality high during busy periods.`,
-      imageAlt: `${feature} faster execution illustration placeholder`,
-    },
-    {
-      name: "Better customer experience",
-      description: `${feature} helps customers receive more timely, consistent, and confidence-building support interactions.`,
-      imageAlt: `${feature} customer experience illustration placeholder`,
-      notes: [
-        "Works well with structured workflows.",
-        "Supports consistent execution across teams.",
-        "Pairs naturally with other VerlyAI support features.",
-      ],
-    },
-  ];
-}
-
-function buildSetupSteps(feature: string, category: RawCategory) {
-  return [
-    {
-      title: `Step 1 - Define how ${feature} should be used`,
-      items: [
-        `Review where ${feature.toLowerCase()} fits in your ${category.name.toLowerCase()} process.`,
-        "Decide which teams, inboxes, or workflows should rely on it first.",
-        "Set a clear success goal such as faster handling, better quality, or fewer manual steps.",
-      ],
-    },
-    {
-      title: `Step 2 - Connect ${feature} to your workflow`,
-      items: [
-        `Enable ${feature.toLowerCase()} in the part of VerlyAI where your agents already work.`,
-        "Align ownership, routing, and internal process expectations.",
-        "Prepare any supporting knowledge, instructions, or operational rules needed for rollout.",
-      ],
-    },
-    {
-      title: `Step 3 - Roll out and refine`,
-      items: [
-        "Start with a focused use case or team.",
-        "Review performance and agent feedback regularly.",
-        `Refine how ${feature.toLowerCase()} is used until it fits naturally into day-to-day support work.`,
-      ],
-    },
-  ];
-}
-
-function buildValuePoints(feature: string, category: RawCategory) {
-  return [
-    `Use ${feature} to make the ${category.name.toLowerCase()} workflow easier for agents and more predictable for customers.`,
-    `Reduce manual effort by standardizing how your team handles ${feature.toLowerCase()} across chat, voice, WhatsApp, and ticket queues.`,
-    `Create a cleaner support operation with better visibility, smoother handoffs, and stronger service consistency.`,
-  ];
-}
-
-function buildUseCases(feature: string, category: RawCategory) {
-  return [
-    `Support teams that want clearer processes around ${feature.toLowerCase()}.`,
-    `Growing businesses that need ${category.name.toLowerCase()} to scale without adding operational friction.`,
-    `Ops and CX leaders who want better quality control, reporting, and customer experience consistency.`,
-  ];
-}
-
-function buildFaqItems(feature: string, category: RawCategory) {
-  return [
-    {
-      question: `What is ${feature}?`,
-      answer: `${feature} is a VerlyAI capability built for ${category.name.toLowerCase()}. It helps teams ${sentenceCaseSummary(
-        category.summary
-      )} with more consistency and less manual friction.`,
-    },
-    {
-      question: `How does ${feature} work?`,
-      answer: `${feature} works inside your VerlyAI workflow so agents can use it in context, apply it to real support activity, and improve speed, quality, and operational clarity.`,
-    },
-    {
-      question: `When should teams use ${feature}?`,
-      answer: `Teams should use ${feature.toLowerCase()} when they want to improve support execution, reduce repetitive effort, and make the customer experience more reliable at scale.`,
-    },
-  ];
-}
-
-export const FEATURE_CATEGORIES: FeatureCategory[] = RAW_CATEGORIES.map(
+export const FEATURE_CATEGORIES: FeatureCategory[] = parsedCategories.map(
   (category, index) => ({
     name: category.name,
     slug: slugify(category.name),
     summary: category.summary,
     theme: CATEGORY_THEMES[index % CATEGORY_THEMES.length],
-    features: category.features.map((feature) => ({
-      title: feature,
-      slug: slugify(feature),
-      shortDescription: buildShortDescription(feature, category),
-    })),
+    imagePath: CATEGORY_IMAGE_MAP[slugify(category.name)],
+    features: category.features.map((featureTitle) => {
+      const slug = slugify(featureTitle);
+      const catalogFeature = catalog.get(slug);
+      const meta = contentMeta.get(slug);
+
+      return {
+        title: featureTitle,
+        slug,
+        shortDescription:
+          meta?.description ??
+          catalogFeature?.shortDescription ??
+          `${featureTitle} helps teams work faster and more consistently.`,
+        iconName: featureIcons.get(slug)?.iconName,
+      };
+    }),
   })
 );
 
 export const ALL_FEATURES: FeatureDetail[] = FEATURE_CATEGORIES.flatMap((category) =>
-  category.features.map((feature) => ({
-    ...feature,
-    categoryName: category.name,
-    categorySlug: category.slug,
-    categorySummary: category.summary,
-    theme: category.theme,
-    subtitle: buildSubtitle(feature.title),
-    tags: buildTags({
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    overview: buildOverview(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    introParagraphs: buildIntroParagraphs(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    definitionPoints: buildDefinitionPoints(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    usageList: buildUsageList(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    workflowHint: buildWorkflowHint(feature.title),
-    howItWorksIntro: buildHowItWorksIntro(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    functionBlocks: buildFunctionBlocks(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    setupSteps: buildSetupSteps(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    valuePoints: buildValuePoints(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    useCases: buildUseCases(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-    faqItems: buildFaqItems(feature.title, {
-      name: category.name,
-      summary: category.summary,
-      features: [],
-    }),
-  }))
+  category.features.map((feature) => {
+    const catalogFeature = catalog.get(feature.slug);
+    const meta = contentMeta.get(feature.slug);
+
+    if (!catalogFeature) {
+      return {
+        title: feature.title,
+        slug: feature.slug,
+        shortDescription: feature.shortDescription,
+        iconName: feature.iconName,
+        categoryName: category.name,
+        categorySlug: category.slug,
+        categorySummary: category.summary,
+        theme: category.theme,
+        subtitle: meta?.description ?? feature.shortDescription,
+        tags: [category.name, "Customer support", "VerlyAI"],
+        overview: feature.shortDescription,
+        introParagraphs: [feature.shortDescription],
+        definitionPoints: [],
+        usageList: [],
+        workflowHint: "",
+        howItWorksIntro: [],
+        functionBlocks: [],
+        setupSteps: [],
+        valuePoints: [],
+        useCases: [],
+        faqItems: [],
+        heroImagePath: meta?.image,
+        heroImageAlt: feature.title,
+        overviewImagePath: meta?.image,
+        workflowImagePaths: [],
+      };
+    }
+
+    return {
+      ...catalogFeature,
+      shortDescription: meta?.description ?? catalogFeature.shortDescription,
+      iconName: feature.iconName,
+      categoryName: category.name,
+      categorySlug: category.slug,
+      categorySummary: category.summary,
+      theme: category.theme,
+      heroImagePath: meta?.image ?? catalogFeature.heroImagePath,
+      overviewImagePath: meta?.image ?? catalogFeature.overviewImagePath,
+    };
+  })
 );
 
 export function getFeatureBySlug(slug: string) {

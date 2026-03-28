@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, X, Sparkles, Layers3 } from "lucide-react";
+import { Search, X, Layers3 } from "lucide-react";
+import { getFeatureIconComponent } from "./feature-icon";
 
 type SearchFeature = {
   title: string;
   slug: string;
   shortDescription: string;
+  iconName?: string;
 };
 
 type SearchCategory = {
@@ -177,7 +179,13 @@ export default function FeaturesSearch({
                       {result.type === "category" ? (
                         <Layers3 className="h-5 w-5" />
                       ) : (
-                        <Sparkles className="h-5 w-5" />
+                        (() => {
+                          const feature = categories
+                            .flatMap((category) => category.features)
+                            .find((item) => item.slug === result.href.replace("/features/", ""));
+                          const FeatureIcon = getFeatureIconComponent(feature?.iconName);
+                          return <FeatureIcon className="h-5 w-5" />;
+                        })()
                       )}
                     </div>
                     <div className="min-w-0">

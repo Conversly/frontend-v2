@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "../crisp/landing-page.css";
+import "../landing-page.css";
 
 export default function FeaturesLayout({
   children,

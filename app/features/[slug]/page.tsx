@@ -116,6 +116,21 @@ const THEME_CLASS: Record<
 };
 
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
+const DEFAULT_FEATURE_HERO_IMAGE = "/images/crisp/feature-detail.png";
+const DEFAULT_FEATURE_HERO_ALT = "VerlyAI support workspace preview";
+
+function resolveFeatureVisualPath(imagePath?: string) {
+  if (!imagePath) return DEFAULT_FEATURE_HERO_IMAGE;
+
+  if (
+    imagePath.includes("feature-visual-placeholder") ||
+    imagePath.startsWith("./assets/")
+  ) {
+    return DEFAULT_FEATURE_HERO_IMAGE;
+  }
+
+  return imagePath;
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -178,12 +193,47 @@ function StickyTrialCard() {
           Try VerlyAI free
         </Link>
       </div>
-      <SvgPlaceholder
-        title="Feature promo visual"
-        alt="Feature trial promo illustration"
-        className="mt-8 min-h-[190px] border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]"
-      />
+      <div className="relative mt-8 overflow-hidden rounded-[24px] border border-white/10 bg-white/5">
+        <Image
+          src="/images/crisp/cta-banner-bg-trial.png"
+          alt="VerlyAI trial banner preview"
+          width={450}
+          height={456}
+          className="h-auto w-full object-cover object-center"
+        />
+      </div>
     </aside>
+  );
+}
+
+function FeatureHeroVisual({
+  title,
+  imagePath,
+  alt,
+}: {
+  title: string;
+  imagePath?: string;
+  alt?: string;
+}) {
+  const src = resolveFeatureVisualPath(imagePath);
+  const imageAlt =
+    alt && !alt.toLowerCase().includes("placeholder")
+      ? alt
+      : `${title} - ${DEFAULT_FEATURE_HERO_ALT}`;
+
+  return (
+    <div className="relative overflow-hidden rounded-[32px] border border-[#eaecf5] bg-white p-5 shadow-[0_24px_60px_rgba(16,24,40,0.08)]">
+      <div className="relative min-h-[500px] overflow-hidden rounded-[28px] bg-white">
+        <Image
+          src={src}
+          alt={imageAlt}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 45vw"
+          className="object-contain object-center"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -280,10 +330,10 @@ export default async function FeatureDetailPage({ params }: Props) {
                 </div>
               </div>
 
-              <SvgPlaceholder
-                title={`${feature.title} hero visual`}
-                alt={`${feature.title} SVG hero illustration`}
-                className="min-h-[500px]"
+              <FeatureHeroVisual
+                title={feature.title}
+                imagePath={feature.heroImagePath}
+                alt={feature.heroImageAlt}
               />
             </div>
           </div>

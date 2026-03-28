@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   BarChart3,
@@ -20,6 +21,7 @@ import Footer from "@/components/landing/footer";
 import { FEATURE_CATEGORIES, FEATURES_PAGE_CONTENT, ThemeKey } from "./data";
 import { siteConfig } from "@/lib/metadata";
 import FeaturesSearch from "./features-search";
+import { getFeatureIconComponent } from "./feature-icon";
 
 export const metadata: Metadata = {
   title: "Features | VerlyAI",
@@ -264,30 +266,51 @@ export default function FeaturesPage() {
                       </div>
 
                       <div className="flex flex-1 justify-end">
-                        <div className="relative w-full max-w-[520px] rounded-[28px] border border-white/70 bg-white/60 p-6 shadow-[0_20px_60px_rgba(149,92,244,0.15)] backdrop-blur-sm">
+                        <div className="relative w-full max-w-[560px] overflow-hidden rounded-[28px] border border-white/70 bg-white/60 p-4 shadow-[0_20px_60px_rgba(149,92,244,0.15)] backdrop-blur-sm">
                           <div className="absolute inset-y-0 right-0 w-1/2 rounded-r-[28px] bg-[linear-gradient(180deg,rgba(149,92,244,0.12),rgba(25,114,245,0.08))]" />
-                          <div className="relative z-10 flex flex-col gap-5">
-                            <div
-                              className={`flex h-14 w-14 items-center justify-center rounded-2xl ${theme.iconWrap}`}
-                            >
-                              <Icon className={`h-7 w-7 ${theme.iconColor}`} />
-                            </div>
-                            <div className="space-y-3">
-                              {category.features.slice(0, 3).map((feature, index) => (
-                                <div
-                                  key={feature.slug}
-                                  className={`rounded-2xl border border-white/80 bg-white px-4 py-3 text-sm shadow-sm ${
-                                    index === 1 ? "ml-6" : index === 2 ? "mr-8" : ""
-                                  }`}
-                                >
-                                  <div className={`font-semibold ${theme.accentText}`}>
-                                    {feature.title}
+                          <div className="relative z-10">
+                            <div className="relative overflow-hidden rounded-[24px] border border-white/80 bg-white/90 p-4 shadow-sm">
+                              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(128,128,128,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.04)_1px,transparent_1px)] bg-[size:18px_18px]" />
+                              <div className="relative flex min-h-[320px] items-center justify-center">
+                                {category.imagePath ? (
+                                  <Image
+                                    src={category.imagePath}
+                                    alt={`${category.name} visual`}
+                                    width={460}
+                                    height={320}
+                                    className="h-auto max-h-[300px] w-auto max-w-full object-contain"
+                                  />
+                                ) : (
+                                  <div
+                                    className={`flex h-20 w-20 items-center justify-center rounded-3xl ${theme.iconWrap}`}
+                                  >
+                                    <Icon className={`h-10 w-10 ${theme.iconColor}`} />
                                   </div>
-                                  <p className="mt-1 text-[#5d6b98] line-clamp-2">
-                                    {feature.shortDescription}
-                                  </p>
+                                )}
+                              </div>
+
+                              <div className="pointer-events-none absolute left-5 top-5 flex items-center gap-3 rounded-2xl border border-white/80 bg-white/95 px-3 py-2 shadow-sm">
+                                <div
+                                  className={`flex h-10 w-10 items-center justify-center rounded-2xl ${theme.iconWrap}`}
+                                >
+                                  <Icon className={`h-5 w-5 ${theme.iconColor}`} />
                                 </div>
-                              ))}
+                                <div>
+                                  <div className={`text-sm font-semibold ${theme.accentText}`}>
+                                    {category.features[0]?.title}
+                                  </div>
+                                  <div className="text-xs text-[#7d89b0]">Popular in this category</div>
+                                </div>
+                              </div>
+
+                              {category.features[1] ? (
+                                <div className="pointer-events-none absolute bottom-5 right-5 rounded-2xl border border-white/80 bg-white/95 px-4 py-3 shadow-sm">
+                                  <div className="text-sm font-semibold text-[#242f47]">
+                                    {category.features[1].title}
+                                  </div>
+                                  <div className="mt-1 text-xs text-[#7d89b0]">Feature highlight</div>
+                                </div>
+                              ) : null}
                             </div>
                           </div>
                         </div>
@@ -304,11 +327,16 @@ export default function FeaturesPage() {
                       >
                         <article className="common-card common-card--white-feature h-full rounded-[24px] border border-[#eaecf5] bg-white p-2 transition-all duration-200 hover:-translate-y-1 hover:border-[#c6d7ff] hover:shadow-[0_20px_45px_rgba(42,59,81,0.08)]">
                           <div className="flex h-full flex-col rounded-[22px] border border-white bg-white p-8">
-                            <div
-                              className={`flex h-14 w-14 items-center justify-center rounded-2xl ${theme.iconWrap}`}
-                            >
-                              <Icon className={`h-6 w-6 ${theme.iconColor}`} />
-                            </div>
+                            {(() => {
+                              const FeatureIcon = getFeatureIconComponent(feature.iconName);
+                              return (
+                                <div
+                                  className={`flex h-14 w-14 items-center justify-center rounded-2xl ${theme.iconWrap}`}
+                                >
+                                  <FeatureIcon className={`h-6 w-6 ${theme.iconColor}`} />
+                                </div>
+                              );
+                            })()}
                             <h3 className="mt-6 text-[30px] font-semibold leading-8 tracking-[-0.03em] text-[#242f47]">
                               {feature.title}
                             </h3>
