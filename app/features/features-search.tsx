@@ -132,9 +132,9 @@ export default function FeaturesSearch({
 
   return (
     <div ref={wrapperRef} className="relative mt-10 w-full max-w-[760px]">
-      <div className="rounded-[24px] border border-[#dcdfea] bg-white/90 p-3 shadow-[0_18px_50px_rgba(42,59,81,0.08)] backdrop-blur-sm">
-        <div className="flex items-center gap-3 rounded-[18px] border border-[#dcdfea] bg-white px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all focus-within:border-[#ffb082] focus-within:ring-4 focus-within:ring-[#ff6f3e1f]">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1972f514] text-[#1972f5]">
+      <div className="rounded-[24px] border border-[#dcdfea] bg-white/90 p-3 shadow-[0_18px_50px_rgba(42,59,81,0.08)] backdrop-blur-sm dark:border-[#243146] dark:bg-[#0f1728]/90 dark:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+        <div className="flex items-center gap-3 rounded-[18px] border border-[#dcdfea] bg-white px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all focus-within:border-[#ffb082] focus-within:ring-4 focus-within:ring-[#ff6f3e1f] dark:border-[#243146] dark:bg-[#111827] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] dark:focus-within:border-[#ff9f43]/60 dark:focus-within:ring-[#ff9f43]/15">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1972f514] text-[#1972f5] dark:bg-blue-500/15 dark:text-blue-300">
             <Search className="h-5 w-5" />
           </div>
           <input
@@ -142,13 +142,13 @@ export default function FeaturesSearch({
             onChange={(event) => setQuery(event.target.value)}
             onFocus={() => setIsFocused(true)}
             placeholder="Search features, categories, or capabilities"
-            className="h-10 flex-1 border-0 bg-transparent text-[18px] text-[#242f47] outline-none placeholder:text-[#7d89b0]"
+            className="h-10 flex-1 border-0 bg-transparent text-[18px] text-[#242f47] outline-none placeholder:text-[#7d89b0] dark:text-white dark:placeholder:text-slate-500"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery("")}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-[#98a2b3] transition-colors hover:bg-[#f5f7fb] hover:text-[#404968]"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-[#98a2b3] transition-colors hover:bg-[#f5f7fb] hover:text-[#404968] dark:hover:bg-[#1a2334] dark:hover:text-slate-200"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
@@ -158,7 +158,7 @@ export default function FeaturesSearch({
       </div>
 
       {showResults ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-30 overflow-hidden rounded-[24px] border border-[#dcdfea] bg-white/95 p-3 shadow-[0_24px_80px_rgba(42,59,81,0.12)] backdrop-blur-md">
+        <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-30 overflow-hidden rounded-[24px] border border-[#dcdfea] bg-white/95 p-3 shadow-[0_24px_80px_rgba(42,59,81,0.12)] backdrop-blur-md dark:border-[#243146] dark:bg-[#0f1728]/95 dark:shadow-[0_28px_80px_rgba(0,0,0,0.45)]">
           {results.length > 0 ? (
             <div className="max-h-[420px] space-y-3 overflow-y-auto pr-1">
               {results.map((result) => (
@@ -166,7 +166,7 @@ export default function FeaturesSearch({
                   key={result.key}
                   href={result.href}
                   onClick={() => setIsFocused(false)}
-                  className="block rounded-[18px] border border-[#eaecf5] bg-white px-4 py-4 transition-all hover:border-[#cbdbf4] hover:bg-[#fcfcfd]"
+                  className="block rounded-[18px] border border-[#eaecf5] bg-white px-4 py-4 transition-all hover:border-[#cbdbf4] hover:bg-[#fcfcfd] dark:border-[#243146] dark:bg-[#111827] dark:hover:border-[#35507a] dark:hover:bg-[#162033]"
                 >
                   <div className="flex items-start gap-4">
                     <div
@@ -199,14 +199,14 @@ export default function FeaturesSearch({
                         >
                           {result.type === "category" ? "Category" : "Feature"}
                         </span>
-                        <span className="text-[12px] font-medium text-[#7d89b0]">
+                        <span className="text-[12px] font-medium text-[#7d89b0] dark:text-slate-400">
                           {result.meta}
                         </span>
                       </div>
-                      <h3 className="mt-2 text-[18px] font-semibold leading-6 text-[#242f47]">
+                      <h3 className="mt-2 text-[18px] font-semibold leading-6 text-[#242f47] dark:text-white">
                         {result.title}
                       </h3>
-                      <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#667085]">
+                      <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#667085] dark:text-slate-300">
                         {result.description}
                       </p>
                     </div>
@@ -215,11 +215,11 @@ export default function FeaturesSearch({
               ))}
             </div>
           ) : (
-            <div className="rounded-[18px] border border-[#eaecf5] bg-[#fcfcfd] px-5 py-8 text-center">
-              <p className="text-[16px] font-semibold text-[#242f47]">
+            <div className="rounded-[18px] border border-[#eaecf5] bg-[#fcfcfd] px-5 py-8 text-center dark:border-[#243146] dark:bg-[#111827]">
+              <p className="text-[16px] font-semibold text-[#242f47] dark:text-white">
                 No matching features found
               </p>
-              <p className="mt-2 text-[14px] leading-6 text-[#667085]">
+              <p className="mt-2 text-[14px] leading-6 text-[#667085] dark:text-slate-300">
                 Try searching by category name, feature title, or a capability keyword.
               </p>
             </div>

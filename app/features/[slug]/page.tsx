@@ -12,10 +12,11 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import {
   ALL_FEATURES,
+  FEATURE_UI_ASSETS,
   FEATURE_CATEGORIES,
   getFeatureBySlug,
   ThemeKey,
-} from "../data";
+} from "../constants";
 import { siteConfig } from "@/lib/metadata";
 import {
   Breadcrumb,
@@ -42,82 +43,82 @@ const THEME_CLASS: Record<
   }
 > = {
   purple: {
-    pill: "bg-violet-100 text-violet-700 border-violet-200",
-    accent: "text-violet-700",
-    soft: "bg-violet-50",
-    border: "border-violet-100",
+    pill: "bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-500/15 dark:text-violet-200 dark:border-violet-500/20",
+    accent: "text-violet-700 dark:text-violet-300",
+    soft: "bg-violet-50 dark:bg-violet-500/10",
+    border: "border-violet-100 dark:border-violet-500/20",
   },
   blue: {
-    pill: "bg-blue-100 text-blue-700 border-blue-200",
-    accent: "text-blue-700",
-    soft: "bg-blue-50",
-    border: "border-blue-100",
+    pill: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/15 dark:text-blue-200 dark:border-blue-500/20",
+    accent: "text-blue-700 dark:text-blue-300",
+    soft: "bg-blue-50 dark:bg-blue-500/10",
+    border: "border-blue-100 dark:border-blue-500/20",
   },
   teal: {
-    pill: "bg-cyan-100 text-cyan-700 border-cyan-200",
-    accent: "text-cyan-700",
-    soft: "bg-cyan-50",
-    border: "border-cyan-100",
+    pill: "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-500/15 dark:text-cyan-200 dark:border-cyan-500/20",
+    accent: "text-cyan-700 dark:text-cyan-300",
+    soft: "bg-cyan-50 dark:bg-cyan-500/10",
+    border: "border-cyan-100 dark:border-cyan-500/20",
   },
   orange: {
-    pill: "bg-orange-100 text-orange-700 border-orange-200",
-    accent: "text-orange-700",
-    soft: "bg-orange-50",
-    border: "border-orange-100",
+    pill: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-500/15 dark:text-orange-200 dark:border-orange-500/20",
+    accent: "text-orange-700 dark:text-orange-300",
+    soft: "bg-orange-50 dark:bg-orange-500/10",
+    border: "border-orange-100 dark:border-orange-500/20",
   },
   green: {
-    pill: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    accent: "text-emerald-700",
-    soft: "bg-emerald-50",
-    border: "border-emerald-100",
+    pill: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/20",
+    accent: "text-emerald-700 dark:text-emerald-300",
+    soft: "bg-emerald-50 dark:bg-emerald-500/10",
+    border: "border-emerald-100 dark:border-emerald-500/20",
   },
   violet: {
-    pill: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200",
-    accent: "text-fuchsia-700",
-    soft: "bg-fuchsia-50",
-    border: "border-fuchsia-100",
+    pill: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200 dark:bg-fuchsia-500/15 dark:text-fuchsia-200 dark:border-fuchsia-500/20",
+    accent: "text-fuchsia-700 dark:text-fuchsia-300",
+    soft: "bg-fuchsia-50 dark:bg-fuchsia-500/10",
+    border: "border-fuchsia-100 dark:border-fuchsia-500/20",
   },
   indigo: {
-    pill: "bg-indigo-100 text-indigo-700 border-indigo-200",
-    accent: "text-indigo-700",
-    soft: "bg-indigo-50",
-    border: "border-indigo-100",
+    pill: "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-500/15 dark:text-indigo-200 dark:border-indigo-500/20",
+    accent: "text-indigo-700 dark:text-indigo-300",
+    soft: "bg-indigo-50 dark:bg-indigo-500/10",
+    border: "border-indigo-100 dark:border-indigo-500/20",
   },
   sky: {
-    pill: "bg-sky-100 text-sky-700 border-sky-200",
-    accent: "text-sky-700",
-    soft: "bg-sky-50",
-    border: "border-sky-100",
+    pill: "bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-500/15 dark:text-sky-200 dark:border-sky-500/20",
+    accent: "text-sky-700 dark:text-sky-300",
+    soft: "bg-sky-50 dark:bg-sky-500/10",
+    border: "border-sky-100 dark:border-sky-500/20",
   },
   slate: {
-    pill: "bg-slate-100 text-slate-700 border-slate-200",
-    accent: "text-slate-700",
-    soft: "bg-slate-50",
-    border: "border-slate-100",
+    pill: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-500/15 dark:text-slate-200 dark:border-slate-500/20",
+    accent: "text-slate-700 dark:text-slate-300",
+    soft: "bg-slate-50 dark:bg-slate-500/10",
+    border: "border-slate-100 dark:border-slate-500/20",
   },
   rose: {
-    pill: "bg-rose-100 text-rose-700 border-rose-200",
-    accent: "text-rose-700",
-    soft: "bg-rose-50",
-    border: "border-rose-100",
+    pill: "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-200 dark:border-rose-500/20",
+    accent: "text-rose-700 dark:text-rose-300",
+    soft: "bg-rose-50 dark:bg-rose-500/10",
+    border: "border-rose-100 dark:border-rose-500/20",
   },
   amber: {
-    pill: "bg-amber-100 text-amber-700 border-amber-200",
-    accent: "text-amber-700",
-    soft: "bg-amber-50",
-    border: "border-amber-100",
+    pill: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:border-amber-500/20",
+    accent: "text-amber-700 dark:text-amber-300",
+    soft: "bg-amber-50 dark:bg-amber-500/10",
+    border: "border-amber-100 dark:border-amber-500/20",
   },
   cyan: {
-    pill: "bg-cyan-100 text-cyan-700 border-cyan-200",
-    accent: "text-cyan-700",
-    soft: "bg-cyan-50",
-    border: "border-cyan-100",
+    pill: "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-500/15 dark:text-cyan-200 dark:border-cyan-500/20",
+    accent: "text-cyan-700 dark:text-cyan-300",
+    soft: "bg-cyan-50 dark:bg-cyan-500/10",
+    border: "border-cyan-100 dark:border-cyan-500/20",
   },
 };
 
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
-const DEFAULT_FEATURE_HERO_IMAGE = "/images/crisp/feature-detail.png";
-const DEFAULT_FEATURE_HERO_ALT = "VerlyAI support workspace preview";
+const DEFAULT_FEATURE_HERO_IMAGE = FEATURE_UI_ASSETS.defaultHeroImagePath;
+const DEFAULT_FEATURE_HERO_ALT = FEATURE_UI_ASSETS.defaultHeroImageAlt;
 
 function resolveFeatureVisualPath(imagePath?: string) {
   if (!imagePath) return DEFAULT_FEATURE_HERO_IMAGE;
@@ -147,16 +148,16 @@ function SvgPlaceholder({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[28px] border border-[#eaecf5] bg-[linear-gradient(180deg,#ffffff,#f8fafc)] ${className}`}
+      className={`relative overflow-hidden rounded-[28px] border border-[#eaecf5] bg-[linear-gradient(180deg,#ffffff,#f8fafc)] dark:border-[#243146] dark:bg-[linear-gradient(180deg,#111827,#0f1728)] ${className}`}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(128,128,128,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.05)_1px,transparent_1px)] bg-[size:18px_18px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(128,128,128,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.05)_1px,transparent_1px)] bg-[size:18px_18px] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)]" />
       <div className="relative flex h-full min-h-[220px] flex-col items-center justify-center gap-4 p-8 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#1972f514] text-[#1972f5]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#1972f514] text-[#1972f5] dark:bg-blue-500/15 dark:text-blue-300">
           <ImageIcon className="h-8 w-8" />
         </div>
         <div>
-          <p className="text-lg font-semibold text-[#242f47]">{title}</p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-[#667085]">
+          <p className="text-lg font-semibold text-[#242f47] dark:text-white">{title}</p>
+          <p className="mt-2 max-w-md text-sm leading-6 text-[#667085] dark:text-slate-300">
             SVG placeholder for: {alt}
           </p>
         </div>
@@ -171,7 +172,7 @@ function StickyTrialCard() {
       <div className="flex flex-col items-center text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff9f43]">
           <Image
-            src="/verly_logo.png"
+            src={FEATURE_UI_ASSETS.trialLogoPath}
             alt="VerlyAI logo"
             width={24}
             height={24}
@@ -195,8 +196,8 @@ function StickyTrialCard() {
       </div>
       <div className="relative mt-8 overflow-hidden rounded-[24px] border border-white/10 bg-white/5">
         <Image
-          src="/images/crisp/cta-banner-bg-trial.png"
-          alt="VerlyAI trial banner preview"
+          src={FEATURE_UI_ASSETS.trialBannerImagePath}
+          alt={FEATURE_UI_ASSETS.trialBannerImageAlt}
           width={450}
           height={456}
           className="h-auto w-full object-cover object-center"
@@ -222,8 +223,8 @@ function FeatureHeroVisual({
       : `${title} - ${DEFAULT_FEATURE_HERO_ALT}`;
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] border border-[#eaecf5] bg-white p-5 shadow-[0_24px_60px_rgba(16,24,40,0.08)]">
-      <div className="relative min-h-[500px] overflow-hidden rounded-[28px] bg-white">
+    <div className="relative overflow-hidden rounded-[32px] border border-[#eaecf5] bg-white p-5 shadow-[0_24px_60px_rgba(16,24,40,0.08)] dark:border-[#243146] dark:bg-[#0f1728] dark:shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative min-h-[500px] overflow-hidden rounded-[28px] bg-white dark:bg-[#111827]">
         <Image
           src={src}
           alt={imageAlt}
@@ -277,15 +278,15 @@ export default async function FeatureDetailPage({ params }: Props) {
     ) ?? [];
 
   return (
-    <main className="bg-[#fcfcfd] relative min-h-screen selection:bg-blue-100">
-      <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+    <main className="relative min-h-screen bg-[#fcfcfd] text-[#0f1e35] selection:bg-blue-100 dark:bg-[#090c14] dark:text-white">
+      <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)]" />
       <div className="relative z-10">
         <Navbar />
 
         <section className="pt-28 pb-12">
           <div className={CONTENT_WIDTH}>
             <Breadcrumb>
-              <BreadcrumbList className="text-sm text-[#667085]">
+              <BreadcrumbList className="text-sm text-[#667085] dark:text-slate-400 [&_a]:dark:text-slate-300 [&_svg]:dark:text-slate-500">
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link href="/">Home</Link>
@@ -312,17 +313,17 @@ export default async function FeatureDetailPage({ params }: Props) {
                   <Sparkles className="h-4 w-4" />
                   {feature.categoryName}
                 </div>
-                <h1 className="mt-6 text-5xl font-semibold tracking-[-0.06em] text-[#0f1e35] md:text-7xl">
+                <h1 className="mt-6 text-5xl font-semibold tracking-[-0.06em] text-[#0f1e35] dark:text-white md:text-7xl">
                   {feature.title}
                 </h1>
-                <p className="mt-6 max-w-2xl text-xl leading-9 text-[#5d6b98]">
+                <p className="mt-6 max-w-2xl text-xl leading-9 text-[#5d6b98] dark:text-slate-300">
                   {feature.subtitle}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   {feature.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-xl border border-[#dcdfea] bg-white px-3 py-2 text-sm font-medium text-[#667085]"
+                      className="rounded-xl border border-[#dcdfea] bg-white px-3 py-2 text-sm font-medium text-[#667085] dark:border-[#243146] dark:bg-[#111827] dark:text-slate-300"
                     >
                       {tag}
                     </span>
@@ -342,17 +343,17 @@ export default async function FeatureDetailPage({ params }: Props) {
         <section className="pb-24">
           <div className={`${CONTENT_WIDTH} grid gap-12 lg:grid-cols-[1fr_380px]`}>
             <div className="space-y-16">
-              <div className="space-y-8 text-[17px] leading-9 text-[#5d6b98]">
+              <div className="space-y-8 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
                 {feature.introParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
 
               <section>
-                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937]">
+                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937] dark:text-white">
                   What is {feature.title}?
                 </h2>
-                <div className="mt-8 space-y-6 text-[17px] leading-9 text-[#5d6b98]">
+                <div className="mt-8 space-y-6 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
                   <p>{feature.overview}</p>
                   <ul className="space-y-4">
                     {feature.definitionPoints.map((point) => (
@@ -371,18 +372,18 @@ export default async function FeatureDetailPage({ params }: Props) {
               </section>
 
               <section>
-                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937]">
+                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937] dark:text-white">
                   Here&apos;s how you can use the {feature.title} feature
                 </h2>
-                <ul className="mt-8 space-y-5 text-[17px] leading-9 text-[#5d6b98]">
+                <ul className="mt-8 space-y-5 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
                   {feature.usageList.map((item) => (
                     <li key={item} className="list-disc ml-6 pl-2">
                       {item}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-8 text-[17px] leading-9 text-[#5d6b98]">
-                  <span className="font-semibold text-[#242f47]">Workflow hint:</span>{" "}
+                <p className="mt-8 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
+                  <span className="font-semibold text-[#242f47] dark:text-white">Workflow hint:</span>{" "}
                   {feature.workflowHint}
                 </p>
                 <div className="mt-10 grid gap-6 md:grid-cols-2">
@@ -398,10 +399,10 @@ export default async function FeatureDetailPage({ params }: Props) {
               </section>
 
               <section>
-                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937]">
+                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937] dark:text-white">
                   How {feature.title} works
                 </h2>
-                <div className="mt-8 space-y-6 text-[17px] leading-9 text-[#5d6b98]">
+                <div className="mt-8 space-y-6 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
                   {feature.howItWorksIntro.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}
@@ -409,14 +410,14 @@ export default async function FeatureDetailPage({ params }: Props) {
                 <div className="mt-10 space-y-10">
                   {feature.functionBlocks.map((block) => (
                     <div key={block.name}>
-                      <h3 className="text-3xl font-semibold tracking-[-0.03em] text-[#242f47]">
+                      <h3 className="text-3xl font-semibold tracking-[-0.03em] text-[#242f47] dark:text-white">
                         {block.name}
                       </h3>
-                      <p className="mt-4 text-[17px] leading-9 text-[#5d6b98]">
+                      <p className="mt-4 text-[17px] leading-9 text-[#5d6b98] dark:text-slate-300">
                         {block.description}
                       </p>
                       {block.notes ? (
-                        <ul className="mt-5 space-y-3 text-[16px] leading-8 text-[#5d6b98]">
+                        <ul className="mt-5 space-y-3 text-[16px] leading-8 text-[#5d6b98] dark:text-slate-300">
                           {block.notes.map((note) => (
                             <li key={note} className="list-disc ml-6 pl-2">
                               {note}
@@ -435,19 +436,19 @@ export default async function FeatureDetailPage({ params }: Props) {
               </section>
 
               <section>
-                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937]">
+                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937] dark:text-white">
                   How to set up {feature.title}
                 </h2>
                 <div className="mt-10 space-y-8">
                   {feature.setupSteps.map((step) => (
                     <div
                       key={step.title}
-                      className={`rounded-[28px] border ${theme.border} bg-white p-8 shadow-sm`}
+                      className={`rounded-[28px] border ${theme.border} bg-white p-8 shadow-sm dark:bg-[#111827] dark:shadow-[0_16px_40px_rgba(0,0,0,0.25)]`}
                     >
-                      <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#242f47]">
+                      <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#242f47] dark:text-white">
                         {step.title}
                       </h3>
-                      <ul className="mt-5 space-y-3 text-[16px] leading-8 text-[#5d6b98]">
+                      <ul className="mt-5 space-y-3 text-[16px] leading-8 text-[#5d6b98] dark:text-slate-300">
                         {step.items.map((item) => (
                           <li key={item} className="list-disc ml-6 pl-2">
                             {item}
@@ -460,16 +461,16 @@ export default async function FeatureDetailPage({ params }: Props) {
               </section>
 
               <section className="common-faq">
-                <h2 className="common-faq__title text-[#1f2937]">
+                <h2 className="common-faq__title text-[#1f2937] dark:text-white">
                   Frequently asked questions
                 </h2>
                 <Accordion type="single" collapsible className="common-faq-list">
                   {feature.faqItems.map((item, index) => (
-                    <AccordionItem key={item.question} value={`faq-${index}`} className="border-[#eaecf5]">
-                      <AccordionTrigger className="common-faq-list__question text-left text-xl font-semibold text-[#242f47] hover:no-underline">
+                    <AccordionItem key={item.question} value={`faq-${index}`} className="border-[#eaecf5] dark:border-[#243146]">
+                      <AccordionTrigger className="common-faq-list__question text-left text-xl font-semibold text-[#242f47] hover:no-underline dark:text-white">
                         {item.question}
                       </AccordionTrigger>
-                      <AccordionContent className="common-faq-list__answer ml-0 pt-0 text-[16px] leading-8 text-[#667085]">
+                      <AccordionContent className="common-faq-list__answer ml-0 pt-0 text-[16px] leading-8 text-[#667085] dark:text-slate-300">
                         {item.answer}
                       </AccordionContent>
                     </AccordionItem>
@@ -511,7 +512,7 @@ export default async function FeatureDetailPage({ params }: Props) {
 
             {relatedFeatures.length > 0 && (
               <section>
-                <h2 className="text-center text-5xl font-semibold tracking-[-0.05em] text-[#111827]">
+                <h2 className="text-center text-5xl font-semibold tracking-[-0.05em] text-[#111827] dark:text-white">
                   Learn more
                 </h2>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -521,31 +522,31 @@ export default async function FeatureDetailPage({ params }: Props) {
                       href={`/features/${relatedFeature.slug}`}
                       className="group block"
                     >
-                      <article className="overflow-hidden rounded-[28px] border border-[#eaecf5] bg-white shadow-[0_18px_50px_rgba(42,59,81,0.08)] transition-all duration-200 hover:-translate-y-1">
+                      <article className="overflow-hidden rounded-[28px] border border-[#eaecf5] bg-white shadow-[0_18px_50px_rgba(42,59,81,0.08)] transition-all duration-200 hover:-translate-y-1 dark:border-[#243146] dark:bg-[#111827] dark:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
                         <SvgPlaceholder
                           title={`${relatedFeature.title} preview`}
                           alt={`${relatedFeature.title} related content image placeholder`}
                           className="rounded-none border-0 border-b min-h-[240px]"
                         />
                         <div className="p-8">
-                          <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#242f47]">
+                          <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#242f47] dark:text-white">
                             {relatedFeature.title}
                           </h3>
-                          <p className="mt-4 text-[16px] leading-8 text-[#667085]">
+                          <p className="mt-4 text-[16px] leading-8 text-[#667085] dark:text-slate-300">
                             {relatedFeature.shortDescription}
                           </p>
-                          <div className="mt-6 text-sm text-[#7d89b0]">
+                          <div className="mt-6 text-sm text-[#7d89b0] dark:text-slate-400">
                             Jan 20, 2026 · 5 min read
                           </div>
                           <div className="mt-5 flex flex-wrap gap-2">
-                            <span className="rounded-xl border border-[#dcdfea] bg-[#fcfcfd] px-3 py-1.5 text-sm text-[#667085]">
+                            <span className="rounded-xl border border-[#dcdfea] bg-[#fcfcfd] px-3 py-1.5 text-sm text-[#667085] dark:border-[#243146] dark:bg-[#0f1728] dark:text-slate-300">
                               {feature.categoryName}
                             </span>
-                            <span className="rounded-xl border border-[#dcdfea] bg-[#fcfcfd] px-3 py-1.5 text-sm text-[#667085]">
+                            <span className="rounded-xl border border-[#dcdfea] bg-[#fcfcfd] px-3 py-1.5 text-sm text-[#667085] dark:border-[#243146] dark:bg-[#0f1728] dark:text-slate-300">
                               VerlyAI
                             </span>
                           </div>
-                          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#242f47] group-hover:text-[#1972f5]">
+                          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#242f47] group-hover:text-[#1972f5] dark:text-slate-100 dark:group-hover:text-blue-300">
                             Open feature
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                           </div>
