@@ -1,132 +1,216 @@
-"use client";
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { Linkedin, Mail, Calendar } from "lucide-react";
 
-const footerLinks = {
-  Product: [
-    { label: "Testimonials", href: "#", badge: "4.8" },
-    { label: "Comparisons", href: "#" },
-    { label: "Alternatives", href: "#" },
-    { label: "Integrations", href: "#" },
-    { label: "Developer Hub", href: "#" },
-    { label: "Ask a demo", href: "/demo" },
-  ],
-  Features: [
-    { label: "Chat Widget", href: "#" },
-    { label: "AI Agents", href: "#" },
-    { label: "AI Chatbot", href: "#" },
-    { label: "Shared Inbox", href: "#" },
-    { label: "CRM", href: "#" },
-  ],
-  Company: [
-    { label: "About us", href: "/about" },
-    { label: "Contact us", href: "/contact" },
-    { label: "Careers", href: "#" },
-    { label: "Brand Assets", href: "#" },
-    { label: "Partnerships", href: "#" },
-  ],
-  Resources: [
-    { label: "Read our blog", href: "/blogs" },
-    { label: "Help Center", href: "#" },
-    { label: "Security", href: "#" },
-    { label: "Terms of use", href: "/terms" },
-    { label: "Privacy policy", href: "/privacy" },
-  ],
-};
+import { Button } from "@/components/ui/button";
+import { openCalendlyPopup } from "@/lib/calendly";
 
-const socials = [
-  { label: "Facebook", icon: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" },
-  { label: "X", icon: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
-  { label: "YouTube", icon: "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" },
-  { label: "Instagram", icon: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" },
-  { label: "LinkedIn", icon: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" },
-  { label: "GitHub", icon: "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" },
+const exploreLinks = [
+  { name: "Features", href: "/features" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Solutions", href: "/solutions" },
 ];
 
-export default function CrispFooter() {
+const companyLinks = [
+  { name: "About", href: "/about" },
+  { name: "Blog", href: "/blogs" },
+  { name: "Help", href: "/help" },
+  { name: "Documentation", href: "/docs" },
+];
+
+const legalLinks = [
+  { name: "Privacy Policy", href: "/privacy" },
+  { name: "Terms of Service", href: "/terms" },
+  { name: "Data Deletion Policy", href: "/deletion" },
+];
+
+const socialLinks = [
+  { name: "X", icon: XIcon, href: "https://x.com/VerlyAI" },
+  { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/verlyai/" },
+];
+
+function XIcon({ className }: { className?: string }) {
   return (
-    <footer className="bg-[#EEF2FF] px-6 pt-12 pb-32">
-      <div className="max-w-[1240px] mx-auto">
-        <div className="bg-[#F8FAFC] rounded-[40px] border border-gray-200/60 p-10 md:p-14 shadow-[0_10px_40px_rgba(0,0,0,0.02)]">
-          
-          <div className="grid md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-x-8 gap-y-12">
-            
-            {/* Brand Column */}
-            <div className="pr-4">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-10 h-10 bg-[#3E80F1] rounded-[12px] flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 32 32">
-                    <path d="M26.2 3.8C24.4 2.1 21.8 1 18.9 1c-4.6 0-8.8 2.5-11 6.3C5.5 8.7 3 11.8 3 15.6c0 1.9.6 3.8 1.6 5.3L2 28l7.6-2c1.7 1.1 3.7 1.7 5.9 1.7 2.1 0 4.1-.6 5.8-1.5 2.5-1.5 4.5-3.8 5.6-6.6a11.97 11.97 0 0 0 3.1-8 c0-3.1-1.3-5.9-3.8-7.8z"/>
-                  </svg>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+  );
+}
+
+export default function Footer() {
+  return (
+    <footer className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+      <div
+        className="relative"
+        style={{
+          background:
+            "linear-gradient(to bottom, #ffffff 0%, #f7fbff 12.5%, #edf5ff 25%, #d6eaff 37.5%, #b3d7ff 50%, #80bfff 62.5%, #4d94ff 75%, #0056b3 87.5%, #000000 100%)",
+        }}
+      >
+        <div className="relative pb-14 pt-24 md:pb-16 md:pt-24">
+          <motion.div
+            className="mx-auto max-w-4xl px-4 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="mx-auto max-w-[780px] text-4xl font-bold leading-[0.98] tracking-[-0.04em] text-foreground md:text-5xl lg:text-6xl">
+              If you&apos;ve come this far,
+              <span className="block">let&apos;s talk.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-[440px] text-lg font-medium leading-8 text-foreground/80 md:text-xl">
+              Schedule a quick call and see how Verly fits your support workflow.
+            </p>
+            <motion.div
+              className="mt-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Button
+                asChild
+                size="lg"
+                className="group h-12 gap-2 bg-foreground px-6 text-base text-background transition-all duration-300 hover:bg-foreground/90 hover:shadow-md"
+              >
+                <button
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    void openCalendlyPopup();
+                  }}
+                >
+                  <Calendar className="h-5 w-5" />
+                  Book a demo
+                </button>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="relative border-t border-white/10 bg-[#010309]">
+        <div className="mx-auto w-[95%] max-w-[1200px] px-4 py-12 md:w-[85%] lg:w-[80%]">
+          <motion.div
+            className="mb-9 grid grid-cols-1 gap-10 md:grid-cols-[1.35fr_0.72fr_0.72fr_0.95fr] md:gap-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div>
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/verly_logo.png"
+                  alt="VerlyAI Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
+                <div>
+                  <p className="text-[15px] font-semibold text-white">VerlyAI</p>
+                  <p className="text-[13px] text-white/40">AI customer support platform</p>
                 </div>
               </div>
-              
-              <p className="text-[17px] font-extrabold text-[#111827] mb-1 tracking-tight">
-                The AI Customer Support platform.
-              </p>
-              <p className="text-[15px] italic text-[#6B7280] font-medium mb-12">
-                Built for every company.
+
+              <p className="mt-8 max-w-[440px] text-[15px] leading-8 text-white/58 md:text-[16px]">
+                Verly helps support teams automate repetitive support, keep human context in the
+                loop, and manage voice, WhatsApp, and web chat from one place.
               </p>
 
-              <div className="flex items-center gap-3 mb-6 flex-wrap">
-                <span className="text-[14px] font-semibold text-[#6B7280] mr-2">Socials</span>
-                {socials.map((s) => (
-                  <a
-                    key={s.label}
-                    href="#"
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#3E80F1] hover:text-white transition-all duration-300"
-                    aria-label={s.label}
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d={s.icon} />
-                    </svg>
-                  </a>
-                ))}
-              </div>
-              
-               <div className="flex items-center gap-3">
-                <span className="text-[14px] font-semibold text-[#6B7280] mr-2">App</span>
-                <a href="#" className="text-[14px] font-bold text-[#3E80F1] hover:text-[#2B6CE0] flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                  Download for macOS
-                </a>
-              </div>
+              <a
+                href="mailto:team@verlyai.xyz"
+                className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-[15px] text-white/68 transition-colors hover:text-white"
+              >
+                <Mail className="h-5 w-5" />
+                team@verlyai.xyz
+              </a>
             </div>
 
-            {/* Link Columns */}
-            {Object.entries(footerLinks).map(([title, links]) => (
-              <div key={title}>
-                <h4 className="font-extrabold text-[#111827] text-[16px] mb-6">{title}</h4>
-                <ul className="space-y-4">
-                  {links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-[15px] font-semibold text-[#6B7280] hover:text-[#111827] transition-colors flex items-center gap-2"
-                      >
-                        {link.label}
-                        {link.badge && (
-                           <span className="bg-[#F59E0B] text-white text-[11px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                             {link.badge}
-                             <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                           </span>
-                        )}
-                      </Link>
-                      {link.label === "Comparisons" && (
-                         <div className="h-4"></div>
-                      )}
-                      {link.label === "Developer Hub" && (
-                         <div className="h-4"></div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+            <FooterColumn title="Explore" links={exploreLinks} />
+            <FooterColumn title="Company" links={companyLinks} />
 
+            <div>
+              <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white">
+                Legal & social
+              </h3>
+              <ul className="space-y-4">
+                {legalLinks.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="text-sm leading-6 text-white/50 transition-colors duration-200 hover:text-white"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 flex items-center gap-3">
+                {socialLinks.map((social) => (
+                  <Link
+                    key={social.name}
+                    href={social.href}
+                    className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:bg-white/20 hover:text-white"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                  >
+                    <social.icon className="h-5 w-5" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="border-t border-white/10 pt-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm leading-6 text-white/50">
+                © {new Date().getFullYear()} VerlyAI. All rights reserved.
+              </p>
+              <p className="max-w-[560px] text-sm leading-6 text-white/35 md:text-right">
+                Built for support teams managing voice, WhatsApp, and web chat in one place.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: Array<{ name: string; href: string }>;
+}) {
+  return (
+    <div>
+      <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white">{title}</h3>
+      <ul className="space-y-4">
+        {links.map((link) => (
+          <li key={link.name}>
+            <Link
+              href={link.href}
+              className="text-sm leading-6 text-white/50 transition-colors duration-200 hover:text-white"
+            >
+              {link.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

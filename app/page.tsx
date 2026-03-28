@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 import Navbar from "@/components/landing/navbar";
 import CrispHero from "@/components/crisp-landing/crisp-hero";
+import CrispSupportLifecycle from "@/components/crisp-landing/crisp-support-lifecycle";
 import CrispFeatures from "@/components/crisp-landing/crisp-features";
-import CrispAIShowcase from "@/components/crisp-landing/crisp-ai-showcase";
-import CrispStats from "@/components/crisp-landing/crisp-stats";
-import CrispCTA from "@/components/crisp-landing/crisp-cta";
-import CrispFooter from "@/components/crisp-landing/crisp-footer";
 import ClientAuthRedirect from "@/components/landing/ClientAuthRedirect";
 import Certificate from "@/components/crisp-landing/certificate";
 import { siteConfig } from "@/lib/metadata";
+import CrispFullscreenImage from "@/components/crisp-landing/crisp-fullscreen-image";
+import Footer from "@/components/crisp-landing/crisp-footer";
+import CrispPlatformModules from "@/components/crisp-landing/crisp-platform-modules";
 
 export const metadata: Metadata = {
   title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
@@ -37,12 +37,12 @@ export default function Home() {
 
       <Navbar />
       <CrispHero />
+      <CrispSupportLifecycle />
+      <CrispFullscreenImage />
       <CrispFeatures />
-      <CrispAIShowcase />
-      <CrispStats />
+      <CrispPlatformModules />
       <Certificate />
-      <CrispCTA />
-      <CrispFooter />
+      <Footer />
     </main>
   );
 }
