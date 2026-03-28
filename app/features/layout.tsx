@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "../landing-page.css";
+import "@/app/landing-page.css";
 
 export default function FeaturesLayout({
   children,

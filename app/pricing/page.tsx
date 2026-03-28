@@ -40,8 +40,8 @@ export default function PricingPage() {
         <Navbar />
 
         <div className={`${CONTENT_WIDTH} relative`}>
+        <PricingSection />
           <ROICalculator />
-          <PricingSection />
           <PricingDecisionBanner />
           <Footer />
         </div>
