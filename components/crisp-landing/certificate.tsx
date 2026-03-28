@@ -53,14 +53,12 @@ const Certificate = () => {
                     {/* Right: Graph Visual */}
                     <div className="flex items-center justify-center">
                         <img
-                            src="https://hiverhq.com/wp-content/uploads/2025/10/graph@2x.png"
-                            alt="VerlyAI performance graph"
-                            width={1288}
-                            height={1305}
+                            src="/love_wall.png"
+                            alt="Customer love wall with reviews, ratings, and trust signals"
+                            width={1024}
+                            height={1024}
                             loading="lazy"
                             className="w-full max-w-[520px] h-auto rounded-3xl"
-                            srcSet="https://hiverhq.com/wp-content/uploads/2025/10/graph@2x.png 1288w, https://hiverhq.com/wp-content/uploads/2025/10/graph@2x-1011x1024.png 1011w, https://hiverhq.com/wp-content/uploads/2025/10/graph@2x-768x778.png 768w, https://hiverhq.com/wp-content/uploads/2025/10/graph@2x-296x300.png 296w"
-                            sizes="(max-width: 1288px) 100vw, 1288px"
                         />
                     </div>
 
