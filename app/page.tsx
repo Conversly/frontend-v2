@@ -8,6 +8,7 @@ import CrispStats from "@/components/crisp-landing/crisp-stats";
 import CrispCTA from "@/components/crisp-landing/crisp-cta";
 import CrispFooter from "@/components/crisp-landing/crisp-footer";
 import ClientAuthRedirect from "@/components/landing/ClientAuthRedirect";
+import Certificate from "@/components/crisp-landing/certificate";
 import { siteConfig } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default function Home() {
       <CrispFeatures />
       <CrispAIShowcase />
       <CrispStats />
+      <Certificate />
       <CrispCTA />
       <CrispFooter />
     </main>
