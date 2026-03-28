@@ -134,6 +134,10 @@ export default function Navbar() {
               About
             </Link>
 
+            <Link href="/features" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+              Features
+            </Link>
+
             <Link href="/pricing" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </Link>

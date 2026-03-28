@@ -42,7 +42,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <div className="w-full py-24 lg:py-32">
+    <div id="features" className="w-full py-24 lg:py-32">
       <div className="w-full">
         <div className="flex flex-col gap-10">
           <div className="flex gap-4 flex-col items-start">
