@@ -1,16 +1,48 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Slider } from '@/components/ui/slider';
 import {
-  DollarSign, Clock, Users, Zap, ArrowRight, Calendar,
+  ArrowRight,
+  Calendar,
+  Clock,
+  DollarSign,
+  Users,
+  Zap,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { openCalendlyPopup } from '@/lib/calendly';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
+
+const heroBenefits = [
+  {
+    icon: DollarSign,
+    label: 'Lower support costs',
+    description: 'Model savings in under a minute',
+    tone: 'green',
+  },
+  {
+    icon: Zap,
+    label: 'Faster resolutions',
+    description: 'Estimate automation impact instantly',
+    tone: 'blue',
+  },
+  {
+    icon: Users,
+    label: 'Lean team planning',
+    description: 'See capacity you can reassign',
+    tone: 'purple',
+  },
+] as const;
 
 function fmt(n: number): string {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -33,23 +65,27 @@ interface InputFieldProps {
 
 function InputField({ label, value, onChange, hint, prefix, suffix }: InputFieldProps) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-semibold text-foreground">{label}</label>
+    <div className="space-y-2.5">
+      <label className="text-sm font-semibold text-[#0f172a]">{label}</label>
       <div className="relative">
         {prefix && (
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">{prefix}</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-[#64748b]">
+            {prefix}
+          </span>
         )}
         <input
           type="number"
           value={value}
           onChange={(e) => onChange(Number(e.target.value) || 0)}
-          className={`w-full rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3.5 text-foreground text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-12' : ''}`}
+          className={`w-full rounded-2xl border border-[#dbe5f1] bg-white/95 px-4 py-3.5 text-sm font-medium text-[#0f172a] shadow-[0_10px_30px_rgba(15,23,42,0.04)] outline-none transition-all focus:border-[#1976d2] focus:ring-4 focus:ring-[#bfdbfe] ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-12' : ''}`}
         />
         {suffix && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">{suffix}</span>
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#64748b]">
+            {suffix}
+          </span>
         )}
       </div>
-      <p className="text-xs text-muted-foreground">{hint}</p>
+      <p className="text-xs text-[#64748b]">{hint}</p>
     </div>
   );
 }
@@ -69,14 +105,14 @@ function StatCard({ label, value, subtext, icon, delay = 0 }: StatCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl p-5 flex flex-col gap-2 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+      className="flex flex-col gap-2 rounded-[1.5rem] border border-white/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[#bfdbfe]"
     >
-      <div className="flex items-center gap-2 text-muted-foreground">
+      <div className="flex items-center gap-2 text-[#64748b]">
         {icon}
-        <span className="text-xs font-medium uppercase tracking-wide">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-[0.18em]">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
-      <p className="text-xs text-muted-foreground">{subtext}</p>
+      <p className="text-2xl font-bold tracking-tight text-[#0f172a]">{value}</p>
+      <p className="text-xs text-[#64748b]">{subtext}</p>
     </motion.div>
   );
 }
@@ -105,7 +141,8 @@ export default function ROICalculator() {
     const timeReductionPercent = totalHoursPerYear > 0
       ? (hoursSavedPerYear / totalHoursPerYear) * 100
       : 0;
-    const newResolutionTime = resolutionTime * (1 - automationRate / 100) + (resolutionTime * 0.15 * (automationRate / 100));
+    const newResolutionTime = resolutionTime * (1 - automationRate / 100)
+      + (resolutionTime * 0.15 * (automationRate / 100));
     const resolutionImprovement = resolutionTime > 0
       ? ((resolutionTime - newResolutionTime) / resolutionTime) * 100
       : 0;
@@ -113,7 +150,7 @@ export default function ROICalculator() {
 
     const yearlyData = [];
     let cumulativeSavings = 0;
-    for (let y = 1; y <= 5; y++) {
+    for (let y = 1; y <= 5; y += 1) {
       const factor = Math.pow(1 + growthRate / 100, y - 1);
       const yearlySavings = year1Savings * factor;
       cumulativeSavings += yearlySavings;
@@ -144,70 +181,93 @@ export default function ROICalculator() {
   }, [conversations, avgSalary, numAgents, resolutionTime, growthRate, automationRate]);
 
   return (
-    <div className="w-full">
-      {/* Hero */}
-      <section className="relative pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/8 via-background to-transparent" />
-          <motion.div
-            animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[120px]"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-            className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-accent/15 rounded-full blur-[120px]"
-          />
-        </div>
+    <div className="w-full text-[#111827]">
+      <section className="home-hero relative overflow-hidden pb-10 pt-32 md:pt-40">
+        <div className="common-hero">
+          <div className="common-hero__wrapper px-0">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mb-6 inline-block"
+            >
+              <span className="common-pill-link">
+                <span className="common-pill-link__badge font-sans-bold border-blue-200">Pricing</span>
+                <span className="common-pill-link__label">
+                  ROI calculator for AI-powered support teams
+                </span>
+              </span>
+            </motion.div>
 
-        <div className="relative max-w-4xl mx-auto text-center px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-block mb-6"
-          >
-            <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide uppercase border border-primary/20">
-              ROI Calculator
-            </span>
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-4"
-          >
-            See How Much You Can{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-chart-2 to-accent">
-              Save with Verly AI
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-          >
-            Companies using AI automation save an average of $500K+ annually while improving customer satisfaction by 40%.{' '}
-            <span className="text-foreground font-medium">See your potential in under 60 seconds.</span>
-          </motion.p>
+            <div className="page-main-title mb-0">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="page-main-title__title font-title-bold"
+              >
+                See how much you can <span className="emphasis">save with Verly AI</span>
+              </motion.h1>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-3xl text-lg leading-relaxed text-[#5f6f8d] md:text-xl"
+            >
+              Plug in your support metrics and model how automation changes payroll
+              efficiency, resolution speed, and long-term operating leverage.
+            </motion.p>
+
+            <div className="page-main-title__benefits">
+              <div className="common-benefit-pills">
+                {heroBenefits.map((benefit, index) => {
+                  const Icon = benefit.icon;
+                  return (
+                    <motion.div
+                      key={benefit.label}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 + index * 0.08 }}
+                      className={`common-benefit-pill common-benefit-pill--${benefit.tone}`}
+                    >
+                      <div className="common-benefit-pill__icon">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="common-benefit-pill__text">
+                        <span className="common-benefit-pill__label font-sans-bold">
+                          {benefit.label}
+                        </span>
+                        <span className="common-benefit-pill__description">
+                          {benefit.description}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Calculator */}
-      <section className="relative pb-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative px-4 pb-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-xl p-6 md:p-10 shadow-xl"
+            className="rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(247,251,255,0.98)_100%)] p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] md:p-10"
           >
-            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-              {/* Left: Inputs */}
+            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground mb-1">Your Current Operations</h2>
-                  <p className="text-sm text-muted-foreground">Enter your metrics below to unlock your savings potential</p>
+                  <h2 className="font-title-bold text-2xl text-[#0f172a] md:text-3xl">
+                    Your current support operation
+                  </h2>
+                  <p className="mt-2 text-sm text-[#5f6f8d]">
+                    Enter your current metrics to estimate the revenue and time impact
+                    of AI automation.
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -244,98 +304,116 @@ export default function ROICalculator() {
                     suffix="%"
                   />
 
-                  {/* Automation Rate Slider */}
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-4">
+                  <div className="space-y-4 rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] p-5">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-foreground">Target Automation Rate:</span>
-                      <span className="text-lg font-bold text-primary">{automationRate}%</span>
+                      <span className="text-sm font-semibold text-[#0f172a]">
+                        Target automation rate
+                      </span>
+                      <span className="rounded-full bg-white px-3 py-1 text-lg font-bold text-[#1976d2] shadow-sm">
+                        {automationRate}%
+                      </span>
                     </div>
                     <Slider
                       value={[automationRate]}
-                      onValueChange={(v) => setAutomationRate(v[0])}
+                      onValueChange={(value) => setAutomationRate(value[0])}
                       min={10}
                       max={95}
                       step={5}
                     />
-                    <p className="text-xs text-muted-foreground">% of conversations you want AI agents to handle on their own</p>
+                    <p className="text-xs text-[#5f6f8d]">
+                      % of conversations you want AI agents to fully handle on
+                      their own.
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Right: Results */}
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground mb-1">Your Savings Potential</h2>
-                  <p className="text-sm text-muted-foreground">Based on industry benchmarks and your inputs</p>
+                  <h2 className="font-title-bold text-2xl text-[#0f172a] md:text-3xl">
+                    Your projected impact
+                  </h2>
+                  <p className="mt-2 text-sm text-[#5f6f8d]">
+                    Modeled from your inputs and benchmarked support automation
+                    assumptions.
+                  </p>
                 </div>
 
-                {/* Total 5-Year Savings highlight */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="rounded-2xl bg-gradient-to-br from-primary via-chart-2 to-accent p-6 text-primary-foreground text-center shadow-lg shadow-primary/25"
+                  className="rounded-[1.75rem] border border-[#dbeafe] bg-[linear-gradient(135deg,#1976d2_0%,#3b82f6_52%,#60a5fa_100%)] p-6 text-center text-white shadow-[0_24px_60px_rgba(25,118,210,0.35)]"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-2 text-primary-foreground/80">Total 5-Year Savings</p>
-                  <p className="text-4xl md:text-5xl font-bold tracking-tight mb-1">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
+                    Total 5-year savings
+                  </p>
+                  <p className="mb-1 text-4xl font-bold tracking-tight md:text-5xl">
                     {fmt(results.total5Year)}
                   </p>
-                  <p className="text-sm text-primary-foreground/80">
-                    That&apos;s <span className="font-semibold text-primary-foreground">{fmt(results.monthlyAvg)}</span> saved every month!
+                  <p className="text-sm text-white/80">
+                    That&apos;s <span className="font-semibold text-white">{fmt(results.monthlyAvg)}</span>{' '}
+                    in average monthly savings over five years.
                   </p>
                 </motion.div>
 
-                {/* Stat cards grid */}
                 <div className="grid grid-cols-2 gap-3">
                   <StatCard
                     label="Year 1 Savings"
                     value={fmt(results.year1Savings)}
                     subtext={`${results.payrollPercent.toFixed(0)}% of payroll`}
-                    icon={<DollarSign className="w-4 h-4" />}
+                    icon={<DollarSign className="h-4 w-4" />}
                     delay={0.1}
                   />
                   <StatCard
                     label="Hours Saved/Year"
                     value={fmtNum(Math.round(results.hoursSavedPerYear))}
                     subtext={`${results.timeReductionPercent.toFixed(0)}% time reduction`}
-                    icon={<Clock className="w-4 h-4" />}
+                    icon={<Clock className="h-4 w-4" />}
                     delay={0.15}
                   />
                   <StatCard
                     label="Automated Tickets"
                     value={fmtNum(Math.round(results.automatedConversations))}
                     subtext={`${automationRate}% automation rate`}
-                    icon={<Zap className="w-4 h-4" />}
+                    icon={<Zap className="h-4 w-4" />}
                     delay={0.2}
                   />
                   <StatCard
                     label="Agents Reassigned"
                     value={fmtNum(results.agentsFreed)}
                     subtext="To higher-value work"
-                    icon={<Users className="w-4 h-4" />}
+                    icon={<Users className="h-4 w-4" />}
                     delay={0.25}
                   />
                 </div>
 
-                {/* Efficiency Improvements */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">Efficiency Improvements</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Resolution Time Improvement</span>
-                      <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg">
+                  <h3 className="text-lg font-bold text-[#0f172a]">
+                    Efficiency improvements
+                  </h3>
+                  <div className="space-y-3 rounded-[1.5rem] border border-[#e2e8f0] bg-[#f8fbff] p-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-sm text-[#5f6f8d]">
+                        Resolution time improvement
+                      </span>
+                      <span className="rounded-full bg-[#dbeafe] px-3 py-1 text-sm font-bold text-[#1976d2]">
                         {results.resolutionImprovement.toFixed(1)}%
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">New Average Resolution Time</span>
-                      <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-sm text-[#5f6f8d]">
+                        New average resolution time
+                      </span>
+                      <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#0f172a] shadow-sm">
                         {results.newResolutionTime.toFixed(1)} minutes
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Hours Saved Monthly</span>
-                      <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-sm text-[#5f6f8d]">
+                        Hours saved monthly
+                      </span>
+                      <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#0f172a] shadow-sm">
                         {fmtNum(Math.round(results.hoursSavedMonthly))} hours
                       </span>
                     </div>
@@ -344,48 +422,51 @@ export default function ROICalculator() {
               </div>
             </div>
 
-            {/* Charts Section */}
-            <div className="mt-12 grid md:grid-cols-2 gap-8">
-              {/* 5-Year Compound Savings Chart */}
+            <div className="mt-12 grid gap-8 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">5-Year Compound Savings</h3>
-                  <p className="text-xs text-muted-foreground">Your savings grow year over year with business growth</p>
+                  <h3 className="text-lg font-bold text-[#0f172a]">
+                    5-year compound savings
+                  </h3>
+                  <p className="text-xs text-[#5f6f8d]">
+                    Your modeled savings as support volume grows over time.
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-4 h-[280px]">
+                <div className="h-[280px] rounded-[1.5rem] border border-[#e2e8f0] bg-white/90 p-4 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={results.yearlyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.9} />
-                          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0.3} />
+                          <stop offset="0%" stopColor="#1976d2" stopOpacity={0.95} />
+                          <stop offset="100%" stopColor="#93c5fd" stopOpacity={0.45} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.4} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#dbe5f1" opacity={0.8} />
                       <XAxis
                         dataKey="year"
-                        tick={{ fontSize: 12, fill: 'var(--color-muted-foreground)' }}
-                        axisLine={{ stroke: 'var(--color-border)' }}
+                        tick={{ fontSize: 12, fill: '#64748b' }}
+                        axisLine={{ stroke: '#dbe5f1' }}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
+                        tick={{ fontSize: 11, fill: '#64748b' }}
                         axisLine={false}
                         tickLine={false}
-                        tickFormatter={(v: number) => fmt(v)}
+                        tickFormatter={(value: number) => fmt(value)}
                       />
                       <Tooltip
                         formatter={(value) => [fmt(Number(value ?? 0)), 'Savings']}
                         contentStyle={{
-                          backgroundColor: 'var(--color-card)',
-                          border: '1px solid var(--color-border)',
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #dbe5f1',
                           borderRadius: '12px',
                           fontSize: '12px',
+                          boxShadow: '0 16px 40px rgba(15, 23, 42, 0.08)',
                         }}
                       />
                       <Bar dataKey="savings" radius={[8, 8, 0, 0]} maxBarSize={50}>
-                        {results.yearlyData.map((_, i) => (
-                          <Cell key={i} fill="url(#savingsGradient)" />
+                        {results.yearlyData.map((_, index) => (
+                          <Cell key={index} fill="url(#savingsGradient)" />
                         ))}
                       </Bar>
                     </BarChart>
@@ -393,36 +474,47 @@ export default function ROICalculator() {
                 </div>
               </div>
 
-              {/* Year-by-Year Breakdown */}
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">Year-by-Year Breakdown</h3>
-                  <p className="text-xs text-muted-foreground">Cumulative savings over 5 years</p>
+                  <h3 className="text-lg font-bold text-[#0f172a]">
+                    Year-by-year breakdown
+                  </h3>
+                  <p className="text-xs text-[#5f6f8d]">
+                    Track annual and cumulative savings side by side.
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-4 space-y-3">
-                  {results.yearlyData.map((d, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <span className="text-xs font-medium text-muted-foreground w-12 shrink-0">{d.year}</span>
-                      <div className="flex-1 h-8 rounded-lg bg-muted/40 overflow-hidden relative">
+                <div className="space-y-3 rounded-[1.5rem] border border-[#e2e8f0] bg-white/90 p-4 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
+                  {results.yearlyData.map((data, index) => (
+                    <div key={data.year} className="flex items-center gap-3">
+                      <span className="w-12 shrink-0 text-xs font-medium text-[#64748b]">
+                        {data.year}
+                      </span>
+                      <div className="relative h-8 flex-1 overflow-hidden rounded-lg bg-[#eff6ff]">
                         <motion.div
                           initial={{ width: 0 }}
-                          whileInView={{ width: `${(d.cumulative / results.yearlyData[4].cumulative) * 100}%` }}
+                          whileInView={{ width: `${(data.cumulative / results.yearlyData[4].cumulative) * 100}%` }}
                           viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: i * 0.1 }}
-                          className="h-full rounded-lg bg-gradient-to-r from-primary/80 to-primary flex items-center justify-end px-3"
+                          transition={{ duration: 0.8, delay: index * 0.1 }}
+                          className="flex h-full items-center justify-end rounded-lg bg-gradient-to-r from-[#60a5fa] to-[#1976d2] px-3"
                         >
-                          <span className="text-[10px] font-bold text-primary-foreground whitespace-nowrap">{fmt(d.cumulative)}</span>
+                          <span className="whitespace-nowrap text-[10px] font-bold text-white">
+                            {fmt(data.cumulative)}
+                          </span>
                         </motion.div>
                       </div>
-                      <div className="text-right w-20 shrink-0">
-                        <p className="text-xs font-semibold text-foreground">{fmt(d.savings)}</p>
-                        <p className="text-[10px] text-muted-foreground">per year</p>
+                      <div className="w-20 shrink-0 text-right">
+                        <p className="text-xs font-semibold text-[#0f172a]">
+                          {fmt(data.savings)}
+                        </p>
+                        <p className="text-[10px] text-[#64748b]">per year</p>
                       </div>
                     </div>
                   ))}
-                  <div className="pt-3 mt-3 border-t border-border/40 flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">Total 5-Year Savings</span>
-                    <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                  <div className="mt-3 flex items-center justify-between border-t border-[#e2e8f0] pt-3">
+                    <span className="text-sm font-medium text-[#5f6f8d]">
+                      Total 5-year savings
+                    </span>
+                    <span className="bg-gradient-to-r from-[#1976d2] to-[#60a5fa] bg-clip-text text-lg font-bold text-transparent">
                       {fmt(results.total5Year)}
                     </span>
                   </div>
@@ -430,26 +522,25 @@ export default function ROICalculator() {
               </div>
             </div>
 
-            {/* CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mt-12 text-center space-y-4"
+              className="mt-12 space-y-4 text-center"
             >
-              <Button
-                size="lg"
-                className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary via-chart-2 to-primary bg-[length:200%_100%] animate-[shimmer_2.5s_linear_infinite] px-8 py-6 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-primary/40 hover:-translate-y-0.5 hover:scale-[1.02]"
+              <button
+                type="button"
+                className="common-button font-sans-bold text-base shadow-[0_16px_40px_rgba(25,118,210,0.3)]"
                 onClick={() => void openCalendlyPopup()}
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Book a Custom Demo
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <Calendar className="h-5 w-5" />
+                Book a Custom Demo
+                <span className="common-button__icon">
+                  <ArrowRight className="h-4 w-4" />
                 </span>
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                Get a personalized savings report for your business
+              </button>
+              <p className="text-sm text-[#5f6f8d]">
+                Get a personalized savings report tailored to your support workload.
               </p>
             </motion.div>
           </motion.div>
