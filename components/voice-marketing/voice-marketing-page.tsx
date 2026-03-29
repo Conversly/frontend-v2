@@ -111,20 +111,41 @@ function HeroSection() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden border-b border-white/8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(104,145,255,0.14),transparent_24%),linear-gradient(180deg,#060914_0%,#050816_100%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.065)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.065)_1px,transparent_1px)] [background-size:78px_78px]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(170,198,255,0.1),transparent)]" />
-      <div className="pointer-events-none absolute inset-x-[10%] bottom-[-18%] h-[420px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.28)_0%,rgba(138,240,190,0.14)_28%,rgba(5,8,22,0.02)_60%,transparent_74%)] blur-3xl" />
-      <div className="pointer-events-none absolute inset-x-[3%] bottom-[-28%] h-[340px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.14)_0%,rgba(104,145,255,0.08)_30%,transparent_70%)] blur-2xl" />
+    <section className="relative overflow-hidden border-b border-white/[0.06]">
+      {/* Base dark background */}
+      <div className="pointer-events-none absolute inset-0 bg-[#040710]" />
+
+      {/* Nester-style: Fine grid overlay */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.28] [background-image:linear-gradient(rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:60px_60px]" />
+
+      {/* Nester-style: Giant bottom-horizon radial glow — the hero centerpiece */}
+      <div className="pointer-events-none absolute -bottom-[30%] left-1/2 h-[700px] w-[120%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(138,240,190,0.22)_0%,rgba(104,145,255,0.28)_18%,rgba(80,110,240,0.14)_38%,rgba(5,8,22,0.0)_66%)] blur-[72px]" />
+
+      {/* Secondary outer glow ring for depth */}
+      <div className="pointer-events-none absolute -bottom-[20%] left-1/2 h-[500px] w-[90%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(141,220,255,0.10)_0%,rgba(104,145,255,0.06)_40%,transparent_70%)] blur-[48px]" />
+
+      {/* Soft top vignette */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[linear-gradient(180deg,rgba(104,145,255,0.06),transparent)]" />
+
+      {/* Left floating orb */}
+      <div className="pointer-events-none absolute left-[-8%] top-[30%] h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(138,240,190,0.08)_0%,transparent_70%)] blur-[80px]" />
+      {/* Right floating orb */}
+      <div className="pointer-events-none absolute right-[-6%] top-[20%] h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.10)_0%,transparent_70%)] blur-[60px]" />
 
       <div className="relative mx-auto flex w-full max-w-[1380px] flex-col items-center px-5 pb-14 pt-34 text-center sm:px-8 lg:px-10 lg:pt-42">
+        {/* Animated pill badge */}
         <motion.div
           initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-[#92f2bd]"
+          className="relative inline-flex items-center gap-2 rounded-full border border-[#8af0be]/25 bg-[#8af0be]/[0.06] px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-[#92f2bd] backdrop-blur-sm"
         >
+          {/* Animated glow behind pill */}
+          <motion.span
+            animate={shouldReduceMotion ? undefined : { opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            className="pointer-events-none absolute inset-0 rounded-full bg-[#8af0be]/10 blur-[8px]"
+          />
           <AudioLines className="h-3.5 w-3.5" />
           Verly Voice Platform
         </motion.div>
@@ -136,8 +157,8 @@ function HeroSection() {
             transition={{ duration: 0.72, delay: 0.08, ease: "easeOut" }}
             className="max-w-[960px] text-[clamp(3.4rem,7.5vw,6.6rem)] font-light leading-[0.92] tracking-[-0.07em]"
           >
-            <span className="block text-[#aeb9d2]">AI voice support</span>
-            <span className="mt-1 block text-[#faf4ea] [text-shadow:0_0_16px_rgba(255,255,255,0.16),0_0_34px_rgba(141,220,255,0.12)]">
+            <span className="block text-[#8a99bb]">AI voice support</span>
+            <span className="mt-1 block bg-gradient-to-b from-[#ffffff] to-[#b8ccee] bg-clip-text text-transparent [text-shadow:none]">
               for the helpdesk era
             </span>
           </motion.h1>
@@ -146,7 +167,7 @@ function HeroSection() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.72, delay: 0.14, ease: "easeOut" }}
-            className="mt-7 max-w-[690px] text-[1.02rem] leading-8 text-[#d2dcef] sm:text-[1.14rem]"
+            className="mt-7 max-w-[690px] text-[1.02rem] leading-8 text-[#c4ceea] sm:text-[1.14rem]"
           >
             Verly gives support teams one voice system for website voice widget
             experiences, inbound calls, escalation and handoff, plus outbound
@@ -163,7 +184,7 @@ function HeroSection() {
           {["Inbound support", "Website voice widget", "Human handoff"].map((item) => (
             <span
               key={item}
-              className="rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm text-[#d8e1f1] backdrop-blur-sm"
+              className="rounded-full border border-white/[0.10] bg-white/[0.035] px-4 py-2 text-sm text-[#c8d6f0] backdrop-blur-sm"
             >
               {item}
             </span>
@@ -179,7 +200,7 @@ function HeroSection() {
           <Button
             asChild
             size="lg"
-            className="h-13 min-w-[178px] rounded-full bg-[#8af0be] px-8 text-[15px] font-semibold text-[#08111f] hover:bg-[#9bf4c8]"
+            className="relative h-13 min-w-[178px] overflow-hidden rounded-full bg-[#8af0be] px-8 text-[15px] font-semibold text-[#08111f] shadow-[0_0_32px_rgba(138,240,190,0.35)] transition-all hover:bg-[#9bf4c8] hover:shadow-[0_0_44px_rgba(138,240,190,0.5)]"
           >
             <Link href="/login">
               Start building
@@ -191,7 +212,7 @@ function HeroSection() {
             size="lg"
             variant="outline"
             onClick={() => void openCalendlyPopup()}
-            className="h-13 min-w-[178px] rounded-full border-white/12 bg-black/10 px-8 text-[15px] font-semibold text-[#faf4ea] hover:bg-white/[0.05]"
+            className="h-13 min-w-[178px] rounded-full border-white/[0.12] bg-white/[0.04] px-8 text-[15px] font-semibold text-[#faf4ea] backdrop-blur-sm hover:bg-white/[0.08]"
           >
             Book a demo
             <ChevronRight className="h-4 w-4" />
@@ -220,32 +241,46 @@ function HeroWaveStage() {
   const accentCycle = ["#f7f3e9", "#8ddcff", "#8af0be", "#f3de62", "#c28cff", "#f28a49"];
 
   return (
-    <div className="relative overflow-hidden rounded-[34px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.012))] px-4 pb-8 pt-10 shadow-[0_28px_80px_rgba(0,0,0,0.22)] sm:px-8">
-      <div className="pointer-events-none absolute inset-0 opacity-22 [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:62px_62px]" />
-      <div className="pointer-events-none absolute inset-x-[14%] bottom-[-22%] h-[320px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.34)_0%,rgba(138,240,190,0.15)_25%,rgba(5,8,22,0)_68%)] blur-3xl" />
+    <div className="relative overflow-hidden rounded-[34px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(10,16,36,0.9),rgba(4,7,16,0.98))] px-4 pb-0 pt-10 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_32px_100px_rgba(0,0,0,0.38)] sm:px-8">
+      {/* Fine inner grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:60px_60px]" />
+
+      {/* Dramatic bottom horizon glow inside the card — matching hero */}
+      <div className="pointer-events-none absolute -bottom-[10%] left-1/2 h-[380px] w-[110%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(138,240,190,0.18)_0%,rgba(104,145,255,0.22)_20%,rgba(60,80,200,0.08)_44%,transparent_68%)] blur-[56px]" />
+
+      {/* Subtle top fade into card */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(104,145,255,0.04),transparent)]" />
 
       <div className="relative mx-auto flex max-w-[980px] flex-col items-center">
+        {/* Eyebrow label */}
         <div className="mb-6 text-[11px] uppercase tracking-[0.34em] text-[#8af0be]">
           Support-first voice workflows
         </div>
 
-        <div className="relative z-10 mb-8 rounded-[999px] border border-white/14 bg-[#f1ecde] px-7 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.28)]">
-          <div className="flex items-center gap-6 sm:gap-8">
-            <span className="text-[clamp(1rem,2.1vw,1.55rem)] font-medium tracking-[0.18em] text-[#111827]">
-              TALK TO VERLY
-            </span>
-            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#111827]/12 bg-white/70 text-[#111827]">
-              <Mic className="h-4 w-4" />
-            </span>
+        {/* "Talk to Verly" pill */}
+        <div className="relative z-10 mb-8">
+          <div className="absolute -inset-[2px] rounded-[999px] bg-gradient-to-r from-[#8af0be]/30 via-[#8ddcff]/20 to-[#8af0be]/30 blur-[6px]" />
+          <div className="relative rounded-[999px] border border-white/[0.14] bg-[#f1ecde] px-7 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.32)]">
+            <div className="flex items-center gap-6 sm:gap-8">
+              <span className="text-[clamp(1rem,2.1vw,1.55rem)] font-medium tracking-[0.18em] text-[#111827]">
+                TALK TO VERLY
+              </span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#111827]/12 bg-white/70 text-[#111827] shadow-[0_0_16px_rgba(138,240,190,0.2)]">
+                <Mic className="h-4 w-4" />
+              </span>
+            </div>
           </div>
         </div>
 
-        <p className="relative z-10 mb-10 max-w-[560px] text-center text-[0.98rem] leading-7 text-[#c9d4e8] sm:text-[1.02rem]">
+        <p className="relative z-10 mb-10 max-w-[560px] text-center text-[0.98rem] leading-7 text-[#b8c6e0] sm:text-[1.02rem]">
           Natural voice experiences for inbound support, fast escalation, and
           customer conversations that stay grounded in your knowledge and actions.
         </p>
 
-        <div className="flex h-[240px] w-full items-end justify-center gap-2 overflow-hidden">
+        {/* Animated waveform bars — fade into the horizon glow */}
+        <div className="relative flex h-[240px] w-full items-end justify-center gap-2 overflow-hidden">
+          {/* Fade mask so bars dissolve into the glow */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] bg-[linear-gradient(to_top,rgba(4,7,16,0.60),transparent)]" />
           {heights.map((height, index) => (
             <motion.div
               key={`${height}-${index}`}
@@ -272,6 +307,10 @@ function HeroWaveStage() {
                       index % 5 === 0 || index % 7 === 0
                         ? accentCycle[(index + unitIndex) % accentCycle.length]
                         : "#f7f3e9",
+                    boxShadow:
+                      index % 5 === 0 || index % 7 === 0
+                        ? `0 0 8px ${accentCycle[(index + unitIndex) % accentCycle.length]}88`
+                        : "none",
                   }}
                 />
               ))}

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,7 @@ import Image from "next/image";
 import {
   Sparkles, ArrowRight,
   Headphones, Briefcase, Users, Building2, HeartPulse, ShoppingBag,
-  Book, HelpCircle, Newspaper, ChevronDown
+  Book, HelpCircle, Newspaper, ChevronDown, Mic
 } from "lucide-react";
 import {
   Popover,
@@ -24,6 +25,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
 export default function Navbar() {
   const { user, logout, setUser } = useAuth();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const queryClient = useQueryClient();
 
@@ -140,6 +142,21 @@ export default function Navbar() {
 
             <Link href="/compare" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
               Compare
+            </Link>
+
+            <Link
+              href="/voice"
+              className={`relative h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 flex items-center gap-1.5 ${
+                pathname === "/voice"
+                  ? "bg-[#8af0be]/10 text-[#059669]"
+                  : "text-slate-600"
+              }`}
+            >
+              <Mic className="h-3.5 w-3.5" />
+              Voice
+              <span className="inline-flex items-center rounded-full bg-[#8af0be]/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#059669]">
+                New
+              </span>
             </Link>
 
             <Popover>
