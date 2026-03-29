@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Linkedin, Mail, Calendar } from "lucide-react";
+import { Linkedin, Mail, Calendar, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { openCalendlyPopup } from "@/lib/calendly";
@@ -16,9 +16,13 @@ const exploreLinks = [
 
 const companyLinks = [
   { name: "About", href: "/about" },
-  { name: "Blog", href: "/blogs" },
   { name: "Help", href: "/help" },
-  { name: "Documentation", href: "/docs" },
+];
+
+const webLinks = [
+  { name: "Docs", href: "https://docs.verlyai.xyz" },
+  { name: "Blogs", href: "https://verlyai.xyz/blogs" },
+  { name: "Voice", href: "https://verlyai.xyz/voice" },
 ];
 
 const legalLinks = [
@@ -50,52 +54,65 @@ export default function Footer() {
             "linear-gradient(to bottom, #ffffff 0%, #f7fbff 12.5%, #edf5ff 25%, #d6eaff 37.5%, #b3d7ff 50%, #80bfff 62.5%, #4d94ff 75%, #0056b3 87.5%, #000000 100%)",
         }}
       >
-        <div className="relative pb-14 pt-24 md:pb-16 md:pt-24">
+        <div className="relative pb-14 pt-24 md:pb-16 md:pt-28">
           <motion.div
-            className="mx-auto max-w-4xl px-4 text-center"
+            className="mx-auto max-w-5xl px-4 text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="mx-auto max-w-[780px] text-4xl font-bold leading-[0.98] tracking-[-0.04em] text-foreground md:text-5xl lg:text-6xl">
-              If you&apos;ve come this far,
-              <span className="block">let&apos;s talk.</span>
+            <span className="inline-flex rounded-full border border-black/10 bg-white/55 px-4 py-1 text-sm font-medium text-foreground/70 backdrop-blur-sm">
+              Ready to see Verly live?
+            </span>
+            <h2 className="mx-auto mt-6 max-w-[860px] text-4xl font-bold leading-[0.98] tracking-[-0.04em] text-foreground md:text-5xl lg:text-6xl">
+              Turn support conversations into
+              <span className="block">faster resolutions.</span>
             </h2>
-            <p className="mx-auto mt-5 max-w-[440px] text-lg font-medium leading-8 text-foreground/80 md:text-xl">
-              Schedule a quick call and see how Verly fits your support workflow.
+            <p className="mx-auto mt-5 max-w-[620px] text-base font-medium leading-7 text-foreground/75 md:text-xl md:leading-8">
+              Book a quick walkthrough to see how Verly helps teams handle voice, WhatsApp,
+              and web chat from one streamlined support workflow.
             </p>
             <motion.div
-              className="mt-8"
+              className="mt-10"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Button
-                asChild
-                size="lg"
-                className="group h-12 gap-2 bg-foreground px-6 text-base text-background transition-all duration-300 hover:bg-foreground/90 hover:shadow-md"
-              >
-                <button
-                  className="flex items-center gap-2"
-                  onClick={() => {
-                    void openCalendlyPopup();
-                  }}
+              <div className="mx-auto flex max-w-max flex-col items-center gap-4 sm:flex-row">
+                <Button
+                  size="lg"
+                  onClick={() => void openCalendlyPopup()}
+                  className="h-12 min-w-[190px] rounded-full bg-[#111111] px-7 text-base text-white shadow-[0_12px_30px_rgba(17,17,17,0.18)] transition-all duration-300 hover:bg-[#222222]"
                 >
-                  <Calendar className="h-5 w-5" />
+                  <Calendar className="mr-2 h-5 w-5" />
                   Book a demo
-                </button>
-              </Button>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-12 min-w-[190px] rounded-full border-black/10 bg-white/14 px-7 text-base text-foreground backdrop-blur-sm transition-all duration-300 hover:bg-white/24"
+                >
+                  <Link href="/login">
+                    Start building
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <p className="mt-4 text-sm font-medium text-foreground/55">
+                Quick walkthrough. Clear use cases. No pressure.
+              </p>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
       <div className="relative border-t border-white/10 bg-[#010309]">
-        <div className="mx-auto w-[95%] max-w-[1200px] px-4 py-12 md:w-[85%] lg:w-[80%]">
+        <div className="mx-auto w-[95%] max-w-[1120px] px-4 py-12 md:w-[85%] lg:w-[80%]">
           <motion.div
-            className="mb-9 grid grid-cols-1 gap-10 md:grid-cols-[1.35fr_0.72fr_0.72fr_0.95fr] md:gap-12"
+            className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-[1.45fr_0.8fr_0.95fr_1fr] md:gap-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -116,14 +133,13 @@ export default function Footer() {
                 </div>
               </div>
 
-              <p className="mt-8 max-w-[440px] text-[15px] leading-8 text-white/58 md:text-[16px]">
-                Verly helps support teams automate repetitive support, keep human context in the
-                loop, and manage voice, WhatsApp, and web chat from one place.
+              <p className="mt-6 max-w-[410px] text-[15px] leading-8 text-white/58 md:text-[16px]">
+                Unified AI support for voice, WhatsApp, and web chat with human handoff built in.
               </p>
 
               <a
                 href="mailto:team@verlyai.xyz"
-                className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-[15px] text-white/68 transition-colors hover:text-white"
+                className="mt-7 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-[15px] text-white/68 transition-colors hover:text-white"
               >
                 <Mail className="h-5 w-5" />
                 team@verlyai.xyz
@@ -131,7 +147,14 @@ export default function Footer() {
             </div>
 
             <FooterColumn title="Explore" links={exploreLinks} />
-            <FooterColumn title="Company" links={companyLinks} />
+
+            <div>
+              <FooterColumn title="Company" links={companyLinks} />
+
+              <div className="mt-9">
+                <FooterColumn title="Web" links={webLinks} compact horizontal />
+              </div>
+            </div>
 
             <div>
               <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white">
@@ -150,7 +173,7 @@ export default function Footer() {
                 ))}
               </ul>
 
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-7 flex items-center gap-3">
                 {socialLinks.map((social) => (
                   <Link
                     key={social.name}
@@ -164,6 +187,10 @@ export default function Footer() {
                   </Link>
                 ))}
               </div>
+
+              <p className="mt-5 max-w-[220px] text-sm leading-7 text-white/38">
+                Follow Verly for product updates and support workflow insights.
+              </p>
             </div>
           </motion.div>
 
@@ -178,7 +205,7 @@ export default function Footer() {
               <p className="text-sm leading-6 text-white/50">
                 © {new Date().getFullYear()} VerlyAI. All rights reserved.
               </p>
-              <p className="max-w-[560px] text-sm leading-6 text-white/35 md:text-right">
+              <p className="max-w-[520px] text-sm leading-6 text-white/35 md:text-right">
                 Built for support teams managing voice, WhatsApp, and web chat in one place.
               </p>
             </div>
@@ -192,19 +219,33 @@ export default function Footer() {
 function FooterColumn({
   title,
   links,
+  compact = false,
+  horizontal = false,
 }: {
   title: string;
   links: Array<{ name: string; href: string }>;
+  compact?: boolean;
+  horizontal?: boolean;
 }) {
   return (
     <div>
       <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white">{title}</h3>
-      <ul className="space-y-4">
+      <ul
+        className={
+          horizontal
+            ? "flex flex-wrap gap-x-5 gap-y-3"
+            : compact
+              ? "space-y-3.5"
+              : "space-y-4"
+        }
+      >
         {links.map((link) => (
           <li key={link.name}>
             <Link
               href={link.href}
               className="text-sm leading-6 text-white/50 transition-colors duration-200 hover:text-white"
+              target={link.href.startsWith("http") ? "_blank" : undefined}
+              rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
             >
               {link.name}
             </Link>

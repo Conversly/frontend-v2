@@ -29,28 +29,26 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { openCalendlyPopup } from "@/lib/calendly";
 
-const brandLogos = ["Unity AI", "New York Life", "Intuit", "Delphi", "Housecall Pro", "Cherry"];
-
 const workflowCards = [
   {
     index: "001",
-    title: "Choose the workflow",
+    title: "Design the workflow",
     description:
-      "Start with inbound support, website voice, outbound qualification, or callback automation.",
+      "Craft natural, branching conversational paths for inbound support, lead qualification, or callback automation.",
     visual: WorkflowBarsVisual,
   },
   {
     index: "002",
-    title: "Connect knowledge and actions",
+    title: "Ground in knowledge",
     description:
-      "Ground every call in your FAQs, support content, tools, and customer context so the workflow can resolve work.",
+      "Connect your specific FAQs, live account status, and custom tools so every action is contextual and accurate.",
     visual: WorkflowGridVisual,
   },
   {
     index: "003",
-    title: "Deploy and measure",
+    title: "Deploy anywhere",
     description:
-      "Launch on the website or phone, then review analytics, handoffs, and campaign outcomes from the same platform.",
+      "Publish your agent to the website or phone line instantly. Measure outcomes, handoffs, and resolve rates live.",
     visual: WorkflowBurstVisual,
   },
 ] as const;
@@ -99,7 +97,6 @@ export function VoiceMarketingPage() {
   return (
     <div className="min-h-screen bg-[#050816] text-[#f6f1e6]">
       <HeroSection />
-      <BrandStrip />
       <WorkflowSection />
       <SupportShowcaseSection />
       <OutboundShowcaseSection />
@@ -115,51 +112,74 @@ function HeroSection() {
 
   return (
     <section className="relative overflow-hidden border-b border-white/8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(104,145,255,0.14),transparent_28%),linear-gradient(180deg,#060914_0%,#050816_100%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle,rgba(124,134,182,0.35)_1px,transparent_1px)] [background-size:18px_18px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(104,145,255,0.14),transparent_24%),linear-gradient(180deg,#060914_0%,#050816_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.065)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.065)_1px,transparent_1px)] [background-size:78px_78px]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(170,198,255,0.1),transparent)]" />
+      <div className="pointer-events-none absolute inset-x-[10%] bottom-[-18%] h-[420px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.28)_0%,rgba(138,240,190,0.14)_28%,rgba(5,8,22,0.02)_60%,transparent_74%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-[3%] bottom-[-28%] h-[340px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.14)_0%,rgba(104,145,255,0.08)_30%,transparent_70%)] blur-2xl" />
 
-      <div className="relative mx-auto flex w-full max-w-[1380px] flex-col items-center px-5 pb-8 pt-34 text-center sm:px-8 lg:px-10 lg:pt-42">
+      <div className="relative mx-auto flex w-full max-w-[1380px] flex-col items-center px-5 pb-14 pt-34 text-center sm:px-8 lg:px-10 lg:pt-42">
         <motion.div
           initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-[#92f2bd]"
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-[#92f2bd]"
         >
           <AudioLines className="h-3.5 w-3.5" />
           Verly Voice Platform
         </motion.div>
 
-        <motion.h1
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.72, delay: 0.08, ease: "easeOut" }}
-          className="mt-8 max-w-5xl text-[clamp(3.4rem,8vw,6.8rem)] font-light leading-[0.92] tracking-[-0.06em] text-[#faf4ea]"
-        >
-          Voice AI agents
-          <span className="block">for modern support teams</span>
-        </motion.h1>
+        <div className="mt-10 flex max-w-[980px] flex-col items-center">
+          <motion.h1
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.72, delay: 0.08, ease: "easeOut" }}
+            className="max-w-[960px] text-[clamp(3.4rem,7.5vw,6.6rem)] font-light leading-[0.92] tracking-[-0.07em]"
+          >
+            <span className="block text-[#aeb9d2]">AI voice support</span>
+            <span className="mt-1 block text-[#faf4ea] [text-shadow:0_0_16px_rgba(255,255,255,0.16),0_0_34px_rgba(141,220,255,0.12)]">
+              for the helpdesk era
+            </span>
+          </motion.h1>
 
-        <motion.p
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+          <motion.p
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.72, delay: 0.14, ease: "easeOut" }}
+            className="mt-7 max-w-[690px] text-[1.02rem] leading-8 text-[#d2dcef] sm:text-[1.14rem]"
+          >
+            Verly gives support teams one voice system for website voice widget
+            experiences, inbound calls, escalation and handoff, plus outbound
+            qualification and callback automation when needed.
+          </motion.p>
+        </div>
+
+        <motion.div
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.72, delay: 0.14, ease: "easeOut" }}
-          className="mt-7 max-w-3xl text-lg leading-8 text-[#bac4dd] sm:text-xl"
+          transition={{ duration: 0.72, delay: 0.18, ease: "easeOut" }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-3"
         >
-          Build Verly voice workflows for inbound support, website voice widget
-          experiences, outbound qualification, and callback automation on one
-          customer-support operating layer.
-        </motion.p>
+          {["Inbound support", "Website voice widget", "Human handoff"].map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm text-[#d8e1f1] backdrop-blur-sm"
+            >
+              {item}
+            </span>
+          ))}
+        </motion.div>
 
         <motion.div
           initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.72, delay: 0.2, ease: "easeOut" }}
-          className="mt-10 flex flex-col gap-4 sm:flex-row"
+          className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
         >
           <Button
             asChild
             size="lg"
-            className="h-13 rounded-full bg-[#8af0be] px-8 text-[15px] font-semibold text-[#08111f] hover:bg-[#9bf4c8]"
+            className="h-13 min-w-[178px] rounded-full bg-[#8af0be] px-8 text-[15px] font-semibold text-[#08111f] hover:bg-[#9bf4c8]"
           >
             <Link href="/login">
               Start building
@@ -171,7 +191,7 @@ function HeroSection() {
             size="lg"
             variant="outline"
             onClick={() => void openCalendlyPopup()}
-            className="h-13 rounded-full border-white/12 bg-black/10 px-8 text-[15px] font-semibold text-[#faf4ea] hover:bg-white/[0.05]"
+            className="h-13 min-w-[178px] rounded-full border-white/12 bg-black/10 px-8 text-[15px] font-semibold text-[#faf4ea] hover:bg-white/[0.05]"
           >
             Book a demo
             <ChevronRight className="h-4 w-4" />
@@ -200,11 +220,18 @@ function HeroWaveStage() {
   const accentCycle = ["#f7f3e9", "#8ddcff", "#8af0be", "#f3de62", "#c28cff", "#f28a49"];
 
   return (
-    <div className="overflow-hidden rounded-[32px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 pb-6 pt-8 sm:px-8">
-      <div className="mx-auto flex max-w-[980px] flex-col items-center">
-        <div className="relative z-10 mb-10 rounded-[999px] border border-white/14 bg-[#f1ecde] px-7 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.28)]">
-          <div className="flex items-center gap-8">
-            <span className="text-[clamp(1.1rem,2.2vw,1.7rem)] font-medium tracking-[0.22em] text-[#111827]">
+    <div className="relative overflow-hidden rounded-[34px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.012))] px-4 pb-8 pt-10 shadow-[0_28px_80px_rgba(0,0,0,0.22)] sm:px-8">
+      <div className="pointer-events-none absolute inset-0 opacity-22 [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:62px_62px]" />
+      <div className="pointer-events-none absolute inset-x-[14%] bottom-[-22%] h-[320px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.34)_0%,rgba(138,240,190,0.15)_25%,rgba(5,8,22,0)_68%)] blur-3xl" />
+
+      <div className="relative mx-auto flex max-w-[980px] flex-col items-center">
+        <div className="mb-6 text-[11px] uppercase tracking-[0.34em] text-[#8af0be]">
+          Support-first voice workflows
+        </div>
+
+        <div className="relative z-10 mb-8 rounded-[999px] border border-white/14 bg-[#f1ecde] px-7 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.28)]">
+          <div className="flex items-center gap-6 sm:gap-8">
+            <span className="text-[clamp(1rem,2.1vw,1.55rem)] font-medium tracking-[0.18em] text-[#111827]">
               TALK TO VERLY
             </span>
             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#111827]/12 bg-white/70 text-[#111827]">
@@ -212,6 +239,11 @@ function HeroWaveStage() {
             </span>
           </div>
         </div>
+
+        <p className="relative z-10 mb-10 max-w-[560px] text-center text-[0.98rem] leading-7 text-[#c9d4e8] sm:text-[1.02rem]">
+          Natural voice experiences for inbound support, fast escalation, and
+          customer conversations that stay grounded in your knowledge and actions.
+        </p>
 
         <div className="flex h-[240px] w-full items-end justify-center gap-2 overflow-hidden">
           {heights.map((height, index) => (
@@ -251,23 +283,6 @@ function HeroWaveStage() {
   );
 }
 
-function BrandStrip() {
-  return (
-    <section className="border-b border-white/8">
-      <div className="mx-auto grid w-full max-w-[1380px] grid-cols-2 gap-px border-x border-white/8 bg-white/8 sm:grid-cols-3 lg:grid-cols-6">
-        {brandLogos.map((logo) => (
-          <div
-            key={logo}
-            className="flex h-20 items-center justify-center bg-[#050816] px-4 text-center text-[1.35rem] font-semibold tracking-[-0.03em] text-[#f3efe5]"
-          >
-            {logo}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function WorkflowSection() {
   const shouldReduceMotion = useReducedMotion();
 
@@ -275,11 +290,11 @@ function WorkflowSection() {
     <section className="mx-auto w-full max-w-[1380px] px-5 py-22 sm:px-8 lg:px-10">
       <SectionHeader
         eyebrow="How it works"
-        title="Try in minutes. Deploy on voice surfaces in days."
-        description="Keep the setup path simple: define the workflow, connect support context, and launch the same Verly logic wherever conversations begin."
+        title="Build in minutes. Command voice surfaces in days."
+        description="Keep your path frictionless: map your ideal workflow, connect your specialized knowledge, and launch the exact same intelligent Verly logic wherever conversations begin."
       />
 
-      <div className="mt-14 grid gap-px overflow-hidden rounded-[30px] border border-white/8 bg-white/8 lg:grid-cols-3">
+      <div className="mt-14 grid gap-6 lg:grid-cols-3">
         {workflowCards.map((card, index) => {
           const Visual = card.visual;
 
@@ -290,18 +305,18 @@ function WorkflowSection() {
               whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.45, delay: index * 0.06 }}
-              className="bg-[#070b18] p-8 sm:p-10"
+              className="group flex flex-col rounded-[32px] border border-white/5 bg-[#0a0f1d] p-8 shadow-[0_12px_44px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#0c1222] sm:p-10"
             >
-              <div className="inline-flex rounded-full border border-white/12 px-3 py-1 text-[11px] tracking-[0.22em] text-[#d7deef]">
-                {card.index}
+              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#aebbd6]">
+                STEP {card.index}
               </div>
-              <div className="mt-10 flex min-h-[250px] items-center justify-center rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0.01))]">
+              <div className="mt-10 flex min-h-[260px] items-center justify-center rounded-[24px] border border-white/[0.03] bg-[#050812] shadow-inner transition-colors duration-300 group-hover:bg-[#070b16]">
                 <Visual />
               </div>
-              <h3 className="mt-10 text-3xl font-light tracking-[-0.04em] text-[#faf4ea]">
+              <h3 className="mt-10 text-2xl font-medium tracking-tight text-[#f4f7fc]">
                 {card.title}
               </h3>
-              <p className="mt-4 text-base leading-7 text-[#b5bfd8]">
+              <p className="mt-4 text-[1.05rem] leading-[1.65] text-[#8e9fbf]">
                 {card.description}
               </p>
             </motion.article>
@@ -601,29 +616,40 @@ function SectionHeader({
 
 function WorkflowBarsVisual() {
   const shouldReduceMotion = useReducedMotion();
-  const bars = [34, 50, 84, 62, 40, 76, 108, 72, 46, 88];
+  const bars = [32, 48, 86, 64, 38, 76, 110, 72, 44, 90, 56, 32];
 
   return (
-    <div className="flex items-end gap-2">
+    <div className="flex items-end gap-[10px]">
       {bars.map((height, index) => (
         <motion.span
           key={`${height}-${index}`}
           animate={
             shouldReduceMotion
               ? undefined
-              : { height: [Math.max(16, height - 12), height, Math.max(16, height - 5)] }
+              : { height: [Math.max(16, height - 16), height, Math.max(16, height - 8)] }
           }
           transition={{
             duration: 1.8,
             repeat: Infinity,
             repeatType: "mirror",
             delay: index * 0.08,
+            ease: "easeInOut",
           }}
-          className="block w-3 rounded-full"
+          className="block w-4 rounded-full"
           style={{
             height,
-            backgroundColor:
-              index % 4 === 0 ? "#8ddcff" : index % 3 === 0 ? "#8af0be" : "#f7f3e9",
+            background:
+              index % 4 === 0 
+                ? "linear-gradient(180deg, #8ddcff, #38bdf8)" 
+                : index % 3 === 0 
+                ? "linear-gradient(180deg, #8af0be, #34d399)" 
+                : "linear-gradient(180deg, #e2e8f0, #94a3b8)",
+            boxShadow: 
+              index % 4 === 0 
+                ? "0 0 16px rgba(141,220,255,0.4)" 
+                : index % 3 === 0 
+                ? "0 0 16px rgba(138,240,190,0.4)" 
+                : "0 0 12px rgba(255,255,255,0.05)",
           }}
         />
       ))}
@@ -633,63 +659,80 @@ function WorkflowBarsVisual() {
 
 function WorkflowGridVisual() {
   const shouldReduceMotion = useReducedMotion();
-  const colors = ["#f7f3e9", "#8ddcff", "#8af0be", "#f3de62", "#c28cff"];
+  const colors = [
+    { bg: "#38bdf8", shadow: "rgba(56,189,248,0.5)" },
+    { bg: "#34d399", shadow: "rgba(52,211,153,0.5)" },
+    { bg: "#facc15", shadow: "rgba(250,204,21,0.4)" },
+    { bg: "#c084fc", shadow: "rgba(192,132,252,0.4)" },
+    { bg: "#ffffff", shadow: "rgba(255,255,255,0.2)" },
+  ];
 
   return (
-    <div className="grid grid-cols-6 gap-3">
-      {Array.from({ length: 36 }).map((_, index) => (
-        <motion.span
-          key={index}
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { opacity: [0.55, 1, 0.72], scale: [1, 1.08, 1] }
-          }
-          transition={{
-            duration: 1.7,
-            repeat: Infinity,
-            repeatType: "mirror",
-            delay: index * 0.03,
-          }}
-          className="block h-5 w-3 rounded-full"
-          style={{
-            backgroundColor:
-              index % 4 === 0 || index % 7 === 0 ? colors[index % colors.length] : "#f7f3e9",
-          }}
-        />
-      ))}
+    <div className="grid grid-cols-7 gap-3 sm:gap-4">
+      {Array.from({ length: 35 }).map((_, index) => {
+        const isHighlight = index % 5 === 0 || index % 8 === 0;
+        const color = isHighlight ? colors[index % 4] : colors[4];
+        
+        return (
+          <motion.span
+            key={index}
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : { opacity: [0.3, 1, 0.4], scale: [1, 1.25, 1] }
+            }
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              repeatType: "mirror",
+              delay: index * 0.05,
+              ease: "easeInOut",
+            }}
+            className="block h-4 w-4 rounded-full"
+            style={{
+              backgroundColor: color.bg,
+              boxShadow: isHighlight ? `0 0 16px ${color.shadow}` : "none",
+              opacity: isHighlight ? 1 : 0.4,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
 
 function WorkflowBurstVisual() {
   const shouldReduceMotion = useReducedMotion();
-  const colors = ["#f7f3e9", "#8ddcff", "#8af0be", "#f3de62", "#c28cff", "#f28a49"];
 
   return (
-    <div className="relative h-[210px] w-[210px]">
-      {Array.from({ length: 22 }).map((_, index) => (
-        <motion.span
+    <div className="relative flex h-[240px] w-[240px] items-center justify-center">
+      <motion.div
+        animate={shouldReduceMotion ? undefined : { scale: [0.8, 1.6], opacity: [0.8, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut" }}
+        className="absolute inset-0 rounded-full border border-[#8ddcff]/60"
+      />
+      <motion.div
+        animate={shouldReduceMotion ? undefined : { scale: [0.8, 1.4], opacity: [0.5, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, delay: 0.8, ease: "easeOut" }}
+        className="absolute inset-4 rounded-full border border-[#8af0be]/60"
+      />
+      <div className="absolute h-[110px] w-[110px] rounded-full bg-[radial-gradient(circle,rgba(104,145,255,0.2)_0%,rgba(5,8,22,0.8)_80%)] backdrop-blur-sm" />
+      <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/5 shadow-[0_0_32px_rgba(141,220,255,0.4)] backdrop-blur-md">
+        <div className="h-8 w-8 rounded-full bg-[#8ddcff] shadow-[0_0_20px_rgba(141,220,255,0.9)]" />
+      </div>
+
+      {Array.from({ length: 12 }).map((_, index) => (
+        <motion.div
           key={index}
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { scaleY: [0.88, 1.16, 1], opacity: [0.75, 1, 0.82] }
-          }
-          transition={{
-            duration: 1.9,
-            repeat: Infinity,
-            repeatType: "mirror",
-            delay: index * 0.05,
-          }}
-          className="absolute left-1/2 top-1/2 block h-6 w-2 -translate-x-1/2 rounded-full"
+          animate={{ opacity: [0, 1, 0], scale: [0.6, 1.4, 0.8] }}
+          transition={{ duration: 2.5, repeat: Infinity, delay: index * 0.2 }}
+          className="absolute h-2.5 w-2.5 rounded-full shadow-[0_0_12px_rgba(255,255,255,0.9)]"
           style={{
-            backgroundColor: colors[index % colors.length],
-            transform: `translate(-50%, -50%) rotate(${index * 16}deg) translateY(-78px)`,
+            transform: `rotate(${index * 30}deg) translateY(-85px)`,
+            backgroundColor: index % 3 === 0 ? "#8af0be" : index % 2 === 0 ? "#8ddcff" : "#ffffff"
           }}
         />
       ))}
-      <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/12 bg-[#0a0f1d]" />
     </div>
   );
 }
@@ -703,22 +746,95 @@ function InboundSupportVisual() {
       whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, delay: 0.05 }}
-      className="relative overflow-hidden rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(137,214,255,0.28),transparent_38%),linear-gradient(180deg,#bfe8ff_0%,#a7ddff_46%,#8accff_100%)] p-6 sm:p-8"
+      className="relative flex min-h-[500px] items-center justify-center overflow-hidden rounded-[32px] border border-white/8 bg-[#0a0d1c] p-6 lg:ml-4"
     >
-      <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:10px_10px]" />
-      <motion.div
-        animate={shouldReduceMotion ? undefined : { y: [-4, 5, -4] }}
-        transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
-        className="relative z-10 mx-auto max-w-[420px]"
-      >
-        <SupportFlowNode icon={PhoneCall} title="Receive support call" badge="INBOUND LINE" />
-        <VerticalConnector />
-        <SupportFlowNode icon={ShieldCheck} title="Resolve with knowledge" badge="DOCS + ACCOUNT CONTEXT" highlight />
-        <VerticalConnector />
-        <SupportFlowNode icon={SquareTerminal} title="Use tool or fetch status" badge="LIVE ACTIONS" />
-        <VerticalConnector />
-        <SupportFlowNode icon={Users} title="Escalate with summary" badge="HUMAN HANDOFF" />
-      </motion.div>
+      {/* Background Glows */}
+      <div className="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#8ddcff]/5 blur-[120px]"></div>
+      <div className="absolute left-1/2 top-1/2 h-3/4 w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#8af0be]/5 blur-[100px]"></div>
+      
+      <div className="relative z-10 w-full space-y-12 py-8">
+        {/* Node 1 */}
+        <div className="flex justify-center">
+          <div className="w-64 rounded-xl border border-[#444758]/20 bg-[#14192a] p-5 shadow-2xl">
+            <div className="mb-2 flex items-center space-x-3">
+              <PhoneCall className="h-[18px] w-[18px] text-[#8ddcff]" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#a7aabe]">Incoming</span>
+            </div>
+            <h4 className="font-medium text-[#e2e4f9]">Receive support call</h4>
+          </div>
+        </div>
+        
+        {/* Connector Line 1 */}
+        <div className="-my-6 flex flex-col items-center">
+          <div className="h-16 w-px bg-gradient-to-b from-[#8ddcff] to-[#8af0be]"></div>
+        </div>
+        
+        {/* Central Node 2 */}
+        <div className="flex justify-center">
+          <div className="group relative">
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#8af0be]/50 to-[#8ddcff]/50 opacity-25 blur transition duration-1000 group-hover:opacity-40"></div>
+            <div className="relative w-80 rounded-2xl border border-[#8af0be]/20 bg-[#1a1f32] p-8 shadow-2xl">
+              <div className="mb-4 flex items-center justify-between">
+                <BrainCircuit className="h-7 w-7 text-[#8af0be]" />
+                <div className="flex space-x-1">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-[#8af0be]"></div>
+                  <div className="h-2 w-2 rounded-full bg-[#8ddcff]/50"></div>
+                </div>
+              </div>
+              <h4 className="mb-4 text-xl font-light text-[#e2e4f9]">Resolve with knowledge</h4>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 rounded-full border border-[#444758]/10 bg-[#1f253a] px-3 py-1.5 text-xs text-[#a7aabe]">
+                  <ShieldCheck className="h-4 w-4" />
+                  <span>GROUNDED IN DOCS</span>
+                </div>
+                <div className="flex items-center space-x-2 rounded-full border border-[#444758]/10 bg-[#1f253a] px-3 py-1.5 text-xs text-[#a7aabe]">
+                  <Users className="h-4 w-4" />
+                  <span>ACCOUNT CONTEXT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Connector Line 2 with fork */}
+        <div className="-my-6 flex justify-center">
+          <div className="relative h-20 w-48">
+            <svg className="h-full w-full" fill="none" viewBox="0 0 192 80" xmlns="http://www.w3.org/2000/svg">
+              <path d="M96 0V40C96 51.0457 87.0457 60 76 60H32" stroke="url(#paint0_linear)" strokeOpacity="0.3" strokeWidth="1.5"></path>
+              <path d="M96 0V40C96 51.0457 104.954 60 116 60H160" stroke="url(#paint1_linear)" strokeOpacity="0.3" strokeWidth="1.5"></path>
+              <circle cx="96" cy="0" fill="#8af0be" r="3"></circle>
+              <defs>
+                <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear" x1="96" x2="32" y1="0" y2="60">
+                  <stop stopColor="#8af0be"></stop>
+                  <stop offset="1" stopColor="#8ddcff"></stop>
+                </linearGradient>
+                <linearGradient gradientUnits="userSpaceOnUse" id="paint1_linear" x1="96" x2="160" y1="0" y2="60">
+                  <stop stopColor="#8af0be"></stop>
+                  <stop offset="1" stopColor="#f3de62"></stop>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        
+        {/* Final Row of Nodes */}
+        <div className="mx-auto flex w-full max-w-[340px] items-start justify-between px-1">
+          <div className="w-[150px] rounded-xl border border-[#444758]/20 bg-[#14192a]/80 p-3.5">
+            <div className="mb-2 flex items-center space-x-2">
+              <SquareTerminal className="h-3.5 w-3.5 text-[#8ddcff]" />
+              <span className="text-[9px] font-bold uppercase tracking-widest text-[#a7aabe]">Automation</span>
+            </div>
+            <h5 className="text-[13px] font-medium leading-[1.3] text-[#e2e4f9]">Use tool or fetch status</h5>
+          </div>
+          <div className="w-[150px] rounded-xl border border-[#f3de62]/20 bg-[#14192a]/80 p-3.5">
+            <div className="mb-2 flex items-center space-x-2">
+              <PhoneForwarded className="h-3.5 w-3.5 text-[#f3de62]" />
+              <span className="text-[9px] font-bold uppercase tracking-widest text-[#a7aabe]">Live Handoff</span>
+            </div>
+            <h5 className="text-[13px] font-medium leading-[1.3] text-[#e2e4f9]">Escalate with summary</h5>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }
@@ -869,35 +985,28 @@ function SupportFlowNode({
 }) {
   return (
     <div
-      className={cn(
-        "rounded-[24px] border bg-[#081427]/92 px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.25)]",
-        highlight ? "border-[#8ddcff]/35" : "border-white/10",
-      )}
+      className="relative z-10 w-full rounded-[20px] border border-white/[0.04] bg-[#1a2130] px-5 py-5 shadow-[0_12px_44px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <div
           className={cn(
-            "flex h-11 w-11 items-center justify-center rounded-2xl border",
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border border-white/5",
             highlight
-              ? "border-[#8ddcff]/30 bg-[#8ddcff]/12 text-[#3f6e92]"
-              : "border-white/10 bg-white/[0.04] text-[#8af0be]",
+              ? "bg-[#8ddcff]/10 text-[#8ddcff]"
+              : "bg-white/[0.03] text-[#8af0be]",
           )}
         >
           <Icon className="h-5 w-5" />
         </div>
-        <div className="min-w-0">
-          <div className="font-medium text-[#f8f4eb]">{title}</div>
-          <div className="mt-1 inline-flex rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] tracking-[0.12em] text-[#c6d7f8]">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <div className="text-[15px] font-medium text-[#fcfdfd] sm:text-[16px]">{title}</div>
+          <div className="inline-flex w-fit rounded-full bg-[#283243] px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#a7b5d1] leading-none">
             {badge}
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-function VerticalConnector() {
-  return <div className="ml-10 h-10 w-px bg-[linear-gradient(180deg,rgba(255,255,255,0.22),rgba(255,255,255,0.02))]" />;
 }
 
 function CampaignRow({
