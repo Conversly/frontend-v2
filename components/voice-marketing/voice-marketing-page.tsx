@@ -544,15 +544,15 @@ function PlatformSection() {
 
 function FinalCtaSection() {
   return (
-    <section className="relative overflow-hidden px-5 pb-0 pt-10 sm:px-8 lg:px-10">
-      <div className="mx-auto w-full max-w-[1380px]">
-        <div
-          className="rounded-t-[38px] px-6 py-16 text-center sm:px-10 sm:py-20"
-          style={{
-            background:
-              "linear-gradient(to bottom, #050816 0%, #102247 34%, #2d72b8 68%, #cbe5ff 92%, #ffffff 100%)",
-          }}
-        >
+    <section 
+      className="relative w-full overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(to bottom, #050816 0%, #102247 34%, #2d72b8 68%, #cbe5ff 92%, #ffffff 100%)",
+      }}
+    >
+      <div className="mx-auto w-full max-w-[1380px] px-5 sm:px-8 lg:px-10">
+        <div className="px-6 pb-14 pt-24 text-center md:pb-16 md:pt-28">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-[#c5f6d9] backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5" />
             Let&apos;s talk
@@ -943,31 +943,209 @@ function MiniStatCard({
 }
 
 function UseCaseVisual({ accent }: { accent: "blue" | "mint" | "gold" | "lavender" }) {
-  const palette =
-    accent === "blue"
-      ? ["#f7f3e9", "#8ddcff", "#8ddcff"]
-      : accent === "mint"
-        ? ["#f7f3e9", "#8af0be", "#8ddcff"]
-        : accent === "gold"
-          ? ["#f7f3e9", "#f3de62", "#f28a49"]
-          : ["#f7f3e9", "#c28cff", "#8ddcff"];
+  if (accent === "blue") return <WaveVisual />;
+  if (accent === "mint") return <CallFlowVisual />;
+  if (accent === "gold") return <FunnelVisual />;
+  return <ClockVisual />;
+}
 
+/** Blue — animated sine waveform (website voice widget) */
+function WaveVisual() {
+  const shouldReduceMotion = useReducedMotion();
   return (
-    <div className="flex items-end gap-2">
-      {[28, 38, 54, 46, 68, 52, 34, 60].map((height, index) => (
-        <div
-          key={`${accent}-${height}-${index}`}
-          className="flex w-3 flex-col justify-end gap-2"
+    <div className="flex w-full items-center justify-center">
+      <motion.svg
+        width="160"
+        height="64"
+        viewBox="0 0 160 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="waveGrad" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#8ddcff" stopOpacity="0.3" />
+            <stop offset="0.5" stopColor="#8ddcff" />
+            <stop offset="1" stopColor="#8ddcff" stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+        {/* Background muted wave */}
+        <path
+          d="M0 32 C20 10, 40 54, 60 32 C80 10, 100 54, 120 32 C140 10, 155 54, 160 32"
+          stroke="#8ddcff"
+          strokeOpacity="0.15"
+          strokeWidth="1.5"
+          fill="none"
+        />
+        {/* Animated main wave */}
+        <motion.path
+          d="M0 32 C20 10, 40 54, 60 32 C80 10, 100 54, 120 32 C140 10, 155 54, 160 32"
+          stroke="url(#waveGrad)"
+          strokeWidth="2"
+          fill="none"
+          animate={shouldReduceMotion ? undefined : { pathLength: [0, 1] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+        />
+        {/* Cursor dot */}
+        <motion.circle
+          r="4"
+          fill="#8ddcff"
+          style={{ filter: "drop-shadow(0 0 6px #8ddcff)" }}
+          animate={shouldReduceMotion ? undefined : {
+            cx: [0, 20, 40, 60, 80, 100, 120, 140, 160],
+            cy: [32, 10, 54, 32, 10, 54, 32, 10, 32],
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+        />
+      </motion.svg>
+    </div>
+  );
+}
+
+/** Mint — branching call-flow nodes (inbound support) */
+function CallFlowVisual() {
+  const shouldReduceMotion = useReducedMotion();
+  return (
+    <div className="flex w-full items-center justify-center">
+      <svg width="150" height="80" viewBox="0 0 150 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="flowL" x1="75" y1="16" x2="30" y2="64" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#8af0be" />
+            <stop offset="1" stopColor="#8ddcff" />
+          </linearGradient>
+          <linearGradient id="flowR" x1="75" y1="16" x2="120" y2="64" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#8af0be" />
+            <stop offset="1" stopColor="#f3de62" />
+          </linearGradient>
+        </defs>
+        {/* Top node */}
+        <rect x="55" y="4" width="40" height="24" rx="12" fill="#8af0be" fillOpacity="0.12" stroke="#8af0be" strokeWidth="1.2" />
+        <text x="75" y="21" textAnchor="middle" fill="#8af0be" fontSize="9" fontWeight="600" letterSpacing="0.5">CALL IN</text>
+
+        {/* Lines branching down */}
+        <line x1="75" y1="28" x2="30" y2="56" stroke="url(#flowL)" strokeWidth="1.2" strokeDasharray="3 2" />
+        <line x1="75" y1="28" x2="120" y2="56" stroke="url(#flowR)" strokeWidth="1.2" strokeDasharray="3 2" />
+        <motion.circle cx="75" cy="28" r="3" fill="#8af0be"
+          animate={shouldReduceMotion ? undefined : { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
+        />
+
+        {/* Left: Resolved */}
+        <rect x="6" y="56" width="48" height="20" rx="10" fill="#8af0be" fillOpacity="0.1" stroke="#8af0be" strokeOpacity="0.4" strokeWidth="1" />
+        <motion.circle cx="18" cy="66" r="3" fill="#8af0be"
+          animate={shouldReduceMotion ? undefined : { opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+        />
+        <text x="32" y="70" textAnchor="middle" fill="#8af0be" fontSize="8" fontWeight="500">Resolved</text>
+
+        {/* Right: Escalated */}
+        <rect x="96" y="56" width="48" height="20" rx="10" fill="#f3de62" fillOpacity="0.08" stroke="#f3de62" strokeOpacity="0.4" strokeWidth="1" />
+        <motion.circle cx="108" cy="66" r="3" fill="#f3de62"
+          animate={shouldReduceMotion ? undefined : { opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0.9 }}
+        />
+        <text x="122" y="70" textAnchor="middle" fill="#f3de62" fontSize="8" fontWeight="500">Escalated</text>
+      </svg>
+    </div>
+  );
+}
+
+/** Gold — animated qualification funnel (outbound) */
+function FunnelVisual() {
+  const shouldReduceMotion = useReducedMotion();
+  const stages = [
+    { label: "Dialed", width: 130, color: "#f3de62", opacity: 0.9 },
+    { label: "Answered", width: 90, color: "#f3de62", opacity: 0.7 },
+    { label: "Qualified", width: 54, color: "#f28a49", opacity: 1 },
+  ];
+  return (
+    <div className="flex w-full flex-col items-center gap-1.5">
+      {stages.map((stage, i) => (
+        <motion.div
+          key={stage.label}
+          className="flex items-center gap-2"
+          initial={shouldReduceMotion ? false : { opacity: 0, scaleX: 0.6 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: i * 0.12 }}
         >
-          {Array.from({ length: Math.max(2, Math.floor(height / 20)) }).map((_, unitIndex) => (
-            <span
-              key={unitIndex}
-              className="block h-3 rounded-full"
-              style={{ backgroundColor: palette[(index + unitIndex) % palette.length] }}
-            />
-          ))}
-        </div>
+          <div
+            className="h-5 rounded-full"
+            style={{
+              width: stage.width,
+              background: `linear-gradient(90deg, ${stage.color}${Math.round(stage.opacity * 255).toString(16).padStart(2, "0")}, ${stage.color}60)`,
+              boxShadow: `0 0 10px ${stage.color}30`,
+            }}
+          />
+          <span className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: stage.color, opacity: 0.8 }}>
+            {stage.label}
+          </span>
+        </motion.div>
       ))}
+    </div>
+  );
+}
+
+/** Lavender — animated clock face (callback automation) */
+function ClockVisual() {
+  const shouldReduceMotion = useReducedMotion();
+  return (
+    <div className="flex w-full items-center justify-center">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="arcGrad" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#c28cff" />
+            <stop offset="1" stopColor="#8ddcff" />
+          </linearGradient>
+        </defs>
+        {/* Outer ring */}
+        <circle cx="40" cy="40" r="36" stroke="#c28cff" strokeOpacity="0.15" strokeWidth="1.5" />
+        {/* Progress arc */}
+        <motion.circle
+          cx="40"
+          cy="40"
+          r="36"
+          stroke="url(#arcGrad)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          fill="none"
+          strokeDasharray="226"
+          animate={shouldReduceMotion ? undefined : { strokeDashoffset: [226, 56, 226] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          style={{ transform: "rotate(-90deg)", transformOrigin: "40px 40px" }}
+        />
+        {/* Inner circle */}
+        <circle cx="40" cy="40" r="26" fill="#c28cff" fillOpacity="0.06" stroke="#c28cff" strokeOpacity="0.2" strokeWidth="1" />
+        {/* Hour hand */}
+        <motion.line
+          x1="40" y1="40" x2="40" y2="22"
+          stroke="#c28cff"
+          strokeWidth="2"
+          strokeLinecap="round"
+          animate={shouldReduceMotion ? undefined : { rotate: [0, 360] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "40px 40px" }}
+        />
+        {/* Minute hand */}
+        <motion.line
+          x1="40" y1="40" x2="52" y2="40"
+          stroke="#8ddcff"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          animate={shouldReduceMotion ? undefined : { rotate: [0, 360] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "40px 40px" }}
+        />
+        {/* Center dot */}
+        <circle cx="40" cy="40" r="3" fill="#c28cff" style={{ filter: "drop-shadow(0 0 6px #c28cff)" }} />
+        {/* Notification ping */}
+        <motion.circle
+          cx="62" cy="18" r="5"
+          fill="#c28cff"
+          animate={shouldReduceMotion ? undefined : { scale: [0.8, 1.2, 0.8], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        <text x="62" y="22" textAnchor="middle" fill="white" fontSize="6" fontWeight="bold">!</text>
+      </svg>
     </div>
   );
 }

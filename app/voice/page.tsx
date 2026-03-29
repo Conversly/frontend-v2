@@ -31,7 +31,7 @@ export default function VoicePage() {
     <main className="relative min-h-screen bg-[#050816]">
       <Navbar />
       <VoiceMarketingPage />
-      <Footer />
+      <Footer hideCta />
     </main>
   );
 }
