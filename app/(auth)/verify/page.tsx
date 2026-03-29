@@ -146,7 +146,7 @@ export default function VerifyEmailPage() {
                                 Build the perfect customer-facing AI agent
                             </h3>
                             <p className="mt-4 text-base text-gray-600">
-                                 VerlyAI gives you all the tools you need to train your perfect AI agent and connect it to your systems.
+                                 Verly gives you all the tools you need to train your perfect AI agent and connect it to your systems.
                             </p>
                             <a
                                 href="https://docs.verlyai.com"
@@ -173,7 +173,7 @@ export default function VerifyEmailPage() {
                 {/* Footer */}
                 <div className="mt-20 w-full items-center justify-center text-center text-sm text-gray-400 sm:flex sm:px-6 sm:text-left">
                     <div className="flex flex-wrap items-center justify-center gap-2">
-                        <span>© VerlyAI</span>
+                        <span>© Verly</span>
                         <span>·</span>
                         <Link
                             href="/terms"

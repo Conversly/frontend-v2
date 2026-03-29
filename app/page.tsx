@@ -12,19 +12,19 @@ import Certificate from "@/components/crisp-landing/certificate";
 import { siteConfig } from "@/lib/metadata";
 
 export const metadata: Metadata = {
-  title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
-  description: 'Automate customer support with VerlyAI. Deploy intelligent AI agents for Voice, WhatsApp, and Web Chat in minutes. Reduce support costs by 80% and handle unlimited conversations simultaneously.',
+  title: 'Verly - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+  description: 'Automate customer support with Verly. Deploy intelligent AI agents for Voice, WhatsApp, and Web Chat in minutes. Reduce support costs by 80% and handle unlimited conversations simultaneously.',
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+    title: 'Verly - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web. Start for free.',
     url: siteConfig.url,
     type: 'website',
   },
   twitter: {
-    title: 'VerlyAI - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
+    title: 'Verly - AI Agent for Customer Support | Voice, WhatsApp & Web Chat',
     description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
   },
 };
