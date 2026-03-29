@@ -1,3 +1,5 @@
+import { enrichFeatureVisuals } from "./feature-visual-enrichment";
+
 export const FEATURES_PAGE_CONTENT = {
   "title": "Features | VerlyAI",
   "intro": "Explore every VerlyAI feature in one place. Browse by category, compare capabilities, and open any feature to see how it helps your support team automate faster and serve customers better."
@@ -13862,7 +13864,9 @@ export const FEATURE_CATEGORIES: FeatureCategory[] = FEATURE_CATEGORY_DEFINITION
 }));
 
 export function getFeatureBySlug(slug: string) {
-  return ALL_FEATURES.find((feature) => feature.slug === slug);
+  const feature = ALL_FEATURES.find((item) => item.slug === slug);
+  if (!feature) return undefined;
+  return enrichFeatureVisuals(feature);
 }
 
 export function getCategoryBySlug(slug: string) {

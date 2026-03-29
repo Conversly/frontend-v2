@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import {
   ArrowRight,
   CheckCircle2,
-  ImageIcon,
   Sparkles,
 } from "lucide-react";
 import Navbar from "@/components/landing/navbar";
@@ -123,6 +122,10 @@ const DEFAULT_FEATURE_HERO_ALT = FEATURE_UI_ASSETS.defaultHeroImageAlt;
 function resolveFeatureVisualPath(imagePath?: string) {
   if (!imagePath) return DEFAULT_FEATURE_HERO_IMAGE;
 
+  if (imagePath.startsWith("/images/features/")) {
+    return imagePath;
+  }
+
   if (
     imagePath.includes("feature-visual-placeholder") ||
     imagePath.startsWith("./assets/")
@@ -133,38 +136,42 @@ function resolveFeatureVisualPath(imagePath?: string) {
   return imagePath;
 }
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-function SvgPlaceholder({
-  title,
+function FeatureRasterVisual({
+  imagePath,
   alt,
   className = "",
+  minHeightClass = "min-h-[280px]",
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px",
 }: {
-  title: string;
+  imagePath?: string;
   alt: string;
   className?: string;
+  minHeightClass?: string;
+  sizes?: string;
 }) {
+  const src = resolveFeatureVisualPath(imagePath);
   return (
     <div
-      className={`relative overflow-hidden rounded-[28px] border border-[#eaecf5] bg-[linear-gradient(180deg,#ffffff,#f8fafc)] dark:border-[#243146] dark:bg-[linear-gradient(180deg,#111827,#0f1728)] ${className}`}
+      className={`relative overflow-hidden rounded-[28px] border border-[#eaecf5] bg-[#f8fafc] p-3 shadow-[0_12px_40px_rgba(16,24,40,0.06)] dark:border-[#243146] dark:bg-[#111827] dark:shadow-[0_16px_40px_rgba(0,0,0,0.25)] ${className}`}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(128,128,128,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.05)_1px,transparent_1px)] bg-[size:18px_18px] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)]" />
-      <div className="relative flex h-full min-h-[220px] flex-col items-center justify-center gap-4 p-8 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#1972f514] text-[#1972f5] dark:bg-blue-500/15 dark:text-blue-300">
-          <ImageIcon className="h-8 w-8" />
-        </div>
-        <div>
-          <p className="text-lg font-semibold text-[#242f47] dark:text-white">{title}</p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-[#667085] dark:text-slate-300">
-            SVG placeholder for: {alt}
-          </p>
-        </div>
+      <div
+        className={`relative w-full overflow-hidden rounded-[22px] bg-white dark:bg-[#0f1728] ${minHeightClass}`}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-contain object-center"
+          sizes={sizes}
+        />
       </div>
     </div>
   );
 }
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
 function StickyTrialCard() {
   return (
@@ -364,10 +371,12 @@ export default async function FeatureDetailPage({ params }: Props) {
                     ))}
                   </ul>
                 </div>
-                <SvgPlaceholder
-                  title={`${feature.title} general view`}
-                  alt={`${feature.title} detailed section illustration`}
+                <FeatureRasterVisual
+                  imagePath={feature.overviewImagePath}
+                  alt={`${feature.title} — overview`}
                   className="mt-10"
+                  minHeightClass="min-h-[360px]"
+                  sizes="(max-width: 1024px) 100vw, 800px"
                 />
               </section>
 
@@ -387,13 +396,17 @@ export default async function FeatureDetailPage({ params }: Props) {
                   {feature.workflowHint}
                 </p>
                 <div className="mt-10 grid gap-6 md:grid-cols-2">
-                  <SvgPlaceholder
-                    title="Primary workflow placeholder"
-                    alt={`${feature.title} workflow step one`}
+                  <FeatureRasterVisual
+                    imagePath={feature.workflowImagePaths[0]}
+                    alt={`${feature.title} — workflow`}
+                    minHeightClass="min-h-[240px]"
+                    sizes="(max-width: 768px) 100vw, 45vw"
                   />
-                  <SvgPlaceholder
-                    title="Secondary workflow placeholder"
-                    alt={`${feature.title} workflow step two`}
+                  <FeatureRasterVisual
+                    imagePath={feature.workflowImagePaths[1]}
+                    alt={`${feature.title} — workflow detail`}
+                    minHeightClass="min-h-[240px]"
+                    sizes="(max-width: 768px) 100vw, 45vw"
                   />
                 </div>
               </section>
@@ -425,10 +438,12 @@ export default async function FeatureDetailPage({ params }: Props) {
                           ))}
                         </ul>
                       ) : null}
-                      <SvgPlaceholder
-                        title={`${block.name} visual`}
+                      <FeatureRasterVisual
+                        imagePath={block.imagePath}
                         alt={block.imageAlt}
                         className="mt-8"
+                        minHeightClass="min-h-[300px]"
+                        sizes="(max-width: 1024px) 100vw, 800px"
                       />
                     </div>
                   ))}
@@ -516,18 +531,27 @@ export default async function FeatureDetailPage({ params }: Props) {
                   Learn more
                 </h2>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-                  {relatedFeatures.slice(0, 3).map((relatedFeature) => (
+                  {relatedFeatures.slice(0, 3).map((relatedFeature) => {
+                    const relatedDetail = getFeatureBySlug(relatedFeature.slug);
+                    const relatedHero = resolveFeatureVisualPath(
+                      relatedDetail?.heroImagePath
+                    );
+                    return (
                     <Link
                       key={relatedFeature.slug}
                       href={`/features/${relatedFeature.slug}`}
                       className="group block"
                     >
                       <article className="overflow-hidden rounded-[28px] border border-[#eaecf5] bg-white shadow-[0_18px_50px_rgba(42,59,81,0.08)] transition-all duration-200 hover:-translate-y-1 dark:border-[#243146] dark:bg-[#111827] dark:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
-                        <SvgPlaceholder
-                          title={`${relatedFeature.title} preview`}
-                          alt={`${relatedFeature.title} related content image placeholder`}
-                          className="rounded-none border-0 border-b min-h-[240px]"
-                        />
+                        <div className="relative h-[240px] w-full overflow-hidden border-b border-[#eaecf5] bg-[#f8fafc] dark:border-[#243146] dark:bg-[#0f1728]">
+                          <Image
+                            src={relatedHero}
+                            alt={`${relatedFeature.title} preview`}
+                            fill
+                            className="object-cover object-center"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                          />
+                        </div>
                         <div className="p-8">
                           <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#242f47] dark:text-white">
                             {relatedFeature.title}
@@ -553,7 +577,8 @@ export default async function FeatureDetailPage({ params }: Props) {
                         </div>
                       </article>
                     </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
