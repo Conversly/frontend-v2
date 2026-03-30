@@ -1,10 +1,11 @@
 "use client";
 
 import { PhoneCall, Sparkles } from "lucide-react";
+import BackedBy from "./backed-by";
 
 export default function CrispSupportLifecycle() {
   return (
-    <section id="support-lifecycle" className="relative overflow-hidden bg-white py-16 text-[#19253b] md:py-20">
+    <section id="support-lifecycle" className="relative overflow-hidden bg-white pt-16 pb-0 text-[#19253b] md:pt-20 md:pb-0">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f7f9ff_56%,#ffffff_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,123,247,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.08),transparent_22%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.06)_1px,transparent_1px)] bg-[size:72px_72px]" />
@@ -28,6 +29,8 @@ export default function CrispSupportLifecycle() {
           <ProductMockup />
         </div>
       </div>
+
+      <BackedBy />
     </section>
   );
 }
@@ -122,7 +125,7 @@ function ProductMockup() {
           </div>
         </div>
 
-        <div className="absolute -bottom-8 left-2 flex flex-wrap gap-3 sm:left-4">
+        <div className="absolute -bottom-12 left-2 flex flex-wrap gap-3 sm:-bottom-14 sm:left-4">
           <div className="flex items-center gap-2.5 rounded-full border border-[#0b9f62]/15 bg-[#006947] px-3.5 py-2.5 text-[11px] font-bold text-white shadow-[0_18px_34px_rgba(0,105,71,0.26)] sm:px-4.5 sm:text-xs">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/18 ring-1 ring-white/20">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">

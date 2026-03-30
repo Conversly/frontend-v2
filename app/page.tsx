@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/landing/navbar";
 import CrispHero from "@/components/crisp-landing/crisp-hero";
 import CrispSupportLifecycle from "@/components/crisp-landing/crisp-support-lifecycle";
+import BackedBy from "@/components/crisp-landing/backed-by";
 import CrispFeatures from "@/components/crisp-landing/crisp-features";
 import ClientAuthRedirect from "@/components/landing/ClientAuthRedirect";
 import Certificate from "@/components/crisp-landing/certificate";
