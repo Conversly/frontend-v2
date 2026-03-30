@@ -25,101 +25,124 @@ export interface ProcessRequest {
 
 
 export interface DatasourceResponse {
-    success: boolean;
-    insertedCount: number;
-    datasourceIds: string[];
-  }
-  
-  export interface DeleteKnowledgeResponse {
-    success: boolean;
-    message: string;
-  }
-  
-  export interface DataSourceItem {
+  success: boolean;
+  insertedCount: number;
+  datasourceIds: string[];
+}
+
+export interface DeleteKnowledgeResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface DataSourceItem {
+  id: string;
+  // Backend-mapped value (legacy + new variants).
+  // Examples seen: "Website", "Document", "URL", "DOCUMENT", "QNA", "TXT", ...
+  type: string;
+  name: string;
+  // Usage status (backend enum-ish, but keep legacy to match backend mapping)
+  status: string;
+  // Training/ingestion status (backend enum-ish, but keep legacy to match backend mapping)
+  ingestionStatus: string;
+  sourceDetails: any;
+  createdAt: string | Date | null;
+  citation: string | null;
+}
+export interface FetchDataSourcesResponse {
+  success: boolean;
+  data: DataSourceItem[];
+}
+
+export interface AddCitationRequest {
+  chatbotId: string;
+  dataSourceId: string;
+  citation: string;
+}
+
+export interface AddCitationResponse {
+  success: boolean;
+  message: string;
+  data: {
     id: string;
-    // Backend-mapped value (legacy + new variants).
-    // Examples seen: "Website", "Document", "URL", "DOCUMENT", "QNA", "TXT", ...
-    type: string;
-    name: string;
-    // Usage status (backend enum-ish, but keep legacy to match backend mapping)
-    status: string;
-    // Training/ingestion status (backend enum-ish, but keep legacy to match backend mapping)
-    ingestionStatus: string;
-    sourceDetails: any;
-    createdAt: string | Date | null;
-    citation: string | null;
-  }
-  
-  export interface FetchDataSourcesResponse {
-    success: boolean;
-    data: DataSourceItem[];
-  }
-  
-  export interface AddCitationRequest {
-    chatbotId: string;
-    dataSourceId: string;
     citation: string;
-  }
-  
-  export interface AddCitationResponse {
-    success: boolean;
-    message: string;
-    data: {
-      id: string;
-      citation: string;
-      updatedEmbeddingsCount: number;
-    };
-  }
-  
-  export interface EmbeddingItem {
-    id: string;
-    text: string;
-    topic: string;
-  }
+    updatedEmbeddingsCount: number;
+  };
+}
 
-  export interface FetchEmbeddingsResponse {
-    success: boolean;
-    data: EmbeddingItem[];
-  }
+export interface EmbeddingMetadata {
+  headingContext?: string[];
+  prevChunkId?: string;
+  nextChunkId?: string;
+  sourceType?: string;
+  sectionPath?: string;
+  chunkType?: string;
+  totalChunks?: number;
+  [key: string]: any;
+}
 
-  // Source Content types (for clean document preview)
+export interface EmbeddingItem {
+  id: string;
+  text: string;
+  topic?: string;
+  citation?: string;
+  summary?: string;
+  keywords?: string[];
+  questions?: string[];
+  sectionPath?: string;
+  chunkType?: string;
+  chunkIndex?: number;
+  totalChunks?: number;
+  processingPipeline?: string;
+  metadata?: EmbeddingMetadata;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
-  export interface WebContent {
-    title: string;
-    url: string;
-    sections: { heading: string; content: string }[];
-  }
+export interface FetchEmbeddingsResponse {
+  success: boolean;
+  data: EmbeddingItem[];
+}
 
-  export interface FileContent {
-    filename: string;
-    pageCount: number;
-    fileSize: string;
-    pages: { page: number; content: string }[];
-  }
 
-  export interface QASourceContent {
-    question: string;
-    answer: string;
-  }
+// Source Content types (for clean document preview)
 
-  export interface TextSourceContent {
-    content: string;
-  }
+export interface WebContent {
+  title: string;
+  url: string;
+  sections: { heading: string; content: string }[];
+}
 
-  export interface SourceContentItem {
-    id: string;
-    dataSourceId: string;
-    contentType: 'web' | 'file' | 'qa' | 'text';
-    structuredContent: WebContent | FileContent | QASourceContent | TextSourceContent;
-    plainText: string | null;
-    summary: string | null;
-    wordCount: number;
-    metadata: Record<string, any>;
-    createdAt: string | Date | null;
-  }
+export interface FileContent {
+  filename: string;
+  pageCount: number;
+  fileSize: string;
+  pages: { page: number; content: string }[];
+}
 
-  export interface FetchSourceContentResponse {
-    success: boolean;
-    data: SourceContentItem | null;
-  }
+export interface QASourceContent {
+  question: string;
+  answer: string;
+}
+
+export interface TextSourceContent {
+  content: string;
+}
+
+export interface SourceContentItem {
+  id: string;
+  dataSourceId: string;
+  contentType: 'web' | 'file' | 'qa' | 'text';
+  structuredContent: WebContent | FileContent | QASourceContent | TextSourceContent;
+  plainText: string | null;
+  summary: string | null;
+  wordCount: number;
+  metadata: Record<string, any>;
+  createdAt: string | Date | null;
+}
+
+export interface FetchSourceContentResponse {
+  success: boolean;
+  data: SourceContentItem | null;
+}
 
