@@ -145,6 +145,17 @@ export default function Navbar() {
             </Link>
 
             <Link
+              href="/why-verly"
+              className={`h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 ${
+                pathname === "/why-verly"
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-slate-600"
+              }`}
+            >
+              Why Verly
+            </Link>
+
+            <Link
               href="/voice"
               className={`relative h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 flex items-center gap-1.5 ${
                 pathname === "/voice"

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { openCalendlyPopup } from "@/lib/calendly";
 
 const exploreLinks = [
+  { name: "Why Verly", href: "/why-verly" },
   { name: "Features", href: "/features" },
   { name: "Pricing", href: "/pricing" },
   { name: "Solutions", href: "/solutions" },
