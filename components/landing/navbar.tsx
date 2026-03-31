@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,7 @@ import Image from "next/image";
 import {
   Sparkles, ArrowRight,
   Headphones, Briefcase, Users, Building2, HeartPulse, ShoppingBag,
-  Book, HelpCircle, Newspaper, ChevronDown
+  Book, HelpCircle, Newspaper, ChevronDown, Mic
 } from "lucide-react";
 import {
   Popover,
@@ -24,6 +25,7 @@ import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
 export default function Navbar() {
   const { user, logout, setUser } = useAuth();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const queryClient = useQueryClient();
 
@@ -111,7 +113,7 @@ export default function Navbar() {
         h-[74px] flex items-center
         top-0 w-full rounded-none
         lg:top-6 lg:max-w-7xl lg:rounded-[47px]
-        border border-border/40 shadow-lg bg-background/60 backdrop-blur-md text-foreground 
+        border border-slate-200 shadow-[0_18px_48px_rgba(15,23,42,0.12)] bg-white text-slate-900
         ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'
           }`}
       >
@@ -124,31 +126,57 @@ export default function Navbar() {
               height={33}
               className="h-10 w-auto object-contain"
             />
-            <span className="font-bold text-xl">VerlyAI</span>
+            <span className="text-xl font-bold text-slate-900">VerlyAI</span>
           </Link>
 
           {/* Navigation Links */}
           {/* Mega Menu Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/about" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/about" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
               About
             </Link>
 
-            <Link href="/features" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/features" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
               Features
             </Link>
 
-            <Link href="/pricing" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/pricing" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
               Pricing
             </Link>
 
-            <Link href="/compare" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/compare" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
               Compare
+            </Link>
+
+            <Link
+              href="/why-verly"
+              className={`h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 ${
+                pathname === "/why-verly"
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-slate-600"
+              }`}
+            >
+              Why Verly
+            </Link>
+
+            <Link
+              href="/voice"
+              className={`relative h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 flex items-center gap-1.5 ${
+                pathname === "/voice"
+                  ? "bg-[#8af0be]/10 text-[#059669]"
+                  : "text-slate-600"
+              }`}
+            >
+              <Mic className="h-3.5 w-3.5" />
+              Voice
+              <span className="inline-flex items-center rounded-full bg-[#8af0be]/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#059669]">
+                New
+              </span>
             </Link>
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                <Button variant="ghost" className="group h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 data-[state=open]:bg-slate-100 data-[state=open]:text-blue-600">
                   Solutions
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
@@ -296,7 +324,7 @@ export default function Navbar() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="h-auto py-2 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-transparent data-[state=open]:text-primary data-[state=open]:bg-transparent group">
+                <Button variant="ghost" className="group h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 data-[state=open]:bg-slate-100/90 data-[state=open]:text-blue-600">
                   Resources
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
@@ -404,7 +432,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary via-blue-400 to-primary bg-[length:200%_100%] animate-[shimmer_2.5s_linear_infinite] px-6 font-semibold text-primary-foreground shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 hover:scale-[1.02]">
+                  <Button className="group relative overflow-hidden rounded-full border border-blue-600/70 bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] px-6 font-semibold text-white shadow-[0_12px_28px_rgba(37,99,235,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:from-[#1d4ed8] hover:to-[#1e40af] hover:shadow-[0_16px_34px_rgba(37,99,235,0.42)]">
                     <span className="relative z-10 flex items-center gap-2">
                       Get started
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

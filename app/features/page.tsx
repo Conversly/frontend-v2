@@ -22,7 +22,6 @@ import { FEATURE_CATEGORIES, FEATURES_PAGE_CONTENT, ThemeKey } from "./constants
 import { siteConfig } from "@/lib/metadata";
 import FeaturesSearch from "./features-search";
 import { getFeatureIconComponent } from "./feature-icon";
-
 export const metadata: Metadata = {
   title: "Features | VerlyAI",
   description: FEATURES_PAGE_CONTENT.intro,

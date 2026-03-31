@@ -30,7 +30,7 @@ export default function CrispHero() {
               <div className="page-main-title__buttons mt-6">
                 <div className="common-signup-cta common-signup-cta--medium home-hero__signup-cta">
                   <div className="common-signup-cta__field">
-                    <a href="https://calendly.com/rdhakad2002/30min" target="_blank" rel="noopener noreferrer" className="common-button common-button--medium font-sans-bold common-button--roundish" style={{ background: '#fff', color: '#111827' }}>
+                    <a href="https://calendly.com/rdhakad2002/30min" target="_blank" rel="noopener noreferrer" className="common-button common-button--white common-button--medium font-sans-bold common-button--roundish">
                       <span className="common-button__label ellipsis">Schedule a Demo</span>
                     </a>
                     <a href="https://app.verly.ai/signup" rel="noopener noreferrer" className="common-button common-button--blue common-button--medium font-sans-bold common-button--roundish">
@@ -40,11 +40,11 @@ export default function CrispHero() {
                   </div>
                   
                   <div className="mt-10 flex flex-wrap justify-center gap-3">
-                    <span className="px-3 py-1.5 text-[13px] font-semibold text-gray-600 bg-gray-50/80 border border-gray-200/60 rounded-lg shadow-sm">No setup fee</span>
-                    <span className="px-3 py-1.5 text-[13px] font-semibold text-gray-600 bg-gray-50/80 border border-gray-200/60 rounded-lg shadow-sm">24/7 Customer service</span>
-                    <span className="px-3 py-1.5 text-[13px] font-semibold text-gray-600 bg-gray-50/80 border border-gray-200/60 rounded-lg shadow-sm">No credit card required</span>
-                    <span className="px-3 py-1.5 text-[13px] font-semibold text-gray-600 bg-gray-50/80 border border-gray-200/60 rounded-lg shadow-sm">Cancel any time</span>
-                    <span className="px-3 py-1.5 text-[13px] font-semibold text-gray-600 bg-gray-50/80 border border-gray-200/60 rounded-lg shadow-sm">30-day free trial</span>
+                    <span className="home-hero__benefit-chip">No setup fee</span>
+                    <span className="home-hero__benefit-chip">24/7 Customer service</span>
+                    <span className="home-hero__benefit-chip">No credit card required</span>
+                    <span className="home-hero__benefit-chip">Cancel any time</span>
+                    <span className="home-hero__benefit-chip">30-day free trial</span>
                   </div>
                 </div>
               </div>
@@ -77,9 +77,9 @@ export default function CrispHero() {
       
       <div className="common-hero__background">
         <div className="common-decor common-decor--hide-on-mobile home-hero-background" style={{ backgroundColor: "transparent" } as React.CSSProperties}>
-          <div className="common-decor__grid" style={{ opacity: 0.2 }}></div>
+          <div className="common-decor__grid"></div>
           <picture className="common-decor__texture common-decor__texture--full">
-            <img alt="home-hero-background" loading="eager" style={{ objectPosition: "center", opacity: 0.9 }} src="/wallpaper.jpg" className="w-full h-full object-cover" />
+            <img alt="home-hero-background" loading="eager" src="/wallpaper.jpg" className="w-full h-full object-cover object-center" />
           </picture>
         </div>
       </div>
