@@ -121,7 +121,7 @@ export function WhyHero() {
                       poster="/why-verly/featured-omnichannel.png"
                       className="h-full w-full object-cover object-center [filter:contrast(1.08)_saturate(1.06)_brightness(0.98)]"
                     >
-                      <source src="/why-verly/why-verly-promo.mp4" type="video/mp4" />
+                      <source src="/why-verly/why-verly-promo.webm" type="video/webm" />
                     </video>
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_28%)]" />
                     <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),transparent)]" />
