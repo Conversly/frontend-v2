@@ -1,6 +1,6 @@
 export const WHY_VERLY_PAGE = {
   eyebrow: "Why Verly",
-  title: "6 reasons fast-growing teams choose Verly for AI customer support",
+  title: "6 More reasons fast-growing teams choose Verly for AI customer support",
   description:
     "Deliver faster replies, lower support costs, and cover voice, WhatsApp, and web chat from one AI-native support system.",
   primaryCta: {
@@ -9,7 +9,7 @@ export const WHY_VERLY_PAGE = {
   },
   secondaryCta: {
     label: "Start free trial",
-    href: "https://app.verly.ai/signup",
+    href: "https://verlyai.xyz/login",
   },
   heroStats: [
     { value: "80%", label: "lower support cost potential" },
