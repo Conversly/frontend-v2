@@ -112,22 +112,9 @@ export default function CrispHero() {
           <div className="home-hero-app__container">
             <div className="common-ghost-container common-ghost-container--white home-hero-app__screenshot-container">
               <div className="common-ghost-container__content home-hero-app__content">
-                <button className="home-hero-app__play" aria-label="Play video">
-                  <div className="home-hero-app__play-inner">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#315EEA] text-white shadow-lg">
-                      <Play className="h-5 w-5 ml-0.5" fill="currentColor" />
-                    </div>
-                    <div className="home-hero-app__play-text">
-                      <span className="home-hero-app__play-title font-sans-bold">
-                        Discover Verly
-                      </span>
-                      <span className="home-hero-app__play-description">Video, 2 mins</span>
-                    </div>
-                  </div>
-                </button>
                 <div className="home-hero-app__screenshot">
                   <Image
-                    src="/helpdesk-showcase-reference.png"
+                    src="/dashboard.png"
                     alt="Verly AI helpdesk dashboard"
                     width={980}
                     height={600}
