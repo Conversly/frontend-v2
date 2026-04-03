@@ -175,41 +175,59 @@ type Props = {
 
 function StickyTrialCard() {
   return (
-    <aside className="sticky top-28 mx-auto w-full max-w-[360px] rounded-[28px] border border-[#2f3442] bg-[#202123] p-8 text-white shadow-[0_24px_60px_rgba(16,24,40,0.25)]">
-      <div className="flex flex-col items-center text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff9f43]">
-          <Image
-            src={FEATURE_UI_ASSETS.trialLogoPath}
-            alt="VerlyAI logo"
-            width={24}
-            height={24}
-            className="h-6 w-6 object-contain"
-          />
+    <aside className="sticky top-28 w-full space-y-4">
+      {/* CTA card */}
+      <div className="rounded-2xl border border-[#eaecf5] bg-white p-5 shadow-sm dark:border-[#243146] dark:bg-[#111827]">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1976d2]">
+            <Image
+              src={FEATURE_UI_ASSETS.trialLogoPath}
+              alt="VerlyAI logo"
+              width={20}
+              height={20}
+              className="h-5 w-5 object-contain"
+            />
+          </div>
+          <div>
+            <h3 className="text-[15px] font-semibold text-[#242f47] dark:text-white">
+              Try VerlyAI free
+            </h3>
+            <p className="text-[13px] text-[#667085] dark:text-slate-400">
+              No credit card required
+            </p>
+          </div>
         </div>
-        <h3 className="mt-6 text-3xl font-semibold tracking-[-0.04em]">
-          Start your free trial
-        </h3>
-        <p className="mt-4 max-w-[280px] text-base leading-8 text-white/75">
-          Get professional customer support with VerlyAI. Bring together AI workflows, automation, and team execution in one platform.
+        <p className="mt-3 text-[13px] leading-5 text-[#5d6b98] dark:text-slate-300">
+          Bring together AI workflows, automation, and team execution in one support platform.
         </p>
-      </div>
-      <div className="mt-8">
         <Link
           href="/login"
-          className="flex h-12 items-center justify-center rounded-2xl bg-[#ff9f43] px-5 text-base font-semibold text-white transition-colors hover:bg-[#f28c28]"
+          className="mt-4 flex h-10 items-center justify-center rounded-xl bg-[#1976d2] text-sm font-semibold text-white transition-colors hover:bg-[#1565c0]"
         >
-          Try VerlyAI free
+          Start free trial
         </Link>
       </div>
-      <div className="relative mt-8 overflow-hidden rounded-[24px] border border-white/10 bg-white/5">
+
+      {/* Preview image */}
+      <div className="overflow-hidden rounded-2xl border border-[#eaecf5] dark:border-[#243146]">
         <Image
           src={FEATURE_UI_ASSETS.trialBannerImagePath}
           alt={FEATURE_UI_ASSETS.trialBannerImageAlt}
-          width={450}
-          height={456}
-          className="h-auto w-full object-cover object-center"
+          width={380}
+          height={240}
+          className="h-auto w-full object-cover"
         />
       </div>
+
+      {/* Quick link */}
+      <Link
+        href="https://calendly.com/rdhakad2002/30min"
+        target="_blank"
+        className="flex items-center justify-between rounded-2xl border border-[#eaecf5] bg-white px-5 py-3.5 text-sm font-medium text-[#242f47] transition-colors hover:bg-[#f8fafc] dark:border-[#243146] dark:bg-[#111827] dark:text-white dark:hover:bg-[#162033]"
+      >
+        Book a demo
+        <ArrowRight className="h-4 w-4 text-[#667085]" />
+      </Link>
     </aside>
   );
 }
@@ -475,17 +493,17 @@ export default async function FeatureDetailPage({ params }: Props) {
                 </div>
               </section>
 
-              <section className="common-faq">
-                <h2 className="common-faq__title text-[#1f2937] dark:text-white">
+              <section>
+                <h2 className="text-4xl font-semibold tracking-[-0.04em] text-[#1f2937] dark:text-white">
                   Frequently asked questions
                 </h2>
-                <Accordion type="single" collapsible className="common-faq-list">
+                <Accordion type="single" collapsible className="mt-8 space-y-3">
                   {feature.faqItems.map((item, index) => (
-                    <AccordionItem key={item.question} value={`faq-${index}`} className="border-[#eaecf5] dark:border-[#243146]">
-                      <AccordionTrigger className="common-faq-list__question text-left text-xl font-semibold text-[#242f47] hover:no-underline dark:text-white">
+                    <AccordionItem key={item.question} value={`faq-${index}`} className="rounded-2xl border border-[#eaecf5] bg-white px-6 dark:border-[#243146] dark:bg-[#111827]">
+                      <AccordionTrigger className="text-left text-lg font-semibold text-[#242f47] hover:no-underline dark:text-white">
                         {item.question}
                       </AccordionTrigger>
-                      <AccordionContent className="common-faq-list__answer ml-0 pt-0 text-[16px] leading-8 text-[#667085] dark:text-slate-300">
+                      <AccordionContent className="pb-5 text-[16px] leading-8 text-[#667085] dark:text-slate-300">
                         {item.answer}
                       </AccordionContent>
                     </AccordionItem>
