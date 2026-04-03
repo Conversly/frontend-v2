@@ -18,12 +18,14 @@ export interface SolutionDetail {
   description: string;
   color: string;
   bg: string;
+  heroImage: string;
+  heroImageAlt: string;
+  heroPanelLabel: string;
+  heroSummary: string[];
   features: string[];
-
   heroTagline: string;
   heroSubtitle: string;
   tags: string[];
-
   painPoints: { title: string; description: string }[];
   capabilities: { title: string; description: string }[];
   useCases: { title: string; scenario: string; outcome: string }[];
@@ -39,118 +41,126 @@ export const solutions: SolutionDetail[] = [
     title: "E-commerce & Retail",
     category: "Commerce",
     description:
-      "Turn browsers into buyers with instant answers. Stop losing sales to unanswered questions — AI responds in 2 seconds, 24/7.",
-    color: "text-blue-600",
-    bg: "bg-blue-100",
-    features: [
-      "Instant order tracking via chat or WhatsApp",
-      "Product recommendations that increase AOV 18%",
-      "Automated returns save 15 hrs/week",
-      "Support 95+ languages without hiring",
-      "Works with Shopify, WooCommerce, Magento",
+      "Resolve order, delivery, and return questions instantly across web chat, WhatsApp, and voice without bloating your support team.",
+    color: "text-[#315EEA]",
+    bg: "bg-[#eaf0ff]",
+    heroImage: "/solutions/e-commerce-retail.png",
+    heroImageAlt: "Retail support command center visual",
+    heroPanelLabel: "Commerce operating layer",
+    heroSummary: [
+      "Answer order-status, return, and delivery questions in seconds.",
+      "Turn support into a revenue surface with product recommendations and recovery offers.",
+      "Keep Shopify, WooCommerce, and fulfillment data available inside every conversation.",
     ],
-    heroTagline: "AI support built for online retail",
+    features: [
+      "Instant order tracking across chat, WhatsApp, and voice",
+      "Return and refund automation with policy checks built in",
+      "Product recommendations and cart-recovery nudges in live conversations",
+      "95+ language coverage for global support teams",
+      "Shopify, WooCommerce, Magento, and logistics integrations",
+    ],
+    heroTagline: "AI support built for modern retail operations",
     heroSubtitle:
-      "Shoppers expect instant answers. Verly handles order tracking, product questions, returns, and recommendations 24/7 — so your team focuses on growth instead of repetitive tickets.",
-    tags: ["24/7 Support", "Order Tracking", "Multi-language", "Shopify"],
+      "Retail teams lose revenue when shoppers wait on sizing, shipping, and return questions. Verly handles the repetitive volume, surfaces the right order context instantly, and keeps your human team focused on VIP issues and exceptions.",
+    tags: ["Order Tracking", "Returns", "Revenue Recovery", "Shopify"],
     painPoints: [
       {
-        title: "Cart abandonment from slow support",
+        title: "Shoppers abandon carts when support goes dark",
         description:
-          "Shoppers leave when questions go unanswered. Every minute of delay costs revenue — especially during peak hours and promotions.",
+          "Questions about shipping, sizing, stock, and delivery timing often show up after hours or during campaign spikes. When nobody responds quickly, the purchase disappears.",
       },
       {
-        title: "Repetitive order status queries",
+        title: "Order-status tickets bury the team",
         description:
-          "\"Where is my order?\" accounts for 40%+ of support volume. Your agents spend hours on questions that AI can answer instantly.",
+          "\"Where is my order?\" and \"Can I change my address?\" should not consume your highest-volume support queue, but they usually do.",
       },
       {
-        title: "Returns and refunds bottleneck",
+        title: "Returns create operational drag",
         description:
-          "Manual return processing eats 15+ hours per week. Customers wait days for simple exchanges that should take minutes.",
+          "Manual checks for eligibility, policy windows, and exchange options slow down customers and force agents into repetitive admin work.",
       },
       {
-        title: "Scaling during peak seasons",
+        title: "Peak demand is expensive to staff",
         description:
-          "Black Friday, holiday sales, flash promotions — hiring seasonal agents is expensive and slow. You need support that scales instantly.",
+          "Holiday launches, creator drops, and flash sales create support surges that require coverage immediately, not a hiring cycle.",
       },
     ],
     capabilities: [
       {
-        title: "Instant order tracking",
+        title: "Real-time order answers",
         description:
-          "AI pulls real-time shipping data and responds to \"Where is my order?\" in under 2 seconds — via chat, WhatsApp, or voice.",
+          "Pull shipment, payment, and fulfillment context directly into the conversation so customers get accurate updates without waiting in queue.",
       },
       {
-        title: "AI product recommendations",
+        title: "Return and exchange workflows",
         description:
-          "Suggest complementary products during conversations. Customers who engage with recommendations have 18% higher average order value.",
+          "Verify policy eligibility, collect reasons, trigger labels, and guide exchanges or refunds without a manual agent handoff.",
       },
       {
-        title: "Automated returns & refunds",
+        title: "Revenue-aware product guidance",
         description:
-          "Process return requests end-to-end: verify eligibility, generate labels, and issue refunds — no agent involvement required.",
+          "Use purchase context and browsing intent to recommend alternates, bundles, and cross-sells while helping the customer move forward.",
       },
       {
-        title: "Multi-language support",
+        title: "Channel-consistent support",
         description:
-          "Serve customers in 95+ languages without hiring multilingual agents. AI detects language and responds natively.",
+          "Run the same support logic across web chat, WhatsApp, and voice while keeping all order context and escalation history unified.",
       },
       {
-        title: "Platform integrations",
+        title: "Operational routing for exceptions",
         description:
-          "Connect with Shopify, WooCommerce, Magento, and your existing tools in minutes. No engineering work required.",
+          "Escalate chargebacks, lost parcels, and VIP customers to the right team with summaries and customer history attached.",
       },
     ],
     useCases: [
       {
-        title: "Order status inquiry",
+        title: "After-hours shipping question",
         scenario:
-          "A customer messages \"Where is my order #48291?\" at 11pm on a Saturday.",
+          "A customer messages at 11:42pm asking whether order #48291 will arrive before a birthday in two days.",
         outcome:
-          "AI pulls tracking data from your shipping provider and responds with current location, estimated delivery, and a tracking link — in 2 seconds.",
+          "Verly checks shipment status, confirms ETA, offers expedited options if needed, and shares a tracking link with no agent required.",
       },
       {
-        title: "Product discovery",
+        title: "Self-serve exchange flow",
         scenario:
-          "A shopper browsing your site asks the chat widget about sizing for a specific jacket.",
+          "A shopper wants to exchange a jacket for a different size from the confirmation email thread.",
         outcome:
-          "AI provides size chart details, recommends matching accessories, and offers a 10% discount code — increasing cart value by 22%.",
+          "Verly verifies the policy window, confirms replacement inventory, generates the exchange flow, and updates the customer instantly.",
       },
       {
-        title: "Automated return",
+        title: "Pre-purchase conversion support",
         scenario:
-          "A customer wants to return a pair of shoes that doesn't fit.",
+          "A buyer compares two products and asks which one is better for travel use.",
         outcome:
-          "AI verifies the order, checks return eligibility, generates a prepaid shipping label, and confirms the refund timeline — all without human involvement.",
+          "Verly answers the product question, recommends the right SKU, and suggests a bundle that improves AOV during the same conversation.",
       },
     ],
     metrics: [
-      { value: "2s", label: "average response time" },
-      { value: "80%", label: "tickets auto-resolved" },
-      { value: "18%", label: "increase in AOV" },
-      { value: "15hrs", label: "saved per week on returns" },
+      { value: "80%", label: "retail tickets resolved automatically" },
+      { value: "2s", label: "response time on common order questions" },
+      { value: "18%", label: "higher AOV from guided product discovery" },
+      { value: "24/7", label: "coverage during launches and peak demand" },
     ],
     faqItems: [
       {
-        question: "How does Verly integrate with Shopify?",
+        question: "Does Verly integrate directly with Shopify and WooCommerce?",
         answer:
-          "Verly connects to Shopify via a native app. Install it from the Shopify App Store, authorize access, and your product catalog, order data, and customer info sync automatically. Setup takes under 5 minutes.",
+          "Yes. Verly can connect with commerce platforms and related operational systems so product catalog, order status, fulfillment updates, and customer context remain available inside support conversations.",
       },
       {
-        question: "Can it handle Black Friday traffic?",
+        question: "Can it support both pre-purchase and post-purchase flows?",
         answer:
-          "Yes. Verly auto-scales to handle unlimited concurrent conversations. Whether you get 100 or 100,000 inquiries in a day, response times stay under 3 seconds.",
+          "Yes. Teams commonly use Verly for sales-assist questions before checkout and order support after purchase, with different routing, guardrails, and response goals for each motion.",
       },
       {
-        question: "Does it support multiple storefronts?",
+        question: "What happens with damaged shipments or policy exceptions?",
         answer:
-          "Absolutely. You can connect multiple Shopify stores, WooCommerce instances, or any combination of platforms under a single Verly workspace.",
+          "Those conversations can escalate automatically with a summary, order context, and reason code so your human team starts from the right place instead of re-triaging the issue.",
       },
       {
-        question: "How does the product recommendation engine work?",
+        question: "Can the experience stay on-brand across channels?",
         answer:
-          "Verly analyzes the customer's browsing context, current cart, and conversation to suggest relevant products. It works with your existing catalog data — no additional training needed.",
+          "Yes. You can keep one support brain across web, messaging, and voice while tuning copy, channel behavior, and escalation rules for each surface.",
       },
     ],
     relatedSlugs: ["saas-platforms", "restaurants-hospitality", "travel-tourism"],
@@ -161,121 +171,129 @@ export const solutions: SolutionDetail[] = [
     title: "SaaS Platforms",
     category: "Support",
     description:
-      "Cut support costs by 80% while improving CSAT. AI handles Tier 1 tickets so your team focuses on product, not repetitive questions.",
-    color: "text-purple-600",
-    bg: "bg-purple-100",
-    features: [
-      "Answer docs questions with 95% accuracy",
-      "Reduce onboarding support by 70%",
-      "Troubleshoot common errors instantly",
-      "Handle billing inquiries automatically",
-      "Smart routing to engineers when needed",
+      "Deflect repetitive tickets, guide onboarding, and route technical issues with full product context instead of forcing engineers into Tier 1 support.",
+    color: "text-[#5b5bd6]",
+    bg: "bg-[#efeefe]",
+    heroImage: "/solutions/saas-platforms.png",
+    heroImageAlt: "SaaS support workspace visual",
+    heroPanelLabel: "Support command center",
+    heroSummary: [
+      "Answer docs and onboarding questions with grounded product knowledge.",
+      "Collect technical context before escalation so engineering stops doing intake work.",
+      "Automate billing, upgrade, and account-management conversations inside the product.",
     ],
-    heroTagline: "Scale support without scaling headcount",
+    features: [
+      "Knowledge-backed answers from docs, changelogs, and internal help content",
+      "Contextual onboarding guidance directly inside the product",
+      "Technical triage with structured issue collection before handoff",
+      "Billing, invoice, and upgrade automation for common account workflows",
+      "In-app widget support with page-aware responses",
+    ],
+    heroTagline: "Scale SaaS support without scaling headcount",
     heroSubtitle:
-      "Your engineers shouldn't be answering Tier 1 tickets. Verly learns your documentation, resolves onboarding questions, and only escalates what truly needs a human.",
-    tags: ["Knowledge Base", "Ticket Routing", "Onboarding", "Billing"],
+      "Fast-growing software products need more than a FAQ bot. Verly resolves repetitive product questions, guides onboarding, and captures the technical details your engineers need when a case actually deserves human review.",
+    tags: ["In-App Support", "Technical Triage", "Billing", "Docs"],
     painPoints: [
       {
-        title: "Tier 1 tickets overwhelming engineering",
+        title: "Engineers get dragged into Tier 1 support",
         description:
-          "Your most expensive team members are answering password resets and setup questions instead of building product.",
+          "Simple setup questions and recurring troubleshooting issues land in the same queue as real incidents, which slows both support and product velocity.",
       },
       {
-        title: "Onboarding questions eating dev time",
+        title: "Onboarding friction creates avoidable churn",
         description:
-          "New users ask the same questions repeatedly. Your docs exist, but nobody reads them — they open tickets instead.",
+          "New customers ask the same implementation questions repeatedly because answers are scattered across docs, release notes, and the product UI.",
       },
       {
-        title: "Inconsistent responses across agents",
+        title: "Support replies are inconsistent",
         description:
-          "Different agents give different answers to the same question. Customers get confused and lose trust.",
+          "Customers should not get different answers depending on who is online. Inconsistent guidance creates confusion and makes debugging harder.",
       },
       {
-        title: "Documentation going unused",
+        title: "Escalations arrive without the right data",
         description:
-          "You've invested in great docs, but support volume keeps growing. The knowledge exists — it's just not accessible at the right moment.",
+          "A bug report without repro steps, workspace state, or browser context still forces someone on your team to start from zero.",
       },
     ],
     capabilities: [
       {
-        title: "Knowledge-powered answers",
+        title: "Grounded product answers",
         description:
-          "AI learns your docs, changelogs, and past tickets. It answers questions with 95% accuracy and links to the relevant documentation.",
+          "Use synced docs, release notes, and internal playbooks to answer setup and feature questions with links and source-backed guidance.",
       },
       {
-        title: "Automated onboarding flows",
+        title: "Onboarding assistance in context",
         description:
-          "Guide new users through setup with contextual, step-by-step assistance. Reduce onboarding support tickets by 70%.",
+          "Guide users through setup, configuration, and adoption flows based on where they are in the product and what they are trying to do.",
       },
       {
-        title: "Smart ticket routing",
+        title: "Structured bug and support triage",
         description:
-          "AI triages incoming tickets by intent, severity, and required expertise — then routes to the right team with full context.",
+          "Collect screenshots, browser details, workspace context, and repro steps before a ticket reaches engineering or product support.",
       },
       {
-        title: "Billing automation",
+        title: "Billing and account operations",
         description:
-          "Handle subscription inquiries, plan comparisons, invoice requests, and payment issues without human involvement.",
+          "Handle invoices, upgrades, renewals, plan comparisons, and entitlement questions automatically while preserving escalation paths for edge cases.",
       },
       {
-        title: "In-app support widget",
+        title: "Unified escalation workflow",
         description:
-          "Embed contextual help directly in your product. AI knows which page the user is on and tailors responses accordingly.",
+          "Route technical issues, high-value accounts, and urgent incidents with summaries and next-step context already attached.",
       },
     ],
     useCases: [
       {
-        title: "Setup question",
+        title: "SSO setup guidance",
         scenario:
-          "A new user asks how to configure SSO integration during their first week.",
+          "An admin asks how to complete SAML setup while they are inside your settings page.",
         outcome:
-          "AI surfaces the exact SSO setup guide, walks through each step, and links to the relevant admin panel — resolving the ticket in under 30 seconds.",
+          "Verly explains the exact steps, maps them to your UI, highlights common errors, and links the right docs before the ticket ever reaches support.",
       },
       {
-        title: "Bug report triage",
+        title: "Bug report intake",
         scenario:
-          "A customer reports that exports are failing with a timeout error.",
+          "A customer reports failed exports but only provides a vague description in chat.",
         outcome:
-          "AI collects browser, plan info, and reproduction steps, then routes to engineering with a structured bug report — saving 15 minutes of back-and-forth.",
+          "Verly gathers the affected workspace, date range, browser details, and reproduction steps so engineering receives a structured report instead of a loose complaint.",
       },
       {
-        title: "Billing inquiry",
+        title: "Plan upgrade conversation",
         scenario:
-          "A customer asks about upgrading from Starter to Growth plan mid-cycle.",
+          "A customer asks if upgrading mid-cycle unlocks audit logs and higher usage limits immediately.",
         outcome:
-          "AI calculates the prorated cost, explains the feature differences, and provides a one-click upgrade link — no agent needed.",
+          "Verly explains the differences, handles the billing logic, and routes the user toward the upgrade path without pulling in a human rep.",
       },
     ],
     metrics: [
-      { value: "80%", label: "reduction in support costs" },
-      { value: "70%", label: "fewer onboarding tickets" },
-      { value: "95%", label: "answer accuracy" },
-      { value: "<30s", label: "average resolution time" },
+      { value: "70%", label: "fewer onboarding tickets for product teams" },
+      { value: "95%", label: "answer accuracy on grounded knowledge flows" },
+      { value: "<30s", label: "resolution time for common SaaS questions" },
+      { value: "80%", label: "lower support-cost pressure on scaling teams" },
     ],
     faqItems: [
       {
-        question: "Can it learn from our documentation?",
+        question: "Can Verly answer from our docs and release notes without retraining every week?",
         answer:
-          "Yes. Verly ingests your docs, help center articles, changelogs, and past tickets. It stays updated as you publish new content — no manual retraining required.",
+          "Yes. Verly is designed around synced knowledge sources so answers stay grounded in current content rather than a stale static FAQ workflow.",
       },
       {
-        question: "How does smart routing work?",
+        question: "Can it work inside the product instead of only on the marketing site?",
         answer:
-          "AI analyzes the ticket's intent, sentiment, and technical complexity, then routes to the appropriate team (support, engineering, billing) with a summary and recommended action.",
+          "Yes. Teams often use Verly in-app so support can respond with knowledge, account context, and workflow guidance where the user is actually working.",
       },
       {
-        question: "Does it integrate with Intercom or Zendesk?",
+        question: "How do you prevent low-quality escalation to engineering?",
         answer:
-          "Verly integrates with Intercom, Zendesk, Freshdesk, and other major helpdesk platforms. You can also use it standalone as your primary support tool.",
+          "Verly can gather structured context before handoff, including intent, priority, reproduction details, and any required metadata your team needs to act quickly.",
       },
       {
-        question: "Can it handle technical questions?",
+        question: "Can billing and technical support use different rules?",
         answer:
-          "For questions covered in your docs, yes — with 95% accuracy. For novel technical issues, AI collects context and routes to your engineering team with a structured report.",
+          "Yes. Each motion can use different guardrails, knowledge sources, and escalation behavior while still operating inside one support system.",
       },
     ],
-    relatedSlugs: ["e-commerce-retail", "education", "professional-services"],
+    relatedSlugs: ["education", "professional-services", "e-commerce-retail"],
   },
   {
     slug: "healthcare",
@@ -283,121 +301,129 @@ export const solutions: SolutionDetail[] = [
     title: "Healthcare",
     category: "Voice",
     description:
-      "Never miss a patient call again. AI handles scheduling, insurance verification, and routine inquiries — HIPAA compliant.",
-    color: "text-red-600",
-    bg: "bg-red-100",
-    features: [
-      "100% HIPAA-compliant & secure",
-      "24/7 appointment booking & reminders",
-      "Verify insurance in seconds",
-      "Automate prescription refills",
-      "Communicate in patient's language",
+      "Handle patient scheduling, refill requests, and routine triage with guardrails, multilingual access, and always-on response coverage.",
+    color: "text-[#dc5b5b]",
+    bg: "bg-[#fdeeed]",
+    heroImage: "/solutions/healthcare.png",
+    heroImageAlt: "Healthcare patient access visual",
+    heroPanelLabel: "Patient access flow",
+    heroSummary: [
+      "Automate appointment requests, reschedules, and routine patient questions.",
+      "Keep refill and intake workflows moving without forcing patients to wait on hold.",
+      "Add compliance-aware guardrails and escalation logic for sensitive conversations.",
     ],
-    heroTagline: "HIPAA-compliant AI for patient communication",
+    features: [
+      "24/7 scheduling and rescheduling for patient access teams",
+      "Prescription refill intake and follow-up workflows",
+      "Insurance, referral, and intake question automation",
+      "Multilingual support for high-volume patient communication",
+      "Voice, messaging, and web coverage from one operating model",
+    ],
+    heroTagline: "Patient communication that does not stop when the front desk closes",
     heroSubtitle:
-      "Patients expect immediate answers, but your staff is stretched thin. Verly handles appointment scheduling, insurance verification, and routine inquiries around the clock — with full HIPAA compliance.",
-    tags: ["HIPAA Compliant", "Voice AI", "Scheduling", "Insurance"],
+      "Healthcare teams spend too much time on routine calls and portal questions while patients wait for simple answers. Verly helps patient access and operations teams automate the repetitive volume, preserve guardrails, and escalate only when clinical nuance or policy requires it.",
+    tags: ["Patient Access", "Scheduling", "Refills", "Compliance-Aware"],
     painPoints: [
       {
-        title: "Missed calls, lost appointments",
+        title: "Missed calls turn into missed appointments",
         description:
-          "When phone lines are busy or it's after hours, patients hang up and don't call back. Every missed call is a missed appointment.",
+          "When the line is busy or voicemail takes over, patients often do not try again. That creates revenue loss and a poor care-access experience.",
       },
       {
-        title: "Staff overwhelmed by routine queries",
+        title: "Routine questions overwhelm staff",
         description:
-          "Scheduling, insurance verification, and refill requests consume 60%+ of front desk time — pulling staff away from in-office patients.",
+          "Office hours, appointment prep, referral requirements, and refill updates should not consume the same staff time needed for higher-value care coordination.",
       },
       {
-        title: "Compliance makes automation risky",
+        title: "Automation is risky without clear guardrails",
         description:
-          "HIPAA requirements make many automation tools off-limits. You need AI that's built for healthcare from the ground up.",
+          "Healthcare teams need escalation and data-handling rules that respect policy, privacy, and operational boundaries, not generic chatbot behavior.",
       },
       {
-        title: "After-hours calls go to voicemail",
+        title: "After-hours demand never disappears",
         description:
-          "Patients with urgent scheduling needs after 5pm leave voicemails that don't get returned until the next day — if at all.",
+          "Patients call outside business hours because that is when they remember, worry, or need to make a change. The operation still needs to respond.",
       },
     ],
     capabilities: [
       {
-        title: "24/7 appointment scheduling",
+        title: "Appointment management",
         description:
-          "Patients book, reschedule, and cancel appointments via voice or chat — any time, any day. AI syncs directly with your practice management system.",
+          "Handle scheduling, rescheduling, cancellations, reminders, and intake preparation across the channels patients already use.",
       },
       {
-        title: "Insurance verification",
+        title: "Routine patient-question automation",
         description:
-          "Verify patient insurance eligibility in seconds. AI checks coverage details, copays, and pre-authorization requirements automatically.",
+          "Answer office, provider, and visit-prep questions quickly while keeping the conversation inside approved operational boundaries.",
       },
       {
-        title: "Prescription refill automation",
+        title: "Refill and follow-up workflows",
         description:
-          "Patients request refills via WhatsApp or voice. AI verifies the prescription, checks with the pharmacy, and confirms the pickup time.",
-      },
-      {
-        title: "HIPAA-compliant infrastructure",
-        description:
-          "All data encrypted at rest and in transit. BAA available. Audit logs for every interaction. Built to meet healthcare compliance standards.",
+          "Collect refill details, confirm the right workflow, and route the request or status update without long hold times.",
       },
       {
         title: "Multilingual patient communication",
         description:
-          "Communicate with patients in their preferred language. AI handles 95+ languages across voice, chat, and WhatsApp channels.",
+          "Support diverse patient populations with natural language handling across voice and messaging instead of maintaining separate manual coverage.",
+      },
+      {
+        title: "Escalation for sensitive cases",
+        description:
+          "Route symptom-based, urgent, or policy-sensitive issues with the right summary so your team stays in control when a conversation should leave automation.",
       },
     ],
     useCases: [
       {
         title: "After-hours scheduling",
         scenario:
-          "A patient calls at 8pm to schedule a follow-up appointment with their cardiologist.",
+          "A patient calls after work to reschedule tomorrow's appointment and ask what they need to bring.",
         outcome:
-          "Voice AI checks the doctor's availability, books the next open slot, sends an SMS confirmation with prep instructions, and updates the EHR.",
+          "Verly checks availability, confirms the new slot, shares visit-prep details, and sends a follow-up message without forcing a callback the next day.",
       },
       {
-        title: "Insurance pre-check",
+        title: "Prescription refill intake",
         scenario:
-          "A new patient needs to verify their insurance covers a specialist visit before coming in.",
+          "A patient wants a refill update and is unsure whether the request was submitted correctly.",
         outcome:
-          "AI verifies coverage, confirms the copay amount, and lets the patient know what documentation to bring — all in under 60 seconds.",
+          "Verly captures the required details, confirms the next step, and routes the request according to your refill process instead of leaving the patient in a phone queue.",
       },
       {
-        title: "Prescription refill",
+        title: "Insurance and referral guidance",
         scenario:
-          "A patient messages on WhatsApp asking to refill their blood pressure medication.",
+          "A new patient asks whether a referral is required before booking a specialist visit.",
         outcome:
-          "AI confirms the prescription details, checks with the pharmacy for availability, and texts the patient when it's ready for pickup.",
+          "Verly explains the intake path, collects the needed information, and moves the patient toward the correct scheduling flow quickly.",
       },
     ],
     metrics: [
-      { value: "100%", label: "HIPAA compliant" },
-      { value: "0", label: "missed patient calls" },
-      { value: "60%", label: "reduction in front desk load" },
-      { value: "24/7", label: "scheduling availability" },
+      { value: "24/7", label: "patient-access coverage outside office hours" },
+      { value: "60%", label: "fewer routine calls reaching front-desk staff" },
+      { value: "<1 min", label: "faster scheduling resolution for common requests" },
+      { value: "95+", label: "languages available for patient communication" },
     ],
     faqItems: [
       {
-        question: "Is Verly HIPAA compliant?",
+        question: "Can Verly support healthcare teams with stricter data-handling requirements?",
         answer:
-          "Yes. Verly is fully HIPAA compliant with end-to-end encryption, BAA agreements, audit logging, and role-based access controls. We undergo regular third-party security audits.",
+          "Yes. The product can be configured with operational guardrails, workflow boundaries, and escalation rules so automation only handles the motions your team approves.",
       },
       {
-        question: "Can it integrate with our EHR/EMR?",
+        question: "Is this only for chat, or can it handle phone traffic too?",
         answer:
-          "Verly integrates with major EHR systems including Epic, Cerner, and Athenahealth via HL7 FHIR APIs. Custom integrations are available for other systems.",
+          "Healthcare teams often need voice coverage as much as messaging coverage. Verly is designed to support both instead of forcing separate systems for each channel.",
       },
       {
-        question: "How does voice AI handle medical terminology?",
+        question: "What kinds of conversations should still escalate to staff?",
         answer:
-          "Our voice AI is trained on healthcare-specific language models. It accurately understands medical terms, drug names, and procedure descriptions across specialties.",
+          "Anything involving clinical nuance, urgency, policy-sensitive exceptions, or workflows your team does not want automated can escalate immediately with conversation context attached.",
       },
       {
-        question: "What happens if the AI can't answer a medical question?",
+        question: "Can the patient experience be multilingual?",
         answer:
-          "Verly never provides medical advice. If a patient asks a clinical question, AI immediately routes to a nurse or practitioner with the full conversation context.",
+          "Yes. Teams can support multiple languages without maintaining independent manual queues for each one, which is especially useful for patient-access operations.",
       },
     ],
-    relatedSlugs: ["professional-services", "education", "restaurants-hospitality"],
+    relatedSlugs: ["education", "restaurants-hospitality", "professional-services"],
   },
   {
     slug: "restaurants-hospitality",
@@ -405,118 +431,126 @@ export const solutions: SolutionDetail[] = [
     title: "Restaurants & Hospitality",
     category: "Voice",
     description:
-      "Handle reservations, menu inquiries, and guest feedback without pulling staff away from service.",
-    color: "text-orange-600",
-    bg: "bg-orange-100",
-    features: [
-      "Table reservation via voice/WhatsApp",
-      "Menu and allergen information",
-      "Catering inquiry handling",
-      "Real-time availability checking",
-      "Integration with OpenTable, Resy",
+      "Automate reservations, guest questions, and catering intake so staff stay focused on service instead of constantly answering the phone.",
+    color: "text-[#d48536]",
+    bg: "bg-[#fff4e7]",
+    heroImage: "/solutions/restaurants-hospitality.png",
+    heroImageAlt: "Hospitality reservations visual",
+    heroPanelLabel: "Guest operations desk",
+    heroSummary: [
+      "Handle reservations, opening-hours questions, and large-party requests instantly.",
+      "Keep menu, allergen, and location details available over voice and messaging.",
+      "Capture catering and event leads instead of letting them die in voicemail.",
     ],
-    heroTagline: "Never miss a reservation or guest inquiry",
+    features: [
+      "Reservation capture over voice, WhatsApp, and web chat",
+      "Menu, hours, and allergen answers without pulling staff off the floor",
+      "Large-party and catering inquiry capture with qualification built in",
+      "Location-aware routing for multi-venue operators",
+      "Always-on guest communication for peak hours and closed periods",
+    ],
+    heroTagline: "Never miss a guest inquiry during the rush",
     heroSubtitle:
-      "During peak hours, your staff can't answer every call. Verly handles reservations, menu questions, and catering inquiries via voice and WhatsApp — so your team stays focused on the guests in front of them.",
-    tags: ["Reservations", "Voice AI", "WhatsApp", "Menu Info"],
+      "Hospitality teams lose covers and event revenue when phones go unanswered or staff have to leave service to handle repetitive questions. Verly keeps reservations, guest information, and lead capture moving without disrupting the in-person experience.",
+    tags: ["Reservations", "Guest Messaging", "Catering", "Voice AI"],
     painPoints: [
       {
-        title: "Busy lines during peak hours",
+        title: "Peak-hour calls overwhelm the host stand",
         description:
-          "When the restaurant is full, nobody's answering the phone. Potential guests get a busy signal and book somewhere else.",
+          "The busiest moments for guest service are also the worst times to stop and answer repetitive phone questions about hours, reservations, and menu details.",
       },
       {
-        title: "Staff pulled from service",
+        title: "Staff get pulled away from the floor",
         description:
-          "Hosts and servers stop what they're doing to answer routine calls about hours, parking, and menu items — degrading the in-house experience.",
+          "Every routine phone interruption reduces table attention, slows service, and creates operational drag right when guests expect the opposite.",
       },
       {
-        title: "Allergen and dietary confusion",
+        title: "Guest information is inconsistent",
         description:
-          "Guests need accurate allergen info before visiting. Wrong answers create liability. Staff can't always recall every ingredient.",
+          "Allergen details, parking instructions, and policy questions need consistent answers, but busy teams often answer from memory instead of a shared playbook.",
       },
       {
-        title: "Catering leads falling through",
+        title: "High-value inquiries slip through",
         description:
-          "Corporate catering inquiries come in via voicemail, email, and DMs. Without a system, high-value leads get lost in the shuffle.",
+          "Catering and event leads often arrive after hours or during service rushes, which means valuable conversations can get lost before anyone follows up.",
       },
     ],
     capabilities: [
       {
-        title: "Voice & WhatsApp reservations",
+        title: "Reservation automation",
         description:
-          "Guests book tables via phone call or WhatsApp message. AI checks real-time availability, confirms party size, and sends a confirmation.",
+          "Handle booking, confirmations, updates, and availability checks without forcing a guest to wait for a host to free up.",
       },
       {
-        title: "Menu & allergen information",
+        title: "Guest information coverage",
         description:
-          "AI knows your full menu including ingredients, allergens, and dietary labels. Guests get accurate answers instantly.",
+          "Answer questions about hours, locations, parking, menu items, allergen notes, and house policies with consistent guidance.",
       },
       {
-        title: "Catering inquiry capture",
+        title: "Catering and event lead capture",
         description:
-          "AI qualifies catering requests — event date, headcount, budget, dietary needs — and forwards qualified leads to your events team.",
+          "Collect date, party size, budget, and intent so the right team gets a qualified lead instead of an incomplete voicemail.",
       },
       {
-        title: "Real-time availability",
+        title: "Multi-location support logic",
         description:
-          "Connected to your reservation system, AI provides live table availability and suggests alternative times when fully booked.",
+          "Route conversations by venue, local hours, and availability while keeping one support system behind the scenes.",
       },
       {
-        title: "Platform integrations",
+        title: "Escalation for VIP or exception handling",
         description:
-          "Works with OpenTable, Resy, SevenRooms, and your POS system. No double-booking, no manual sync.",
+          "Special events, large parties, and edge-case requests can route directly to managers with a clean summary of what the guest already asked for.",
       },
     ],
     useCases: [
       {
-        title: "Peak-hour reservation",
+        title: "Peak-hour reservation call",
         scenario:
-          "A guest calls during Saturday dinner rush to book a table for 6 next Friday.",
+          "A guest calls during dinner rush asking for a table for six and whether the patio is available.",
         outcome:
-          "Voice AI checks availability, books the table, sends an SMS confirmation with parking directions, and adds a note about the large party.",
+          "Verly checks availability, books the reservation, confirms the seating preference, and sends the guest a follow-up confirmation without interrupting service staff.",
       },
       {
-        title: "Allergen inquiry",
+        title: "Allergen and menu question",
         scenario:
-          "A guest messages on WhatsApp asking which appetizers are nut-free.",
+          "A customer messages to ask which dishes are safe for a gluten-free diner with a shellfish allergy.",
         outcome:
-          "AI instantly lists all nut-free appetizers with ingredient details and suggests popular choices — building confidence before the visit.",
+          "Verly answers from the approved menu guidance and can escalate if the venue requires a manager or chef to confirm a special case.",
       },
       {
         title: "Catering lead capture",
         scenario:
-          "A company calls asking about catering for a 50-person corporate lunch.",
+          "A business owner reaches out after hours about catering a 40-person lunch next week.",
         outcome:
-          "AI collects event details, dietary requirements, and budget range, then emails a qualified lead summary to the events manager within minutes.",
+          "Verly captures the event details, qualifies the request, and routes the lead to the catering team with all context attached for morning follow-up.",
       },
     ],
     metrics: [
-      { value: "0", label: "missed reservation calls" },
-      { value: "35%", label: "more bookings captured" },
-      { value: "12hrs", label: "saved per week" },
-      { value: "< 3s", label: "response time" },
+      { value: "24/7", label: "guest-response coverage beyond service hours" },
+      { value: "65%", label: "reservation and FAQ volume handled automatically" },
+      { value: "40%", label: "more catering leads captured cleanly" },
+      { value: "<10s", label: "response time for common guest questions" },
     ],
     faqItems: [
       {
-        question: "Does it work with our existing reservation system?",
+        question: "Can Verly handle reservations across multiple locations?",
         answer:
-          "Yes. Verly integrates with OpenTable, Resy, SevenRooms, and most major reservation platforms. It reads and writes availability in real time.",
+          "Yes. Teams can route by venue, local operating hours, and availability rules while still running one support system for the overall brand.",
       },
       {
-        question: "Can it handle multiple locations?",
+        question: "What about menu or allergen accuracy?",
         answer:
-          "Absolutely. Each location gets its own menu, hours, and availability data. Guests are routed to the right location based on their request.",
+          "The system works best when guest-facing answers are grounded in approved operational content so staff are not improvising sensitive responses from memory.",
       },
       {
-        question: "How does it handle special dietary requests?",
+        question: "Can it capture high-value event inquiries instead of just FAQ traffic?",
         answer:
-          "AI references your complete menu data including ingredients and allergen labels. It can filter dishes by any dietary requirement — gluten-free, vegan, nut-free, etc.",
+          "Yes. Catering, private dining, and event requests can use separate intake paths so the commercial value of those conversations is not lost in a generic support queue.",
       },
       {
-        question: "Can guests modify reservations through the AI?",
+        question: "Can staff still step in when needed?",
         answer:
-          "Yes. Guests can change party size, date, time, or cancel entirely via voice or WhatsApp. Changes sync to your reservation system instantly.",
+          "Yes. Special requests, VIP guests, and exception cases can escalate quickly with context preserved so the guest does not have to repeat everything.",
       },
     ],
     relatedSlugs: ["travel-tourism", "e-commerce-retail", "healthcare"],
@@ -527,121 +561,129 @@ export const solutions: SolutionDetail[] = [
     title: "Real Estate",
     category: "Sales",
     description:
-      "Capture every lead — even at 2am. AI qualifies prospects, schedules viewings, and answers property questions while you sleep.",
-    color: "text-teal-600",
-    bg: "bg-teal-100",
-    features: [
-      "Qualify 200+ leads/month automatically",
-      "Instant answers to property questions",
-      "Schedule tours 24/7 via voice or chat",
-      "Calculate mortgages in real-time",
-      "Auto-sync with your CRM",
+      "Qualify property inquiries, answer listing questions, and book tours around the clock so hot leads do not cool down overnight.",
+    color: "text-[#0f8b8d]",
+    bg: "bg-[#e7fbfa]",
+    heroImage: "/solutions/real-estate.png",
+    heroImageAlt: "Real estate lead routing visual",
+    heroPanelLabel: "Lead routing system",
+    heroSummary: [
+      "Capture and qualify buyer, seller, and renter inquiries 24/7.",
+      "Answer property questions instantly with listing and neighborhood context.",
+      "Book tours and route qualified leads into the right agent workflow fast.",
     ],
-    heroTagline: "Capture and qualify leads around the clock",
+    features: [
+      "Always-on property inquiry capture and qualification",
+      "Tour scheduling with calendar coordination and reminders",
+      "Instant answers on listings, neighborhoods, and availability",
+      "Lead routing by budget, timeline, intent, and geography",
+      "CRM synchronization for agents and brokerage teams",
+    ],
+    heroTagline: "Capture high-intent property demand before it goes cold",
     heroSubtitle:
-      "Real estate leads don't wait for business hours. Verly engages prospects at 2am, qualifies their budget and timeline, and schedules showings — so you wake up to booked appointments, not cold leads.",
-    tags: ["Lead Qualification", "Tour Scheduling", "CRM Sync", "24/7"],
+      "The best real-estate lead is the one you respond to first. Verly helps teams qualify prospects, answer listing questions, and book next steps immediately so late-night inquiries and weekend traffic do not disappear before an agent can respond.",
+    tags: ["Lead Qualification", "Tour Booking", "Listings", "CRM Sync"],
     painPoints: [
       {
-        title: "Leads go cold overnight",
+        title: "Leads go cold outside business hours",
         description:
-          "A prospect fills out a form at 10pm. By the time you call back at 9am, they've already contacted three other agents.",
+          "Property interest is high at night and on weekends, but most brokerage response systems are still built around office-hour follow-up.",
       },
       {
-        title: "Hours spent on repetitive questions",
+        title: "Agents repeat the same listing answers",
         description:
-          "\"How many bedrooms?\" \"Is there parking?\" \"What are the HOA fees?\" — agents answer the same property questions hundreds of times.",
+          "Square footage, HOA fees, move-in dates, school zones, and financing basics consume time that should be spent on high-conviction conversations.",
       },
       {
-        title: "Tour scheduling friction",
+        title: "Tour scheduling creates friction",
         description:
-          "Coordinating showing times via email and phone tag takes 3-5 exchanges. Half of interested buyers give up before booking.",
+          "Coordinating calendars, confirming availability, and chasing responses makes the first real next step harder than it should be.",
       },
       {
-        title: "Slow follow-up loses deals",
+        title: "Unqualified leads still reach top performers",
         description:
-          "The first agent to respond wins 78% of the time. Manual follow-up processes mean you're rarely first.",
+          "Without early qualification, valuable agent time disappears into conversations that should have been filtered or routed sooner.",
       },
     ],
     capabilities: [
       {
-        title: "24/7 lead qualification",
+        title: "Property inquiry handling",
         description:
-          "AI engages every website visitor and inquiry instantly. It qualifies budget, timeline, location preferences, and financing status.",
+          "Answer listing, neighborhood, and availability questions immediately using live property context and approved agent guidance.",
       },
       {
-        title: "Instant property answers",
+        title: "Lead qualification",
         description:
-          "AI knows every listing's details — bedrooms, square footage, HOA, schools, commute times. Prospects get answers in seconds.",
+          "Collect buyer or renter intent, financing readiness, budget, location preference, and timing before routing the conversation onward.",
       },
       {
-        title: "Automated tour scheduling",
+        title: "Tour booking workflows",
         description:
-          "AI checks your calendar, proposes available showing times, and books confirmed appointments — complete with address and directions.",
+          "Offer viewing slots, coordinate calendars, and send confirmation or reminder messages without a string of manual follow-ups.",
       },
       {
-        title: "Mortgage estimation",
+        title: "Seller and landlord intake",
         description:
-          "Prospects get instant mortgage calculations based on listing price, down payment, and current rates — keeping them engaged in the buying process.",
+          "Route listing-owner and landlord inquiries through a different qualification flow than buyer demand so both motions stay organized.",
       },
       {
-        title: "CRM integration",
+        title: "CRM and agent routing",
         description:
-          "Qualified leads and conversation summaries sync automatically to your CRM. No manual data entry, no missed follow-ups.",
+          "Sync qualified leads and conversation summaries into the systems your agents already use so nothing has to be re-entered later.",
       },
     ],
     useCases: [
       {
-        title: "Late-night lead capture",
+        title: "Late-night buyer inquiry",
         scenario:
-          "A prospect browses your listings at 11pm and asks the chat widget about a 3-bedroom home in Westside.",
+          "A buyer asks about a property at 10:30pm and wants to know whether they can tour it this weekend.",
         outcome:
-          "AI qualifies their budget ($500K-600K), timeline (3 months), and financing (pre-approved), then books a showing for Saturday morning.",
+          "Verly answers key listing questions, qualifies the buyer's timing and budget, and books the next available showing before the lead drifts elsewhere.",
       },
       {
-        title: "Property details on demand",
+        title: "Rental listing question",
         scenario:
-          "A buyer asks about school districts and commute times for a specific listing.",
+          "A renter asks about move-in dates, pet policies, and parking for a newly listed apartment.",
         outcome:
-          "AI provides school ratings, average commute to downtown, nearby amenities, and recent comparable sales — keeping the buyer engaged.",
+          "Verly provides the approved property details instantly and moves qualified renters toward an application or tour instead of forcing manual follow-up.",
       },
       {
-        title: "Seller inquiry routing",
+        title: "Seller lead routing",
         scenario:
-          "A homeowner asks about listing their property for sale.",
+          "A homeowner wants to know what your brokerage would need to evaluate their property for sale.",
         outcome:
-          "AI collects property details, estimated value expectations, and timeline, then routes the qualified seller lead to the appropriate listing agent.",
+          "Verly captures the property details, timeline, and goals, then routes the inquiry to the right agent with a clean intake summary.",
       },
     ],
     metrics: [
-      { value: "200+", label: "leads qualified per month" },
-      { value: "78%", label: "faster response than competitors" },
-      { value: "3x", label: "more showings booked" },
-      { value: "24/7", label: "lead capture" },
+      { value: "24/7", label: "lead capture across nights and weekends" },
+      { value: "50%", label: "faster response to inbound listing interest" },
+      { value: "35%", label: "more tours booked from inbound demand" },
+      { value: "2x", label: "better qualification before agent handoff" },
     ],
     faqItems: [
       {
-        question: "Can it integrate with my MLS?",
+        question: "Can Verly support both buyer and renter workflows?",
         answer:
-          "Yes. Verly connects to major MLS systems and IDX feeds to pull live listing data. Property details, photos, and status updates sync automatically.",
+          "Yes. Each motion can use different qualification questions, routing rules, and next steps while still running inside one system.",
       },
       {
-        question: "How does lead qualification work?",
+        question: "Does it need to replace our CRM?",
         answer:
-          "AI engages prospects conversationally — asking about budget, timeline, location, and financing. Qualified leads are scored and synced to your CRM with a full summary.",
+          "No. The common pattern is to use Verly for capture, qualification, and scheduling while syncing the output into the CRM your brokerage or team already operates from.",
       },
       {
-        question: "Does it sync with my CRM?",
+        question: "Can it handle seller inquiries too?",
         answer:
-          "Verly integrates with Salesforce, HubSpot, Follow Up Boss, and other real estate CRMs. Leads, conversations, and appointments sync automatically.",
+          "Yes. Seller and landlord intake can route through dedicated qualification flows rather than mixing with general buyer demand.",
       },
       {
-        question: "Can it handle rental and sales inquiries separately?",
+        question: "What gets escalated to agents?",
         answer:
-          "Absolutely. AI detects intent (buy, sell, rent) and routes to the appropriate workflow and agent team. Each gets customized qualification questions.",
+          "High-intent leads, special negotiation questions, and complex property-specific scenarios can move to agents quickly with a summary of what has already been captured.",
       },
     ],
-    relatedSlugs: ["professional-services", "saas-platforms", "e-commerce-retail"],
+    relatedSlugs: ["professional-services", "travel-tourism", "e-commerce-retail"],
   },
   {
     slug: "education",
@@ -649,118 +691,126 @@ export const solutions: SolutionDetail[] = [
     title: "Education",
     category: "Support",
     description:
-      "Support students and parents 24/7 with course information, admissions guidance, and campus services.",
-    color: "text-indigo-600",
-    bg: "bg-indigo-100",
-    features: [
-      "Course catalog information",
-      "Admissions process guidance",
-      "Financial aid inquiries",
-      "Campus tour scheduling",
-      "Student portal integration",
+      "Support prospective students, current students, and families with admissions, aid, and campus-service answers without forcing them to wait for office hours.",
+    color: "text-[#4669d9]",
+    bg: "bg-[#edf2ff]",
+    heroImage: "/solutions/education.png",
+    heroImageAlt: "Education student services visual",
+    heroPanelLabel: "Student services desk",
+    heroSummary: [
+      "Answer admissions, deadline, and program questions at any time.",
+      "Handle financial-aid and campus-service inquiries with clearer routing.",
+      "Book tours, guide next steps, and reduce repetitive intake work for staff.",
     ],
-    heroTagline: "Streamline student and parent communication",
+    features: [
+      "Admissions and application guidance across channels",
+      "Financial-aid and student-services FAQ automation",
+      "Tour booking and reminder workflows",
+      "Program, catalog, and campus information support",
+      "Role-based routing for admissions, registrar, and service teams",
+    ],
+    heroTagline: "Give students and families answers when they actually need them",
     heroSubtitle:
-      "Admissions teams are buried in repetitive inquiries. Students can't get answers outside office hours. Verly handles it all — applications, financial aid, scheduling, and campus info — around the clock.",
-    tags: ["Admissions", "Financial Aid", "Campus Tours", "Multi-language"],
+      "Education teams face intense inquiry volume around admissions, aid, deadlines, and campus logistics. Verly helps institutions respond faster, book next steps sooner, and keep repetitive support from overwhelming staff during peak enrollment periods.",
+    tags: ["Admissions", "Student Services", "Aid Questions", "Campus Tours"],
     painPoints: [
       {
-        title: "Admissions teams buried in inquiries",
+        title: "Admissions teams drown in repeated questions",
         description:
-          "Every application cycle brings thousands of identical questions about deadlines, requirements, and process. Staff can't keep up.",
+          "Every cycle creates the same flood of deadline, requirement, and program-fit questions that should be answered instantly, not days later.",
       },
       {
-        title: "No answers outside office hours",
+        title: "Students need help outside office hours",
         description:
-          "Students and parents across time zones need help at 10pm, on weekends, and during holidays. Voicemail isn't an answer.",
+          "Questions about deadlines, documents, or enrollment often come up late at night, on weekends, or across time zones when nobody is available to respond.",
       },
       {
-        title: "Financial aid bottleneck",
+        title: "Aid and process questions take too long to resolve",
         description:
-          "Aid questions are complex but repetitive. Students wait days for responses that AI could provide in seconds.",
+          "Financial-aid workflows are sensitive and repetitive, which makes them a poor fit for manual back-and-forth and a strong fit for guided automation.",
       },
       {
-        title: "Manual tour scheduling",
+        title: "Scheduling tours and next steps is fragmented",
         description:
-          "Coordinating campus tours involves email chains, calendar juggling, and frequent no-shows. The process needs automation.",
+          "Campus tours, callbacks, and department-specific follow-ups often require too many manual messages for a high-volume admissions team.",
       },
     ],
     capabilities: [
       {
         title: "Admissions guidance",
         description:
-          "AI walks prospective students through application requirements, deadlines, and next steps — personalized to their program of interest.",
+          "Help prospective students understand program requirements, deadlines, application steps, and the right next action for their situation.",
       },
       {
-        title: "Course & program information",
+        title: "Student-services coverage",
         description:
-          "Students get instant answers about course catalogs, prerequisites, schedules, and program details without waiting for an advisor.",
+          "Answer common registrar, campus, and support questions so current students do not have to wait for staff to handle routine requests.",
       },
       {
-        title: "Financial aid support",
+        title: "Financial-aid workflow support",
         description:
-          "AI handles FAFSA questions, scholarship eligibility checks, and aid package explanations — reducing wait times from days to seconds.",
+          "Guide students through common aid questions, application preparation, and status-related next steps with approved operational answers.",
       },
       {
-        title: "Campus tour booking",
+        title: "Tour and appointment scheduling",
         description:
-          "Prospective students and families book campus tours via chat or WhatsApp. AI confirms dates, sends directions, and reduces no-shows with reminders.",
+          "Book campus tours, department visits, or admissions follow-ups while keeping reminders and confirmations automatic.",
       },
       {
-        title: "Student portal integration",
+        title: "Team-based routing and escalation",
         description:
-          "Connect to your SIS and LMS. AI can check enrollment status, grades, and account balances — giving students instant self-service.",
+          "Send complex cases to admissions, aid, registrar, or student-support staff with the right context already captured.",
       },
     ],
     useCases: [
       {
-        title: "Admissions FAQ",
+        title: "Application deadline question",
         scenario:
-          "A prospective student asks about application deadlines and required documents for the nursing program.",
+          "A prospective student asks whether late materials are accepted for a specific graduate program.",
         outcome:
-          "AI provides the exact deadline, lists required documents, links to the application portal, and offers to schedule a campus tour.",
+          "Verly provides the approved deadline guidance, clarifies the requirement, and offers the correct next step instead of leaving the student waiting for email follow-up.",
       },
       {
-        title: "Financial aid check",
+        title: "Financial-aid support",
         scenario:
-          "A current student needs to know their remaining financial aid balance and next disbursement date.",
+          "A student wants to understand what still needs to be submitted before aid can be processed.",
         outcome:
-          "AI checks the student portal, confirms the balance, provides the disbursement schedule, and links to the financial aid office for follow-up.",
+          "Verly explains the document path, highlights what is commonly missing, and routes any account-specific exception to the right office.",
       },
       {
         title: "Campus tour booking",
         scenario:
-          "A parent messages on WhatsApp to schedule a campus tour for their high school junior.",
+          "A family wants to schedule a campus visit and ask whether engineering facilities can be included.",
         outcome:
-          "AI offers available tour dates, books the slot, sends a confirmation with parking info and a campus map, and follows up with a reminder the day before.",
+          "Verly presents available dates, books the visit, and captures the program interest so the institution can personalize follow-up.",
       },
     ],
     metrics: [
-      { value: "65%", label: "fewer admissions tickets" },
-      { value: "24/7", label: "student support" },
-      { value: "40%", label: "more tours booked" },
-      { value: "< 5s", label: "average response time" },
+      { value: "24/7", label: "coverage for admissions and student-service questions" },
+      { value: "65%", label: "fewer repetitive inquiries reaching staff" },
+      { value: "40%", label: "more tours and next steps booked quickly" },
+      { value: "<5s", label: "response time on common student questions" },
     ],
     faqItems: [
       {
-        question: "Can it connect to our student information system?",
+        question: "Can different campus teams use different support rules?",
         answer:
-          "Yes. Verly integrates with Banner, PeopleSoft, Slate, and other major SIS platforms via API. Student data stays secure and up-to-date.",
+          "Yes. Admissions, aid, registrar, and campus-service teams can each use different routing, content, and escalation behavior while keeping one student-facing experience.",
       },
       {
-        question: "Does it support multiple departments?",
+        question: "Is this only for prospective students?",
         answer:
-          "Absolutely. Each department (admissions, financial aid, registrar) can have its own knowledge base and routing rules while sharing a unified student experience.",
+          "No. Institutions often use Verly for both admissions workflows and current-student support motions that generate repetitive operational questions.",
       },
       {
-        question: "How does it handle sensitive student data?",
+        question: "Can it support multilingual enrollment or student communication?",
         answer:
-          "Verly is FERPA-aware with role-based access controls, data encryption, and audit logging. Students authenticate before accessing personal information.",
+          "Yes. Institutions can use multilingual coverage so international students and families are not blocked on office-hour availability.",
       },
       {
-        question: "Can it work in multiple languages for international students?",
+        question: "What happens when the conversation becomes account-specific?",
         answer:
-          "Yes. AI supports 95+ languages and automatically detects the student's preferred language — critical for institutions with international enrollment.",
+          "Those cases can escalate with conversation context and intake details attached so staff can respond faster and avoid re-asking the basics.",
       },
     ],
     relatedSlugs: ["healthcare", "saas-platforms", "professional-services"],
@@ -771,118 +821,126 @@ export const solutions: SolutionDetail[] = [
     title: "Travel & Tourism",
     category: "Voice",
     description:
-      "Assist travelers with bookings, itinerary changes, and destination information across every channel.",
-    color: "text-sky-600",
-    bg: "bg-sky-100",
-    features: [
-      "Booking modifications via chat",
-      "Flight status notifications",
-      "Destination recommendations",
-      "Travel documentation assistance",
-      "Integration with Amadeus, Sabre",
+      "Help travelers with booking changes, disruption support, and local guidance across channels without forcing them into long queues.",
+    color: "text-[#3d8fd2]",
+    bg: "bg-[#eaf6ff]",
+    heroImage: "/solutions/travel-tourism.png",
+    heroImageAlt: "Travel disruption support visual",
+    heroPanelLabel: "Travel disruption desk",
+    heroSummary: [
+      "Handle booking changes, cancellations, and schedule disruptions quickly.",
+      "Keep real-time travel information available across voice and messaging channels.",
+      "Support multilingual travelers with one consistent concierge-style operating layer.",
     ],
-    heroTagline: "AI concierge for modern travelers",
+    features: [
+      "Booking modifications and itinerary update support",
+      "Delay, cancellation, and disruption communication workflows",
+      "Destination and local-guidance assistance for travelers",
+      "Visa, document, and process guidance for common cases",
+      "Multi-channel support for urgent travel conversations",
+    ],
+    heroTagline: "Give travelers a faster path through disruption",
     heroSubtitle:
-      "Travelers need instant help with bookings, delays, and itinerary changes. Verly acts as an always-available concierge — handling modifications, providing updates, and recommending destinations in any language.",
-    tags: ["Booking Management", "Real-time Updates", "Multi-language", "GDS"],
+      "Travel support gets hardest when urgency is highest. Verly helps travel teams handle booking changes, deliver real-time updates, and guide travelers across channels so they are not stuck waiting when plans shift quickly.",
+    tags: ["Disruption Support", "Booking Changes", "Multilingual", "Travel Ops"],
     painPoints: [
       {
-        title: "High volume of booking changes",
+        title: "Booking changes arrive in waves",
         description:
-          "Flight delays, schedule conflicts, and plan changes generate a constant stream of modification requests that overwhelm support teams.",
+          "Delays, missed connections, and changing plans create sudden spikes in urgent conversations that traditional support teams struggle to absorb.",
       },
       {
-        title: "Real-time information gaps",
+        title: "Travel information becomes stale fast",
         description:
-          "Travelers need instant flight status, gate changes, and delay updates. By the time an agent responds, the information is already stale.",
+          "If a traveler waits too long for a response, the original question may already be obsolete because the gate changed or the itinerary moved again.",
       },
       {
-        title: "Language barriers",
+        title: "Global traveler coverage is expensive",
         description:
-          "International travelers speak dozens of languages. Hiring multilingual agents for every market is prohibitively expensive.",
+          "Supporting multiple languages and time zones manually is difficult, especially for teams that need fast response during disruption events.",
       },
       {
-        title: "Peak season surges",
+        title: "Queues destroy confidence during urgent moments",
         description:
-          "Holiday seasons and disruptions create massive support spikes. You can't hire fast enough to keep up — and you can't justify the cost year-round.",
+          "Travelers remember the support experience most when things go wrong. Long holds or delayed replies damage trust at the worst possible time.",
       },
     ],
     capabilities: [
       {
-        title: "Booking modifications",
+        title: "Booking modification support",
         description:
-          "AI handles flight changes, hotel rebookings, and itinerary adjustments. Travelers make changes via chat or voice without waiting in a queue.",
+          "Help customers change flights, hotel reservations, or itinerary details without forcing them to restart the journey in another channel.",
       },
       {
-        title: "Real-time travel updates",
+        title: "Real-time disruption communication",
         description:
-          "Proactive notifications for flight delays, gate changes, and cancellations. Travelers get alternatives before they even ask.",
+          "Use travel updates and operational logic to guide travelers through delays, cancellations, and next-step decisions faster.",
       },
       {
-        title: "Destination recommendations",
+        title: "Traveler guidance and concierge support",
         description:
-          "AI suggests restaurants, activities, and local experiences based on traveler preferences, location, and itinerary.",
+          "Answer destination, local logistics, and service questions while keeping the experience conversational and useful.",
       },
       {
-        title: "Document & visa guidance",
+        title: "Document and process guidance",
         description:
-          "AI provides passport, visa, and travel documentation requirements based on nationality and destination. No more Googling.",
+          "Handle common documentation and prep questions so travelers do not have to rely on scattered search results or overloaded call centers.",
       },
       {
-        title: "GDS integration",
+        title: "Escalation for complex travel exceptions",
         description:
-          "Connect with Amadeus, Sabre, and Travelport for real-time inventory, pricing, and booking capabilities.",
+          "Move high-friction rebooking, refund, or policy-sensitive cases to the right team with a clean conversation summary attached.",
       },
     ],
     useCases: [
       {
-        title: "Flight rebooking",
+        title: "Cancelled-flight recovery",
         scenario:
-          "A traveler's connecting flight is cancelled due to weather.",
+          "A traveler needs help after a connection is cancelled because of weather and they are trying to reach their final destination quickly.",
         outcome:
-          "AI proactively notifies the traveler, presents 3 alternative itinerary options, rebooks the preferred option, and sends the updated boarding pass — all within minutes.",
+          "Verly explains the next available options, captures the preferred path, and moves the customer toward the correct rebooking workflow faster than a queue-based handoff.",
       },
       {
-        title: "Local recommendations",
+        title: "Hotel booking question",
         scenario:
-          "A tourist in Barcelona asks for restaurant recommendations near their hotel.",
+          "A traveler messages to ask whether they can modify check-in time and add an airport pickup request.",
         outcome:
-          "AI suggests 5 highly-rated restaurants within walking distance, filtered by cuisine preference, and offers to make a reservation at their top choice.",
+          "Verly handles the operational request and confirms the available path without requiring a call back from the front desk or service desk.",
       },
       {
-        title: "Visa requirements",
+        title: "Travel documentation guidance",
         scenario:
-          "A traveler with an Indian passport asks about visa requirements for a layover in Dubai.",
+          "A traveler asks what documents are typically needed for a transit-heavy international route.",
         outcome:
-          "AI checks current visa policies, confirms visa-on-arrival eligibility, lists required documents, and provides processing time estimates.",
+          "Verly provides the approved guidance, points to the right next step, and escalates only if the case falls outside standard support rules.",
       },
     ],
     metrics: [
-      { value: "70%", label: "booking changes automated" },
-      { value: "< 10s", label: "disruption notification" },
-      { value: "95+", label: "languages supported" },
-      { value: "50%", label: "reduction in call volume" },
+      { value: "70%", label: "common booking and disruption requests automated" },
+      { value: "<10s", label: "response time for urgent travel questions" },
+      { value: "95+", label: "languages supported for traveler communication" },
+      { value: "50%", label: "reduction in support pressure during surges" },
     ],
     faqItems: [
       {
-        question: "Does it integrate with booking engines?",
+        question: "Can Verly support urgent disruption traffic, not just routine FAQ?",
         answer:
-          "Yes. Verly connects with Amadeus, Sabre, Travelport, and major OTA platforms. It can read and modify bookings in real time.",
+          "Yes. Travel teams often need fast support during delays and cancellations, which is why the workflow should focus on resolution and routing speed instead of static FAQ behavior alone.",
       },
       {
-        question: "Can it handle multi-leg itineraries?",
+        question: "Does it work across voice and messaging channels?",
         answer:
-          "Absolutely. AI understands complex itineraries with multiple flights, hotels, and activities. It can modify individual segments without disrupting the rest.",
+          "Yes. The same underlying support logic can cover voice, messaging, and web-based traveler interactions while preserving context across them.",
       },
       {
-        question: "How does it work during travel disruptions?",
+        question: "Can it handle multilingual traveler support?",
         answer:
-          "AI monitors for delays and cancellations in real time, proactively notifies affected travelers, and presents rebooking options before they even call in.",
+          "Yes. Multilingual coverage is especially useful in travel because conversations often happen across time zones and language preferences during stressful moments.",
       },
       {
-        question: "Does it support travel insurance claims?",
+        question: "What happens with complex refund or policy exceptions?",
         answer:
-          "AI can guide travelers through the claims process, collect required documentation, and submit initial claims to supported insurance providers.",
+          "Those can escalate to the right operations team with the traveler history and request summary already captured so the customer does not have to repeat their entire situation.",
       },
     ],
     relatedSlugs: ["restaurants-hospitality", "e-commerce-retail", "real-estate"],
@@ -893,136 +951,135 @@ export const solutions: SolutionDetail[] = [
     title: "Professional Services",
     category: "Internal",
     description:
-      "Automate consultation scheduling, client intake, and service inquiries — capture leads even after hours.",
-    color: "text-slate-600",
-    bg: "bg-slate-100",
-    features: [
-      "Consultation booking with calendar sync",
-      "Service package information",
-      "Quote generation",
-      "Client onboarding automation",
-      "Document collection workflows",
+      "Automate client intake, consultation booking, and document collection so high-value service teams spend less time on repetitive coordination.",
+    color: "text-[#64748b]",
+    bg: "bg-[#edf1f6]",
+    heroImage: "/solutions/professional-services.png",
+    heroImageAlt: "Professional services client intake visual",
+    heroPanelLabel: "Client intake pipeline",
+    heroSummary: [
+      "Book consultations and answer service questions without manual back-and-forth.",
+      "Collect intake details and documents before the first human call.",
+      "Route prospects and clients to the right team with clearer context.",
     ],
-    heroTagline: "Automate client intake and communication",
+    features: [
+      "Consultation booking with calendar-aware availability",
+      "Service, pricing, and process question automation",
+      "Client onboarding and document-collection workflows",
+      "Lead qualification before partner or advisor handoff",
+      "CRM and project-system synchronization for follow-through",
+    ],
+    heroTagline: "Move clients from inquiry to intake with less manual work",
     heroSubtitle:
-      "Your team shouldn't spend hours on scheduling and intake. Verly handles consultation booking, service inquiries, document collection, and follow-ups — so you focus on delivering results for clients.",
-    tags: ["Client Intake", "Scheduling", "Document Collection", "CRM"],
+      "Professional-service teams win when they respond quickly and start engagements smoothly. Verly helps automate scheduling, intake, and document collection so your team can focus on delivering the work instead of managing repetitive coordination.",
+    tags: ["Consultations", "Client Intake", "Documents", "CRM"],
     painPoints: [
       {
-        title: "Scheduling takes multiple exchanges",
+        title: "Scheduling takes too many touches",
         description:
-          "Booking a consultation involves 3-5 back-and-forth emails. By the time you confirm, the prospect has moved on.",
+          "Consultation booking often turns into a slow email chain, which creates friction before the relationship has even started.",
       },
       {
-        title: "Manual client onboarding",
+        title: "Intake is still manual and fragmented",
         description:
-          "Collecting documents, NDAs, and intake forms manually takes days. Clients get frustrated with the slow start.",
+          "Teams collect the same background information, documents, and forms over and over without a consistent workflow behind it.",
       },
       {
-        title: "After-hours inquiries missed",
+        title: "After-hours demand gets lost",
         description:
-          "Potential clients visit your website at 10pm, can't get answers, and contact a competitor who responds first.",
+          "Prospects visit your site at night or on weekends, but if the only response path is a form or voicemail, many never convert.",
       },
       {
-        title: "Repetitive service questions",
+        title: "Staff repeat pricing and scope explanations",
         description:
-          "\"What do you charge?\" \"What's included?\" \"How long does it take?\" — your team answers these hundreds of times per month.",
+          "Service descriptions, package differences, and engagement steps are critical but repetitive, which makes them ideal candidates for support automation.",
       },
     ],
     capabilities: [
       {
         title: "Consultation booking",
         description:
-          "AI checks your team's calendar availability and books consultations directly. Prospects pick a time, get a confirmation, and receive a reminder.",
+          "Guide a prospect to the right meeting type, confirm availability, and book the next step without multiple manual messages.",
       },
       {
-        title: "Service & pricing information",
+        title: "Service and pricing support",
         description:
-          "AI explains your service packages, pricing tiers, and deliverables. Prospects get the information they need to make a decision.",
+          "Answer common questions about packages, engagement models, and process so prospects can self-qualify before they speak with the team.",
       },
       {
-        title: "Client onboarding automation",
+        title: "Client onboarding workflows",
         description:
-          "Collect intake forms, documents, and agreements automatically. AI sends requests, tracks progress, and follows up on missing items.",
+          "Collect forms, documents, agreements, and other intake information with automated reminders and clear tracking.",
       },
       {
-        title: "Quote generation",
+        title: "Lead and case routing",
         description:
-          "AI gathers project requirements and generates preliminary quotes based on your pricing rules. Complex requests are routed to the right team member.",
+          "Route inquiries by service line, urgency, or fit so the right advisor or operator receives the conversation summary immediately.",
       },
       {
-        title: "CRM & PM integration",
+        title: "Operational system sync",
         description:
-          "Sync client data, conversations, and project details with Salesforce, HubSpot, or your project management tool. No manual data entry.",
+          "Push intake data and summaries into the CRM or project tooling your business already uses so follow-through is not manual.",
       },
     ],
     useCases: [
       {
-        title: "After-hours lead capture",
+        title: "After-hours consultation request",
         scenario:
-          "A potential client visits your website at 10pm looking for accounting services.",
+          "A prospective client wants to speak about bookkeeping support but lands on your site late in the evening.",
         outcome:
-          "AI qualifies their needs (tax planning, monthly bookkeeping), collects contact info, and books a consultation for the next available slot.",
+          "Verly qualifies the need, explains the relevant service path, and books the next available consultation instead of letting the inquiry sit until morning.",
       },
       {
-        title: "Client onboarding",
+        title: "Client onboarding preparation",
         scenario:
-          "A new client needs to submit incorporation documents, ID verification, and a signed engagement letter.",
+          "A newly signed client needs to submit multiple documents before kickoff can happen.",
         outcome:
-          "AI sends document requests via email, tracks what's been received, follows up on missing items, and notifies the assigned team member when everything is complete.",
+          "Verly sends the intake checklist, tracks missing items, and keeps the onboarding flow moving without a coordinator chasing every step manually.",
       },
       {
-        title: "Service inquiry",
+        title: "Service comparison support",
         scenario:
-          "A business owner asks about the difference between your Standard and Premium consulting packages.",
+          "A prospect asks what differentiates two advisory packages and whether either includes implementation support.",
         outcome:
-          "AI explains both packages, highlights key differences, provides pricing, and offers to book a call to discuss the best fit.",
+          "Verly explains the package differences clearly and moves the prospect toward the right meeting or follow-up path based on fit.",
       },
     ],
     metrics: [
-      { value: "40%", label: "more consultations booked" },
-      { value: "3x", label: "faster client onboarding" },
-      { value: "24/7", label: "lead capture" },
-      { value: "8hrs", label: "saved per week" },
+      { value: "40%", label: "more consultations booked from inbound traffic" },
+      { value: "3x", label: "faster onboarding for common client workflows" },
+      { value: "24/7", label: "lead capture beyond office-hour coverage" },
+      { value: "8hrs", label: "operator time saved each week on coordination" },
     ],
     faqItems: [
       {
-        question: "Can it integrate with my calendar and CRM?",
+        question: "Can service lines use different intake logic?",
         answer:
-          "Yes. Verly integrates with Google Calendar, Outlook, Calendly, Salesforce, HubSpot, and other tools. Bookings and lead data sync automatically.",
+          "Yes. Different teams or service offerings can use different qualification questions, content, and routing rules without creating a fragmented client experience.",
       },
       {
-        question: "How does document collection work?",
+        question: "Does Verly replace our booking tools or CRM?",
         answer:
-          "AI sends personalized document requests via email or WhatsApp, provides secure upload links, tracks completion status, and sends automated follow-ups for missing items.",
+          "No. It usually sits in front of them, handling the conversation, qualification, and intake work before syncing the outcome into your existing systems.",
       },
       {
-        question: "Does it handle different service lines?",
+        question: "Can it help with document collection and follow-up?",
         answer:
-          "Absolutely. Each service line (consulting, legal, accounting, etc.) can have its own intake flow, pricing rules, and routing logic.",
+          "Yes. Intake workflows are a strong fit because they are repetitive, operationally important, and often delayed by manual reminders or inconsistent coordination.",
       },
       {
-        question: "Can it generate custom quotes?",
+        question: "What still needs a human partner or advisor?",
         answer:
-          "AI collects project requirements through a conversational flow and generates quotes based on your pricing rules. Complex or non-standard requests are routed to a team member for review.",
+          "Complex scoping, strategic advice, or sensitive exceptions can escalate immediately with the intake context preserved so your team starts informed.",
       },
     ],
     relatedSlugs: ["saas-platforms", "real-estate", "healthcare"],
   },
 ];
 
-export const categories = [
-  "All",
-  "Support",
-  "Voice",
-  "Commerce",
-  "Internal",
-  "Sales",
-];
+export const categories = ["All", "Support", "Voice", "Commerce", "Internal", "Sales"];
 
-export function getSolutionBySlug(
-  slug: string,
-): SolutionDetail | undefined {
+export function getSolutionBySlug(slug: string): SolutionDetail | undefined {
   return solutions.find((s) => s.slug === slug);
 }
 

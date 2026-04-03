@@ -240,6 +240,23 @@ export default function Navbar() {
                         </Link>
                       </li>
                     </ul>
+
+                    <Link href="/solutions" className="block group p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                      <div className="flex items-start gap-4">
+                        <div className="mt-1 p-2.5 rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-900/20 group-hover:bg-sky-100 transition-colors shadow-sm">
+                          <Sparkles className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                            Check all solutions
+                            <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                            Browse every use case and industry solution in one place.
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
 
                   {/* Column 2: Industry */}

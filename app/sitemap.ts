@@ -2,6 +2,8 @@ import { MetadataRoute } from "next";
 
 import { siteConfig } from "@/lib/metadata";
 import { getAllPosts } from "@/lib/sanity/client";
+import { getAllSolutionSlugs } from "@/lib/solutions-data";
+import { ALL_FEATURES } from "@/app/features/constants";
 
 const staticRoutes: MetadataRoute.Sitemap = [
   {
@@ -23,7 +25,43 @@ const staticRoutes: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
+    url: `${siteConfig.url}/features`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    url: `${siteConfig.url}/pricing`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    url: `${siteConfig.url}/voice`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  },
+  {
+    url: `${siteConfig.url}/why-verly`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
+    url: `${siteConfig.url}/compare`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     url: `${siteConfig.url}/blogs`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  },
+  {
+    url: `${siteConfig.url}/docs`,
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.8,
@@ -72,5 +110,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-  return [...staticRoutes, ...blogRoutes];
+  const solutionRoutes: MetadataRoute.Sitemap = getAllSolutionSlugs().map(
+    (slug) => ({
+      url: `${siteConfig.url}/solutions/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })
+  );
+
+  const featureRoutes: MetadataRoute.Sitemap = ALL_FEATURES.map((feature) => ({
+    url: `${siteConfig.url}/features/${feature.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...blogRoutes,
+    ...solutionRoutes,
+    ...featureRoutes,
+  ];
 }

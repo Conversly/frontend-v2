@@ -2,46 +2,56 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { type SolutionDetail, solutions, categories } from "@/lib/solutions-data";
+import { type SolutionDetail, categories, solutions } from "@/lib/solutions-data";
 
-const CARD_ACCENTS: Record<string, { border: string; hoverBorder: string; hoverShadow: string; iconBg: string; iconText: string }> = {
+const CARD_ACCENTS: Record<
+  string,
+  {
+    border: string;
+    hoverBorder: string;
+    hoverShadow: string;
+    iconBg: string;
+    iconText: string;
+  }
+> = {
   Commerce: {
-    border: "border-blue-100/70",
-    hoverBorder: "hover:border-blue-200",
-    hoverShadow: "hover:shadow-[0_20px_50px_rgba(37,99,235,0.08)]",
-    iconBg: "bg-blue-50",
-    iconText: "text-blue-600",
+    border: "border-[#dce6ff]",
+    hoverBorder: "hover:border-[#bdd1ff]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(49,94,234,0.10)]",
+    iconBg: "bg-[#eaf0ff]",
+    iconText: "text-[#315EEA]",
   },
   Support: {
-    border: "border-purple-100/70",
-    hoverBorder: "hover:border-purple-200",
-    hoverShadow: "hover:shadow-[0_20px_50px_rgba(139,92,246,0.08)]",
-    iconBg: "bg-purple-50",
-    iconText: "text-purple-600",
+    border: "border-[#e5e1ff]",
+    hoverBorder: "hover:border-[#cdc7ff]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(91,91,214,0.10)]",
+    iconBg: "bg-[#f2efff]",
+    iconText: "text-[#5b5bd6]",
   },
   Voice: {
-    border: "border-red-100/70",
-    hoverBorder: "hover:border-red-200",
-    hoverShadow: "hover:shadow-[0_20px_50px_rgba(239,68,68,0.06)]",
-    iconBg: "bg-red-50",
-    iconText: "text-red-500",
+    border: "border-[#f4dfdb]",
+    hoverBorder: "hover:border-[#efcbc4]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(220,91,91,0.10)]",
+    iconBg: "bg-[#fdeeed]",
+    iconText: "text-[#d55d55]",
   },
   Sales: {
-    border: "border-teal-100/70",
-    hoverBorder: "hover:border-teal-200",
-    hoverShadow: "hover:shadow-[0_20px_50px_rgba(20,184,166,0.08)]",
-    iconBg: "bg-teal-50",
-    iconText: "text-teal-600",
+    border: "border-[#d8f0ee]",
+    hoverBorder: "hover:border-[#b8e2de]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(15,139,141,0.10)]",
+    iconBg: "bg-[#e7fbfa]",
+    iconText: "text-[#0f8b8d]",
   },
   Internal: {
-    border: "border-slate-200/70",
-    hoverBorder: "hover:border-slate-300",
-    hoverShadow: "hover:shadow-[0_20px_50px_rgba(100,116,139,0.08)]",
-    iconBg: "bg-slate-100",
-    iconText: "text-slate-600",
+    border: "border-[#dde4ec]",
+    hoverBorder: "hover:border-[#c9d4df]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(100,116,139,0.10)]",
+    iconBg: "bg-[#edf1f6]",
+    iconText: "text-[#64748b]",
   },
 };
 
@@ -58,42 +68,67 @@ function SolutionCard({ solution }: { solution: SolutionDetail }) {
     >
       <Link
         href={`/solutions/${solution.slug}`}
-        className={`group flex h-full flex-col overflow-hidden rounded-[24px] border bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300 md:p-7 ${accent.border} ${accent.hoverBorder} ${accent.hoverShadow}`}
+        className={`group flex h-full flex-col overflow-hidden rounded-[28px] border bg-white shadow-[0_12px_30px_rgba(40,34,26,0.05)] transition-all duration-300 ${accent.border} ${accent.hoverBorder} ${accent.hoverShadow}`}
       >
-        <div className="flex items-center gap-3.5">
-          <div
-            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText} transition-transform duration-300 group-hover:scale-110`}
-          >
-            <solution.icon className="h-6 w-6" />
-          </div>
-          <div>
-            <span className={`text-[11px] font-bold uppercase tracking-[0.14em] ${accent.iconText}`}>
-              {solution.category}
-            </span>
-            <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[18px] tracking-[-0.02em] text-[#221f1b]">
-              {solution.title}
-            </h3>
+        <div className="relative aspect-[1.72/1] overflow-hidden border-b border-[#ece6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7f4ee_100%)]">
+          <Image
+            src={solution.heroImage}
+            alt={solution.heroImageAlt}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_25%,rgba(18,24,39,0.08)_100%)]" />
+          <div className="absolute left-5 top-5 inline-flex rounded-full border border-white/80 bg-white/92 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#766f62] shadow-sm">
+            {solution.heroPanelLabel}
           </div>
         </div>
 
-        <p className="mt-4 text-[14px] leading-7 text-[#6d665d]">
-          {solution.description}
-        </p>
+        <div className="flex flex-1 flex-col p-5 md:p-6">
+          <div className="flex items-center gap-3.5">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText} transition-transform duration-300 group-hover:scale-110`}
+            >
+              <solution.icon className="h-5 w-5" />
+            </div>
+            <div>
+              <span className={`text-[11px] font-bold uppercase tracking-[0.14em] ${accent.iconText}`}>
+                {solution.category}
+              </span>
+              <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[17px] tracking-[-0.02em] text-[#221f1b]">
+                {solution.title}
+              </h3>
+            </div>
+          </div>
 
-        <ul className="mt-5 space-y-2.5">
-          {solution.features.slice(0, 3).map((feature) => (
-            <li key={feature} className="flex items-start gap-2 text-[13px] leading-6 text-[#6d665d]">
-              <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
-              {feature}
-            </li>
-          ))}
-        </ul>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {solution.tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-[#e7e0d5] bg-[#fbf8f3] px-3 py-1 text-[11px] font-medium text-[#6b6358]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
 
-        <div className="mt-auto pt-5">
-          <span className={`inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${accent.iconText}`}>
-            Explore solution
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-          </span>
+          <p className="mt-3 text-[13px] leading-6 text-[#6d665d]">{solution.description}</p>
+
+          <ul className="mt-4 space-y-2">
+            {solution.heroSummary.slice(0, 1).map((item) => (
+              <li key={item} className="flex items-start gap-2.5 text-[12px] leading-5 text-[#6d665d]">
+                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto pt-5">
+            <span className={`inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${accent.iconText}`}>
+              Explore solution
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
         </div>
       </Link>
     </motion.div>
@@ -101,12 +136,30 @@ function SolutionCard({ solution }: { solution: SolutionDetail }) {
 }
 
 const CATEGORY_COLORS: Record<string, { active: string; inactive: string }> = {
-  All: { active: "bg-[#221f1b] text-white shadow-[0_4px_12px_rgba(34,31,27,0.2)]", inactive: "border border-[#ddd7ca] bg-white text-[#6d665d]" },
-  Support: { active: "bg-purple-600 text-white shadow-[0_4px_12px_rgba(139,92,246,0.3)]", inactive: "border border-purple-100 bg-purple-50/50 text-purple-600" },
-  Voice: { active: "bg-red-500 text-white shadow-[0_4px_12px_rgba(239,68,68,0.3)]", inactive: "border border-red-100 bg-red-50/50 text-red-500" },
-  Commerce: { active: "bg-blue-600 text-white shadow-[0_4px_12px_rgba(37,99,235,0.3)]", inactive: "border border-blue-100 bg-blue-50/50 text-blue-600" },
-  Internal: { active: "bg-slate-600 text-white shadow-[0_4px_12px_rgba(100,116,139,0.3)]", inactive: "border border-slate-200 bg-slate-50/50 text-slate-600" },
-  Sales: { active: "bg-teal-600 text-white shadow-[0_4px_12px_rgba(20,184,166,0.3)]", inactive: "border border-teal-100 bg-teal-50/50 text-teal-600" },
+  All: {
+    active: "bg-[#221f1b] text-white shadow-[0_6px_16px_rgba(34,31,27,0.18)]",
+    inactive: "border border-[#ddd7ca] bg-white text-[#6d665d]",
+  },
+  Support: {
+    active: "bg-[#5b5bd6] text-white shadow-[0_6px_16px_rgba(91,91,214,0.24)]",
+    inactive: "border border-[#e5e1ff] bg-[#f7f6ff] text-[#5b5bd6]",
+  },
+  Voice: {
+    active: "bg-[#d55d55] text-white shadow-[0_6px_16px_rgba(213,93,85,0.24)]",
+    inactive: "border border-[#f4dfdb] bg-[#fff6f5] text-[#d55d55]",
+  },
+  Commerce: {
+    active: "bg-[#315EEA] text-white shadow-[0_6px_16px_rgba(49,94,234,0.24)]",
+    inactive: "border border-[#dce6ff] bg-[#f5f8ff] text-[#315EEA]",
+  },
+  Internal: {
+    active: "bg-[#64748b] text-white shadow-[0_6px_16px_rgba(100,116,139,0.24)]",
+    inactive: "border border-[#dde4ec] bg-[#f7f9fb] text-[#64748b]",
+  },
+  Sales: {
+    active: "bg-[#0f8b8d] text-white shadow-[0_6px_16px_rgba(15,139,141,0.24)]",
+    inactive: "border border-[#d8f0ee] bg-[#f2fcfb] text-[#0f8b8d]",
+  },
 };
 
 function CategoryFilter({
@@ -117,7 +170,7 @@ function CategoryFilter({
   onCategoryChange: (category: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap justify-center gap-2 px-5 pb-12 md:px-8">
+    <div className="mx-auto flex max-w-[1360px] flex-wrap justify-center gap-2 px-5 pb-12 md:px-8">
       {categories.map((cat) => {
         const isActive = activeCategory === cat;
         const colors = CATEGORY_COLORS[cat] ?? CATEGORY_COLORS.All;
