@@ -83,6 +83,7 @@ export const API = {
       PROCESS: devMode(() => "/process"),
       ADD_CITATION: devMode(() => "/citation"),
       EMBEDDINGS: allMode(() => "/embeddings/:dataSourceId"),
+      CONTENT: allMode(() => "/content/:dataSourceId"),
       DELETE_KNOWLEDGE: devMode(() => "/knowledge"),
       GET_DATA_SOURCES: allMode(() => "/:chatbotId"),
     },
@@ -240,6 +241,7 @@ export const API = {
       BASE_URL: () => "/leads",
       CREATE: allMode(() => "/"),   //POST
       GET_LEADS: allMode(() => "/"), //GET
+      EXPORT: allMode(() => "/export"), //GET - CSV download
     },
     LEAD_FORMS: {
       BASE_URL: () => "/lead-forms",

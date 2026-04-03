@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, Suspense } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -11,13 +11,9 @@ import {
   Search,
   Trash2,
   Edit3,
-  Copy,
-  Check,
   Calendar,
   Database,
-  AlertCircle,
   AlertTriangle,
-  Eye,
   MoreVertical,
   Plus,
   Lock
@@ -32,9 +28,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSuspenseDataSources, useSuspenseEmbeddings, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
+import { useSuspenseDataSources, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
 import { toast } from 'sonner';
-import type { DataSourceItem, EmbeddingItem } from '@/types/datasource';
+import type { DataSourceItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
 import { useAccessControl } from '@/hooks/useAccessControl';
@@ -63,7 +59,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
 import {
   SourcesCategorySidebar,
   AddKnowledgeDialog,
@@ -120,149 +115,6 @@ function getStatusBadgeClass(status: string | null | undefined, map: Record<stri
   return map[normalizedKey] || map.DRAFT;
 }
 
-
-function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index: number }) {
-  const [copied, setCopied] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(embedding.text);
-    setCopied(true);
-    toast.success('Copied to clipboard');
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const shouldTruncate = embedding.text.length > 200;
-  const displayText = expanded ? embedding.text : embedding.text.slice(0, 200);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.02 }}
-      className="group bg-[--surface-secondary] border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
-    >
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <span className="text-xs font-mono text-muted-foreground">Chunk #{index + 1}</span>
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          onClick={handleCopy}
-          className="opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          {copied ? (
-            <Check className="w-3 h-3 text-green-400" />
-          ) : (
-            <Copy className="w-3 h-3" />
-          )}
-        </Button>
-      </div>
-      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-        {displayText}
-        {shouldTruncate && !expanded && '...'}
-      </p>
-      {shouldTruncate && (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="text-xs text-primary hover:text-primary/80 mt-2 font-medium"
-        >
-          {expanded ? 'Show less' : 'Show more'}
-        </button>
-      )}
-    </motion.div>
-  );
-}
-
-function ViewChunksDialog({ dataSource, onClose }: { dataSource: DataSourceItem; onClose: () => void }) {
-  const Icon = DATA_SOURCE_ICONS[dataSource.type as keyof typeof DATA_SOURCE_ICONS] || FileText;
-
-  return (
-    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-4 border-b border-border">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <Icon className="w-5 h-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge
-                  variant="outline"
-                  className={cn('text-2xs font-medium', DATA_SOURCE_BADGE_COLORS[dataSource.type as keyof typeof DATA_SOURCE_BADGE_COLORS])}
-                >
-                  {dataSource.type}
-                </Badge>
-                {dataSource.createdAt && (
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(dataSource.createdAt).toLocaleDateString()}
-                  </span>
-                )}
-              </div>
-              <DialogTitle className="type-section-title truncate">{dataSource.name}</DialogTitle>
-              {dataSource.citation && (
-                <a
-                  href={dataSource.citation}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:text-primary/80 truncate block mt-1"
-                >
-                  {dataSource.citation}
-                </a>
-              )}
-            </div>
-          </div>
-        </DialogHeader>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Database className="w-4 h-4 text-primary" />
-            <h4 className="type-micro-heading">
-              Embedding Chunks
-            </h4>
-          </div>
-
-          <AsyncBoundary loadingFallback={
-            <div className="flex items-center justify-center py-12">
-              <div className="text-sm text-muted-foreground">Loading embeddings...</div>
-            </div>
-          }>
-            <EmbeddingChunksContent dataSourceId={dataSource.id} />
-          </AsyncBoundary>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
-  const { data: embeddings } = useSuspenseEmbeddings(dataSourceId);
-
-  if (!embeddings || embeddings.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground">
-          No embeddings found. They may still be processing.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-muted-foreground font-normal">({embeddings.length})</span>
-      </div>
-      <div className="space-y-3">
-        <AnimatePresence>
-          {embeddings.map((embedding, index) => (
-            <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
-          ))}
-        </AnimatePresence>
-      </div>
-    </>
-  );
-}
 
 function EditCitationDialog({
   dataSource,
@@ -323,7 +175,8 @@ function DataSourceCard({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-4 shadow-card transition-all hover:border-primary/20 shadow-card-hover"
+      className="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-4 shadow-card transition-all hover:border-primary/20 shadow-card-hover cursor-pointer"
+      onClick={onViewChunks}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
@@ -348,15 +201,16 @@ function DataSourceCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground"
+              onClick={(e) => e.stopPropagation()}
+            >
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onViewChunks}>
-              <Eye className="w-4 h-4 mr-2" />
-              View chunks
-            </DropdownMenuItem>
+          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
             <FeatureGuard feature="datasources">
               <DropdownMenuItem
                 onClick={onEditCitation}
@@ -412,7 +266,7 @@ interface DataSourcesContentProps {
   searchQuery: string;
   onSourceToDelete: (source: DataSourceItem) => void;
   onEditingSource: (source: DataSourceItem) => void;
-  onViewingSource: (source: DataSourceItem) => void;
+  onNavigateToSource: (source: DataSourceItem) => void;
   isLiveMode: boolean;
 }
 
@@ -423,7 +277,7 @@ function DataSourcesContent({
   searchQuery,
   onSourceToDelete,
   onEditingSource,
-  onViewingSource,
+  onNavigateToSource,
   isLiveMode,
 }: DataSourcesContentProps) {
   const { data: dataSources } = useSuspenseDataSources(botId);
@@ -491,7 +345,7 @@ function DataSourcesContent({
             dataSource={source}
             onDelete={() => onSourceToDelete(source)}
             onEditCitation={() => onEditingSource(source)}
-            onViewChunks={() => onViewingSource(source)}
+            onViewChunks={() => onNavigateToSource(source)}
             isLiveMode={isLiveMode}
           />
         ))}
@@ -523,10 +377,11 @@ export default function DataSourcesPage() {
   const botId = Array.isArray(routeParams.botId) ? routeParams.botId[0] : routeParams.botId;
   const workspaceId = Array.isArray(routeParams.workspaceId) ? routeParams.workspaceId[0] : routeParams.workspaceId;
 
+  const router = useRouter();
+
   const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
-  const [viewingSource, setViewingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -661,7 +516,7 @@ export default function DataSourcesPage() {
               searchQuery={searchQuery}
               onSourceToDelete={handleDelete}
               onEditingSource={setEditingSource}
-              onViewingSource={setViewingSource}
+              onNavigateToSource={(source) => router.push(`/${workspaceId}/chatbot/${botId}/sources/${source.id}`)}
               isLiveMode={isLiveMode}
             />
           </AsyncBoundary>
@@ -674,14 +529,6 @@ export default function DataSourcesPage() {
         onOpenChange={setIsAddDialogOpen}
         chatbotId={botId}
       />
-
-      {/* View Chunks Dialog */}
-      {viewingSource && (
-        <ViewChunksDialog
-          dataSource={viewingSource}
-          onClose={() => setViewingSource(null)}
-        />
-      )}
 
       {/* Edit Citation Dialog */}
       {editingSource && (

@@ -21,6 +21,15 @@ export interface GetLeadsQuery {
     topicId?: string;
 }
 
+export interface ExportLeadsQuery {
+    chatbotId: string;
+    source?: 'WIDGET' | 'WHATSAPP' | 'VOICE' | 'SMS';
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+    topicId?: string;
+}
+
 // ============================================================================
 // Response Types
 // ============================================================================

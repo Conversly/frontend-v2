@@ -6,6 +6,7 @@ import {
   processDataSource,
   deleteKnowledge,
   fetchEmbeddings,
+  fetchSourceContent,
   addCitation,
 } from "@/lib/api/datasource";
 import type { ProcessRequest, DataSourceItem } from "@/types/datasource";
@@ -129,5 +130,16 @@ export const useSuspenseEmbeddings = (dataSourceId: string) =>
   useSuspenseQuery({
     queryKey: [QUERY_KEY.DATASOURCES_EMBEDDINGS, dataSourceId],
     queryFn: () => fetchEmbeddings(dataSourceId),
+    ...DATASOURCE_CACHE_CONFIG,
+  });
+
+/**
+ * Suspense-enabled hook for fetching structured source content for a data source.
+ * Returns the full document content for clean UI display.
+ */
+export const useSuspenseSourceContent = (dataSourceId: string) =>
+  useSuspenseQuery({
+    queryKey: [QUERY_KEY.DATASOURCES_CONTENT, dataSourceId],
+    queryFn: () => fetchSourceContent(dataSourceId),
     ...DATASOURCE_CACHE_CONFIG,
   });

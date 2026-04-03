@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 // MessageList component missing
 
@@ -15,7 +15,8 @@ import {
   ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
   ACTIVITY_PAGE_ROOT_CLASSNAME,
 } from "@/components/chatbot/activity/layout-constants";
-import { ConversationViewer } from "@/components/chatbot/activity/ConversationViewer";
+import { ConversationViewer, type ConversationMessage } from "@/components/chatbot/activity/ConversationViewer";
+import { ReviseAnswerSheet } from "@/components/chatbot/activity/ReviseAnswerSheet";
 import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,21 @@ export default function ChatLogsPage() {
 
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [reviseTarget, setReviseTarget] = useState<{
+    userMessage: string;
+    assistantMessage: string;
+  } | null>(null);
+
+  const handleReviseAnswer = useCallback(
+    (assistantMsg: ConversationMessage, userMsg: ConversationMessage | null) => {
+      setReviseTarget({
+        userMessage: userMsg?.content ?? "",
+        assistantMessage: assistantMsg.content,
+      });
+    },
+    []
+  );
 
   const filteredChatlogs = useMemo(() => {
     if (!chatlogs) return [];
@@ -303,6 +319,7 @@ export default function ChatLogsPage() {
               <ConversationViewer
                 messages={renderedMessages}
                 isLoading={isLoadingMessages}
+                onReviseAnswer={handleReviseAnswer}
                 emptyMessage={
                   renderedMessages.length === 0
                     ? "No messages in this conversation yet."
@@ -330,6 +347,14 @@ export default function ChatLogsPage() {
             feedback: null,
           })
         }
+      />
+
+      <ReviseAnswerSheet
+        open={!!reviseTarget}
+        onOpenChange={(open) => { if (!open) setReviseTarget(null); }}
+        userMessage={reviseTarget?.userMessage ?? ""}
+        agentResponse={reviseTarget?.assistantMessage ?? ""}
+        botId={botId}
       />
     </div>
   );

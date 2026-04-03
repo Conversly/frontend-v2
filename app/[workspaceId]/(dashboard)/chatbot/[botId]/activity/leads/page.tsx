@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Search, Calendar as CalendarIcon, Filter, X } from "lucide-react";
-import { useGetLeadsInfinite } from "@/services/leads";
+import { Search, Calendar as CalendarIcon, Filter, X, Download } from "lucide-react";
+import { useGetLeadsInfinite, useExportLeads } from "@/services/leads";
 import { useTopicsQuery } from "@/services/chatbot";
 import { cn } from "@/lib/utils";
 import {
@@ -113,6 +113,19 @@ export default function LeadsPage() {
 
   const { data: topics } = useTopicsQuery(chatbotId);
 
+  // Export
+  const { mutate: exportLeads, isPending: isExporting } = useExportLeads();
+  const handleExport = () => {
+    exportLeads({
+      chatbotId,
+      source: source === "ALL" ? undefined : (source as any),
+      topicId: topicId === "ALL" ? undefined : topicId,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      search: debouncedSearch || undefined,
+    });
+  };
+
   // Flatten pages
   const leads = useMemo(() => {
     return data?.pages.flatMap((page) => page.data) ?? [];
@@ -158,11 +171,22 @@ export default function LeadsPage() {
     <div className="flex h-full flex-col bg-background">
       {/* Header */}
       <div className="border-b bg-background px-6 py-4 space-y-4">
-        <div>
-          <h1 className="type-section-title tracking-tight">Leads</h1>
-          <p className="type-body-muted mt-0.5">
-            Manage and track leads generated from conversations
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="type-section-title tracking-tight">Leads</h1>
+            <p className="type-body-muted mt-0.5">
+              Manage and track leads generated from conversations
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+            disabled={isExporting}
+          >
+            <Download className="w-4 h-4 mr-1.5" />
+            {isExporting ? "Exporting..." : "Export CSV"}
+          </Button>
         </div>
 
         {/* Filters Bar */}
