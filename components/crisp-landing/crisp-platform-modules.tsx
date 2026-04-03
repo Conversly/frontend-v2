@@ -7,29 +7,30 @@ import {
   ChartColumnBig,
   Inbox,
   MessageSquareText,
-  Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const ROTATION_INTERVAL = 6000;
 
 const modules = [
   {
     id: "ai-helpdesk",
     title: "AI Helpdesk",
     eyebrow: "Automation core",
-    description: "Give superpowers to your teams and customers.",
+    description: "Resolve tickets before your team wakes up.",
     summary:
-      "Automate repetitive support, draft smarter replies, and keep human handoff available when nuance matters.",
+      "AI handles triage, drafts contextual replies, and escalates with full conversation history — so your agents only touch what truly needs a human.",
     icon: Bot,
     iconClass: "bg-[#e6ddff] text-[#6a45db]",
     previewLabel: "AI Helpdesk",
-    previewTitle: "Autonomous support flows",
+    previewTitle: "Support that runs while you sleep",
     previewDescription:
-      "AI handles repetitive requests, classifies issues, and escalates with context when needed.",
+      "AI classifies, drafts, and resolves — your team steps in only when it matters.",
     metrics: [
       { value: "72%", label: "auto-resolved" },
       { value: "4.8m", label: "avg first reply" },
-      { value: "100%", label: "handoff context" },
+      { value: "100%", label: "context preserved" },
     ],
     render: () => (
       <div className="flex h-full flex-col gap-4 md:grid md:grid-cols-[1.15fr_0.85fr]">
@@ -39,16 +40,16 @@ const modules = [
               <SectionTitle
                 eyebrow="AI inbox assistant"
                 title="Suggested next actions"
-                description="Verly reviews the conversation, policy context, and customer status before proposing the next move."
+                description="Reviews conversation, policy context, and customer status before proposing the next move."
               />
               <StatusChip tone="blue">Live</StatusChip>
             </div>
 
             <div className="mt-auto pt-5 grid gap-3">
               {[
-                ["Refund request", "Matched to returns policy article"],
-                ["Billing issue", "Needs finance escalation with summary"],
-                ["VIP customer", "Priority response and manager notification"],
+                ["Refund request", "Matched to returns policy — auto-approved under $50"],
+                ["Billing dispute", "Escalated to finance with AI-generated summary"],
+                ["VIP account", "Priority queue + manager notified in Slack"],
               ].map(([title, detail]) => (
                 <DetailRow key={title} title={title} detail={detail} />
               ))}
@@ -61,10 +62,10 @@ const modules = [
             title="Escalation output"
             value="1-click handoff"
             lines={[
-              "AI conversational summary",
-              "Detected user intent",
+              "Full conversation summary",
+              "Detected customer intent",
               "Suggested macro reply",
-              "Assessed priority level",
+              "Priority level assessed",
             ]}
             fullHeight
           />
@@ -74,21 +75,21 @@ const modules = [
   },
   {
     id: "chat-widget",
-    title: "Chat widget",
-    eyebrow: "Website support",
-    description: "Support from your website and mobile apps.",
+    title: "Chat Widget",
+    eyebrow: "Website & mobile",
+    description: "Turn visitors into conversations instantly.",
     summary:
-      "Launch a modern web chat experience that captures intent fast and routes conversations into the same Verly workflow.",
+      "A modern chat experience that captures intent from the first click and routes conversations straight into your Verly workflow — no separate tool needed.",
     icon: MessageSquareText,
     iconClass: "bg-[#dde7ff] text-[#3f63d8]",
-    previewLabel: "Web conversations",
-    previewTitle: "Website widget with instant intake",
+    previewLabel: "Live Chat",
+    previewTitle: "Instant support from any page",
     previewDescription:
-      "Capture questions, surface quick actions, and start support with structured context from the first click.",
+      "Capture questions, surface quick actions, and start support with structured context from the first message.",
     metrics: [
       { value: "3 clicks", label: "to start" },
-      { value: "24/7", label: "coverage" },
-      { value: "1 flow", label: "with inbox sync" },
+      { value: "24/7", label: "always on" },
+      { value: "1 flow", label: "inbox sync" },
     ],
     render: () => (
       <div className="flex h-full flex-col gap-4 md:grid md:grid-cols-[0.98fr_1.02fr]">
@@ -113,10 +114,10 @@ const modules = [
                   <Bubble side="left" text="Hi, I need help updating my shipping address." />
                   <Bubble
                     side="right"
-                    text="I can help with that. Is this for an existing order or a new purchase?"
+                    text="Sure! Is this for an existing order or a new purchase?"
                   />
                   <div className="grid gap-2 sm:grid-cols-2 pt-2">
-                    {["Track an order", "Billing help", "Talk to sales", "Need an agent"].map(
+                    {["Track order", "Billing help", "Talk to sales", "Live agent"].map(
                       (item) => (
                         <div
                           key={item}
@@ -151,15 +152,15 @@ const modules = [
     id: "shared-inbox",
     title: "Shared Inbox",
     eyebrow: "Omnichannel queue",
-    description: "Centralize your inbound communications.",
+    description: "Every channel, one operating layer.",
     summary:
-      "Manage every incoming conversation from one place with priorities, ownership, and a live queue across channels.",
+      "Email, WhatsApp, Instagram, voice — every conversation lands in one queue with smart routing, ownership, and live priority signals.",
     icon: Inbox,
     iconClass: "bg-[#e4e9ff] text-[#5671ff]",
     previewLabel: "Shared Inbox",
-    previewTitle: "Unified queue for every channel",
+    previewTitle: "One queue for every channel",
     previewDescription:
-      "Route voice, WhatsApp, email, and social conversations into one operating layer for your team.",
+      "Route voice, WhatsApp, email, and social conversations into a single workspace your team already knows.",
     metrics: [
       { value: "50%", label: "faster resolution" },
       { value: "387 hrs", label: "saved/month" },
@@ -176,7 +177,7 @@ const modules = [
                   <span className="h-2.5 w-2.5 rounded-full bg-[#f0c95a]" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#7bc97f]" />
                 </div>
-                <span className="text-[13px] font-medium text-[#666d86]">verly.app/modules/inbox</span>
+                <span className="text-[13px] font-medium text-[#666d86]">verly.app/inbox</span>
               </div>
               <span className="rounded-full bg-[#eef1ff] px-2.5 py-1 text-[11px] font-bold text-[#7691ff]">
                 Live View
@@ -185,57 +186,57 @@ const modules = [
 
             <div className="flex flex-1 flex-col">
               <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="text-[18px] font-semibold text-[#353d53]">Unified Queue</h3>
-              <p className="mt-1 text-[14px] text-[#8790ab]">All conversations, one workflow</p>
-            </div>
-            <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[12px] font-bold text-blue-600 border border-blue-100">
-              24 open
-            </span>
-          </div>
-
-          <div className="mt-auto pt-4 grid gap-3 grid-cols-2 md:grid-cols-4">
-            {[
-              { name: "Email", color: "bg-[#4e7ff5]", count: "12" },
-              { name: "WhatsApp", color: "bg-[#42b97a]", count: "5" },
-              { name: "Instagram", color: "bg-[#dc4a95]", count: "4" },
-              { name: "Messenger", color: "bg-[#615ff4]", count: "3" },
-            ].map((channel) => (
-              <div
-                key={channel.name}
-                className="rounded-[18px] border border-[#eceef6] bg-gradient-to-b from-[#f8f9fc] to-[#f4f6fb] px-3 py-4 text-center shadow-sm relative overflow-hidden"
-              >
-                <div className={`mx-auto flex h-10 w-10 items-center justify-center rounded-2xl ${channel.color} text-white shadow-md`}>
-                  <Inbox size={18} />
+                <div>
+                  <h3 className="text-[18px] font-semibold text-[#353d53]">Unified Queue</h3>
+                  <p className="mt-1 text-[14px] text-[#8790ab]">All conversations, one workflow</p>
                 </div>
-                <div className="mt-3 text-[13px] font-semibold text-[#69728c]">{channel.name}</div>
-                <div className="absolute top-2 right-2 text-[10px] font-bold text-[#8d96b3] bg-white rounded-full px-1.5 min-w-[20px] shadow-sm">
-                  {channel.count}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 space-y-2.5">
-            {[
-              { name: "Refund follow-up", priority: "High", icon: "🔴" },
-              { name: "Billing question", priority: "Medium", icon: "🟡" },
-              { name: "VIP handoff", priority: "Urgent", icon: "🟣" },
-            ].map((item) => (
-              <div
-                key={item.name}
-                className="flex items-center justify-between rounded-[16px] border border-[#eceef6] bg-[#f8f9fc] px-4 py-3 text-[14px] transition-colors hover:bg-[#f1f3f9] cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-[12px]">{item.icon}</span>
-                  <span className="font-medium text-[#495168]">{item.name}</span>
-                </div>
-                <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-[#8b92aa] shadow-sm border border-[#e8eaef]">
-                  {item.priority}
+                <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[12px] font-bold text-blue-600 border border-blue-100">
+                  24 open
                 </span>
               </div>
-            ))}
-          </div>
+
+              <div className="mt-auto pt-4 grid gap-3 grid-cols-2 md:grid-cols-4">
+                {[
+                  { name: "Email", color: "bg-[#4e7ff5]", count: "12" },
+                  { name: "WhatsApp", color: "bg-[#42b97a]", count: "5" },
+                  { name: "Instagram", color: "bg-[#dc4a95]", count: "4" },
+                  { name: "Messenger", color: "bg-[#615ff4]", count: "3" },
+                ].map((channel) => (
+                  <div
+                    key={channel.name}
+                    className="rounded-[18px] border border-[#eceef6] bg-gradient-to-b from-[#f8f9fc] to-[#f4f6fb] px-3 py-4 text-center shadow-sm relative overflow-hidden"
+                  >
+                    <div className={`mx-auto flex h-10 w-10 items-center justify-center rounded-2xl ${channel.color} text-white shadow-md`}>
+                      <Inbox size={18} />
+                    </div>
+                    <div className="mt-3 text-[13px] font-semibold text-[#69728c]">{channel.name}</div>
+                    <div className="absolute top-2 right-2 text-[10px] font-bold text-[#8d96b3] bg-white rounded-full px-1.5 min-w-[20px] shadow-sm">
+                      {channel.count}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 space-y-2.5">
+                {[
+                  { name: "Refund follow-up", priority: "High", dot: "bg-red-400" },
+                  { name: "Billing question", priority: "Medium", dot: "bg-amber-400" },
+                  { name: "VIP handoff", priority: "Urgent", dot: "bg-purple-400" },
+                ].map((item) => (
+                  <div
+                    key={item.name}
+                    className="flex items-center justify-between rounded-[16px] border border-[#eceef6] bg-[#f8f9fc] px-4 py-3 text-[14px] transition-colors hover:bg-[#f1f3f9] cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`h-2 w-2 rounded-full ${item.dot}`} />
+                      <span className="font-medium text-[#495168]">{item.name}</span>
+                    </div>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-[#8b92aa] shadow-sm border border-[#e8eaef]">
+                      {item.priority}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </ModuleCard>
@@ -246,15 +247,15 @@ const modules = [
     id: "knowledge-base",
     title: "Knowledge Base",
     eyebrow: "Training layer",
-    description: "Make your customers more autonomous.",
+    description: "Your best answers, always getting better.",
     summary:
-      "Organize product knowledge, FAQs, and resolution playbooks so AI and agents respond with better context.",
+      "Organize docs, FAQs, and playbooks into a single source of truth that trains both AI and agents — so every response improves over time.",
     icon: BookOpenText,
     iconClass: "bg-[#dff2d7] text-[#4c8a3e]",
     previewLabel: "Knowledge Base",
-    previewTitle: "Docs that train the system",
+    previewTitle: "Docs that power every answer",
     previewDescription:
-      "Sync articles, SOPs, and policy docs into a central source of truth for self-serve and agent assist.",
+      "Sync articles, SOPs, and policies into one place — AI and agents pull from the same source.",
     metrics: [
       { value: "128", label: "articles synced" },
       { value: "92%", label: "answer coverage" },
@@ -294,7 +295,7 @@ const modules = [
           lines={[
             "Auto-sync enabled",
             "Versioned updates",
-            "Intent mapping",
+            "Intent mapping active",
             "Source-linked answers",
           ]}
           fullHeight
@@ -303,80 +304,18 @@ const modules = [
     ),
   },
   {
-    id: "support-crm",
-    title: "Support CRM",
-    eyebrow: "Customer context",
-    description: "Organize your customer data in a CRM.",
-    summary:
-      "Keep conversation history, account notes, plan details, and support signals visible in one customer record.",
-    icon: Users,
-    iconClass: "bg-[#f6e4d0] text-[#bb6b2f]",
-    previewLabel: "Support CRM",
-    previewTitle: "One customer record across channels",
-    previewDescription:
-      "Give agents and AI instant context on plans, issues, and previous conversations before every reply.",
-    metrics: [
-      { value: "360°", label: "customer context" },
-      { value: "0", label: "lost handoffs" },
-      { value: "1 view", label: "per account" },
-    ],
-    render: () => (
-      <div className="flex h-full flex-col gap-4 md:grid md:grid-cols-[0.9fr_1.1fr]">
-        <SmallPanel
-          title="Customer profile"
-          value="Riya Sharma"
-          lines={[
-            "Plan: Growth (+2 seats)",
-            "Region: APAC (GMT+8)",
-            "Open cases: 2 (1 urgent)",
-            "CSM: Assigned (Sarah)",
-          ]}
-          fullHeight
-        />
-
-        <ModuleCard>
-          <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between pb-4 border-b border-[#f0f2f7]">
-              <div className="text-[17px] font-semibold text-[#31384f]">Recent timeline</div>
-              <StatusChip tone="neutral">Synced via API</StatusChip>
-            </div>
-            <div className="mt-auto pt-4 space-y-3 relative before:absolute before:left-3 before:top-6 before:bottom-6 before:w-0.5 before:bg-[#e4e7f1]">
-              {[
-                { action: "Voice call summary added by AI", time: "10m ago", glow: "border-[#6e83ff]" },
-                { action: "WhatsApp billing issue resolved", time: "2h ago", glow: "border-[#eaecf4]" },
-                { action: "Follow-up task created for onboarding", time: "1d ago", glow: "border-[#eaecf4]" },
-                { action: "Priority tag added after escalation", time: "3d ago", glow: "border-[#eaecf4]" },
-              ].map((item) => (
-                <div
-                  key={item.action}
-                  className={`relative ml-4 rounded-[16px] border bg-gradient-to-r from-white to-[#f9fafc] px-4 py-3 text-[14px] font-medium text-[#5c647c] shadow-sm ${item.glow}`}
-                >
-                  <span className={`absolute -left-[22px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-white border-2 ${item.glow === "border-[#6e83ff]" ? "border-[#6e83ff]" : "border-[#ced2df]"}`} />
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="leading-5">{item.action}</span>
-                    <span className="text-[11px] text-[#939bb0] shrink-0 font-bold">{item.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </ModuleCard>
-      </div>
-    ),
-  },
-  {
     id: "support-analytics",
-    title: "Support Analytics",
+    title: "Analytics",
     eyebrow: "Performance layer",
-    description: "Monitor and track your teams' performances.",
+    description: "Know exactly what needs attention next.",
     summary:
-      "Track response quality, missed intents, channel volume, and automation opportunities from one analytics layer.",
+      "Track response quality, missed intents, channel volume, and automation gaps from one dashboard — so you fix problems before customers notice.",
     icon: ChartColumnBig,
     iconClass: "bg-[#f8dfe4] text-[#d54d68]",
     previewLabel: "Support Analytics",
-    previewTitle: "See what needs attention next",
+    previewTitle: "From data to action, instantly",
     previewDescription:
-      "Surface trends, gaps, and performance changes across AI and human support workflows in real time.",
+      "Surface trends, gaps, and performance changes across AI and human workflows in real time.",
     metrics: [
       { value: "18%", label: "fewer handoffs" },
       { value: "94%", label: "CSAT trend" },
@@ -404,7 +343,7 @@ const modules = [
             </div>
             <div className="mt-4 overflow-hidden rounded-[18px] bg-[linear-gradient(180deg,#f5f7fd_0%,#edf1ff_100%)] p-4 border border-[#e8eaef]">
               <div className="mb-3 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em] text-[#8c93ab]">
-                <span>Conversation monitors</span>
+                <span>Conversation volume</span>
                 <span className="text-[#6a45db]">Last 7 days</span>
               </div>
               <div className="flex h-[76px] items-end gap-3 px-1">
@@ -435,15 +374,38 @@ const modules = [
 ] as const;
 
 export default function CrispPlatformModules() {
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const progressRef = useRef<number | null>(null);
+  const startTimeRef = useRef(Date.now());
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % modules.length);
-    }, 5000);
+    startTimeRef.current = Date.now();
+    setProgress(0);
 
-    return () => window.clearInterval(interval);
-  }, []);
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const pct = Math.min(elapsed / ROTATION_INTERVAL, 1);
+      setProgress(pct);
+
+      if (pct >= 1) {
+        setActiveIndex((current) => (current + 1) % modules.length);
+      } else {
+        progressRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    progressRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (progressRef.current) cancelAnimationFrame(progressRef.current);
+    };
+  }, [activeIndex]);
+
+  const handleModuleClick = (index: number) => {
+    if (progressRef.current) cancelAnimationFrame(progressRef.current);
+    setActiveIndex(index);
+  };
 
   const activeModule = modules[activeIndex];
   const ActiveIcon = activeModule.icon;
@@ -453,23 +415,56 @@ export default function CrispPlatformModules() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(83,104,255,0.16),transparent_28%),linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:auto,48px_48px,48px_48px]" />
 
       <div className="relative mx-auto max-w-[1440px] px-4 md:px-6">
-        <div className="mb-10 grid gap-8 lg:grid-cols-[minmax(0,760px)_minmax(0,320px)] lg:items-end lg:justify-between">
+        {/* Header */}
+        <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,760px)_minmax(0,360px)] lg:items-end lg:justify-between">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
               Platform Modules
             </span>
             <h2 className="mt-5 max-w-[720px] font-[Georgia,Times,'Times_New_Roman',serif] text-[42px] leading-[0.98] tracking-[-0.04em] text-white md:text-[64px]">
               Here&apos;s why teams love
-              <span className="block">one AI platform.</span>
+              <span className="block text-white/50">One connected platform.</span>
             </h2>
           </div>
 
-          <p className="max-w-[320px] text-[15px] leading-8 text-white/52 lg:justify-self-end">
-            Explore one Verly module at a time and see how each layer fits into the support
-            workflow.
+          <p className="max-w-[360px] text-[15px] leading-8 text-white/52 lg:justify-self-end">
+            Each module works on its own — but they&apos;re built to work together. Explore how
+            every layer fits into your support workflow.
           </p>
         </div>
 
+        {/* Module selector pills */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {modules.map((module, index) => {
+            const isActive = index === activeIndex;
+            const ModIcon = module.icon;
+
+            return (
+              <button
+                key={module.id}
+                type="button"
+                onClick={() => handleModuleClick(index)}
+                className={`group relative flex items-center gap-2 overflow-hidden rounded-full border px-4 py-2.5 text-[13px] font-medium transition-all ${
+                  isActive
+                    ? "border-[#7f95ff]/40 bg-[#7f95ff]/10 text-white"
+                    : "border-white/8 bg-white/[0.03] text-white/50 hover:border-white/15 hover:text-white/75"
+                }`}
+              >
+                {/* Progress fill behind active pill */}
+                {isActive && (
+                  <span
+                    className="absolute inset-0 bg-[#7f95ff]/[0.08] origin-left"
+                    style={{ transform: `scaleX(${progress})` }}
+                  />
+                )}
+                <ModIcon className="relative h-3.5 w-3.5" />
+                <span className="relative">{module.title}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Main showcase */}
         <div className="relative isolate">
           <div className="grid grid-cols-1 grid-rows-1">
             <AnimatePresence>
@@ -482,54 +477,58 @@ export default function CrispPlatformModules() {
                 className="col-start-1 row-start-1 h-full flex flex-col w-full overflow-hidden rounded-[34px] border border-white/8 bg-[linear-gradient(180deg,rgba(9,11,20,0.98),rgba(4,6,13,0.98))] p-4 shadow-[0_32px_80px_rgba(0,0,0,0.3)] md:p-6"
               >
                 <div className="mx-auto w-full max-w-[1080px] flex-1 overflow-hidden flex flex-col rounded-[30px] border border-[#d8d9e6] bg-[#dbdde9] shadow-[0_20px_60px_rgba(14,19,43,0.18)]">
-              <div className="border-b border-[#c9ccdb] bg-[#dcdeea] px-6 py-6 md:px-8">
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${activeModule.iconClass} shadow-[0_12px_24px_rgba(110,131,255,0.18)]`}
-                  >
-                    <ActiveIcon className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#8b8ea4]">
-                      {activeModule.previewLabel}
-                    </div>
-                    <div className="mt-2 text-[30px] font-semibold tracking-[-0.04em] text-[#2b3245]">
-                      {activeModule.previewTitle}
-                    </div>
-                    <p className="mt-2 max-w-[680px] text-[15px] leading-7 text-[#6f768d]">
-                      {activeModule.previewDescription}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 md:p-5 flex flex-1 flex-col">
-                <div className="rounded-[24px] bg-[#edeff6] p-3 md:p-4 flex-1">
-                  {activeModule.render()}
-                </div>
-
-                <div className="mt-4 grid gap-px bg-[#7086ff] md:grid-cols-3 shrink-0">
-                  {activeModule.metrics.map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="bg-[linear-gradient(180deg,#7f95ff_0%,#637cff_100%)] px-6 py-5 text-center text-white"
-                    >
-                      <div className="text-[18px] font-semibold md:text-[22px]">{stat.value}</div>
-                      <div className="mt-1 text-[12px] font-medium tracking-[0.04em] text-white/80">
-                        {stat.label}
+                  {/* Module header */}
+                  <div className="border-b border-[#c9ccdb] bg-[#dcdeea] px-6 py-6 md:px-8">
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${activeModule.iconClass} shadow-[0_12px_24px_rgba(110,131,255,0.18)]`}
+                      >
+                        <ActiveIcon className="h-6 w-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#8b8ea4]">
+                          {activeModule.previewLabel}
+                        </div>
+                        <div className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#2b3245] md:text-[30px]">
+                          {activeModule.previewTitle}
+                        </div>
+                        <p className="mt-2 max-w-[680px] text-[15px] leading-7 text-[#6f768d]">
+                          {activeModule.previewDescription}
+                        </p>
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Module content */}
+                  <div className="p-4 md:p-5 flex flex-1 flex-col">
+                    <div className="rounded-[24px] bg-[#edeff6] p-3 md:p-4 flex-1">
+                      {activeModule.render()}
+                    </div>
+
+                    {/* Metrics bar */}
+                    <div className="mt-4 grid gap-px overflow-hidden rounded-[16px] bg-[#7086ff] md:grid-cols-3 shrink-0">
+                      {activeModule.metrics.map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="bg-[linear-gradient(180deg,#7f95ff_0%,#637cff_100%)] px-6 py-5 text-center text-white"
+                        >
+                          <div className="text-[18px] font-semibold md:text-[22px]">{stat.value}</div>
+                          <div className="mt-1 text-[12px] font-medium tracking-[0.04em] text-white/80">
+                            {stat.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </motion.div>
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
+        {/* Bottom description strip */}
         <div className="mt-6 overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.03]">
-          <div className="grid gap-5 px-4 py-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-6">
+          <div className="grid gap-5 px-5 py-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-7 md:py-6">
             <div>
               <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white/48">
                 {activeModule.eyebrow}
@@ -539,21 +538,10 @@ export default function CrispPlatformModules() {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2 md:justify-end">
-              {modules.map((module, index) => (
-                <button
-                  key={module.id}
-                  type="button"
-                  onClick={() => setActiveIndex(index)}
-                  className={`rounded-full border px-3.5 py-2 text-[13px] font-medium transition-colors ${
-                    index === activeIndex
-                      ? "border-[#7f95ff] bg-[#7f95ff]/10 text-white"
-                      : "border-white/10 bg-white/[0.03] text-white/55 hover:text-white"
-                  }`}
-                >
-                  {module.title}
-                </button>
-              ))}
+            <div className="flex items-center gap-2 text-[13px] text-white/40">
+              <span className="tabular-nums">{activeIndex + 1}</span>
+              <span className="text-white/20">/</span>
+              <span className="tabular-nums">{modules.length}</span>
             </div>
           </div>
         </div>
