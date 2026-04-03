@@ -214,18 +214,7 @@ export default function ChatLogsPage() {
                     {/* Main content */}
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-2">
-                          <span className="truncate text-sm font-medium">{title}</span>
-                          <span
-                            className={cn(
-                              "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
-                              isActive ? "bg-background text-foreground" : "bg-muted text-muted-foreground group-hover/item:bg-background",
-                            )}
-                          >
-                            {channelLabel}
-                          </span>
-                        </div>
-
+                        <span className="truncate text-sm font-semibold">{title}</span>
                         <span className="text-muted-foreground flex-none text-xs tabular-nums">
                           {formatShortDateTime(ts)}
                         </span>

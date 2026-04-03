@@ -76,11 +76,11 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Warning Banner */}
-      <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-        <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-        <p className="type-body-muted text-destructive">
+      <div className="flex items-start gap-3 p-5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-amber-700">
           If you are uploading a PDF, make sure you can select/highlight the text.
         </p>
       </div>
@@ -96,7 +96,7 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
           }
         }}
         className={`
-          relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200
+          relative border-2 border-dashed rounded-xl p-16 text-center transition-all duration-200
           ${isUploading
             ? 'border-primary/50 bg-primary/5 cursor-not-allowed opacity-60'
             : isDragging
@@ -105,22 +105,22 @@ export function FileUploadContent({ onSuccess }: FileUploadContentProps) {
           }
         `}
       >
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+        <div className="flex flex-col items-center gap-5">
+          <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
             {isUploading ? (
-              <Loader2 className="w-6 h-6 text-primary animate-spin" />
+              <Loader2 className="w-7 h-7 text-primary animate-spin" />
             ) : (
-              <Upload className="w-6 h-6 text-muted-foreground" />
+              <Upload className="w-7 h-7 text-muted-foreground" />
             )}
           </div>
           <div>
-            <p className="text-foreground font-semibold mb-1">
+            <p className="text-foreground font-semibold mb-2 text-base">
               {isUploading
                 ? 'Uploading file...'
                 : 'Drag & drop files here, or click to select files'
               }
             </p>
-            <p className="type-body-muted">
+            <p className="text-sm text-muted-foreground">
               {isUploading
                 ? 'Please wait while your file is being uploaded'
                 : 'Supported file types: pdf, doc, docx, txt'

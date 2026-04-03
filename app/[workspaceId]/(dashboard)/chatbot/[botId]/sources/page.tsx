@@ -61,10 +61,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   SourcesCategorySidebar,
-  AddKnowledgeDialog,
-  PendingSourcesPanel,
   type SourceCategory,
 } from '@/components/chatbot/sources';
+import { AddKnowledgeView } from '@/components/chatbot/sources/AddKnowledgeView';
+import type { AddKnowledgeSourceTab } from '@/components/chatbot/sources/AddKnowledgeSidebar';
 import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
 const DATA_SOURCE_ICONS = {
@@ -379,11 +379,12 @@ export default function DataSourcesPage() {
 
   const router = useRouter();
 
+  const [viewMode, setViewMode] = useState<'browse' | 'add-knowledge'>('browse');
+  const [activeSourceTab, setActiveSourceTab] = useState<AddKnowledgeSourceTab>('files');
   const [selectedCategory, setSelectedCategory] = useState<SourceCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingSource, setEditingSource] = useState<DataSourceItem | null>(null);
   const [sourceToDelete, setSourceToDelete] = useState<DataSourceItem | null>(null);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
@@ -437,14 +438,34 @@ export default function DataSourcesPage() {
     }
   };
 
+  const handleOpenAddKnowledge = () => {
+    setViewMode('add-knowledge');
+    setActiveSourceTab('files');
+  };
+
+  const handleBackToBrowse = () => {
+    setViewMode('browse');
+  };
+
+  if (viewMode === 'add-knowledge') {
+    return (
+      <AddKnowledgeView
+        chatbotId={botId}
+        activeTab={activeSourceTab}
+        onTabChange={setActiveSourceTab}
+        onBack={handleBackToBrowse}
+      />
+    );
+  }
+
   return (
     <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">
-      {/* Left Sidebar - Categories (Fixed) - Note: sourceCounts comes from hook inside sidebar */}
+      {/* Left Sidebar - Categories (Fixed) */}
       <div className="flex-shrink-0 h-full">
         <SourcesCategorySidebar
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
-          onAddKnowledge={() => setIsAddDialogOpen(true)}
+          onAddKnowledge={handleOpenAddKnowledge}
           chatbotId={botId}
         />
       </div>
@@ -477,7 +498,7 @@ export default function DataSourcesPage() {
                     <FeatureGuard feature="datasources" currentUsage={0}>
                       {({ isLocked }) => (
                         <Button
-                          onClick={() => setIsAddDialogOpen(true)}
+                          onClick={handleOpenAddKnowledge}
                           variant={!isLocked ? "default" : "outline"}
                           className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
                         >
@@ -523,13 +544,6 @@ export default function DataSourcesPage() {
         </div>
       </div>
 
-      {/* Add Knowledge Dialog */}
-      <AddKnowledgeDialog
-        open={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        chatbotId={botId}
-      />
-
       {/* Edit Citation Dialog */}
       {editingSource && (
         <EditCitationDialog
@@ -567,7 +581,6 @@ export default function DataSourcesPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Pending Sources Panel is now in the sidebar */}
     </div>
   );
 }

@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { PendingSourcesPanel } from './PendingSourcesPanel';
 
 export type SourceCategory = 'all' | 'URL' | 'DOCUMENT' | 'QNA' | 'TXT';
 
@@ -148,11 +147,6 @@ export function SourcesCategorySidebar({
             <span className="type-body font-medium">Request Integration</span>
           </Button>
         </div>
-      </div>
-
-      {/* Pending Sources Panel (at bottom of sidebar) */}
-      <div className="p-4 border-t border-border mt-auto bg-card">
-        <PendingSourcesPanel chatbotId={chatbotId} />
       </div>
 
       {/* Request Integration Modal */}

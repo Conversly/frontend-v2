@@ -128,20 +128,20 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Tabs defaultValue="crawl" className="w-full">
-        <TabsList className="mb-4">
+        <TabsList className="mb-6">
           <TabsTrigger value="crawl">Crawl links</TabsTrigger>
           <TabsTrigger value="sitemap">Sitemap</TabsTrigger>
           <TabsTrigger value="individual">Individual link</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="crawl" className="space-y-4">
-          <div className="space-y-2">
-            <label className="type-micro-heading">URL</label>
-            <div className="flex gap-2">
+        <TabsContent value="crawl" className="space-y-6">
+          <div className="space-y-3">
+            <label className="type-micro-heading text-sm">URL</label>
+            <div className="flex gap-3">
               <Select value={protocol} onValueChange={setProtocol}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-36 h-12 text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -154,7 +154,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="www.example.com"
-                className="flex-1"
+                className="flex-1 h-12 text-base"
                 disabled={isFetching}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !isFetching) {
@@ -164,7 +164,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
               />
             </div>
             <div className="flex items-start gap-2 text-xs text-muted-foreground">
-              <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
+              <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
               <span className="type-caption">Links found during crawling or sitemap retrieval may be updated if new links are discovered or some links are invalid.</span>
             </div>
           </div>
@@ -175,7 +175,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
               Advanced options
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-4 space-y-4">
-              <div className="p-4 bg-[--surface-secondary] rounded-md border border-border">
+              <div className="p-5 bg-[--surface-secondary] rounded-md border border-border">
                 <p className="type-body-muted">Advanced crawling options coming soon...</p>
               </div>
             </CollapsibleContent>
@@ -184,7 +184,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
           <Button
             onClick={handleFetchLinks}
             disabled={!url.trim() || isFetching}
-            className="bg-muted text-foreground hover:bg-muted/80"
+            className="bg-muted text-foreground hover:bg-muted/80 h-11 px-6 text-sm"
           >
             {isFetching ? (
               <>
@@ -198,36 +198,36 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
 
           {/* Fetched Pages List */}
           {fetchedPages.length > 0 && (
-            <div className="space-y-3 pt-4 border-t border-border">
+            <div className="space-y-4 pt-6 border-t border-border">
               <div className="flex items-center justify-between">
-                <h4 className="type-micro-heading">
+                <h4 className="type-micro-heading text-sm">
                   Found {fetchedPages.length} page{fetchedPages.length === 1 ? '' : 's'}
                 </h4>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleToggleAll}
-                  className="text-xs text-muted-foreground hover:text-foreground"
+                  className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   {selectedPages.size === fetchedPages.length ? (
                     <>
-                      <CheckSquare className="w-3.5 h-3.5 mr-1" />
+                      <CheckSquare className="w-4 h-4 mr-1.5" />
                       Deselect all
                     </>
                   ) : (
                     <>
-                      <Square className="w-3.5 h-3.5 mr-1" />
+                      <Square className="w-4 h-4 mr-1.5" />
                       Select all
                     </>
                   )}
                 </Button>
               </div>
 
-              <div className="max-h-[300px] overflow-y-auto space-y-2 pr-2">
+              <div className="max-h-[400px] overflow-y-auto space-y-2.5 pr-2">
                 {fetchedPages.map((page, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 p-3 bg-[--surface-secondary] rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-border"
+                    className="flex items-start gap-4 p-4 bg-[--surface-secondary] rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-border"
                     onClick={() => handleTogglePage(page)}
                   >
                     <Checkbox
@@ -242,14 +242,14 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center justify-between pt-3">
                 <p className="type-caption">
                   {selectedPages.size} of {fetchedPages.length} selected
                 </p>
                 <Button
                   onClick={handleAddSelectedPages}
                   disabled={selectedPages.size === 0}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-6"
                 >
                   Add selected pages
                 </Button>
@@ -258,21 +258,22 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
           )}
         </TabsContent>
 
-        <TabsContent value="sitemap" className="space-y-4">
-          <div className="p-8 text-center bg-muted/50 rounded-lg">
-            <Globe className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Sitemap support coming soon</p>
+        <TabsContent value="sitemap" className="space-y-6">
+          <div className="p-10 text-center bg-muted/50 rounded-lg">
+            <Globe className="w-14 h-14 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-base text-muted-foreground">Sitemap support coming soon</p>
           </div>
         </TabsContent>
 
-        <TabsContent value="individual" className="space-y-4">
-          <div className="space-y-2">
-            <label className="type-micro-heading">URL</label>
+        <TabsContent value="individual" className="space-y-6">
+          <div className="space-y-3">
+            <label className="type-micro-heading text-sm">URL</label>
             <Input
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://www.example.com/page"
+              className="h-12 text-base"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleAddIndividualLink();
@@ -283,7 +284,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
           <Button
             onClick={handleAddIndividualLink}
             disabled={!url.trim()}
-            className="bg-muted text-foreground hover:bg-muted/80"
+            className="bg-muted text-foreground hover:bg-muted/80 h-11 px-6 text-sm"
           >
             Add link
           </Button>
