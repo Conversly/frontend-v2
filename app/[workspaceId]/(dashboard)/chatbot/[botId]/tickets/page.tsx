@@ -253,29 +253,26 @@ export default function TicketsOverviewPage() {
 
             {/* Tabs & Search */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto hidescrollbar">
+                <div className="flex items-center bg-muted/60 dark:bg-slate-800/60 rounded-lg p-1 gap-0.5 overflow-x-auto hidescrollbar border border-border/50">
                     {TABS.map((tab) => {
                         const isActive = activeTab === tab.value;
                         const count = getTabCount(tab.value);
 
-                        let activeStyle = "bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 font-semibold";
-                        let inactiveStyle = "bg-transparent text-muted-foreground border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50";
+                        const activeCountStyles: Partial<Record<TabValue, string>> = {
+                            ALL: "bg-slate-200/80 text-slate-700 dark:bg-slate-600/60 dark:text-slate-200",
+                            OPEN: "bg-blue-200/80 text-blue-700 dark:bg-blue-800/60 dark:text-blue-300",
+                            PENDING: "bg-amber-200/80 text-amber-700 dark:bg-amber-800/60 dark:text-amber-300",
+                            RESOLVED: "bg-emerald-200/80 text-emerald-700 dark:bg-emerald-800/60 dark:text-emerald-300",
+                            CLOSED: "bg-slate-200/80 text-slate-500 dark:bg-slate-700/60 dark:text-slate-400",
+                        };
 
-                        if (isActive) {
-                            switch (tab.value) {
-                                case "OPEN": activeStyle = "bg-blue-100/80 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"; break;
-                                case "PENDING": activeStyle = "bg-amber-100/80 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"; break;
-                                case "RESOLVED": activeStyle = "bg-emerald-100/80 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50"; break;
-                                case "CLOSED": activeStyle = "bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:border-slate-700/50"; break;
-                            }
-                        } else {
-                            switch (tab.value) {
-                                case "OPEN": inactiveStyle = "bg-transparent text-blue-600/70 border-transparent hover:bg-blue-50 dark:text-blue-400/70 dark:hover:bg-blue-900/20"; break;
-                                case "PENDING": inactiveStyle = "bg-transparent text-amber-600/70 border-transparent hover:bg-amber-50 dark:text-amber-400/70 dark:hover:bg-amber-900/20"; break;
-                                case "RESOLVED": inactiveStyle = "bg-transparent text-emerald-600/70 border-transparent hover:bg-emerald-50 dark:text-emerald-400/70 dark:hover:bg-emerald-900/20"; break;
-                                case "CLOSED": inactiveStyle = "bg-transparent text-slate-500/70 border-transparent hover:bg-slate-50 dark:text-slate-400/70 dark:hover:bg-slate-800/40"; break;
-                            }
-                        }
+                        const activeTabStyles: Partial<Record<TabValue, string>> = {
+                            ALL: "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100",
+                            OPEN: "bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400",
+                            PENDING: "bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400",
+                            RESOLVED: "bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400",
+                            CLOSED: "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400",
+                        };
 
                         return (
                             <button
@@ -285,16 +282,18 @@ export default function TicketsOverviewPage() {
                                     setPage(1);
                                 }}
                                 className={cn(
-                                    "px-4 py-1.5 text-sm font-semibold rounded-full whitespace-nowrap transition-colors border flex items-center gap-1.5",
-                                    isActive ? activeStyle : inactiveStyle
+                                    "px-3.5 py-1.5 text-sm rounded-md whitespace-nowrap transition-all duration-150 flex items-center gap-2 select-none",
+                                    isActive
+                                        ? cn("font-semibold shadow-sm ring-1 ring-black/[0.06] dark:ring-white/[0.08]", activeTabStyles[tab.value])
+                                        : "font-medium text-muted-foreground hover:text-foreground hover:bg-white/50 dark:hover:bg-slate-700/50"
                                 )}
                             >
                                 {tab.label}
                                 <span className={cn(
-                                    "text-[10px] rounded-sm px-1.5 py-0 min-w-[20px] inline-flex items-center justify-center font-bold",
+                                    "text-[10px] rounded px-1.5 py-0 min-w-[20px] inline-flex items-center justify-center font-bold tabular-nums",
                                     isActive
-                                        ? "bg-white/60 text-current dark:bg-black/40"
-                                        : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                                        ? activeCountStyles[tab.value]
+                                        : "bg-slate-200/70 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
                                 )}>
                                     {count}
                                 </span>

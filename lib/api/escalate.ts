@@ -156,7 +156,7 @@ export async function listEscalations(params: {
         }
 
         const endpoint =
-            API.ENDPOINTS.ESCALATE.BASE_URL() + API.ENDPOINTS.ESCALATE.LIST.path();
+            API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.LIST_ESCALATIONS.path();
         const url = `${endpoint}${buildQuery({ chatbotId, mine: mine ? "true" : undefined, status, limit, offset, search })}`;
 
         const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetEscalationsResponse;
@@ -174,8 +174,8 @@ export async function getEscalation(escalationId: string): Promise<GetEscalation
         }
 
         const endpoint =
-            API.ENDPOINTS.ESCALATE.BASE_URL() +
-            fillPath(API.ENDPOINTS.ESCALATE.GET.path(), { escalationId });
+            API.ENDPOINTS.ACTIVITY.BASE_URL() +
+            fillPath(API.ENDPOINTS.ACTIVITY.GET_ESCALATION.path(), { escalationId });
         const res = (await fetch(endpoint, { method: "GET" }).then((r) => r.data)) as GetEscalationResponse;
         return res.data;
     } catch (error: any) {
@@ -191,8 +191,8 @@ export async function markEscalationRead(escalationId: string): Promise<MarkEsca
         }
 
         const endpoint =
-            API.ENDPOINTS.ESCALATE.BASE_URL() +
-            fillPath(API.ENDPOINTS.ESCALATE.MARK_READ.path(), { escalationId });
+            API.ENDPOINTS.ACTIVITY.BASE_URL() +
+            fillPath(API.ENDPOINTS.ACTIVITY.MARK_ESCALATION_READ.path(), { escalationId });
 
         const res = (await fetch(endpoint, { method: "POST", data: {} }).then((r) => r.data)) as MarkEscalationReadResponse;
         return res.data;

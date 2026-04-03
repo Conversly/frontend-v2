@@ -61,6 +61,7 @@ export default function RootLayout({
         )}
       </head>
       <body
+        suppressHydrationWarning
         className={merge(
           lato.variable,
           "font-sans antialiased m-0 p-0 h-full w-full flex flex-col overflow-hidden",

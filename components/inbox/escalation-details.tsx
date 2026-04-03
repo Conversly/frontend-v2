@@ -2,12 +2,22 @@
 
 import { useAgentInboxStore } from "@/store/agent-inbox";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Mail, Globe, MessageCircle, MessageSquare, Zap, History, ChevronRight, Loader2, IterationCcw } from "lucide-react";
+import { Mail, Globe, MessageCircle, MessageSquare, Zap, History, ChevronRight, Loader2, IterationCcw, User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { listTickets } from "@/lib/api/tickets";
 import { listContactConversations } from "@/lib/api/activity";
+
+function getCountryName(code?: string | null): string {
+    if (!code || code === "NaN") return "Unknown";
+    try {
+        const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+        return regionNames.of(code.toUpperCase()) ?? code;
+    } catch {
+        return code;
+    }
+}
 
 function getChannelIcon(channel?: string) {
     const c = (channel || "").toUpperCase();
@@ -62,9 +72,9 @@ export function EscalationDetails() {
     }
 
     const userName = activeEscalation?.contactName || "Unknown Visitor";
-    const userLocation = "United States"; // Could map contactCountryCode
     const userEmail = activeEscalation?.contactEmail || "—";
     const countryCode = activeEscalation?.contactCountryCode;
+    const countryName = getCountryName(countryCode);
 
     const isAiEscalated = (activeEscalation?.reason || "").toLowerCase().includes("human") || true;
 
@@ -76,14 +86,13 @@ export function EscalationDetails() {
                 <section className="p-6 border-b border-border w-full">
                     <div className="flex items-center gap-4 mb-6">
                         <Avatar className="size-16 rounded-2xl shadow-sm border border-border">
-                            <AvatarImage src={"https://i.pravatar.cc/150?u=" + activeConversationId} alt="Profile" />
-                            <AvatarFallback className="rounded-2xl text-xl font-bold bg-[--surface-secondary] text-muted-foreground">
-                                {userName.charAt(0)}
+                            <AvatarFallback className="rounded-2xl bg-[--surface-secondary] text-muted-foreground">
+                                <User className="size-7" />
                             </AvatarFallback>
                         </Avatar>
                         <div>
                             <h2 className="text-lg font-bold truncate pr-3">{userName}</h2>
-                            <p className="text-xs text-muted-foreground">{userLocation}</p>
+                            <p className="text-xs text-muted-foreground">{countryName}</p>
                         </div>
                     </div>
 
@@ -100,10 +109,7 @@ export function EscalationDetails() {
                             <Globe className="size-5 text-muted-foreground" />
                             <div className="flex-1">
                                 <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide">Country</p>
-                                <div className="flex items-center gap-2">
-                                    <p className="text-sm font-medium">{countryCode || userLocation}</p>
-                                    {countryCode === "US" && <span className="text-xs">🇺🇸</span>}
-                                </div>
+                                <p className="text-sm font-medium">{countryName}</p>
                             </div>
                         </div>
                     </div>

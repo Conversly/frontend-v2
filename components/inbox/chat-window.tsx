@@ -18,6 +18,7 @@ import {
     Sparkles,
     Eye,
 } from "lucide-react";
+import { AiToolsPopover } from "./ai-tools-popover";
 import type { TicketPriority } from "@/types/escalate";
 
 interface ChatWindowProps {
@@ -278,6 +279,12 @@ export function ChatWindow({
                         <button className="p-2 text-muted-foreground hover:text-primary transition-colors">
                             <Smile className="size-5" />
                         </button>
+                        <AiToolsPopover
+                            draft={draft}
+                            onReplace={setDraft}
+                            messages={activeMessages}
+                            disabled={!isInputActive}
+                        />
                         <Button
                             size="icon"
                             disabled={!isInputActive || !draft.trim()}
