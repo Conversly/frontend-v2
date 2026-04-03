@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Certificate = () => {
     return (
@@ -16,12 +18,13 @@ const Certificate = () => {
                         </h2>
 
                         <p className="crisp-subtitle">
-                            You don't need to spend a fortune to deliver stellar service.
+                            You don&apos;t need to spend a fortune to deliver stellar service.
                             Replace Zendesk, Freshdesk, Intercom, and other point solutions
                             with Verly to cut costs and get better results.
                         </p>
 
                         {/* G2 Badges Image */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src="https://hiverhq.com/wp-content/uploads/2025/10/badges@2x.png"
                             alt="VerlyAI G2 Award Badges – Users Love Us, Best Support, Best Usability, High Performer, Leader"
@@ -29,35 +32,33 @@ const Certificate = () => {
                             height={163}
                             loading="lazy"
                             className="max-w-full h-auto"
-                            srcSet="https://hiverhq.com/wp-content/uploads/2025/10/badges@2x.png 812w, https://hiverhq.com/wp-content/uploads/2025/10/badges@2x-768x154.png 768w, https://hiverhq.com/wp-content/uploads/2025/10/badges@2x-300x60.png 300w"
-                            sizes="(max-width: 812px) 100vw, 812px"
                         />
 
                         {/* CTA Buttons */}
                         <div className="flex gap-4 flex-wrap">
-                            <a
-                                href="/signup"
+                            <Link
+                                href="/login"
                                 className="crisp-btn-primary px-8 py-4 text-[17px]"
                             >
                                 Start free trial
-                            </a>
-                            <a
-                                href="/demo"
+                            </Link>
+                            <Link
+                                href="https://calendly.com/rdhakad2002/30min"
+                                target="_blank"
                                 className="crisp-btn-secondary px-8 py-4 text-[17px]"
                             >
                                 Book a demo
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
-                    {/* Right: Graph Visual */}
+                    {/* Right: Love Wall Visual */}
                     <div className="flex items-center justify-center">
-                        <img
+                        <Image
                             src="/love_wall.png"
                             alt="Customer love wall with reviews, ratings, and trust signals"
-                            width={1024}
-                            height={1024}
-                            loading="lazy"
+                            width={520}
+                            height={520}
                             className="w-full max-w-[520px] h-auto rounded-3xl"
                         />
                     </div>

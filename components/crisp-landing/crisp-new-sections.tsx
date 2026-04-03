@@ -214,17 +214,15 @@ export function OmnichannelSection() {
           transition={{ duration: 0.55 }}
           className="mx-auto max-w-[760px] text-center"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/70 px-4 py-1.5 text-sm font-medium text-blue-600 shadow-sm backdrop-blur-sm">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
             <Headphones className="h-4 w-4" />
             Omnichannel Support
           </div>
-          <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
+          <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.02] tracking-[-0.04em] text-[#221f1b] md:text-[52px]">
             Three channels.
-            <span className="relative block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              One support brain.
-            </span>
+            <span className="block text-[#6e6558]">One support brain.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[700px] text-lg leading-8 text-slate-600 md:text-xl">
+          <p className="mx-auto mt-5 max-w-[700px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
             Customers pick the channel they prefer. Verly handles them equally — same knowledge,
             same routing, same analytics.
           </p>
@@ -252,12 +250,12 @@ export function OmnichannelSection() {
                   >
                     <ch.icon className="h-[18px] w-[18px]" />
                   </div>
-                  <h3 className="text-[1.05rem] font-semibold tracking-[-0.02em] text-slate-900">
+                  <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[1.15rem] tracking-[-0.02em] text-[#221f1b]">
                     {ch.title}
                   </h3>
                 </div>
 
-                <p className="mt-4 text-[0.98rem] leading-8 text-slate-600">
+                <p className="mt-4 text-[0.92rem] leading-7 text-[#6d665d]">
                   {ch.description}
                 </p>
               </div>
