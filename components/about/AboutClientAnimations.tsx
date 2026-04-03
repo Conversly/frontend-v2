@@ -9,7 +9,6 @@ import {
   Headphones,
   MessageSquare,
   PhoneCall,
-  Shield,
   ShieldCheck,
   Sparkles,
   Unplug,
@@ -286,12 +285,12 @@ const stackItems = [
 export function FragmentedStackVisual() {
   return (
     <AboutSectionReveal delay={0.1}>
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#e4ddd4] bg-[#faf8f6] p-6 shadow-[0_14px_40px_rgba(140,100,70,0.06)] md:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),transparent_55%)]" />
+      <div className="relative overflow-hidden rounded-[2rem] border border-white/8 bg-white/5 p-6 shadow-[0_14px_40px_rgba(0,0,0,0.20)] backdrop-blur-sm md:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03),transparent_55%)]" />
 
         <div className="relative">
           <div className="mb-5 text-center">
-            <span className="inline-flex rounded-full border border-[#e4ddd4] bg-white/80 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7e64]">
+            <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
               The fragmented stack
             </span>
           </div>
@@ -304,7 +303,7 @@ export function FragmentedStackVisual() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.08 + index * 0.07 }}
-                className={`flex items-center gap-3 rounded-2xl bg-gradient-to-r ${item.color} px-4 py-3.5 text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)]`}
+                className={`flex items-center gap-3 rounded-2xl bg-gradient-to-r ${item.color} px-4 py-3.5 text-white shadow-[0_8px_20px_rgba(0,0,0,0.2)]`}
               >
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
                   <item.icon className="h-4 w-4" />
@@ -320,8 +319,8 @@ export function FragmentedStackVisual() {
           </div>
 
           <div className="mt-5 flex items-center justify-center gap-2 text-center">
-            <Unplug className="h-4 w-4 text-[#b5937a]" />
-            <span className="text-[0.82rem] font-medium text-[#9a7e64]">
+            <Unplug className="h-4 w-4 text-red-400/70" />
+            <span className="text-[0.82rem] font-medium text-white/50">
               Five tools. No shared context. No unified view.
             </span>
           </div>
@@ -409,55 +408,49 @@ interface PillarItem {
   description: string;
 }
 
+const pillarAccents = [
+  { icon: "text-[#346ae8]", number: "text-[#346ae8]/15", line: "bg-[#346ae8]" },
+  { icon: "text-[#198a69]", number: "text-[#198a69]/15", line: "bg-[#198a69]" },
+  { icon: "text-[#7b55df]", number: "text-[#7b55df]/15", line: "bg-[#7b55df]" },
+  { icon: "text-[#c57722]", number: "text-[#c57722]/15", line: "bg-[#c57722]" },
+] as const;
+
 export function AboutPillars({ items }: { items: PillarItem[] }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-px overflow-hidden rounded-[1.5rem] border border-[#e4ddd4] bg-[#e4ddd4] md:grid-cols-4">
       {items.map((item, index) => {
         const Icon = pillarIcons[item.icon];
+        const accent = pillarAccents[index % pillarAccents.length];
 
         return (
-          <AboutSectionReveal key={item.title} delay={index * 0.07}>
+          <AboutSectionReveal key={item.title} delay={index * 0.06}>
             <motion.div
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.3 }}
-              className="group relative flex h-full flex-col overflow-hidden rounded-[30px] border border-[#dde5f4] bg-[linear-gradient(180deg,#ffffff_0%,#f7faff_100%)] p-7 shadow-[0_16px_40px_rgba(59,43,22,0.05)] transition-all duration-300 hover:border-[#c9d7f1] hover:shadow-[0_28px_58px_rgba(59,43,22,0.10)]"
+              whileHover={{ backgroundColor: "rgba(255,255,255,1)" }}
+              transition={{ duration: 0.25 }}
+              className="group relative flex h-full flex-col bg-[#faf8f6] px-6 py-6"
             >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(76,124,233,0.10),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(30,144,255,0.07),transparent_30%)] opacity-70" />
+              {/* Large watermark number */}
+              <span
+                className={`pointer-events-none absolute right-3 top-2 select-none font-[Georgia,serif] text-[5rem] font-bold leading-none tracking-[-0.06em] ${accent.number}`}
+              >
+                0{index + 1}
+              </span>
 
-              <div className="relative flex items-start justify-between gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem] bg-[linear-gradient(180deg,#edf3ff_0%,#e7f0ff_100%)] text-[#3e6fe8] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_12px_24px_rgba(62,111,232,0.10)] transition-transform duration-300 group-hover:scale-105">
-                  <Icon className="h-6 w-6" />
-                </div>
+              {/* Accent line */}
+              <div className={`h-1 w-8 rounded-full ${accent.line} mb-5`} />
 
-                <div className="text-right">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8090ae]">
-                    Core principle
-                  </p>
-                  <p className="mt-2 font-[Georgia,serif] text-[1.9rem] leading-none tracking-[-0.05em] text-[#c7d2eb]">
-                    0{index + 1}
-                  </p>
-                </div>
+              {/* Icon */}
+              <div className={`mb-4 ${accent.icon}`}>
+                <Icon className="h-5 w-5" />
               </div>
 
-              <div className="relative mt-8">
-                <div className="inline-flex rounded-full border border-[#d9e4fb] bg-white/80 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#6f82a9]">
-                  Verly foundation
-                </div>
-                <h3 className="mt-4 text-[1.35rem] font-semibold tracking-[-0.03em] text-[#141824]">
-                  {item.title}
-                </h3>
-                <p className="mt-3 max-w-[32rem] text-[0.97rem] leading-7 text-[#5a6277]">
-                  {item.description}
-                </p>
-              </div>
-
-              <div className="relative mt-8 flex items-center justify-between border-t border-[#e4ebf7] pt-4 text-[0.8rem] text-[#6f7890]">
-                <span className="inline-flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-[#8196c9]" />
-                  System-level behavior
-                </span>
-                <span>Designed to scale</span>
-              </div>
+              {/* Content */}
+              <h3 className="text-[1.05rem] font-semibold tracking-[-0.02em] text-[#1e1c19]">
+                {item.title}
+              </h3>
+              <p className="mt-2 flex-1 text-[0.88rem] leading-6 text-[#6d665d]">
+                {item.description}
+              </p>
             </motion.div>
           </AboutSectionReveal>
         );

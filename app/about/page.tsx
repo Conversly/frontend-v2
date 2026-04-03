@@ -39,24 +39,61 @@ const WRAP = "mx-auto w-full max-w-[1360px]";
 const sectionLabelClass =
   "inline-flex items-center rounded-full border border-[#d9d2c5] bg-white px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7468] shadow-sm";
 
+const sectionContentWrap = `${WRAP} relative z-10`;
+
+function AboutSectionBackground({
+  tone,
+}: {
+  tone: "hero" | "sky" | "mint" | "warm" | "violet" | "neutral";
+}) {
+  const toneClass = {
+    hero:
+      "bg-[radial-gradient(circle_at_top_left,rgba(57,118,255,0.22),transparent_28%),radial-gradient(circle_at_top_right,rgba(240,198,116,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(45,87,193,0.10),transparent_26%),linear-gradient(180deg,rgba(244,240,233,0.96)_0%,rgba(236,241,252,0.98)_58%,rgba(229,236,250,1)_100%)]",
+    sky:
+      "bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.10),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.08),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.70)_0%,rgba(246,249,255,0.96)_100%)]",
+    mint:
+      "bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(62,128,241,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.68)_0%,rgba(244,252,247,0.96)_100%)]",
+    warm:
+      "bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.10),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.08),transparent_24%),linear-gradient(180deg,rgba(255,253,248,0.75)_0%,rgba(255,248,238,0.96)_100%)]",
+    violet:
+      "bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.10),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(62,128,241,0.08),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.70)_0%,rgba(248,246,255,0.96)_100%)]",
+    neutral:
+      "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.72),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.62)_0%,rgba(251,248,243,0.92)_100%)]",
+  }[tone];
+
+  return (
+    <>
+      <div
+        className={`pointer-events-none absolute inset-x-3 inset-y-2 rounded-[2.75rem] md:inset-x-6 ${toneClass}`}
+      />
+      <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(148,163,184,0.28),transparent)]" />
+    </>
+  );
+}
+
 /* ─────────────────────────── Page ─────────────────────────── */
 
 export default function AboutPage() {
   return (
-    <main className="relative min-h-screen bg-[#fbf9f4] text-[#221f1b] selection:bg-blue-100">
+    <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)] text-[#221f1b] selection:bg-blue-100">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
+      <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] rounded-full bg-blue-300/15 blur-[110px]" />
+      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] rounded-full bg-emerald-300/15 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] rounded-full bg-violet-300/15 blur-[110px]" />
+      <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,rgba(120,145,201,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.05)_1px,transparent_1px)] bg-[size:72px_72px]" />
 
       <div className="relative z-10">
         <Navbar />
 
         {/* ─────── 1. HERO ─────── */}
-        <section className="pt-24 lg:pt-28">
-          <div className={WRAP}>
+        <section className="relative overflow-hidden pb-14 pt-24 md:pb-18 lg:pt-28">
+          <AboutSectionBackground tone="hero" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(92,112,156,0.10)_1px,transparent_1px),linear-gradient(to_bottom,rgba(92,112,156,0.10)_1px,transparent_1px)] bg-[size:72px_72px]" />
+          <div className={sectionContentWrap}>
             <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
               <AboutSectionReveal>
                 <div className="max-w-[640px]">
@@ -78,7 +115,7 @@ export default function AboutPage() {
                     <Link href="/features">
                       <Button
                         size="lg"
-                        className="h-13 rounded-full bg-[#1976d2] px-7 text-sm sm:text-base text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1565c0] hover:shadow-[0_12px_30px_rgba(25,118,210,0.28)]"
+                        className="h-13 rounded-full bg-[#141923] px-7 text-sm text-white shadow-[0_18px_40px_rgba(20,25,35,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1d2432] hover:shadow-[0_22px_46px_rgba(20,25,35,0.24)] sm:text-base"
                       >
                         See the platform
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -88,7 +125,7 @@ export default function AboutPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        className="h-13 rounded-full border-black/10 bg-white px-7 text-sm sm:text-base text-[#071224] transition-all duration-200 hover:-translate-y-0.5 hover:border-black/20 hover:bg-white"
+                        className="h-13 rounded-full border-[#d6d9e2] bg-white/78 px-7 text-sm text-[#071224] shadow-[0_16px_30px_rgba(58,47,25,0.08)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8cfdd] hover:bg-white sm:text-base"
                       >
                         Book demo
                       </Button>
@@ -108,22 +145,24 @@ export default function AboutPage() {
         {/* ─────── 1b. WHY SWITCH — fragmented stack vs Verly ─────── */}
         <WhySwitchSection />
 
-        {/* ─────── 2. THE PROBLEM WE SAW ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        {/* ─────── 2. THE PROBLEM WE SAW (dark navy) ─────── */}
+        <section className="relative overflow-hidden py-16 lg:py-22 bg-[#0f172a]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(83,104,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.10),transparent_22%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
+          <div className={sectionContentWrap}>
             <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr]">
               <AboutSectionReveal>
                 <div className="max-w-[560px]">
                   <div className="mb-6 flex justify-start">
-                    <span className={sectionLabelClass}>The Problem</span>
+                    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 shadow-sm backdrop-blur-sm">The Problem</span>
                   </div>
 
-                  <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
+                  <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-white">
                     Support got harder{" "}
-                    <span className="text-[#6e6558]">before it got smarter.</span>
+                    <span className="text-white/50">before it got smarter.</span>
                   </h2>
 
-                  <div className="mt-6 space-y-5 text-[16px] leading-8 text-[#6d665d] sm:text-[18px]">
+                  <div className="mt-6 space-y-5 text-[16px] leading-8 text-white/60 sm:text-[18px]">
                     <p>
                       Customers switch channels constantly — they start on chat, follow up on
                       WhatsApp, and call when something is urgent. But support teams lose
@@ -146,9 +185,11 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ─────── 3. WHY VERLY EXISTS ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        {/* ─────── 3. WHY VERLY EXISTS (warm beige/tan) ─────── */}
+        <section className="relative overflow-hidden py-16 lg:py-22 bg-[linear-gradient(180deg,#f7f4ee_0%,#f2eee8_100%)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(197,119,34,0.06),transparent_26%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,100,60,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,100,60,0.04)_1px,transparent_1px)] bg-[size:72px_72px]" />
+          <div className={sectionContentWrap}>
             <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr]">
               <div className="order-2 lg:order-1">
                 <UnifiedSystemVisual />
@@ -157,15 +198,15 @@ export default function AboutPage() {
               <AboutSectionReveal>
                 <div className="order-1 max-w-[560px] lg:order-2">
                   <div className="mb-6 flex justify-start">
-                    <span className={sectionLabelClass}>Our Mission</span>
+                    <span className="inline-flex items-center rounded-full border border-[#d4c9b5] bg-white/70 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a6d55] shadow-sm">Our Mission</span>
                   </div>
 
-                  <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
+                  <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#2c2418]">
                     We built Verly to unify support operations,{" "}
-                    <span className="text-[#6e6558]">not just automate replies.</span>
+                    <span className="text-[#8a7a62]">not just automate replies.</span>
                   </h2>
 
-                  <div className="mt-6 space-y-5 text-[16px] leading-8 text-[#6d665d] sm:text-[18px]">
+                  <div className="mt-6 space-y-5 text-[16px] leading-8 text-[#6d6352] sm:text-[18px]">
                     <p>
                       AI support should not mean another disconnected tool. The product should
                       share knowledge, routing, context, and escalation across every channel.
@@ -186,8 +227,9 @@ export default function AboutPage() {
         </section>
 
         {/* ─────── 4. WHAT MAKES VERLY DIFFERENT ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        <section className="relative overflow-hidden py-16 lg:py-22">
+          <AboutSectionBackground tone="warm" />
+          <div className={sectionContentWrap}>
             <AboutSectionReveal>
               <div className="mb-10 max-w-[660px]">
                 <div className="mb-6 flex justify-start">
@@ -231,18 +273,20 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ─────── 5. WHAT WE'RE BUILDING ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        {/* ─────── 5. WHAT WE'RE BUILDING (dark) ─────── */}
+        <section className="relative overflow-hidden py-16 lg:py-22 bg-[#04060d]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(83,104,255,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.08),transparent_22%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px]" />
+          <div className={sectionContentWrap}>
             <AboutSectionReveal>
               <div className="mb-10 max-w-[660px]">
                 <div className="mb-6 flex justify-start">
-                  <span className={sectionLabelClass}>Product Vision</span>
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 shadow-sm backdrop-blur-sm">Product Vision</span>
                 </div>
-                <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
+                <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-white">
                   What Verly is becoming.
                 </h2>
-                <p className="mt-4 text-[16px] leading-8 text-[#6d665d] sm:text-[18px]">
+                <p className="mt-4 text-[16px] leading-8 text-white/55 sm:text-[18px]">
                   We are building toward a world where support teams run one system, not a
                   patchwork — and where AI handles repetition while humans handle judgment.
                 </p>
@@ -257,6 +301,7 @@ export default function AboutPage() {
                   text: "AI that resolves repetitive support end-to-end — not just drafts a response and waits for an agent to press send.",
                   footer: "Reduce repetitive queue work",
                   delay: 0,
+                  accent: "rgba(83,104,255,0.18)",
                 },
                 {
                   eyebrow: "Escalations with memory",
@@ -264,6 +309,7 @@ export default function AboutPage() {
                   text: "Human workflows stay informed. Every escalation carries the full conversation, intent, and recommended next step.",
                   footer: "No re-explaining for agents",
                   delay: 0.08,
+                  accent: "rgba(16,185,129,0.18)",
                 },
                 {
                   eyebrow: "Operational command center",
@@ -271,26 +317,27 @@ export default function AboutPage() {
                   text: "One operating layer across channels — with analytics, routing, and control designed for the people running support, not just the people building it.",
                   footer: "Designed for support leaders",
                   delay: 0.16,
+                  accent: "rgba(139,92,246,0.18)",
                 },
               ].map((item) => (
                 <AboutSectionReveal key={item.label} delay={item.delay}>
-                  <div className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-[#dfe9e2] bg-[linear-gradient(180deg,#f8fcf8_0%,#ffffff_100%)] px-7 py-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#b8d3be] hover:shadow-[0_20px_46px_rgba(68,145,94,0.10)]">
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(117,179,135,0.14),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.85),transparent_28%)]" />
+                  <div className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(9,11,20,0.98),rgba(4,6,13,0.98))] px-7 py-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-white/14 hover:shadow-[0_20px_46px_rgba(0,0,0,0.30)]">
+                    <div className={`pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,${item.accent},transparent_34%)]`} />
 
-                    <div className="relative inline-flex w-fit rounded-full border border-[#d9e7dd] bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#5d8a6a]">
+                    <div className="relative inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/50">
                       {item.eyebrow}
                     </div>
 
-                    <div className="relative mt-8 font-title-bold text-[1.55rem] tracking-[-0.04em] text-[#071224]">
+                    <div className="relative mt-8 font-title-bold text-[1.55rem] tracking-[-0.04em] text-white">
                       {item.label}
                     </div>
-                    <p className="relative mt-3 flex-1 text-[0.98rem] leading-7 text-[#55627d]">
+                    <p className="relative mt-3 flex-1 text-[0.98rem] leading-7 text-white/50">
                       {item.text}
                     </p>
 
-                    <div className="relative mt-8 flex items-center justify-between border-t border-[#deebe1] pt-4">
-                      <span className="text-[0.8rem] font-medium text-[#345144]">{item.footer}</span>
-                      <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#87a18e]">
+                    <div className="relative mt-8 flex items-center justify-between border-t border-white/8 pt-4">
+                      <span className="text-[0.8rem] font-medium text-white/40">{item.footer}</span>
+                      <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-white/30">
                         Vision
                       </span>
                     </div>
@@ -302,8 +349,9 @@ export default function AboutPage() {
         </section>
 
         {/* ─────── 6. TRUST / STAGE / PROOF ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        <section className="relative overflow-hidden py-16 lg:py-22">
+          <AboutSectionBackground tone="violet" />
+          <div className={sectionContentWrap}>
             <AboutSectionReveal>
               <div className="mb-10 max-w-[660px]">
                 <div className="mb-6 flex justify-start">
@@ -364,15 +412,17 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ─────── 7. TEAM / FOUNDER CREDIBILITY ─────── */}
-        <section className="py-16 lg:py-22">
-          <div className={WRAP}>
+        {/* ─────── 7. TEAM / FOUNDER CREDIBILITY (warm beige) ─────── */}
+        <section className="relative overflow-hidden py-16 lg:py-22 bg-[linear-gradient(180deg,#f7f4ee_0%,#f2eee8_50%,#f7f4ee_100%)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(197,127,30,0.06),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.04),transparent_24%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,100,60,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,100,60,0.03)_1px,transparent_1px)] bg-[size:72px_72px]" />
+          <div className={sectionContentWrap}>
             <AboutSectionReveal>
               <div className="mb-10 text-center">
                 <div className="mb-6 flex justify-center">
-                  <span className={sectionLabelClass}>Built Close to the Problem</span>
+                  <span className="inline-flex items-center rounded-full border border-[#d4c9b5] bg-white/70 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a6d55] shadow-sm">Built Close to the Problem</span>
                 </div>
-                <h2 className="font-[Georgia,serif] mx-auto max-w-[800px] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
+                <h2 className="font-[Georgia,serif] mx-auto max-w-[800px] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-[#2c2418]">
                   We are building Verly alongside our earliest customers.
                 </h2>
               </div>
@@ -382,15 +432,16 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ─────── 8. FINAL CTA ─────── */}
-        <section className="pb-24 pt-14">
-          <div className={WRAP}>
+        {/* ─────── 8. FINAL CTA (dark navy with gradient accent) ─────── */}
+        <section className="relative overflow-hidden pb-24 pt-14 bg-[#0f172a]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(62,128,241,0.14),transparent_40%),radial-gradient(circle_at_top_right,rgba(139,92,246,0.10),transparent_30%)]" />
+          <div className={sectionContentWrap}>
             <AboutSectionReveal>
-              <div className="rounded-[2rem] border border-[#d8def0] bg-[linear-gradient(180deg,#ebf0ff_0%,#eef3ff_100%)] px-8 py-14 text-center transition-all duration-300 hover:bg-[linear-gradient(180deg,#e6edff_0%,#eaf0ff_100%)] hover:shadow-[0_18px_48px_rgba(8,15,34,0.08)]">
-                <h2 className="font-[Georgia,serif] mx-auto max-w-[900px] text-[clamp(2.2rem,4vw,4.2rem)] leading-[1.02] tracking-[-0.04em] text-[#221f1b]">
+              <div className="rounded-[2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.02)_100%)] px-8 py-14 text-center backdrop-blur-sm transition-all duration-300 hover:border-white/12 hover:shadow-[0_18px_48px_rgba(0,0,0,0.20)]">
+                <h2 className="font-[Georgia,serif] mx-auto max-w-[900px] text-[clamp(2.2rem,4vw,4.2rem)] leading-[1.02] tracking-[-0.04em] text-white">
                   If your support stack feels fragmented, Verly is built for that next step.
                 </h2>
-                <p className="mx-auto mt-5 max-w-[620px] text-[16px] leading-8 text-[#6d665d] sm:text-[18px]">
+                <p className="mx-auto mt-5 max-w-[620px] text-[16px] leading-8 text-white/55 sm:text-[18px]">
                   See how one system for AI, human handoff, and omnichannel support can
                   replace the patchwork your team works with today.
                 </p>
@@ -399,7 +450,7 @@ export default function AboutPage() {
                   <Link href="/pricing">
                     <Button
                       size="lg"
-                      className="h-13 rounded-full bg-[#111827] px-7 text-sm sm:text-base text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-black hover:shadow-[0_12px_28px_rgba(17,24,39,0.22)]"
+                      className="h-13 rounded-full bg-white px-7 text-sm sm:text-base text-[#0f172a] font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_12px_28px_rgba(255,255,255,0.12)]"
                     >
                       See pricing
                     </Button>
@@ -408,7 +459,7 @@ export default function AboutPage() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="h-13 rounded-full border-black/10 bg-white px-7 text-sm sm:text-base text-[#071224] transition-all duration-200 hover:-translate-y-0.5 hover:border-black/20 hover:bg-white"
+                      className="h-13 rounded-full border-white/20 bg-transparent px-7 text-sm sm:text-base text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/5"
                     >
                       Talk to our team
                     </Button>
