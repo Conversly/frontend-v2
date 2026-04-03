@@ -84,12 +84,12 @@ export function ChatWindow({
 
     if (!activeConversationId) {
         return (
-            <main className="flex-1 flex flex-col bg-white shrink-0">
+            <main className="flex-1 flex flex-col bg-card shrink-0">
                 {/* Empty state content */}
-                <div className="flex-1 flex flex-col justify-center items-center bg-white text-muted-foreground">
+                <div className="flex-1 flex flex-col justify-center items-center bg-card text-muted-foreground">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="size-16 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
-                            <MessageCircle className="size-8 text-gray-300" />
+                        <div className="flex size-16 items-center justify-center rounded-3xl border border-border/70 bg-[var(--surface-secondary)] shadow-xs">
+                            <MessageCircle className="size-8 text-muted-foreground/45" />
                         </div>
                         <div className="text-center">
                             <p className="text-sm font-medium text-foreground">No conversation selected</p>
@@ -105,18 +105,18 @@ export function ChatWindow({
         <main className="flex-1 flex flex-col bg-card shrink-0">
             {/* Pinned AI Summary Banner */}
             {activeEscalation?.reason && (
-                <div className="bg-blue-50 border-b border-blue-100 p-3 shrink-0 flex items-start gap-3 relative">
-                    <Sparkles className="size-4 text-blue-500 mt-0.5" />
+                <div className="shrink-0 border-b border-[var(--status-info-border)] bg-[var(--status-info-bg)] p-4 flex items-start gap-3 relative">
+                    <Sparkles className="size-4 text-[var(--status-info-fg)] mt-0.5" />
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
                             {isUserOnline && (
-                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100 border border-green-200">
+                                <div className="dashboard-status-chip dashboard-status-chip--success">
                                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-[10px] font-bold text-green-700 uppercase tracking-widest">User Online</span>
+                                    <span>User Online</span>
                                 </div>
                             )}
                         </div>
-                        <div className="text-sm text-blue-900 font-medium whitespace-pre-wrap">
+                        <div className="text-sm font-medium whitespace-pre-wrap text-[var(--status-info-fg)]">
                             {activeEscalation.reason}
                         </div>
                     </div>
@@ -125,9 +125,9 @@ export function ChatWindow({
 
             {/* Agent Collision Banner */}
             {otherAgentsViewing.length > 0 && (
-                <div className="bg-orange-50 border-b border-orange-100 px-3 py-2 flex items-center justify-center gap-2 shrink-0 shadow-sm z-10">
-                    <Eye className="size-3.5 text-orange-600 animate-pulse" />
-                    <span className="text-xs font-semibold text-orange-800">
+                <div className="flex items-center justify-center gap-2 border-b border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 shrink-0 shadow-sm z-10">
+                    <Eye className="size-3.5 text-[var(--status-warning-fg)] animate-pulse" />
+                    <span className="text-xs font-semibold text-[var(--status-warning-fg)]">
                         {otherAgentsViewing.length === 1
                             ? `Agent ${otherAgentsViewing[0].agentDisplayName || otherAgentsViewing[0].agentUserId.substring(0, 6)} is currently viewing this conversation.`
                             : `${otherAgentsViewing.length} other agents are viewing this conversation.`
@@ -137,12 +137,12 @@ export function ChatWindow({
             )}
 
             {/* Chat History Area */}
-            <div className="flex-1 overflow-hidden flex flex-col bg-[--surface-secondary]">
+            <div className="flex-1 overflow-hidden flex flex-col bg-[var(--surface-secondary)]">
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
                     {/* Date Divider */}
                     <div className="flex justify-center">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-muted px-3 py-1 rounded-full">Conversation History</span>
+                        <span className="dashboard-status-chip dashboard-status-chip--neutral">Conversation History</span>
                     </div>
 
                     {isLoadingHistory ? (
@@ -168,9 +168,9 @@ export function ChatWindow({
                             if (isSystem || isVerboseEscalationMsg) {
                                 return (
                                     <div key={m.id || idx} className="flex justify-center py-2">
-                                        <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full border border-border/50">
-                                            {isVerboseEscalationMsg && <Bot className="size-3.5 text-muted-foreground shrink-0" />}
-                                            <div className="text-xs text-muted-foreground font-medium text-center">
+                                            <div className="flex items-center gap-2 rounded-full border border-border/50 bg-card px-3 py-1.5 shadow-xs">
+                                                {isVerboseEscalationMsg && <Bot className="size-3.5 text-muted-foreground shrink-0" />}
+                                                <div className="text-xs text-muted-foreground font-medium text-center">
                                                 {isVerboseEscalationMsg ? (
                                                     <span>⚡️ AI escalated the conversation - Reason: {activeEscalation?.reason || "User requested human"}</span>
                                                 ) : (
@@ -212,8 +212,8 @@ export function ChatWindow({
                                         <div className={cn(
                                             "rounded-2xl px-4 py-2 text-base font-medium leading-relaxed shadow-sm",
                                             isUser && "bg-primary text-primary-foreground",
-                                            isAgent && "bg-white border border-border text-foreground",
-                                            isAssistant && "bg-muted text-foreground"
+                                            isAgent && "bg-card border border-border/70 text-foreground",
+                                            isAssistant && "bg-white/75 border border-border/60 text-foreground"
                                         )}>
                                             {isAssistant && (
                                                 <div className="flex items-center gap-1 mb-1">
@@ -240,9 +240,9 @@ export function ChatWindow({
             </div>
 
             {/* Chat Input */}
-            <div className="p-4 bg-card border-t border-border shrink-0">
+            <div className="p-4 bg-card border-t border-border/70 shrink-0">
                 <div className={cn(
-                    "flex items-center gap-2 p-2 rounded-xl border transition-all bg-[--surface-secondary]",
+                    "flex items-center gap-2 rounded-[var(--panel-radius-md)] border bg-[var(--surface-secondary)] p-2 transition-all shadow-xs",
                     isInputActive
                         ? "border-border focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30"
                         : "border-border/50 opacity-60 pointer-events-none"

@@ -16,14 +16,14 @@ import {
 } from "lucide-react";
 
 const BackgroundPattern = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
-    <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 border-l border-border/50 ${className}`}>
+    <div className={`w-full h-full relative overflow-hidden flex items-center justify-center p-6 ${className}`}>
         {/* Grid Pattern */}
-        <div className="absolute inset-0 z-0 opacity-40">
+        <div className="absolute inset-0 z-0 opacity-25">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,theme(colors.border)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.border)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         </div>
 
         {/* Soft Gradient */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-tr from-blue-500/5 via-background/50 to-emerald-500/5"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-tr from-primary/5 via-background to-emerald-500/5"></div>
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center justify-center">
@@ -66,7 +66,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                         transition={{ duration: 2, ease: "easeInOut" }}
                         className="absolute z-20 pointer-events-none"
                     >
-                        <div className="bg-blue-500 text-white p-2 rounded-lg shadow-lg">
+                        <div className="bg-primary text-white p-2 rounded-xl shadow-lg">
                             {configItems[id % configItems.length].icon}
                         </div>
                     </motion.div>
@@ -79,9 +79,9 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                     className="flex flex-col items-center gap-3"
                     animate={isDeploying ? { opacity: 0.7 } : { opacity: 1 }}
                 >
-                    <div className="w-24 h-24 bg-card rounded-2xl border-2 border-dashed border-border flex items-center justify-center relative overflow-hidden group">
+                    <div className="w-24 h-24 bg-card rounded-[28px] border border-border/70 flex items-center justify-center relative overflow-hidden group shadow-sm">
                         <motion.div
-                            className="text-muted-foreground group-hover:text-blue-500 transition-colors"
+                            className="text-muted-foreground group-hover:text-primary transition-colors"
                             animate={isDeploying ? { rotate: 360 } : {}}
                             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                         >
@@ -89,7 +89,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                         </motion.div>
                         {isDeploying && (
                             <motion.div
-                                className="absolute inset-0 bg-blue-500/10"
+                                className="absolute inset-0 bg-primary/10"
                                 initial={{ height: "0%" }}
                                 animate={{ height: "100%" }}
                                 transition={{ duration: 2, repeat: Infinity }}
@@ -102,12 +102,12 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                 {/* CONNECTION LINE */}
                 <div className="flex-1 h-px bg-border relative">
                     <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-blue-500 to-emerald-500"
+                        className="absolute inset-0 bg-gradient-to-r from-primary to-emerald-500"
                         initial={{ scaleX: 0, originX: 0 }}
                         animate={isDeploying ? { scaleX: 1 } : { scaleX: 0 }}
                     />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2">
-                        <ArrowRight className={isDeploying ? "text-blue-500" : "text-muted-foreground"} size={20} />
+                        <ArrowRight className={isDeploying ? "text-primary" : "text-muted-foreground"} size={20} />
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                     animate={isDeploying ? { scale: [1, 1.05, 1] } : { scale: 1 }}
                     transition={{ duration: 1, repeat: Infinity }}
                 >
-                    <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl border-2 border-emerald-500/20 flex items-center justify-center relative overflow-hidden">
+                    <div className="w-24 h-24 bg-emerald-500/10 rounded-[28px] border border-emerald-500/20 flex items-center justify-center relative overflow-hidden shadow-sm">
                         <div className="text-emerald-500 relative z-10">
                             {isDeploying ? <Clock size={40} className="animate-pulse" /> : <Globe size={40} />}
                         </div>
@@ -151,11 +151,11 @@ export const DeployVisual = ({ isDeploying = false }: { isDeploying?: boolean })
                         >
                             <div className="flex items-center gap-2 text-blue-600 font-medium">
                                 <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                                </span>
-                                Syncing configurations...
-                            </div>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                            </span>
+                            Syncing configurations...
+                        </div>
                             <p className="text-xs text-muted-foreground max-w-[250px]">
                                 Moving your prompts, actions, and widget settings to the production environment.
                             </p>

@@ -272,10 +272,10 @@ export function DashboardHeader() {
     "Dashboard";
 
   return (
-    <div className="flex items-center justify-between w-full">
-      <div className="flex items-center gap-2">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
+    <div className="flex w-full items-center justify-between gap-4">
+      <div className="flex min-w-0 items-center gap-3">
+        <SidebarTrigger className="-ml-1 h-9 w-9 rounded-xl border border-border/70 bg-background shadow-xs hover:bg-[var(--surface-secondary)]" />
+        <Separator orientation="vertical" className="h-5" />
 
         {/*
           Breadcrumbs - render immediately with static content if no bot selected,
@@ -313,9 +313,9 @@ export function DashboardHeader() {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {!isChatbotDashboard && (
-          <div className="w-56 mr-32">
+          <div className="w-56">
             <WorkspaceSwitcher />
           </div>
         )}

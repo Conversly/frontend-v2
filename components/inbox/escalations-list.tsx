@@ -100,18 +100,18 @@ export function EscalationsList({
     return (
         <div
             className={cn(
-                "flex flex-col bg-[--surface-secondary] shrink-0 border-r border-border transition-all duration-300",
+                "flex flex-col bg-card shrink-0 border-r border-border/70 transition-all duration-300",
                 isDetailsOpen
                     ? "w-[280px] lg:w-[330px]"
                     : "w-[clamp(260px,28vw,400px)]"
             )}
         >
-            <div className="p-3 space-y-3">
-                <div className="flex items-center gap-2">
+            <div className="border-b border-border/60 p-3 space-y-3 bg-[var(--surface-secondary)]">
+                <div className="dashboard-search-shell">
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
+                        <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
                         <input
-                            className="w-full pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-1 focus:ring-primary outline-none transition-shadow"
+                            className="w-full bg-transparent pl-7 pr-1 py-1.5 text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
                             placeholder="Search by ID or Exact Email (Press Enter)..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -131,10 +131,10 @@ export function EscalationsList({
                             key={tab.id}
                             onClick={() => onQueueChange(tab.id)}
                             className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all shrink-0 border",
+                                "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all shrink-0 border",
                                 activeQueue === tab.id
-                                    ? "bg-primary text-primary-foreground border-primary"
-                                    : "bg-white text-foreground border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                                    : "bg-card text-muted-foreground border-border/70 hover:border-primary/20 hover:text-foreground hover:bg-[var(--surface-secondary)]"
                             )}
                         >
                             {tab.label}
@@ -143,7 +143,7 @@ export function EscalationsList({
                                     "text-[10px] px-1.5 py-0.5 rounded-full font-semibold",
                                     activeQueue === tab.id
                                         ? "bg-primary-foreground/20 text-primary-foreground"
-                                        : "bg-gray-100 text-foreground"
+                                        : "bg-[var(--surface-secondary)] text-foreground"
                                 )}>
                                     {tab.count}
                                 </span>
@@ -153,10 +153,10 @@ export function EscalationsList({
                 </div>
             </div>
 
-            <div className="flex-1 min-h-0 divide-y divide-border overflow-y-auto">
+            <div className="flex-1 min-h-0 overflow-y-auto bg-[var(--surface-secondary)] p-3">
                 {isLoading ? (
                     Array.from({ length: 10 }).map((_, i) => (
-                        <div key={i} className="flex flex-col px-3 py-2 gap-1.5 bg-card border-l-[3px] border-transparent">
+                        <div key={i} className="mb-3 flex flex-col gap-1.5 rounded-[var(--panel-radius-sm)] border border-border/70 bg-card px-3 py-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <Skeleton className="size-6 rounded-full" />
@@ -218,10 +218,10 @@ export function EscalationsList({
                                 key={e.escalationId}
                                 onClick={() => onSelectRow(e.conversationId)}
                                 className={cn(
-                                    "px-3 py-2 border-l-[3px] cursor-pointer group transition-all flex flex-col relative bg-card",
+                                    "dashboard-list-row mb-3 cursor-pointer group transition-all flex flex-col relative",
                                     isActive
-                                        ? "border-primary bg-primary/5"
-                                        : "border-transparent hover:bg-muted/50"
+                                        ? "border-primary/45 bg-primary/[0.045] shadow-md"
+                                        : "hover:bg-card"
                                 )}
                             >
                                 {/* Top Row - Identity, Reason Pill & Wait Time */}
@@ -249,19 +249,19 @@ export function EscalationsList({
                                         })()}
                                         <span className="text-sm font-semibold truncate text-foreground">{contactName}</span>
                                         {primaryReason && (
-                                            <span className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-1.5 py-0.5 rounded-md truncate max-w-[200px]" title={primaryReason}>
+                                            <span className="dashboard-status-chip dashboard-status-chip--info max-w-[200px] truncate" title={primaryReason}>
                                                 {primaryReason}
                                             </span>
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <div className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1.5", stateColor)}>
+                                        <div className={cn("dashboard-status-chip", stateColor)}>
                                             {isBreached && <AlertTriangle className="size-2.5" />}
                                             {!isBreached && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
                                             {timeText}
                                         </div>
                                         {unread > 0 && (
-                                            <span className="text-[10px] font-bold bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full">
+                                            <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm">
                                                 {unread}
                                             </span>
                                         )}
@@ -282,9 +282,9 @@ export function EscalationsList({
                                         {isMine && !isActive && <Check className="size-3.5 text-green-600" />}
                                         {isAssigned && (
                                             <div
-                                                className="size-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 overflow-hidden"
-                                                title={`Working on it: ${e.agentDisplayName}`}
-                                            >
+                                            className="size-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 overflow-hidden"
+                                            title={`Working on it: ${e.agentDisplayName}`}
+                                        >
                                                 {e.agentAvatarUrl ? (
                                                     <img src={e.agentAvatarUrl} alt={e.agentDisplayName!} className="size-full object-cover" />
                                                 ) : (
@@ -337,7 +337,7 @@ export function EscalationsList({
                     })
                 ) : (
                     // Empty state (no items)
-                    <div className="flex flex-col items-center justify-center p-8 text-center bg-card">
+                    <div className="flex flex-col items-center justify-center rounded-[var(--panel-radius-md)] border border-dashed border-border/70 bg-card p-8 text-center">
                         <MessageSquare className="size-8 text-muted-foreground/30 mb-3" />
                         <h3 className="text-sm font-medium text-foreground">No escalations found</h3>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -347,13 +347,13 @@ export function EscalationsList({
                 )}
 
                 {inboxItems.length > 0 && hasMore && (
-                    <div className="p-4 flex justify-center">
+                    <div className="px-1 pb-1 pt-2 flex justify-center">
                         <Button
                             variant="secondary"
                             size="sm"
                             onClick={onLoadMore}
                             disabled={isFetchingMore}
-                            className="w-full bg-muted/50 text-muted-foreground hover:bg-muted"
+                            className="w-full bg-[var(--surface-secondary)] text-muted-foreground hover:bg-[var(--surface-tertiary)]"
                         >
                             {isFetchingMore ? (
                                 <span className="flex items-center gap-2">

@@ -19,26 +19,23 @@ import {
     RotateCcw,
     AlertTriangle,
     CheckCircle2,
-    Clock,
     ShieldAlert,
     Info,
-    ArrowLeft
+    GitBranch,
+    Globe2
 } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 type PageView = "default" | "reviewing";
 
 export default function DeployLivePage() {
-    const { botId, workspaceId } = useParams() as { botId: string; workspaceId: string };
+    const { botId } = useParams() as { botId: string; workspaceId: string };
     const {
         activeBranch,
         switchBranch,
         setDeployState,
         syncVersions,
-        devVersion: storeDevVersion,
-        liveVersion: storeLiveVersion
     } = useBranch();
 
     const [status, setStatus] = useState<DeployStatus | null>(null);
@@ -171,33 +168,40 @@ export default function DeployLivePage() {
         const state = status?.deployStatusField;
         switch (state) {
             case 'NOT_DEPLOYED':
-                return { label: 'Not deployed yet', className: 'text-muted-foreground' };
+                return { label: 'Not deployed yet', chipClass: 'dashboard-status-chip dashboard-status-chip--neutral' };
             case 'SYNCED':
-                return { label: 'Up to date', className: 'text-emerald-600' };
+                return { label: 'Up to date', chipClass: 'dashboard-status-chip dashboard-status-chip--success' };
             case 'DEV_DIRTY':
-                return { label: 'Unpublished changes', className: 'text-orange-600' };
+                return { label: 'Unpublished changes', chipClass: 'dashboard-status-chip dashboard-status-chip--warning' };
             case 'DEPLOYING':
-                return { label: 'Publishing…', className: 'text-blue-600' };
+                return { label: 'Publishing…', chipClass: 'dashboard-status-chip dashboard-status-chip--info' };
             case 'LOCKED':
-                return { label: 'Deployment locked', className: 'text-red-600' };
+                return { label: 'Deployment locked', chipClass: 'dashboard-status-chip dashboard-status-chip--danger' };
             default:
-                return { label: 'Unknown', className: 'text-muted-foreground' };
+                return { label: 'Unknown', chipClass: 'dashboard-status-chip dashboard-status-chip--neutral' };
         }
     })();
 
     return (
-        <div className="p-6 h-full w-full space-y-6">
+        <div className="dashboard-page px-4 py-4 md:px-6 md:py-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Deploy to Live</h1>
-                    <p className="text-muted-foreground mt-1">
+            <div className="page-header md:flex-row md:items-start md:justify-between">
+                <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className={deployStateUi.chipClass}>{deployStateUi.label}</span>
+                        <span className="dashboard-status-chip dashboard-status-chip--neutral">
+                            {activeBranch === "DEV" ? <GitBranch className="size-3" /> : <Globe2 className="size-3" />}
+                            {activeBranch} mode
+                        </span>
+                    </div>
+                    <h1 className="type-page-title">Deploy to Live</h1>
+                    <p className="type-body-muted">
                         Move your draft changes from the development environment to your public live chatbot.
                     </p>
                 </div>
 
                 {activeBranch === 'LIVE' && (
-                    <Button variant="outline" onClick={() => switchBranch('DEV')} className="border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100">
+                    <Button variant="outline" onClick={() => switchBranch('DEV')} className="self-start">
                         Switch to DEV to Deploy
                     </Button>
                 )}
@@ -207,7 +211,7 @@ export default function DeployLivePage() {
                 {/* Main Column — swaps between DeployVisual and DiffView */}
                 <div className="lg:col-span-2 space-y-6">
                     {pageView === "default" && isLocked && (
-                        <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+                        <Alert variant="destructive" className="border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]">
                             <ShieldAlert className="h-5 w-5" />
                             <AlertTitle>Deployment Locked</AlertTitle>
                             <AlertDescription>
@@ -218,8 +222,8 @@ export default function DeployLivePage() {
                     )}
 
                     {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
-                        <Alert className="bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                        <Alert className="border-[var(--status-success-border)] bg-[var(--status-success-bg)] text-[var(--status-success-fg)]">
+                            <CheckCircle2 className="h-5 w-5 text-[var(--status-success-fg)]" />
                             <AlertTitle>All changes synced</AlertTitle>
                             <AlertDescription>
                                 Your LIVE chatbot is currently running the latest version of your configuration.
@@ -251,7 +255,7 @@ export default function DeployLivePage() {
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.25 }}
                             >
-                                <Card className="overflow-hidden border-border/60 shadow-md h-[calc(100vh-180px)] min-h-[600px]">
+                                <Card className="overflow-hidden border-border/60 shadow-md h-[calc(100vh-220px)] min-h-[560px]">
                                     <DeployVisual isDeploying={isDeploying} />
                                 </Card>
                             </motion.div>
@@ -262,31 +266,29 @@ export default function DeployLivePage() {
                 {/* Actions Column */}
                 <div className="space-y-6">
                     {/* Status Card */}
-                    <Card className="bg-muted/30 border-border shadow-sm">
+                    <Card className="bg-card">
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Current Status</CardTitle>
+                            <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Release Status</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="flex justify-between items-end">
-                                <div>
-                                    <p className="text-2xl font-bold text-foreground">v{status?.liveVersion || 0}</p>
-                                    <p className="text-xs text-muted-foreground">Live Version</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="dashboard-panel-muted rounded-[var(--panel-radius-sm)] p-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Live</p>
+                                    <p className="mt-1 text-2xl font-bold text-foreground">v{status?.liveVersion || 0}</p>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-2xl font-bold text-blue-600">v{status?.devVersion || 0}</p>
-                                    <p className="text-xs text-muted-foreground">Draft Version</p>
+                                <div className="dashboard-panel-muted rounded-[var(--panel-radius-sm)] p-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Draft</p>
+                                    <p className="mt-1 text-2xl font-bold text-primary">v{status?.devVersion || 0}</p>
                                 </div>
                             </div>
                             <div className="pt-2 border-t border-border">
                                 <div className="flex items-center justify-between text-xs">
-                                    <span className="text-muted-foreground">State:</span>
-                                    <span className={`font-semibold ${deployStateUi.className}`}>
-                                        {deployStateUi.label}
-                                    </span>
+                                    <span className="text-muted-foreground">State</span>
+                                    <span className={deployStateUi.chipClass}>{deployStateUi.label}</span>
                                 </div>
                                 {status?.lastDeployedAt && (
                                     <div className="flex items-center justify-between text-xs mt-1">
-                                        <span className="text-muted-foreground">Last Deployed:</span>
+                                        <span className="text-muted-foreground">Last Deployed</span>
                                         <span className="text-foreground">
                                             {new Date(status.lastDeployedAt).toLocaleDateString()}
                                         </span>
@@ -297,10 +299,10 @@ export default function DeployLivePage() {
                     </Card>
 
                     {/* Push Card */}
-                    <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying && pageView === "default" ? 'border-blue-500 shadow-blue-100 shadow-lg' : 'opacity-70'}`}>
+                    <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying && pageView === "default" ? 'border-primary/30 shadow-lg' : 'opacity-80'}`}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-blue-500" />
+                                <Rocket className="w-5 h-5 text-primary" />
                                 Push to Live
                             </CardTitle>
                             <CardDescription>
@@ -308,18 +310,18 @@ export default function DeployLivePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pb-4">
-                            <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 text-xs text-blue-600 dark:text-blue-400 flex gap-3">
+                            <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-info-border)] bg-[var(--status-info-bg)] p-3 text-xs text-[var(--status-info-fg)] flex gap-3">
                                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>This will deploy all the changes which you have done on your live chatbot. User will be affected.</p>
                             </div>
-                            <div className="mt-3 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20 text-xs text-orange-600 dark:text-orange-400 flex gap-3">
+                            <div className="mt-3 rounded-[var(--panel-radius-sm)] border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] p-3 text-xs text-[var(--status-warning-fg)] flex gap-3">
                                 <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>Your chatbot will be inactive for a short duration (1-2 minutes) during deployment.</p>
                             </div>
                         </CardContent>
                         <CardFooter>
                             <Button
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
+                                className="w-full"
                                 disabled={!isDirty || isDeploying || isActionInProgress || activeBranch !== 'DEV' || pageView === "reviewing"}
                                 onClick={handleReviewChanges}
                             >
@@ -340,7 +342,7 @@ export default function DeployLivePage() {
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                                     >
-                                        <Rocket className="w-10 h-10 text-blue-500" />
+                                        <Rocket className="w-10 h-10 text-primary" />
                                     </motion.div>
                                     <h4 className="mt-4 font-bold text-foreground">Pushing Changes</h4>
                                     <p className="text-xs text-muted-foreground mt-1">Please wait until the sync is complete. This usually takes less than a minute.</p>
@@ -361,7 +363,7 @@ export default function DeployLivePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pb-4">
-                            <div className="p-3 bg-muted/50 rounded-lg border border-border text-xs text-muted-foreground flex gap-3">
+                            <div className="rounded-[var(--panel-radius-sm)] border border-border bg-[var(--surface-secondary)] p-3 text-xs text-muted-foreground flex gap-3">
                                 <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <p>This will remove all your changes to the current live stage. Your draft will be replaced by the current production configuration.</p>
                             </div>

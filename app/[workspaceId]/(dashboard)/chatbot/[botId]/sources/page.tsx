@@ -323,16 +323,16 @@ function DataSourceCard({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-4 shadow-card transition-all hover:border-primary/20 shadow-card-hover"
+      className="group relative flex flex-col justify-between rounded-[var(--panel-radius-md)] border border-[var(--panel-border-soft)] bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 overflow-hidden">
           <div className={cn(
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-gradient-to-br',
-            colorClass
+            'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-card shadow-xs',
+            normalizedType === 'URL' || normalizedType === 'DOCUMENT' ? 'border-border/70' : 'border-border/60'
           )}>
-            <Icon className="h-5 w-5" />
+            <Icon className={cn('h-5 w-5', colorClass.split(" ").at(-1))} />
           </div>
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-foreground truncate" title={dataSource.name}>
@@ -378,23 +378,35 @@ function DataSourceCard({
         </DropdownMenu>
       </div>
 
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Badge
+          variant="outline"
+          className={cn(
+            'text-[10px] px-2 py-0.5 h-6 font-semibold tracking-[0.04em]',
+            badgeColor
+          )}
+        >
+          {normalizedType}
+        </Badge>
+        <Badge
+          variant="outline"
+          className={cn(
+            'text-[10px] px-2 py-0.5 h-6 font-semibold tracking-[0.04em]',
+            getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
+          )}
+        >
+          {dataSource.ingestionStatus ?? 'Draft'}
+        </Badge>
+      </div>
+
       {/* Footer / Status */}
       <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Calendar className="h-3.5 w-3.5" />
           <span>{dataSource.createdAt ? new Date(dataSource.createdAt).toLocaleDateString() : 'N/A'}</span>
         </div>
-        <div className="flex gap-2">
-          <Badge
-            variant="outline"
-            className={cn(
-              'text-[10px] px-1.5 py-0 h-5 font-medium',
-              getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
-            )}
-          >
-            {dataSource.ingestionStatus ?? 'Draft'}
-          </Badge>
-          {/* Optional: Show Usage Status if different from Training? Usually Ingestion is key. */}
+        <div className="text-[11px] font-medium text-muted-foreground">
+          {dataSource.citation ? "Citation attached" : "No citation"}
         </div>
       </div>
     </motion.div>
@@ -474,7 +486,7 @@ function DataSourcesContent({
             )}
           </FeatureGuard>
         ) : (
-          <div className="text-center py-12 text-muted-foreground">
+          <div className="dashboard-panel flex min-h-[240px] items-center justify-center text-center text-muted-foreground">
             No sources match your search
           </div>
         )}
@@ -583,7 +595,7 @@ export default function DataSourcesPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-48px)] flex bg-background overflow-hidden">
+    <div className="h-[calc(100vh-64px)] flex bg-background overflow-hidden rounded-[var(--panel-radius-lg)] border border-[var(--panel-border-soft)] shadow-sm">
       {/* Left Sidebar - Categories (Fixed) - Note: sourceCounts comes from hook inside sidebar */}
       <div className="flex-shrink-0 h-full">
         <SourcesCategorySidebar
@@ -595,10 +607,10 @@ export default function DataSourcesPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[var(--surface-secondary)]">
         {/* Header (Fixed) */}
-        <div className="flex-shrink-0 border-b border-border bg-card p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="flex-shrink-0 border-b border-border/60 bg-card p-6">
+          <div className="dashboard-toolbar">
             <div>
               <h1 className="type-page-title">
                 {getCategoryTitle()}
@@ -614,38 +626,38 @@ export default function DataSourcesPage() {
                 </Suspense>
               </p>
             </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span>
-                    {/* Optimistically show 0 until data loads */}
-                    <FeatureGuard feature="datasources" currentUsage={0}>
-                      {({ isLocked }) => (
-                        <Button
-                          onClick={() => setIsAddDialogOpen(true)}
-                          variant={!isLocked ? "default" : "outline"}
-                          className={isLocked ? "border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20" : ""}
-                        >
-                          {isLocked ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-                          Add Knowledge
-                        </Button>
-                      )}
-                    </FeatureGuard>
-                  </span>
-                </TooltipTrigger>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+            <div className="dashboard-toolbar__group">
+              <div className="dashboard-search-shell min-w-[280px] max-w-md">
+                <Search className="w-4 h-4 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by name or citation..."
+                  className="border-0 bg-transparent pl-2 shadow-none focus-visible:ring-0"
+                />
+              </div>
 
-          {/* Search */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name or citation..."
-              className="pl-9"
-            />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <FeatureGuard feature="datasources" currentUsage={0}>
+                        {({ isLocked }) => (
+                          <Button
+                            onClick={() => setIsAddDialogOpen(true)}
+                            variant={!isLocked ? "default" : "outline"}
+                            className={isLocked ? "border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)]" : ""}
+                          >
+                            {isLocked ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                            Add Knowledge
+                          </Button>
+                        )}
+                      </FeatureGuard>
+                    </span>
+                  </TooltipTrigger>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
         </div>
 

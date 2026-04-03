@@ -87,7 +87,7 @@ export function EscalationDetails() {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="dashboard-panel-muted space-y-4 rounded-[var(--panel-radius-sm)] p-4">
                         <div className="flex items-center gap-3">
                             <Mail className="size-5 text-muted-foreground" />
                             <div className="flex-1 overflow-hidden">
@@ -112,7 +112,7 @@ export function EscalationDetails() {
                 {/* Conversation Info Section */}
                 <section className="p-6 border-b border-border">
                     <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Conversation Details</h3>
-                    <div className="space-y-3">
+                    <div className="dashboard-panel-muted space-y-3 rounded-[var(--panel-radius-sm)] p-4">
                         <div className="flex justify-between items-center py-2 border-b border-[--surface-secondary]">
                             <span className="text-sm text-muted-foreground">Channel</span>
                             <span className="text-sm font-medium flex items-center gap-1.5">
@@ -129,9 +129,9 @@ export function EscalationDetails() {
                         <div className="flex justify-between items-center py-2">
                             <span className="text-sm text-muted-foreground">Escalated</span>
                             {isAiEscalated ? (
-                                <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded uppercase tracking-wider">Yes (AI)</span>
+                                <span className="dashboard-status-chip dashboard-status-chip--info">Yes (AI)</span>
                             ) : (
-                                <span className="text-[10px] font-bold bg-muted text-muted-foreground px-2 py-0.5 rounded uppercase">Manual</span>
+                                <span className="dashboard-status-chip dashboard-status-chip--neutral">Manual</span>
                             )}
                         </div>
                     </div>
@@ -158,7 +158,7 @@ export function EscalationDetails() {
                                 </div>
                             ) : previousConversations.length > 0 ? (
                                 previousConversations.map((conv) => (
-                                    <div key={conv.conversationId} className="p-3 bg-background shadow-sm rounded-lg border border-border hover:border-primary transition-colors cursor-pointer group">
+                                    <div key={conv.conversationId} className="dashboard-list-row cursor-pointer group p-3">
                                         <div className="flex justify-between items-center mb-1">
                                             <p className="text-xs font-bold group-hover:text-primary transition-colors truncate capitalize">
                                                 {((conv as any).state || conv.status || "OPEN").toLowerCase().replace('_', ' ')}
@@ -190,7 +190,7 @@ export function EscalationDetails() {
                                 </div>
                             ) : previousTickets.length > 0 ? (
                                 previousTickets.map((ticket) => (
-                                    <div key={ticket.id} className="p-3 bg-background shadow-sm rounded-lg border border-border hover:border-primary transition-colors cursor-pointer group">
+                                    <div key={ticket.id} className="dashboard-list-row cursor-pointer group p-3">
                                         <p className="text-xs font-bold mb-1 group-hover:text-primary transition-colors truncate">
                                             #{ticket.id.slice(0, 8).toUpperCase()}: {ticket.subject || "General Support"}
                                         </p>

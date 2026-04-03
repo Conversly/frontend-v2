@@ -26,7 +26,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="p-6 relative overflow-hidden">
+      <Card className="dashboard-kpi-card p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Messages Used</p>
           <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -45,15 +45,16 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
             </>
           )}
         </div>
-        <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
+        <div className="mt-4 h-1.5 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
           <div
             className="h-full bg-primary transition-all duration-500"
             style={{ width: `${usagePercentage}%` }}
           />
         </div>
+        <p className="mt-2 text-[11px] font-medium text-muted-foreground">Current billing cycle usage</p>
       </Card>
 
-      <Card className="p-6 relative overflow-hidden">
+      <Card className="dashboard-kpi-card p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Avg. Messages / Conv.</p>
           <BarChart3 className="h-4 w-4 text-muted-foreground" />
@@ -68,7 +69,7 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
         <p className="text-xs text-muted-foreground mt-1">Per active conversation</p>
       </Card>
 
-      <Card className="p-6 relative overflow-hidden">
+      <Card className="dashboard-kpi-card p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Like Rate</p>
           <ThumbsUp className="h-4 w-4 text-muted-foreground" />
@@ -80,12 +81,13 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
             <div className="text-2xl font-bold">{summaryData?.likeRatePercent?.toFixed(1) || '0.0'}%</div>
           )}
         </div>
-        <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
+        <div className="mt-4 h-1.5 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
           <div className="h-full bg-green-500" style={{ width: `${summaryData?.likeRatePercent || 0}%` }} />
         </div>
+        <p className="mt-2 text-[11px] font-medium text-muted-foreground">Feedback share across recent sessions</p>
       </Card>
 
-      <Card className="p-6 relative overflow-hidden">
+      <Card className="dashboard-kpi-card p-6 relative overflow-hidden">
         <div className="flex items-center justify-between space-y-0 pb-2">
           <p className="text-sm font-medium text-muted-foreground">Avg. Session Duration</p>
           <Clock className="h-4 w-4 text-muted-foreground" />
@@ -104,4 +106,3 @@ export function SummaryCards({ summaryData, isLoading }: SummaryCardsProps) {
     </div>
   );
 }
-

@@ -101,11 +101,16 @@ export function SourcesCategorySidebar({
   };
 
   return (
-    <div className="w-[240px] border-r border-border bg-card h-full flex flex-col overflow-hidden">
+    <div className="flex h-full w-[252px] flex-col overflow-hidden border-r border-border/70 bg-card">
+      <div className="border-b border-border/60 px-4 py-4">
+        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Knowledge Base</p>
+        <p className="mt-1 text-sm font-semibold text-foreground">Sources & training queue</p>
+      </div>
+
       {/* Categories */}
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-3">
         {/* Source Categories */}
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           {categories.map((category) => {
             const Icon = category.icon;
             const count = sourceCounts[category.id];
@@ -116,18 +121,25 @@ export function SourcesCategorySidebar({
                 key={category.id}
                 onClick={() => onCategoryChange(category.id)}
                 className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors',
+                  'w-full flex items-center gap-3 px-3 py-3 rounded-[var(--panel-radius-sm)] text-sm transition-all border',
                   isSelected
-                    ? 'bg-primary/10 text-primary font-semibold'
-                    : 'text-muted-foreground hover:bg-[--sidebar-accent] hover:text-foreground'
+                    ? 'border-primary/20 bg-primary/10 text-primary shadow-sm'
+                    : 'border-transparent text-muted-foreground hover:border-border/70 hover:bg-[var(--surface-secondary)] hover:text-foreground'
                 )}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
+                <div className={cn(
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border",
+                  isSelected
+                    ? "border-primary/20 bg-primary/10"
+                    : "border-border/60 bg-card"
+                )}>
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                </div>
                 <span className="flex-1 text-left">{category.label}</span>
                 {count > 0 && (
                   <span className={cn(
                     'text-2xs px-2 py-0.5 rounded-full font-medium',
-                    isSelected ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                    isSelected ? 'bg-primary/15 text-primary' : 'bg-[var(--surface-secondary)] text-muted-foreground'
                   )}>
                     {count}
                   </span>
@@ -140,8 +152,8 @@ export function SourcesCategorySidebar({
         {/* Request Integration */}
         <div className="p-2 pt-4 border-t border-border mt-auto">
           <Button
-            variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-[--sidebar-accent]"
+            variant="outline"
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
             onClick={() => setIsRequestModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -151,7 +163,7 @@ export function SourcesCategorySidebar({
       </div>
 
       {/* Pending Sources Panel (at bottom of sidebar) */}
-      <div className="p-4 border-t border-border mt-auto bg-card">
+      <div className="p-4 border-t border-border/60 mt-auto bg-[var(--surface-secondary)]">
         <PendingSourcesPanel chatbotId={chatbotId} />
       </div>
 
