@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Building2, CheckCircle2, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -247,93 +247,6 @@ export function SolutionsClientContent() {
               ))}
             </AnimatePresence>
 
-            {activeCategory === "All" ? (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <Link
-                  href="/solutions/enterprise"
-                  className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#dce6f6] bg-white shadow-[0_12px_30px_rgba(40,34,26,0.05)] transition-all duration-300 hover:border-[#bdd1ff] hover:shadow-[0_24px_56px_rgba(49,94,234,0.10)]"
-                >
-                  <div className="relative aspect-[1.55/1] overflow-hidden border-b border-[#ece6dc] bg-[linear-gradient(135deg,#f3f7ff_0%,#ffffff_45%,#fff9ef_100%)] p-5">
-                    <div className="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef4ff] text-[#315EEA] shadow-[0_12px_24px_rgba(49,94,234,0.12)]">
-                      <ShieldCheck className="h-6 w-6" />
-                    </div>
-                    <div className="inline-flex rounded-full border border-white/80 bg-white/92 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6a7690] shadow-sm">
-                      Enterprise solution
-                    </div>
-                    <div className="mt-8 max-w-[88%] rounded-[20px] border border-white/60 bg-white/92 px-4 py-4 shadow-[0_18px_36px_rgba(17,24,39,0.10)]">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#315EEA]">
-                        Enterprise
-                      </div>
-                      <p className="mt-1 text-[13px] font-medium leading-5 text-[#2b2b2b]">
-                        Secure deployment, custom integrations, and rollout support for complex teams.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-5 md:p-6">
-                    <div className="flex items-center gap-3.5">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#eef4ff] text-[#315EEA] transition-transform duration-300 group-hover:scale-110">
-                        <Building2 className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#315EEA]">
-                          Enterprise
-                        </span>
-                        <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[17px] tracking-[-0.02em] text-[#221f1b]">
-                          Enterprise
-                        </h3>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {["Security", "Custom Integrations"].map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-[#e7e0d5] bg-[#fbf8f3] px-3 py-1 text-[11px] font-medium text-[#6b6358]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    <p className="mt-3 text-[13px] leading-6 text-[#6d665d]">
-                      Explore Verly for stricter deployment requirements, custom workflow design,
-                      and enterprise rollout support.
-                    </p>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {["Web Chat", "Voice", "WhatsApp"].map((channel) => (
-                        <span
-                          key={channel}
-                          className="rounded-full border border-[#dde6f4] bg-[#f8fbff] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6d7f9e]"
-                        >
-                          {channel}
-                        </span>
-                      ))}
-                    </div>
-
-                    <ul className="mt-4 space-y-2">
-                      <li className="flex items-start gap-2.5 text-[12px] leading-5 text-[#6d665d]">
-                        <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                        Dedicated deployment, security, and escalation support for complex operations.
-                      </li>
-                    </ul>
-
-                    <div className="mt-auto pt-5">
-                      <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#315EEA] transition-colors">
-                        Explore solution
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ) : null}
           </div>
         </div>
       </section>

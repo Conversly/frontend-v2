@@ -1,17 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, Send } from "lucide-react";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { joinWaitlist } from "@/lib/api/waitlist";
 
 const COMPANY_SIZES = [
@@ -23,6 +14,23 @@ const COMPANY_SIZES = [
 ] as const;
 
 const DEMO_URL = "https://calendly.com/rdhakad2002/30min";
+
+function FormField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="group relative">
+      <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.08em] text-[#8a8275] transition-colors group-focus-within:text-[#315EEA]">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
 
 export function EnterpriseInquiryForm() {
   const [fullName, setFullName] = useState("");
@@ -71,114 +79,135 @@ export function EnterpriseInquiryForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-[28px] border border-[#dce6f6] bg-white/95 p-8 shadow-[0_24px_64px_rgba(45,58,96,0.10)]">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaf6ee] text-emerald-600">
-          <CheckCircle2 className="h-6 w-6" />
+      <div className="space-y-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-200">
+            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+          </div>
+          <div>
+            <p className="text-[15px] font-semibold text-[#221f1b]">Request received</p>
+            <p className="text-[12px] text-[#8a8275]">We&apos;ll respond within 1 business day</p>
+          </div>
         </div>
-        <h3 className="mt-5 font-[Georgia,Times,'Times_New_Roman',serif] text-[30px] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
-          Your request is in
-        </h3>
-        <p className="mt-4 text-[15px] leading-7 text-[#6d665d]">
-          We captured your enterprise inquiry and our team will follow up. If you want to move
-          faster, book a demo now and we’ll tailor it to your workflow.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
+
+        <div className="rounded-xl border border-[#ece8e0] bg-[#faf8f5] px-4 py-3.5">
+          <p className="text-[13px] leading-relaxed text-[#6d665d]">
+            We captured your enterprise inquiry. Want to skip the wait? Book a tailored demo directly.
+          </p>
+        </div>
+
+        <div className="flex gap-2.5">
           <Link
             href={DEMO_URL}
             target="_blank"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-[#315EEA] px-6 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(49,94,234,0.28)] transition-all hover:bg-[#264fd4]"
+            className="inline-flex h-10 flex-1 items-center justify-center rounded-lg bg-[#315EEA] text-[13px] font-semibold text-white shadow-[0_8px_20px_rgba(49,94,234,0.2)] transition-all hover:bg-[#264fd4]"
           >
-            Book a custom demo
-            <ArrowRight className="ml-2 h-4 w-4" />
+            Book demo
+            <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
           </Link>
           <Link
             href="/login"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-[#dde6f4] bg-white px-6 text-[14px] font-semibold text-[#221f1b] transition-all hover:bg-[#fafcff]"
+            className="inline-flex h-10 flex-1 items-center justify-center rounded-lg border border-[#ddd7ca] text-[13px] font-medium text-[#6d665d] transition-all hover:bg-[#faf8f5]"
           >
-            Start building
+            Go to dashboard
           </Link>
         </div>
       </div>
     );
   }
 
+  const inputBase =
+    "h-10 w-full rounded-xl border border-[#e0dbd3] bg-[#faf8f5] px-3.5 text-[13px] text-[#221f1b] outline-none transition-all duration-200 placeholder:text-[#b0a898] hover:border-[#d0c9bd] focus:border-[#315EEA]/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(49,94,234,0.06)]";
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-[28px] border border-[#dce6f6] bg-white/95 p-6 shadow-[0_24px_64px_rgba(45,58,96,0.10)] md:p-7"
-    >
-      <div className="mb-5">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
-          Fill in the form
-        </div>
-        <p className="mt-2 text-[14px] leading-6 text-[#6d665d]">
-          Tell us about your support workflow and we’ll tailor the next conversation around it.
-        </p>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <FormField label="Name">
+          <input
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Jane Smith"
+            className={inputBase}
+          />
+        </FormField>
+        <FormField label="Work email">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="jane@company.com"
+            className={inputBase}
+          />
+        </FormField>
       </div>
 
-      <div className="space-y-4">
-        <Input
-          value={fullName}
-          onChange={(event) => setFullName(event.target.value)}
-          placeholder="John Doe"
-          className="h-12 rounded-2xl border-[#d9e3f5] bg-[#fbfdff]"
-        />
-        <Input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="your.email@example.com"
-          className="h-12 rounded-2xl border-[#d9e3f5] bg-[#fbfdff]"
-        />
-        <Select value={companySize} onValueChange={setCompanySize}>
-          <SelectTrigger className="h-12 rounded-2xl border-[#d9e3f5] bg-[#fbfdff]">
-            <SelectValue placeholder="Select company size" />
-          </SelectTrigger>
-          <SelectContent>
-            {COMPANY_SIZES.map((size) => (
-              <SelectItem key={size} value={size}>
-                {size}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Textarea
+      <FormField label="Company size">
+        <select
+          value={companySize}
+          onChange={(e) => setCompanySize(e.target.value)}
+          className={`${inputBase} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22rgba(138%2C130%2C117%2C0.5)%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_12px_center] bg-no-repeat pr-9 ${!companySize ? "text-[#b0a898]" : ""}`}
+        >
+          <option value="" disabled>
+            Select size
+          </option>
+          {COMPANY_SIZES.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="How can we help?">
+        <textarea
           value={message}
-          onChange={(event) => setMessage(event.target.value)}
-          placeholder="Write your message..."
-          className="min-h-[140px] rounded-[22px] border-[#d9e3f5] bg-[#fbfdff]"
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Tell us about your support workflow, channels, and what you need from an enterprise deployment..."
+          rows={3}
+          className={`${inputBase} h-auto min-h-[88px] resize-none py-2.5 leading-relaxed`}
         />
-      </div>
+      </FormField>
 
-      {error ? <p className="mt-4 text-sm text-[#c2410c]">{error}</p> : null}
+      {error ? (
+        <p className="text-[12px] font-medium text-red-500">{error}</p>
+      ) : null}
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#315EEA] px-6 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(49,94,234,0.28)] transition-all hover:bg-[#264fd4] disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Submitting
-          </>
-        ) : (
-          <>
-            Submit
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </>
-        )}
-      </button>
+      <div className="space-y-3 pt-1">
+        <button
+          type="submit"
+          disabled={loading}
+          className="group relative inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-xl bg-[#221f1b] text-[13px] font-semibold text-white transition-all duration-200 hover:bg-[#1a1816] hover:shadow-[0_8px_24px_rgba(34,31,27,0.18)] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Sending...
+            </>
+          ) : (
+            <>
+              Submit inquiry
+              <Send className="ml-2 h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </>
+          )}
+        </button>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-[12px] text-[#7b8798]">
-        <span>Need a faster path?</span>
-        <Link href={DEMO_URL} target="_blank" className="font-semibold text-[#315EEA]">
-          Book a demo
-        </Link>
-        <span>or</span>
-        <Link href="mailto:team@verlyai.xyz" className="font-semibold text-[#315EEA]">
-          email our team
-        </Link>
+        <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#b0a898]">
+          <span>or</span>
+          <Link
+            href={DEMO_URL}
+            target="_blank"
+            className="text-[#8a8275] underline decoration-[#ddd7ca] underline-offset-2 transition-colors hover:text-[#315EEA]"
+          >
+            book a demo
+          </Link>
+          <span>&middot;</span>
+          <Link
+            href="mailto:team@verlyai.xyz"
+            className="text-[#8a8275] underline decoration-[#ddd7ca] underline-offset-2 transition-colors hover:text-[#315EEA]"
+          >
+            email us
+          </Link>
+        </div>
       </div>
     </form>
   );
