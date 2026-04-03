@@ -29,7 +29,7 @@ const showcaseTabs = [
     shortDesc: "Customers shape the responses they get.",
     description:
       "Thumbs up, thumbs down, CSAT scores — every piece of customer feedback tells the system what's working and what isn't. Responses that delight get reinforced; ones that miss the mark get refined automatically.",
-    image: "/reporting.png",
+    image: "/customer_feedback.png",
     highlights: [
       "CSAT-driven tuning",
       "Sentiment analysis",
@@ -59,7 +59,7 @@ const showcaseTabs = [
     shortDesc: "AI that never stops improving.",
     description:
       "Conversations, customer ratings, and agent corrections all feed into a single loop. The system compounds what it learns — so your support quality keeps climbing week after week, without extra effort.",
-    image: "/data_sources.png",
+    image: "/always_improve.png",
     highlights: [
       "Compounding intelligence",
       "Adaptive responses",
