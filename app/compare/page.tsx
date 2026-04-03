@@ -20,42 +20,67 @@ const CONTENT_WIDTH = 'w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto';
 
 export default function ComparePage() {
   return (
-    <main className="bg-background relative w-full">
-      <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+    <main className="bg-background relative w-full overflow-x-hidden">
+      {/* Subtle dot grid background */}
+      <div className="absolute inset-0 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none" />
+
+      {/* Floating gradient orbs */}
+      <div className="absolute top-20 -left-32 w-[500px] h-[500px] rounded-full bg-primary/[0.06] blur-[100px] pointer-events-none" />
+      <div className="absolute top-60 -right-40 w-[600px] h-[600px] rounded-full bg-chart-2/[0.05] blur-[120px] pointer-events-none" />
+      <div className="absolute top-[600px] left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-primary/[0.04] blur-[80px] pointer-events-none" />
+
       <div className="relative z-10">
         <Navbar />
         <div className={CONTENT_WIDTH}>
-          <section className="relative pt-32 pb-20 px-4">
+          <section className="relative pt-32 pb-24 px-4">
             {/* Hero text */}
-            <div className="max-w-3xl mx-auto text-center mb-12 space-y-5">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide uppercase border border-primary/20">
+            <div className="max-w-3xl mx-auto text-center mb-14 space-y-6">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-primary/10 via-primary/5 to-chart-2/10 text-primary text-xs font-bold tracking-[0.08em] uppercase border border-primary/15 shadow-[0_0_20px_rgba(79,70,229,0.08)]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                </span>
                 AI-Powered Comparison
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-tight">
-                VerlyAI vs Your Current Tool
+              </div>
+
+              {/* Title with gradient */}
+              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1]">
+                <span className="text-foreground">VerlyAI vs </span>
+                <span className="bg-gradient-to-r from-primary via-chart-2 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
+                  Your Current Tool
+                </span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+
+              <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
                 Get a personalized, data-driven comparison report for your business in under 60 seconds.
               </p>
-              <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground pt-1">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  10 dimensions scored
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  54+ feature comparisons
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Personalized insights
-                </span>
+
+              {/* Feature pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                {[
+                  { label: '10 dimensions scored', icon: '◆' },
+                  { label: '54+ feature comparisons', icon: '◆' },
+                  { label: 'Personalized insights', icon: '◆' },
+                ].map((item) => (
+                  <span
+                    key={item.label}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 border border-border/50 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm hover:border-primary/20 hover:text-foreground transition-all duration-300"
+                  >
+                    <span className="text-primary text-[8px]">{item.icon}</span>
+                    {item.label}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Form card */}
-            <div className="max-w-3xl mx-auto rounded-[2rem] border border-border/40 bg-card/50 backdrop-blur-xl p-6 md:p-10 shadow-xl">
-              <CompareForm />
+            {/* Form card with gradient border effect */}
+            <div className="max-w-3xl mx-auto relative group">
+              {/* Glow behind card */}
+              <div className="absolute -inset-[1px] rounded-[2rem] bg-gradient-to-b from-primary/20 via-transparent to-chart-2/10 opacity-60 group-hover:opacity-80 transition-opacity duration-500 blur-sm" />
+              <div className="relative rounded-[2rem] border border-border/30 bg-card/80 backdrop-blur-xl p-6 md:p-10 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
+                <CompareForm />
+              </div>
             </div>
           </section>
           <Footer />
