@@ -1,17 +1,16 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import {
   Bot,
   BrainCircuit,
   Headphones,
   LockKeyhole,
-  Mail,
   MessageSquareMore,
   PhoneCall,
   Sparkles,
 } from "lucide-react";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+import FAQAskAIBanner from "@/components/landing/faq-ask-ai-banner";
 import {
   Accordion,
   AccordionContent,
@@ -255,20 +254,21 @@ const FaqPage = () => {
         <Navbar />
 
         <main className="faq-shell">
-          <section className="faq-hero">
+          <section className="faq-hero faq-hero--centered">
             <div className="faq-hero__badge">
               <Sparkles className="h-4 w-4" />
               <span>Verly FAQ</span>
             </div>
 
-            <div className="faq-hero__copy">
-              <h1 className="crisp-title-lg faq-hero__title">
-              Frequently asked questions.
+            <div className="faq-hero__copy faq-hero__copy--centered">
+              <h1 className="faq-hero__title faq-hero__title--centered">
+                Everything you need to know
+                <span className="faq-hero__title-accent"> before you launch.</span>
               </h1>
-              <p className="crisp-subtitle faq-hero__subtitle">
-                Explore the questions teams ask before launching AI support
-                across chat, voice, and automation. Everything is grouped by
-                implementation stage so you can find the right answer fast.
+              <p className="faq-hero__subtitle faq-hero__subtitle--centered">
+                Answers to the questions teams ask before deploying AI support
+                across chat, voice, and WhatsApp — grouped by topic so you can
+                find what matters fast.
               </p>
             </div>
 
@@ -373,34 +373,8 @@ const FaqPage = () => {
             })}
           </section>
 
-          <section className="faq-support-card">
-            <div className="faq-support-card__copy">
-              <div className="faq-support-card__eyebrow">
-                Need a more specific answer?
-              </div>
-              <h2 className="faq-support-card__title">
-                Talk through your use case with the Verly team.
-              </h2>
-              <p className="faq-support-card__description">
-                If your question depends on data sources, deployment
-                constraints, or channel strategy, we can help you map the
-                cleanest setup.
-              </p>
-            </div>
+          <FAQAskAIBanner />
 
-            <div className="faq-support-card__actions">
-              <a
-                href="mailto:support@verlyai.xyz"
-                className="faq-support-card__primary"
-              >
-                <Mail className="h-4 w-4" />
-                <span>Contact support</span>
-              </a>
-              <Link href="/help" className="faq-support-card__secondary">
-                Visit help center
-              </Link>
-            </div>
-          </section>
         </main>
 
         <Footer />
