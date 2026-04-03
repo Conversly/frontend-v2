@@ -13,10 +13,12 @@ const exploreLinks = [
   { name: "Features", href: "/features" },
   { name: "Pricing", href: "/pricing" },
   { name: "Solutions", href: "/solutions" },
+  { name: "Lead Agent", href: "/lead-agent" },
 ];
 
 const companyLinks = [
   { name: "About", href: "/about" },
+  { name: "Enterprise", href: "/solutions/enterprise" },
   { name: "Help", href: "/help" },
 ];
 

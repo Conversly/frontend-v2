@@ -97,6 +97,38 @@ export default function SolutionsPage() {
               </p>
             </div>
           </div>
+
+          <div className="mt-6 rounded-[28px] border border-[#dbe5ff] bg-[linear-gradient(135deg,#ffffff_0%,#f3f7ff_42%,#fff9ef_100%)] p-6 shadow-[0_18px_42px_rgba(49,94,234,0.08)] md:p-7">
+            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <div>
+                <div className="inline-flex rounded-full border border-[#dce6ff] bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#315EEA]">
+                  Enterprise Solution
+                </div>
+                <h2 className="mt-4 font-[Georgia,Times,'Times_New_Roman',serif] text-[30px] leading-[1.04] tracking-[-0.04em] text-[#221f1b] md:text-[42px]">
+                  Security, deployment, and custom workflow support for larger teams
+                </h2>
+                <p className="mt-4 max-w-[560px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+                  Enterprise now lives inside Solutions so buyers can evaluate Verly in one place:
+                  industry workflows, use-case fit, and enterprise rollout requirements together.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  "Dedicated rollout support, enterprise agreements, and custom routing control",
+                  "Security-sensitive deployment paths including stricter data-handling options",
+                  "Custom integrations and workflow design for complex support operations",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-[18px] border border-[#dde6f4] bg-white/92 px-4 py-3 text-[14px] leading-6 text-[#4a5568]"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
