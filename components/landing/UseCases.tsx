@@ -22,7 +22,7 @@ const useCases = [
     statLabel: "ticket reduction",
     accent: "#3f63d8",
     accentBg: "#dde7ff",
-    link: "/solutions",
+    link: "/solutions/saas-platforms",
   },
   {
     icon: ShoppingCart,
@@ -34,7 +34,7 @@ const useCases = [
     statLabel: "availability",
     accent: "#2e9d63",
     accentBg: "#d8f5e3",
-    link: "/solutions",
+    link: "/solutions/e-commerce-retail",
   },
   {
     icon: HeartPulse,
@@ -46,7 +46,7 @@ const useCases = [
     statLabel: "fewer no-shows",
     accent: "#d44a5c",
     accentBg: "#ffe0e6",
-    link: "/solutions",
+    link: "/solutions/healthcare",
   },
   {
     icon: Home,
@@ -58,7 +58,7 @@ const useCases = [
     statLabel: "faster response",
     accent: "#c57f1e",
     accentBg: "#fff3d6",
-    link: "/solutions",
+    link: "/solutions/real-estate",
   },
   {
     icon: GraduationCap,
@@ -70,7 +70,7 @@ const useCases = [
     statLabel: "satisfaction",
     accent: "#7c3aed",
     accentBg: "#ede4ff",
-    link: "/solutions",
+    link: "/solutions/education",
   },
   {
     icon: Plane,
@@ -82,7 +82,7 @@ const useCases = [
     statLabel: "languages",
     accent: "#0e7490",
     accentBg: "#d5f5ff",
-    link: "/solutions",
+    link: "/solutions/travel-tourism",
   },
 ];
 

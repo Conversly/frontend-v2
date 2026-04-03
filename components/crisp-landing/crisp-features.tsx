@@ -8,63 +8,63 @@ const ROTATION_INTERVAL = 6000;
 
 const showcaseTabs = [
   {
-    id: "helpdesk",
-    title: "Unified Helpdesk",
-    eyebrow: "Shared inbox & ticket ops",
-    shortDesc: "Every channel, one workspace.",
+    id: "conversations",
+    title: "Every Conversation",
+    eyebrow: "Learning from real interactions",
+    shortDesc: "Each chat makes the system smarter.",
     description:
-      "Route emails, chats, and social messages into a single queue. Assign, prioritize, and resolve without switching tabs — your team stays focused and customers get faster answers.",
-    image: "/helpdesk-showcase-reference.png",
+      "Every customer conversation is a training signal. The system captures what was asked, how it was resolved, and what language worked — building a deeper understanding of your customers with every interaction.",
+    image: "/escalation-analytics.png",
     highlights: [
-      "Omnichannel inbox",
-      "Smart assignments",
-      "Internal notes & mentions",
-      "SLA tracking",
+      "Real-time learning",
+      "Pattern recognition",
+      "Context retention",
+      "Resolution tracking",
     ],
   },
   {
-    id: "ai-agent",
-    title: "Built-in AI Agent",
-    eyebrow: "Automation that actually ships",
-    shortDesc: "AI that works alongside your team.",
+    id: "user-feedback",
+    title: "Customer Feedback",
+    eyebrow: "Powered by real ratings",
+    shortDesc: "Customers shape the responses they get.",
     description:
-      "Deploy AI agents that draft replies, triage tickets, and handle repetitive questions — all inside your existing workflow. No separate tool, no extra setup.",
-    image: "/create_chatbot.png",
-    highlights: [
-      "Auto-draft replies",
-      "Intelligent triage",
-      "Instant deployment",
-      "Seamless handoff",
-    ],
-  },
-  {
-    id: "insights",
-    title: "Live Insights",
-    eyebrow: "Analytics that surface what matters",
-    shortDesc: "Spot trends before they become problems.",
-    description:
-      "Track resolution times, identify friction points, and monitor team performance with real-time dashboards. Stop guessing — let data drive your support strategy.",
+      "Thumbs up, thumbs down, CSAT scores — every piece of customer feedback tells the system what's working and what isn't. Responses that delight get reinforced; ones that miss the mark get refined automatically.",
     image: "/reporting.png",
     highlights: [
-      "Real-time dashboards",
-      "CSAT & NPS tracking",
-      "Conversation analytics",
-      "Custom reports",
+      "CSAT-driven tuning",
+      "Sentiment analysis",
+      "Quality scoring",
+      "Auto-refinement",
+    ],
+  },
+  {
+    id: "agent-feedback",
+    title: "Agent Corrections",
+    eyebrow: "Your team trains the AI",
+    shortDesc: "Agents teach, the system remembers.",
+    description:
+      "When an agent edits a draft, overrides a suggestion, or adds missing context — the system learns from it. Your team's expertise feeds directly into smarter, more accurate responses over time.",
+    image: "/improve-the-ans.png",
+    highlights: [
+      "Draft corrections",
+      "Override learning",
+      "Expertise capture",
+      "Accuracy improvement",
     ],
   },
   {
     id: "self-improving",
-    title: "Knowledge Engine",
-    eyebrow: "Gets smarter with every conversation",
-    shortDesc: "Your best answers, always improving.",
+    title: "Continuous Evolution",
+    eyebrow: "Gets better every single day",
+    shortDesc: "AI that never stops improving.",
     description:
-      "Feed it your docs, product updates, and resolved tickets. The system learns from every interaction so responses get more accurate and on-brand over time.",
+      "Conversations, customer ratings, and agent corrections all feed into a single loop. The system compounds what it learns — so your support quality keeps climbing week after week, without extra effort.",
     image: "/data_sources.png",
     highlights: [
-      "Auto-sync knowledge base",
-      "Doc ingestion",
-      "Continuous learning",
-      "Brand-safe replies",
+      "Compounding intelligence",
+      "Adaptive responses",
+      "Zero manual training",
+      "Always improving",
     ],
   },
 ] as const;
@@ -114,15 +114,15 @@ export default function CrispFeatures() {
         {/* Header */}
         <div className="mx-auto max-w-[780px] text-center">
           <div className="mb-5 inline-flex rounded-full border border-[#d9d2c5] bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a7468]">
-            Support Platform
+            Self-Learning AI
           </div>
           <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[36px] leading-[1.05] tracking-[-0.04em] text-[#221f1b] md:text-[56px]">
-            Everything your team needs,
-            <span className="block text-[#8a7d6b]">ready on day one.</span>
+            A system that learns
+            <span className="block text-[#8a7d6b]">and never stops improving.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-[560px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
-            Four connected layers — helpdesk, AI, analytics, and knowledge — working together so
-            nothing falls through the cracks.
+            Every conversation, customer rating, and agent correction feeds back into the system —
+            so your support gets smarter every single day.
           </p>
         </div>
 
