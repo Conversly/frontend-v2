@@ -1,36 +1,23 @@
 'use client';
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   AudioWaveform,
   Bot,
   BrainCircuit,
+  Eye,
+  Headphones,
   MessageSquare,
   PhoneCall,
+  Shield,
   ShieldCheck,
   Sparkles,
+  Unplug,
   Workflow,
+  Zap,
 } from "lucide-react";
 
-const journeyIcons = {
-  "sparkles": Sparkles,
-  "bot": Bot,
-  "message-square": MessageSquare,
-  "audio-waveform": AudioWaveform,
-} as const;
-
-const pillarIcons = {
-  "brain-circuit": BrainCircuit,
-  "shield-check": ShieldCheck,
-  "workflow": Workflow,
-} as const;
-
-const featureIcons = {
-  "message-square": MessageSquare,
-  "phone-call": PhoneCall,
-  "bot": Bot,
-} as const;
+/* ─────────────────────────── Reveal wrapper ─────────────────────────── */
 
 interface AboutSectionRevealProps {
   children: React.ReactNode;
@@ -53,22 +40,106 @@ export function AboutSectionReveal({
   );
 }
 
+/* ─────────────────────────── Metric cards ─────────────────────────── */
+
+const metricIconMap = {
+  channels: Unplug,
+  handoff: Headphones,
+  setup: Zap,
+  teams: ShieldCheck,
+} as const;
+
+const metricCardTheme = {
+  channels: {
+    accent: "from-[#eff6ff] via-[#f8fbff] to-white",
+    border: "border-[#d9e7ff]",
+    iconWrap: "bg-[#e7f0ff] text-[#2864dc]",
+    chip: "Omnichannel live",
+    chipTone: "bg-[#eff5ff] text-[#3d68d0]",
+    footLabel: "Coverage",
+  },
+  handoff: {
+    accent: "from-[#f4f1ff] via-[#faf8ff] to-white",
+    border: "border-[#e4dbff]",
+    iconWrap: "bg-[#efe8ff] text-[#6f4ed6]",
+    chip: "Escalation built in",
+    chipTone: "bg-[#f2edff] text-[#7255d9]",
+    footLabel: "Handoff",
+  },
+  setup: {
+    accent: "from-[#eefbf6] via-[#f8fdfb] to-white",
+    border: "border-[#d6efe3]",
+    iconWrap: "bg-[#e4f7ee] text-[#1f8b61]",
+    chip: "Go live quickly",
+    chipTone: "bg-[#ecfaf3] text-[#277f5d]",
+    footLabel: "Launch speed",
+  },
+  teams: {
+    accent: "from-[#fff5eb] via-[#fffaf4] to-white",
+    border: "border-[#f0dfca]",
+    iconWrap: "bg-[#fff0dd] text-[#c46a28]",
+    chip: "Operator-first",
+    chipTone: "bg-[#fff4e8] text-[#b6682c]",
+    footLabel: "Audience",
+  },
+} as const;
+
 export function AboutMetricCard({
   value,
   label,
+  icon,
+  delay = 0,
 }: {
   value: string;
   label: string;
+  icon: keyof typeof metricIconMap;
+  delay?: number;
 }) {
+  const Icon = metricIconMap[icon];
+  const theme = metricCardTheme[icon];
+
   return (
-    <AboutSectionReveal>
-      <div className="rounded-[1.5rem] border border-border/60 bg-background/75 p-5 shadow-sm backdrop-blur">
-        <div className="text-2xl font-semibold tracking-tight text-foreground">{value}</div>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">{label}</p>
-      </div>
+    <AboutSectionReveal delay={delay}>
+      <motion.div
+        whileHover={{ y: -6 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[30px] border bg-gradient-to-br px-6 py-6 text-left shadow-[0_16px_44px_rgba(59,43,22,0.05)] transition-all duration-300 hover:shadow-[0_28px_60px_rgba(59,43,22,0.10)] ${theme.accent} ${theme.border}`}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.85),transparent_34%)]" />
+        <div className="pointer-events-none absolute -bottom-14 right-0 h-28 w-28 rounded-full bg-white/70 blur-3xl transition-transform duration-500 group-hover:scale-125" />
+
+        <div className="relative flex items-start justify-between gap-4">
+          <span
+            className={`inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${theme.chipTone}`}
+          >
+            {theme.chip}
+          </span>
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[1.1rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-transform duration-300 group-hover:scale-105 ${theme.iconWrap}`}
+          >
+            <Icon className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="relative mt-10">
+          <div className="font-[Georgia,serif] text-[2.4rem] leading-none tracking-[-0.05em] text-[#221f1b]">
+            {value}
+          </div>
+          <p className="mt-3 max-w-[18rem] text-[0.97rem] leading-6 text-[#5f5a52]">{label}</p>
+        </div>
+
+        <div className="relative mt-8 flex items-center justify-between border-t border-black/5 pt-4">
+          <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#857d72]">
+            {theme.footLabel}
+          </span>
+          <span className="text-[0.8rem] font-medium text-[#2f2a25]">Built into the core</span>
+        </div>
+      </motion.div>
     </AboutSectionReveal>
   );
 }
+
+/* ─────────────────────────── Hero Panel ─────────────────────────── */
 
 export function AboutHeroPanel() {
   const channels = [
@@ -93,55 +164,68 @@ export function AboutHeroPanel() {
   ];
 
   return (
-    <AboutSectionReveal delay={0.1}>
-      <div className="relative rounded-[2rem] border border-border/60 bg-card/80 p-6 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.45)] backdrop-blur md:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.14),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.12),transparent_34%)]" />
+    <AboutSectionReveal delay={0.15}>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-[#e4ddd4] bg-white p-6 shadow-[0_24px_64px_rgba(59,43,22,0.06)] md:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(62,128,241,0.06),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.04),transparent_36%)]" />
 
-        <div className="relative space-y-5">
-          <div className="flex items-center justify-between rounded-[1.5rem] border border-border/60 bg-background/80 px-5 py-4">
+        <div className="relative space-y-4">
+          <div className="flex items-center justify-between rounded-[1.6rem] border border-[#e4ddd4] bg-[#faf8f6] px-6 py-4">
             <div>
-              <p className="text-sm text-muted-foreground">Unified support control room</p>
-              <h3 className="text-lg font-semibold">VerlyAI Operator View</h3>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a9189]">
+                Unified support control
+              </p>
+              <h3 className="mt-0.5 text-[1.15rem] font-semibold text-[#1e1c19]">
+                Verly Operator View
+              </h3>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/50 px-4 py-1.5 text-[11px] font-bold text-emerald-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Live
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-3">
             {channels.map((channel, index) => (
               <motion.div
                 key={channel.title}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: 0.12 + index * 0.08 }}
-                className="rounded-[1.4rem] border border-border/60 bg-background/80 p-5"
+                transition={{ duration: 0.4, delay: 0.12 + index * 0.08 }}
+                className="rounded-[1.4rem] border border-[#e4ddd4] bg-[#faf8f6] p-5"
               >
                 <div
-                  className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl ${channel.tone}`}
+                  className={`mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl shadow-sm ${channel.tone}`}
                 >
                   <channel.icon className="h-5 w-5" />
                 </div>
-                <h4 className="font-semibold text-foreground">{channel.title}</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{channel.subtitle}</p>
+                <h4 className="text-[1rem] font-semibold text-[#1e1c19]">
+                  {channel.title}
+                </h4>
+                <p className="mt-1.5 text-[0.85rem] leading-5 text-[#6d665d]">
+                  {channel.subtitle}
+                </p>
               </motion.div>
             ))}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[1.5rem] border border-border/60 bg-background/85 p-5">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                  <BrainCircuit className="h-5 w-5" />
+          {/* Knowledge + outcomes row */}
+          <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-[1.4rem] border border-[#e4e8f3] bg-[#f8f9fd] p-4">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#eff3fe] text-[#4b6fe2]">
+                  <BrainCircuit className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Knowledge and behavior</p>
-                  <p className="text-xs text-muted-foreground">One operating model across channels</p>
+                  <p className="text-[0.82rem] font-medium text-[#31384f]">
+                    Knowledge & behavior
+                  </p>
+                  <p className="text-[0.72rem] text-[#8b93ab]">
+                    One operating model across channels
+                  </p>
                 </div>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   "Shared knowledge sources",
                   "Prompt and behavior controls",
@@ -149,7 +233,7 @@ export function AboutHeroPanel() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-border/60 bg-muted/40 px-4 py-3 text-sm text-foreground"
+                    className="rounded-xl border border-[#e8ebf4] bg-white px-3.5 py-2.5 text-[0.82rem] text-[#505a75]"
                   >
                     {item}
                   </div>
@@ -157,29 +241,29 @@ export function AboutHeroPanel() {
               </div>
             </div>
 
-            <div className="rounded-[1.5rem] border border-border/60 bg-slate-950 p-5 text-slate-50">
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
-                  <AudioWaveform className="h-5 w-5" />
+            <div className="rounded-[1.4rem] border border-[#1e2538] bg-[#0f1424] p-4 text-white">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
+                  <AudioWaveform className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Operator outcomes</p>
-                  <p className="text-xs text-slate-300">Built for measurable support improvement</p>
+                  <p className="text-[0.82rem] font-medium">Operator outcomes</p>
+                  <p className="text-[0.72rem] text-white/50">
+                    Measurable support improvement
+                  </p>
                 </div>
               </div>
-              <div className="space-y-4">
-                <div>
-                  <div className="text-3xl font-semibold">Faster</div>
-                  <p className="mt-1 text-sm text-slate-300">First responses and resolution paths.</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-semibold">Clearer</div>
-                  <p className="mt-1 text-sm text-slate-300">Shared prompts, topics, and analytics.</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-semibold">Safer</div>
-                  <p className="mt-1 text-sm text-slate-300">More control than a generic chatbot widget.</p>
-                </div>
+              <div className="space-y-3">
+                {[
+                  { v: "Faster", d: "First responses and resolution." },
+                  { v: "Clearer", d: "Shared prompts, topics, analytics." },
+                  { v: "Safer", d: "More control than a chatbot widget." },
+                ].map((o) => (
+                  <div key={o.v}>
+                    <div className="text-[1.35rem] font-semibold">{o.v}</div>
+                    <p className="mt-0.5 text-[0.78rem] text-white/50">{o.d}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -188,6 +272,136 @@ export function AboutHeroPanel() {
     </AboutSectionReveal>
   );
 }
+
+/* ──────────────── Fragmented Stack Visual (Problem section) ──────────────── */
+
+const stackItems = [
+  { label: "Chat widget", color: "from-[#4f9fc2] to-[#3b85ae]", icon: MessageSquare },
+  { label: "WhatsApp tool", color: "from-[#42b97a] to-[#2e9d63]", icon: Bot },
+  { label: "Phone system", color: "from-[#8b5cf6] to-[#7c3aed]", icon: PhoneCall },
+  { label: "Human queue", color: "from-[#f59e0b] to-[#d97706]", icon: Headphones },
+  { label: "Reporting", color: "from-[#ef4444] to-[#dc2626]", icon: AudioWaveform },
+];
+
+export function FragmentedStackVisual() {
+  return (
+    <AboutSectionReveal delay={0.1}>
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e4ddd4] bg-[#faf8f6] p-6 shadow-[0_14px_40px_rgba(140,100,70,0.06)] md:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),transparent_55%)]" />
+
+        <div className="relative">
+          <div className="mb-5 text-center">
+            <span className="inline-flex rounded-full border border-[#e4ddd4] bg-white/80 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7e64]">
+              The fragmented stack
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {stackItems.map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.08 + index * 0.07 }}
+                className={`flex items-center gap-3 rounded-2xl bg-gradient-to-r ${item.color} px-4 py-3.5 text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)]`}
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <item.icon className="h-4 w-4" />
+                </div>
+                <span className="text-[0.92rem] font-semibold tracking-[-0.01em]">
+                  {item.label}
+                </span>
+                <span className="ml-auto text-[0.72rem] font-medium text-white/60">
+                  Disconnected
+                </span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-5 flex items-center justify-center gap-2 text-center">
+            <Unplug className="h-4 w-4 text-[#b5937a]" />
+            <span className="text-[0.82rem] font-medium text-[#9a7e64]">
+              Five tools. No shared context. No unified view.
+            </span>
+          </div>
+        </div>
+      </div>
+    </AboutSectionReveal>
+  );
+}
+
+/* ──────────────── Unified System Visual (Why Verly Exists) ──────────────── */
+
+export function UnifiedSystemVisual() {
+  return (
+    <AboutSectionReveal delay={0.1}>
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#d9e7dd] bg-[#f4fbf5] p-6 shadow-[0_14px_40px_rgba(60,130,80,0.06)] md:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),transparent_55%)]" />
+
+        <div className="relative">
+          <div className="mb-6 text-center">
+            <span className="inline-flex rounded-full border border-[#c8dece] bg-white/80 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4c8a3e]">
+              The Verly approach
+            </span>
+          </div>
+
+          {/* Center hub */}
+          <div className="mx-auto mb-5 flex max-w-[320px] flex-col items-center rounded-2xl border border-[#c8dece] bg-white p-5 shadow-[0_12px_28px_rgba(60,130,80,0.08)]">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e7f4e8] text-[#4c8a3e] shadow-sm">
+              <BrainCircuit className="h-6 w-6" />
+            </div>
+            <div className="text-center">
+              <div className="text-[1.05rem] font-semibold text-[#1e2538]">
+                One knowledge core
+              </div>
+              <p className="mt-1 text-[0.78rem] text-[#6d768d]">
+                Shared context, routing, and escalation logic
+              </p>
+            </div>
+          </div>
+
+          {/* Channels radiating out */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "Web Chat", icon: MessageSquare, color: "text-sky-600 bg-sky-50 border-sky-100" },
+              { label: "Voice", icon: PhoneCall, color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
+              { label: "WhatsApp", icon: Bot, color: "text-orange-600 bg-orange-50 border-orange-100" },
+            ].map((ch) => (
+              <motion.div
+                key={ch.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className={`flex flex-col items-center gap-2 rounded-2xl border p-4 shadow-sm ${ch.color}`}
+              >
+                <ch.icon className="h-5 w-5" />
+                <span className="text-[0.82rem] font-semibold">{ch.label}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-5 flex items-center justify-center gap-2 text-center">
+            <Sparkles className="h-4 w-4 text-[#4c8a3e]" />
+            <span className="text-[0.82rem] font-medium text-[#4c8a3e]">
+              One brain. Three channels. Full context everywhere.
+            </span>
+          </div>
+        </div>
+      </div>
+    </AboutSectionReveal>
+  );
+}
+
+/* ─────────────────────────── Pillars ─────────────────────────── */
+
+const pillarIcons = {
+  "brain-circuit": BrainCircuit,
+  "shield-check": ShieldCheck,
+  "workflow": Workflow,
+  "eye": Eye,
+} as const;
 
 interface PillarItem {
   icon: keyof typeof pillarIcons;
@@ -197,23 +411,54 @@ interface PillarItem {
 
 export function AboutPillars({ items }: { items: PillarItem[] }) {
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-4 md:grid-cols-2">
       {items.map((item, index) => {
         const Icon = pillarIcons[item.icon];
 
         return (
-          <AboutSectionReveal key={item.title} delay={index * 0.08}>
-            <div className="rounded-[1.75rem] border border-border/60 bg-card/70 p-6 shadow-sm backdrop-blur">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                  <Icon className="h-5 w-5" />
+          <AboutSectionReveal key={item.title} delay={index * 0.07}>
+            <motion.div
+              whileHover={{ y: -6 }}
+              transition={{ duration: 0.3 }}
+              className="group relative flex h-full flex-col overflow-hidden rounded-[30px] border border-[#dde5f4] bg-[linear-gradient(180deg,#ffffff_0%,#f7faff_100%)] p-7 shadow-[0_16px_40px_rgba(59,43,22,0.05)] transition-all duration-300 hover:border-[#c9d7f1] hover:shadow-[0_28px_58px_rgba(59,43,22,0.10)]"
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(76,124,233,0.10),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(30,144,255,0.07),transparent_30%)] opacity-70" />
+
+              <div className="relative flex items-start justify-between gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem] bg-[linear-gradient(180deg,#edf3ff_0%,#e7f0ff_100%)] text-[#3e6fe8] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_12px_24px_rgba(62,111,232,0.10)] transition-transform duration-300 group-hover:scale-105">
+                  <Icon className="h-6 w-6" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold tracking-tight">{item.title}</h3>
-                  <p className="mt-3 leading-7 text-muted-foreground">{item.description}</p>
+
+                <div className="text-right">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8090ae]">
+                    Core principle
+                  </p>
+                  <p className="mt-2 font-[Georgia,serif] text-[1.9rem] leading-none tracking-[-0.05em] text-[#c7d2eb]">
+                    0{index + 1}
+                  </p>
                 </div>
               </div>
-            </div>
+
+              <div className="relative mt-8">
+                <div className="inline-flex rounded-full border border-[#d9e4fb] bg-white/80 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#6f82a9]">
+                  Verly foundation
+                </div>
+                <h3 className="mt-4 text-[1.35rem] font-semibold tracking-[-0.03em] text-[#141824]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 max-w-[32rem] text-[0.97rem] leading-7 text-[#5a6277]">
+                  {item.description}
+                </p>
+              </div>
+
+              <div className="relative mt-8 flex items-center justify-between border-t border-[#e4ebf7] pt-4 text-[0.8rem] text-[#6f7890]">
+                <span className="inline-flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-[#8196c9]" />
+                  System-level behavior
+                </span>
+                <span>Designed to scale</span>
+              </div>
+            </motion.div>
           </AboutSectionReveal>
         );
       })}
@@ -221,37 +466,57 @@ export function AboutPillars({ items }: { items: PillarItem[] }) {
   );
 }
 
-interface JourneyItem {
-  step: string;
-  title: string;
-  description: string;
-  icon: keyof typeof journeyIcons;
-}
+/* ─────────────────────────── Founder Note ─────────────────────────── */
 
-export function AboutJourneyCard({
-  item,
-  index,
-}: {
-  item: JourneyItem;
-  index: number;
-}) {
-  const Icon = journeyIcons[item.icon];
-
+export function FounderNote() {
   return (
-    <AboutSectionReveal delay={index * 0.08}>
-      <div className="group h-full rounded-[1.75rem] border border-border/60 bg-card/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5">
-        <div className="mb-6 flex items-center justify-between">
-          <span className="text-sm font-medium text-primary">{item.step}</span>
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Icon className="h-5 w-5" />
+    <AboutSectionReveal delay={0.1}>
+      <div className="mx-auto max-w-[760px] rounded-[2.5rem] border border-[#e4ddd4] bg-white px-10 py-12 shadow-[0_16px_48px_rgba(59,43,22,0.05)] md:px-14">
+        <div className="mb-8 flex items-center gap-5">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1e1c19] text-white shadow-lg">
+            <span className="font-[Georgia,serif] text-[1.4rem] font-bold">V</span>
+          </div>
+          <div>
+            <div className="text-[1.1rem] font-semibold text-[#1e1c19]">
+              From the Verly team
+            </div>
+            <p className="text-[0.88rem] text-[#8a8279]">
+              Building alongside early customers
+            </p>
           </div>
         </div>
-        <h3 className="text-xl font-semibold tracking-tight">{item.title}</h3>
-        <p className="mt-3 leading-7 text-muted-foreground">{item.description}</p>
+
+        <blockquote className="space-y-6 font-[Georgia,serif] text-[1.1rem] leading-[1.75] text-[#3d3832] sm:text-[1.25rem]">
+          <p>
+            &ldquo;We started Verly because we kept seeing the same problem:
+            support teams forced to stitch together five tools just to handle a
+            customer across chat, WhatsApp, and phone. Context leaks at every
+            handoff, and the team spends more time managing tools than actually
+            helping people.&rdquo;
+          </p>
+          <p>
+            &ldquo;We&rsquo;re building Verly as one operating layer—shared knowledge,
+            shared routing, shared escalation—so teams can focus on what matters:
+            faster, better resolution.&rdquo;
+          </p>
+        </blockquote>
+
+        <div className="mt-8 flex items-center gap-2 text-[0.85rem] text-[#9a9189]">
+          <Sparkles className="h-4 w-4 text-[#c57f1e]" />
+          <span>Working closely with every early customer</span>
+        </div>
       </div>
     </AboutSectionReveal>
   );
 }
+
+/* ─────────────────────────── Feature Card (kept for reuse) ─────────────────────────── */
+
+const featureIcons = {
+  "message-square": MessageSquare,
+  "phone-call": PhoneCall,
+  "bot": Bot,
+} as const;
 
 interface AboutFeatureCardProps {
   title: string;
@@ -284,38 +549,6 @@ export function AboutFeatureCard({
         <p className="mt-4 flex-1 text-[1rem] leading-8 text-[#64708a] transition-colors duration-300">
           {description}
         </p>
-      </motion.div>
-    </AboutSectionReveal>
-  );
-}
-
-export function AboutImageCard({
-  src,
-  alt,
-  width,
-  height,
-  delay = 0,
-}: {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  delay?: number;
-}) {
-  return (
-    <AboutSectionReveal delay={delay}>
-      <motion.div
-        whileHover={{ y: -4 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
-        className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-[0_16px_48px_rgba(8,15,34,0.08)] transition-shadow duration-300 hover:shadow-[0_22px_56px_rgba(8,15,34,0.12)]"
-      >
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className="h-full w-full rounded-[1.5rem] object-cover transition-transform duration-500 hover:scale-[1.02]"
-        />
       </motion.div>
     </AboutSectionReveal>
   );

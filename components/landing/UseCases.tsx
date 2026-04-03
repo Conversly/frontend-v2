@@ -8,123 +8,176 @@ import {
   Home,
   GraduationCap,
   Plane,
-  ArrowRight
+  ArrowUpRight,
 } from "lucide-react";
 
 const useCases = [
   {
     icon: Building2,
-    title: "B2B SaaS Customer Support",
-    description: "AI agents handle technical onboarding, feature explanations, and troubleshooting for software companies. Reduce support ticket volume by 80% while providing instant answers to complex product questions.",
-    stats: "80% ticket reduction",
-    color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-    link: "/solutions?filter=support"
+    title: "B2B SaaS",
+    subtitle: "Customer Support",
+    description:
+      "AI agents handle technical onboarding, feature explanations, and troubleshooting. Reduce ticket volume by 80% with instant, context-aware answers.",
+    stat: "80%",
+    statLabel: "ticket reduction",
+    accent: "#3f63d8",
+    accentBg: "#dde7ff",
+    link: "/solutions?filter=support",
   },
   {
     icon: ShoppingCart,
-    title: "E-commerce Order Management",
-    description: "Automate order tracking, returns, and product recommendations across web chat and WhatsApp. Handle peak season traffic without hiring temporary staff while maintaining personalized customer experiences.",
-    stats: "24/7 availability",
-    color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-    link: "/solutions?industry=retail"
+    title: "E-commerce",
+    subtitle: "Order Management",
+    description:
+      "Automate order tracking, returns, and recommendations across web chat and WhatsApp. Handle peak traffic without seasonal hiring.",
+    stat: "24/7",
+    statLabel: "availability",
+    accent: "#2e9d63",
+    accentBg: "#d8f5e3",
+    link: "/solutions?industry=retail",
   },
   {
     icon: HeartPulse,
-    title: "Healthcare Appointment Scheduling",
-    description: "Voice AI agents handle appointment bookings, reminders, and follow-ups. Reduce no-shows by 40% with automated reminders while freeing staff to focus on patient care instead of administrative tasks.",
-    stats: "40% fewer no-shows",
-    color: "bg-rose-500/10 text-rose-600 border-rose-500/20",
-    link: "/solutions?industry=healthcare"
+    title: "Healthcare",
+    subtitle: "Appointment Scheduling",
+    description:
+      "Voice AI agents handle bookings, reminders, and follow-ups. Free staff to focus on patient care instead of admin tasks.",
+    stat: "40%",
+    statLabel: "fewer no-shows",
+    accent: "#d44a5c",
+    accentBg: "#ffe0e6",
+    link: "/solutions?industry=healthcare",
   },
   {
     icon: Home,
-    title: "Real Estate Lead Qualification",
-    description: "Qualify prospects instantly via WhatsApp and voice calls. AI agents collect requirements, schedule property viewings, and nurture leads until they're ready to speak with an agent.",
-    stats: "3x faster response",
-    color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    link: "/solutions?filter=commerce"
+    title: "Real Estate",
+    subtitle: "Lead Qualification",
+    description:
+      "Qualify prospects instantly via WhatsApp and voice. AI collects requirements, schedules viewings, and nurtures leads.",
+    stat: "3×",
+    statLabel: "faster response",
+    accent: "#c57f1e",
+    accentBg: "#fff3d6",
+    link: "/solutions?filter=commerce",
   },
   {
     icon: GraduationCap,
-    title: "Education & Course Support",
-    description: "Answer student questions about courses, assignments, and admissions 24/7. Scale educational support without increasing staff while providing personalized learning assistance.",
-    stats: "95% satisfaction rate",
-    color: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-    link: "/solutions"
+    title: "Education",
+    subtitle: "Course Support",
+    description:
+      "Answer student questions about courses, assignments, and admissions 24/7. Personalized learning assistance at scale.",
+    stat: "95%",
+    statLabel: "satisfaction",
+    accent: "#7c3aed",
+    accentBg: "#ede4ff",
+    link: "/solutions",
   },
   {
     icon: Plane,
-    title: "Travel & Hospitality Booking",
-    description: "Handle booking inquiries, itinerary changes, and travel recommendations across multiple channels. Provide instant support in 95+ languages for global travelers.",
-    stats: "Support in 95+ languages",
-    color: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
-    link: "/solutions"
-  }
+    title: "Travel",
+    subtitle: "Hospitality Booking",
+    description:
+      "Handle booking inquiries, itinerary changes, and travel recommendations. Instant support in 95+ languages.",
+    stat: "95+",
+    statLabel: "languages",
+    accent: "#0e7490",
+    accentBg: "#d5f5ff",
+    link: "/solutions",
+  },
 ];
 
 export default function UseCases() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" id="use-cases">
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]" />
-      </div>
+    <section
+      className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f4ee_0%,#f2eee8_50%,#f7f4ee_100%)] py-20 md:py-28"
+      id="use-cases"
+    >
+      {/* subtle grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.03)_1px,transparent_1px)] bg-[size:72px_72px]" />
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+      <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          transition={{ duration: 0.55 }}
+          className="mx-auto mb-14 max-w-[760px] text-center"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
-            AI Customer Support for Every Industry
+          <div className="mb-4 inline-flex rounded-full border border-[#d9d2c5] bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a7468]">
+            Industries
+          </div>
+          <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.05] tracking-[-0.04em] text-[#221f1b] md:text-[52px]">
+            Built for every team.
+            <span className="block text-[#6e6558]">Trusted across industries.</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            See how businesses across industries use VerlyAI to automate customer support, 
-            reduce costs, and scale operations. Deploy AI agents tailored to your specific use case.
+          <p className="mx-auto mt-5 max-w-[600px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+            See how teams across industries use Verly to automate support, reduce cost, and
+            scale without scaling headcount.
           </p>
         </motion.div>
 
-        {/* Use Cases Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {useCases.map((useCase, index) => (
+        {/* Grid */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {useCases.map((uc, i) => (
             <motion.a
-              key={useCase.title}
-              href={useCase.link}
-              initial={{ opacity: 0, y: 20 }}
+              key={uc.title}
+              href={uc.link}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -4 }}
-              className="group relative block p-6 rounded-2xl border bg-card hover:shadow-lg transition-all duration-300"
+              transition={{ duration: 0.45, delay: i * 0.06 }}
+              whileHover={{ y: -6 }}
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#e4ddd4] bg-white p-7 shadow-[0_14px_36px_rgba(59,43,22,0.05)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(59,43,22,0.10)]"
             >
-              {/* Icon */}
-              <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${useCase.color}`}>
-                <useCase.icon className="w-6 h-6" />
+              {/* Accent corner glow */}
+              <div
+                className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-[0.15] blur-3xl transition-opacity duration-500 group-hover:opacity-[0.28]"
+                style={{ background: uc.accent }}
+              />
+
+              <div>
+                {/* Icon */}
+                <div
+                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm"
+                  style={{ backgroundColor: uc.accentBg, color: uc.accent }}
+                >
+                  <uc.icon className="h-6 w-6" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-[1.3rem] font-semibold leading-snug tracking-[-0.02em] text-[#1e1c19]">
+                  {uc.title}
+                  <span className="block text-[0.85rem] font-medium text-[#8a8279]">
+                    {uc.subtitle}
+                  </span>
+                </h3>
+
+                {/* Description */}
+                <p className="mt-3 text-[0.88rem] leading-[1.7] text-[#6d665d]">
+                  {uc.description}
+                </p>
               </div>
 
-              {/* Title as H3 for SEO */}
-              <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                {useCase.title}
-              </h3>
+              {/* Footer row */}
+              <div className="mt-6 flex items-end justify-between">
+                {/* Stat */}
+                <div className="flex items-baseline gap-1.5">
+                  <span
+                    className="text-[1.6rem] font-bold leading-none tracking-tight"
+                    style={{ color: uc.accent }}
+                  >
+                    {uc.stat}
+                  </span>
+                  <span className="text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#9a9189]">
+                    {uc.statLabel}
+                  </span>
+                </div>
 
-              {/* Description */}
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                {useCase.description}
-              </p>
-
-              {/* Stats Badge */}
-              <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${useCase.color}`}>
-                  {useCase.stats}
-                </span>
-                <span className="flex items-center gap-1 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                  Learn more <ArrowRight className="w-4 h-4" />
-                </span>
+                {/* Arrow */}
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e4ddd4] bg-[#faf8f6] text-[#9a9189] transition-all duration-300 group-hover:border-transparent group-hover:bg-[#1e1c19] group-hover:text-white">
+                  <ArrowUpRight className="h-4 w-4" />
+                </div>
               </div>
             </motion.a>
           ))}
@@ -132,21 +185,21 @@ export default function UseCases() {
 
         {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-12 text-center"
         >
-          <p className="text-muted-foreground mb-4">
-            Looking for a custom solution? We support any industry and use case.
+          <p className="text-[0.92rem] text-[#8a8279]">
+            Don&apos;t see your industry?{" "}
+            <a
+              href="/solutions"
+              className="font-semibold text-[#315EEA] underline decoration-[#315EEA]/30 underline-offset-4 transition-colors hover:text-[#1d47c4]"
+            >
+              Explore all solutions
+            </a>
           </p>
-          <a
-            href="/solutions"
-            className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
-          >
-            Explore all solutions <ArrowRight className="w-4 h-4" />
-          </a>
         </motion.div>
       </div>
     </section>

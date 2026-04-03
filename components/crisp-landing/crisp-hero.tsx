@@ -5,43 +5,35 @@ export default function CrispHero() {
     <div className="home-hero">
       <div className="common-hero home-hero__inner">
         <div className="common-hero__wrapper">
-          {/* <a href="https://verlyai.xyz/login" target="_blank" rel="noopener noreferrer" className="common-pill-link common-hero__pill-link">
-            <span className="common-pill-link__label">
-              <span className="common-pill-link__badge font-sans-bold border-blue-200"></span>
-              Build <span className="font-sans-bold px-1 text-blue-600">AI Agents</span> with Verly
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" className="nuxt-icon common-icon common-icon--icon-chevron-right common-pill-link__chevron text-blue-600" height="15" width="15">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m6 12 4-4-4-4"></path>
-            </svg>
-          </a> */}
-          
           <div className="page-main-title page-main-title--large page-main-title--black page-main-title--title common-hero__title">
             <div className="page-wrapper page-wrapper--generic page-wrapper--regular page-main-title__wrapper">
               <div className="page-main-title__title-wrapper">
                 <h1 className="page-main-title__title font-title-bold">
                   <span>
-                    Handle <span className="emphasis"><span className="emphasis-text">10X More</span></span> Customers.<br />
-                    Without hiring anyone.
+                    The AI customer support platform for{' '}
+                    <span className="emphasis">
+                      <span className="emphasis-text">Web, WhatsApp & Voice.</span>
+                    </span>
+                    <br />
                   </span>
                 </h1>
               </div>
               
-              {/* Removed original three feature pills */}
               <div className="page-main-title__buttons mt-6">
                 <div className="common-signup-cta common-signup-cta--medium home-hero__signup-cta">
                   <div className="common-signup-cta__field">
-                    <a href="https://calendly.com/rdhakad2002/30min" target="_blank" rel="noopener noreferrer" className="common-button common-button--white common-button--medium font-sans-bold common-button--roundish">
-                      <span className="common-button__label ellipsis">Schedule a Demo</span>
-                    </a>
                     <a href="https://app.verly.ai/signup" rel="noopener noreferrer" className="common-button common-button--blue common-button--medium font-sans-bold common-button--roundish">
-                      <span className="common-button__label ellipsis">Try it Now</span>
+                      <span className="common-button__label ellipsis">Start free</span>
                       <img width="20" height="20" alt="" src="https://crisp.chat/_ipx/s_40x40/components/home/HomeHero/signup_arrow.svg" className="common-icon common-button__icon common-button__icon--right" />
+                    </a>
+                    <a href="https://calendly.com/rdhakad2002/30min" target="_blank" rel="noopener noreferrer" className="common-button common-button--white common-button--medium font-sans-bold common-button--roundish">
+                      <span className="common-button__label ellipsis">Book a demo</span>
                     </a>
                   </div>
                   
                   <div className="mt-10 flex flex-wrap justify-center gap-3">
                     <span className="home-hero__benefit-chip">No setup fee</span>
-                    <span className="home-hero__benefit-chip">24/7 Customer service</span>
+                    <span className="home-hero__benefit-chip">24/7 AI support</span>
                     <span className="home-hero__benefit-chip">No credit card required</span>
                     <span className="home-hero__benefit-chip">Cancel any time</span>
                     <span className="home-hero__benefit-chip">30-day free trial</span>
