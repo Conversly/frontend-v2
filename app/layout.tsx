@@ -1,3 +1,4 @@
+import StickyCTABar from "@/components/landing/sticky-cta-bar";
 import AppContextProvider from "@/contexts";
 import { ThemeProvider } from "@/components/shared/themeProvider";
 import { merge } from "@/utils/ui";
@@ -74,6 +75,7 @@ export default function RootLayout({
             <AppContextProvider>
               <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
                 {children}
+                <StickyCTABar />
               </div>
             </AppContextProvider>
           </ThemeProvider>
