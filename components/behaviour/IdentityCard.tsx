@@ -55,12 +55,12 @@ export function IdentityCard({
             <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <User className="h-4 w-4 text-primary" />
-                    <h3 className="text-sm font-semibold text-muted-foreground">1. Identity</h3>
+                    <h3 className="text-base font-semibold text-foreground">1. Identity</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="ai-name" className="text-sm font-medium">AI Agent Name</Label>
+                        <Label htmlFor="ai-name" className="text-sm font-semibold">AI Agent Name</Label>
                         <Input
                             id="ai-name"
                             placeholder="e.g. Alice"
@@ -70,7 +70,7 @@ export function IdentityCard({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="role" className="text-sm font-medium">Role / Occupation</Label>
+                        <Label htmlFor="role" className="text-sm font-semibold">Role / Occupation</Label>
                         <Select
                             value={identity.role}
                             onValueChange={(value) => handleIdentityChange("role", value as RoleType)}
@@ -90,7 +90,7 @@ export function IdentityCard({
                 </div>
 
                 <div className="grid gap-2">
-                    <Label htmlFor="purpose" className="text-sm font-medium">Primary Goal</Label>
+                    <Label htmlFor="purpose" className="text-sm font-semibold">Primary Goal</Label>
                     <Textarea
                         id="purpose"
                         placeholder="e.g. Answering questions about our pricing and features..."
@@ -101,7 +101,7 @@ export function IdentityCard({
                 </div>
 
                 <div className="grid gap-2">
-                    <Label htmlFor="constraints" className="text-sm font-medium">Boundaries & Guardrails</Label>
+                    <Label htmlFor="constraints" className="text-sm font-semibold">Boundaries & Guardrails</Label>
                     <Textarea
                         id="constraints"
                         placeholder="e.g. Never promise a specific delivery date, don't mention competitors..."
@@ -113,15 +113,15 @@ export function IdentityCard({
             </div>
 
             {/* 2. STYLE SECTION */}
-            <div className="p-6 space-y-4 bg-muted/20">
+            <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <MessageSquare className="h-4 w-4 text-primary" />
-                    <h3 className="text-sm font-semibold text-muted-foreground">2. Conversation Style</h3>
+                    <h3 className="text-base font-semibold text-foreground">2. Conversation Style</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="grid gap-2">
-                        <Label className="text-sm font-medium">Tone of Voice</Label>
+                        <Label className="text-sm font-semibold">Tone of Voice</Label>
                         <Select
                             value={style.tone}
                             onValueChange={(value) => handleStyleUpdate({ tone: value as ToneType })}
@@ -140,7 +140,7 @@ export function IdentityCard({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-sm font-medium">Response Depth</Label>
+                        <Label className="text-sm font-semibold">Response Depth</Label>
                         <Select
                             value={style.responseLength}
                             onValueChange={(value) => handleStyleUpdate({ responseLength: value as ResponseLengthType })}
@@ -216,7 +216,7 @@ export function IdentityCard({
                     <Textarea
                         value={systemPrompt}
                         onChange={(e) => onSystemPromptChange(e.target.value)}
-                        className="min-h-[200px] font-mono text-xs bg-card border-border shadow-sm focus-visible:ring-primary/30"
+                        className="min-h-[200px] font-mono text-base bg-card border-border shadow-sm focus-visible:ring-primary/30"
                         placeholder="Click generate to create instructions from your settings..."
                     />
                     <div className="flex items-start gap-2 text-[11px] text-primary bg-primary/5 p-2 rounded border border-primary/20">

@@ -124,7 +124,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
     }
 
     return (
-        <div>
+        <div className="p-6">
             {/* Toggle Row */}
             <div className="flex items-center justify-between mb-6 p-4 bg-muted/30 rounded-lg border border-border">
                 <div className="flex items-center gap-3">
@@ -143,18 +143,14 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
             </div>
 
             {form.isEnabled && (
-                <div className="space-y-6">
+                <div className="space-y-4">
 
                     {/* 1. Lead Detection Strategy */}
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-primary" />
-                            <h3 className="text-sm font-semibold text-muted-foreground">Lead Detection Strategy</h3>
-                        </div>
 
                         {/* High Intent Signals */}
-                        <div className="space-y-3">
-                            <Label className="text-sm font-medium">1. High-Intent Signals</Label>
+                        <div className="grid gap-2">
+                            <Label className="text-sm font-semibold">1. High-Intent Signals</Label>
                             <p className="text-sm text-muted-foreground">Trigger lead form when visitor:</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {[
@@ -177,7 +173,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                                 },
                                             })}
                                         />
-                                        <Label htmlFor={`signal-${signal.key}`} className="font-normal text-sm">{signal.label}</Label>
+                                        <Label htmlFor={`signal-${signal.key}`} className="font-normal text-sm text-foreground">{signal.label}</Label>
                                     </div>
                                 ))}
                                 <div className="flex items-center space-x-2">
@@ -191,7 +187,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                             },
                                         })}
                                     />
-                                    <Label htmlFor="signal-custom" className="font-normal text-sm">Custom...</Label>
+                                    <Label htmlFor="signal-custom" className="font-normal text-sm text-foreground">Custom...</Label>
                                 </div>
                             </div>
 
@@ -209,8 +205,8 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                         <Separator />
 
                         {/* Aggressiveness */}
-                        <div className="space-y-3">
-                            <Label className="text-sm font-medium">2. Aggressiveness</Label>
+                        <div className="grid gap-2">
+                            <Label className="text-sm font-semibold">2. Aggressiveness</Label>
                             <div className="grid grid-cols-3 gap-3">
                                 {["Conservative", "Balanced", "Aggressive"].map((mode) => (
                                     <div
@@ -233,8 +229,8 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                         <Separator />
 
                         {/* Keywords */}
-                        <div className="space-y-3">
-                            <Label className="text-sm font-medium">3. Mandatory Keywords (Optional)</Label>
+                        <div className="grid gap-2">
+                            <Label className="text-sm font-semibold">3. Mandatory Keywords (Optional)</Label>
                             <Input
                                 value={state.leadConfig.keywords || ""}
                                 onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, keywords: e.target.value } })}
@@ -246,15 +242,15 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                         <Separator />
 
                         {/* Target Pages */}
-                        <div className="space-y-3">
-                            <Label className="text-sm font-medium">4. Target Pages</Label>
+                        <div className="grid gap-2">
+                            <Label className="text-sm font-semibold">4. Target Pages</Label>
                             <p className="text-sm text-muted-foreground">Which pages should trigger lead capture aggressively?</p>
                             <div className="grid gap-3">
                                 <Textarea
                                     value={state.leadConfig.pageTriggers || ""}
                                     onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, pageTriggers: e.target.value } })}
                                     placeholder="/pricing, /contact, /enterprise/*"
-                                    className="min-h-[80px]"
+                                    className="min-h-[80px] text-sm"
                                 />
                                 <div className="flex flex-wrap gap-2">
                                     <span className="text-xs text-muted-foreground mr-2 self-center">Quick Add:</span>
@@ -298,12 +294,12 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <Magnet className="h-4 w-4 text-primary" />
-                            <h3 className="text-sm font-semibold text-muted-foreground">Form Appearance</h3>
+                            <h3 className="text-base font-semibold text-foreground">Form Appearance</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">Form Title</Label>
+                                <Label className="text-sm font-semibold">Form Title</Label>
                                 <Input
                                     value={form.title}
                                     onChange={(e) => updateForm({ title: e.target.value })}
@@ -311,7 +307,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">Subtitle</Label>
+                                <Label className="text-sm font-semibold">Subtitle</Label>
                                 <Input
                                     value={form.subtitle || ""}
                                     onChange={(e) => updateForm({ subtitle: e.target.value })}
@@ -319,7 +315,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">CTA Button Text</Label>
+                                <Label className="text-sm font-semibold">CTA Button Text</Label>
                                 <Input
                                     value={form.ctaText || ""}
                                     onChange={(e) => updateForm({ ctaText: e.target.value })}
@@ -327,7 +323,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">Success Message</Label>
+                                <Label className="text-sm font-semibold">Success Message</Label>
                                 <Input
                                     value={form.successMessage || ""}
                                     onChange={(e) => updateForm({ successMessage: e.target.value })}
@@ -344,7 +340,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <GripVertical className="h-4 w-4 text-primary" />
-                                <h3 className="text-sm font-semibold text-muted-foreground">Form Fields</h3>
+                                <h3 className="text-base font-semibold text-foreground">Form Fields</h3>
                             </div>
                             <Button variant="outline" size="sm" onClick={addCustomField}>
                                 <Plus className="h-3 w-3 mr-1" /> Add Custom Field
@@ -503,7 +499,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
             )}
 
             {/* 4. Magic Prompt — same style as HandoffCard */}
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
+            <div className="mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-primary" />
@@ -532,7 +528,7 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                     <Textarea
                         value={state.systemPrompt}
                         onChange={(e) => updateState({ systemPrompt: e.target.value })}
-                        className="min-h-[120px] font-mono text-sm bg-card border-border"
+                        className="min-h-[120px] font-mono text-base bg-card border-border"
                         placeholder="Click generate to create a prompt from your settings..."
                     />
                     <p className="text-[10px] text-muted-foreground italic">

@@ -38,7 +38,7 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
     };
 
     return (
-        <div>
+        <div className="p-6">
             {/* Toggle Row */}
             <div className="flex items-center justify-between mb-6 p-4 bg-muted/30 rounded-lg border border-border">
                 <div className="flex items-center gap-3">
@@ -57,9 +57,9 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
             </div>
 
             {state.enabled && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <div className="grid gap-2">
-                        <Label className="text-sm font-medium">Support Mode</Label>
+                        <Label className="text-sm font-semibold">Support Mode</Label>
                         <Select
                             value={state.supportMode}
                             onValueChange={(value: any) => updateState({ supportMode: value })}
@@ -76,8 +76,8 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
                         </Select>
                     </div>
 
-                    <div className="space-y-3">
-                        <Label className="text-sm font-medium">Escalation Triggers</Label>
+                    <div className="grid gap-2">
+                        <Label className="text-sm font-semibold">Escalation Triggers</Label>
                         <div className="grid gap-2">
                             {[
                                 { key: "frustration", label: "Visitor frustration detected" },
@@ -91,19 +91,19 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
                                         checked={(state.escalationTriggers as any)[trigger.key]}
                                         onCheckedChange={(checked) => updateTriggers(trigger.key as keyof HandoffState["escalationTriggers"], checked as boolean)}
                                     />
-                                    <Label htmlFor={`trigger-${trigger.key}`} className="font-normal text-sm">{trigger.label}</Label>
+                                    <Label htmlFor={`trigger-${trigger.key}`} className="font-normal text-sm text-foreground">{trigger.label}</Label>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-sm font-medium">Additional Context (Your Own Words)</Label>
+                        <Label className="text-sm font-semibold">Additional Context (Your Own Words)</Label>
                         <Textarea
                             placeholder="e.g. Only escalate for billing issues if they mention 'refund' twice."
                             value={state.additionalInstructions}
                             onChange={(e) => updateState({ additionalInstructions: e.target.value })}
-                            className="min-h-[60px]"
+                            className="min-h-[60px] text-sm"
                         />
                     </div>
 
@@ -137,7 +137,7 @@ export function HandoffCard({ state, onChange, onGenerate, isGenerating }: Hando
                             <Textarea
                                 value={state.systemPrompt}
                                 onChange={(e) => updateState({ systemPrompt: e.target.value })}
-                                className="min-h-[120px] font-mono text-sm bg-card border-border"
+                                className="min-h-[120px] font-mono text-base bg-card border-border"
                                 placeholder="Click generate to create a prompt from your settings..."
                             />
                         </div>

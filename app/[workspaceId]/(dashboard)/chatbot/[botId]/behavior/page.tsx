@@ -455,8 +455,8 @@ export default function BehaviourPage() {
                     </div>
 
                     {/* Card container */}
-                    <div className="bg-card rounded-xl border border-border shadow-sm">
-                        <div className="p-6">
+                    <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+                        <div>
                             {activeTab === "identity" && (
                                 <IdentityCard
                                     identity={behaviour.identity}
