@@ -18,6 +18,8 @@ export interface SolutionDetail {
   description: string;
   color: string;
   bg: string;
+  cardImage: string;
+  cardImageAlt: string;
   heroImage: string;
   heroImageAlt: string;
   heroPanelLabel: string;
@@ -44,6 +46,9 @@ export const solutions: SolutionDetail[] = [
       "Resolve order, delivery, and return questions instantly across web chat, WhatsApp, and voice without bloating your support team.",
     color: "text-[#315EEA]",
     bg: "bg-[#eaf0ff]",
+    cardImage:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1800&h=1400&fit=crop&crop=faces",
+    cardImageAlt: "Retail team supporting customers across commerce channels",
     heroImage: "/solutions/e-commerce-retail.png",
     heroImageAlt: "Retail support command center visual",
     heroPanelLabel: "Commerce operating layer",
@@ -171,9 +176,12 @@ export const solutions: SolutionDetail[] = [
     title: "SaaS Platforms",
     category: "Support",
     description:
-      "Deflect repetitive tickets, guide onboarding, and route technical issues with full product context instead of forcing engineers into Tier 1 support.",
+      "Deflect repetitive tickets, guide onboarding, and automate billing or account questions with grounded product context inside the app.",
     color: "text-[#5b5bd6]",
     bg: "bg-[#efeefe]",
+    cardImage:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1800&h=1400&fit=crop",
+    cardImageAlt: "SaaS support team working on customer onboarding and product help",
     heroImage: "/solutions/saas-platforms.png",
     heroImageAlt: "SaaS support workspace visual",
     heroPanelLabel: "Support command center",
@@ -304,6 +312,9 @@ export const solutions: SolutionDetail[] = [
       "Handle patient scheduling, refill requests, and routine triage with guardrails, multilingual access, and always-on response coverage.",
     color: "text-[#dc5b5b]",
     bg: "bg-[#fdeeed]",
+    cardImage:
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Healthcare support staff assisting patients in a clinic",
     heroImage: "/solutions/healthcare.png",
     heroImageAlt: "Healthcare patient access visual",
     heroPanelLabel: "Patient access flow",
@@ -431,9 +442,12 @@ export const solutions: SolutionDetail[] = [
     title: "Restaurants & Hospitality",
     category: "Voice",
     description:
-      "Automate reservations, guest questions, and catering intake so staff stay focused on service instead of constantly answering the phone.",
+      "Automate reservations, guest questions, and catering intake across calls and messages so staff stay focused on service.",
     color: "text-[#d48536]",
     bg: "bg-[#fff4e7]",
+    cardImage:
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Restaurant and hospitality team serving guests",
     heroImage: "/solutions/restaurants-hospitality.png",
     heroImageAlt: "Hospitality reservations visual",
     heroPanelLabel: "Guest operations desk",
@@ -561,9 +575,12 @@ export const solutions: SolutionDetail[] = [
     title: "Real Estate",
     category: "Sales",
     description:
-      "Qualify property inquiries, answer listing questions, and book tours around the clock so hot leads do not cool down overnight.",
+      "Qualify property inquiries, answer listing questions, and book tours around the clock across web chat and messaging.",
     color: "text-[#0f8b8d]",
     bg: "bg-[#e7fbfa]",
+    cardImage:
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Real estate property inquiry and buyer support visual",
     heroImage: "/solutions/real-estate.png",
     heroImageAlt: "Real estate lead routing visual",
     heroPanelLabel: "Lead routing system",
@@ -691,9 +708,12 @@ export const solutions: SolutionDetail[] = [
     title: "Education",
     category: "Support",
     description:
-      "Support prospective students, current students, and families with admissions, aid, and campus-service answers without forcing them to wait for office hours.",
+      "Support prospective students, current students, and families with admissions, aid, and campus-service answers across chat, voice, and messaging.",
     color: "text-[#4669d9]",
     bg: "bg-[#edf2ff]",
+    cardImage:
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Students and staff in an education support setting",
     heroImage: "/solutions/education.png",
     heroImageAlt: "Education student services visual",
     heroPanelLabel: "Student services desk",
@@ -821,9 +841,12 @@ export const solutions: SolutionDetail[] = [
     title: "Travel & Tourism",
     category: "Voice",
     description:
-      "Help travelers with booking changes, disruption support, and local guidance across channels without forcing them into long queues.",
+      "Help travelers with booking changes, disruption support, and live itinerary questions across voice and messaging without long queues.",
     color: "text-[#3d8fd2]",
     bg: "bg-[#eaf6ff]",
+    cardImage:
+      "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Travel operations visual with airport and flight activity",
     heroImage: "/solutions/travel-tourism.png",
     heroImageAlt: "Travel disruption support visual",
     heroPanelLabel: "Travel disruption desk",
@@ -951,9 +974,12 @@ export const solutions: SolutionDetail[] = [
     title: "Professional Services",
     category: "Internal",
     description:
-      "Automate client intake, consultation booking, and document collection so high-value service teams spend less time on repetitive coordination.",
+      "Automate client intake, consultation booking, and document collection so service teams spend less time on repetitive coordination.",
     color: "text-[#64748b]",
     bg: "bg-[#edf1f6]",
+    cardImage:
+      "https://images.unsplash.com/photo-1552581234-26160f608093?w=1800&h=1400&fit=crop",
+    cardImageAlt: "Professional services team in a client-facing working session",
     heroImage: "/solutions/professional-services.png",
     heroImageAlt: "Professional services client intake visual",
     heroPanelLabel: "Client intake pipeline",

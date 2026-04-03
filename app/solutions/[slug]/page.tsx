@@ -73,8 +73,8 @@ const HERO_SHOWCASE_IMAGES: Record<string, { src: string; alt: string }> = {
     alt: "Real estate professionals reviewing property inquiries",
   },
   education: {
-    src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1800&h=1400&fit=crop",
-    alt: "Education support environment with students and staff",
+    src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&h=1400&fit=crop",
+    alt: "Students and staff in an education support environment",
   },
   "travel-tourism": {
     src: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&h=1400&fit=crop",
@@ -113,9 +113,9 @@ const STORY_IMAGES: Record<string, [string, string, string]> = {
     "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1600&h=1200&fit=crop",
   ],
   education: [
-    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&h=1200&fit=crop",
     "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&h=1200&fit=crop",
     "https://images.unsplash.com/photo-1513258496099-48168024aec0?w=1600&h=1200&fit=crop",
+    "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&h=1200&fit=crop",
   ],
   "travel-tourism": [
     "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&h=1200&fit=crop",
@@ -606,8 +606,8 @@ export default async function SolutionDetailPage({ params }: Props) {
                   >
                     <div className="relative aspect-[1.28/1] overflow-hidden border-b border-[#ece6dc]">
                       <Image
-                        src={item.heroImage}
-                        alt={item.heroImageAlt}
+                        src={item.cardImage}
+                        alt={item.cardImageAlt}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"

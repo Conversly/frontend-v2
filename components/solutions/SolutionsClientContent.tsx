@@ -70,17 +70,27 @@ function SolutionCard({ solution }: { solution: SolutionDetail }) {
         href={`/solutions/${solution.slug}`}
         className={`group flex h-full flex-col overflow-hidden rounded-[28px] border bg-white shadow-[0_12px_30px_rgba(40,34,26,0.05)] transition-all duration-300 ${accent.border} ${accent.hoverBorder} ${accent.hoverShadow}`}
       >
-        <div className="relative aspect-[1.72/1] overflow-hidden border-b border-[#ece6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7f4ee_100%)]">
+        <div className="relative aspect-[1.55/1] overflow-hidden border-b border-[#ece6dc] bg-[linear-gradient(180deg,#f3f7ff_0%,#fffdfa_100%)]">
           <Image
-            src={solution.heroImage}
-            alt={solution.heroImageAlt}
+            src={solution.cardImage}
+            alt={solution.cardImageAlt}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_25%,rgba(18,24,39,0.08)_100%)]" />
-          <div className="absolute left-5 top-5 inline-flex rounded-full border border-white/80 bg-white/92 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#766f62] shadow-sm">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,27,61,0.02)_0%,rgba(15,27,61,0.18)_100%)]" />
+          <div className="absolute left-5 top-5 inline-flex rounded-full border border-white/80 bg-white/92 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6a7690] shadow-sm">
             {solution.heroPanelLabel}
+          </div>
+          <div className="absolute bottom-5 left-5 right-5">
+            <div className="max-w-[85%] rounded-[18px] border border-white/60 bg-white/92 px-4 py-3 shadow-[0_18px_36px_rgba(17,24,39,0.12)]">
+              <div className={`text-[10px] font-bold uppercase tracking-[0.18em] ${accent.iconText}`}>
+                {solution.category}
+              </div>
+              <p className="mt-1 text-[13px] font-medium leading-5 text-[#2b2b2b]">
+                {solution.heroSummary[0]}
+              </p>
+            </div>
           </div>
         </div>
 
