@@ -18,6 +18,14 @@ export interface SolutionDetail {
   description: string;
   color: string;
   bg: string;
+  primaryTeam: string;
+  primaryChannels: string[];
+  starterAutomations: string[];
+  knowledgeSources: string[];
+  systemActions: string[];
+  handoffTriggers: string[];
+  integrations: string[];
+  workflowSteps: { title: string; description: string }[];
   cardImage: string;
   cardImageAlt: string;
   heroImage: string;
@@ -46,6 +54,47 @@ export const solutions: SolutionDetail[] = [
       "Resolve order, delivery, and return questions instantly across web chat, WhatsApp, and voice without bloating your support team.",
     color: "text-[#315EEA]",
     bg: "bg-[#eaf0ff]",
+    primaryTeam:
+      "CX, support, and retention teams handling pre-purchase and post-purchase demand.",
+    primaryChannels: ["Web chat", "WhatsApp", "Voice"],
+    starterAutomations: [
+      "Order-status and delivery updates tied to live shipment data",
+      "Return, exchange, and refund flows with policy checks built in",
+      "Pre-purchase product questions, size guidance, and cart-recovery nudges",
+    ],
+    knowledgeSources: [
+      "Shopify or WooCommerce order data",
+      "Fulfillment and tracking updates",
+      "Return policy, product catalog, and FAQ content",
+    ],
+    systemActions: [
+      "Look up order and shipping status in real time",
+      "Start return or exchange workflows and confirm next steps",
+      "Send tracking links, confirmations, and revenue-recovery offers",
+    ],
+    handoffTriggers: [
+      "Lost parcels, damaged shipments, or chargeback-related exceptions",
+      "VIP orders or goodwill cases that need manual review",
+      "Situations where policy overrides or human negotiation are required",
+    ],
+    integrations: ["Shopify or WooCommerce", "Logistics and tracking tools", "Helpdesk or CRM systems"],
+    workflowSteps: [
+      {
+        title: "Catch the demand instantly",
+        description:
+          "Verly answers shipping, delivery, return, and product questions across web, WhatsApp, and voice without making shoppers wait in queue.",
+      },
+      {
+        title: "Use live commerce context",
+        description:
+          "It pulls order status, fulfillment events, and policy rules into the conversation so the answer is specific to the shopper's situation.",
+      },
+      {
+        title: "Resolve or route with context",
+        description:
+          "Common motions finish automatically, while damaged shipments, exceptions, or VIP cases escalate to the team with the order summary already attached.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1800&h=1400&fit=crop&crop=faces",
     cardImageAlt: "Retail team supporting customers across commerce channels",
@@ -179,6 +228,47 @@ export const solutions: SolutionDetail[] = [
       "Deflect repetitive tickets, guide onboarding, and automate billing or account questions with grounded product context inside the app.",
     color: "text-[#5b5bd6]",
     bg: "bg-[#efeefe]",
+    primaryTeam:
+      "Support, success, and product operations teams handling onboarding, technical triage, and account workflows.",
+    primaryChannels: ["In-app chat", "Web chat", "WhatsApp"],
+    starterAutomations: [
+      "Docs-backed answers for setup, onboarding, and feature questions",
+      "Structured bug and incident intake before engineering handoff",
+      "Billing, invoice, plan-change, and account-management support",
+    ],
+    knowledgeSources: [
+      "Product docs, release notes, and internal support playbooks",
+      "Workspace or account context from the app",
+      "Billing rules, plan entitlements, and help-center content",
+    ],
+    systemActions: [
+      "Answer feature questions from synced knowledge",
+      "Collect repro steps, screenshots, and workspace context",
+      "Guide upgrades, invoices, and entitlement-related requests",
+    ],
+    handoffTriggers: [
+      "Confirmed bugs, outages, or security-sensitive issues",
+      "High-value account escalations that need a human owner",
+      "Cases that require product, engineering, or manual billing intervention",
+    ],
+    integrations: ["Docs and knowledge base", "Billing or subscription systems", "Helpdesk, CRM, or issue tracker"],
+    workflowSteps: [
+      {
+        title: "Answer in context",
+        description:
+          "Verly responds inside the app or on the site using synced docs, release notes, and account context instead of a static FAQ.",
+      },
+      {
+        title: "Collect technical details early",
+        description:
+          "When the request is not solvable instantly, it gathers structured context like workspace state, screenshots, and repro steps before handoff.",
+      },
+      {
+        title: "Protect engineering time",
+        description:
+          "Onboarding, billing, and common support motions stay automated while true product issues reach the right team with a clean summary.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1800&h=1400&fit=crop",
     cardImageAlt: "SaaS support team working on customer onboarding and product help",
@@ -312,6 +402,47 @@ export const solutions: SolutionDetail[] = [
       "Handle patient scheduling, refill requests, and routine triage with guardrails, multilingual access, and always-on response coverage.",
     color: "text-[#dc5b5b]",
     bg: "bg-[#fdeeed]",
+    primaryTeam:
+      "Patient-access, front-desk, and healthcare operations teams managing routine inbound communication.",
+    primaryChannels: ["Voice", "Web chat", "WhatsApp"],
+    starterAutomations: [
+      "Appointment booking, rescheduling, and visit-prep questions",
+      "Refill intake and routine follow-up workflows",
+      "Office, referral, insurance, and intake guidance with guardrails",
+    ],
+    knowledgeSources: [
+      "Scheduling and availability data",
+      "Approved visit-prep, office, and intake guidance",
+      "Operational policies for referrals, refills, and escalation boundaries",
+    ],
+    systemActions: [
+      "Confirm or change appointments and share next steps",
+      "Collect refill or intake details before routing",
+      "Send follow-up instructions in the patient's preferred channel",
+    ],
+    handoffTriggers: [
+      "Clinical, urgent, or symptom-sensitive conversations",
+      "Policy-sensitive exceptions or cases needing staff judgment",
+      "Requests that require direct review by care or access teams",
+    ],
+    integrations: ["Scheduling systems", "Patient-access workflows", "Helpdesk or routing systems"],
+    workflowSteps: [
+      {
+        title: "Stay available after hours",
+        description:
+          "Verly answers routine patient questions when front-desk staff are offline, especially on evenings, weekends, and call spikes.",
+      },
+      {
+        title: "Follow approved boundaries",
+        description:
+          "It uses operational guidance for scheduling, prep, refill intake, and routine questions while staying inside guardrails defined by the team.",
+      },
+      {
+        title: "Escalate sensitive cases correctly",
+        description:
+          "Anything urgent, clinical, or policy-sensitive routes to staff with the conversation already summarized so the patient is not forced to repeat it.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1800&h=1400&fit=crop",
     cardImageAlt: "Healthcare support staff assisting patients in a clinic",
@@ -445,6 +576,47 @@ export const solutions: SolutionDetail[] = [
       "Automate reservations, guest questions, and catering intake across calls and messages so staff stay focused on service.",
     color: "text-[#d48536]",
     bg: "bg-[#fff4e7]",
+    primaryTeam:
+      "Host stand, guest-services, and multi-location hospitality teams balancing live service with inbound demand.",
+    primaryChannels: ["Voice", "WhatsApp", "Web chat"],
+    starterAutomations: [
+      "Reservations, confirmations, and availability checks",
+      "Menu, allergen, parking, and opening-hours questions",
+      "Large-party, catering, and event inquiry capture",
+    ],
+    knowledgeSources: [
+      "Reservation policies and availability",
+      "Menu, allergen, and venue-specific guest information",
+      "Location details, hours, and event intake requirements",
+    ],
+    systemActions: [
+      "Book reservations and confirm details automatically",
+      "Answer common guest questions without pulling staff off the floor",
+      "Capture event and catering leads with structured intake",
+    ],
+    handoffTriggers: [
+      "VIP events, large parties, or unusual service requests",
+      "Special allergen or policy exceptions needing staff confirmation",
+      "Requests that require manager approval or manual availability checks",
+    ],
+    integrations: ["Reservation systems", "Location and menu data", "CRM or catering lead workflows"],
+    workflowSteps: [
+      {
+        title: "Handle the rush-time questions",
+        description:
+          "Verly covers repetitive guest questions and reservation demand during the exact moments when the team should stay focused on in-person service.",
+      },
+      {
+        title: "Keep the guest information consistent",
+        description:
+          "Hours, menu guidance, allergen notes, and location details come from one approved source instead of ad hoc staff answers.",
+      },
+      {
+        title: "Capture the valuable exceptions",
+        description:
+          "Large parties, catering requests, and special guest situations are routed to managers with the intake already collected.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1800&h=1400&fit=crop",
     cardImageAlt: "Restaurant and hospitality team serving guests",
@@ -578,6 +750,47 @@ export const solutions: SolutionDetail[] = [
       "Qualify property inquiries, answer listing questions, and book tours around the clock across web chat and messaging.",
     color: "text-[#0f8b8d]",
     bg: "bg-[#e7fbfa]",
+    primaryTeam:
+      "Brokerage, ISA, and agent teams handling buyer, renter, seller, and landlord demand.",
+    primaryChannels: ["Web chat", "WhatsApp", "Voice"],
+    starterAutomations: [
+      "Listing questions and property-availability responses",
+      "Buyer, renter, and seller qualification before agent handoff",
+      "Tour scheduling, reminders, and next-step coordination",
+    ],
+    knowledgeSources: [
+      "Listing data and availability",
+      "Neighborhood, property, and qualification guidance",
+      "Agent rules for routing by budget, timeline, and geography",
+    ],
+    systemActions: [
+      "Answer property questions instantly",
+      "Collect budget, intent, financing, and timeline details",
+      "Book tours and push qualified demand into the CRM",
+    ],
+    handoffTriggers: [
+      "High-intent prospects ready for agent follow-up",
+      "Negotiation, financing, or property-specific edge cases",
+      "Seller or landlord situations needing a dedicated team member",
+    ],
+    integrations: ["Listing inventory or property data", "Calendars for tour booking", "CRM and lead-routing systems"],
+    workflowSteps: [
+      {
+        title: "Respond before the lead cools down",
+        description:
+          "Verly answers late-night and weekend inquiries the moment they arrive instead of waiting for office-hour follow-up.",
+      },
+      {
+        title: "Qualify before routing",
+        description:
+          "It collects buying timeline, budget, location preference, and intent so top-performing agents are not doing first-pass intake manually.",
+      },
+      {
+        title: "Book the next step fast",
+        description:
+          "Tours, callbacks, and CRM handoff happen with the prospect summary already captured so momentum is not lost.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1800&h=1400&fit=crop",
     cardImageAlt: "Real estate property inquiry and buyer support visual",
@@ -711,6 +924,47 @@ export const solutions: SolutionDetail[] = [
       "Support prospective students, current students, and families with admissions, aid, and campus-service answers across chat, voice, and messaging.",
     color: "text-[#4669d9]",
     bg: "bg-[#edf2ff]",
+    primaryTeam:
+      "Admissions, student-services, registrar, and financial-aid teams managing high-volume inquiry cycles.",
+    primaryChannels: ["Web chat", "Voice", "WhatsApp"],
+    starterAutomations: [
+      "Admissions, deadline, and program-fit questions",
+      "Financial-aid, document, and process guidance",
+      "Campus tour booking and next-step routing",
+    ],
+    knowledgeSources: [
+      "Admissions calendars, program pages, and application requirements",
+      "Approved aid, registrar, and campus-service content",
+      "Tour availability and institution-specific routing rules",
+    ],
+    systemActions: [
+      "Answer student and family questions at any time",
+      "Guide applicants through required next steps and document needs",
+      "Book tours or route cases to admissions, aid, or registrar teams",
+    ],
+    handoffTriggers: [
+      "Account-specific aid, registrar, or student-record issues",
+      "Exceptions that require institutional review or policy judgment",
+      "Conversations that need a live staff owner for follow-through",
+    ],
+    integrations: ["Admissions and tour workflows", "Knowledge base or program content", "CRM or student-service routing systems"],
+    workflowSteps: [
+      {
+        title: "Answer the repetitive intake volume",
+        description:
+          "Verly handles deadline, program, document, and campus questions across channels so staff are not buried in the same requests every cycle.",
+      },
+      {
+        title: "Guide the next action clearly",
+        description:
+          "It uses approved institutional content to tell students and families what to submit, when to act, and which office owns the next step.",
+      },
+      {
+        title: "Escalate account-specific cases cleanly",
+        description:
+          "When a conversation reaches aid exceptions, student records, or sensitive review, the right team receives the full intake and context.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&h=1400&fit=crop",
     cardImageAlt: "Students and staff in an education support setting",
@@ -844,6 +1098,47 @@ export const solutions: SolutionDetail[] = [
       "Help travelers with booking changes, disruption support, and live itinerary questions across voice and messaging without long queues.",
     color: "text-[#3d8fd2]",
     bg: "bg-[#eaf6ff]",
+    primaryTeam:
+      "Travel operations, support, and service teams handling urgent itinerary and disruption conversations.",
+    primaryChannels: ["Voice", "WhatsApp", "Web chat"],
+    starterAutomations: [
+      "Booking-change, cancellation, and itinerary-update requests",
+      "Delay, disruption, and next-step travel guidance",
+      "Destination, document, and service questions across time zones",
+    ],
+    knowledgeSources: [
+      "Booking and itinerary context",
+      "Operational travel policies and disruption guidance",
+      "Destination, document, and service information approved by the team",
+    ],
+    systemActions: [
+      "Guide travelers through changes and disruption flows",
+      "Share live next steps across voice and messaging",
+      "Capture preferences and route urgent cases to operations teams",
+    ],
+    handoffTriggers: [
+      "Complex refunds, rebooking exceptions, or policy overrides",
+      "Urgent disruptions needing a live operations decision",
+      "Cases where the traveler's request falls outside standard support rules",
+    ],
+    integrations: ["Booking or itinerary systems", "Travel policy and service data", "Operations or helpdesk routing"],
+    workflowSteps: [
+      {
+        title: "Respond during the disruption spike",
+        description:
+          "Verly keeps urgent traveler questions moving when delays, cancellations, or missed connections create sudden queue pressure.",
+      },
+      {
+        title: "Use the latest trip context",
+        description:
+          "It answers from itinerary, policy, and operational guidance so the traveler gets relevant next steps instead of generic FAQ copy.",
+      },
+      {
+        title: "Route exceptions without losing time",
+        description:
+          "Refund, rebooking, and edge-case escalation moves to live teams with the history already captured, which matters most in urgent moments.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&h=1400&fit=crop",
     cardImageAlt: "Travel operations visual with airport and flight activity",
@@ -977,6 +1272,47 @@ export const solutions: SolutionDetail[] = [
       "Automate client intake, consultation booking, and document collection so service teams spend less time on repetitive coordination.",
     color: "text-[#64748b]",
     bg: "bg-[#edf1f6]",
+    primaryTeam:
+      "Advisory, service-ops, and client-success teams managing inbound qualification and onboarding.",
+    primaryChannels: ["Web chat", "WhatsApp", "Voice"],
+    starterAutomations: [
+      "Consultation booking and package or process questions",
+      "Lead qualification before partner or advisor handoff",
+      "Client onboarding, document collection, and reminder workflows",
+    ],
+    knowledgeSources: [
+      "Service packages, pricing logic, and scope guidance",
+      "Onboarding checklists, document requirements, and delivery process content",
+      "Routing rules by service line, urgency, or fit",
+    ],
+    systemActions: [
+      "Qualify prospects and book the right meeting type",
+      "Explain service differences and intake requirements",
+      "Collect documents and push the summary into existing systems",
+    ],
+    handoffTriggers: [
+      "Custom scoping, strategic advisory, or bespoke pricing discussions",
+      "Sensitive client situations that need an owner immediately",
+      "Exceptions where a partner or operator should take over directly",
+    ],
+    integrations: ["Calendar and scheduling tools", "CRM or pipeline systems", "Onboarding or document workflows"],
+    workflowSteps: [
+      {
+        title: "Qualify before the first call",
+        description:
+          "Verly explains services, asks the right intake questions, and helps prospects self-select into the correct path before a human meeting happens.",
+      },
+      {
+        title: "Remove the repetitive coordination",
+        description:
+          "Consultation scheduling, reminders, and document collection run automatically so the team is not chasing every step manually.",
+      },
+      {
+        title: "Escalate the high-value conversations",
+        description:
+          "Complex scoping and strategic exceptions route to advisors with the intake already structured, which shortens time to a useful first call.",
+      },
+    ],
     cardImage:
       "https://images.unsplash.com/photo-1552581234-26160f608093?w=1800&h=1400&fit=crop",
     cardImageAlt: "Professional services team in a client-facing working session",

@@ -88,7 +88,7 @@ function SolutionCard({ solution }: { solution: SolutionDetail }) {
                 {solution.category}
               </div>
               <p className="mt-1 text-[13px] font-medium leading-5 text-[#2b2b2b]">
-                {solution.heroSummary[0]}
+                {solution.starterAutomations[0]}
               </p>
             </div>
           </div>
@@ -124,8 +124,19 @@ function SolutionCard({ solution }: { solution: SolutionDetail }) {
 
           <p className="mt-3 text-[13px] leading-6 text-[#6d665d]">{solution.description}</p>
 
+          <div className="mt-3 flex flex-wrap gap-2">
+            {solution.primaryChannels.map((channel) => (
+              <span
+                key={channel}
+                className="rounded-full border border-[#dde6f4] bg-[#f8fbff] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6d7f9e]"
+              >
+                {channel}
+              </span>
+            ))}
+          </div>
+
           <ul className="mt-4 space-y-2">
-            {solution.heroSummary.slice(0, 1).map((item) => (
+            {solution.handoffTriggers.slice(0, 1).map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-[12px] leading-5 text-[#6d665d]">
                 <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
                 {item}

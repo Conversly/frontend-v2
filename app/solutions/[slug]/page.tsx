@@ -249,8 +249,11 @@ export default async function SolutionDetailPage({ params }: Props) {
   ];
 
   const painBullets = solution.painPoints.slice(0, 3).map((point) => point.title);
-  const capabilityBullets = solution.capabilities.slice(0, 3).map((capability) => capability.title);
+  const workflowBullets = solution.workflowSteps.map(
+    (step) => `${step.title}: ${step.description}`,
+  );
   const useCaseBullets = solution.useCases.slice(0, 3).map((useCase) => `${useCase.title}: ${useCase.outcome}`);
+  const primaryChannelsLabel = solution.primaryChannels.join(" • ");
 
   const storyAccents = [
     {
@@ -331,6 +334,9 @@ export default async function SolutionDetailPage({ params }: Props) {
               </h1>
               <p className="mt-5 max-w-[620px] text-[16px] leading-8 text-[#6d665d] md:text-[18px]">
                 {solution.heroSubtitle}
+              </p>
+              <p className="mt-4 max-w-[620px] text-[13px] font-medium uppercase tracking-[0.12em] text-[#6d7f9e]">
+                Built for {solution.primaryTeam}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2.5">
@@ -426,10 +432,94 @@ export default async function SolutionDetailPage({ params }: Props) {
         </div>
       </section>
 
+      <section className="bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] py-16 md:py-22">
+        <div className="mx-auto max-w-[1360px] px-5 md:px-8">
+          <div className="mx-auto max-w-[860px] text-center">
+            <div className="mb-4 inline-flex rounded-full border border-[#dde6f4] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#5f6f8c]">
+              Workflow Fit
+            </div>
+            <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[30px] leading-[1.08] tracking-[-0.04em] text-[#221f1b] md:text-[44px]">
+              How Verly works for {solution.title.toLowerCase()}
+            </h2>
+            <p className="mx-auto mt-4 max-w-[700px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+              Verly gives this team one support layer across {primaryChannelsLabel.toLowerCase()}.
+              It answers from approved knowledge, takes the next operational action when possible,
+              and routes exceptions to the right human with context already captured.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-[24px] border border-[#dde6f4] bg-white p-5 shadow-[0_10px_24px_rgba(44,56,92,0.05)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                Primary team
+              </div>
+              <p className="mt-3 text-[15px] font-medium leading-7 text-[#221f1b]">
+                {solution.primaryTeam}
+              </p>
+            </div>
+            <div className="rounded-[24px] border border-[#dde6f4] bg-white p-5 shadow-[0_10px_24px_rgba(44,56,92,0.05)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                Channels live
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {solution.primaryChannels.map((channel) => (
+                  <span
+                    key={channel}
+                    className="rounded-full border border-[#dce6ff] bg-[#f5f8ff] px-3 py-1 text-[12px] font-medium text-[#315EEA]"
+                  >
+                    {channel}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[24px] border border-[#dde6f4] bg-white p-5 shadow-[0_10px_24px_rgba(44,56,92,0.05)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                Verly reads from
+              </div>
+              <div className="mt-3 space-y-2">
+                {solution.knowledgeSources.map((source) => (
+                  <div key={source} className="text-[14px] leading-6 text-[#5f5a52]">
+                    {source}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[24px] border border-[#dde6f4] bg-white p-5 shadow-[0_10px_24px_rgba(44,56,92,0.05)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                Verly can do
+              </div>
+              <div className="mt-3 space-y-2">
+                {solution.systemActions.map((action) => (
+                  <div key={action} className="text-[14px] leading-6 text-[#5f5a52]">
+                    {action}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-[28px] border border-[#dde6f4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7fbff_100%)] p-6 shadow-[0_10px_24px_rgba(44,56,92,0.04)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+              Connected systems
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {solution.integrations.map((integration) => (
+                <span
+                  key={integration}
+                  className="rounded-full border border-[#e3e9f5] bg-white px-3.5 py-1.5 text-[12px] font-medium text-[#5f584f]"
+                >
+                  {integration}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <SolutionStorySection
         eyebrow="The Challenge"
         title={`Why ${solution.title.toLowerCase()} teams change the support model`}
-        description="The biggest problem is rarely just volume. It is repetitive operational work, poor after-hours coverage, and support handoff that happens too late."
+        description={`For ${solution.primaryTeam.toLowerCase()}, the real issue is not just volume. It is repetitive operational work arriving across ${primaryChannelsLabel.toLowerCase()}, plus slow routing when a case finally needs a person.`}
         bullets={painBullets}
         image={storyImages[0]}
         imageAlt={`${solution.title} support team working session`}
@@ -441,16 +531,16 @@ export default async function SolutionDetailPage({ params }: Props) {
 
       <SolutionStorySection
         eyebrow="Operating Model"
-        title={`What Verly automates first for ${solution.title.toLowerCase()}`}
-        description="Most teams begin with the highest-volume support motion, connect the right knowledge and routing rules, and then expand once resolution quality is proven."
-        bullets={capabilityBullets}
+        title={`How Verly runs the first layer of support for ${solution.title.toLowerCase()}`}
+        description="The workflow is simple: answer from approved knowledge, collect the right context, complete the action when possible, then route only the exceptions that still need human judgment."
+        bullets={workflowBullets}
         image={storyImages[1]}
         imageAlt={`${solution.title} support workflow in action`}
         reverse
         accent={storyAccents[1]}
         calloutLabel="Automation layer"
-        calloutValue={solution.capabilities[0]?.title ?? solution.heroSummary[0]}
-        note={solution.metrics[1]?.label ?? "Fast resolution path"}
+        calloutValue={solution.starterAutomations[0] ?? solution.heroSummary[0]}
+        note={primaryChannelsLabel}
       />
 
       <SolutionStorySection
@@ -468,31 +558,66 @@ export default async function SolutionDetailPage({ params }: Props) {
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f4ee_0%,#f4efe8_58%,#f8fbff_100%)] py-16 md:py-24">
         <div className="mx-auto max-w-[1360px] px-5 md:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#d9f0e4] bg-white px-4 py-1.5 text-[12px] font-semibold text-emerald-700">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                Solution Coverage
+                Launch Scope
               </div>
               <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[30px] leading-[1.08] tracking-[-0.04em] text-[#221f1b] md:text-[46px]">
-                Built specifically for {solution.title.toLowerCase()}
+                Where automation starts and where humans step in
               </h2>
               <p className="mt-4 max-w-[540px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
-                The feature mix is tailored to the workflows, channel expectations, and escalation
-                requirements that matter most in this operating environment.
+                The strongest solution pages do not pretend everything should be automated. They
+                show the first high-volume motions Verly should own, and the situations your team
+                should still receive with judgment and context.
               </p>
+
+              <div className="mt-8 rounded-[28px] border border-[#dde6f4] bg-white p-6 shadow-[0_10px_24px_rgba(44,56,92,0.05)]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                  What teams automate first
+                </div>
+                <div className="mt-4 space-y-3">
+                  {solution.starterAutomations.map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-start gap-3.5 rounded-[20px] border border-[#dde6f4] bg-[#fbfdff] px-5 py-4"
+                    >
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                      <span className="text-[15px] font-medium leading-7 text-[#2c2f30]">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {solution.features.map((feature) => (
-                <div
-                  key={feature}
-                  className="flex items-start gap-3.5 rounded-[20px] border border-[#dde6f4] bg-white px-5 py-4 shadow-[0_10px_24px_rgba(44,56,92,0.05)]"
-                >
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-                  <span className="text-[15px] font-medium leading-7 text-[#2c2f30]">{feature}</span>
+            <div className="rounded-[28px] border border-[#e4ddd2] bg-white p-6 shadow-[0_10px_24px_rgba(59,43,22,0.05)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a8173]">
+                When Verly hands off
+              </div>
+              <div className="mt-4 space-y-3">
+                {solution.handoffTriggers.map((trigger) => (
+                  <div
+                    key={trigger}
+                    className="flex items-start gap-3.5 rounded-[20px] border border-[#ece6dc] bg-[#fffdfa] px-5 py-4"
+                  >
+                    <ArrowRight className="mt-1 h-4.5 w-4.5 shrink-0 text-[#b07b1a]" />
+                    <span className="text-[15px] font-medium leading-7 text-[#45372a]">{trigger}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 rounded-[22px] border border-[#eef1f6] bg-[#f8fbff] px-5 py-4">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d7f9e]">
+                  Full solution coverage
                 </div>
-              ))}
+                <div className="mt-3 space-y-2">
+                  {solution.features.map((feature) => (
+                    <div key={feature} className="text-[14px] leading-6 text-[#5f5a52]">
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
