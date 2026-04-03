@@ -1,6 +1,7 @@
 "use client";
 
-import { PhoneCall, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { PhoneCall, Sparkles, User, Bot } from "lucide-react";
 import BackedBy from "./backed-by";
 
 export default function CrispSupportLifecycle() {
@@ -12,7 +13,13 @@ export default function CrispSupportLifecycle() {
 
       <div className="relative mx-auto max-w-[1380px] px-5 md:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,620px)_minmax(0,1fr)] xl:gap-16">
-          <div className="max-w-[620px] lg:pr-8">
+          <motion.div
+            className="max-w-[620px] lg:pr-8"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.08)] backdrop-blur-sm">
               <Sparkles className="h-4 w-4" />
               Lifecycle Solution
@@ -24,7 +31,7 @@ export default function CrispSupportLifecycle() {
               Verly captures every conversation, learns your business context, provides instant
               support on WhatsApp and Voice, and escalates to humans when it matters most.
             </p>
-          </div>
+          </motion.div>
 
           <ProductMockup />
         </div>
@@ -35,9 +42,31 @@ export default function CrispSupportLifecycle() {
   );
 }
 
+function AvatarIcon({ className }: { className?: string }) {
+  return (
+    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${className}`}>
+      <User className="h-4 w-4" />
+    </div>
+  );
+}
+
+function BotAvatar() {
+  return (
+    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0050d4] text-white">
+      <Bot className="h-4 w-4" />
+    </div>
+  );
+}
+
 function ProductMockup() {
   return (
-    <div className="relative flex min-h-[520px] items-center justify-center lg:min-h-[560px]">
+    <motion.div
+      className="relative flex min-h-[520px] items-center justify-center lg:min-h-[560px]"
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7 }}
+    >
       <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-tr from-[#0050d4]/5 via-transparent to-[#6a37d4]/5" />
 
       <div className="relative w-full max-w-[560px]">
@@ -53,39 +82,45 @@ function ProductMockup() {
           </div>
 
           <div className="space-y-5 p-5 sm:p-6">
-            <div className="flex max-w-[85%] items-end gap-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#dadddf] text-[#595c5d]">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 10a3.25 3.25 0 100-6.5 3.25 3.25 0 000 6.5Zm0 1.5c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4Z" />
-                </svg>
-              </div>
+            <motion.div
+              className="flex max-w-[85%] items-end gap-2"
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <AvatarIcon className="bg-[#dadddf] text-[#595c5d]" />
               <div className="rounded-lg rounded-bl-sm bg-[#dadddf] px-4 py-3.5 text-[13px] leading-relaxed text-[#2c2f30] sm:text-sm">
                 Hi, I&apos;m looking for an update on my order #48291. It hasn&apos;t arrived yet.
               </div>
-            </div>
+            </motion.div>
 
-            <div className="ml-auto flex max-w-[85%] flex-row-reverse items-end gap-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0050d4] text-white">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 3.75a6.25 6.25 0 106.25 6.25A6.25 6.25 0 0010 3.75Zm-2 6.25a1.25 1.25 0 112.5 0 1.25 1.25 0 01-2.5 0Zm4 0a1.25 1.25 0 112.5 0 1.25 1.25 0 01-2.5 0Zm-2 3.75a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5Z" />
-                </svg>
-              </div>
+            <motion.div
+              className="ml-auto flex max-w-[85%] flex-row-reverse items-end gap-2"
+              initial={{ opacity: 0, x: 16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <BotAvatar />
               <div className="rounded-lg rounded-br-sm bg-[#0050d4] px-4 py-3.5 text-[13px] leading-relaxed text-white sm:text-sm">
                 Checking that for you... I see it&apos;s currently at the sorting facility in
                 Denver. Estimated delivery is tomorrow by 5 PM.
               </div>
-            </div>
+            </motion.div>
 
-            <div className="flex max-w-[85%] items-end gap-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#dadddf] text-[#595c5d]">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 10a3.25 3.25 0 100-6.5 3.25 3.25 0 000 6.5Zm0 1.5c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4Z" />
-                </svg>
-              </div>
+            <motion.div
+              className="flex max-w-[85%] items-end gap-2"
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <AvatarIcon className="bg-[#dadddf] text-[#595c5d]" />
               <div className="rounded-lg rounded-bl-sm bg-[#dadddf] px-4 py-3.5 text-[13px] leading-relaxed text-[#2c2f30] sm:text-sm">
                 Can I change the delivery address to my office instead?
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <div className="flex items-center gap-3 border-t border-[#abadae]/10 bg-[#eff1f2] px-4 py-4">
@@ -103,7 +138,14 @@ function ProductMockup() {
           </div>
         </div>
 
-        <div className="absolute -right-4 -top-10 w-60 rotate-3 rounded-xl border border-[#abadae]/20 bg-white/85 p-4 shadow-xl backdrop-blur-[20px] transition-transform duration-300 hover:rotate-0 sm:-right-8 sm:-top-12 sm:w-64">
+        {/* Handoff card — positioned responsively */}
+        <motion.div
+          className="absolute -top-6 right-0 w-56 rotate-3 rounded-xl border border-[#abadae]/20 bg-white/85 p-4 shadow-xl backdrop-blur-[20px] transition-transform duration-300 hover:rotate-0 sm:-right-8 sm:-top-12 sm:w-64"
+          initial={{ opacity: 0, y: -10, scale: 0.9 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 1.0, duration: 0.5 }}
+        >
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fb5151]/20 text-[#b31b25]">
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -123,9 +165,16 @@ function ProductMockup() {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="absolute -bottom-12 left-2 flex flex-wrap gap-3 sm:-bottom-14 sm:left-4">
+        {/* Channel badges — responsive positioning */}
+        <motion.div
+          className="absolute -bottom-10 left-2 flex flex-wrap gap-3 sm:-bottom-14 sm:left-4"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 1.2, duration: 0.5 }}
+        >
           <div className="flex items-center gap-2.5 rounded-full border border-[#0b9f62]/15 bg-[#006947] px-3.5 py-2.5 text-[11px] font-bold text-white shadow-[0_18px_34px_rgba(0,105,71,0.26)] sm:px-4.5 sm:text-xs">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/18 ring-1 ring-white/20">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -140,10 +189,11 @@ function ProductMockup() {
             </span>
             <span className="tracking-[0.01em]">Voice Active</span>
           </div>
-        </div>
+        </motion.div>
 
+        {/* Decorative connector line */}
         <svg
-          className="absolute -z-10 left-full top-1/2 h-32 w-32 -translate-x-1/2 text-[#abadae]/20"
+          className="absolute -z-10 left-full top-1/2 hidden h-32 w-32 -translate-x-1/2 text-[#abadae]/20 lg:block"
           viewBox="0 0 100 100"
         >
           <path
@@ -155,6 +205,6 @@ function ProductMockup() {
           />
         </svg>
       </div>
-    </div>
+    </motion.div>
   );
 }

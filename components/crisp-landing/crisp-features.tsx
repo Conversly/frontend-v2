@@ -128,8 +128,12 @@ export default function CrispFeatures() {
 
         {/* Showcase card */}
         <div className="overflow-hidden rounded-[28px] border border-[#ddd7ca] bg-white shadow-[0_30px_80px_rgba(59,43,22,0.10)]">
-          {/* Tabs */}
-          <div className="grid border-b border-[#e8e2d7] md:grid-cols-4">
+          {/* Tabs — horizontal scroll on mobile, grid on desktop */}
+          <div
+            className="flex overflow-x-auto border-b border-[#e8e2d7] md:grid md:grid-cols-4 md:overflow-visible scrollbar-hide"
+            role="tablist"
+            aria-label="Feature tabs"
+          >
             {showcaseTabs.map((tab, index) => {
               const isActive = index === activeIndex;
 
@@ -137,13 +141,25 @@ export default function CrispFeatures() {
                 <button
                   key={tab.id}
                   type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={`tabpanel-${tab.id}`}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => handleTabClick(index)}
-                  className={`group relative px-5 py-5 text-left transition-colors md:px-6 ${
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight") {
+                      e.preventDefault();
+                      handleTabClick((index + 1) % showcaseTabs.length);
+                    } else if (e.key === "ArrowLeft") {
+                      e.preventDefault();
+                      handleTabClick((index - 1 + showcaseTabs.length) % showcaseTabs.length);
+                    }
+                  }}
+                  className={`group relative min-w-[160px] shrink-0 px-5 py-5 text-left transition-colors md:min-w-0 md:px-6 ${
                     isActive
                       ? "bg-white text-[#1f1d1a]"
                       : "bg-[#fcfbf8] text-[#a19a90] hover:bg-white/80 hover:text-[#575047]"
                   }`}
-                  aria-pressed={isActive}
                 >
                   {/* Progress bar */}
                   <span
@@ -157,7 +173,7 @@ export default function CrispFeatures() {
                   {/* Divider */}
                   <span
                     className={`absolute inset-y-0 left-0 w-px bg-[#ece6db] ${
-                      index === 0 ? "hidden" : "block"
+                      index === 0 ? "hidden" : "hidden md:block"
                     }`}
                   />
                   <span className="block text-[15px] font-semibold tracking-[-0.01em] md:text-[16px]">
@@ -176,7 +192,12 @@ export default function CrispFeatures() {
           </div>
 
           {/* Showcase area */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#e8e0d0] via-[#ddd5c3] to-[#d0c7b3] px-4 py-5 md:px-8 md:py-8">
+          <div
+            id={`tabpanel-${activeTab.id}`}
+            role="tabpanel"
+            aria-label={activeTab.title}
+            className="relative overflow-hidden bg-gradient-to-br from-[#e8e0d0] via-[#ddd5c3] to-[#d0c7b3] px-4 py-5 md:px-8 md:py-8"
+          >
             {/* Subtle pattern overlay */}
             <div
               className="absolute inset-0 opacity-[0.04]"

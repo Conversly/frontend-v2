@@ -22,7 +22,7 @@ const useCases = [
     statLabel: "ticket reduction",
     accent: "#3f63d8",
     accentBg: "#dde7ff",
-    link: "/solutions?filter=support",
+    link: "/solutions",
   },
   {
     icon: ShoppingCart,
@@ -34,7 +34,7 @@ const useCases = [
     statLabel: "availability",
     accent: "#2e9d63",
     accentBg: "#d8f5e3",
-    link: "/solutions?industry=retail",
+    link: "/solutions",
   },
   {
     icon: HeartPulse,
@@ -46,7 +46,7 @@ const useCases = [
     statLabel: "fewer no-shows",
     accent: "#d44a5c",
     accentBg: "#ffe0e6",
-    link: "/solutions?industry=healthcare",
+    link: "/solutions",
   },
   {
     icon: Home,
@@ -58,7 +58,7 @@ const useCases = [
     statLabel: "faster response",
     accent: "#c57f1e",
     accentBg: "#fff3d6",
-    link: "/solutions?filter=commerce",
+    link: "/solutions",
   },
   {
     icon: GraduationCap,

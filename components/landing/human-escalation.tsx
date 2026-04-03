@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { User, Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, MessageSquare, ThumbsDown, Activity } from "lucide-react";
+import { Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, ThumbsDown, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -411,7 +411,53 @@ export default function HumanEscalationSection() {
                             </div>
                         </motion.div>
 
-                        {/* Floating Elements (Parallax) */}
+                        {/* Mobile-only: inline stats that replace the hidden floating elements */}
+                        <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
+                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+                                <div className="flex items-center gap-3">
+                                    <motion.div
+                                        animate={{
+                                            background: satisfactionScore < 85 ? "linear-gradient(to top right, #ef4444, #f87171)" : "linear-gradient(to top right, #10b981, #34d399)"
+                                        }}
+                                        className="h-10 w-10 rounded-full flex items-center justify-center shadow-lg text-white shrink-0 transition-colors duration-500"
+                                    >
+                                        {satisfactionScore < 85 ? <ThumbsDown size={16} /> : <CheckCircle2 size={18} />}
+                                    </motion.div>
+                                    <div>
+                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Satisfaction</div>
+                                        <div className={`text-xl font-black leading-none ${satisfactionScore < 85 ? "text-red-500" : "text-slate-800"}`}>
+                                            {satisfactionScore}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+                                <div className="flex items-center gap-3">
+                                    <motion.div
+                                        animate={{
+                                            backgroundColor: isEscalating ? "#fff7ed" : isResolved ? "#f0fdf4" : "#eff6ff",
+                                            borderColor: isEscalating ? "#ffedd5" : isResolved ? "#dcfce7" : "#dbeafe"
+                                        }}
+                                        className="h-10 w-10 rounded-full border flex items-center justify-center shrink-0 shadow-sm transition-colors duration-500"
+                                    >
+                                        {isEscalating ? <Activity size={16} className="text-amber-500" /> : isResolved ? <Headphones size={16} className="text-green-600" /> : <Bot size={16} className="text-blue-600" />}
+                                    </motion.div>
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-800">
+                                            {isEscalating ? "Escalating" : isResolved ? "Connected" : "AI Active"}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                            <span className={`h-1.5 w-1.5 rounded-full ${isEscalating ? 'bg-amber-500 animate-pulse' : 'bg-green-500'}`} />
+                                            <span className="text-[10px] text-slate-500 font-medium">
+                                                {isEscalating ? "Routing..." : "Active Now"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Elements (Parallax) — desktop only */}
                         <motion.div
                             style={{
                                 y: useTransform(mouseY, [0, 1], [-15, 15]),

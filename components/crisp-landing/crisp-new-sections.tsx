@@ -12,6 +12,7 @@ import {
   UserCheck,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 import {
   VoiceAgentVisual,
   WhatsAppVisual,
@@ -175,6 +176,7 @@ const channels = [
     iconClassName: "text-purple-600",
     badgeClassName: "bg-purple-500/10 border-purple-500/20",
     visual: <WebsiteWidgetVisual />,
+    href: "/features",
   },
   {
     icon: MessageCircle,
@@ -184,6 +186,7 @@ const channels = [
     iconClassName: "text-emerald-600",
     badgeClassName: "bg-emerald-500/10 border-emerald-500/20",
     visual: <WhatsAppVisual />,
+    href: "/features",
   },
   {
     icon: Mic,
@@ -193,6 +196,7 @@ const channels = [
     iconClassName: "text-blue-600",
     badgeClassName: "bg-blue-500/10 border-blue-500/20",
     visual: <VoiceAgentVisual />,
+    href: "https://verlyai.xyz/features",
   },
 ];
 
@@ -239,8 +243,13 @@ export function OmnichannelSection() {
               whileHover={{ y: -6 }}
               className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/85 shadow-[0_18px_48px_rgba(15,23,42,0.08)] backdrop-blur-md transition-all duration-300 hover:border-slate-300 hover:shadow-[0_26px_60px_rgba(37,99,235,0.12)]"
             >
-              <div className="h-60 shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50">
+              <div className="relative h-60 shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50">
                 {ch.visual}
+                {/* Live indicator */}
+                <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 shadow-sm backdrop-blur-sm">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                  Live
+                </div>
               </div>
 
               <div className="flex flex-1 flex-col px-6 py-5">
@@ -255,9 +264,18 @@ export function OmnichannelSection() {
                   </h3>
                 </div>
 
-                <p className="mt-4 text-[0.92rem] leading-7 text-[#6d665d]">
+                <p className="mt-4 flex-1 text-[0.92rem] leading-7 text-[#6d665d]">
                   {ch.description}
                 </p>
+
+                {/* CTA link */}
+                <Link
+                  href={ch.href}
+                  className="mt-5 inline-flex items-center gap-2 text-[0.88rem] font-semibold text-[#315EEA] transition-colors hover:text-[#1d47c4]"
+                >
+                  Learn more
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
               </div>
             </motion.div>
           ))}
@@ -413,7 +431,7 @@ export function HandoffSection() {
                     <div className="mb-1 flex items-center gap-1.5 text-[0.65rem] font-semibold text-emerald-600">
                       <UserCheck className="h-3 w-3" /> Sarah · Human Agent
                     </div>
-                    Hi! I see the issue with the courier. I&apos;ve expedited it for you now. 😊
+                    Hi! I see the issue with the courier. I&apos;ve expedited it for you now.
                   </div>
                 </div>
               </div>

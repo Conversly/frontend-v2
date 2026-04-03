@@ -78,7 +78,7 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
       )}
 
       <section
-        className="relative overflow-hidden bg-white pb-8 pt-20 md:pb-12 md:pt-28"
+        className="relative overflow-hidden bg-white pb-16 pt-20 md:pb-20 md:pt-28"
         id="faq"
       >
         {/* Decorative background */}
@@ -163,6 +163,7 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
               );
             })}
           </div>
+
         </div>
       </section>
     </>
