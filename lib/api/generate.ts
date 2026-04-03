@@ -23,7 +23,7 @@ export interface ImproveMessageResponse {
 
 export const improveMessage = async (input: ImproveMessageInput): Promise<ImproveMessageResponse> => {
     const endpoint = API.ENDPOINTS.GENERATE.IMPROVE_MESSAGE;
-    return guardedFetch<ImproveMessageResponse>(
+    const response = await guardedFetch<ImproveMessageResponse>(
         endpoint,
         API.ENDPOINTS.GENERATE.BASE_URL(),
         {
@@ -31,4 +31,5 @@ export const improveMessage = async (input: ImproveMessageInput): Promise<Improv
             data: input,
         },
     );
+    return response.data;
 };
