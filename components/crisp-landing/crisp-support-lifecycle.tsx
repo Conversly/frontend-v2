@@ -17,7 +17,7 @@ export default function CrispSupportLifecycle() {
               <Sparkles className="h-4 w-4" />
               Lifecycle Solution
             </div>
-            <h2 className="max-w-[13ch] text-[44px] font-semibold leading-[0.92] tracking-[-0.06em] text-[#101828] sm:text-[52px] md:text-[62px] lg:max-w-none lg:text-[68px]">
+            <h2 className="max-w-[13ch] font-[Georgia,Times,'Times_New_Roman',serif] text-[44px] font-semibold leading-[0.92] tracking-[-0.06em] text-[#101828] sm:text-[52px] md:text-[62px] lg:max-w-none lg:text-[68px]">
               A complete customer support lifecycle solution
             </h2>
             <p className="mt-7 max-w-[560px] text-[18px] leading-[1.65] text-[#667085] sm:text-[20px]">

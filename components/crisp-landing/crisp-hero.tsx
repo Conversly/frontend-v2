@@ -8,7 +8,7 @@ export default function CrispHero() {
           <div className="page-main-title page-main-title--large page-main-title--black page-main-title--title common-hero__title">
             <div className="page-wrapper page-wrapper--generic page-wrapper--regular page-main-title__wrapper">
               <div className="page-main-title__title-wrapper">
-                <h1 className="page-main-title__title font-title-bold">
+                <h1 className="page-main-title__title font-[Georgia,Times,'Times_New_Roman',serif]">
                   <span>
                     The AI customer support platform for{' '}
                     <span className="emphasis">
