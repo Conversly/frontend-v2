@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
@@ -78,7 +78,7 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
       )}
 
       <section
-        className="relative overflow-hidden bg-white py-20 md:py-28"
+        className="relative overflow-hidden bg-white pb-8 pt-20 md:pb-12 md:pt-28"
         id="faq"
       >
         {/* Decorative background */}
@@ -163,26 +163,6 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
               );
             })}
           </div>
-
-          {/* Bottom CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-12 flex flex-col items-center gap-4 text-center"
-          >
-            <p className="text-[0.92rem] text-[#8a8279]">
-              Still have questions?
-            </p>
-            <a
-              href="mailto:team@verlyai.xyz"
-              className="inline-flex items-center gap-2 rounded-full border border-[#e4ddd4] bg-white px-6 py-3 text-[0.9rem] font-semibold text-[#1e1c19] shadow-[0_4px_16px_rgba(59,43,22,0.06)] transition-all duration-300 hover:border-[#315EEA]/30 hover:bg-[#f8faff] hover:shadow-[0_8px_24px_rgba(49,94,234,0.1)]"
-            >
-              Talk to our team
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </motion.div>
         </div>
       </section>
     </>

@@ -126,7 +126,7 @@ export default function Navbar() {
               height={33}
               className="h-10 w-auto object-contain"
             />
-            <span className="text-xl font-bold text-slate-900">VerlyAI</span>
+            <span className="text-xl font-bold text-slate-900">Verly</span>
           </Link>
 
           {/* Navigation Links */}

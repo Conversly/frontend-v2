@@ -4,16 +4,19 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Bot,
-  Globe,
   Headphones,
+  MessageCircle,
   MessageSquare,
-  Phone,
-  PhoneCall,
-  Send,
+  Mic,
   Sparkles,
   UserCheck,
   Zap,
 } from "lucide-react";
+import {
+  VoiceAgentVisual,
+  WhatsAppVisual,
+  WebsiteWidgetVisual,
+} from "@/components/landing/cards/FeatureVisuals";
 
 /* ═══════════════════════════════════════════════════════════════════════
    WHY SWITCH — Problem section
@@ -160,150 +163,48 @@ export function WhySwitchSection() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   OMNICHANNEL PROOF — with richer card interiors
+   OMNICHANNEL PROOF — adapted from previous landing cards
    ═══════════════════════════════════════════════════════════════════════ */
-
-function WebChatMockup() {
-  return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-[#c4d4f7]/60 bg-[#f4f7ff]">
-      {/* Browser bar */}
-      <div className="flex items-center gap-2 border-b border-[#c4d4f7]/40 bg-white/80 px-4 py-2.5">
-        <div className="flex gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-[#ff6058]" />
-          <span className="h-2 w-2 rounded-full bg-[#ffbd2e]" />
-          <span className="h-2 w-2 rounded-full bg-[#27ca40]" />
-        </div>
-        <div className="ml-2 flex items-center gap-1.5 rounded-md bg-[#eef2fa] px-3 py-1 text-[0.65rem] text-[#6e7da2]">
-          <Globe className="h-3 w-3" /> yoursite.com
-        </div>
-      </div>
-      {/* Chat messages */}
-      <div className="space-y-2 p-4">
-        <div className="flex justify-start">
-          <div className="max-w-[85%] rounded-xl rounded-bl-sm bg-white px-3 py-2 text-[0.72rem] text-[#3d4a62] shadow-sm">
-            Hi! How can I return my order?
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <div className="max-w-[85%] rounded-xl rounded-br-sm bg-[#315EEA] px-3 py-2 text-[0.72rem] text-white">
-            I can help! Let me pull up your order details.
-          </div>
-        </div>
-        <div className="flex items-center gap-1 text-[0.6rem] text-[#8b93ab]">
-          <Bot className="h-3 w-3" /> AI · Instant reply
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function WhatsAppMockup() {
-  return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-[#bde8cd]/60 bg-[#e7f8ed]">
-      {/* WA header */}
-      <div className="flex items-center gap-2 border-b border-[#bde8cd]/40 bg-[#128C7E] px-4 py-2.5 text-white">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
-          <Send className="h-3 w-3" />
-        </div>
-        <span className="text-[0.72rem] font-semibold">Verly Support</span>
-        <span className="ml-auto text-[0.6rem] opacity-70">Online</span>
-      </div>
-      {/* Messages */}
-      <div className="space-y-2 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Crect%20fill%3D%22%23e2f0e6%22%20width%3D%2232%22%20height%3D%2232%22/%3E%3C/svg%3E')] p-4">
-        <div className="flex justify-start">
-          <div className="max-w-[85%] rounded-xl rounded-bl-sm bg-white px-3 py-2 text-[0.72rem] text-[#3d4a62] shadow-sm">
-            When does my subscription renew? 📅
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <div className="max-w-[85%] rounded-xl rounded-br-sm bg-[#dcf8c6] px-3 py-2 text-[0.72rem] text-[#2c3e28]">
-            Your plan renews on March 15. Want to update it?
-          </div>
-        </div>
-        <div className="flex items-center gap-1 text-[0.6rem] text-[#6d9a63]">
-          <UserCheck className="h-3 w-3" /> Same AI brain, same knowledge
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VoiceMockup() {
-  return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-[#d6c8f7]/60 bg-[#f5f0ff]">
-      {/* Call header */}
-      <div className="flex items-center justify-between border-b border-[#d6c8f7]/40 bg-[#7c3aed] px-4 py-2.5 text-white">
-        <div className="flex items-center gap-2">
-          <Phone className="h-3.5 w-3.5" />
-          <span className="text-[0.72rem] font-semibold">Voice AI Active</span>
-        </div>
-        <span className="flex items-center gap-1 text-[0.6rem] opacity-80">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-300" /> 2:34
-        </span>
-      </div>
-      {/* Transcript */}
-      <div className="space-y-2.5 p-4">
-        <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ede4ff] text-[#7c3aed]">
-            <span className="text-[0.5rem] font-bold">C</span>
-          </div>
-          <p className="text-[0.72rem] leading-snug text-[#3d4a62]">
-            &quot;I need to reschedule my appointment for next week.&quot;
-          </p>
-        </div>
-        <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#7c3aed] text-white">
-            <Bot className="h-3 w-3" />
-          </div>
-          <p className="text-[0.72rem] leading-snug text-[#3d4a62]">
-            &quot;Of course! I see an opening on Tuesday at 2 PM. Shall I book that?&quot;
-          </p>
-        </div>
-        <div className="flex items-center gap-1 text-[0.6rem] text-[#8a7cb8]">
-          <Sparkles className="h-3 w-3" /> Natural voice · Context-aware
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const channels = [
   {
     icon: MessageSquare,
-    title: "Web Chat",
+    title: "Website Chat",
     description:
-      "Embed a smart widget on your website. AI answers instantly, captures intent, and routes to humans when needed.",
-    iconColor: "#3f63d8",
-    iconBg: "#dde7ff",
-    borderColor: "border-[#c4d4f7]",
-    Mockup: WebChatMockup,
+      "Create your AI chatbot for your website — engage visitors 24/7, answer questions instantly, and convert browsers into customers automatically.",
+    iconClassName: "text-purple-600",
+    badgeClassName: "bg-purple-500/10 border-purple-500/20",
+    visual: <WebsiteWidgetVisual />,
   },
   {
-    icon: Bot,
-    title: "WhatsApp",
+    icon: MessageCircle,
+    title: "WhatsApp AI",
     description:
-      "Run support where customers already talk. Same AI brain, same routing, same escalation — on WhatsApp Business.",
-    iconColor: "#2e9d63",
-    iconBg: "#d8f5e3",
-    borderColor: "border-[#bde8cd]",
-    Mockup: WhatsAppMockup,
+      "Meet customers on their favorite app — automate conversations, confirm bookings, and close deals on WhatsApp at scale.",
+    iconClassName: "text-emerald-600",
+    badgeClassName: "bg-emerald-500/10 border-emerald-500/20",
+    visual: <WhatsAppVisual />,
   },
   {
-    icon: PhoneCall,
-    title: "Voice",
+    icon: Mic,
+    title: "Voice AI",
     description:
-      "Handle inbound calls with a natural voice AI agent. Route complex calls to humans with full context.",
-    iconColor: "#7c3aed",
-    iconBg: "#ede4ff",
-    borderColor: "border-[#d6c8f7]",
-    Mockup: VoiceMockup,
+      "Answer every call instantly with natural AI voices — qualify leads, book appointments, and provide support without hiring more staff.",
+    iconClassName: "text-blue-600",
+    badgeClassName: "bg-blue-500/10 border-blue-500/20",
+    visual: <VoiceAgentVisual />,
   },
 ];
 
 export function OmnichannelSection() {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f4ee_0%,#f2eee8_50%,#f7f4ee_100%)] py-20 text-[#1d1d1b] md:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.03)_1px,transparent_1px)] bg-[size:72px_72px]" />
+    <section className="relative overflow-hidden bg-slate-50 pb-10 pt-20 text-slate-900 md:pb-12 md:pt-24 lg:pb-14">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.04)_1px,transparent_1px)] bg-[size:72px_72px]" />
+        <div className="absolute right-[6%] top-[8%] h-[320px] w-[320px] rounded-full bg-blue-300/10 blur-[90px]" />
+        <div className="absolute bottom-[0%] left-[4%] h-[360px] w-[360px] rounded-full bg-indigo-300/10 blur-[100px]" />
+      </div>
 
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
         <motion.div
@@ -313,14 +214,17 @@ export function OmnichannelSection() {
           transition={{ duration: 0.55 }}
           className="mx-auto max-w-[760px] text-center"
         >
-          <div className="mb-4 inline-flex rounded-full border border-[#d9d2c5] bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a7468]">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/70 px-4 py-1.5 text-sm font-medium text-blue-600 shadow-sm backdrop-blur-sm">
+            <Headphones className="h-4 w-4" />
             Omnichannel Support
           </div>
-          <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.02] tracking-[-0.04em] text-[#221f1b] md:text-[52px]">
+          <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
             Three channels.
-            <span className="block text-[#6e6558]">One support brain.</span>
+            <span className="relative block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              One support brain.
+            </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+          <p className="mx-auto mt-5 max-w-[700px] text-lg leading-8 text-slate-600 md:text-xl">
             Customers pick the channel they prefer. Verly handles them equally — same knowledge,
             same routing, same analytics.
           </p>
@@ -335,21 +239,28 @@ export function OmnichannelSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               whileHover={{ y: -6 }}
-              className={`group rounded-[28px] border ${ch.borderColor} bg-white p-7 shadow-[0_14px_36px_rgba(59,43,22,0.06)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(59,43,22,0.10)]`}
+              className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/85 shadow-[0_18px_48px_rgba(15,23,42,0.08)] backdrop-blur-md transition-all duration-300 hover:border-slate-300 hover:shadow-[0_26px_60px_rgba(37,99,235,0.12)]"
             >
-              <div
-                className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm"
-                style={{ backgroundColor: ch.iconBg, color: ch.iconColor }}
-              >
-                <ch.icon className="h-6 w-6" />
+              <div className="h-60 shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50">
+                {ch.visual}
               </div>
-              <h3 className="text-[1.3rem] font-semibold tracking-[-0.02em] text-[#1e1c19]">
-                {ch.title}
-              </h3>
-              <p className="mt-2 text-[0.88rem] leading-[1.65] text-[#6d665d]">
-                {ch.description}
-              </p>
-              <ch.Mockup />
+
+              <div className="flex flex-1 flex-col px-6 py-5">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl border ${ch.badgeClassName} ${ch.iconClassName}`}
+                  >
+                    <ch.icon className="h-[18px] w-[18px]" />
+                  </div>
+                  <h3 className="text-[1.05rem] font-semibold tracking-[-0.02em] text-slate-900">
+                    {ch.title}
+                  </h3>
+                </div>
+
+                <p className="mt-4 text-[0.98rem] leading-8 text-slate-600">
+                  {ch.description}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>
