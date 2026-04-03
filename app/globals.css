@@ -331,8 +331,8 @@
    * L2  --card         Pure white foreground content
    * ─────────────────────────────────────────────────────────────────── */
 
-  /* L0 — Page canvas */
-  --background: oklch(0.960 0.006 248);
+  /* L0 — Page canvas (pure white — hierarchy via borders & elevation) */
+  --background: oklch(1 0 0);
 
   /* L1 — Sidebar: Pure White */
   --sidebar: oklch(1 0 0);

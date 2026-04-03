@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
   Globe,
@@ -11,7 +10,6 @@ import {
   ChevronLeft,
   Copy,
   Check,
-  Database,
   AlertCircle,
   Ellipsis,
   Trash2,
@@ -19,8 +17,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -94,37 +90,41 @@ function getStatusBadgeClass(status: string | null | undefined, map: Record<stri
   return map[status.toUpperCase()] || map.DRAFT;
 }
 
+// Pill-style tab trigger — matches CustomizationTab standard
+const PILL_TAB_CLASS =
+  'text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground';
+
 // =============================================================================
 // Content Viewer Components
 // =============================================================================
 
 function WebContentView({ content }: { content: WebContent }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {(content.title || content.url) && (
-        <div className="pb-4 border-b border-border">
+        <div className="pb-5 border-b border-border">
           {content.title && (
-            <h3 className="text-base font-semibold text-foreground">{content.title}</h3>
+            <h3 className="text-base font-semibold text-foreground leading-snug">{content.title}</h3>
           )}
           {content.url && (
             <a
               href={content.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-primary hover:text-primary/80 break-all mt-1 block"
+              className="text-sm text-primary hover:text-primary/80 break-all mt-1.5 block"
             >
               {content.url}
             </a>
           )}
         </div>
       )}
-      <div className="text-sm text-foreground/80 leading-relaxed space-y-5">
+      <div className="space-y-6">
         {content.sections?.map((section, i) => (
           <div key={i}>
             {section.heading && (
-              <h4 className="text-sm font-semibold text-foreground mb-1.5">{section.heading}</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-2">{section.heading}</h4>
             )}
-            <p className="whitespace-pre-wrap">{section.content}</p>
+            <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{section.content}</p>
           </div>
         ))}
       </div>
@@ -134,12 +134,16 @@ function WebContentView({ content }: { content: WebContent }) {
 
 function FileContentView({ content }: { content: FileContent }) {
   return (
-    <div className="text-sm text-foreground/80 leading-relaxed">
+    <div className="space-y-6">
       {content.pages?.map((page, i) => (
         <div key={page.page}>
-          <p className="whitespace-pre-wrap">{page.content}</p>
+          <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{page.content}</p>
           {i < (content.pages?.length ?? 0) - 1 && (
-            <p className="text-muted-foreground text-xs font-medium my-5">--- Page {page.page + 1} ---</p>
+            <div className="flex items-center gap-3 my-6">
+              <div className="flex-1 border-t border-border" />
+              <span className="text-xs text-muted-foreground font-medium">Page {page.page + 1}</span>
+              <div className="flex-1 border-t border-border" />
+            </div>
           )}
         </div>
       ))}
@@ -149,14 +153,14 @@ function FileContentView({ content }: { content: FileContent }) {
 
 function QAContentView({ content }: { content: QASourceContent }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Question</span>
-        <p className="text-sm text-foreground leading-relaxed mt-1.5">{content.question}</p>
+        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Question</p>
+        <p className="text-sm text-foreground leading-[1.75]">{content.question}</p>
       </div>
-      <div className="border-t border-border pt-5">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Answer</span>
-        <p className="text-sm text-foreground/80 leading-relaxed mt-1.5 whitespace-pre-wrap">{content.answer}</p>
+      <div className="border-t border-border pt-6">
+        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Answer</p>
+        <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{content.answer}</p>
       </div>
     </div>
   );
@@ -164,7 +168,7 @@ function QAContentView({ content }: { content: QASourceContent }) {
 
 function TextContentView({ content }: { content: TextSourceContent }) {
   return (
-    <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">{content.content}</p>
+    <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{content.content}</p>
   );
 }
 
@@ -180,7 +184,7 @@ function SourceContentRenderer({ content }: { content: SourceContentItem }) {
       return <TextContentView content={content.structuredContent as TextSourceContent} />;
     default:
       return (
-        <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
+        <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">
           {content.plainText || 'No content available'}
         </p>
       );
@@ -196,14 +200,10 @@ function SourceContentTabBody({ dataSourceId }: { dataSourceId: string }) {
 
   if (!content) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground">
-          Content preview not available for this source.
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Switch to the Chunks tab to view the raw data.
-        </p>
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <AlertCircle className="w-7 h-7 text-muted-foreground/40 mb-3" />
+        <p className="text-sm text-muted-foreground">Content preview not available.</p>
+        <p className="text-xs text-muted-foreground/60 mt-1">Switch to the Chunks tab to view raw data.</p>
       </div>
     );
   }
@@ -222,17 +222,12 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const shouldTruncate = embedding.text.length > 200;
-  const displayText = expanded ? embedding.text : embedding.text.slice(0, 200);
+  const shouldTruncate = embedding.text.length > 300;
+  const displayText = expanded ? embedding.text : embedding.text.slice(0, 300);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.02 }}
-      className="group bg-[--surface-secondary] border border-border rounded-lg p-4 hover:border-primary/20 transition-all"
-    >
-      <div className="flex items-start justify-between gap-3 mb-2">
+    <div className="group py-5">
+      <div className="flex items-center justify-between mb-2.5">
         <span className="text-xs font-mono text-muted-foreground">Chunk #{index + 1}</span>
         <Button
           size="icon-sm"
@@ -240,14 +235,10 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
           onClick={handleCopy}
           className="opacity-0 group-hover:opacity-100 transition-opacity"
         >
-          {copied ? (
-            <Check className="w-3 h-3 text-green-400" />
-          ) : (
-            <Copy className="w-3 h-3" />
-          )}
+          {copied ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3" />}
         </Button>
       </div>
-      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+      <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">
         {displayText}
         {shouldTruncate && !expanded && '...'}
       </p>
@@ -259,7 +250,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
           {expanded ? 'Show less' : 'Show more'}
         </button>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -268,28 +259,22 @@ function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
 
   if (!embeddings || embeddings.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground">
-          No embeddings found. They may still be processing.
-        </p>
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <AlertCircle className="w-7 h-7 text-muted-foreground/40 mb-3" />
+        <p className="text-sm text-muted-foreground">No embeddings found. They may still be processing.</p>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-muted-foreground font-normal text-sm">{embeddings.length} chunks</span>
+    <div>
+      <p className="text-xs text-muted-foreground mb-1">{embeddings.length} chunks</p>
+      <div className="divide-y divide-border">
+        {embeddings.map((embedding, index) => (
+          <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
+        ))}
       </div>
-      <div className="space-y-3">
-        <AnimatePresence>
-          {embeddings.map((embedding, index) => (
-            <EmbeddingChunk key={embedding.id} embedding={embedding} index={index} />
-          ))}
-        </AnimatePresence>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -301,48 +286,45 @@ function DetailsSidebarRows({ dataSource, wordCount }: { dataSource: DataSourceI
   const formatDate = (date: string | Date | null) => {
     if (!date) return 'N/A';
     const d = new Date(date);
-    return d.toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: '2-digit',
-    }) + ', ' + d.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return (
+      d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: '2-digit' }) +
+      ', ' +
+      d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    );
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-row justify-between text-sm">
-        <p className="text-muted-foreground">Created:</p>
-        <p className="font-medium text-foreground">{formatDate(dataSource.createdAt)}</p>
+    <div className="divide-y divide-border">
+      <div className="flex items-baseline justify-between py-3">
+        <span className="text-sm text-muted-foreground">Created:</span>
+        <span className="text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
       </div>
-      <div className="flex flex-row justify-between text-sm">
-        <p className="text-muted-foreground">Last updated:</p>
-        <p className="font-medium text-foreground">{formatDate(dataSource.createdAt)}</p>
+      <div className="flex items-baseline justify-between py-3">
+        <span className="text-sm text-muted-foreground">Last updated:</span>
+        <span className="text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
       </div>
       {wordCount != null && wordCount > 0 && (
-        <div className="flex flex-row justify-between text-sm">
-          <p className="text-muted-foreground">Words:</p>
-          <p className="font-medium text-foreground">{wordCount.toLocaleString()}</p>
+        <div className="flex items-baseline justify-between py-3">
+          <span className="text-sm text-muted-foreground">Words:</span>
+          <span className="text-sm font-medium text-foreground">{wordCount.toLocaleString()}</span>
         </div>
       )}
-      <div className="flex flex-row justify-between text-sm">
-        <p className="text-muted-foreground">Type:</p>
-        <p className="font-medium text-foreground capitalize">{(dataSource.type || 'Document').toLowerCase()}</p>
+      <div className="flex items-baseline justify-between py-3">
+        <span className="text-sm text-muted-foreground">Type:</span>
+        <span className="text-sm font-medium text-foreground capitalize">{(dataSource.type || 'Document').toLowerCase()}</span>
       </div>
-      <div className="flex flex-row justify-between text-sm">
-        <p className="text-muted-foreground">Status:</p>
-        <p className="font-medium text-foreground capitalize">{(dataSource.ingestionStatus || 'Draft').toLowerCase()}</p>
+      <div className="flex items-baseline justify-between py-3">
+        <span className="text-sm text-muted-foreground">Status:</span>
+        <span className="text-sm font-medium text-foreground capitalize">{(dataSource.ingestionStatus || 'Draft').toLowerCase()}</span>
       </div>
       {dataSource.citation && (
-        <div className="flex flex-row justify-between gap-4 text-sm">
-          <p className="text-muted-foreground shrink-0">Citation:</p>
+        <div className="flex items-baseline justify-between gap-4 py-3">
+          <span className="text-sm text-muted-foreground shrink-0">Citation:</span>
           <a
             href={dataSource.citation}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary hover:text-primary/80 break-all text-right"
+            className="text-sm font-medium text-primary hover:text-primary/80 break-all text-right"
           >
             {dataSource.citation}
           </a>
@@ -386,12 +368,8 @@ function EditCitationDialog({
           />
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="flex-1">
-            Cancel
-          </Button>
-          <Button onClick={() => onSave(citation)} className="flex-1">
-            Save
-          </Button>
+          <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
+          <Button onClick={() => onSave(citation)} className="flex-1">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -420,10 +398,7 @@ export default function DataSourceDetailPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteMutation.mutateAsync({
-        chatbotId: botId,
-        datasourceId: dataSourceId,
-      });
+      await deleteMutation.mutateAsync({ chatbotId: botId, datasourceId: dataSourceId });
       toast.success('Data source deleted successfully');
       router.push(backUrl);
     } catch (error) {
@@ -475,7 +450,6 @@ export default function DataSourceDetailPage() {
         />
       </AsyncBoundary>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteConfirm} onOpenChange={(open) => !open && setShowDeleteConfirm(false)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -490,14 +464,11 @@ export default function DataSourceDetailPage() {
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete();
-              }}
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -555,133 +526,128 @@ function DataSourceDetailContent({
   return (
     <div className="flex h-full overflow-hidden">
       {/* ─── Main Content Area ─────────────────────────────────────────── */}
-      <section className="flex-1 flex flex-col overflow-y-auto min-w-0">
+      <section className="flex-1 flex flex-col overflow-hidden min-w-0 bg-background">
+
         {/* Header */}
-        <div className="flex w-full flex-col items-start gap-1 px-5 pt-6 pb-4 lg:px-8 lg:pt-8 border-b border-border">
+        <div className="px-6 pt-5 pb-0 lg:px-10 lg:pt-6 border-b border-border">
           <button
             onClick={() => router.push(backUrl)}
-            className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-0.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3"
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-4" />
             Back to sources
           </button>
 
-          <h4 className="font-semibold text-2xl w-full mt-1">
-            <div className="flex justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-2 break-all">
+          <div className="flex items-start justify-between pb-4 gap-4">
+            <div className="min-w-0">
+              <h1 className="text-xl font-semibold text-foreground leading-tight break-words">
                 {dataSource.name}
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    'shrink-0 text-xs px-2 py-0.5 font-medium',
-                    getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
-                  )}
-                >
-                  <span className="truncate text-center">
-                    {dataSource.ingestionStatus ?? 'Draft'}
-                  </span>
-                </Badge>
-              </div>
-
-              {/* Desktop actions */}
-              <div className="hidden items-center gap-3 lg:flex">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="h-9 w-9 shrink-0">
-                      <Ellipsis className="size-5 text-muted-foreground" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <FeatureGuard feature="datasources">
-                      <DropdownMenuItem onClick={onEditCitation} disabled={isLiveMode}>
-                        <Edit3 className="w-4 h-4 mr-2" />
-                        Edit citation
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={onDelete}
-                        disabled={isLiveMode}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </FeatureGuard>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              </h1>
+              <Badge
+                variant="outline"
+                className={cn(
+                  'mt-2 text-xs px-2 py-0.5 font-medium',
+                  getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
+                )}
+              >
+                {dataSource.ingestionStatus ?? 'Draft'}
+              </Badge>
             </div>
-          </h4>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
+                >
+                  <Ellipsis className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <FeatureGuard feature="datasources">
+                  <DropdownMenuItem onClick={onEditCitation} disabled={isLiveMode}>
+                    <Edit3 className="w-4 h-4 mr-2" />
+                    Edit citation
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={onDelete}
+                    disabled={isLiveMode}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </FeatureGuard>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
-        {/* Outer tabs — mobile switches between Overview / Details */}
-        <Tabs defaultValue="overview" className="flex flex-1 flex-col gap-0">
+        {/* Outer tabs — mobile toggles Overview / Details */}
+        <Tabs defaultValue="overview" className="flex flex-1 flex-col gap-0 overflow-hidden">
           {/* Mobile-only tab triggers */}
-          <div className="px-5 pt-4 lg:hidden">
+          <div className="px-6 pt-4 lg:hidden">
             <TabsList className="w-full">
-              <TabsTrigger value="overview" className="flex-1">
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value="details" className="flex-1">
-                Details
-              </TabsTrigger>
+              <TabsTrigger value="overview" className="flex-1">Overview</TabsTrigger>
+              <TabsTrigger value="details" className="flex-1">Details</TabsTrigger>
             </TabsList>
           </div>
 
           {/* Overview — always visible on desktop */}
-          <TabsContent value="overview" className="flex-1 flex flex-col mt-0">
+          <TabsContent value="overview" className="flex-1 flex flex-col mt-0 overflow-hidden">
             {/* Inner Content / Chunks tabs */}
-            <Tabs defaultValue="content" className="flex-1 flex flex-col gap-0">
-              <div className="px-5 lg:px-8 pt-4 lg:pt-5">
-                <TabsList>
-                  <TabsTrigger value="content">
+            <Tabs defaultValue="content" className="flex-1 flex flex-col gap-0 overflow-hidden">
+              {/* Pill-style tab triggers — matches app standard */}
+              <div className="px-6 lg:px-10 pt-5">
+                <TabsList className="bg-muted p-1 rounded-lg">
+                  <TabsTrigger value="content" className={PILL_TAB_CLASS}>
                     Content
                   </TabsTrigger>
-                  <TabsTrigger value="chunks">
+                  <TabsTrigger value="chunks" className={PILL_TAB_CLASS}>
                     Chunks
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              <TabsContent value="content" className="flex-1 px-5 py-6 lg:px-8 lg:pb-8 mt-0">
-                <Card className="overflow-auto break-words">
-                  <CardContent className="p-6">
-                    <div className="w-full max-w-none text-sm">
-                      <AsyncBoundary
-                        loadingFallback={
-                          <div className="flex items-center justify-center py-16">
-                            <div className="text-sm text-muted-foreground">Loading content...</div>
-                          </div>
-                        }
-                      >
-                        <SourceContentTabBody dataSourceId={dataSourceId} />
-                      </AsyncBoundary>
-                    </div>
-                  </CardContent>
-                </Card>
+              <TabsContent value="content" className="flex-1 overflow-y-auto mt-0">
+                <div className="px-6 py-6 lg:px-10">
+                  <div className="border border-border rounded-lg p-6">
+                    <AsyncBoundary
+                      loadingFallback={
+                        <div className="flex items-center justify-center py-16">
+                          <div className="text-sm text-muted-foreground">Loading content...</div>
+                        </div>
+                      }
+                    >
+                      <SourceContentTabBody dataSourceId={dataSourceId} />
+                    </AsyncBoundary>
+                  </div>
+                </div>
               </TabsContent>
 
-              <TabsContent value="chunks" className="flex-1 px-5 py-6 lg:px-8 lg:pb-8 mt-0">
-                <div className="flex items-center gap-2 mb-4">
-                  <Database className="w-4 h-4 text-muted-foreground" />
-                  <h4 className="text-sm font-medium text-muted-foreground">Embedding Chunks</h4>
+              <TabsContent value="chunks" className="flex-1 overflow-y-auto mt-0">
+                <div className="px-6 py-6 lg:px-10">
+                  <div className="border border-border rounded-lg p-6">
+                    <AsyncBoundary
+                      loadingFallback={
+                        <div className="flex items-center justify-center py-16">
+                          <div className="text-sm text-muted-foreground">Loading embeddings...</div>
+                        </div>
+                      }
+                    >
+                      <EmbeddingChunksContent dataSourceId={dataSourceId} />
+                    </AsyncBoundary>
+                  </div>
                 </div>
-                <AsyncBoundary
-                  loadingFallback={
-                    <div className="flex items-center justify-center py-16">
-                      <div className="text-sm text-muted-foreground">Loading embeddings...</div>
-                    </div>
-                  }
-                >
-                  <EmbeddingChunksContent dataSourceId={dataSourceId} />
-                </AsyncBoundary>
               </TabsContent>
             </Tabs>
           </TabsContent>
 
           {/* Details — mobile only (desktop uses the sidebar) */}
-          <TabsContent value="details" className="flex-1 px-5 py-6 mt-0">
-            <div className="flex flex-col gap-6">
-              <h2 className="font-semibold text-lg tracking-tight">Details</h2>
+          <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-6 mt-0">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-base font-semibold text-foreground">Details</h2>
               <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
                 <DetailsSidebarRowsWithContent dataSource={dataSource} />
               </AsyncBoundary>
@@ -690,12 +656,12 @@ function DataSourceDetailContent({
         </Tabs>
 
         {/* Mobile sticky bottom action bar */}
-        <div className="sticky bottom-0 flex w-full justify-between gap-4 border-t bg-card p-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] lg:hidden">
+        <div className="sticky bottom-0 flex w-full gap-4 border-t bg-background p-5 lg:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex-1 h-9">
-                <span>Actions</span>
-                <Ellipsis className="size-5 text-muted-foreground hidden lg:block" />
+                <Ellipsis className="size-4 text-muted-foreground" />
+                Actions
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -719,17 +685,15 @@ function DataSourceDetailContent({
       </section>
 
       {/* ─── Desktop Details Sidebar ───────────────────────────────────── */}
-      <aside className="hidden h-full w-[35%] flex-shrink-0 bg-muted lg:flex">
-        <Separator orientation="vertical" />
-        <div className="flex flex-1 flex-col gap-6 p-8 overflow-y-auto">
-          <h2 className="font-semibold text-lg tracking-tight">Details</h2>
+      <aside className="hidden h-full w-72 flex-shrink-0 border-l border-border bg-background lg:flex flex-col">
+        <div className="flex flex-col gap-2 p-6 overflow-y-auto flex-1">
+          <h2 className="text-base font-semibold text-foreground">Details</h2>
           <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
             <DetailsSidebarRowsWithContent dataSource={dataSource} />
           </AsyncBoundary>
         </div>
       </aside>
 
-      {/* Edit Citation Dialog */}
       {editingCitation && (
         <EditCitationDialog
           dataSource={dataSource}
