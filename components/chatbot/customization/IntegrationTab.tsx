@@ -32,9 +32,11 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import type { UIConfigInput } from '@/types/customization';
 import { DomainInfo } from '@/lib/api/deploy';
+import { Switch } from '@/components/ui/switch';
 import {
   useIdentityVerificationConfig,
   useGenerateIdentitySecret,
+  useToggleIdentityVerification,
 } from '@/hooks/useIdentityVerification';
 import {
   AlertDialog,
@@ -388,13 +390,24 @@ Script:
 function IdentityVerificationSection({ chatbotId }: { chatbotId: string }) {
   const { data: config, isLoading } = useIdentityVerificationConfig(chatbotId);
   const generateSecret = useGenerateIdentitySecret(chatbotId);
+  const toggleIdentityVerification = useToggleIdentityVerification(chatbotId);
 
   const [secretVisible, setSecretVisible] = useState(false);
 
   const secret = config?.secret ?? null;
+  const enabled = config?.enabled ?? false;
   const maskedSecret = secret
     ? `${'*'.repeat(Math.max(0, secret.length - 4))}${secret.slice(-4)}`
     : null;
+
+  const handleToggle = async (checked: boolean) => {
+    try {
+      await toggleIdentityVerification.mutateAsync(checked);
+      toast.success(checked ? 'Identity verification enabled' : 'Identity verification disabled');
+    } catch {
+      toast.error('Failed to update identity verification');
+    }
+  };
 
   const handleCopySecret = () => {
     if (secret) {
@@ -468,6 +481,23 @@ window.verly('identify', { token }); // Identify the user with Verly AI`;
       </a>
 
       <div className="space-y-4">
+        {/* Enable / disable toggle */}
+        <div className="flex items-center justify-between py-2">
+          <div>
+            <p className="text-sm font-medium text-foreground">Enable identity verification</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Takes effect on the live widget after you deploy.
+              {!secret && ' Generate a secret key first.'}
+            </p>
+          </div>
+          <Switch
+            checked={enabled}
+            onCheckedChange={handleToggle}
+            disabled={!secret || toggleIdentityVerification.isPending || isLoading}
+            aria-label="Enable identity verification"
+          />
+        </div>
+
         {/* Secret key section */}
         <div>
           <Label className="text-sm font-medium text-foreground mb-2 block">Secret key</Label>
