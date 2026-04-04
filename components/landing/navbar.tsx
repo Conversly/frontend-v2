@@ -71,7 +71,7 @@ export default function Navbar() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="group h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 data-[state=open]:bg-slate-100 data-[state=open]:text-blue-600">
-                  Solutions
+                  Enterprise
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </PopoverTrigger>
