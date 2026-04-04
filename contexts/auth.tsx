@@ -1,12 +1,13 @@
 "use client";
 
 import { getLoggedInUser } from "@/lib/api/user";
+import { getVerlyIdentityToken } from "@/lib/api/auth";
 import { useAuth } from "@/store/auth";
 import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 import { QUERY_KEY } from "@/utils/query-key";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 
 interface AuthContextType { }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,6 +62,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Authentication error:", error);
     }
   }, [error, setAuthStatus, setUser]);
+
+  // ─── Verly AI Widget Identity Verification ───
+  // When the user is authenticated, fetch an identity JWT and identify them
+  // to the embedded support chatbot widget so it can greet them by name.
+  const identifiedUserRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!user?.id || identifiedUserRef.current === user.id) return;
+
+    // Avoid re-identifying the same user on re-renders
+    identifiedUserRef.current = user.id;
+
+    getVerlyIdentityToken().then((token) => {
+      if (token && typeof window !== "undefined" && typeof (window as any).verly === "function") {
+        (window as any).verly("identify", {
+          token,
+          name: user.displayName || user.username || "",
+        });
+      }
+    }).catch(() => {
+      // Silent — identity verification is best-effort, never blocks the app
+    });
+  }, [user]);
 
   // Protect dashboard routes - redirect to home if not authenticated
   useEffect(() => {
