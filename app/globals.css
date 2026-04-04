@@ -1429,6 +1429,27 @@
   }
 }
 
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Reduced motion: disable all animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @utility minimal-scrollbar {
   &::-webkit-scrollbar {
     width: 6px;
@@ -1498,6 +1519,26 @@
 
 .cursor-none * {
   cursor: none !important;
+}
+
+/* Crisp Design System Utilities */
+.crisp-section {
+  @apply relative py-20 md:py-28 overflow-hidden bg-[#fbf9f4];
+}
+.crisp-container {
+  @apply relative mx-auto max-w-[1360px] px-5 md:px-8;
+}
+.crisp-title {
+  @apply font-[Georgia,serif] text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.04em] text-[#221f1b];
+}
+.crisp-subtitle {
+  @apply mt-5 text-[15px] md:text-[18px] leading-7 text-[#6d665d] max-w-[580px];
+}
+.crisp-btn-primary {
+  @apply inline-flex h-13 items-center justify-center rounded-full bg-[#1e1c19] px-7 text-sm font-semibold text-white transition-all hover:bg-black hover:shadow-[0_12px_28px_rgba(17,24,39,0.22)];
+}
+.crisp-btn-secondary {
+  @apply inline-flex h-13 items-center justify-center rounded-full border border-[#e4ddd4] bg-white px-7 text-sm font-semibold text-[#1e1c19] transition-all hover:bg-[#fafaf9] hover:shadow-[0_8px_16px_rgba(59,43,22,0.04)];
 }
 
 /*---break---

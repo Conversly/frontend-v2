@@ -2,55 +2,63 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "What is VerlyAI and how does it work?",
-    answer: "VerlyAI is an AI customer support platform that lets you deploy intelligent agents across Website chat, Voice calls, and WhatsApp. Our AI agents understand your business, answer customer questions 24/7, and seamlessly hand off to human agents when needed. Setup takes minutes—just connect your knowledge base and choose your channels."
+    question: "What is Verly and how does it work?",
+    answer:
+      "Verly is an AI customer support platform that lets you deploy intelligent agents across web chat, voice, and WhatsApp — from a single dashboard. Our AI understands your business, answers customer questions 24/7, and seamlessly hands off to human agents when needed. Setup takes minutes: connect your knowledge base, choose your channels, and go live.",
   },
   {
-    question: "How is VerlyAI different from other chatbot platforms?",
-    answer: "Unlike traditional chatbots that rely on rigid decision trees, VerlyAI uses advanced AI models that understand context and nuance. We offer true omnichannel support (web, voice, WhatsApp), smart AI model switching to reduce costs by up to 90%, and seamless human handoff. Plus, our agents learn continuously from your interactions."
+    question: "How is Verly different from other chatbot platforms?",
+    answer:
+      "Unlike traditional chatbots that rely on rigid decision trees, Verly uses advanced AI models that understand context and nuance. We offer true omnichannel support (web, voice, WhatsApp), smart model switching to reduce costs by up to 90%, and seamless human handoff with full conversation context. Plus, agents learn continuously from your interactions.",
   },
   {
-    question: "Can the AI agents handle complex customer inquiries?",
-    answer: "Yes! Our AI agents are designed to handle complex, multi-turn conversations. They can access your knowledge base, perform actions like booking appointments or checking order status, and maintain context throughout the conversation. For questions beyond their capability, they seamlessly escalate to human agents with full conversation history."
+    question: "Can the AI agents handle complex inquiries?",
+    answer:
+      "Yes. Our agents handle multi-turn conversations, access your knowledge base, perform actions like booking appointments or checking orders, and maintain context throughout. For questions beyond their capability, they escalate to human agents — with the full conversation history, detected intent, and a recommended next step.",
   },
   {
-    question: "How quickly can I deploy VerlyAI for my business?",
-    answer: "Most businesses are up and running within 15 minutes. Simply upload your knowledge base (documents, FAQs, website content), configure your agent's personality and responses, and deploy to your preferred channels. No coding required. We also offer custom integrations for enterprise clients."
+    question: "How quickly can I deploy Verly for my business?",
+    answer:
+      "Most businesses go live within 15 minutes. Upload your knowledge base (documents, FAQs, website content), configure your agent's personality, and deploy to your preferred channels. No coding required. Enterprise clients can request custom integrations and onboarding.",
   },
   {
-    question: "What channels does VerlyAI support?",
-    answer: "VerlyAI supports three primary channels: Website Chat (embeddable widget), Voice AI (human-like phone agents), and WhatsApp Business API. All channels share the same AI brain, ensuring consistent responses. You can start with one channel and expand to others at any time."
+    question: "What channels does Verly support?",
+    answer:
+      "Verly supports three primary channels: Website Chat (embeddable widget), Voice AI (natural-sounding phone agents), and WhatsApp Business API. All channels share the same AI brain, knowledge base, and routing — ensuring consistent responses no matter where the customer reaches out.",
   },
   {
-    question: "Is my customer data secure with VerlyAI?",
-    answer: "Absolutely. We take security seriously with SOC 2 Type II compliance, GDPR compliance, end-to-end encryption, and strict data privacy policies. Your data is never used to train models without permission, and we offer enterprise-grade security features including SSO, audit logs, and custom data retention policies."
+    question: "Is my customer data secure?",
+    answer:
+      "Absolutely. We maintain SOC 2 Type II compliance, GDPR compliance, end-to-end encryption, and strict data privacy policies. Your data is never used to train models without explicit permission. Enterprise plans include SSO, audit logs, and custom data retention.",
   },
   {
-    question: "How much does VerlyAI cost?",
-    answer: "We offer flexible pricing starting from free for small businesses. Our Hobby plan is $29.99/month, Standard is $79.99/month, and Pro is $249.99/month. All plans include unlimited conversations—you pay based on features and team size, not usage. Enterprise plans with custom pricing are available for large organizations."
+    question: "How much does Verly cost?",
+    answer:
+      "We offer flexible pricing starting from free. Hobby is $29.99/month, Standard is $79.99/month, and Pro is $249.99/month. Every plan includes unlimited conversations — you pay based on features and team size, not usage. Enterprise plans with custom pricing are also available.",
   },
   {
-    question: "Can I try VerlyAI before committing?",
-    answer: "Yes! We offer a free plan with 50 messages per month so you can test the platform. No credit card required. You can upgrade anytime when you're ready to scale. We also offer a 14-day free trial of our paid plans with full features."
-  }
+    question: "Can I try Verly before committing?",
+    answer:
+      "Yes — our free plan includes 50 messages per month so you can test the entire platform. No credit card required. When you're ready to scale, upgrade anytime. We also offer a 14-day free trial of any paid plan with full features and no restrictions.",
+  },
 ];
 
 // JSON-LD structured data for SEO
 export const faqStructuredData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": faqs.map(faq => ({
+  mainEntity: faqs.map((faq) => ({
     "@type": "Question",
-    "name": faq.question,
-    "acceptedAnswer": {
+    name: faq.question,
+    acceptedAnswer: {
       "@type": "Answer",
-      "text": faq.answer
-    }
-  }))
+      text: faq.answer,
+    },
+  })),
 };
 
 interface FAQProps {
@@ -62,7 +70,6 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
 
   return (
     <>
-      {/* Structured Data for SEO */}
       {showStructuredData && (
         <script
           type="application/ld+json"
@@ -70,94 +77,93 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
         />
       )}
 
-      <section className="py-16 lg:py-24 relative overflow-hidden" id="faq">
-        {/* Background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
-        </div>
+      <section
+        className="relative overflow-hidden bg-white pb-16 pt-20 md:pb-20 md:pt-28"
+        id="faq"
+      >
+        {/* Decorative background */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8f9ff_50%,#ffffff_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(49,94,234,0.04),transparent_62%)]" />
 
-        <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
+        <div className="relative mx-auto max-w-[860px] px-5 md:px-8">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.55 }}
+            className="mb-12 text-center"
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
-              Frequently Asked Questions
+            <div className="mb-4 inline-flex rounded-full border border-[#d9d2c5] bg-[#faf8f6] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a7468]">
+              FAQ
+            </div>
+            <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.05] tracking-[-0.04em] text-[#221f1b] md:text-[48px]">
+              Common questions,
+              <span className="block text-[#6e6558]">straight answers.</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to know about VerlyAI and how our AI customer 
-              support agents can help your business scale.
-            </p>
           </motion.div>
 
-          {/* FAQ Items */}
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="border rounded-xl bg-card overflow-hidden"
-              >
-                <button
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-muted/50 transition-colors"
-                  aria-expanded={openIndex === index}
+          {/* Accordion */}
+          <div className="space-y-3">
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: index * 0.04 }}
+                  className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
+                    isOpen
+                      ? "border-[#c4d4f7] bg-[#f8faff] shadow-[0_8px_24px_rgba(49,94,234,0.06)]"
+                      : "border-[#e8e3dc] bg-white hover:border-[#d1ccc3]"
+                  }`}
                 >
-                  <span className="font-semibold text-lg pr-4">{faq.question}</span>
-                  <motion.div
-                    animate={{ rotate: openIndex === index ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex-shrink-0"
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    className="flex w-full items-center justify-between px-6 py-5 text-left transition-colors"
+                    aria-expanded={isOpen}
                   >
-                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                  </motion.div>
-                </button>
-
-                <AnimatePresence>
-                  {openIndex === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                    <span
+                      className={`pr-4 text-[1rem] font-semibold leading-snug tracking-[-0.01em] transition-colors md:text-[1.08rem] ${
+                        isOpen ? "text-[#1e1c19]" : "text-[#3d3a35]"
+                      }`}
                     >
-                      <div className="px-6 pb-6 text-muted-foreground leading-relaxed">
-                        {faq.answer}
-                      </div>
+                      {faq.question}
+                    </span>
+                    <motion.div
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25 }}
+                      className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors duration-300 ${
+                        isOpen
+                          ? "bg-[#315EEA] text-white"
+                          : "bg-[#f4f1ed] text-[#8a8279]"
+                      }`}
+                    >
+                      <ChevronDown className="h-4 w-4" />
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
+                  </button>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="px-6 pb-6 text-[0.92rem] leading-[1.8] text-[#6d665d]">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
 
-          {/* Contact CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-12 p-8 rounded-2xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20"
-          >
-            <h3 className="text-xl font-bold mb-3">Still have questions?</h3>
-            <p className="text-muted-foreground mb-6">
-              Can&apos;t find the answer you&apos;re looking for? Our team is here to help.
-            </p>
-            <a
-              href="mailto:team@verlyai.xyz"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Contact Support
-            </a>
-          </motion.div>
         </div>
       </section>
     </>

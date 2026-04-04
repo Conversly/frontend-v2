@@ -1,3 +1,4 @@
+import StickyCTABar from "@/components/landing/sticky-cta-bar";
 import AppContextProvider from "@/contexts";
 import { ThemeProvider } from "@/components/shared/themeProvider";
 import { merge } from "@/utils/ui";
@@ -7,6 +8,7 @@ import Script from "next/script";
 import { Lato } from "next/font/google";
 import { FONTS } from "@/lib/theme/fonts";
 import "./globals.css";
+import "./landing-page.css";
 import { defaultMetadata, organizationSchema, softwareApplicationSchema, websiteSchema } from "@/lib/metadata";
 
 const lato = Lato({
@@ -74,6 +76,7 @@ export default function RootLayout({
             <AppContextProvider>
               <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
                 {children}
+                <StickyCTABar />
               </div>
             </AppContextProvider>
           </ThemeProvider>

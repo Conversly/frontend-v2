@@ -354,7 +354,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="mt-20 w-full items-center justify-center text-center text-sm text-gray-400 sm:flex sm:px-6 sm:text-left">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span>© VerlyAI</span>
+            <span>© Verly</span>
             <span>·</span>
             <Link
               href="/terms"

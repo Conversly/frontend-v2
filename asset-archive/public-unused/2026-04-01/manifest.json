@@ -1,0 +1,282 @@
+{
+  "archiveDate": "2026-04-01",
+  "archivedAssets": [],
+  "optimizedAssets": [
+    {
+      "path": "/compare_model.png",
+      "beforeSize": 528011,
+      "afterSize": 164671,
+      "savedBytes": 363340
+    },
+    {
+      "path": "/create_chatbot.png",
+      "beforeSize": 941812,
+      "afterSize": 312872,
+      "savedBytes": 628940
+    },
+    {
+      "path": "/create_chatbot_voice.png",
+      "beforeSize": 1512475,
+      "afterSize": 621385,
+      "savedBytes": 891090
+    },
+    {
+      "path": "/create_meta_app.png",
+      "beforeSize": 1473476,
+      "afterSize": 633529,
+      "savedBytes": 839947
+    },
+    {
+      "path": "/customise_apperances.png",
+      "beforeSize": 1272400,
+      "afterSize": 555626,
+      "savedBytes": 716774
+    },
+    {
+      "path": "/data_sources.png",
+      "beforeSize": 1336443,
+      "afterSize": 575656,
+      "savedBytes": 760787
+    },
+    {
+      "path": "/deploy_voice.png",
+      "beforeSize": 1484249,
+      "afterSize": 654770,
+      "savedBytes": 829479
+    },
+    {
+      "path": "/embeded_web.png",
+      "beforeSize": 1536864,
+      "afterSize": 641002,
+      "savedBytes": 895862
+    },
+    {
+      "path": "/embeed.png",
+      "beforeSize": 1420879,
+      "afterSize": 690212,
+      "savedBytes": 730667
+    },
+    {
+      "path": "/escalation.png",
+      "beforeSize": 563559,
+      "afterSize": 175453,
+      "savedBytes": 388106
+    },
+    {
+      "path": "/generate_access_token.png",
+      "beforeSize": 1430252,
+      "afterSize": 680692,
+      "savedBytes": 749560
+    },
+    {
+      "path": "/get_phone_id.png",
+      "beforeSize": 1415034,
+      "afterSize": 709139,
+      "savedBytes": 705895
+    },
+    {
+      "path": "/helpdesk-showcase-reference.png",
+      "beforeSize": 1294789,
+      "afterSize": 436804,
+      "savedBytes": 857985
+    },
+    {
+      "path": "/images/blog/autonomous-agents.png",
+      "beforeSize": 373510,
+      "afterSize": 306918,
+      "savedBytes": 66592
+    },
+    {
+      "path": "/images/blog/omnichannel.png",
+      "beforeSize": 319202,
+      "afterSize": 305566,
+      "savedBytes": 13636
+    },
+    {
+      "path": "/images/blog/voice-ai.png",
+      "beforeSize": 485794,
+      "afterSize": 441293,
+      "savedBytes": 44501
+    },
+    {
+      "path": "/images/features/Action&Tool.png",
+      "beforeSize": 347808,
+      "afterSize": 117101,
+      "savedBytes": 230707
+    },
+    {
+      "path": "/images/features/AddKnowledgeSources.png",
+      "beforeSize": 297232,
+      "afterSize": 98102,
+      "savedBytes": 199130
+    },
+    {
+      "path": "/images/features/BehaviourDashboard.png",
+      "beforeSize": 228542,
+      "afterSize": 77662,
+      "savedBytes": 150880
+    },
+    {
+      "path": "/images/features/BehaviourDashboard1.png",
+      "beforeSize": 200115,
+      "afterSize": 63206,
+      "savedBytes": 136909
+    },
+    {
+      "path": "/images/features/ChatbotGivingResponse.png",
+      "beforeSize": 301642,
+      "afterSize": 99975,
+      "savedBytes": 201667
+    },
+    {
+      "path": "/images/features/ChatbotInterface.png",
+      "beforeSize": 305505,
+      "afterSize": 102027,
+      "savedBytes": 203478
+    },
+    {
+      "path": "/images/features/ConversionVolume.png",
+      "beforeSize": 181248,
+      "afterSize": 58742,
+      "savedBytes": 122506
+    },
+    {
+      "path": "/images/features/DataSources.png",
+      "beforeSize": 332112,
+      "afterSize": 119437,
+      "savedBytes": 212675
+    },
+    {
+      "path": "/images/features/DeployYourAgent.png",
+      "beforeSize": 316214,
+      "afterSize": 101077,
+      "savedBytes": 215137
+    },
+    {
+      "path": "/images/features/GeographicDistribution&Feedback.png",
+      "beforeSize": 211550,
+      "afterSize": 80078,
+      "savedBytes": 131472
+    },
+    {
+      "path": "/images/features/IncomeStatistics.png",
+      "beforeSize": 203456,
+      "afterSize": 68617,
+      "savedBytes": 134839
+    },
+    {
+      "path": "/images/features/Playground.png",
+      "beforeSize": 305505,
+      "afterSize": 102027,
+      "savedBytes": 203478
+    },
+    {
+      "path": "/images/features/Step1Process.png",
+      "beforeSize": 208728,
+      "afterSize": 69366,
+      "savedBytes": 139362
+    },
+    {
+      "path": "/images/features/Topics&Sentiment.png",
+      "beforeSize": 257806,
+      "afterSize": 100930,
+      "savedBytes": 156876
+    },
+    {
+      "path": "/images/features/TopicsDashboard.png",
+      "beforeSize": 219197,
+      "afterSize": 74133,
+      "savedBytes": 145064
+    },
+    {
+      "path": "/images/features/UploadMoreTypeSources.png",
+      "beforeSize": 333340,
+      "afterSize": 118911,
+      "savedBytes": 214429
+    },
+    {
+      "path": "/login_page.png",
+      "beforeSize": 1385730,
+      "afterSize": 347413,
+      "savedBytes": 1038317
+    },
+    {
+      "path": "/love_wall.png",
+      "beforeSize": 1331504,
+      "afterSize": 587131,
+      "savedBytes": 744373
+    },
+    {
+      "path": "/reporting.png",
+      "beforeSize": 620224,
+      "afterSize": 171854,
+      "savedBytes": 448370
+    },
+    {
+      "path": "/set_up_voice.png",
+      "beforeSize": 1484255,
+      "afterSize": 748343,
+      "savedBytes": 735912
+    },
+    {
+      "path": "/take_action.png",
+      "beforeSize": 649340,
+      "afterSize": 174932,
+      "savedBytes": 474408
+    },
+    {
+      "path": "/verly_logo.png",
+      "beforeSize": 66742,
+      "afterSize": 15134,
+      "savedBytes": 51608
+    },
+    {
+      "path": "/voice_config.png",
+      "beforeSize": 1351243,
+      "afterSize": 616406,
+      "savedBytes": 734837
+    },
+    {
+      "path": "/whatsapp.png",
+      "beforeSize": 40504,
+      "afterSize": 17510,
+      "savedBytes": 22994
+    },
+    {
+      "path": "/why-verly/ai-resolution.png",
+      "beforeSize": 142616,
+      "afterSize": 127213,
+      "savedBytes": 15403
+    },
+    {
+      "path": "/why-verly/always-on-voice.png",
+      "beforeSize": 148337,
+      "afterSize": 138206,
+      "savedBytes": 10131
+    },
+    {
+      "path": "/why-verly/customer-support-workspace.png",
+      "beforeSize": 158943,
+      "afterSize": 147834,
+      "savedBytes": 11109
+    },
+    {
+      "path": "/why-verly/featured-omnichannel.png",
+      "beforeSize": 163662,
+      "afterSize": 147010,
+      "savedBytes": 16652
+    },
+    {
+      "path": "/why-verly/knowledge-control.png",
+      "beforeSize": 115917,
+      "afterSize": 109858,
+      "savedBytes": 6059
+    },
+    {
+      "path": "/why-verly/shared-inbox.png",
+      "beforeSize": 166471,
+      "afterSize": 157639,
+      "savedBytes": 8832
+    }
+  ]
+}

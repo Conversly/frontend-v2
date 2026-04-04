@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { User, Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, MessageSquare, ThumbsDown, Activity } from "lucide-react";
+import { Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, ThumbsDown, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -177,10 +177,10 @@ export default function HumanEscalationSection() {
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/50 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-blue-600 w-fit shadow-sm"
+                            className="inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm w-fit"
                         >
-                            <Zap size={16} className="fill-blue-600" />
-                            <span>Smart Escalation Handling</span>
+                            <Zap size={14} />
+                            Smart Escalation Handling
                         </motion.div>
 
                         <div className="space-y-4">
@@ -189,14 +189,11 @@ export default function HumanEscalationSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.1 }}
-                                className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.1] tracking-tight"
+                                className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.02] tracking-[-0.04em] text-[#221f1b] md:text-[52px]"
                             >
-                                When AI hits a wall, <br />
-                                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent relative">
+                                When AI hits a wall,{" "}
+                                <span className="text-[#6e6558]">
                                     Humans Step In.
-                                    <svg className="absolute w-full h-3 -bottom-1 left-0 text-indigo-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                                    </svg>
                                 </span>
                             </motion.h2>
 
@@ -205,7 +202,7 @@ export default function HumanEscalationSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.2 }}
-                                className="text-xl text-slate-600 leading-relaxed max-w-lg"
+                                className="text-[15px] leading-7 text-[#6d665d] max-w-lg md:text-[17px]"
                             >
                                 Seamlessly transition from AI to human agents when conversations get complex. Zero context loss, 100% customer satisfaction.
                             </motion.p>
@@ -223,13 +220,13 @@ export default function HumanEscalationSection() {
                                 { text: "Full conversation history transfer", icon: <ArrowRight size={18} /> },
                                 { text: "Zero wait-time handoffs", icon: <CheckCircle2 size={18} /> }
                             ].map((item, i) => (
-                                <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group">
-                                    <div className="h-10 w-10 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-blue-100 transition-all duration-300">
-                                        <div className="text-blue-600">
+                                <li key={i} className="flex items-center gap-4 text-[#3d4a62] font-medium group">
+                                    <div className="h-10 w-10 rounded-xl bg-white border border-blue-100 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-blue-100 transition-all duration-300">
+                                        <div className="text-[#315EEA]">
                                             {item.icon}
                                         </div>
                                     </div>
-                                    {item.text}
+                                    <span className="text-[0.95rem]">{item.text}</span>
                                 </li>
                             ))}
                         </motion.ul>
@@ -242,8 +239,8 @@ export default function HumanEscalationSection() {
                             className="pt-4"
                         >
                             <Link href="/login">
-                                <Button size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-14 text-lg shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
-                                    Start Building <ArrowRight className="ml-2 w-5 h-5" />
+                                <Button size="lg" className="rounded-full bg-[#315EEA] text-white hover:bg-[#2850d0] px-8 h-13 text-[15px] shadow-[0_12px_30px_rgba(49,94,234,0.22)] hover:shadow-[0_16px_36px_rgba(49,94,234,0.30)] hover:-translate-y-0.5 transition-all duration-300">
+                                    Start Building <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
                             </Link>
                         </motion.div>
@@ -414,7 +411,53 @@ export default function HumanEscalationSection() {
                             </div>
                         </motion.div>
 
-                        {/* Floating Elements (Parallax) */}
+                        {/* Mobile-only: inline stats that replace the hidden floating elements */}
+                        <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
+                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+                                <div className="flex items-center gap-3">
+                                    <motion.div
+                                        animate={{
+                                            background: satisfactionScore < 85 ? "linear-gradient(to top right, #ef4444, #f87171)" : "linear-gradient(to top right, #10b981, #34d399)"
+                                        }}
+                                        className="h-10 w-10 rounded-full flex items-center justify-center shadow-lg text-white shrink-0 transition-colors duration-500"
+                                    >
+                                        {satisfactionScore < 85 ? <ThumbsDown size={16} /> : <CheckCircle2 size={18} />}
+                                    </motion.div>
+                                    <div>
+                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Satisfaction</div>
+                                        <div className={`text-xl font-black leading-none ${satisfactionScore < 85 ? "text-red-500" : "text-slate-800"}`}>
+                                            {satisfactionScore}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
+                                <div className="flex items-center gap-3">
+                                    <motion.div
+                                        animate={{
+                                            backgroundColor: isEscalating ? "#fff7ed" : isResolved ? "#f0fdf4" : "#eff6ff",
+                                            borderColor: isEscalating ? "#ffedd5" : isResolved ? "#dcfce7" : "#dbeafe"
+                                        }}
+                                        className="h-10 w-10 rounded-full border flex items-center justify-center shrink-0 shadow-sm transition-colors duration-500"
+                                    >
+                                        {isEscalating ? <Activity size={16} className="text-amber-500" /> : isResolved ? <Headphones size={16} className="text-green-600" /> : <Bot size={16} className="text-blue-600" />}
+                                    </motion.div>
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-800">
+                                            {isEscalating ? "Escalating" : isResolved ? "Connected" : "AI Active"}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                            <span className={`h-1.5 w-1.5 rounded-full ${isEscalating ? 'bg-amber-500 animate-pulse' : 'bg-green-500'}`} />
+                                            <span className="text-[10px] text-slate-500 font-medium">
+                                                {isEscalating ? "Routing..." : "Active Now"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Elements (Parallax) — desktop only */}
                         <motion.div
                             style={{
                                 y: useTransform(mouseY, [0, 1], [-15, 15]),

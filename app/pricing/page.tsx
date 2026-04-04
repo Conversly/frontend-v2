@@ -3,6 +3,7 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import ROICalculator from "@/components/landing/roi-calculator";
 import PricingSection from "@/components/landing/pricing";
+import PricingDecisionBanner from "@/components/landing/pricing-decision-banner";
 import { siteConfig } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -27,15 +28,21 @@ const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
 
 export default function PricingPage() {
   return (
-    <main className="bg-background relative w-full">
-      <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+    <main className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_18%,#eef5ff_52%,#ffffff_100%)] text-[#111827]">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50" />
+        <div className="absolute left-[-12%] top-24 h-[26rem] w-[26rem] rounded-full bg-[#bfdbfe]/50 blur-[120px]" />
+        <div className="absolute right-[-8%] top-[22rem] h-[24rem] w-[24rem] rounded-full bg-[#dbeafe] blur-[120px]" />
+        <div className="absolute bottom-[-8rem] left-1/2 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-[#e0f2fe] blur-[120px]" />
+      </div>
 
       <div className="relative z-10">
         <Navbar />
 
-        <div className={CONTENT_WIDTH}>
+        <div className={`${CONTENT_WIDTH} relative`}>
+        <PricingSection />
           <ROICalculator />
-          <PricingSection />
+          <PricingDecisionBanner />
           <Footer />
         </div>
       </div>

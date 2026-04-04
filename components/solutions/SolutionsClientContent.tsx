@@ -1,185 +1,255 @@
-'use client';
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Testimonial from "@/components/landing/testimonial";
-import { Solution, solutions, categories } from "@/lib/solutions-data";
+import { type SolutionDetail, categories, solutions } from "@/lib/solutions-data";
 
-const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
+const CARD_ACCENTS: Record<
+  string,
+  {
+    border: string;
+    hoverBorder: string;
+    hoverShadow: string;
+    iconBg: string;
+    iconText: string;
+  }
+> = {
+  Commerce: {
+    border: "border-[#dce6ff]",
+    hoverBorder: "hover:border-[#bdd1ff]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(49,94,234,0.10)]",
+    iconBg: "bg-[#eaf0ff]",
+    iconText: "text-[#315EEA]",
+  },
+  Support: {
+    border: "border-[#e5e1ff]",
+    hoverBorder: "hover:border-[#cdc7ff]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(91,91,214,0.10)]",
+    iconBg: "bg-[#f2efff]",
+    iconText: "text-[#5b5bd6]",
+  },
+  Voice: {
+    border: "border-[#f4dfdb]",
+    hoverBorder: "hover:border-[#efcbc4]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(220,91,91,0.10)]",
+    iconBg: "bg-[#fdeeed]",
+    iconText: "text-[#d55d55]",
+  },
+  Sales: {
+    border: "border-[#d8f0ee]",
+    hoverBorder: "hover:border-[#b8e2de]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(15,139,141,0.10)]",
+    iconBg: "bg-[#e7fbfa]",
+    iconText: "text-[#0f8b8d]",
+  },
+  Internal: {
+    border: "border-[#dde4ec]",
+    hoverBorder: "hover:border-[#c9d4df]",
+    hoverShadow: "hover:shadow-[0_24px_56px_rgba(100,116,139,0.10)]",
+    iconBg: "bg-[#edf1f6]",
+    iconText: "text-[#64748b]",
+  },
+};
 
-function SolutionCard({ solution }: { solution: Solution }) {
-    return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-border p-8 rounded-3xl hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 group flex flex-col h-full relative overflow-hidden"
-        >
-            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none">
-                <solution.icon className="w-32 h-32 -mr-16 -mt-16 rotate-12" />
+function SolutionCard({ solution }: { solution: SolutionDetail }) {
+  const accent = CARD_ACCENTS[solution.category] ?? CARD_ACCENTS.Support;
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.25 }}
+    >
+      <Link
+        href={`/solutions/${solution.slug}`}
+        className={`group flex h-full flex-col overflow-hidden rounded-[28px] border bg-white shadow-[0_12px_30px_rgba(40,34,26,0.05)] transition-all duration-300 ${accent.border} ${accent.hoverBorder} ${accent.hoverShadow}`}
+      >
+        <div className="relative aspect-[1.55/1] overflow-hidden border-b border-[#ece6dc] bg-[linear-gradient(180deg,#f3f7ff_0%,#fffdfa_100%)]">
+          <Image
+            src={solution.cardImage}
+            alt={solution.cardImageAlt}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,27,61,0.02)_0%,rgba(15,27,61,0.18)_100%)]" />
+          <div className="absolute left-5 top-5 inline-flex rounded-full border border-white/80 bg-white/92 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6a7690] shadow-sm">
+            {solution.heroPanelLabel}
+          </div>
+          <div className="absolute bottom-5 left-5 right-5">
+            <div className="max-w-[85%] rounded-[18px] border border-white/60 bg-white/92 px-4 py-3 shadow-[0_18px_36px_rgba(17,24,39,0.12)]">
+              <div className={`text-[10px] font-bold uppercase tracking-[0.18em] ${accent.iconText}`}>
+                {solution.category}
+              </div>
+              <p className="mt-1 text-[13px] font-medium leading-5 text-[#2b2b2b]">
+                {solution.starterAutomations[0]}
+              </p>
             </div>
+          </div>
+        </div>
 
-            <div className={`w-14 h-14 rounded-2xl ${solution.bg} flex items-center justify-center ${solution.color} mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                <solution.icon className="w-7 h-7" />
+        <div className="flex flex-1 flex-col p-5 md:p-6">
+          <div className="flex items-center gap-3.5">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText} transition-transform duration-300 group-hover:scale-110`}
+            >
+              <solution.icon className="h-5 w-5" />
             </div>
-
-            <div className="mb-4">
-                <span className="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-muted-foreground uppercase tracking-wide border border-border/50">
-                    {solution.category}
-                </span>
-            </div>
-
-            <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+            <div>
+              <span className={`text-[11px] font-bold uppercase tracking-[0.14em] ${accent.iconText}`}>
+                {solution.category}
+              </span>
+              <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[17px] tracking-[-0.02em] text-[#221f1b]">
                 {solution.title}
-            </h3>
-
-            <p className="type-body-muted leading-relaxed mb-8">
-                {solution.description}
-            </p>
-
-            <div className="mt-auto space-y-6">
-                <ul className="space-y-3">
-                    {solution.features.slice(0, 3).map((feature, i) => (
-                        <li key={i} className="flex items-start gap-2.5 type-body-muted">
-                            <div className={`mt-1 rounded-full p-0.5 ${solution.bg}`}>
-                                <CheckCircle2 className={`w-3 h-3 ${solution.color}`} />
-                            </div>
-                            {feature}
-                        </li>
-                    ))}
-                </ul>
-
-                <div className="flex items-center gap-3 pt-2">
-                    <Link href="/login" className="flex-1">
-                        <Button className="w-full rounded-xl bg-white dark:bg-slate-800 text-foreground border border-border hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm font-semibold group/btn">
-                            Get Started
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                        </Button>
-                    </Link>
-                    <Link href="/docs">
-                        <Button variant="ghost" size="icon" className="rounded-xl border border-transparent hover:border-border hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <Sparkles className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                    </Link>
-                </div>
+              </h3>
             </div>
-        </motion.div>
-    );
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {solution.tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-[#e7e0d5] bg-[#fbf8f3] px-3 py-1 text-[11px] font-medium text-[#6b6358]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <p className="mt-3 text-[13px] leading-6 text-[#6d665d]">{solution.description}</p>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {solution.primaryChannels.map((channel) => (
+              <span
+                key={channel}
+                className="rounded-full border border-[#dde6f4] bg-[#f8fbff] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6d7f9e]"
+              >
+                {channel}
+              </span>
+            ))}
+          </div>
+
+          <ul className="mt-4 space-y-2">
+            {solution.handoffTriggers.slice(0, 1).map((item) => (
+              <li key={item} className="flex items-start gap-2.5 text-[12px] leading-5 text-[#6d665d]">
+                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto pt-5">
+            <span className={`inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${accent.iconText}`}>
+              Explore solution
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
 }
 
-export function SolutionsHero() {
-    return (
-        <section className="pt-24 pb-12 lg:pt-32 lg:pb-16 text-center px-4">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
-            >
-                <Sparkles className="w-4 h-4" />
-                <span>Infinite Possibilities</span>
-            </motion.div>
-            <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-foreground"
-            >
-                AI That Works for <br />
-                <span className="text-primary">Your Industry</span>
-            </motion.h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                From e-commerce stores handling 1,000+ daily inquiries to healthcare providers scheduling appointments — see how businesses like yours automate support and save thousands monthly.
-            </p>
-        </section>
-    );
-}
+const CATEGORY_COLORS: Record<string, { active: string; inactive: string }> = {
+  All: {
+    active: "bg-[#221f1b] text-white shadow-[0_6px_16px_rgba(34,31,27,0.18)]",
+    inactive: "border border-[#ddd7ca] bg-white text-[#6d665d]",
+  },
+  Support: {
+    active: "bg-[#5b5bd6] text-white shadow-[0_6px_16px_rgba(91,91,214,0.24)]",
+    inactive: "border border-[#e5e1ff] bg-[#f7f6ff] text-[#5b5bd6]",
+  },
+  Voice: {
+    active: "bg-[#d55d55] text-white shadow-[0_6px_16px_rgba(213,93,85,0.24)]",
+    inactive: "border border-[#f4dfdb] bg-[#fff6f5] text-[#d55d55]",
+  },
+  Commerce: {
+    active: "bg-[#315EEA] text-white shadow-[0_6px_16px_rgba(49,94,234,0.24)]",
+    inactive: "border border-[#dce6ff] bg-[#f5f8ff] text-[#315EEA]",
+  },
+  Internal: {
+    active: "bg-[#64748b] text-white shadow-[0_6px_16px_rgba(100,116,139,0.24)]",
+    inactive: "border border-[#dde4ec] bg-[#f7f9fb] text-[#64748b]",
+  },
+  Sales: {
+    active: "bg-[#0f8b8d] text-white shadow-[0_6px_16px_rgba(15,139,141,0.24)]",
+    inactive: "border border-[#d8f0ee] bg-[#f2fcfb] text-[#0f8b8d]",
+  },
+};
 
-export function SolutionsGrid({ activeCategory }: { activeCategory: string }) {
-    const filteredSolutions = solutions.filter(solution =>
-        activeCategory === "All" || solution.category === activeCategory
-    );
-
-    return (
-        <section className="pb-20 lg:pb-32 px-4">
-            <div className={CONTENT_WIDTH}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {filteredSolutions.map((solution) => (
-                            <SolutionCard key={solution.title} solution={solution} />
-                        ))}
-                    </AnimatePresence>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-interface CategoryFilterProps {
-    activeCategory: string;
-    onCategoryChange: (category: string) => void;
-}
-
-export function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFilterProps) {
-    return (
-        <section className="pb-12">
-            <div className="flex flex-wrap justify-center gap-2 px-4">
-                {categories.map((cat) => (
-                    <button
-                        key={cat}
-                        onClick={() => onCategoryChange(cat)}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === cat
-                            ? "bg-primary text-white shadow-lg shadow-primary/25 scale-105"
-                            : "bg-white/50 dark:bg-slate-800/50 border border-border text-muted-foreground hover:bg-white hover:border-primary/30"
-                        }`}
-                    >
-                        {cat}
-                    </button>
-                ))}
-            </div>
-        </section>
-    );
-}
-
-export function TestimonialSection() {
-    return (
-        <section className="pb-20 lg:pb-32 px-4">
-            <div className={CONTENT_WIDTH}>
-                <Testimonial />
-            </div>
-        </section>
-    );
+function CategoryFilter({
+  activeCategory,
+  onCategoryChange,
+}: {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+}) {
+  return (
+    <div className="mx-auto flex max-w-[1360px] flex-wrap justify-center gap-2 px-5 pb-12 md:px-8">
+      {categories.map((cat) => {
+        const isActive = activeCategory === cat;
+        const colors = CATEGORY_COLORS[cat] ?? CATEGORY_COLORS.All;
+        return (
+          <button
+            key={cat}
+            type="button"
+            onClick={() => onCategoryChange(cat)}
+            className={`rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 ${
+              isActive ? colors.active : `${colors.inactive} hover:border-opacity-100`
+            }`}
+          >
+            {cat}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 export function SolutionsClientContent() {
-    const searchParams = useSearchParams();
-    const [activeCategory, setActiveCategory] = useState("All");
+  const searchParams = useSearchParams();
+  const [activeCategory, setActiveCategory] = useState("All");
 
-    useEffect(() => {
-        const filterParam = searchParams.get('filter')?.toLowerCase();
-        const industryParam = searchParams.get('industry')?.toLowerCase();
+  useEffect(() => {
+    const filterParam = searchParams.get("filter")?.toLowerCase();
+    const industryParam = searchParams.get("industry")?.toLowerCase();
 
-        if (filterParam) {
-            if (filterParam === 'support') setActiveCategory('Support');
-            else if (filterParam === 'internal') setActiveCategory('Internal');
-            else if (filterParam === 'commerce') setActiveCategory('Commerce');
-        } else if (industryParam) {
-            if (industryParam === 'healthcare') setActiveCategory('Voice');
-            else if (industryParam === 'retail') setActiveCategory('Commerce');
-            else if (industryParam === 'bfsi') setActiveCategory('Sales');
-        }
-    }, [searchParams]);
+    if (filterParam) {
+      const match = categories.find((c) => c.toLowerCase() === filterParam);
+      if (match) setActiveCategory(match);
+    } else if (industryParam) {
+      if (industryParam === "healthcare") setActiveCategory("Voice");
+      else if (industryParam === "retail") setActiveCategory("Commerce");
+      else if (industryParam === "bfsi") setActiveCategory("Sales");
+    }
+  }, [searchParams]);
 
-    return (
-        <>
-            <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
-            <SolutionsGrid activeCategory={activeCategory} />
-            <TestimonialSection />
-        </>
-    );
+  const filteredSolutions = solutions.filter(
+    (s) => activeCategory === "All" || s.category === activeCategory,
+  );
+
+  return (
+    <>
+      <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+
+      <section className="px-5 pb-20 md:px-8 md:pb-28">
+        <div className="mx-auto max-w-[1360px]">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {filteredSolutions.map((solution) => (
+                <SolutionCard key={solution.slug} solution={solution} />
+              ))}
+            </AnimatePresence>
+
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
