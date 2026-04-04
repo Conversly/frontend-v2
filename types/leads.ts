@@ -53,6 +53,9 @@ export interface LeadResponse {
         key: string;
         value: any;
     }>;
+
+    // Identity metadata persisted from verified JWT custom_attributes
+    metadata?: Record<string, any>;
 }
 
 export interface GetLeadsResponse {

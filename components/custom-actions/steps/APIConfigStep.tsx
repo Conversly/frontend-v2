@@ -468,8 +468,14 @@ export const APIConfigSection: React.FC<Props> = ({
                         )}
                         <p className="text-xs text-muted-foreground">
                             This is the <strong>static JSON body</strong>. To mark a field as dynamic, set its value to an <strong>exact placeholder string</strong> like{' '}
-                            <code className="px-1 py-0.5 rounded bg-muted">{"\"{{appearance}}\""}</code> (must be valid JSON). In the next step we’ll detect these placeholders and pre-create Inputs with the correct{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">{'"{{appearance}}"'}</code> (must be valid JSON). In the next step we&apos;ll detect these placeholders and pre-create Inputs with the correct{' '}
                             <code className="px-1 py-0.5 rounded bg-muted">bodyPath</code>.
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                            With identity verification enabled, you can use contact variables like{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">{'"{{contact.email}}"'}</code>,{' '}
+                            <code className="px-1 py-0.5 rounded bg-muted">{'"{{contact.metadata.plan}}"'}</code>{' '}
+                            &mdash; these resolve to the verified user&apos;s data at runtime.
                         </p>
                     </div>
                 </TabsContent>
