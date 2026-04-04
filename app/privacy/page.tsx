@@ -12,6 +12,11 @@ export const metadata: Metadata = {
     title: 'Privacy Policy | VerlyAI',
     description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA regulations.',
     url: 'https://verlyai.xyz/privacy',
+    type: 'website',
+  },
+  twitter: {
+    title: 'Privacy Policy | VerlyAI',
+    description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA.',
   },
 };
 

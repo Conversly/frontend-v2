@@ -209,14 +209,16 @@ function StickyTrialCard() {
       </div>
 
       {/* Preview image */}
-      <div className="overflow-hidden rounded-2xl border border-[#eaecf5] dark:border-[#243146]">
-        <Image
-          src={FEATURE_UI_ASSETS.trialBannerImagePath}
-          alt={FEATURE_UI_ASSETS.trialBannerImageAlt}
-          width={380}
-          height={240}
-          className="h-auto w-full object-cover"
-        />
+      <div className="overflow-hidden rounded-2xl border border-[#eaecf5] bg-[#f8fafc] dark:border-[#243146] dark:bg-[#0f1728]">
+        <div className="relative aspect-[19/12] w-full">
+          <Image
+            src={FEATURE_UI_ASSETS.trialBannerImagePath}
+            alt={FEATURE_UI_ASSETS.trialBannerImageAlt}
+            fill
+            sizes="380px"
+            className="object-cover object-top"
+          />
+        </div>
       </div>
 
       {/* Quick link */}

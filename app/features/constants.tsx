@@ -6,9 +6,9 @@ export const FEATURES_PAGE_CONTENT = {
 } as const;
 
 export const FEATURE_UI_ASSETS = {
-  "defaultHeroImagePath": "/images/crisp/feature-detail.png",
+  "defaultHeroImagePath": "/images/features/feature-detail.png",
   "defaultHeroImageAlt": "VerlyAI support workspace preview",
-  "trialBannerImagePath": "/images/crisp/cta-banner-bg-trial.png",
+  "trialBannerImagePath": "/images/features/cta-banner-bg-trial.png",
   "trialBannerImageAlt": "VerlyAI trial banner preview",
   "trialLogoPath": "/verly_logo.png"
 } as const;

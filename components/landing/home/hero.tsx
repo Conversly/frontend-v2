@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
 
 const stagger = {
   hidden: {},
@@ -15,7 +14,7 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
-export default function CrispHero() {
+export default function LandingHero() {
   return (
     <div className="home-hero">
       <div className="common-hero home-hero__inner">

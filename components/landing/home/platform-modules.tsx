@@ -373,7 +373,7 @@ const modules = [
   },
 ] as const;
 
-export default function CrispPlatformModules() {
+export default function PlatformModules() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const progressRef = useRef<number | null>(null);

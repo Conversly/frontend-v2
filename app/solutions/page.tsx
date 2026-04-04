@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     description:
       "See how businesses across E-commerce, Healthcare, SaaS, Real Estate, and more use Verly to automate support and save thousands monthly.",
     url: "https://verlyai.xyz/solutions",
+    type: "website",
+  },
+  twitter: {
+    title: "Solutions - AI Customer Support for Every Industry | Verly",
+    description:
+      "See how businesses across E-commerce, Healthcare, SaaS, and more use Verly to automate support.",
   },
 };
 

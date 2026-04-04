@@ -14,6 +14,11 @@ export const metadata: Metadata = {
     url: `${siteConfig.url}/solutions/enterprise`,
     type: "website",
   },
+  twitter: {
+    title: "Enterprise AI Customer Support Solution | Verly",
+    description:
+      "See how Verly fits enterprise support teams with stricter security, deployment, and workflow requirements.",
+  },
 };
 
 export default function EnterpriseSolutionPage() {

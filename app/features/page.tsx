@@ -32,6 +32,10 @@ export const metadata: Metadata = {
     url: `${siteConfig.url}/features`,
     type: "website",
   },
+  twitter: {
+    title: "Features | VerlyAI",
+    description: FEATURES_PAGE_CONTENT.intro,
+  },
 };
 
 const HERO_ICONS: Record<ThemeKey, typeof Sparkles> = {

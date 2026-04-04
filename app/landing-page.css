@@ -496,88 +496,88 @@
 }
 
 @layer components {
-  /* Common Crisp buttons */
-  .crisp-btn-primary {
+  /* Common landing buttons */
+  .landing-btn-primary {
     @apply bg-[#3E80F1] hover:bg-[#2B6CE0] text-white font-bold rounded-full transition-all flex items-center justify-center gap-2 shadow-[0_2px_10px_rgba(62_128_241/0.3)];
   }
 
-  .crisp-btn-secondary {
+  .landing-btn-secondary {
     @apply bg-white hover:bg-gray-50 text-[#111827] font-medium rounded-full transition-colors border border-gray-200 flex items-center justify-center gap-2;
   }
 
-  .crisp-btn-dark {
+  .landing-btn-dark {
     @apply bg-[#111827] hover:bg-black text-white font-medium rounded-full transition-colors flex items-center justify-center gap-2 shadow-lg;
   }
 
   /* Feature badges & tags */
-  .crisp-badge-new {
+  .landing-badge-new {
     @apply bg-[#3E80F1] text-white text-[11px] font-bold px-2 py-0.5 rounded-[6px] tracking-wider uppercase;
   }
 
   /* Navbar elements */
-  .crisp-nav-link {
+  .landing-nav-link {
     @apply text-[15px] text-[#374151] hover:text-[#111827] font-semibold transition-colors rounded-lg hover:bg-black/5 px-3 py-2 flex items-center gap-1.5;
   }
 
-  .crisp-top-banner {
+  .landing-top-banner {
     @apply block w-full bg-[#0B1536] text-white text-center py-2 px-4 z-50 relative hover:bg-[#131E46] transition-colors;
   }
 
-  .crisp-search-box {
+  .landing-search-box {
     @apply flex border border-gray-200 hover:border-gray-300 rounded-[10px] bg-gray-50 items-center justify-between text-[14px] text-gray-400 px-3 py-2 w-48 shadow-sm transition-colors;
   }
 
   /* Typical floating pill container */
-  .crisp-floating-pill {
+  .landing-floating-pill {
     @apply bg-white/90 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgba(0_0_0/0.08)] border border-gray-200/50 p-1.5 flex items-center gap-1;
   }
 
   /* Sections & Layouts */
-  .crisp-section {
+  .landing-section {
     @apply py-24 bg-white relative;
   }
 
-  .crisp-section-light {
+  .landing-section-light {
     @apply py-24 bg-[#EEF2FF] relative;
   }
 
-  .crisp-section-dark {
+  .landing-section-dark {
     @apply py-32 bg-[#0B1536] relative overflow-hidden;
   }
 
-  .crisp-container {
+  .landing-container {
     @apply max-w-[1240px] mx-auto px-6 relative z-10;
   }
 
   /* Typography */
-  .crisp-title-lg {
+  .landing-title-lg {
     @apply text-[44px] md:text-[56px] font-extrabold text-[#111827] leading-[1.05] tracking-tight;
   }
 
-  .crisp-title {
+  .landing-title {
     @apply text-[32px] md:text-[44px] font-extrabold text-[#111827] leading-[1.1] tracking-tight;
   }
 
-  .crisp-subtitle {
+  .landing-subtitle {
     @apply text-[16px] md:text-[17px] text-[#6B7280] font-medium leading-[1.7];
   }
 
   /* Cards & Blocks */
-  .crisp-card {
+  .landing-card {
     @apply bg-white rounded-[32px] md:p-14 shadow-[0_2px_40px_rgba(0_0_0/0.04)] border border-gray-100/50;
   }
 
   /* Feature Tabs */
-  .crisp-feature-tab {
+  .landing-feature-tab {
     @apply flex items-center gap-3 px-5 py-3.5 rounded-[14px] transition-all min-w-[180px] shadow-sm font-semibold border bg-white/50 border-gray-200/50 hover:bg-white text-gray-500 hover:text-gray-900;
   }
 
-  .crisp-feature-tab-active {
+  .landing-feature-tab-active {
     @apply flex items-center gap-3 px-5 py-3.5 rounded-[14px] transition-all min-w-[180px] shadow-[0_4px_16px_rgba(0_0_0/0.06)] font-semibold border-transparent bg-white scale-105 z-10 text-gray-900 font-extrabold;
   }
 
   /* Generic Badges */
-  .crisp-badge-tag {
+  .landing-badge-tag {
     @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-bold tracking-wide uppercase;
   }
 }
@@ -585,7 +585,7 @@
 .faq-page {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   background:
     radial-gradient(
       circle at top left,
@@ -1169,4 +1169,3 @@
     width: 100%;
   }
 }
-

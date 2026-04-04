@@ -1,15 +1,6 @@
-import type { Metadata } from "next";
-
 import AppProviders from "@/components/providers/app-providers";
 
-export const metadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
-export default function RootLayout({
+export default function PublicInteractiveLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return <AppProviders>{children}</AppProviders>;

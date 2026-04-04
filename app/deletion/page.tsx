@@ -13,6 +13,11 @@ export const metadata: Metadata = {
     title: 'Data Deletion Request | VerlyAI',
     description: 'Submit a request to permanently delete your personal data from VerlyAI systems.',
     url: 'https://verlyai.xyz/deletion',
+    type: 'website',
+  },
+  twitter: {
+    title: 'Data Deletion Request | VerlyAI',
+    description: 'Request the deletion of your personal data from VerlyAI.',
   },
 };
 
