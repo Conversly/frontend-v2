@@ -17,12 +17,15 @@ import {
     Bot,
     Sparkles,
     Eye,
+    BookmarkPlus,
 } from "lucide-react";
 import { AiToolsPopover } from "./ai-tools-popover";
+import { SaveToKBSheet } from "./save-to-kb-sheet";
 import type { TicketPriority } from "@/types/escalate";
 
 interface ChatWindowProps {
     agentUserId: string;
+    botId: string;
     onSend: (text: string) => void;
     onClaim: () => void;
     /** Mark as RESOLVED — the issue was actually solved */
@@ -38,6 +41,7 @@ interface ChatWindowProps {
 
 export function ChatWindow({
     agentUserId,
+    botId,
     onSend,
     onClaim,
     onResolve,
@@ -57,6 +61,7 @@ export function ChatWindow({
 
     const [draft, setDraft] = useState("");
     const scrollEndRef = useRef<HTMLDivElement>(null);
+    const [saveTarget, setSaveTarget] = useState<{ userMessage: string; agentAnswer: string } | null>(null);
 
     // Auto-scroll to bottom when messages change or conversation switches
     useEffect(() => {
@@ -69,6 +74,11 @@ export function ChatWindow({
     const activeEscalation = activeEscalationId ? escalationsById[activeEscalationId] : undefined;
     const activeState = activeConversationId ? stateByConversationId[activeConversationId] : undefined;
     const activeMessages = activeConversationId ? (messagesByConversationId[activeConversationId] ?? []) : [];
+
+    const handleSaveToKB = (agentText: string, idx: number) => {
+        const preceding = [...activeMessages].slice(0, idx).reverse().find((m) => m.senderType === "USER");
+        setSaveTarget({ userMessage: preceding?.text ?? "", agentAnswer: agentText });
+    };
 
     // Live Presence data
     const activeViewers = activeConversationId ? (viewersByConversationId[activeConversationId] ?? []) : [];
@@ -103,6 +113,7 @@ export function ChatWindow({
     }
 
     return (
+        <>
         <main className="flex-1 flex flex-col bg-card shrink-0">
             {/* Pinned AI Summary Banner */}
             {activeEscalation?.reason && (
@@ -188,7 +199,7 @@ export function ChatWindow({
                             const isRightSide = isUser;
 
                             return (
-                                <div key={m.id || idx} className={cn("flex items-start gap-3 max-w-[80%]", isRightSide ? "flex-row-reverse ml-auto" : "justify-start")}>
+                                <div key={m.id || idx} className={cn("group/msg flex items-start gap-3 max-w-[80%]", isRightSide ? "flex-row-reverse ml-auto" : "justify-start")}>
                                     {/* Avatar */}
                                     {isUser && (
                                         <Avatar className="size-8 border shadow-sm">
@@ -231,6 +242,16 @@ export function ChatWindow({
                                             {m.sentAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                             {isUser && " • Sent"}
                                         </span>
+                                        {isAgent && !isClosedOrResolved && (
+                                            <button
+                                                onClick={() => handleSaveToKB(m.text, idx)}
+                                                className="opacity-0 group-hover/msg:opacity-100 transition-opacity flex items-center gap-1 px-1.5 py-0.5 rounded text-xs text-muted-foreground hover:text-primary hover:bg-muted"
+                                                title="Save to knowledge base"
+                                            >
+                                                <BookmarkPlus className="size-3" />
+                                                Save to KB
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             );
@@ -302,6 +323,15 @@ export function ChatWindow({
                     </div>
                 </div>
             </div>
-        </main >
+        </main>
+
+        <SaveToKBSheet
+            open={!!saveTarget}
+            onOpenChange={(open) => { if (!open) setSaveTarget(null); }}
+            userMessage={saveTarget?.userMessage ?? ""}
+            agentAnswer={saveTarget?.agentAnswer ?? ""}
+            botId={botId}
+        />
+        </>
     );
 }

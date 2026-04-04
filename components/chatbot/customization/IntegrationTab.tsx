@@ -15,6 +15,11 @@ import {
   ExternalLink,
   Play,
   Terminal,
+  Shield,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  AlertTriangle,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -27,6 +32,21 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import type { UIConfigInput } from '@/types/customization';
 import { DomainInfo } from '@/lib/api/deploy';
+import {
+  useIdentityVerificationConfig,
+  useGenerateIdentitySecret,
+} from '@/hooks/useIdentityVerification';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface IntegrationTabProps {
   config: UIConfigInput;
@@ -222,6 +242,9 @@ Script:
         </Tabs>
       </div>
 
+      {/* Identity Verification */}
+      <IdentityVerificationSection chatbotId={chatbotId} />
+
       {/* API Key
       <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
         <SectionHeader
@@ -355,5 +378,218 @@ Script:
       </div>
       */}
     </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identity Verification Section (shown below embed code, like Chatbase)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function IdentityVerificationSection({ chatbotId }: { chatbotId: string }) {
+  const { data: config, isLoading } = useIdentityVerificationConfig(chatbotId);
+  const generateSecret = useGenerateIdentitySecret(chatbotId);
+
+  const [secretVisible, setSecretVisible] = useState(false);
+
+  const secret = config?.secret ?? null;
+  const maskedSecret = secret
+    ? `${'*'.repeat(Math.max(0, secret.length - 4))}${secret.slice(-4)}`
+    : null;
+
+  const handleCopySecret = () => {
+    if (secret) {
+      navigator.clipboard.writeText(secret);
+      toast.success('Secret key copied to clipboard');
+    }
+  };
+
+  const handleRotateSecret = async () => {
+    try {
+      await generateSecret.mutateAsync();
+      toast.success('Secret key rotated. All existing tokens are now invalid.');
+    } catch {
+      toast.error('Failed to rotate secret key');
+    }
+  };
+
+  const handleGenerateSecret = async () => {
+    try {
+      await generateSecret.mutateAsync();
+      toast.success('Secret key generated');
+    } catch {
+      toast.error('Failed to generate secret key');
+    }
+  };
+
+  const getIdentityCode = () => `// --- SERVER CODE ---
+const jwt = require('jsonwebtoken');
+
+const secret = process.env.VERLY_IDENTITY_SECRET; // Your chatbot's identity secret
+
+const user = await getSignedInUser(); // Get the current user signed in on your platform
+
+const token = jwt.sign(
+    {
+        user_id: user.id, // Your user's id
+        email: user.email, // User's email
+        name: user.name, // User's name
+        // ... other custom attributes
+    },
+    secret,
+    { expiresIn: '1h' }
+);
+
+// --- CLIENT CODE ---
+const token = await getUserToken(); // Get the token from your server
+window.verly('identify', { token }); // Identify the user with Verly AI`;
+
+  const handleCopyIdentityCode = () => {
+    navigator.clipboard.writeText(getIdentityCode());
+    toast.success('Identity verification code copied to clipboard');
+  };
+
+  return (
+    <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-6">
+      <SectionHeader
+        title="Identity verification"
+        description="Secure your AI Agent by generating a JWT for each logged-in user and sending it to Verly AI. This enables secure identity verification for your AI Agent with various actions."
+        icon={Shield}
+      />
+
+      {/* Read more link */}
+      <a
+        href="/docs/identity-verification"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 text-xs text-primary hover:underline mb-4"
+      >
+        Read more in the Identity Verification Docs.
+        <ExternalLink className="w-3 h-3" />
+      </a>
+
+      <div className="space-y-4">
+        {/* Secret key section */}
+        <div>
+          <Label className="text-sm font-medium text-foreground mb-2 block">Secret key</Label>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : secret ? (
+            <div className="space-y-3">
+              {/* Secret display + copy + rotate */}
+              <div className="flex gap-2">
+                <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg border border-border/50">
+                  <code className="text-sm font-mono text-foreground flex-1 select-all">
+                    {secretVisible ? secret : maskedSecret}
+                  </code>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    onClick={() => setSecretVisible(!secretVisible)}
+                    aria-label={secretVisible ? "Hide secret" : "Show secret"}
+                  >
+                    {secretVisible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    onClick={handleCopySecret}
+                    aria-label="Copy secret key"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-border text-foreground hover:bg-muted/50 gap-1.5"
+                      disabled={generateSecret.isPending}
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${generateSecret.isPending ? 'animate-spin' : ''}`} />
+                      Rotate
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 text-amber-500" />
+                        Rotate secret key?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will generate a new secret key. All existing JWT tokens signed with the current secret will immediately become invalid. Your users will need to re-authenticate.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleRotateSecret}>
+                        Rotate secret
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              {/* Warning callout */}
+              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border-l-2 border-amber-500 rounded-r-lg">
+                <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+                <p className="font-sans text-xs text-amber-700 dark:text-amber-400">
+                  Keep your secret key safe! Never commit it directly to your repository, client-side code, or anywhere a third party can find it.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="text-center py-4 text-muted-foreground">
+                <Shield className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                <p className="font-sans text-sm">No secret key generated</p>
+                <p className="font-sans text-xs mt-1">Generate a key to enable identity verification</p>
+              </div>
+              <Button
+                onClick={handleGenerateSecret}
+                disabled={generateSecret.isPending}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {generateSecret.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  'Generate Secret Key'
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Code snippet */}
+        {secret && (
+          <div className="relative group">
+            <div className="absolute top-2 right-2 z-10">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm backdrop-blur-sm transition-all duration-200"
+                onClick={handleCopyIdentityCode}
+              >
+                <Copy className="h-3.5 w-3.5" />
+                Copy
+              </Button>
+            </div>
+            <div className="p-4 bg-muted/50 rounded-lg border border-border/50 max-h-[400px] overflow-y-auto">
+              <pre className="text-xs text-muted-foreground font-mono whitespace-pre-wrap pr-20">
+                {getIdentityCode()}
+              </pre>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

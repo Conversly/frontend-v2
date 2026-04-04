@@ -759,6 +759,7 @@ export default function InboxPage() {
         {/* 2. Right: Active Chat Window */}
         <ChatWindow
           agentUserId={agentUserId}
+          botId={botId}
           onSend={onSend}
           onClaim={() => onClaim()}
           onResolve={onResolve}
