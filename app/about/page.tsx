@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { siteConfig } from "@/lib/metadata";
 
 import {
   AboutHeroPanel,
@@ -13,7 +14,7 @@ import {
 } from "@/components/about/AboutClientAnimations";
 import Footer from "@/components/landing/footer";
 import Navbar from "@/components/landing/navbar";
-import { WhySwitchSection } from "@/components/crisp-landing/crisp-new-sections";
+import { WhySwitchSection } from "@/components/landing/home/channel-sections";
 import { Button } from "@/components/ui/button";
 
 const breadcrumbSchema = {
@@ -31,6 +32,18 @@ export const metadata: Metadata = {
     "Verly exists because support teams deserve one operating layer for web chat, voice, and WhatsApp — not five disconnected tools. Learn why we built it.",
   alternates: {
     canonical: "/about",
+  },
+  openGraph: {
+    title: "About Verly | Why We Built a Unified Support Platform",
+    description:
+      "Learn why we built one operating layer for web chat, voice, and WhatsApp — not five disconnected tools.",
+    url: `${siteConfig.url}/about`,
+    type: "website",
+  },
+  twitter: {
+    title: "About Verly | Why We Built a Unified Support Platform",
+    description:
+      "Verly exists because support teams deserve one operating layer for web chat, voice, and WhatsApp.",
   },
 };
 
@@ -75,7 +88,7 @@ function AboutSectionBackground({
 
 export default function AboutPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)] text-[#221f1b] selection:bg-blue-100">
+    <main className="relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)] text-[#221f1b] selection:bg-blue-100">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}

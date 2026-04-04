@@ -28,7 +28,7 @@ const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto";
 
 export default function PricingPage() {
   return (
-    <main className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_18%,#eef5ff_52%,#ffffff_100%)] text-[#111827]">
+    <main className="relative w-full overflow-x-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_18%,#eef5ff_52%,#ffffff_100%)] text-[#111827]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50" />
         <div className="absolute left-[-12%] top-24 h-[26rem] w-[26rem] rounded-full bg-[#bfdbfe]/50 blur-[120px]" />

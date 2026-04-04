@@ -69,7 +69,7 @@ const showcaseTabs = [
   },
 ] as const;
 
-export default function CrispFeatures() {
+export default function FeatureShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const progressRef = useRef<number | null>(null);

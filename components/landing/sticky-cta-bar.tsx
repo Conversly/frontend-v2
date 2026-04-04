@@ -3,16 +3,25 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquareText, Sparkles, X } from "lucide-react";
-import { useAuth } from "@/store/auth";
+import { X } from "lucide-react";
+
+import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
 
 const HIDDEN_PATHS = ["/login", "/signup", "/onboarding", "/dashboard"];
 
 export default function StickyCTABar() {
   const pathname = usePathname();
-  const { user } = useAuth();
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsAuthenticated(localStorage.getItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN) === "true");
+    } catch {
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   useEffect(() => {
     const container = document.getElementById("main-scroll-container") || window;
@@ -28,7 +37,7 @@ export default function StickyCTABar() {
   }, []);
 
   if (dismissed) return null;
-  if (user) return null;
+  if (isAuthenticated) return null;
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
   if (/^\/[a-f0-9-]{20,}/.test(pathname)) return null;
 
@@ -40,7 +49,7 @@ export default function StickyCTABar() {
           : "translate-y-6 opacity-0 pointer-events-none"
       }`}
     >
-      {/* Outer shell — mimics Crisp's double-border look */}
+      {/* Outer shell for the floating CTA */}
       <div className="rounded-[22px] border border-[#d0d5dd]/60 bg-[#eef0f4]/80 p-[5px] shadow-[0_10px_40px_rgba(0,0,0,0.13),0_2px_6px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
         {/* Inner pill */}
         <div className="flex items-center gap-2 rounded-[18px] bg-white px-2 py-1.5">

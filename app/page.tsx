@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 
 import Navbar from "@/components/landing/navbar";
-import CrispHero from "@/components/crisp-landing/crisp-hero";
-import CrispSupportLifecycle from "@/components/crisp-landing/crisp-support-lifecycle";
-import CrispFeatures from "@/components/crisp-landing/crisp-features";
+import LandingHero from "@/components/landing/home/hero";
+import SupportLifecycle from "@/components/landing/home/support-lifecycle";
+import FeatureShowcase from "@/components/landing/home/feature-showcase";
 import ClientAuthRedirect from "@/components/landing/ClientAuthRedirect";
-import Certificate from "@/components/crisp-landing/certificate";
+import Certificate from "@/components/landing/home/certificate";
 import { siteConfig } from "@/lib/metadata";
-import CrispFullscreenImage from "@/components/crisp-landing/crisp-fullscreen-image";
-import Footer from "@/components/crisp-landing/crisp-footer";
-import CrispPlatformModules from "@/components/crisp-landing/crisp-platform-modules";
+import FullscreenVideo from "@/components/landing/home/fullscreen-video";
+import Footer from "@/components/landing/footer";
+import PlatformModules from "@/components/landing/home/platform-modules";
 import {
   OmnichannelSection,
-} from "@/components/crisp-landing/crisp-new-sections";
+} from "@/components/landing/home/channel-sections";
 import UseCases from "@/components/landing/UseCases";
 import FAQ from "@/components/landing/FAQ";
 import HumanEscalationSection from "@/components/landing/human-escalation";
@@ -44,13 +44,13 @@ export default function Home() {
       <Navbar />
 
       {/* 1. Hero: category, channels, CTA, real product visual */}
-      <CrispHero />
+      <LandingHero />
 
       {/* 2. How it works: support lifecycle */}
-      <CrispSupportLifecycle />
+      <SupportLifecycle />
 
       {/* 5. Product demo video */}
-      <CrispFullscreenImage />
+      <FullscreenVideo />
 
       {/* 6. Omnichannel proof: web, WhatsApp, voice */}
       <OmnichannelSection />
@@ -59,10 +59,10 @@ export default function Home() {
       <HumanEscalationSection />
 
       {/* 8. Interactive showcase: feature highlights */}
-      <CrispFeatures />
+      <FeatureShowcase />
 
       {/* 9. Platform modules deep-dive */}
-      <CrispPlatformModules />
+      <PlatformModules />
 
       {/* 10. Use cases */}
       <UseCases />

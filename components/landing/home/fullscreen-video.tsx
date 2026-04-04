@@ -1,4 +1,4 @@
-export default function CrispFullscreenImage() {
+export default function FullscreenVideo() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#0f172a]">
       <video
@@ -10,7 +10,7 @@ export default function CrispFullscreenImage() {
         aria-hidden="true"
         className="h-full min-h-screen w-full object-cover object-center"
       >
-        <source src="/crisp-hero.webm" type="video/webm" />
+        <source src="/landing-hero.webm" type="video/webm" />
       </video>
     </section>
   );

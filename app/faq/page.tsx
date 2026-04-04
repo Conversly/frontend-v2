@@ -49,6 +49,12 @@ export const metadata: Metadata = {
     description:
       "Answers to common questions about Verly, including pricing, security, integrations, chatbot training, and automation workflows.",
     url: "https://verlyai.xyz/faq",
+    type: "website",
+  },
+  twitter: {
+    title: "FAQ - Verly Customer Support Questions & Answers",
+    description:
+      "Answers to common questions about Verly, including pricing, security, integrations, and automation workflows.",
   },
 };
 

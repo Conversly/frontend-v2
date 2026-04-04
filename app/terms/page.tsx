@@ -12,6 +12,11 @@ export const metadata: Metadata = {
     title: 'Terms of Service | VerlyAI',
     description: 'Terms and conditions for using VerlyAI platform, including WhatsApp automation and AI customer support services.',
     url: 'https://verlyai.xyz/terms',
+    type: 'website',
+  },
+  twitter: {
+    title: 'Terms of Service | VerlyAI',
+    description: 'Terms and conditions for using VerlyAI platform and AI customer support services.',
   },
 };
 

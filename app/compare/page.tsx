@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     url: `${siteConfig.url}/compare`,
     type: 'website',
   },
+  twitter: {
+    title: 'Compare VerlyAI vs Competitors | VerlyAI',
+    description: 'Get a personalized AI-powered comparison report in 30 seconds.',
+  },
 };
 
 const CONTENT_WIDTH = 'w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto';

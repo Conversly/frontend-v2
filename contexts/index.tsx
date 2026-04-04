@@ -1,6 +1,5 @@
 "use client";
 
-import { Toaster } from "@/components/ui/sonner";
 import QueryClientProvider from "@/contexts/query";
 import { AuthProvider } from "@/contexts/auth";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -25,7 +24,6 @@ export default function AppContextProvider({
       <AuthProvider>
         <Suspense>
           <NuqsAdapter>
-            <Toaster />
             {children}
           </NuqsAdapter>
         </Suspense>

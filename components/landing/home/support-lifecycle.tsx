@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { PhoneCall, Sparkles, User, Bot } from "lucide-react";
 import BackedBy from "./backed-by";
 
-export default function CrispSupportLifecycle() {
+export default function SupportLifecycle() {
   return (
     <section id="support-lifecycle" className="relative overflow-hidden bg-white pt-16 pb-0 text-[#19253b] md:pt-20 md:pb-0">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f7f9ff_56%,#ffffff_100%)]" />

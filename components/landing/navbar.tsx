@@ -1,123 +1,38 @@
-'use client';
-import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/store/auth";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Sparkles, ArrowRight,
-  Headphones, Briefcase, Users, Building2, HeartPulse, ShoppingBag,
-  Book, HelpCircle, Newspaper, ChevronDown, Mic
+  Sparkles,
+  ArrowRight,
+  Headphones,
+  Briefcase,
+  Users,
+  Building2,
+  HeartPulse,
+  ShoppingBag,
+  Book,
+  HelpCircle,
+  Newspaper,
+  ChevronDown,
+  Mic,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { getLoggedInUser } from "@/lib/api/user";
-import { getUserWorkspaces } from "@/lib/api/workspaces";
-import { QUERY_KEY } from "@/utils/query-key";
-import { LOCAL_STORAGE_KEY } from "@/utils/local-storage-key";
-
+import NavbarAuthActions from "@/components/landing/navbar-auth-actions";
+import NavbarScrollBehavior from "@/components/landing/navbar-scroll-behavior";
 
 export default function Navbar() {
-  const { user, logout, setUser } = useAuth();
-  const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-  const queryClient = useQueryClient();
-
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: fetchedUser } = useQuery({
-    queryKey: [QUERY_KEY.LOGGED_IN_USER],
-    queryFn: async () => {
-      return await getLoggedInUser();
-    },
-    enabled: mounted,
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  useEffect(() => {
-    if (fetchedUser) {
-      setUser({
-        ...fetchedUser,
-        name: fetchedUser.displayName || "",
-        username: fetchedUser.username || "",
-        avatarUrl: fetchedUser.avatarUrl || null,
-      });
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "true");
-      } catch { }
-    }
-  }, [fetchedUser, setUser]);
-
-  const { data: workspaces } = useQuery({
-    queryKey: [QUERY_KEY.GET_WORKSPACES],
-    queryFn: async () => await getUserWorkspaces(),
-    enabled: mounted && !!user,
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const dashboardHref = workspaces?.[0]?.workspaceId
-    ? `/${workspaces[0].workspaceId}/chatbot`
-    : "/";
-
-
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const scrollContainer = document.getElementById('main-scroll-container') || window;
-
-    const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        const currentScrollY = scrollContainer === window
-          ? window.scrollY
-          : (scrollContainer as HTMLElement).scrollTop;
-
-        if (currentScrollY < 10) {
-          setIsVisible(true);
-        } else {
-          // Check if scrolling down
-          if (currentScrollY > lastScrollY.current) {
-            setIsVisible(false);
-          } else {
-            // Check if scrolling up
-            setIsVisible(true);
-          }
-        }
-
-        lastScrollY.current = currentScrollY;
-      }
-    };
-
-    scrollContainer.addEventListener('scroll', controlNavbar);
-
-    return () => {
-      scrollContainer.removeEventListener('scroll', controlNavbar);
-    };
-  }, []);
-
   return (
-    mounted && (
+    <>
       <nav
-        className={`fixed left-0 right-0 mx-auto z-50 transition-transform duration-300
-        h-[74px] flex items-center
-        top-0 w-full rounded-none
-        lg:top-6 lg:max-w-7xl lg:rounded-[47px]
-        border border-slate-200 shadow-[0_18px_48px_rgba(15,23,42,0.12)] bg-white text-slate-900
-        ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'
-          }`}
+        id="marketing-navbar"
+        className="fixed left-0 right-0 top-0 z-50 mx-auto flex h-[74px] w-full -translate-y-[150%] items-center rounded-none border border-slate-200 bg-white text-slate-900 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-transform duration-300 lg:top-6 lg:max-w-7xl lg:rounded-[47px]"
       >
-        <div className="mx-auto flex w-full h-full items-center justify-between px-6">
+        <div className="mx-auto flex h-full w-full items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/verly_logo.png"
@@ -129,44 +44,23 @@ export default function Navbar() {
             <span className="text-xl font-bold text-slate-900">Verly</span>
           </Link>
 
-          {/* Navigation Links */}
-          {/* Mega Menu Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/about" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
+          <div className="hidden items-center gap-6 md:flex">
+            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/about">
               About
             </Link>
-
-            <Link href="/features" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
+            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/features">
               Features
             </Link>
-
-            <Link href="/pricing" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
+            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/pricing">
               Pricing
             </Link>
-
-            <Link href="/compare" className="h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
+            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/compare">
               Compare
             </Link>
-
-            <Link
-              href="/why-verly"
-              className={`h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 ${
-                pathname === "/why-verly"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600"
-              }`}
-            >
+            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/why-verly">
               Why Verly
             </Link>
-
-            <Link
-              href="/voice"
-              className={`relative h-auto rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 hover:text-slate-900 flex items-center gap-1.5 ${
-                pathname === "/voice"
-                  ? "bg-[#8af0be]/10 text-[#059669]"
-                  : "text-slate-600"
-              }`}
-            >
+            <Link className="relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/voice">
               <Mic className="h-3.5 w-3.5" />
               Voice
               <span className="inline-flex items-center rounded-full bg-[#8af0be]/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#059669]">
@@ -181,11 +75,9 @@ export default function Navbar() {
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
+              <PopoverContent className="w-auto border-0 bg-transparent p-0 shadow-none" align="start" sideOffset={10}>
                 <div className="flex w-[1100px] rounded-[20px] border border-slate-200 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.14)]">
-                  {/* Left side — links */}
                   <div className="flex-1">
-                    {/* Top bar — Enterprise + Sales Agent + All Solutions */}
                     <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4">
                       <Link href="/solutions/enterprise" className="group flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-[#0B1536] to-[#1a2a5e] px-4 py-2.5 transition-all hover:shadow-lg hover:shadow-blue-900/20">
                         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">
@@ -217,7 +109,6 @@ export default function Navbar() {
                       </Link>
                     </div>
 
-                    {/* Solutions grid */}
                     <div className="grid grid-cols-2 gap-x-0 gap-y-0 px-2 py-2">
                       {[
                         { href: "/solutions/e-commerce-retail", icon: ShoppingBag, label: "E-commerce & Retail", desc: "Order tracking, returns & product support", iconBg: "bg-blue-50 text-blue-600", hoverBg: "hover:bg-blue-50/60" },
@@ -238,23 +129,21 @@ export default function Navbar() {
                             <item.icon className="h-5 w-5" />
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center gap-1 text-[13px] font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
+                            <div className="flex items-center gap-1 text-[13px] font-semibold text-slate-800 transition-colors group-hover:text-blue-700">
                               {item.label}
-                              <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-blue-600" />
+                              <ArrowRight className="h-3 w-3 -translate-x-1 opacity-0 text-blue-600 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                             </div>
-                            <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                            <p className="truncate text-[11px] text-slate-500">{item.desc}</p>
                           </div>
                         </Link>
                       ))}
                     </div>
-
                   </div>
 
-                  {/* Right side — Spotlight image */}
                   <div className="w-[300px] shrink-0 border-l border-slate-100 p-2">
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl group cursor-pointer">
+                    <div className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl">
                       <Link href="/voice" className="absolute inset-0 z-20" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+                      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                       <Image
                         src="/create_chatbot_voice.png"
                         alt="Voice AI Agents — deploy human-like voice assistants"
@@ -262,7 +151,7 @@ export default function Navbar() {
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       />
                       <div className="relative z-20 mt-auto p-5 text-white">
-                        <div className="mb-2 inline-flex rounded-full bg-blue-600/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-sm border border-blue-400/30">
+                        <div className="mb-2 inline-flex rounded-full border border-blue-400/30 bg-blue-600/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-sm">
                           New Feature
                         </div>
                         <h4 className="text-lg font-bold leading-tight">Voice AI Agents</h4>
@@ -286,122 +175,80 @@ export default function Navbar() {
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-transparent border-0 shadow-none" align="start" sideOffset={10}>
-                <div className="bg-white dark:bg-slate-950 rounded-[20px] border border-border shadow-lg overflow-hidden">
+              <PopoverContent className="w-auto border-0 bg-transparent p-0 shadow-none" align="start" sideOffset={10}>
+                <div className="overflow-hidden rounded-[20px] border border-border bg-white shadow-lg dark:bg-slate-950">
                   <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <Link
-                        className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-b from-primary/50 to-primary p-6 no-underline outline-none focus:shadow-md relative overflow-hidden group border border-primary/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                        className="group relative flex h-full w-full select-none flex-col justify-end overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-b from-primary/50 to-primary p-6 no-underline outline-none transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:shadow-md"
                         href="/about"
                       >
-                        <div className="mb-2 mt-4 text-lg font-medium text-white relative z-10">
+                        <div className="relative z-10 mb-2 mt-4 text-lg font-medium text-white">
                           About VerlyAI
                         </div>
-                        <p className="text-sm leading-tight text-white/90 relative z-10">
+                        <p className="relative z-10 text-sm leading-tight text-white/90">
                           Building the intelligence layer for global customer support.
                         </p>
-                        <div className="absolute right-[-20px] top-[-20px] opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-                          <Sparkles className="w-32 h-32 text-white" />
+                        <div className="absolute right-[-20px] top-[-20px] opacity-20 transition-opacity duration-300 group-hover:opacity-40">
+                          <Sparkles className="h-32 w-32 text-white" />
                         </div>
-                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+                        <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/docs" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                        <div className="flex items-start gap-4">
-                          <div className="mt-1 p-2 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 group-hover:bg-blue-100 transition-colors shadow-sm">
-                            <Book className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                              Documentation
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                    {[
+                      {
+                        href: "/docs",
+                        icon: Book,
+                        title: "Documentation",
+                        description: "Guides, API Reference, and SDKs.",
+                        iconClassName: "bg-blue-50 text-blue-600 dark:bg-blue-900/20",
+                      },
+                      {
+                        href: "/faq",
+                        icon: HelpCircle,
+                        title: "FAQ Center",
+                        description: "FAQs and support for common issues.",
+                        iconClassName: "bg-purple-50 text-purple-600 dark:bg-purple-900/20",
+                      },
+                      {
+                        href: "/blogs",
+                        icon: Newspaper,
+                        title: "Blog",
+                        description: "Latest updates and industry insights.",
+                        iconClassName: "bg-orange-50 text-orange-600 dark:bg-orange-900/20",
+                      },
+                    ].map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} className="group block rounded-lg p-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900">
+                          <div className="flex items-start gap-4">
+                            <div className={`mt-1 rounded-lg p-2 shadow-sm transition-colors group-hover:bg-opacity-80 ${item.iconClassName}`}>
+                              <item.icon className="h-4 w-4" />
                             </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                              Guides, API Reference, and SDKs.
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/faq" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                        <div className="flex items-start gap-4">
-                          <div className="mt-1 p-2 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/20 group-hover:bg-purple-100 transition-colors shadow-sm">
-                            <HelpCircle className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                              FAQ Center
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                            <div>
+                              <div className="flex items-center gap-1 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                                {item.title}
+                                <ArrowRight className="h-3 w-3 -translate-x-2 opacity-0 text-primary transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+                              </div>
+                              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                                {item.description}
+                              </p>
                             </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                              FAQs and support for common issues.
-                            </p>
                           </div>
-                        </div>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/blogs" className="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                        <div className="flex items-start gap-4">
-                          <div className="mt-1 p-2 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 group-hover:bg-orange-100 transition-colors shadow-sm">
-                            <Newspaper className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                              Blog
-                              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
-                            </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                              Latest updates and industry insights.
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    </li>
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </PopoverContent>
             </Popover>
-
-            {/* <Link href="/help" className="h-auto py-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Help
-            </Link> */}
           </div>
 
           <div className="flex items-center gap-4">
-            {user ? (
-              <div className="flex items-center gap-3">
-                <Link href={dashboardHref}>
-                  <Button variant="outline" className="rounded-full">
-                    Dashboard
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  className="rounded-full"
-                  onClick={() => logout(queryClient)}
-                >
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button className="group relative overflow-hidden rounded-full border border-blue-600/70 bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] px-6 font-semibold text-white shadow-[0_12px_28px_rgba(37,99,235,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:from-[#1d4ed8] hover:to-[#1e40af] hover:shadow-[0_16px_34px_rgba(37,99,235,0.42)]">
-                    <span className="relative z-10 flex items-center gap-2">
-                      Get started
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </Button>
-                </Link>
-
-              </>
-            )}
+            <NavbarAuthActions />
           </div>
-        </div >
-      </nav >
-    )
+        </div>
+      </nav>
+      <NavbarScrollBehavior targetId="marketing-navbar" />
+    </>
   );
 }

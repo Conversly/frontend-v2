@@ -1,12 +1,9 @@
-'use client';
-
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Linkedin, Mail, Calendar, ArrowRight } from "lucide-react";
+import { Linkedin, Mail, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { openCalendlyPopup } from "@/lib/calendly";
+import CalendlyPopupButton from "@/components/landing/calendly-popup-button";
 
 const exploreLinks = [
   { name: "Why Verly", href: "/why-verly" },
@@ -57,13 +54,7 @@ export function FooterCta() {
       }}
     >
       <div className="relative pb-14 pt-24 md:pb-16 md:pt-28">
-        <motion.div
-          className="mx-auto max-w-5xl px-4 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="mx-auto max-w-5xl px-4 text-center">
           <span className="inline-flex rounded-full border border-black/10 bg-white/55 px-4 py-1 text-sm font-medium text-foreground/70 backdrop-blur-sm">
             Ready to see Verly live?
           </span>
@@ -75,22 +66,12 @@ export function FooterCta() {
             Book a quick walkthrough to see how Verly helps teams handle voice, WhatsApp,
             and web chat from one streamlined support workflow.
           </p>
-          <motion.div
-            className="mt-10"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div className="mt-10">
             <div className="mx-auto flex max-w-max flex-col items-center gap-4 sm:flex-row">
-              <Button
-                size="lg"
-                onClick={() => void openCalendlyPopup()}
+              <CalendlyPopupButton
+                icon
                 className="h-12 min-w-[190px] rounded-full bg-[#111111] px-7 text-base text-white shadow-[0_12px_30px_rgba(17,17,17,0.18)] transition-all duration-300 hover:bg-[#222222]"
-              >
-                <Calendar className="mr-2 h-5 w-5" />
-                Book a demo
-              </Button>
+              />
               <Button
                 asChild
                 size="lg"
@@ -106,8 +87,8 @@ export function FooterCta() {
             <p className="mt-4 text-sm font-medium text-foreground/55">
               Quick walkthrough. Clear use cases. No pressure.
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -117,13 +98,7 @@ export function FooterBase() {
   return (
     <div className="relative border-t border-white/10 bg-[#010309]">
       <div className="mx-auto w-[95%] max-w-[1120px] px-4 py-12 md:w-[85%] lg:w-[80%]">
-        <motion.div
-          className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-[1.45fr_0.8fr_0.95fr_1fr] md:gap-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-[1.45fr_0.8fr_0.95fr_1fr] md:gap-12">
           <div>
             <div className="flex items-center gap-3">
               <Image
@@ -198,15 +173,9 @@ export function FooterBase() {
               Follow Verly for product updates and support workflow insights.
             </p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          className="border-t border-white/10 pt-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
+        <div className="border-t border-white/10 pt-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <p className="text-sm leading-6 text-white/50">
               © {new Date().getFullYear()} VerlyAI. All rights reserved.
@@ -215,7 +184,7 @@ export function FooterBase() {
               Built for support teams managing voice, WhatsApp, and web chat in one place.
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -224,7 +193,7 @@ export function FooterBase() {
 export default function Footer({ hideCta = false }: { hideCta?: boolean }) {
   return (
     <footer className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-      {!hideCta && <FooterCta />}
+      {!hideCta ? <FooterCta /> : null}
       <FooterBase />
     </footer>
   );

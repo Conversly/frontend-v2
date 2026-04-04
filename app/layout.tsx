@@ -1,12 +1,8 @@
-import StickyCTABar from "@/components/landing/sticky-cta-bar";
-import AppContextProvider from "@/contexts";
-import { ThemeProvider } from "@/components/shared/themeProvider";
 import { merge } from "@/utils/ui";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Lato } from "next/font/google";
-import { FONTS } from "@/lib/theme/fonts";
+import Script from "next/script";
+import RootClientShell from "@/components/providers/root-client-shell";
 import "./globals.css";
 import "./landing-page.css";
 import { defaultMetadata, organizationSchema, softwareApplicationSchema, websiteSchema } from "@/lib/metadata";
@@ -66,28 +62,24 @@ export default function RootLayout({
         suppressHydrationWarning
         className={merge(
           lato.variable,
-          "font-sans antialiased m-0 p-0 h-full w-full flex flex-col overflow-hidden",
+          "h-screen overflow-hidden font-sans antialiased m-0 p-0",
         )}
       >
-        <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+        <div
+          id="main-scroll-container"
+          className="relative h-screen overflow-x-hidden overflow-y-auto"
         >
-          <ThemeProvider attribute="class" enableSystem>
-            <AppContextProvider>
-              <div className="flex-1 overflow-y-auto h-full w-full relative" id="main-scroll-container">
-                {children}
-                <StickyCTABar />
-              </div>
-            </AppContextProvider>
-          </ThemeProvider>
-        </GoogleOAuthProvider>
-        <script
+          {children}
+        </div>
+        <RootClientShell />
+        <Script
           src="https://widget.verlyai.xyz/embed.js"
           data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
-          data-position="bottom-right" // optional
-          data-primary-color="#4F46E5" // optional
-          data-testing="false" // optional, flag for testing if true then use default configuration no db call
-        ></script>
+          data-position="bottom-right"
+          data-primary-color="#4F46E5"
+          data-testing="false"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

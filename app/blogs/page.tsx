@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     description:
       "Practical guides and product updates for building omnichannel AI agents on Voice, WhatsApp, and the web — from the team behind verlyai.xyz.",
     url: `${siteConfig.url}/blogs`,
+    type: "website",
+  },
+  twitter: {
+    title: "Blog — AI agents, voice & WhatsApp support | VerlyAI",
+    description:
+      "Articles on deploying AI customer support agents: voice AI, WhatsApp automation, web chat, and scaling support.",
   },
 };
 

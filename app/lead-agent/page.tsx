@@ -27,6 +27,11 @@ export const metadata: Metadata = {
     url: `${siteConfig.url}/lead-agent`,
     type: "website",
   },
+  twitter: {
+    title: "AI Lead Agent That Qualifies & Converts Visitors | Verly",
+    description:
+      "Turn website traffic into pipeline with an AI lead agent that qualifies buyer intent and routes opportunities.",
+  },
 };
 
 const solutionIcons = [
@@ -49,7 +54,7 @@ export default function LeadAgentPage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)] text-[#221f1b]">
+    <main className="relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)] text-[#221f1b]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}

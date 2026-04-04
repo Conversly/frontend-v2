@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function AuthRoutesLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return <AppProviders>{children}</AppProviders>;
