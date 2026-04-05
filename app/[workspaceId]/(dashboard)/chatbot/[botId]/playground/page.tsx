@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { PlaygroundWidget } from "@/components/PlaygroundWidget";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
+import type { ChatbotStatus } from "@/types/chatbot";
 import { upsertChannelPrompt } from "@/lib/api/prompt";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export default function PlaygroundPage() {
   const [temperature, setTemperature] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingPrompt, setIsSavingPrompt] = useState(false);
+  const [chatbotStatus, setChatbotStatus] = useState<ChatbotStatus>("ACTIVE");
 
   // For triggering widget refresh
   const [widgetKey, setWidgetKey] = useState(0);
@@ -78,6 +80,7 @@ export default function PlaygroundPage() {
 
         setConfig(uiConfig);
         setSystemPrompt(chatbotData.systemPrompt || "");
+        setChatbotStatus(chatbotData.status);
       } catch (error) {
         console.error("Failed to load playground data:", error);
         toast.error("Failed to load chatbot configuration");
@@ -88,6 +91,20 @@ export default function PlaygroundPage() {
 
     loadData();
   }, [botId]);
+
+  // Poll chatbot status every 5 seconds while training is in progress
+  useEffect(() => {
+    if (chatbotStatus !== "TRAINING") return;
+    const interval = setInterval(async () => {
+      try {
+        const data = await getChatbot(workspaceId, botId);
+        setChatbotStatus(data.status);
+      } catch {
+        // ignore transient polling errors
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [chatbotStatus, botId, workspaceId]);
 
   const handleSavePrompt = async () => {
     if (!botId) return;
@@ -134,7 +151,7 @@ export default function PlaygroundPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
-          <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
+          <div className="relative w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
             <PlaygroundWidget
               key={widgetKey}
               chatbotId={botId}
@@ -143,6 +160,17 @@ export default function PlaygroundPage() {
               model={model}
               temperature={temperature}
             />
+            {chatbotStatus === "TRAINING" && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background/90 backdrop-blur-sm">
+                <div className="flex flex-col items-center gap-3 px-8 text-center">
+                  <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                  <h3 className="text-base font-semibold">Training in progress</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    Your chatbot is learning from newly added sources. This usually takes a few minutes. The widget will become available automatically once training is complete.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

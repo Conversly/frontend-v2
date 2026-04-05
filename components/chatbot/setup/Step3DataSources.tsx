@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   useDataSources,
@@ -10,7 +10,7 @@ import {
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
-import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle } from "lucide-react";
+import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle, Sparkles } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { useAccessControl } from "@/hooks/useAccessControl";
@@ -45,9 +45,19 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
   const sources = useDataSources();
   const selectedSourceIds = useSelectedSourceIds();
   const toggleSourceSelection = useDataSourcesStore((s) => s.toggleSourceSelection);
+  const selectUpToLimit = useDataSourcesStore((s) => s.selectUpToLimit);
   const chatbotId = useSetupStore((s) => s.chatbotId);
   const [openType, setOpenType] = useState<SourceType | null>(null);
   const [isTraining, setIsTraining] = useState(false);
+
+  const hasLimit = typeof datasourcesLimit === 'number' && datasourcesLimit !== -1;
+
+  // On first load, cap selection to the plan limit instead of selecting all
+  useEffect(() => {
+    if (hasLimit && sources.length > datasourcesLimit) {
+      selectUpToLimit(datasourcesLimit as number);
+    }
+  }, [sources.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getSourcesByType = (type: SourceType) => sources.filter((s) => s.type === type);
   const getSelectedByType = (type: SourceType) =>
@@ -97,7 +107,7 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             Add training sources
           </h1>
           <p className="type-body-muted">
-            We found {sources.length} sources from your website. {totalSelected} selected for training.
+            Found {sources.length} source{sources.length !== 1 ? 's' : ''} — {totalSelected} selected for training.
           </p>
         </div>
 
@@ -134,6 +144,16 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
           />
         </div>
 
+        {hasLimit && sources.length > datasourcesLimit && (
+          <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+            <span>
+              Your plan includes up to <span className="font-medium text-foreground">{datasourcesLimit}</span> sources.{' '}
+              <span className="font-medium text-foreground">{sources.length - (datasourcesLimit as number)} more</span> available —{' '}
+              upgrade to train on all of them.
+            </span>
+          </div>
+        )}
         {isOverLimit && (
           <Alert variant="destructive" className="py-2">
             <AlertCircle className="h-4 w-4" />
