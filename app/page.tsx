@@ -53,14 +53,14 @@ export default function Home() {
       {/* 2. Early trust strip */}
       <BackedBy />
 
-      {/* 3. Main interactive showcase */}
-      <PlatformModules />
-
       {/* 4. Product story: lifecycle */}
       <SupportLifecycle />
 
       {/* 6. Human handoff section */}
       <HumanEscalationSection />
+
+      {/* 3. Main interactive showcase */}
+      <PlatformModules />
 
       {/* 5. Omnichannel proof: web, WhatsApp, voice */}
       <OmnichannelSection />
