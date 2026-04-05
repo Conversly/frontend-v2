@@ -2,47 +2,42 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import Image from "next/image";
-import Link from "next/link";
 import {
-  ArrowRight,
   Bot,
   Mail,
   Sparkles,
   Ticket,
   Upload,
-  Zap,
 } from "lucide-react";
 
-import HumanEscalationVisual, {
-  type IntegrationLogo,
-} from "@/components/landing/human-escalation-visual";
-import { Button } from "@/components/ui/button";
+import HumanEscalationVisual from "@/components/landing/human-escalation-visual";
+
+type IntegrationLogo = {
+  name: string;
+  src: string;
+  available: boolean;
+  badgeClassName: string;
+};
 
 const integrationLogos: IntegrationLogo[] = [
   {
     name: "HubSpot",
-    src: "/integrations/hubspot.svg",
-    available: hasPublicAsset("integrations/hubspot.svg"),
+    src: "/integrations/hubspot.png",
+    available: hasPublicAsset("integrations/hubspot.png"),
     badgeClassName: "border-[#ffd9bf] bg-[#fff3ea] text-[#bf612d]",
   },
   {
     name: "Slack",
-    src: "/integrations/slack.svg",
-    available: hasPublicAsset("integrations/slack.svg"),
+    src: "/integrations/slack.png",
+    available: hasPublicAsset("integrations/slack.png"),
     badgeClassName: "border-[#e5d5ff] bg-[#f7f1ff] text-[#6f42c1]",
   },
   {
     name: "Zendesk",
-    src: "/integrations/zendesk.svg",
-    available: hasPublicAsset("integrations/zendesk.svg"),
+    src: "/integrations/zendesk.png",
+    available: hasPublicAsset("integrations/zendesk.png"),
     badgeClassName: "border-[#d9dfeb] bg-[#f4f7fb] text-[#334155]",
-  },
-  {
-    name: "Verly",
-    src: "/verly_logo.png",
-    available: hasPublicAsset("verly_logo.png"),
-    badgeClassName: "border-[#d7e4ff] bg-[#eef4ff] text-[#315eea]",
-  },
+  }
 ];
 
 const valuePoints = [
@@ -89,93 +84,72 @@ export default function HumanEscalationSection() {
         <div className="absolute -left-24 bottom-0 h-[340px] w-[340px] rounded-full bg-[#d8f2ff]/60 blur-[110px]" />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
-          <div className="order-2 flex flex-col gap-8 lg:order-1">
-            <div className="landing-home-eyebrow w-fit">
-              <Zap className="h-4 w-4" />
-              Smart Escalation Handling
-            </div>
+      <div className="relative mx-auto max-w-[1360px] px-4 md:px-6">
+        <div className="space-y-10">
+          <div className="space-y-5">
 
-            <div className="space-y-5">
-              <h2 className="landing-home-title max-w-[11ch] text-[36px] md:text-[54px]">
-                When AI needs backup,
-                <span className="landing-home-title-muted block">
-                  your team steps in ready.
-                </span>
-              </h2>
+            <h2 className="text-[28px] leading-[1.08] tracking-[-0.04em] md:text-[34px] lg:text-[42px] lg:whitespace-nowrap">
+              When AI needs backup, your team steps in ready.
+            </h2>
 
-              <p className="landing-home-copy max-w-[620px] text-[16px] leading-[1.75] md:text-[18px]">
-                Verly escalates complex conversations into the tools your team
-                already uses, creates the right support workflow automatically,
-                and carries the full context forward so every handoff feels
-                instant instead of interrupted.
-              </p>
-            </div>
-
-            <ul className="space-y-4">
-              {valuePoints.map((point) => {
-                const Icon = point.icon;
-
-                return (
-                  <li
-                    key={point.title}
-                    className="rounded-[24px] border border-[#e1e8f6] bg-white/88 p-5 shadow-[0_12px_34px_rgba(15,23,42,0.05)] backdrop-blur-sm"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#dbe5ff] bg-[#eef4ff] text-[#315eea] shadow-[0_10px_24px_rgba(49,94,234,0.12)]">
-                        <Icon className="h-[18px] w-[18px]" />
-                      </div>
-
-                      <div className="min-w-0">
-                        <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-[#1f2a44]">
-                          {point.title}
-                        </h3>
-                        <p className="mt-2 text-[15px] leading-7 text-[#5f6c84]">
-                          {point.description}
-                        </p>
-
-                        {point.title === "Escalate into your preferred stack" ? (
-                          <div className="mt-4 flex flex-wrap gap-2.5">
-                            {integrationLogos.map((logo) => (
-                              <IntegrationBadge key={logo.name} logo={logo} />
-                            ))}
-                          </div>
-                        ) : null}
-
-                        {point.title === "Create tickets and notify your team instantly" ? (
-                          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#dfe7f5] bg-[#f8fbff] px-3.5 py-2 text-[13px] font-medium text-[#4a5a76]">
-                            <Mail className="h-4 w-4 text-[#315eea]" />
-                            Email alerts go out as soon as the handoff is created.
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="flex flex-col gap-4 border-t border-[#d9e2f2] pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="max-w-[420px] text-[14px] leading-6 text-[#6b7891]">
-                Keep AI-first resolution for the easy questions and bring humans
-                in only when nuance, urgency, or judgment matters.
-              </p>
-
-              <Link href="/login">
-                <Button
-                  size="lg"
-                  className="h-12 rounded-full bg-[#315EEA] px-7 text-[15px] text-white shadow-[0_12px_30px_rgba(49,94,234,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2850d0] hover:shadow-[0_16px_36px_rgba(49,94,234,0.24)]"
-                >
-                  Start Building
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
+            <p className="landing-home-copy max-w-[780px] text-[16px] leading-[1.75] md:text-[18px]">
+              Verly escalates complex conversations into the tools your team
+              already uses, creates the right support workflow automatically,
+              and carries the full context forward so every handoff feels
+              instant instead of interrupted.
+            </p>
           </div>
 
-          <div className="order-1 lg:order-2">
-            <HumanEscalationVisual integrations={integrationLogos} />
+          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
+            <div className="order-2 rounded-[28px] border border-[#e1e8f6] bg-white/88 p-6 shadow-[0_18px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm lg:order-1 lg:p-7">
+              <ul className="space-y-6">
+                {valuePoints.map((point) => {
+                  const Icon = point.icon;
+
+                  return (
+                    <li key={point.title}>
+                      <div className="flex items-start gap-4">
+                        <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#dbe5ff] bg-[#eef4ff] text-[#315eea] shadow-[0_10px_24px_rgba(49,94,234,0.12)]">
+                          <Icon className="h-[18px] w-[18px]" />
+                        </div>
+
+                        <div className="min-w-0">
+                          <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-[#1f2a44]">
+                            {point.title}
+                          </h3>
+                          <p className="mt-2 text-[15px] leading-7 text-[#5f6c84]">
+                            {point.description}
+                          </p>
+
+                          {point.title === "Escalate into your preferred stack" ? (
+                            <div className="mt-4 flex flex-wrap gap-2.5">
+                              {integrationLogos.map((logo) => (
+                                <IntegrationBadge key={logo.name} logo={logo} />
+                              ))}
+                            </div>
+                          ) : null}
+
+                          {point.title === "Create tickets and notify your team instantly" ? (
+                            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#dfe7f5] bg-[#f8fbff] px-3.5 py-2 text-[13px] font-medium text-[#4a5a76]">
+                              <Mail className="h-4 w-4 text-[#315eea]" />
+                              Email alerts go out as soon as the handoff is created.
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      {point.title !== valuePoints[valuePoints.length - 1].title ? (
+                        <div className="mt-6 border-b border-[#e7edf7]" />
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="order-1 lg:order-2">
+              <HumanEscalationVisual />
+            </div>
           </div>
         </div>
       </div>
@@ -192,7 +166,7 @@ function IntegrationBadge({ logo }: { logo: IntegrationLogo }) {
           alt={`${logo.name} logo`}
           width={18}
           height={18}
-          className="h-4 w-auto object-contain"
+          className="h-8 w-auto object-contain"
         />
         <span className="text-[13px] font-semibold text-[#44516b]">
           {logo.name}
