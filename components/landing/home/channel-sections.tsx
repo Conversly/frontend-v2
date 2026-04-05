@@ -491,13 +491,6 @@ const channels = [
 export function OmnichannelSection() {
   return (
     <section className="landing-home-section landing-home-section--soft pb-10 pt-20 text-slate-900 md:pb-12 md:pt-24 lg:pb-14">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent opacity-60" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.04)_1px,transparent_1px)] bg-[size:72px_72px]" />
-        <div className="absolute right-[6%] top-[8%] h-[320px] w-[320px] rounded-full bg-blue-300/10 blur-[90px]" />
-        <div className="absolute bottom-[0%] left-[4%] h-[360px] w-[360px] rounded-full bg-indigo-300/10 blur-[100px]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

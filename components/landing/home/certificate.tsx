@@ -5,9 +5,6 @@ import Link from "next/link";
 const Certificate = () => {
   return (
     <section className="relative overflow-hidden bg-white py-20 md:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8f9ff_50%,#ffffff_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(49,94,234,0.04),transparent_62%)]" />
-
       <div className="relative mx-auto max-w-[1240px] px-6">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           {/* Left: Copy */}

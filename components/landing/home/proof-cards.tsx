@@ -67,13 +67,6 @@ const proofCards: ProofCardItem[] = [
 export default function ProofCardsSection() {
   return (
     <section className="landing-home-section landing-home-section--plain">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,#f6f9ff_0%,#ffffff_58%,#f8fbff_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.045)_1px,transparent_1px)] bg-[size:72px_72px]" />
-        <div className="absolute left-[4%] top-[18%] h-[280px] w-[280px] rounded-full bg-[#cfe0ff]/45 blur-[90px]" />
-        <div className="absolute bottom-[6%] right-[6%] h-[320px] w-[320px] rounded-full bg-[#d8e4ff]/50 blur-[100px]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
         <div className="mx-auto max-w-[960px] text-center">
           <h2 className="landing-home-title text-[28px] md:text-[52px]">

@@ -70,20 +70,6 @@ const valuePoints = [
 export default function HumanEscalationSection() {
   return (
     <section className="landing-home-section landing-home-section--soft overflow-hidden py-20 lg:py-24">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(49,94,234,0.12),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(103,217,236,0.16),transparent_20%),radial-gradient(circle_at_18%_88%,rgba(157,182,255,0.12),transparent_26%)]" />
-        <div
-          className="absolute inset-0 opacity-[0.045]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(49,94,234,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(49,94,234,0.08) 1px, transparent 1px)",
-            backgroundSize: "68px 68px",
-          }}
-        />
-        <div className="absolute -right-24 top-10 h-[340px] w-[340px] rounded-full bg-[#c8d8ff]/55 blur-[100px]" />
-        <div className="absolute -left-24 bottom-0 h-[340px] w-[340px] rounded-full bg-[#d8f2ff]/60 blur-[110px]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1360px] px-4 md:px-6">
         <div className="space-y-10">
           <div className="space-y-5">

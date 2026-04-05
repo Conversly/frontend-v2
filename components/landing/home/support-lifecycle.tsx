@@ -8,8 +8,6 @@ export default function SupportLifecycle() {
       id="support-lifecycle"
       className="landing-home-section landing-home-section--soft py-14 text-[#19253b] md:py-16 lg:py-[4.5rem]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,123,247,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.06),transparent_22%)]" />
-
       <div className="relative mx-auto max-w-[1440px] px-5 md:px-6">
         <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,450px)_minmax(0,1fr)] xl:gap-10">
           <div className="max-w-[540px] lg:pr-4">
