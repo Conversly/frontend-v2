@@ -16,18 +16,18 @@ export function ControlsCard({
   onFeedbackLimitChange,
 }: ControlsCardProps) {
   return (
-    <Card className="p-3">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center space-x-3">
+    <Card className="dashboard-toolbar p-3">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="dashboard-toolbar__group">
           <div className="flex items-center space-x-2">
             <Calendar className="h-3.5 w-3.5" />
-            <span className="text-sm font-medium">Charts Period:</span>
+            <span className="text-sm font-medium">Charts Period</span>
             <div className="flex space-x-1.5">
               <Button
                 variant={selectedDays === 7 ? "default" : "outline"}
                 size="sm"
                 onClick={() => onDaysChange(7)}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 7 Days
               </Button>
@@ -35,23 +35,23 @@ export function ControlsCard({
                 variant={selectedDays === 30 ? "default" : "outline"}
                 size="sm"
                 onClick={() => onDaysChange(30)}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 30 Days
               </Button>
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="dashboard-toolbar__group">
           <div className="flex items-center space-x-2">
             <Settings className="h-3.5 w-3.5" />
-            <span className="text-sm font-medium">Feedback Limit:</span>
+            <span className="text-sm font-medium">Feedback Limit</span>
             <div className="flex space-x-1.5">
               <Button
                 variant={feedbackLimit === 5 ? "default" : "outline"}
                 size="sm"
                 onClick={() => onFeedbackLimitChange(5)}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 5
               </Button>
@@ -59,7 +59,7 @@ export function ControlsCard({
                 variant={feedbackLimit === 10 ? "default" : "outline"}
                 size="sm"
                 onClick={() => onFeedbackLimitChange(10)}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 10
               </Button>
@@ -67,7 +67,7 @@ export function ControlsCard({
                 variant={feedbackLimit === 20 ? "default" : "outline"}
                 size="sm"
                 onClick={() => onFeedbackLimitChange(20)}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 20
               </Button>
@@ -78,4 +78,3 @@ export function ControlsCard({
     </Card>
   );
 }
-

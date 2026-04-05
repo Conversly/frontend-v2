@@ -15,7 +15,7 @@ export default function WorkspaceDashboardLayout({
       <SocketBootstrap />
       <AppSidebar />
       <SidebarInset className="app-shell h-full overflow-hidden">
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b bg-sidebar px-4 sticky top-0 z-10">
+        <header className="dashboard-topbar sticky top-0 z-20 flex h-16 shrink-0 items-center border-b border-[var(--toolbar-border)] bg-[var(--toolbar-background)] px-5 backdrop-blur">
           <DashboardHeader />
         </header>
         <div className="page-container flex flex-1 flex-col overflow-y-auto">{children}</div>

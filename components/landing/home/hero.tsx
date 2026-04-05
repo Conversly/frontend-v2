@@ -31,7 +31,7 @@ export default function LandingHero() {
                   <span>
                     The AI customer support platform for{" "}
                     <span className="emphasis">
-                      <span className="emphasis-text">Web, WhatsApp & Voice.</span>
+                      <span className="emphasis-text">your Customers.</span>
                     </span>
                   </span>
                 </h1>
@@ -41,7 +41,7 @@ export default function LandingHero() {
                 variants={fadeUp}
                 className="mx-auto mt-5 max-w-[620px] text-[17px] leading-[1.7] text-slate-600 md:text-[19px]"
               >
-                One platform for AI agents, human handoff, and omnichannel support — deploy in minutes, not months.
+                One platform to handle all your customer support and Instantly answer your visitors' questions with a personalized chatbot trained on your business content.
               </motion.p>
 
               <motion.div variants={fadeUp} className="page-main-title__buttons mt-8">
@@ -76,25 +76,6 @@ export default function LandingHero() {
                       <span className="common-button__label ellipsis">Book a demo</span>
                     </a>
                   </div>
-
-                  <motion.div
-                    variants={fadeUp}
-                    className="mt-10 flex flex-wrap justify-center gap-3"
-                  >
-                    {["No setup fee", "24/7 AI support", "No credit card required", "Cancel any time", "30-day free trial"].map(
-                      (chip, i) => (
-                        <motion.span
-                          key={chip}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.7 + i * 0.06, duration: 0.4 }}
-                          className="home-hero__benefit-chip"
-                        >
-                          {chip}
-                        </motion.span>
-                      )
-                    )}
-                  </motion.div>
                 </div>
               </motion.div>
             </div>

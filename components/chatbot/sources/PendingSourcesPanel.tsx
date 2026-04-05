@@ -158,7 +158,7 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex items-start gap-3 p-3 bg-[--surface-secondary] rounded-lg group hover:bg-muted/70 transition-colors border border-border"
+                className="flex items-start gap-3 p-3 bg-card rounded-[var(--panel-radius-sm)] group hover:bg-[var(--surface-secondary)] transition-colors border border-border/70"
               >
                 <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
@@ -242,7 +242,7 @@ export function PendingSourcesPanel({ chatbotId, mode = 'sheet' }: PendingSource
             <SheetTrigger asChild>
               <Button
                 variant="default"
-                className="w-full gap-2 justify-start px-4 h-11"
+                className="w-full gap-2 justify-start px-4 h-11 shadow-sm"
               >
                 <Database className="w-4 h-4" />
                 <span className="flex-1 text-left">Pending Sources</span>

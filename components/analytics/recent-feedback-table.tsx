@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageSquare } from "lucide-react";
 import type { FeedbackItem } from "@/types/analytics";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface RecentFeedbackTableProps {
   feedbacksData?: FeedbackItem[];
@@ -30,24 +31,23 @@ export function RecentFeedbackTable({
           ))}
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-2 px-3 text-xs font-medium">Content</th>
-                <th className="text-left py-2 px-3 text-xs font-medium">Feedback</th>
-                <th className="text-left py-2 px-3 text-xs font-medium">Comment</th>
-                <th className="text-left py-2 px-3 text-xs font-medium">Date</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Content</TableHead>
+              <TableHead>Feedback</TableHead>
+              <TableHead>Comment</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
               {feedbacksData && feedbacksData.length > 0 ? (
                 feedbacksData.map((feedback, index) => (
-                  <tr key={index} className="border-b hover:bg-muted/50">
-                    <td className="py-2 px-3 max-w-xs truncate text-sm" title={feedback.content}>
+                  <TableRow key={index}>
+                    <TableCell className="max-w-xs truncate text-sm" title={feedback.content}>
                       {feedback.content}
-                    </td>
-                    <td className="py-2 px-3">
+                    </TableCell>
+                    <TableCell>
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           feedback.feedback === 'like'
@@ -57,27 +57,25 @@ export function RecentFeedbackTable({
                       >
                         {feedback.feedback === 'like' ? '👍 Like' : '👎 Dislike'}
                       </span>
-                    </td>
-                    <td className="py-2 px-3 max-w-xs truncate text-sm" title={feedback.feedbackComment ?? 'No comment'}>
+                    </TableCell>
+                    <TableCell className="max-w-xs truncate text-sm" title={feedback.feedbackComment ?? 'No comment'}>
                       {feedback.feedbackComment ?? 'No comment'}
-                    </td>
-                    <td className="py-2 px-3 text-xs text-muted-foreground">
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
                       {formatFeedbackDate(feedback.createdAt)}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               ) : (
-                <tr>
-                  <td colSpan={4} className="py-6 text-center text-sm text-muted-foreground">
+                <TableRow>
+                  <TableCell colSpan={4} className="py-6 text-center text-sm text-muted-foreground">
                     No feedback data available
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
-        </div>
+          </TableBody>
+        </Table>
       )}
     </Card>
   );
 }
-

@@ -84,8 +84,8 @@ export default function StatisticPage({ params }: StatisticPageProps) {
   }
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-6 space-y-4">
-      <div className="mb-4">
+    <div className="dashboard-page px-4 py-4 md:px-6 md:py-6">
+      <div className="page-header">
         <h1 className="type-page-title">Statistics</h1>
         <p className="type-body-muted">
           Analyze conversation topics and trending themes

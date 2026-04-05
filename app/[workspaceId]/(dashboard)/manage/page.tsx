@@ -244,21 +244,21 @@ export default function ManagePage() {
 
     return (
         <AccessGuard capability="canManageMembers">
-            <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8 space-y-8">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Manage Workspace</h1>
-                    <p className="text-muted-foreground mt-1">
+            <div className="dashboard-page px-4 py-6 md:px-6 md:py-8">
+                <div className="page-header">
+                    <h1 className="type-page-title">Manage Workspace</h1>
+                    <p className="type-body-muted">
                         Manage members, settings, and security for <span className="font-semibold text-foreground">{workspaceName}</span>
                     </p>
                 </div>
 
                 <Tabs defaultValue="members" className="w-full">
-                    <TabsList className="mb-4">
-                        <TabsTrigger value="members" className="gap-2">
+                    <TabsList variant="segmented" className="mb-4 w-full justify-start">
+                        <TabsTrigger value="members" variant="segmented" className="gap-2">
                             <User className="h-4 w-4" />
                             Members
                         </TabsTrigger>
-                        <TabsTrigger value="invitations" className="gap-2">
+                        <TabsTrigger value="invitations" variant="segmented" className="gap-2">
                             <Mail className="h-4 w-4" />
                             Invitations
                             {invitations.length > 0 && (
@@ -267,11 +267,11 @@ export default function ManagePage() {
                                 </Badge>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger value="settings" className="gap-2">
+                        <TabsTrigger value="settings" variant="segmented" className="gap-2">
                             <SettingsIcon className="h-4 w-4" />
                             Settings
                         </TabsTrigger>
-                        <TabsTrigger value="security" className="gap-2">
+                        <TabsTrigger value="security" variant="segmented" className="gap-2">
                             <Shield className="h-4 w-4" />
                             Security
                         </TabsTrigger>
@@ -361,25 +361,24 @@ export default function ManagePage() {
                         </div>
 
                         <Card>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Users className="h-5 w-5" />
-                                        Workspace Members
-                                    </CardTitle>
-                                    <CardDescription>People with access to this workspace.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    {isMembersLoading ? (
-                                        <div className="flex h-40 items-center justify-center">
-                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            {members.map((member) => (
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Users className="h-5 w-5" />
+                                    Workspace Members
+                                </CardTitle>
+                                <CardDescription>People with access to this workspace.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {isMembersLoading ? (
+                                    <div className="flex h-40 items-center justify-center">
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {members.map((member) => (
                                                 <div
                                                     key={member.userId}
-                                                    className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-lg bg-card border border-border hover:shadow-sm transition-all"
+                                                    className="dashboard-list-row flex flex-col sm:flex-row items-center justify-between"
                                                 >
                                                     <div className="flex items-center gap-4 w-full sm:w-auto">
                                                         <Avatar>
@@ -429,11 +428,10 @@ export default function ManagePage() {
                                                         </Button>
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                        ))}
+                                    </div>
+                                )}
+                            </CardContent>
                         </Card>
                     </TabsContent>
 
@@ -459,7 +457,7 @@ export default function ManagePage() {
                                         {invitations.map((invite) => (
                                             <div
                                                 key={invite.id}
-                                                className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-lg bg-secondary/20 border border-border"
+                                                className="dashboard-list-row flex flex-col sm:flex-row items-center justify-between"
                                             >
                                                 <div className="flex items-center gap-3 w-full sm:w-auto">
                                                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">

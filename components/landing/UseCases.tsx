@@ -89,7 +89,7 @@ const useCases = [
 export default function UseCases() {
   return (
     <section
-      className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f4ee_0%,#f2eee8_50%,#f7f4ee_100%)] py-20 md:py-28"
+      className="landing-home-section landing-home-section--plain"
       id="use-cases"
     >
       {/* subtle grid */}
@@ -104,14 +104,14 @@ export default function UseCases() {
           transition={{ duration: 0.55 }}
           className="mx-auto mb-14 max-w-[760px] text-center"
         >
-          <div className="mb-4 inline-flex rounded-full border border-[#d9d2c5] bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a7468]">
+          <div className="landing-home-eyebrow mb-4">
             Industries
           </div>
-          <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.05] tracking-[-0.04em] text-[#221f1b] md:text-[52px]">
+          <h2 className="landing-home-title text-[34px] md:text-[52px]">
             Built for every team.
-            <span className="block text-[#6e6558]">Trusted across industries.</span>
+            <span className="landing-home-title-muted block">Trusted across industries.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[600px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+          <p className="landing-home-copy mx-auto mt-5 max-w-[600px] text-[15px] md:text-[17px]">
             See how teams across industries use Verly to automate support, reduce cost, and
             scale without scaling headcount.
           </p>
@@ -128,7 +128,7 @@ export default function UseCases() {
               viewport={{ once: true }}
               transition={{ duration: 0.45, delay: i * 0.06 }}
               whileHover={{ y: -6 }}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#e4ddd4] bg-white p-7 shadow-[0_14px_36px_rgba(59,43,22,0.05)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(59,43,22,0.10)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(37,99,235,0.1)]"
             >
               {/* Accent corner glow */}
               <div
@@ -146,15 +146,15 @@ export default function UseCases() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[1.3rem] font-semibold leading-snug tracking-[-0.02em] text-[#1e1c19]">
+                <h3 className="font-title-bold text-[1.3rem] leading-snug tracking-[-0.03em] text-[#0b1536]">
                   {uc.title}
-                  <span className="block text-[0.85rem] font-medium text-[#8a8279]">
+                  <span className="block text-[0.85rem] font-medium text-[#7b89a4]">
                     {uc.subtitle}
                   </span>
                 </h3>
 
                 {/* Description */}
-                <p className="mt-3 text-[0.88rem] leading-[1.7] text-[#6d665d]">
+                <p className="mt-3 text-[0.88rem] leading-[1.7] text-[#5d6b85]">
                   {uc.description}
                 </p>
               </div>
@@ -169,13 +169,13 @@ export default function UseCases() {
                   >
                     {uc.stat}
                   </span>
-                  <span className="text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#9a9189]">
+                  <span className="text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#8a97af]">
                     {uc.statLabel}
                   </span>
                 </div>
 
                 {/* Arrow */}
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e4ddd4] bg-[#faf8f6] text-[#9a9189] transition-all duration-300 group-hover:border-transparent group-hover:bg-[#1e1c19] group-hover:text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d7e2f4] bg-[#f7faff] text-[#7b89a4] transition-all duration-300 group-hover:border-transparent group-hover:bg-[#315EEA] group-hover:text-white">
                   <ArrowUpRight className="h-4 w-4" />
                 </div>
               </div>
@@ -191,7 +191,7 @@ export default function UseCases() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-12 text-center"
         >
-          <p className="text-[0.92rem] text-[#8a8279]">
+          <p className="text-[0.92rem] text-[#7b89a4]">
             Don&apos;t see your industry?{" "}
             <a
               href="/solutions"

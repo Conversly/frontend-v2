@@ -122,9 +122,9 @@ function formatDisplayValue(val: any): string {
 
 function changeBadge(type: string) {
     switch (type) {
-        case "CREATED": return <Badge className="bg-emerald-500 hover:bg-emerald-600 gap-1 text-xs"><Plus className="w-3 h-3" />New</Badge>;
+        case "CREATED": return <Badge className="gap-1 text-xs bg-emerald-500 hover:bg-emerald-500"><Plus className="w-3 h-3" />New</Badge>;
         case "DELETED": return <Badge variant="destructive" className="gap-1 text-xs"><Trash2 className="w-3 h-3" />Removed</Badge>;
-        case "UPDATED": return <Badge className="bg-amber-500 hover:bg-amber-600 gap-1 text-xs"><Pencil className="w-3 h-3" />Modified</Badge>;
+        case "UPDATED": return <Badge className="gap-1 text-xs bg-amber-500 hover:bg-amber-500"><Pencil className="w-3 h-3" />Modified</Badge>;
         default: return null;
     }
 }
@@ -241,9 +241,9 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
     const hasChanges = totalChanges > 0;
 
     return (
-        <Card className="overflow-hidden border-border/60 shadow-md flex flex-col h-[calc(100vh-180px)] min-h-[600px]">
+        <Card className="overflow-hidden border-border/60 shadow-md flex flex-col h-[calc(100vh-220px)] min-h-[560px]">
             {/* Header */}
-            <CardHeader className="pb-3 border-b bg-muted/20">
+            <CardHeader className="pb-3 border-b bg-[var(--surface-secondary)]">
                 <div>
                     <CardTitle className="text-lg">
                         {isFirstDeploy ? "First Deployment" : "Review Changes"}
@@ -258,19 +258,19 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
 
                 {/* Summary counts */}
                 {hasChanges && !isLoading && (
-                    <div className="flex items-center gap-4 mt-3">
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
                         {created > 0 && (
-                            <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+                            <span className="dashboard-status-chip dashboard-status-chip--success">
                                 <Plus className="w-3 h-3" /> {created} new
                             </span>
                         )}
                         {updated > 0 && (
-                            <span className="flex items-center gap-1.5 text-xs font-medium text-amber-600">
+                            <span className="dashboard-status-chip dashboard-status-chip--warning">
                                 <Pencil className="w-3 h-3" /> {updated} modified
                             </span>
                         )}
                         {deleted > 0 && (
-                            <span className="flex items-center gap-1.5 text-xs font-medium text-red-600">
+                            <span className="dashboard-status-chip dashboard-status-chip--danger">
                                 <Trash2 className="w-3 h-3" /> {deleted} removed
                             </span>
                         )}
@@ -305,9 +305,9 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
                             <AccordionItem
                                 key={resourceKey}
                                 value={resourceKey}
-                                className="border rounded-lg overflow-hidden bg-background"
+                                className="overflow-hidden rounded-[var(--panel-radius-sm)] border border-border/70 bg-background"
                             >
-                                <AccordionTrigger className="px-4 py-2.5 hover:bg-muted/50 text-sm">
+                                <AccordionTrigger className="px-4 py-3 hover:bg-[var(--surface-secondary)] text-sm">
                                     <div className="flex items-center gap-3">
                                         <span className="font-semibold">{getResourceLabel(resourceKey)}</span>
                                         <Badge variant="secondary" className="text-xs">{changes.length}</Badge>
@@ -317,7 +317,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
                                     {changes.map((change, idx) => (
                                         <div key={`${change.logicalId}-${idx}`} className={idx > 0 ? "border-t" : ""}>
                                             {/* Item header */}
-                                            <div className="flex items-center gap-3 px-4 py-2 bg-muted/20">
+                                            <div className="flex items-center gap-3 px-4 py-2.5 bg-[var(--surface-secondary)]">
                                                 {changeBadge(change.changeType)}
                                                 <span className="text-xs font-medium truncate max-w-[400px]" title={getDisplayName(change)}>
                                                     {getDisplayName(change)}
@@ -415,7 +415,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
             </CardContent>
 
             {/* Footer with actions */}
-            <CardFooter className="border-t bg-muted/10 px-4 py-3 flex items-center justify-between">
+            <CardFooter className="border-t bg-[var(--surface-secondary)] px-4 py-3 flex items-center justify-between">
                 <Button variant="ghost" size="sm" onClick={onBack} disabled={isDeploying}>
                     <ArrowLeft className="w-4 h-4 mr-1.5" />
                     Back
@@ -423,7 +423,7 @@ export function DeploymentDiffView({ botId, onConfirm, onBack, isDeploying }: De
                 <Button
                     onClick={onConfirm}
                     disabled={isLoading || isDeploying || !hasChanges}
-                    className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+                    className="gap-2"
                     size="sm"
                 >
                     <Rocket className="w-4 h-4" />

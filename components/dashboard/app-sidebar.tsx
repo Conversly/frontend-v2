@@ -191,28 +191,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar
             collapsible="icon"
-            className="border-r border-border bg-sidebar"
+            className="border-r border-sidebar-border/80 bg-sidebar"
             {...props}
         >
-            <SidebarHeader className="pt-4 pb-2">
+            <SidebarHeader className="px-3 pt-5 pb-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-transparent group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
+                            className="h-14 rounded-2xl border border-transparent bg-transparent px-2.5 data-[state=open]:bg-sidebar-accent/60 data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/60 group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
                         >
-                            <div className="flex aspect-square size-8 group-data-[state=expanded]:size-10 items-center justify-center">
+                            <div className="flex aspect-square size-10 items-center justify-center rounded-2xl border border-sidebar-border/70 bg-background shadow-xs group-data-[state=collapsed]:size-9">
                                 <Image
                                     src="/verly_logo.png"
                                     alt="Verly"
                                     width={40}
                                     height={40}
-                                    className="object-contain drop-shadow-sm group-data-[state=collapsed]:w-8 group-data-[state=collapsed]:h-8"
+                                    className="object-contain drop-shadow-sm group-data-[state=collapsed]:h-7 group-data-[state=collapsed]:w-7"
                                 />
                             </div>
-                            <div className="grid flex-1 text-left leading-tight ml-2">
-                                <span className="truncate font-bold text-base text-foreground">Verly</span>
-                                <span className="truncate text-xs text-muted-foreground font-medium">AI Platform</span>
+                            <div className="ml-1 grid flex-1 text-left leading-tight">
+                                <span className="truncate text-[15px] font-bold tracking-[-0.01em] text-foreground">Verly</span>
+                                <span className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">AI Operations</span>
                             </div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -232,17 +232,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 asChild
                                                 isActive={isActive}
                                                 tooltip={item.title}
-                                                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium transition-all duration-200 group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
+                                                className="group/menu-link hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[active=true]:bg-background data-[active=true]:text-sidebar-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!justify-center"
                                             >
                                                 <Link
                                                     href={item.url}
                                                     onMouseEnter={() => handleNavItemHover(item.url)}
                                                     prefetch={true}
                                                 >
-                                                    <div className={`p-1.5 rounded-lg flex items-center justify-center shrink-0 ${item.colorClass || "text-muted-foreground bg-muted/20"}`}>
+                                                    <div className={`flex size-8 items-center justify-center rounded-xl border border-transparent transition-colors shrink-0 ${isActive ? "bg-primary/10 text-primary" : item.colorClass || "text-muted-foreground bg-transparent"}`}>
                                                         <item.icon className="h-4 w-4" /> {/* Standardize icon size */}
                                                     </div>
-                                                    <span>{item.title}</span>
+                                                    <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                                                        <span>{item.title}</span>
+                                                        {isActive && <PanelLeft className="h-3.5 w-3.5 opacity-55" />}
+                                                    </div>
                                                 </Link>
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
@@ -253,24 +256,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarGroup>
                 ))}
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="px-3 pb-4 pt-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
                                     size="lg"
-                                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                    className="h-12 rounded-2xl border border-sidebar-border/70 bg-background data-[state=open]:bg-sidebar-accent/60 data-[state=open]:text-sidebar-accent-foreground"
                                 >
                                     <Avatar className="h-8 w-8 rounded-lg">
                                         <AvatarImage src={user?.avatarUrl || undefined} alt={getUserDisplayName()} />
-                                        <AvatarFallback className="rounded-lg">{getUserInitials()}</AvatarFallback>
+                                        <AvatarFallback className="rounded-lg bg-primary/10 text-primary">{getUserInitials()}</AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">{getUserDisplayName()}</span>
-                                        <span className="truncate text-xs">{getUserEmail()}</span>
+                                        <span className="truncate text-xs text-muted-foreground">{getUserEmail()}</span>
                                     </div>
-                                    <MoreVertical className="ml-auto size-4" /> {/* Changed to MoreVertical (ellipsis) as requested */}
+                                    <MoreVertical className="ml-auto size-4 text-muted-foreground" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent

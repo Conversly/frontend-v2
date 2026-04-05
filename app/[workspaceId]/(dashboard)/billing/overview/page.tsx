@@ -4,10 +4,10 @@ import { useEffect, useState, useMemo } from "react";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { AccessGuard } from "@/components/auth/access-guard";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -185,10 +185,10 @@ export default function BillingPage() {
 
   return (
     <AccessGuard capability="canManageBilling">
-      <div className="container max-w-7xl px-4 py-8 md:px-6 lg:px-8 space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Billing &amp; Subscription</h1>
-          <p className="text-muted-foreground mt-1">
+      <div className="dashboard-page px-4 py-6 md:px-6 md:py-8">
+        <div className="page-header">
+          <h1 className="type-page-title">Billing &amp; Subscription</h1>
+          <p className="type-body-muted">
             Manage your subscription plan and view payment history for <span className="font-semibold text-foreground">{workspaceName}</span>
           </p>
         </div>
@@ -202,7 +202,7 @@ export default function BillingPage() {
             {/* Top Grid: Plan, Wallet, Usage */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {/* Current Plan Card */}
-              <Card className="flex flex-col">
+              <Card className="dashboard-kpi-card flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Current Plan</CardTitle>
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -303,7 +303,7 @@ export default function BillingPage() {
               </Card>
 
               {/* Wallet Balance Card */}
-              <Card className="flex flex-col">
+              <Card className="dashboard-kpi-card flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Wallet Balance</CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -321,7 +321,7 @@ export default function BillingPage() {
               </Card>
 
               {/* Usage Card */}
-              <Card className="flex flex-col">
+              <Card className="dashboard-kpi-card flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Usage</CardTitle>
                   <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -427,83 +427,81 @@ export default function BillingPage() {
                     <p className="text-sm mt-1">Your billing history will appear here once you have activity.</p>
                   </div>
                 ) : (
-                  <div className="relative w-full overflow-auto rounded-md border">
-                    <table className="w-full caption-bottom text-sm text-left">
-                      <thead className="bg-muted/50">
-                        <tr className="border-b">
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground">Date</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground">Description</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground">Plan</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Amount Charged</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Credits</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-right">Balance</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-center">Status</th>
-                          <th className="h-10 px-4 align-middle font-medium text-muted-foreground text-center">Invoice</th>
-                        </tr>
-                      </thead>
-                      <tbody className="[&_tr:last-child]:border-0 bg-card">
-                        {invoices.map((tx) => (
-                          <tr
-                            key={tx.id}
-                            className={cn(
-                              "border-b transition-colors hover:bg-muted/50",
-                              tx.paymentStatus === "failed" && "bg-destructive/5"
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Plan</TableHead>
+                        <TableHead className="text-right">Amount Charged</TableHead>
+                        <TableHead className="text-right">Credits</TableHead>
+                        <TableHead className="text-right">Balance</TableHead>
+                        <TableHead className="text-center">Status</TableHead>
+                        <TableHead className="text-center">Invoice</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {invoices.map((tx) => (
+                        <TableRow
+                          key={tx.id}
+                          className={cn(
+                            "transition-colors",
+                            tx.paymentStatus === "failed" && "bg-destructive/5"
+                          )}
+                        >
+                          <TableCell className="whitespace-nowrap text-muted-foreground text-xs">
+                            {formatDate(tx.date)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getTransactionIcon(tx)}
+                              <span className="font-medium">{tx.description}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground text-sm">
+                            {tx.planName ?? <span className="text-muted-foreground/40">—</span>}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {tx.paymentAmount != null && tx.paymentAmount > 0
+                              ? <span className="text-foreground">{formatUSD(tx.paymentAmount)}</span>
+                              : <span className="text-muted-foreground/40">—</span>
+                            }
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {tx.creditsAdded > 0
+                              ? <span className="text-green-600">+{tx.creditsAdded.toLocaleString()}</span>
+                              : <span className="text-muted-foreground/40">—</span>
+                            }
+                          </TableCell>
+                          <TableCell className="text-right font-mono text-sm text-muted-foreground">
+                            {tx.balanceAfter.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {getStatusBadge(tx)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {tx.dodoPaymentId ? (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7"
+                                disabled={downloadingId === tx.dodoPaymentId}
+                                onClick={() => handleDownload(tx.dodoPaymentId!)}
+                                title="Download Invoice PDF"
+                              >
+                                {downloadingId === tx.dodoPaymentId
+                                  ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                  : <Download className="h-3.5 w-3.5" />
+                                }
+                              </Button>
+                            ) : (
+                              <span className="text-muted-foreground/30 text-xs">—</span>
                             )}
-                          >
-                            <td className="p-4 align-middle whitespace-nowrap text-muted-foreground text-xs">
-                              {formatDate(tx.date)}
-                            </td>
-                            <td className="p-4 align-middle">
-                              <div className="flex items-center gap-2">
-                                {getTransactionIcon(tx)}
-                                <span className="font-medium">{tx.description}</span>
-                              </div>
-                            </td>
-                            <td className="p-4 align-middle text-muted-foreground text-sm">
-                              {tx.planName ?? <span className="text-muted-foreground/40">—</span>}
-                            </td>
-                            <td className="p-4 align-middle text-right font-medium">
-                              {tx.paymentAmount != null && tx.paymentAmount > 0
-                                ? <span className="text-foreground">{formatUSD(tx.paymentAmount)}</span>
-                                : <span className="text-muted-foreground/40">—</span>
-                              }
-                            </td>
-                            <td className="p-4 align-middle text-right font-medium">
-                              {tx.creditsAdded > 0
-                                ? <span className="text-green-600">+{tx.creditsAdded.toLocaleString()}</span>
-                                : <span className="text-muted-foreground/40">—</span>
-                              }
-                            </td>
-                            <td className="p-4 align-middle text-right font-mono text-sm text-muted-foreground">
-                              {tx.balanceAfter.toLocaleString()}
-                            </td>
-                            <td className="p-4 align-middle text-center">
-                              {getStatusBadge(tx)}
-                            </td>
-                            <td className="p-4 align-middle text-center">
-                              {tx.dodoPaymentId ? (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-7 w-7"
-                                  disabled={downloadingId === tx.dodoPaymentId}
-                                  onClick={() => handleDownload(tx.dodoPaymentId!)}
-                                  title="Download Invoice PDF"
-                                >
-                                  {downloadingId === tx.dodoPaymentId
-                                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                    : <Download className="h-3.5 w-3.5" />
-                                  }
-                                </Button>
-                              ) : (
-                                <span className="text-muted-foreground/30 text-xs">—</span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 )}
               </CardContent>
             </Card>

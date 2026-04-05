@@ -1,0 +1,71 @@
+<svg width="830" height="158" viewBox="0 0 830 158" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="830" height="158" fill="transparent"/>
+
+  <g transform="translate(2,8)">
+    <path d="M8 0H135V116L67.5 149L8 116V0Z" fill="#F2F2F2" stroke="#0F0F0F" stroke-width="4"/>
+    <rect x="0" y="0" width="106" height="28" fill="#DBDBDB" stroke="#0F0F0F" stroke-width="3"/>
+    <rect x="106" y="0" width="29" height="28" fill="#FF5A36" stroke="#0F0F0F" stroke-width="3"/>
+    <text x="53" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8" fill="#222222">MILESTONE</text>
+    <text x="67.5" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#000000">Users</text>
+    <text x="67.5" y="89" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#000000">Love Us</text>
+    <path d="M59 113L62.4 120L70 121L64.5 126.2L65.8 133.8L59 130L52.2 133.8L53.5 126.2L48 121L55.6 120L59 113Z" fill="#FF5A36"/>
+    <path d="M75 113L78.4 120L86 121L80.5 126.2L81.8 133.8L75 130L68.2 133.8L69.5 126.2L64 121L71.6 120L75 113Z" fill="#FF5A36"/>
+    <path d="M67 126L70.4 133L78 134L72.5 139.2L73.8 146.8L67 143L60.2 146.8L61.5 139.2L56 134L63.6 133L67 126Z" fill="#FF5A36"/>
+    <circle cx="120.5" cy="14" r="9" fill="#FFFFFF"/>
+    <text x="120.5" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#FF5A36">G2</text>
+  </g>
+
+  <g transform="translate(169,8)">
+    <path d="M8 0H135V116L67.5 149L8 116V0Z" fill="#F2F2F2" stroke="#0F0F0F" stroke-width="4"/>
+    <rect x="0" y="0" width="106" height="28" fill="#FFFFFF" stroke="#0F0F0F" stroke-width="3"/>
+    <rect x="106" y="0" width="29" height="28" fill="#FF5A36" stroke="#0F0F0F" stroke-width="3"/>
+    <path d="M20 116L67.5 140L123 116V123L67.5 149L20 123V116Z" fill="#39C8BE"/>
+    <text x="53" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8" fill="#222222">FALL 2025</text>
+    <text x="67.5" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="800" fill="#000000">Best</text>
+    <text x="67.5" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="800" fill="#000000">Support</text>
+    <text x="67.5" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="#222222">SMALL BUSINESS</text>
+    <circle cx="120.5" cy="14" r="9" fill="#FFFFFF"/>
+    <text x="120.5" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#FF5A36">G2</text>
+  </g>
+
+  <g transform="translate(336,8)">
+    <path d="M8 0H135V116L67.5 149L8 116V0Z" fill="#F2F2F2" stroke="#0F0F0F" stroke-width="4"/>
+    <rect x="0" y="0" width="106" height="28" fill="#FFFFFF" stroke="#0F0F0F" stroke-width="3"/>
+    <rect x="106" y="0" width="29" height="28" fill="#FF5A36" stroke="#0F0F0F" stroke-width="3"/>
+    <path d="M20 116L67.5 140L123 116V123L67.5 149L20 123V116Z" fill="#F2C200"/>
+    <text x="53" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8" fill="#222222">FALL 2025</text>
+    <text x="67.5" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="800" fill="#000000">Best</text>
+    <text x="67.5" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="800" fill="#000000">Usability</text>
+    <text x="67.5" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="#222222">MID-MARKET</text>
+    <circle cx="120.5" cy="14" r="9" fill="#FFFFFF"/>
+    <text x="120.5" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#FF5A36">G2</text>
+  </g>
+
+  <g transform="translate(503,8)">
+    <path d="M8 0H135V116L67.5 149L8 116V0Z" fill="#F2F2F2" stroke="#0F0F0F" stroke-width="4"/>
+    <rect x="0" y="0" width="106" height="28" fill="#FFFFFF" stroke="#0F0F0F" stroke-width="3"/>
+    <rect x="106" y="0" width="29" height="28" fill="#FF5A36" stroke="#0F0F0F" stroke-width="3"/>
+    <path d="M20 112L67.5 136L123 112V120L67.5 146L20 120V112Z" fill="#F7C311"/>
+    <path d="M20 118L67.5 142L123 118V126L67.5 152L20 126V118Z" fill="#FF8B1E"/>
+    <path d="M20 124L67.5 148L123 124V132L67.5 158L20 132V124Z" fill="#FF4E3A"/>
+    <text x="53" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8" fill="#222222">FALL 2025</text>
+    <text x="67.5" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="800" fill="#000000">High</text>
+    <text x="67.5" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="800" fill="#000000">Performer</text>
+    <text x="67.5" y="98" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="#222222">ENTERPRISE</text>
+    <circle cx="120.5" cy="14" r="9" fill="#FFFFFF"/>
+    <text x="120.5" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#FF5A36">G2</text>
+  </g>
+
+  <g transform="translate(670,8)">
+    <path d="M8 0H135V116L67.5 149L8 116V0Z" fill="#F2F2F2" stroke="#0F0F0F" stroke-width="4"/>
+    <rect x="0" y="0" width="106" height="28" fill="#FFFFFF" stroke="#0F0F0F" stroke-width="3"/>
+    <rect x="106" y="0" width="29" height="28" fill="#FF5A36" stroke="#0F0F0F" stroke-width="3"/>
+    <path d="M20 116L67.5 140L123 116V122L67.5 148L20 122V116Z" fill="#F2C200"/>
+    <path d="M20 121L67.5 145L123 121V127L67.5 153L20 127V121Z" fill="#FF8B1E"/>
+    <path d="M20 126L67.5 150L123 126V132L67.5 156L20 132V126Z" fill="#FF4E3A"/>
+    <text x="53" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8" fill="#222222">FALL 2025</text>
+    <text x="67.5" y="73" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="800" fill="#000000">Leader</text>
+    <circle cx="120.5" cy="14" r="9" fill="#FFFFFF"/>
+    <text x="120.5" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#FF5A36">G2</text>
+  </g>
+</svg>

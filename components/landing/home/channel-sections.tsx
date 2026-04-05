@@ -4,20 +4,20 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Bot,
+  CalendarDays,
+  CheckCheck,
+  Globe,
   Headphones,
   MessageCircle,
   MessageSquare,
   Mic,
+  PhoneCall,
   Sparkles,
   UserCheck,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import {
-  VoiceAgentVisual,
-  WhatsAppVisual,
-  WebsiteWidgetVisual,
-} from "@/components/landing/cards/FeatureVisuals";
+import type { ReactNode } from "react";
 
 /* ═══════════════════════════════════════════════════════════════════════
    WHY SWITCH — Problem section
@@ -167,42 +167,330 @@ export function WhySwitchSection() {
    OMNICHANNEL PROOF — adapted from previous landing cards
    ═══════════════════════════════════════════════════════════════════════ */
 
+function OmnichannelVisualFrame({
+  gradientClassName,
+  children,
+}: {
+  gradientClassName: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`relative flex h-full w-full items-center justify-center overflow-hidden ${gradientClassName}`}
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.58),transparent_48%)]" />
+      <div className="absolute inset-0 opacity-[0.45] [background-image:linear-gradient(rgba(148,163,184,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.14)_1px,transparent_1px)] [background-size:26px_26px]" />
+      <motion.div
+        aria-hidden="true"
+        className="absolute -left-10 top-6 h-24 w-24 rounded-full bg-white/55 blur-2xl"
+        animate={{ scale: [1, 1.08, 1], opacity: [0.42, 0.62, 0.42] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="absolute bottom-2 right-0 h-28 w-28 rounded-full bg-white/45 blur-3xl"
+        animate={{ scale: [1.04, 1, 1.04], opacity: [0.5, 0.32, 0.5] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <div className="relative h-full w-full p-5">{children}</div>
+    </div>
+  );
+}
+
+function WebsiteChatCardVisual() {
+  return (
+    <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f7f5ff_0%,#eef2ff_54%,#f6f8ff_100%)]">
+      <div className="relative mx-auto flex h-full max-w-[290px] items-center justify-center">
+        <motion.div
+          className="absolute left-3 top-4 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6d5bd0] shadow-[0_12px_30px_rgba(109,91,208,0.12)] backdrop-blur-md"
+          animate={{ y: [0, -2, 0] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          Website widget
+        </motion.div>
+
+        <motion.div
+          className="relative w-full overflow-hidden rounded-[28px] border border-white/75 bg-white/78 shadow-[0_28px_60px_rgba(76,81,191,0.16)] backdrop-blur-xl"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <div className="flex items-center gap-2 border-b border-slate-200/70 bg-white/75 px-4 py-3">
+            <div className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff6f61]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ffc34d]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#3ecf8e]" />
+            </div>
+            <div className="mx-auto flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3 py-1 text-[10px] font-medium text-slate-500">
+              <Globe className="h-3 w-3 text-slate-400" />
+              verly.ai
+            </div>
+          </div>
+
+          <div className="grid gap-3 p-4">
+            <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,247,255,0.88))] p-4 shadow-[0_16px_34px_rgba(15,23,42,0.06)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d5bd0]">
+                    Support assistant
+                  </div>
+                  <p className="mt-2 text-[15px] font-semibold leading-6 text-[#172036]">
+                    Need pricing help for your team?
+                  </p>
+                </div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#efe9ff] text-[#6d41e9]">
+                  <Bot className="h-4 w-4" />
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-[#dccfff] bg-[#f6f1ff] px-2.5 py-1 text-[11px] font-medium text-[#6d41e9]">
+                  Pricing for teams?
+                </span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-500">
+                  Book a demo
+                </span>
+              </div>
+            </div>
+
+            <motion.div
+              className="ml-auto max-w-[78%] rounded-[20px] rounded-br-md bg-[linear-gradient(135deg,#7c54ff_0%,#5f49f6_100%)] px-4 py-3 text-white shadow-[0_18px_34px_rgba(109,65,233,0.24)]"
+              animate={{ opacity: [0.92, 1, 0.92] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <p className="text-[12px] font-medium leading-5">
+                We&apos;re a 12-seat team. What&apos;s the monthly plan?
+              </p>
+            </motion.div>
+
+            <div className="rounded-[20px] border border-[#d9def5] bg-white/88 px-4 py-3 shadow-[0_14px_28px_rgba(15,23,42,0.06)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[13px] font-semibold text-[#172036]">Starts at $29 per seat</p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Instant answers, routing, and handoff included.
+                  </p>
+                </div>
+                <div className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-600">
+                  Avg reply 4s
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#7c54ff_0%,#5b39e6_100%)] text-white shadow-[0_20px_40px_rgba(91,57,230,0.35)]">
+            <MessageSquare className="h-5 w-5" />
+          </div>
+        </motion.div>
+      </div>
+    </OmnichannelVisualFrame>
+  );
+}
+
+function WhatsAppCardVisual() {
+  return (
+    <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f4f8f4_0%,#eef6ef_52%,#f8fbf6_100%)]">
+      <div className="relative mx-auto flex h-full max-w-[290px] items-center justify-center">
+        <motion.div
+          className="absolute left-4 top-5 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1d8f63] shadow-[0_12px_28px_rgba(29,143,99,0.12)] backdrop-blur-md"
+          animate={{ y: [0, -2, 0] }}
+          transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          Booking flow
+        </motion.div>
+
+        <motion.div
+          className="relative w-[240px] overflow-hidden rounded-[32px] border border-white/80 bg-white/82 shadow-[0_30px_60px_rgba(16,97,72,0.14)] backdrop-blur-xl"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <div className="border-b border-emerald-100/80 bg-[linear-gradient(180deg,#1c8f67_0%,#167957_100%)] px-4 pb-3 pt-4 text-white">
+            <div className="mx-auto mb-3 h-1.5 w-14 rounded-full bg-white/30" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/16 ring-1 ring-white/25">
+                <Bot className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-[13px] font-semibold">Verly Assistant</div>
+                <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-emerald-50/90">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" />
+                  Replies instantly on WhatsApp
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 bg-[linear-gradient(180deg,#edf6ee_0%,#f7fbf8_100%)] p-4">
+            <div className="ml-auto max-w-[78%] rounded-[18px] rounded-br-md bg-[#dcf8c6] px-3.5 py-3 text-[12px] font-medium leading-5 text-[#23423a] shadow-[0_10px_22px_rgba(16,97,72,0.08)]">
+              Can I move my appointment to Saturday afternoon?
+              <div className="mt-1.5 text-right text-[10px] text-[#56746b]">10:42 AM</div>
+            </div>
+
+            <div className="max-w-[82%] rounded-[18px] rounded-bl-md border border-white/80 bg-white/90 px-3.5 py-3 text-[#1f2937] shadow-[0_14px_28px_rgba(15,23,42,0.06)]">
+              <p className="text-[12px] font-medium leading-5">
+                Saturday at 2:00 PM is available. Want me to confirm it?
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
+                  <CalendarDays className="h-3 w-3" />
+                  Sat, 2:00 PM
+                </div>
+                <div className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-medium text-slate-500">
+                  <CheckCheck className="h-3 w-3 text-[#1d8f63]" />
+                  Ready
+                </div>
+              </div>
+            </div>
+
+            <motion.div
+              className="flex items-center justify-between rounded-[18px] border border-emerald-100/80 bg-white/88 px-3.5 py-3 shadow-[0_14px_24px_rgba(16,97,72,0.08)]"
+              animate={{ opacity: [0.9, 1, 0.9] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div>
+                <div className="text-[11px] font-semibold text-[#1f2937]">Confirmation sent</div>
+                <div className="mt-1 text-[10px] text-slate-500">Updated instantly in the inbox</div>
+              </div>
+              <div className="rounded-full bg-[#1d8f63] px-3 py-1.5 text-[10px] font-semibold text-white">
+                Confirmed
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </OmnichannelVisualFrame>
+  );
+}
+
+function VoiceAICardVisual() {
+  return (
+    <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f4f7ff_0%,#eef3ff_48%,#f8faff_100%)]">
+      <div className="relative mx-auto flex h-full max-w-[292px] items-center justify-center">
+        <motion.div
+          className="absolute right-4 top-5 rounded-full border border-white/75 bg-white/82 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3b63f0] shadow-[0_12px_28px_rgba(59,99,240,0.12)] backdrop-blur-md"
+          animate={{ y: [0, -2, 0] }}
+          transition={{ duration: 5.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          Voice resolution
+        </motion.div>
+
+        <motion.div
+          className="relative w-full overflow-hidden rounded-[30px] border border-white/80 bg-white/78 p-4 shadow-[0_30px_60px_rgba(62,95,185,0.14)] backdrop-blur-xl"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 6.4, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <div className="rounded-[22px] border border-[#dbe5ff] bg-[linear-gradient(180deg,#f8fbff_0%,#eff4ff_100%)] p-4 shadow-[0_16px_32px_rgba(37,99,235,0.08)]">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 rounded-full bg-white/80 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Live call
+                </span>
+              </div>
+              <div className="rounded-full border border-[#d7e1ff] bg-white px-2.5 py-1 text-[10px] font-medium text-slate-500">
+                00:48
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-blue-100 bg-white shadow-[0_10px_22px_rgba(15,23,42,0.06)]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9f0ff] text-[#3b63f0]">
+                    <Mic className="h-4 w-4" />
+                  </div>
+                </div>
+                <span className="text-[11px] font-medium text-slate-500">AI Agent</span>
+              </div>
+
+              <div className="flex flex-1 flex-col items-center gap-3">
+                <div className="flex items-end gap-1">
+                  {[18, 30, 22, 38, 28, 34, 20].map((height, index) => (
+                    <motion.span
+                      key={height}
+                      className="w-1.5 rounded-full bg-[linear-gradient(180deg,#6d7dff_0%,#4967ff_100%)]"
+                      style={{ height }}
+                      animate={{ opacity: [0.45, 1, 0.45], scaleY: [0.88, 1.04, 0.88] }}
+                      transition={{
+                        duration: 1.8,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: index * 0.08,
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="rounded-full border border-[#d7e1ff] bg-white px-3 py-1 text-[10px] font-medium text-slate-500">
+                  Instant response with context
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_22px_rgba(15,23,42,0.06)]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+                    <PhoneCall className="h-4 w-4" />
+                  </div>
+                </div>
+                <span className="text-[11px] font-medium text-slate-500">Caller</span>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-[20px] border border-[#d7e1ff] bg-white/92 px-3.5 py-3 shadow-[0_12px_24px_rgba(37,99,235,0.06)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3b63f0]">
+                    Live transcript
+                  </div>
+                  <p className="mt-1.5 text-[12px] font-medium leading-5 text-[#172036]">
+                    Your order has already shipped. I can text the tracking link right away.
+                  </p>
+                </div>
+                <div className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold text-[#3b63f0]">
+                  Resolved
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </OmnichannelVisualFrame>
+  );
+}
+
 const channels = [
   {
     icon: MessageSquare,
-    title: "Website Chat",
+    title: "Website Widget",
     description:
       "Create your AI chatbot for your website — engage visitors 24/7, answer questions instantly, and convert browsers into customers automatically.",
     iconClassName: "text-purple-600",
     badgeClassName: "bg-purple-500/10 border-purple-500/20",
-    visual: <WebsiteWidgetVisual />,
+    visual: <WebsiteChatCardVisual />,
     href: "/features",
   },
   {
     icon: MessageCircle,
-    title: "WhatsApp AI",
+    title: "WhatsApp Chatbot",
     description:
       "Meet customers on their favorite app — automate conversations, confirm bookings, and close deals on WhatsApp at scale.",
     iconClassName: "text-emerald-600",
     badgeClassName: "bg-emerald-500/10 border-emerald-500/20",
-    visual: <WhatsAppVisual />,
+    visual: <WhatsAppCardVisual />,
     href: "/features",
   },
   {
     icon: Mic,
-    title: "Voice AI",
+    title: "Voice Call Agent",
     description:
       "Answer every call instantly with natural AI voices — qualify leads, book appointments, and provide support without hiring more staff.",
     iconClassName: "text-blue-600",
     badgeClassName: "bg-blue-500/10 border-blue-500/20",
-    visual: <VoiceAgentVisual />,
+    visual: <VoiceAICardVisual />,
     href: "https://verlyai.xyz/features",
   },
 ];
 
 export function OmnichannelSection() {
   return (
-    <section className="relative overflow-hidden bg-slate-50 pb-10 pt-20 text-slate-900 md:pb-12 md:pt-24 lg:pb-14">
+    <section className="landing-home-section landing-home-section--soft pb-10 pt-20 text-slate-900 md:pb-12 md:pt-24 lg:pb-14">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent opacity-60" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.04)_1px,transparent_1px)] bg-[size:72px_72px]" />
@@ -218,15 +506,15 @@ export function OmnichannelSection() {
           transition={{ duration: 0.55 }}
           className="mx-auto max-w-[760px] text-center"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
+          <div className="landing-home-eyebrow mb-4">
             <Headphones className="h-4 w-4" />
             Omnichannel Support
           </div>
-          <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.02] tracking-[-0.04em] text-[#221f1b] md:text-[52px]">
+          <h2 className="landing-home-title text-[34px] md:text-[52px]">
             Three channels.
-            <span className="block text-[#6e6558]">One support brain.</span>
+            <span className="landing-home-title-muted block">One support brain.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[700px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+          <p className="landing-home-copy mx-auto mt-5 max-w-[700px] text-[15px] md:text-[17px]">
             Customers pick the channel they prefer. Verly handles them equally — same knowledge,
             same routing, same analytics.
           </p>
@@ -241,9 +529,9 @@ export function OmnichannelSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               whileHover={{ y: -6 }}
-              className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/85 shadow-[0_18px_48px_rgba(15,23,42,0.08)] backdrop-blur-md transition-all duration-300 hover:border-slate-300 hover:shadow-[0_26px_60px_rgba(37,99,235,0.12)]"
+              className="group flex h-full min-h-[458px] flex-col overflow-hidden rounded-[28px] border border-[#d7e2f4] bg-white/90 shadow-[0_18px_48px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-300 hover:border-[#c2d3f3] hover:shadow-[0_26px_60px_rgba(37,99,235,0.1)] md:min-h-[478px]"
             >
-              <div className="relative h-60 shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50">
+              <div className="relative h-[17rem] shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50/80 md:h-[18.5rem]">
                 {ch.visual}
                 {/* Live indicator */}
                 <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 shadow-sm backdrop-blur-sm">
@@ -259,7 +547,7 @@ export function OmnichannelSection() {
                   >
                     <ch.icon className="h-[18px] w-[18px]" />
                   </div>
-                  <h3 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[1.15rem] tracking-[-0.02em] text-[#221f1b]">
+                  <h3 className="font-title-bold text-[1.15rem] tracking-[-0.03em] text-[#0b1536]">
                     {ch.title}
                   </h3>
                 </div>
