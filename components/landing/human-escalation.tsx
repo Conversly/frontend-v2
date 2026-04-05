@@ -1,576 +1,218 @@
-"use client";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Bot, Headphones, CheckCircle2, AlertCircle, ArrowRight, Sparkles, Zap, ThumbsDown, Activity } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
+import {
+  ArrowRight,
+  Bot,
+  Mail,
+  Sparkles,
+  Ticket,
+  Upload,
+  Zap,
+} from "lucide-react";
 
-const messages = [
-    {
-        id: 1,
-        role: "user",
-        text: "I'm having trouble with my recent order #8291. It hasn't arrived yet.",
-        delay: 0.5,
-        satisfactionImpact: 0,
-    },
-    {
-        id: 2,
-        role: "bot",
-        text: "Let me check that for you... It seems there's a delay with the courier.",
-        delay: 2.0,
-        satisfactionImpact: -5,
-    },
-    {
-        id: 3,
-        role: "user",
-        text: "This is frustrating. Can I speak to a real person?",
-        delay: 4.0,
-        satisfactionImpact: -20, // Frustrated
-    },
-    {
-        id: 4,
-        role: "system",
-        text: "Connecting you to a human agent...",
-        delay: 5.5,
-        satisfactionImpact: 0,
-    },
-    {
-        id: 5,
-        role: "agent",
-        text: "Hi there! I'm Sarah. I see the issue with the courier. I've expedited it for you now.",
-        delay: 7.5,
-        satisfactionImpact: +15, // Recovery
-    },
-    {
-        id: 6,
-        role: "user",
-        text: "Oh, that's great! Thank you so much, Sarah.",
-        delay: 9.5,
-        satisfactionImpact: +10, // Delighted
-    },
+import HumanEscalationVisual, {
+  type IntegrationLogo,
+} from "@/components/landing/human-escalation-visual";
+import { Button } from "@/components/ui/button";
+
+const integrationLogos: IntegrationLogo[] = [
+  {
+    name: "HubSpot",
+    src: "/integrations/hubspot.svg",
+    available: hasPublicAsset("integrations/hubspot.svg"),
+    badgeClassName: "border-[#ffd9bf] bg-[#fff3ea] text-[#bf612d]",
+  },
+  {
+    name: "Slack",
+    src: "/integrations/slack.svg",
+    available: hasPublicAsset("integrations/slack.svg"),
+    badgeClassName: "border-[#e5d5ff] bg-[#f7f1ff] text-[#6f42c1]",
+  },
+  {
+    name: "Zendesk",
+    src: "/integrations/zendesk.svg",
+    available: hasPublicAsset("integrations/zendesk.svg"),
+    badgeClassName: "border-[#d9dfeb] bg-[#f4f7fb] text-[#334155]",
+  },
+  {
+    name: "Verly",
+    src: "/verly_logo.png",
+    available: hasPublicAsset("verly_logo.png"),
+    badgeClassName: "border-[#d7e4ff] bg-[#eef4ff] text-[#315eea]",
+  },
 ];
 
+const valuePoints = [
+  {
+    title: "Escalate into your preferred stack",
+    description:
+      "Route handoffs into HubSpot, Slack, Zendesk, or Verly so your team works where they already manage support.",
+    icon: Sparkles,
+  },
+  {
+    title: "Create tickets and notify your team instantly",
+    description:
+      "The moment escalation happens, Verly opens the support ticket and sends the right email notifications without extra ops work.",
+    icon: Ticket,
+  },
+  {
+    title: "Transfer the full conversation context",
+    description:
+      "Agents see the full transcript, summary, customer intent, and issue details immediately, so nobody has to re-read or re-ask.",
+    icon: Upload,
+  },
+  {
+    title: "Help humans reply faster with Verly Copilot",
+    description:
+      "Once a teammate joins, Verly Copilot drafts stronger replies so agents can resolve complex conversations with more confidence.",
+    icon: Bot,
+  },
+] as const;
+
 export default function HumanEscalationSection() {
-    const [visibleMessages, setVisibleMessages] = useState<number[]>([]);
-    const [isEscalating, setIsEscalating] = useState(false);
-    const [isResolved, setIsResolved] = useState(false);
-    const [satisfactionScore, setSatisfactionScore] = useState(100);
-    const chatContainerRef = useRef<HTMLDivElement>(null);
+  return (
+    <section className="landing-home-section landing-home-section--soft overflow-hidden py-20 lg:py-24">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(49,94,234,0.12),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(103,217,236,0.16),transparent_20%),radial-gradient(circle_at_18%_88%,rgba(157,182,255,0.12),transparent_26%)]" />
+        <div
+          className="absolute inset-0 opacity-[0.045]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(49,94,234,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(49,94,234,0.08) 1px, transparent 1px)",
+            backgroundSize: "68px 68px",
+          }}
+        />
+        <div className="absolute -right-24 top-10 h-[340px] w-[340px] rounded-full bg-[#c8d8ff]/55 blur-[100px]" />
+        <div className="absolute -left-24 bottom-0 h-[340px] w-[340px] rounded-full bg-[#d8f2ff]/60 blur-[110px]" />
+      </div>
 
-    // 3D Tilt Logic
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const mouseX = useSpring(x, { stiffness: 50, damping: 20 });
-    const mouseY = useSpring(y, { stiffness: 50, damping: 20 });
-
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-        const { left, top, width, height } = currentTarget.getBoundingClientRect();
-        x.set((clientX - left) / width - 0.5);
-        y.set((clientY - top) / height - 0.5);
-    }
-
-    function handleMouseLeave() {
-        x.set(0);
-        y.set(0);
-    }
-
-    const rotateX = useTransform(mouseY, [-0.5, 0.5], [7, -7]);
-    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-7, 7]);
-    const shineOpacity = useTransform(mouseX, [-0.5, 0.5], [0, 0.5]);
-
-    // Auto-scroll effect
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTo({
-                top: chatContainerRef.current.scrollHeight,
-                behavior: "smooth"
-            });
-        }
-    }, [visibleMessages, isEscalating]);
-
-    useEffect(() => {
-        let timeouts: NodeJS.Timeout[] = [];
-
-        // Reset state
-        setVisibleMessages([]);
-        setIsEscalating(false);
-        setIsResolved(false);
-        setSatisfactionScore(100);
-
-        // Playback sequence
-        const sequence = async () => {
-            let currentScore = 100;
-
-            for (const msg of messages) {
-                const timeout = setTimeout(() => {
-                    setVisibleMessages((prev) => [...prev, msg.id]);
-
-                    if (msg.role === "system") {
-                        setIsEscalating(true);
-                    }
-                    if (msg.role === "agent") {
-                        setIsEscalating(false);
-                    }
-                    if (msg.id === 6) {
-                        setIsResolved(true);
-                    }
-
-                    // Update Score
-                    if (msg.satisfactionImpact !== 0) {
-                        currentScore = Math.min(100, Math.max(0, currentScore + msg.satisfactionImpact));
-                        setSatisfactionScore(currentScore);
-                    }
-
-                }, msg.delay * 1000);
-                timeouts.push(timeout);
-            }
-
-            // Reset loop
-            const resetTimeout = setTimeout(() => {
-                setVisibleMessages([]);
-                setIsEscalating(false);
-                setIsResolved(false);
-                setSatisfactionScore(100);
-                sequence(); // Loop
-            }, 13000);
-            timeouts.push(resetTimeout);
-        };
-
-        sequence();
-
-        return () => timeouts.forEach(clearTimeout);
-    }, []);
-
-    return (
-        <section className="landing-home-section landing-home-section--soft py-20 lg:py-24 relative overflow-hidden perspective-1000">
-            {/* Dynamic Background */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent opacity-50" />
-                <motion.div
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.3, 0.5, 0.3],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[10%] right-[5%] w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[80px]"
-                />
-                <motion.div
-                    animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.3, 0.4, 0.3],
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute bottom-[10%] left-[5%] w-[500px] h-[500px] bg-purple-400/10 rounded-full blur-[80px]"
-                />
-
-                {/* Circuit Grid Pattern */}
-                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]" />
+      <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
+          <div className="order-2 flex flex-col gap-8 lg:order-1">
+            <div className="landing-home-eyebrow w-fit">
+              <Zap className="h-4 w-4" />
+              Smart Escalation Handling
             </div>
 
-            <div className="container max-w-6xl mx-auto px-4 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-5">
+              <h2 className="landing-home-title max-w-[11ch] text-[36px] md:text-[54px]">
+                When AI needs backup,
+                <span className="landing-home-title-muted block">
+                  your team steps in ready.
+                </span>
+              </h2>
 
-                    {/* Left Content */}
-                    <div className="flex flex-col gap-8 order-2 lg:order-1">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="landing-home-eyebrow w-fit"
-                        >
-                            <Zap size={14} />
-                            Smart Escalation Handling
-                        </motion.div>
+              <p className="landing-home-copy max-w-[620px] text-[16px] leading-[1.75] md:text-[18px]">
+                Verly escalates complex conversations into the tools your team
+                already uses, creates the right support workflow automatically,
+                and carries the full context forward so every handoff feels
+                instant instead of interrupted.
+              </p>
+            </div>
 
-                        <div className="space-y-4">
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.1 }}
-                                className="landing-home-title text-[34px] md:text-[52px]"
-                            >
-                                When AI hits a wall,{" "}
-                                <span className="landing-home-title-muted">
-                                    Humans Step In.
-                                </span>
-                            </motion.h2>
+            <ul className="space-y-4">
+              {valuePoints.map((point) => {
+                const Icon = point.icon;
 
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.2 }}
-                                className="landing-home-copy max-w-lg text-[15px] md:text-[17px]"
-                            >
-                                Seamlessly transition from AI to human agents when conversations get complex. Zero context loss, 100% customer satisfaction.
-                            </motion.p>
-                        </div>
+                return (
+                  <li
+                    key={point.title}
+                    className="rounded-[24px] border border-[#e1e8f6] bg-white/88 p-5 shadow-[0_12px_34px_rgba(15,23,42,0.05)] backdrop-blur-sm"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#dbe5ff] bg-[#eef4ff] text-[#315eea] shadow-[0_10px_24px_rgba(49,94,234,0.12)]">
+                        <Icon className="h-[18px] w-[18px]" />
+                      </div>
 
-                        <motion.ul
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.3 }}
-                            className="space-y-4"
-                        >
-                            {[
-                                { text: "Sentiment-triggered escalation", icon: <Sparkles size={18} /> },
-                                { text: "Full conversation history transfer", icon: <ArrowRight size={18} /> },
-                                { text: "Zero wait-time handoffs", icon: <CheckCircle2 size={18} /> }
-                            ].map((item, i) => (
-                                <li key={i} className="flex items-center gap-4 text-[#3d4a62] font-medium group">
-                                    <div className="h-10 w-10 rounded-xl bg-white border border-blue-100 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-blue-100 transition-all duration-300">
-                                        <div className="text-[#315EEA]">
-                                            {item.icon}
-                                        </div>
-                                    </div>
-                                    <span className="text-[0.95rem]">{item.text}</span>
-                                </li>
+                      <div className="min-w-0">
+                        <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-[#1f2a44]">
+                          {point.title}
+                        </h3>
+                        <p className="mt-2 text-[15px] leading-7 text-[#5f6c84]">
+                          {point.description}
+                        </p>
+
+                        {point.title === "Escalate into your preferred stack" ? (
+                          <div className="mt-4 flex flex-wrap gap-2.5">
+                            {integrationLogos.map((logo) => (
+                              <IntegrationBadge key={logo.name} logo={logo} />
                             ))}
-                        </motion.ul>
+                          </div>
+                        ) : null}
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.4 }}
-                            className="pt-4"
-                        >
-                            <Link href="/login">
-                                <Button size="lg" className="rounded-full bg-[#315EEA] text-white hover:bg-[#2850d0] px-8 h-13 text-[15px] shadow-[0_12px_30px_rgba(49,94,234,0.18)] hover:shadow-[0_16px_36px_rgba(49,94,234,0.24)] hover:-translate-y-0.5 transition-all duration-300">
-                                    Start Building <ArrowRight className="ml-2 w-4 h-4" />
-                                </Button>
-                            </Link>
-                        </motion.div>
+                        {point.title === "Create tickets and notify your team instantly" ? (
+                          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#dfe7f5] bg-[#f8fbff] px-3.5 py-2 text-[13px] font-medium text-[#4a5a76]">
+                            <Mail className="h-4 w-4 text-[#315eea]" />
+                            Email alerts go out as soon as the handoff is created.
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
+                  </li>
+                );
+              })}
+            </ul>
 
-                    {/* Right Visual - 3D Tilt Card */}
-                    <div className="order-1 lg:order-2 perspective-1000 relative">
-                        <motion.div
-                            style={{
-                                rotateX,
-                                rotateY,
-                                transformStyle: "preserve-3d"
-                            }}
-                            onMouseMove={handleMouseMove}
-                            onMouseLeave={handleMouseLeave}
-                            initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
-                            whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, type: "spring" }}
-                            className="relative bg-white rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(50,50,93,0.25),0_30px_60px_-30px_rgba(0,0,0,0.3)] border border-slate-100/50 h-[550px] w-full max-w-[420px] mx-auto flex flex-col overflow-hidden backdrop-blur-xl group z-20"
-                        >
-                            {/* Shine Effect */}
-                            <motion.div
-                                style={{ opacity: shineOpacity }}
-                                className="absolute inset-0 z-50 pointer-events-none bg-gradient-to-tr from-transparent via-white/20 to-transparent"
-                            />
+            <div className="flex flex-col gap-4 border-t border-[#d9e2f2] pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-[420px] text-[14px] leading-6 text-[#6b7891]">
+                Keep AI-first resolution for the easy questions and bring humans
+                in only when nuance, urgency, or judgment matters.
+              </p>
 
-                            {/* Phone Header */}
-                            <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 p-5 sticky top-0 z-20 flex items-center justify-between transform-gpu">
-                                <div className="flex items-center gap-4">
-                                    <div className="relative">
-                                        <motion.div
-                                            animate={{
-                                                backgroundColor: isEscalating ? '#fef3c7' : isResolved ? '#dcfce7' : '#eff6ff'
-                                            }}
-                                            className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-500 shadow-inner overflow-hidden"
-                                        >
-                                            <AnimatePresence mode="wait">
-                                                {isEscalating ? (
-                                                    <motion.div key="alert" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 180 }}>
-                                                        <AlertCircle size={20} className="text-amber-600" />
-                                                    </motion.div>
-                                                ) : isResolved ? (
-                                                    <motion.img
-                                                        key="human-img"
-                                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                        alt="Sarah"
-                                                        initial={{ scale: 0, opacity: 0 }}
-                                                        animate={{ scale: 1, opacity: 1 }}
-                                                        exit={{ scale: 0, opacity: 0 }}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <motion.div key="bot" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 180 }}>
-                                                        <Bot size={20} className="text-blue-600" />
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </motion.div>
-                                        {isEscalating && (
-                                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 ring-2 ring-white"></span>
-                                            </span>
-                                        )}
-                                        {isResolved && (
-                                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 ring-2 ring-white"></span>
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <AnimatePresence mode="wait">
-                                            <motion.h3
-                                                key={isResolved ? "Sarah" : "Support Bot"}
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
-                                                className="text-base font-bold text-slate-900"
-                                            >
-                                                {isResolved || visibleMessages.includes(5) ? "Sarah (Premium Support)" : "Verly Assistant"}
-                                            </motion.h3>
-                                        </AnimatePresence>
-                                        <div className="text-[10px] font-bold text-slate-500 flex items-center gap-1.5 uppercase tracking-wide">
-                                            <span className={`w-1.5 h-1.5 rounded-full ${isEscalating ? 'bg-amber-500 animate-pulse' : 'bg-green-500'} shadow-[0_0_8px_rgba(34,197,94,0.6)]`}></span>
-                                            {isEscalating ? "Escalating..." : "Active Now"}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Chat Area */}
-                            <div ref={chatContainerRef} className="flex-1 p-5 overflow-y-auto bg-slate-50/50 space-y-5 relative scroll-smooth no-scrollbar">
-
-                                {/* Grid overlay for texture */}
-                                <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-
-                                <AnimatePresence initial={false} mode="sync">
-                                    {messages.map((msg) => (
-                                        visibleMessages.includes(msg.id) && (
-                                            <motion.div
-                                                key={msg.id}
-                                                initial={{ opacity: 0, y: 20, scale: 0.9, filter: "blurAttribute(10px)" }}
-                                                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                                                transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                                                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} relative z-10`}
-                                            >
-                                                {msg.role === 'system' ? (
-                                                    <div className="w-full flex justify-center py-4">
-                                                        <motion.div
-                                                            initial={{ width: 0, opacity: 0 }}
-                                                            animate={{ width: "auto", opacity: 1 }}
-                                                            className="bg-slate-900/5 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-3 border border-white/20 shadow-sm"
-                                                        >
-                                                            <div className="flex gap-1 h-3 items-center">
-                                                                <motion.div animate={{ height: [4, 12, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0 }} className="w-1 bg-amber-500 rounded-full" />
-                                                                <motion.div animate={{ height: [4, 12, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0.1 }} className="w-1 bg-amber-500 rounded-full" />
-                                                                <motion.div animate={{ height: [4, 12, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1 bg-amber-500 rounded-full" />
-                                                            </div>
-                                                            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">Escalating to Human Agent</span>
-                                                        </motion.div>
-                                                    </div>
-                                                ) : (
-                                                    <div className={`
-                                  max-w-[85%] p-4 rounded-2xl text-[14px] leading-relaxed shadow-sm relative group transition-all duration-300
-                                  ${msg.role === 'user'
-                                                            ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-br-sm shadow-blue-500/20'
-                                                            : msg.role === 'agent'
-                                                                ? 'bg-white text-slate-800 border-2 border-green-100 rounded-bl-sm shadow-xl shadow-green-500/10'
-                                                                : 'bg-white text-slate-700 border border-slate-200/60 rounded-bl-sm shadow-sm'
-                                                        }
-                               `}>
-                                                        {msg.text}
-                                                        {msg.role === 'agent' && (
-                                                            <div className="absolute -left-2 -top-2 bg-green-500 text-white p-1 rounded-full shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300">
-                                                                <CheckCircle2 size={10} />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </motion.div>
-                                        )
-                                    ))}
-                                </AnimatePresence>
-
-                                {isEscalating && !visibleMessages.includes(5) && (
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="flex items-center gap-1 pl-4"
-                                    >
-                                        <div className="h-1.5 w-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                        <div className="h-1.5 w-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                        <div className="h-1.5 w-1.5 bg-slate-300 rounded-full animate-bounce" />
-                                    </motion.div>
-                                )}
-                                <div className="h-2" /> {/* Spacer */}
-                            </div>
-
-                            {/* Input Area (Mock) */}
-                            <div className="p-4 bg-white border-t border-slate-100/80 z-20">
-                                <div className="h-12 bg-slate-50 border border-slate-200 rounded-full flex items-center px-4 justify-between group focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-                                    <span className="text-slate-400 text-sm font-medium">Message...</span>
-                                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform cursor-pointer">
-                                        <ArrowRight size={16} className="text-white" />
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Mobile-only: inline stats that replace the hidden floating elements */}
-                        <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
-                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
-                                <div className="flex items-center gap-3">
-                                    <motion.div
-                                        animate={{
-                                            background: satisfactionScore < 85 ? "linear-gradient(to top right, #ef4444, #f87171)" : "linear-gradient(to top right, #10b981, #34d399)"
-                                        }}
-                                        className="h-10 w-10 rounded-full flex items-center justify-center shadow-lg text-white shrink-0 transition-colors duration-500"
-                                    >
-                                        {satisfactionScore < 85 ? <ThumbsDown size={16} /> : <CheckCircle2 size={18} />}
-                                    </motion.div>
-                                    <div>
-                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Satisfaction</div>
-                                        <div className={`text-xl font-black leading-none ${satisfactionScore < 85 ? "text-red-500" : "text-slate-800"}`}>
-                                            {satisfactionScore}%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40">
-                                <div className="flex items-center gap-3">
-                                    <motion.div
-                                        animate={{
-                                            backgroundColor: isEscalating ? "#fff7ed" : isResolved ? "#f0fdf4" : "#eff6ff",
-                                            borderColor: isEscalating ? "#ffedd5" : isResolved ? "#dcfce7" : "#dbeafe"
-                                        }}
-                                        className="h-10 w-10 rounded-full border flex items-center justify-center shrink-0 shadow-sm transition-colors duration-500"
-                                    >
-                                        {isEscalating ? <Activity size={16} className="text-amber-500" /> : isResolved ? <Headphones size={16} className="text-green-600" /> : <Bot size={16} className="text-blue-600" />}
-                                    </motion.div>
-                                    <div>
-                                        <div className="text-sm font-bold text-slate-800">
-                                            {isEscalating ? "Escalating" : isResolved ? "Connected" : "AI Active"}
-                                        </div>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <span className={`h-1.5 w-1.5 rounded-full ${isEscalating ? 'bg-amber-500 animate-pulse' : 'bg-green-500'}`} />
-                                            <span className="text-[10px] text-slate-500 font-medium">
-                                                {isEscalating ? "Routing..." : "Active Now"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Floating Elements (Parallax) — desktop only */}
-                        <motion.div
-                            style={{
-                                y: useTransform(mouseY, [0, 1], [-15, 15]),
-                                x: useTransform(mouseX, [0, 1], [-15, 15]),
-                                z: 40
-                            }}
-                            className="absolute -right-4 top-[15%] bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 hidden lg:block z-30 min-w-[180px]"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="relative">
-                                    <motion.div
-                                        animate={{
-                                            background: satisfactionScore < 85 ? "linear-gradient(to top right, #ef4444, #f87171)" : "linear-gradient(to top right, #10b981, #34d399)"
-                                        }}
-                                        className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg text-white shrink-0 transition-colors duration-500"
-                                    >
-                                        <AnimatePresence mode="wait">
-                                            {satisfactionScore < 85 ? (
-                                                <motion.div key="sad" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                    <ThumbsDown size={20} />
-                                                </motion.div>
-                                            ) : (
-                                                <motion.div key="happy" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                    <CheckCircle2 size={24} />
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </motion.div>
-                                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
-                                        <motion.div
-                                            animate={{ backgroundColor: satisfactionScore < 85 ? "#ef4444" : "#22c55e" }}
-                                            className="w-4 h-4 rounded-full border-2 border-white transition-colors duration-500"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Satisfaction Score</div>
-                                    <motion.div
-                                        key={satisfactionScore}
-                                        initial={{ opacity: 0, y: 5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className={`text-2xl font-black leading-none ${satisfactionScore < 85 ? "text-red-500" : "text-slate-800"}`}
-                                    >
-                                        {satisfactionScore}%
-                                    </motion.div>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            style={{
-                                y: useTransform(mouseY, [0, 1], [15, -15]),
-                                x: useTransform(mouseX, [0, 1], [15, -15]),
-                                z: 30
-                            }}
-                            className="absolute -left-8 bottom-[15%] bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 hidden lg:block z-30 min-w-[170px]"
-                        >
-                            <div className="flex items-center gap-3">
-                                <motion.div
-                                    animate={{
-                                        backgroundColor: isEscalating ? "#fff7ed" : isResolved ? "#f0fdf4" : "#eff6ff",
-                                        borderColor: isEscalating ? "#ffedd5" : isResolved ? "#dcfce7" : "#dbeafe"
-                                    }}
-                                    className="h-10 w-10 rounded-full border flex items-center justify-center text-blue-600 shrink-0 shadow-sm transition-colors duration-500 overflow-hidden"
-                                >
-                                    <AnimatePresence mode="wait">
-                                        {isEscalating ? (
-                                            <motion.div key="activity" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                <Activity size={20} className="text-amber-500" />
-                                            </motion.div>
-                                        ) : isResolved ? (
-                                            <motion.img
-                                                key="human-img"
-                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="Agent"
-                                                initial={{ scale: 0, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                exit={{ scale: 0, opacity: 0 }}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <motion.div key="bot" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                                                <Headphones size={20} />
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </motion.div>
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-bold text-slate-800 whitespace-nowrap">
-                                        {isEscalating ? "System Alert" : isResolved ? "Agent Connected" : "AI Assistant"}
-                                    </span>
-                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isEscalating ? 'bg-amber-400' : 'bg-green-400'}`}></span>
-                                            <span className={`relative inline-flex rounded-full h-2 w-2 ${isEscalating ? 'bg-amber-500' : 'bg-green-500'}`}></span>
-                                        </span>
-                                        <motion.span
-                                            key={isEscalating ? "escalating" : "active"}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="text-[10px] text-slate-500 font-medium"
-                                        >
-                                            {isEscalating ? "Escalating..." : "Active Now"}
-                                        </motion.span>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                    </div>
-
-                </div>
+              <Link href="/login">
+                <Button
+                  size="lg"
+                  className="h-12 rounded-full bg-[#315EEA] px-7 text-[15px] text-white shadow-[0_12px_30px_rgba(49,94,234,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2850d0] hover:shadow-[0_16px_36px_rgba(49,94,234,0.24)]"
+                >
+                  Start Building
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
-        </section>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <HumanEscalationVisual integrations={integrationLogos} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function IntegrationBadge({ logo }: { logo: IntegrationLogo }) {
+  if (logo.available) {
+    return (
+      <div className="inline-flex items-center gap-2 rounded-full border border-[#dbe4f4] bg-white px-3.5 py-2 shadow-sm">
+        <Image
+          src={logo.src}
+          alt={`${logo.name} logo`}
+          width={18}
+          height={18}
+          className="h-4 w-auto object-contain"
+        />
+        <span className="text-[13px] font-semibold text-[#44516b]">
+          {logo.name}
+        </span>
+      </div>
     );
+  }
+
+  return (
+    <div
+      className={`inline-flex items-center rounded-full border px-3.5 py-2 text-[13px] font-semibold ${logo.badgeClassName}`}
+    >
+      {logo.name}
+    </div>
+  );
+}
+
+function hasPublicAsset(relativePath: string) {
+  return [
+    join(process.cwd(), "public", relativePath),
+    join(process.cwd(), "client_v2", "public", relativePath),
+  ].some((candidate) => existsSync(candidate));
 }
