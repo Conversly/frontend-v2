@@ -76,9 +76,50 @@ export interface DatasourceResponse {
     text: string;
     topic: string;
   }
-  
+
   export interface FetchEmbeddingsResponse {
     success: boolean;
     data: EmbeddingItem[];
+  }
+
+  // Source Content types (for clean document preview)
+
+  export interface WebContent {
+    title: string;
+    url: string;
+    sections: { heading: string; content: string }[];
+  }
+
+  export interface FileContent {
+    filename: string;
+    pageCount: number;
+    fileSize: string;
+    pages: { page: number; content: string }[];
+  }
+
+  export interface QASourceContent {
+    question: string;
+    answer: string;
+  }
+
+  export interface TextSourceContent {
+    content: string;
+  }
+
+  export interface SourceContentItem {
+    id: string;
+    dataSourceId: string;
+    contentType: 'web' | 'file' | 'qa' | 'text';
+    structuredContent: WebContent | FileContent | QASourceContent | TextSourceContent;
+    plainText: string | null;
+    summary: string | null;
+    wordCount: number;
+    metadata: Record<string, any>;
+    createdAt: string | Date | null;
+  }
+
+  export interface FetchSourceContentResponse {
+    success: boolean;
+    data: SourceContentItem | null;
   }
 

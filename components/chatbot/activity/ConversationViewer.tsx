@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, User } from "lucide-react";
+import { Bot, PenLine, User } from "lucide-react";
 
 export interface ConversationMessage {
     id: string;
@@ -20,6 +21,7 @@ interface ConversationViewerProps {
     isLoading?: boolean;
     className?: string;
     emptyMessage?: string;
+    onReviseAnswer?: (assistantMessage: ConversationMessage, precedingUserMessage: ConversationMessage | null) => void;
 }
 
 export function ConversationViewer({
@@ -27,6 +29,7 @@ export function ConversationViewer({
     isLoading,
     className,
     emptyMessage = "No messages to display.",
+    onReviseAnswer,
 }: ConversationViewerProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +60,7 @@ export function ConversationViewer({
 
     return (
         <div className={cn("space-y-3", className)}>
-            {messages.map((m) => {
+            {messages.map((m, index) => {
                 const isUser = m.role === "user";
                 const isAssistant = m.role === "assistant";
                 const ts = m.createdAt ? formatShortDateTime(m.createdAt) : "";
@@ -101,6 +104,20 @@ export function ConversationViewer({
                                         • {m.citations.length} citation{m.citations.length === 1 ? "" : "s"}
                                     </span>
                                 ) : null}
+                                {isAssistant && onReviseAnswer && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-6 text-[11px] gap-1 px-2 text-muted-foreground hover:text-foreground"
+                                        onClick={() => {
+                                            const precedingUserMsg = messages.slice(0, index).reverse().find(msg => msg.role === "user") ?? null;
+                                            onReviseAnswer(m, precedingUserMsg);
+                                        }}
+                                    >
+                                        <PenLine className="size-3" />
+                                        Revise answer
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>

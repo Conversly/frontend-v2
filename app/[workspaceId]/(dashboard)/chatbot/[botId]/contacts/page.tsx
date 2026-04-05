@@ -160,6 +160,11 @@ export default function ContactsPage() {
     return lead.attributes?.filter(r => !systemKeys.includes(r.key)) || [];
   };
 
+  const getMetadataEntries = (lead: LeadResponse) => {
+    if (!lead.metadata || typeof lead.metadata !== 'object') return [];
+    return Object.entries(lead.metadata).filter(([, v]) => v !== null && v !== undefined);
+  };
+
   const getName = (lead: LeadResponse) => lead.displayName || getFieldValue(lead, 'name') || "Anonymous";
   const getEmail = (lead: LeadResponse) => lead.email || getFieldValue(lead, 'email');
   const getPhone = (lead: LeadResponse) => lead.phoneNumber || getFieldValue(lead, 'phone') || getFieldValue(lead, 'phoneNumber');
@@ -264,6 +269,7 @@ export default function ContactsPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Contact Info</TableHead>
                 <TableHead>Other Details</TableHead>
+                <TableHead>Metadata</TableHead>
                 <TableHead>Source</TableHead>
                 <TableHead>Captured At</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -272,13 +278,13 @@ export default function ContactsPage() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     Loading contacts...
                   </TableCell>
                 </TableRow>
               ) : leads.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     No contacts found.
                   </TableCell>
                 </TableRow>
@@ -316,6 +322,26 @@ export default function ContactsPage() {
                         </div>
                       </TableCell>
                       <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {(() => {
+                            const meta = getMetadataEntries(lead);
+                            if (meta.length === 0) return <span className="text-muted-foreground text-xs">-</span>;
+                            return (
+                              <>
+                                {meta.slice(0, 3).map(([key, val]) => (
+                                  <Badge key={key} variant="outline" className="font-normal text-xs bg-blue-50 border-blue-200 text-blue-700">
+                                    {key}: {String(val)}
+                                  </Badge>
+                                ))}
+                                {meta.length > 3 && (
+                                  <Badge variant="outline" className="text-xs">+{meta.length - 3}</Badge>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </TableCell>
+                      <TableCell>
                         <Badge variant="outline" className="text-xs uppercase px-2 py-0.5">{lead.source}</Badge>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
@@ -350,7 +376,7 @@ export default function ContactsPage() {
               {isFetchingNextPage && (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="h-12 text-center text-muted-foreground text-sm"
                   >
                     Loading more...

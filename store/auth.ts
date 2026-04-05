@@ -28,6 +28,11 @@ export const useAuth = create<AuthState>()(
           });
         }
 
+        // Clear Verly AI widget identity before logout
+        if (typeof window !== "undefined" && typeof (window as any).verly === "function") {
+          (window as any).verly("resetUser");
+        }
+
         // Clear localStorage flag
         localStorage.setItem(LOCAL_STORAGE_KEY.IS_LOGGED_IN, "false");
 

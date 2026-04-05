@@ -333,6 +333,31 @@ export const ParametersStep: React.FC<Props> = ({
                 </p>
             </div>
 
+            {/* Contact template variables reference */}
+            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800">
+                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <AlertDescription className="text-sm text-blue-900 dark:text-blue-200">
+                    <strong>Contact variables</strong> are automatically available when identity verification is enabled.
+                    Use these as placeholder values in your API body or as default values:
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                        {[
+                            '{{contact.name}}',
+                            '{{contact.email}}',
+                            '{{contact.phone}}',
+                            '{{contact.id}}',
+                            '{{contact.metadata.<key>}}',
+                        ].map((v) => (
+                            <code key={v} className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 font-mono text-xs">
+                                {v}
+                            </code>
+                        ))}
+                    </div>
+                    <p className="mt-1.5 text-xs text-blue-700 dark:text-blue-300">
+                        Example: <code className="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 font-mono">{'{{contact.metadata.plan}}'}</code> resolves to the verified user&apos;s plan from JWT custom_attributes.
+                    </p>
+                </AlertDescription>
+            </Alert>
+
             {hasLegacyTemplates && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between gap-4">
                     <div className="flex gap-3">

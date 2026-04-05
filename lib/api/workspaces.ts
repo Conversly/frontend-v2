@@ -282,7 +282,6 @@ export async function deleteWorkspace(workspaceId: string): Promise<void> {
 }
 
 export interface EntitlementData {
-  features: Record<string, boolean>;
   limits: Record<string, number | boolean>;
   usage: {
     chatbots: number;

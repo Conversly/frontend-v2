@@ -146,21 +146,33 @@ const securityCards = [
     description:
       "Customer conversations, business context, and enterprise knowledge remain scoped to your Verly workflows and are not repurposed for model training.",
     icon: LockKeyhole,
-    tone: "bg-[#f5f9ff] border-[#dbe7fb] text-[#2d4d8f]",
+    iconColor: "text-cyan-500",
+    accentBg: "bg-gradient-to-br from-cyan-100/60 to-cyan-50/30",
+    accentRing: "ring-cyan-200/50",
+    dotColor: "bg-cyan-300",
+    dotAccent: "bg-cyan-400/30",
   },
   {
     title: "Encryption and controlled access",
     description:
       "Data is protected in transit and at rest, while teams can enforce clearer access boundaries for operational and compliance needs.",
     icon: ShieldCheck,
-    tone: "bg-[#f6fbf7] border-[#d6eadb] text-[#23603d]",
+    iconColor: "text-emerald-500",
+    accentBg: "bg-gradient-to-br from-emerald-100/60 to-emerald-50/30",
+    accentRing: "ring-emerald-200/50",
+    dotColor: "bg-emerald-300",
+    dotAccent: "bg-emerald-400/30",
   },
   {
     title: "Secure integrations",
     description:
       "Verly can sit inside verified, permissioned workflows so users only access the records, actions, and systems they are allowed to touch.",
     icon: Network,
-    tone: "bg-[#fff8ee] border-[#f0dfc3] text-[#8a5d25]",
+    iconColor: "text-orange-500",
+    accentBg: "bg-gradient-to-br from-orange-100/60 to-amber-50/30",
+    accentRing: "ring-orange-200/50",
+    dotColor: "bg-orange-300",
+    dotAccent: "bg-orange-400/30",
   },
 ];
 
@@ -388,49 +400,38 @@ export default function EnterprisePageContent() {
         </section>
 
         {/* ── Rollout — warm tone ── */}
-        <section className="relative px-5 py-16 md:px-8 md:py-22">
-          <div className="pointer-events-none absolute inset-x-3 inset-y-2 rounded-[2.75rem] bg-[radial-gradient(circle_at_30%_24%,rgba(245,186,69,0.12),transparent_38%),radial-gradient(circle_at_70%_70%,rgba(234,161,59,0.08),transparent_32%),linear-gradient(180deg,#fffefb_0%,#faf5ec_50%,#fffefb_100%)] md:inset-x-6" />
+        <section className="relative overflow-hidden px-5 py-20 md:px-8 md:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#fffefb_0%,#faf5ec_50%,#fffefb_100%)]" />
           <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(210,185,140,0.32),transparent)]" />
-          <div className="relative mx-auto grid max-w-[1360px] gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <div className="relative mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
-              <div className="inline-flex items-center rounded-full border border-[#d9d2c5] bg-white px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7468] shadow-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d9d2c5] bg-white px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7468] shadow-sm">
+                <Globe2 className="h-3 w-3 text-[#9d6b1b]" />
                 How rollout works
               </div>
-              <h2 className="mt-4 font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2rem,4vw,3rem)] leading-[1.06] tracking-[-0.04em] text-[#221f1b]">
+              <h2 className="mt-5 font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2rem,4vw,3rem)] leading-[1.06] tracking-[-0.04em] text-[#221f1b]">
                 From discovery to governed{" "}
                 <span className="text-[#6e6558]">production launch</span>
               </h2>
-              <p className="mt-4 max-w-[560px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
-                Verly works best in enterprise when the workflow, integrations, escalation design,
-                and security posture are shaped together. This is not a drop-in bot exercise. It is a
-                production support system rollout.
+              <p className="mt-4 max-w-[480px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+                Verly works best when the workflow, integrations, escalation design,
+                and security posture are shaped together — not a drop-in bot exercise.
               </p>
-              <div className="mt-6 rounded-[26px] border border-[#eadfc8] bg-white/80 p-5 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#fff4de] text-[#9d6b1b]">
-                    <Globe2 className="h-5 w-5" />
-                  </div>
-                  <p className="text-[14px] leading-7 text-[#5f5a53]">
-                    One enterprise setup can unify support behavior across channels, languages, and
-                    customer journeys while still respecting team-specific rules and compliance needs.
-                  </p>
-                </div>
-              </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {rolloutSteps.map((step, index) => (
                 <div
                   key={step.title}
-                  className="rounded-[28px] border border-[#eadfc8] bg-white p-6 shadow-[0_14px_32px_rgba(89,64,28,0.06)] transition-all duration-300 hover:-translate-y-1"
+                  className="group rounded-[22px] border border-[#eadfc8] bg-white px-6 py-5 shadow-[0_4px_16px_rgba(89,64,28,0.04)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(89,64,28,0.08)]"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#fff4de] text-[16px] font-semibold text-[#8a5d25]">
+                  <div className="flex items-start gap-5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1e1c19] text-[13px] font-bold text-white">
                       0{index + 1}
                     </div>
-                    <div>
-                      <h3 className="text-[20px] font-semibold text-[#221f1b]">{step.title}</h3>
-                      <p className="mt-2 text-[14px] leading-7 text-[#6d665d]">{step.description}</p>
+                    <div className="pt-0.5">
+                      <h3 className="text-[18px] font-semibold text-[#221f1b]">{step.title}</h3>
+                      <p className="mt-1.5 text-[14px] leading-7 text-[#6d665d]">{step.description}</p>
                     </div>
                   </div>
                 </div>
@@ -439,60 +440,83 @@ export default function EnterprisePageContent() {
           </div>
         </section>
 
-        {/* ── Security — violet tone ── */}
-        <section className="relative px-5 py-16 md:px-8 md:py-22">
-          <div className="pointer-events-none absolute inset-x-3 inset-y-2 rounded-[2.75rem] bg-[radial-gradient(circle_at_28%_22%,rgba(139,92,246,0.10),transparent_36%),radial-gradient(circle_at_72%_68%,rgba(62,128,241,0.08),transparent_32%),linear-gradient(180deg,#faf8ff_0%,#f5f2ff_50%,#faf8ff_100%)] md:inset-x-6" />
-          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(148,130,200,0.28),transparent)]" />
-          <div className="relative mx-auto grid max-w-[1360px] gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+        {/* ── Security ── */}
+        <section className="relative overflow-hidden px-5 py-20 md:px-8 md:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-white" />
+          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(148,163,184,0.24),transparent)]" />
+          <div className="relative mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div>
-              <div className="inline-flex items-center rounded-full border border-[#d9d2c5] bg-white px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7468] shadow-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d9d2c5] bg-[#fafaf9] px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7468] shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />
                 Security
               </div>
-              <h2 className="mt-4 font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2rem,4vw,3rem)] leading-[1.06] tracking-[-0.04em] text-[#221f1b]">
-                Enterprise-grade security and privacy posture,{" "}
-                <span className="text-[#6e6558]">made explicit for technical buyers</span>
+              <h2 className="mt-5 font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2rem,4vw,3rem)] leading-[1.06] tracking-[-0.04em] text-[#221f1b]">
+                Enterprise-grade security{" "}
+                <span className="text-[#6e6558]">& privacy</span>
               </h2>
-              <p className="mt-4 max-w-[570px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
-                Larger teams do not evaluate AI support on UX alone. They need to understand what the
-                system can access, how data is handled, where controls sit, and what deployment paths
-                exist before rollout.
+              <p className="mt-4 max-w-[480px] text-[15px] leading-7 text-[#6d665d] md:text-[17px]">
+                We take security and compliance seriously. Your data stays yours. Data encryption.
+                Secure integrations. SOC 2 Type II certified and GDPR compliant.
               </p>
-              <div className="mt-6 space-y-3">
-                {[
-                  "Stronger operational boundaries for sensitive support workflows",
-                  "Clearer security review conversations for procurement and technical stakeholders",
-                  "Deployment flexibility when default SaaS boundaries are not enough",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3 rounded-[18px] border border-[#dde6f4] bg-white px-4 py-3 transition-all duration-300 hover:-translate-y-0.5"
-                  >
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#315EEA]" />
-                    <span className="text-[14px] leading-6 text-[#465266]">{item}</span>
+
+              <div className="mt-8 flex items-center gap-5">
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#e4ddd4] bg-white">
+                    <span className="text-[11px] font-bold tracking-wide text-[#5f5a53]">SOC 2</span>
                   </div>
-                ))}
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-[#b0a898]">Type II</span>
+                </div>
+                <div className="h-8 w-px bg-[#e4ddd4]" />
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#e4ddd4] bg-white">
+                    <ShieldCheck className="h-5 w-5 text-[#5f5a53]" />
+                  </div>
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-[#b0a898]">GDPR</span>
+                </div>
               </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {securityCards.map((card) => (
                 <div
                   key={card.title}
-                  className={`rounded-[30px] border p-6 shadow-[0_16px_34px_rgba(43,58,94,0.06)] transition-all duration-300 hover:-translate-y-1 ${card.tone}`}
+                  className="group overflow-hidden rounded-[22px] border border-[#e8e4de] bg-[#fafaf9] px-6 py-5 transition-all duration-300 hover:bg-white hover:shadow-[0_8px_24px_rgba(43,58,94,0.06)]"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/72">
-                      <card.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-[20px] font-semibold tracking-[-0.02em] text-[#221f1b]">
+                  <div className="flex items-center gap-5">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-[17px] font-bold tracking-[-0.01em] text-[#221f1b]">
                         {card.title}
                       </h3>
-                      <p className="mt-2 text-[14px] leading-7 text-[#516073]">{card.description}</p>
+                      <p className="mt-1.5 text-[14px] leading-7 text-[#6d665d]">{card.description}</p>
+                    </div>
+                    <div className="relative flex h-[72px] w-[72px] shrink-0 items-center justify-center">
+                      <div className={`absolute inset-0 rounded-[18px] ${card.accentBg} ring-1 ${card.accentRing} transition-transform duration-300 group-hover:scale-105`} />
+                      <div className={`absolute right-1 top-1 h-1.5 w-1.5 rounded-full ${card.dotAccent}`} />
+                      <div className={`absolute bottom-1.5 left-1.5 h-1 w-1 rounded-full ${card.dotColor} opacity-40`} />
+                      <card.icon className={`relative h-6 w-6 ${card.iconColor} transition-transform duration-300 group-hover:scale-110`} />
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Trust bar */}
+          <div className="relative mx-auto mt-12 max-w-[1200px]">
+            <div className="flex items-center justify-between rounded-2xl border border-[#e4ddd4] bg-[#fafaf9] px-6 py-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-4 w-4 text-[#315EEA]" />
+                <span className="text-[14px] font-medium text-[#5f5a53]">
+                  Verly is committed to safeguarding your data.
+                </span>
+              </div>
+              <Link
+                href="/privacy"
+                className="flex items-center gap-1 text-[13px] font-medium text-[#8a8275] transition-colors hover:text-[#221f1b]"
+              >
+                Learn more
+                <ArrowRight className="h-3 w-3" />
+              </Link>
             </div>
           </div>
         </section>

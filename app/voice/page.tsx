@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+import AppProviders from "@/components/providers/app-providers";
 import { siteConfig } from "@/lib/metadata";
 import { VoiceMarketingPage } from "@/components/voice-marketing/voice-marketing-page";
 
@@ -28,10 +29,12 @@ export const metadata: Metadata = {
 
 export default function VoicePage() {
   return (
-    <main className="relative min-h-screen bg-[#050816]">
-      <Navbar />
-      <VoiceMarketingPage />
-      <Footer hideCta />
-    </main>
+    <AppProviders>
+      <main className="relative min-h-screen bg-[#050816]">
+        <Navbar />
+        <VoiceMarketingPage />
+        <Footer hideCta />
+      </main>
+    </AppProviders>
   );
 }

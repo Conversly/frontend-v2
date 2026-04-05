@@ -46,50 +46,50 @@ export function TextContent({ onSuccess }: TextContentProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="title" className="type-micro-heading">Title</Label>
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <Label htmlFor="title" className="type-micro-heading text-sm">Title</Label>
         <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex: Company policies"
-          className="border-input text-foreground"
+          className="border-input text-foreground h-12 text-base"
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="text-content" className="type-micro-heading">Content</Label>
+          <Label htmlFor="text-content" className="type-micro-heading text-sm">Content</Label>
           <span className="type-caption">
             {getByteSize(textContent)} B
           </span>
         </div>
 
         {/* Rich Text Toolbar */}
-        <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+        <div className="flex items-center gap-1 p-2.5 bg-[--surface-secondary] rounded-lg border border-border">
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Bold className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Italic className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Strikethrough className="w-4 h-4" />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <List className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <ListOrdered className="w-4 h-4" />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <LinkIcon className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Smile className="w-4 h-4" />
           </Button>
         </div>
@@ -99,15 +99,15 @@ export function TextContent({ onSuccess }: TextContentProps) {
           value={textContent}
           onChange={(e) => setTextContent(e.target.value)}
           placeholder="Enter your text"
-          rows={12}
-          className="border-input text-foreground placeholder:text-muted-foreground resize-none"
+          rows={14}
+          className="border-input text-foreground placeholder:text-muted-foreground resize-none text-base min-h-[280px]"
         />
       </div>
 
       <Button
         onClick={handleAddText}
         disabled={!textContent.trim() || !title.trim()}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
+        className="bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-6 text-sm"
       >
         Add text snippet
       </Button>

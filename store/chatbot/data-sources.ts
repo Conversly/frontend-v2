@@ -34,6 +34,7 @@ interface DataSourcesState {
   toggleSourceSelection: (id: string) => void;
   selectAllSources: () => void;
   deselectAllSources: () => void;
+  selectUpToLimit: (limit: number) => void;
   isSourceSelected: (id: string) => boolean;
   getSelectedSources: () => DataSource[];
   
@@ -91,6 +92,12 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
 
   deselectAllSources: () => {
     set({ selectedSourceIds: new Set() });
+  },
+
+  selectUpToLimit: (limit) => {
+    set((state) => ({
+      selectedSourceIds: new Set(state.sources.slice(0, limit).map((s) => s.id)),
+    }));
   },
 
   isSourceSelected: (id) => get().selectedSourceIds.has(id),

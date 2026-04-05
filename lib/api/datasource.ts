@@ -6,9 +6,11 @@ import {
   AddCitationRequest,
   AddCitationResponse,
   FetchEmbeddingsResponse,
+  FetchSourceContentResponse,
   DeleteKnowledgeResponse,
   FetchDataSourcesResponse,
 } from "@/types/datasource";
+import type { SourceContentItem } from "@/types/datasource";
 import { handleEntitlementError } from "@/lib/api-error-handler";
 
 export const processDataSource = async (
@@ -139,5 +141,31 @@ export const fetchDataSources = async (
   } catch (error: any) {
     console.error(error);
     throw new Error(error.message || "Failed to fetch data sources");
+  }
+};
+
+export const fetchSourceContent = async (
+  dataSourceId: string
+): Promise<SourceContentItem | null> => {
+  try {
+    const endpoint = API.ENDPOINTS.DATA_SOURCE.CONTENT.path().replace(
+      ":dataSourceId",
+      dataSourceId
+    );
+    const res = await fetch(API.ENDPOINTS.DATA_SOURCE.BASE_URL() + endpoint, {
+      method: "GET",
+    }).then((res) => res.data) as FetchSourceContentResponse;
+
+    if (!res.success) {
+      throw new Error("Failed to fetch source content");
+    }
+
+    return res.data;
+  } catch (error: any) {
+    if (handleEntitlementError(error)) {
+      throw error;
+    }
+    console.error(error);
+    throw new Error(error.message || "Failed to fetch source content");
   }
 };

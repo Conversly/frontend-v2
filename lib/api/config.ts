@@ -83,6 +83,7 @@ export const API = {
       PROCESS: devMode(() => "/process"),
       ADD_CITATION: devMode(() => "/citation"),
       EMBEDDINGS: allMode(() => "/embeddings/:dataSourceId"),
+      CONTENT: allMode(() => "/content/:dataSourceId"),
       DELETE_KNOWLEDGE: devMode(() => "/knowledge"),
       GET_DATA_SOURCES: allMode(() => "/:chatbotId"),
     },
@@ -102,6 +103,10 @@ export const API = {
       LIST_CONVERSATIONS: allMode(() => "/conversations"),
       GET_CONVERSATION_MESSAGES: allMode(() => "/conversations/:conversationId/messages"),
       CLOSE_CONVERSATION: allMode(() => "/conversations/:conversationId/close"),
+      // Escalations (read endpoints live on the activity router)
+      LIST_ESCALATIONS: allMode(() => "/escalations"),
+      GET_ESCALATION: allMode(() => "/escalations/:escalationId"),
+      MARK_ESCALATION_READ: allMode(() => "/escalations/:escalationId/read"),
     },
     DEPLOY: {
       BASE_URL: () => "/deploy",
@@ -240,6 +245,7 @@ export const API = {
       BASE_URL: () => "/leads",
       CREATE: allMode(() => "/"),   //POST
       GET_LEADS: allMode(() => "/"), //GET
+      EXPORT: allMode(() => "/export"), //GET - CSV download
     },
     LEAD_FORMS: {
       BASE_URL: () => "/lead-forms",
@@ -261,14 +267,15 @@ export const API = {
     },
     ESCALATE: {
       BASE_URL: () => "/escalate",
-      HANDLE_ABSENCE: allMode(() => "/escalate/handle-absence"),
-      LIST: allMode(() => "/"),
-      GET: allMode(() => "/:escalationId"),
-      CLAIM: allMode(() => "/:escalationId/claim"),
-      RESOLVE: allMode(() => "/:escalationId/resolve"),
-      TRANSFER: allMode(() => "/:escalationId/transfer"),
-      CONVERT_TO_TICKET: allMode(() => "/:escalationId/ticket"),
-      MARK_READ: allMode(() => "/:escalationId/read"),
+      HANDLE_ABSENCE: allMode(() => "/handle-absence"),
+      CLAIM: devMode(() => "/:escalationId/claim"),
+      RESOLVE: devMode(() => "/:escalationId/resolve"),
+      TRANSFER: devMode(() => "/:escalationId/transfer"),
+      CONVERT_TO_TICKET: devMode(() => "/:escalationId/ticket"),
+    },
+    GENERATE: {
+      BASE_URL: () => "/generate",
+      IMPROVE_MESSAGE: allMode(() => "/improve-message"),
     },
     TICKETS: {
       BASE_URL: () => "/tickets",

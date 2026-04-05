@@ -11,9 +11,7 @@ import {
   ChevronRight,
   Clock3,
   Globe2,
-  Headphones,
   LineChart,
-  Mic,
   PhoneCall,
   PhoneForwarded,
   PhoneIncoming,
@@ -22,12 +20,12 @@ import {
   Sparkles,
   SquareTerminal,
   Users,
-  Waves,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { openCalendlyPopup } from "@/lib/calendly";
+import { PublicVoiceDemo } from "@/components/voice-marketing/public-voice-demo";
 
 const workflowCards = [
   {
@@ -233,91 +231,19 @@ function HeroSection() {
 }
 
 function HeroWaveStage() {
-  const shouldReduceMotion = useReducedMotion();
-  const heights = [
-    18, 36, 54, 84, 60, 34, 50, 72, 108, 74, 48, 32, 58, 98, 126, 84, 52, 30, 44,
-    70, 102, 80, 48, 34, 64, 106, 78, 56, 38, 68, 112, 76, 54, 34,
-  ];
-  const accentCycle = ["#f7f3e9", "#8ddcff", "#8af0be", "#f3de62", "#c28cff", "#f28a49"];
-
   return (
     <div className="relative overflow-hidden rounded-[34px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(10,16,36,0.9),rgba(4,7,16,0.98))] px-4 pb-0 pt-10 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_32px_100px_rgba(0,0,0,0.38)] sm:px-8">
       {/* Fine inner grid */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:60px_60px]" />
 
-      {/* Dramatic bottom horizon glow inside the card — matching hero */}
+      {/* Dramatic bottom horizon glow */}
       <div className="pointer-events-none absolute -bottom-[10%] left-1/2 h-[380px] w-[110%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(138,240,190,0.18)_0%,rgba(104,145,255,0.22)_20%,rgba(60,80,200,0.08)_44%,transparent_68%)] blur-[56px]" />
 
-      {/* Subtle top fade into card */}
+      {/* Subtle top fade */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(104,145,255,0.04),transparent)]" />
 
-      <div className="relative mx-auto flex max-w-[980px] flex-col items-center">
-        {/* Eyebrow label */}
-        <div className="mb-6 text-[11px] uppercase tracking-[0.34em] text-[#8af0be]">
-          Support-first voice workflows
-        </div>
-
-        {/* "Talk to Verly" pill */}
-        <div className="relative z-10 mb-8">
-          <div className="absolute -inset-[2px] rounded-[999px] bg-gradient-to-r from-[#8af0be]/30 via-[#8ddcff]/20 to-[#8af0be]/30 blur-[6px]" />
-          <div className="relative rounded-[999px] border border-white/[0.14] bg-[#f1ecde] px-7 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.32)]">
-            <div className="flex items-center gap-6 sm:gap-8">
-              <span className="text-[clamp(1rem,2.1vw,1.55rem)] font-medium tracking-[0.18em] text-[#111827]">
-                TALK TO VERLY
-              </span>
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#111827]/12 bg-white/70 text-[#111827] shadow-[0_0_16px_rgba(138,240,190,0.2)]">
-                <Mic className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <p className="relative z-10 mb-10 max-w-[560px] text-center text-[0.98rem] leading-7 text-[#b8c6e0] sm:text-[1.02rem]">
-          Natural voice experiences for inbound support, fast escalation, and
-          customer conversations that stay grounded in your knowledge and actions.
-        </p>
-
-        {/* Animated waveform bars — fade into the horizon glow */}
-        <div className="relative flex h-[240px] w-full items-end justify-center gap-2 overflow-hidden">
-          {/* Fade mask so bars dissolve into the glow */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] bg-[linear-gradient(to_top,rgba(4,7,16,0.60),transparent)]" />
-          {heights.map((height, index) => (
-            <motion.div
-              key={`${height}-${index}`}
-              animate={
-                shouldReduceMotion
-                  ? undefined
-                  : { height: [Math.max(16, height - 10), height, Math.max(16, height - 4)] }
-              }
-              transition={{
-                duration: 2.2,
-                repeat: Infinity,
-                repeatType: "mirror",
-                delay: index * 0.05,
-                ease: "easeInOut",
-              }}
-              className="flex w-4 flex-col justify-end gap-3"
-            >
-              {Array.from({ length: Math.max(2, Math.floor(height / 24)) }).map((_, unitIndex) => (
-                <span
-                  key={unitIndex}
-                  className="block h-3 rounded-full"
-                  style={{
-                    backgroundColor:
-                      index % 5 === 0 || index % 7 === 0
-                        ? accentCycle[(index + unitIndex) % accentCycle.length]
-                        : "#f7f3e9",
-                    boxShadow:
-                      index % 5 === 0 || index % 7 === 0
-                        ? `0 0 8px ${accentCycle[(index + unitIndex) % accentCycle.length]}88`
-                        : "none",
-                  }}
-                />
-              ))}
-            </motion.div>
-          ))}
-        </div>
-      </div>
+      {/* Live voice demo */}
+      <PublicVoiceDemo />
     </div>
   );
 }

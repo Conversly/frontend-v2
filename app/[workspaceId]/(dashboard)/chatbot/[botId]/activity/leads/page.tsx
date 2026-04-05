@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
+import type { DateRange } from "react-day-picker";
 import {
   Table,
   TableBody,
@@ -22,9 +23,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Search, Calendar as CalendarIcon, Filter, X } from "lucide-react";
-import { useGetLeadsInfinite } from "@/services/leads";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Search, CalendarIcon, X, Download } from "lucide-react";
+import { useGetLeadsInfinite, useExportLeads } from "@/services/leads";
 import { useTopicsQuery } from "@/services/chatbot";
 import { cn } from "@/lib/utils";
 import {
@@ -61,10 +67,8 @@ export default function LeadsPage() {
   const [search, setSearch] = useState("");
   const [topicId, setTopicId] = useState<string>("ALL");
   const [source, setSource] = useState<string>("ALL");
-
-  // Date Filters
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   // Debounce search
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -72,6 +76,9 @@ export default function LeadsPage() {
     const timer = setTimeout(() => setDebouncedSearch(search), 500);
     return () => clearTimeout(timer);
   }, [search]);
+
+  const startDate = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
+  const endDate = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
 
   // 2. Data Fetching
   const {
@@ -90,8 +97,6 @@ export default function LeadsPage() {
     startDate: startDate || undefined,
     endDate: endDate || undefined,
   });
-
-
 
   // 3. Conversation View State
   const [selectedLead, setSelectedLead] = useState<LeadResponse | null>(null);
@@ -112,6 +117,19 @@ export default function LeadsPage() {
   }, [messages]);
 
   const { data: topics } = useTopicsQuery(chatbotId);
+
+  // Export
+  const { mutate: exportLeads, isPending: isExporting } = useExportLeads();
+  const handleExport = () => {
+    exportLeads({
+      chatbotId,
+      source: source === "ALL" ? undefined : (source as any),
+      topicId: topicId === "ALL" ? undefined : topicId,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      search: debouncedSearch || undefined,
+    });
+  };
 
   // Flatten pages
   const leads = useMemo(() => {
@@ -143,51 +161,64 @@ export default function LeadsPage() {
     setSearch("");
     setTopicId("ALL");
     setSource("ALL");
-    setStartDate("");
-    setEndDate("");
+    setDateRange(undefined);
   };
 
   const hasActiveFilters =
     search !== "" ||
     topicId !== "ALL" ||
     source !== "ALL" ||
-    startDate !== "" ||
-    endDate !== "";
+    !!dateRange?.from;
+
+  const dateRangeLabel =
+    dateRange?.from
+      ? dateRange.to
+        ? `${format(dateRange.from, "MMM dd, yyyy")} – ${format(dateRange.to, "MMM dd, yyyy")}`
+        : format(dateRange.from, "MMM dd, yyyy")
+      : "Pick a date range";
 
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Header */}
       <div className="border-b bg-background px-6 py-4 space-y-4">
-        <div>
-          <h1 className="type-section-title tracking-tight">Leads</h1>
-          <p className="type-body-muted mt-0.5">
-            Manage and track leads generated from conversations
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="type-section-title tracking-tight">Leads</h1>
+            <p className="type-body-muted mt-0.5">
+              Manage and track leads generated from conversations
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={isExporting}
+          >
+            <Download className="w-4 h-4 mr-1.5" />
+            {isExporting ? "Exporting..." : "Export CSV"}
+          </Button>
         </div>
 
         {/* Filters Bar */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="flex flex-wrap items-end gap-3">
           {/* Search */}
-          <div className="w-full md:w-64 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Search</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-muted-foreground">Search</Label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search name, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-9 bg-card"
+                className="pl-9 h-10 w-64 font-semibold placeholder:font-normal bg-card"
               />
             </div>
           </div>
 
-          <Separator orientation="vertical" className="hidden md:block h-8 mx-2" />
-
           {/* Source Filter */}
-          <div className="w-full md:w-40 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Source</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-muted-foreground">Source</Label>
             <Select value={source} onValueChange={setSource}>
-              <SelectTrigger className="h-9 bg-card">
+              <SelectTrigger className="h-10 w-40 font-semibold bg-card">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
               <SelectContent>
@@ -202,10 +233,10 @@ export default function LeadsPage() {
           </div>
 
           {/* Topic Filter */}
-          <div className="w-full md:w-40 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Topic</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-muted-foreground">Topic</Label>
             <Select value={topicId} onValueChange={setTopicId}>
-              <SelectTrigger className="h-9 bg-card">
+              <SelectTrigger className="h-10 w-40 font-semibold bg-card">
                 <SelectValue placeholder="All Topics" />
               </SelectTrigger>
               <SelectContent>
@@ -219,31 +250,38 @@ export default function LeadsPage() {
             </Select>
           </div>
 
-          <Separator orientation="vertical" className="hidden md:block h-8 mx-2" />
-
-          {/* Date Range - Simplified using native input type="date" */}
-          <div className="flex items-center gap-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">From</Label>
-              <div className="relative">
-                <Input
-                  type="date"
-                  className="h-9 w-36 px-2 text-sm bg-card"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+          {/* Date Range Picker */}
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-muted-foreground">Date Range</Label>
+            <div>
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "h-10 w-64 justify-start text-left font-semibold bg-card",
+                    !dateRange?.from && "text-muted-foreground font-normal"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                  {dateRangeLabel}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  numberOfMonths={2}
+                  disabled={{ after: new Date() }}
+                  defaultMonth={
+                    dateRange?.from
+                      ? dateRange.from
+                      : new Date(new Date().getFullYear(), new Date().getMonth() - 1)
+                  }
                 />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">To</Label>
-              <div className="relative">
-                <Input
-                  type="date"
-                  className="h-9 w-36 px-2 text-sm bg-card"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </div>
+              </PopoverContent>
+            </Popover>
             </div>
           </div>
 
@@ -251,9 +289,8 @@ export default function LeadsPage() {
           {hasActiveFilters && (
             <Button
               variant="ghost"
-              size="sm"
               onClick={clearFilters}
-              className="h-9 px-2 text-muted-foreground hover:text-foreground ml-auto md:ml-0"
+              className="h-10 px-3 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4 mr-1" /> Clear
             </Button>
@@ -276,7 +313,6 @@ export default function LeadsPage() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                // Skeleton loading rows
                 Array.from({ length: 8 }).map((_, i) => (
                   <TableRow key={`skeleton-${i}`}>
                     <TableCell>

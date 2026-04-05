@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { PendingSourcesPanel } from './PendingSourcesPanel';
+import { PendingSourcesPanel } from "./PendingSourcesPanel";
 
 export type SourceCategory = 'all' | 'URL' | 'DOCUMENT' | 'QNA' | 'TXT';
 

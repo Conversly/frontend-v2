@@ -11,6 +11,8 @@ interface VoicePreviewProps {
     agentConfig: AgentConfigState;
     agentName?: string;
     appConfigOverrides?: Partial<AppConfig>;
+    allowPhoneCalls?: boolean;
+    maxCallDurationMs?: number;
 }
 
 /**
@@ -23,6 +25,8 @@ export function VoicePreview({
     agentConfig,
     agentName = "Voice Agent",
     appConfigOverrides,
+    allowPhoneCalls = true,
+    maxCallDurationMs,
 }: VoicePreviewProps) {
     // Build app config (display-only)
     // agentName used for display; keep empty string for token to match Python agent registration
@@ -43,6 +47,8 @@ export function VoicePreview({
                     botId={botId}
                     assistantId={assistantId}
                     agentConfig={agentConfig}
+                    allowPhoneCalls={allowPhoneCalls}
+                    maxCallDurationMs={maxCallDurationMs}
                 />
             </div>
         </div>

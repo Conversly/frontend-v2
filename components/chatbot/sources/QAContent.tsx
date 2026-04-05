@@ -78,37 +78,37 @@ export function QAContent({ onSuccess }: QAContentProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="title" className="type-micro-heading">Title</Label>
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <Label htmlFor="title" className="type-micro-heading text-sm">Title</Label>
         <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex: Refund requests"
-          className="border-input text-foreground"
+          className="border-input text-foreground h-12 text-base"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="question" className="type-micro-heading">Questions</Label>
+      <div className="space-y-3">
+        <Label htmlFor="question" className="type-micro-heading text-sm">Questions</Label>
 
         {/* Display existing questions */}
         {questions.map((q, index) => (
           q.trim() && (
-            <div key={index} className="flex items-center gap-2">
+            <div key={index} className="flex items-center gap-3">
               <Input
                 type="text"
                 value={q}
                 disabled
-                className="bg-muted/50 border-input text-foreground flex-1"
+                className="bg-muted/50 border-input text-foreground flex-1 h-12 text-base"
               />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => handleRemoveQuestion(index)}
-                className="h-9 w-9 text-muted-foreground hover:text-destructive"
+                className="h-10 w-10 text-muted-foreground hover:text-destructive"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -117,7 +117,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
         ))}
 
         {/* Current question input */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Input
             id="question"
             type="text"
@@ -130,16 +130,16 @@ export function QAContent({ onSuccess }: QAContentProps) {
               }
             }}
             placeholder="Ex: How do I request a refund?"
-            className="border-input text-foreground flex-1"
+            className="border-input text-foreground flex-1 h-12 text-base"
           />
           <Button
             type="button"
             variant="ghost"
-            size="sm"
+            size="default"
             onClick={handleAddQuestion}
-            className="text-muted-foreground hover:text-foreground whitespace-nowrap cursor-pointer"
+            className="text-muted-foreground hover:text-foreground whitespace-nowrap cursor-pointer h-12 px-4"
           >
-            <Plus className="w-4 h-4 mr-1" />
+            <Plus className="w-4 h-4 mr-2" />
             Add question
           </Button>
         </div>
@@ -151,37 +151,37 @@ export function QAContent({ onSuccess }: QAContentProps) {
         )}
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="answer" className="type-micro-heading">Answer</Label>
+          <Label htmlFor="answer" className="type-micro-heading text-sm">Answer</Label>
           <span className="type-caption">
             {getByteSize(answer)} B
           </span>
         </div>
 
         {/* Rich Text Toolbar */}
-        <div className="flex items-center gap-1 p-2 bg-[--surface-secondary] rounded-lg border border-border">
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+        <div className="flex items-center gap-1 p-2.5 bg-[--surface-secondary] rounded-lg border border-border">
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Bold className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Italic className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Strikethrough className="w-4 h-4" />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <List className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <ListOrdered className="w-4 h-4" />
           </Button>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <LinkIcon className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
+          <Button variant="ghost" size="icon" className="h-9 w-9" disabled>
             <Smile className="w-4 h-4" />
           </Button>
         </div>
@@ -191,8 +191,8 @@ export function QAContent({ onSuccess }: QAContentProps) {
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           placeholder="Enter your answer..."
-          rows={8}
-          className="border-input text-foreground placeholder:text-muted-foreground resize-none"
+          rows={10}
+          className="border-input text-foreground placeholder:text-muted-foreground resize-none text-base min-h-[200px]"
         />
       </div>
 
@@ -203,7 +203,7 @@ export function QAContent({ onSuccess }: QAContentProps) {
           (questions.filter(q => q.trim()).length === 0 && !currentQuestion.trim()) ||
           !answer.trim()
         }
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
+        className="bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-6 text-sm"
       >
         Add Q&A
       </Button>

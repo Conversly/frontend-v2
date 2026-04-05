@@ -340,6 +340,45 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
           ))}
         </div>
 
+        {/* Custom Plan — Talk to Sales */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.35 }}
+          className="group relative mt-6"
+        >
+          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-[#1976d2]/8 via-[#1565c0]/8 to-[#0d47a1]/8 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="relative flex flex-col items-center justify-between gap-6 rounded-[2rem] border border-[#93c5fd]/40 bg-[linear-gradient(135deg,#ffffff_0%,#eff6ff_50%,#dbeafe_100%)] px-8 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.07)] md:flex-row md:px-12 md:py-10">
+            <div className="flex-1 text-center md:text-left">
+              <div className="mb-1 inline-flex items-center gap-2">
+                <span className="rounded-full bg-[#1976d2]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1976d2]">
+                  Enterprise
+                </span>
+              </div>
+              <h3 className="font-title-bold text-2xl text-[#0f172a] md:text-3xl">
+                Need a custom plan?
+              </h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#5f6f8d] md:text-base">
+                Unlimited chatbots, dedicated support, custom integrations, and SLAs tailored to your team.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <a
+                href="https://calendly.com/rdhakad2002/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 rounded-full bg-[#1976d2] px-8 py-4 text-sm font-semibold tracking-wide text-white shadow-[0_18px_40px_rgba(25,118,210,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#1565c0]"
+              >
+                Talk to Sales
+                <motion.span className="inline-block" initial={{ x: 0 }} whileHover={{ x: 3 }}>
+                  →
+                </motion.span>
+              </a>
+            </div>
+          </div>
+        </motion.div>
+
         <motion.div
           className="mt-14 flex flex-wrap justify-center gap-3 md:gap-4"
           initial={{ opacity: 0, y: 20 }}

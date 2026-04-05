@@ -102,6 +102,24 @@ export const getSystemTime = async () => {
   return res.data;
 };
 
+/**
+ * Fetch a signed Verly AI identity token for the current logged-in user.
+ * Used to identify the user to the embedded support chatbot widget.
+ */
+export const getVerlyIdentityToken = async (): Promise<string | null> => {
+  try {
+    const res = (await fetch(
+      API.ENDPOINTS.AUTH.BASE_URL() + "/verly-identity-token",
+      { method: "GET" },
+    ).then((res) => res.data)) as ApiResponse<{ token: string | null }>;
+
+    if (!res.success) return null;
+    return res.data?.token ?? null;
+  } catch {
+    return null;
+  }
+};
+
 export const verifyEmail = async (token: string) => {
   const res = (await fetch(
     API.ENDPOINTS.AUTH.BASE_URL() + API.ENDPOINTS.AUTH.VERIFY_EMAIL.path() + `?token=${token}`,
