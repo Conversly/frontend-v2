@@ -74,11 +74,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     identifiedUserRef.current = user.id;
 
     getVerlyIdentityToken().then((token) => {
-      if (token && typeof window !== "undefined" && typeof (window as any).verly === "function") {
+      if (!token || typeof window === "undefined") return;
+
+      const callIdentify = () => {
         (window as any).verly("identify", {
           token,
           name: user.displayName || user.username || "",
         });
+      };
+
+      if (typeof (window as any).verly === "function") {
+        // Widget already loaded
+        callIdentify();
+      } else {
+        // Widget not yet loaded — wait for its script to initialise
+        const script = document.querySelector('script[src*="verlyai.xyz/embed.js"]');
+        if (script) {
+          script.addEventListener("load", callIdentify, { once: true });
+        }
       }
     }).catch(() => {
       // Silent — identity verification is best-effort, never blocks the app
