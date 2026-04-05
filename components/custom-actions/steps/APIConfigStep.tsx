@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Plus, X, Sparkles, Terminal } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, X, Sparkles, Terminal, User, Copy, Check } from 'lucide-react';
 import { CurlImportDialog } from '../CurlImportDialog';
 import CodeMirror from '@uiw/react-codemirror';
 import { json } from '@codemirror/lang-json';
@@ -76,6 +76,71 @@ function extractLegacyVariables(str: string): string[] {
     const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
     return [...new Set(matches.map((m) => m.replace(/\{\{|\}\}/g, '').trim()).filter(Boolean))];
 }
+
+const CONTACT_VARS: { template: string; description: string }[] = [
+    { template: '{{contact.externalId}}', description: 'User ID from JWT (user_id / sub)' },
+    { template: '{{contact.email}}',      description: 'Email from JWT' },
+    { template: '{{contact.name}}',       description: 'Display name from JWT' },
+    { template: '{{contact.phone}}',      description: 'Phone number from JWT' },
+    { template: '{{contact.id}}',         description: 'Internal Verly contact ID' },
+    { template: '{{contact.metadata.<key>}}', description: 'Any key from JWT custom_attributes (e.g. {{contact.metadata.plan}})' },
+];
+
+const ContactVariablesPanel: React.FC = () => {
+    const [open, setOpen] = useState(false);
+    const [copied, setCopied] = useState<string | null>(null);
+
+    const copy = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(text);
+            setTimeout(() => setCopied(null), 1500);
+        });
+    };
+
+    return (
+        <Collapsible open={open} onOpenChange={setOpen}>
+            <CollapsibleTrigger asChild>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 gap-2 text-xs border-dashed text-muted-foreground hover:text-foreground"
+                >
+                    <User className="h-3.5 w-3.5" />
+                    Contact variables
+                    {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+                <div className="mt-2 rounded-md border border-border bg-muted/40 p-3 space-y-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                        These variables are substituted server-side at runtime from the verified user's contact record.
+                        Available in URL, headers, query params, and body.
+                        Requires <strong>identity verification</strong> to be enabled — anonymous users resolve to empty string.
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                        {CONTACT_VARS.map((v) => (
+                            <button
+                                key={v.template}
+                                type="button"
+                                title={v.description}
+                                onClick={() => copy(v.template)}
+                                className="inline-flex items-center gap-1 rounded bg-background border border-border px-2 py-0.5 font-mono text-xs hover:border-primary/60 hover:bg-primary/5 transition-colors"
+                            >
+                                {copied === v.template ? (
+                                    <Check className="h-3 w-3 text-green-500 shrink-0" />
+                                ) : (
+                                    <Copy className="h-3 w-3 text-muted-foreground shrink-0" />
+                                )}
+                                {v.template}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </CollapsibleContent>
+        </Collapsible>
+    );
+};
 
 export const APIConfigSection: React.FC<Props> = ({
     formData,
@@ -267,6 +332,8 @@ export const APIConfigSection: React.FC<Props> = ({
                     </div>
                 )}
             </div>
+
+            <ContactVariablesPanel />
 
             {/* Tabs */}
             <Tabs defaultValue="auth">
@@ -470,12 +537,6 @@ export const APIConfigSection: React.FC<Props> = ({
                             This is the <strong>static JSON body</strong>. To mark a field as dynamic, set its value to an <strong>exact placeholder string</strong> like{' '}
                             <code className="px-1 py-0.5 rounded bg-muted">{'"{{appearance}}"'}</code> (must be valid JSON). In the next step we&apos;ll detect these placeholders and pre-create Inputs with the correct{' '}
                             <code className="px-1 py-0.5 rounded bg-muted">bodyPath</code>.
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                            With identity verification enabled, you can use contact variables like{' '}
-                            <code className="px-1 py-0.5 rounded bg-muted">{'"{{contact.email}}"'}</code>,{' '}
-                            <code className="px-1 py-0.5 rounded bg-muted">{'"{{contact.metadata.plan}}"'}</code>{' '}
-                            &mdash; these resolve to the verified user&apos;s data at runtime.
                         </p>
                     </div>
                 </TabsContent>

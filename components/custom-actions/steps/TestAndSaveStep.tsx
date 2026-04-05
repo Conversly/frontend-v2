@@ -232,12 +232,12 @@ export const TestSection: React.FC<Props> = ({
                     </div>
                 )}
 
-                {/* Test Parameters */}
-                {formData.parameters.length > 0 && (
+                {/* Test Parameters — LLM params */}
+                {formData.parameters.filter((p) => p.source !== 'contact').length > 0 && (
                     <div className="space-y-3">
-                        <Label className="type-label">Test Input Values</Label>
+                        <Label className="type-label">LLM Parameters</Label>
                         <div className="grid grid-cols-2 gap-4">
-                            {formData.parameters.map((param) => (
+                            {formData.parameters.filter((p) => p.source !== 'contact').map((param) => (
                                 <div key={param.name} className="space-y-1.5">
                                     <Label className="type-caption font-mono text-[10px] text-muted-foreground uppercase">{param.name}</Label>
                                     <div className="flex-1">
@@ -259,6 +259,37 @@ export const TestSection: React.FC<Props> = ({
                                                 {errors[`testArgs.${param.name}`]}
                                             </p>
                                         )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Test Parameters — Contact-sourced params (test overrides) */}
+                {formData.parameters.filter((p) => p.source === 'contact').length > 0 && (
+                    <div className="space-y-3">
+                        <Label className="type-label">Contact Parameters <span className="text-muted-foreground font-normal text-xs">(test overrides)</span></Label>
+                        <p className="text-xs text-muted-foreground">
+                            These values are auto-injected from the user's contact at runtime. Provide test values for local testing.
+                        </p>
+                        <div className="grid grid-cols-2 gap-4">
+                            {formData.parameters.filter((p) => p.source === 'contact').map((param) => (
+                                <div key={param.name} className="space-y-1.5">
+                                    <Label className="type-caption font-mono text-[10px] text-muted-foreground uppercase">
+                                        {param.name} <span className="text-blue-500">← {param.contactField}</span>
+                                    </Label>
+                                    <div className="flex-1">
+                                        <Input
+                                            value={
+                                                testValues && Object.prototype.hasOwnProperty.call(testValues, param.name)
+                                                    ? testValues[param.name] ?? ''
+                                                    : ''
+                                            }
+                                            onChange={(e) => onChangeTestValue?.(param.name, e.target.value)}
+                                            placeholder={`test_${param.contactField || 'value'}`}
+                                            className="h-10 text-sm bg-background border-dashed"
+                                        />
                                     </div>
                                 </div>
                             ))}

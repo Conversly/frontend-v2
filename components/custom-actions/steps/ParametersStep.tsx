@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Trash2, Plus, ChevronRight, Sparkles, Info } from 'lucide-react';
+import { Trash2, Plus, ChevronRight, Sparkles, Info, ShieldCheck } from 'lucide-react';
+import type { ParamSource } from '@/types/customActions';
 
 interface Props {
     formData: CustomAction;
@@ -85,6 +86,14 @@ function collectBodyTemplateBindings(value: any, prefix = '', out: Array<{ name:
     }
     return out;
 }
+
+const CONTACT_FIELD_OPTIONS = [
+    { value: 'externalId', label: 'User ID (externalId)' },
+    { value: 'email', label: 'Email' },
+    { value: 'name', label: 'Name' },
+    { value: 'phone', label: 'Phone' },
+    { value: 'id', label: 'Internal Contact ID' },
+];
 
 export const ParametersStep: React.FC<Props> = ({
     formData,
@@ -309,6 +318,11 @@ export const ParametersStep: React.FC<Props> = ({
         // If there are parameters, each must satisfy backend schema requirements.
         return formData.parameters.every(
             (p) => {
+                // Contact-sourced params have simpler requirements
+                if (p.source === 'contact') {
+                    return !!(p.name && p.contactField && p.contactField.length > 0 && p.contactField !== 'metadata.');
+                }
+
                 const baseOk = p.name && p.type && p.description.length >= 10 && !!p.location;
                 if (!baseOk) return false;
 
@@ -453,6 +467,88 @@ export const ParametersStep: React.FC<Props> = ({
                         </CardHeader>
 
                         <CardContent className="space-y-6">
+                            {/* Value Source Toggle */}
+                            <div className="space-y-2">
+                                <Label className="type-label">Value source</Label>
+                                <div className="flex gap-2">
+                                    <Button
+                                        type="button"
+                                        variant={(param.source || 'user') === 'user' ? 'default' : 'outline'}
+                                        size="sm"
+                                        className="h-8 text-xs"
+                                        onClick={() => patchParameter(index, { source: 'user' as ParamSource, contactField: undefined })}
+                                    >
+                                        User provides
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant={param.source === 'contact' ? 'default' : 'outline'}
+                                        size="sm"
+                                        className="h-8 text-xs"
+                                        onClick={() => patchParameter(index, { source: 'contact' as ParamSource, type: 'string' as const, required: false })}
+                                    >
+                                        <ShieldCheck className="h-3 w-3 mr-1" />
+                                        From contact
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {param.source === 'contact' ? (
+                                /* Contact-sourced parameter UI */
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="type-label">Parameter name <span className="text-destructive">*</span></Label>
+                                            <Input
+                                                value={param.name}
+                                                onChange={(e) =>
+                                                    updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
+                                                }
+                                                placeholder="user_id"
+                                                className="font-mono bg-background h-10"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="type-label">Contact field <span className="text-destructive">*</span></Label>
+                                            <Select
+                                                value={param.contactField || ''}
+                                                onValueChange={(value) => patchParameter(index, { contactField: value })}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select contact field..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {CONTACT_FIELD_OPTIONS.map((opt) => (
+                                                        <SelectItem key={opt.value} value={opt.value}>
+                                                            {opt.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                    <SelectItem value="metadata.">metadata.&lt;key&gt;</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    {param.contactField === 'metadata.' && (
+                                        <div className="space-y-2">
+                                            <Label className="type-label">Metadata key</Label>
+                                            <Input
+                                                value={(param.contactField || '').replace('metadata.', '')}
+                                                onChange={(e) => patchParameter(index, { contactField: `metadata.${e.target.value.trim()}` })}
+                                                placeholder="plan"
+                                                className="font-mono bg-background h-10"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="rounded-md bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 p-3 flex items-start gap-2">
+                                        <ShieldCheck className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                                        <p className="text-xs text-blue-900 dark:text-blue-200">
+                                            This value is auto-injected server-side from the verified contact. The AI will not see or ask for it.
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                /* User-sourced parameter UI (existing) */
+                                <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Name */}
                                 <div className="space-y-2">
@@ -702,6 +798,8 @@ export const ParametersStep: React.FC<Props> = ({
                                     )}
                                 </CollapsibleContent>
                             </Collapsible>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                 ))}
@@ -718,23 +816,44 @@ export const ParametersStep: React.FC<Props> = ({
             {formData.parameters.length > 0 && (
                 <Card className="bg-muted/50">
                     <CardContent className="pt-6">
-                        <h4 className="text-sm font-medium mb-2">📝 AI Usage Preview</h4>
-                        <pre className="text-xs bg-background p-4 rounded-md overflow-auto">
-                            {JSON.stringify(
-                                formData.parameters.reduce(
-                                    (acc, p) => ({
-                                        ...acc,
-                                        [p.name]:
-                                            p.default !== undefined
-                                                ? p.default
-                                                : `<${p.type}>`,
-                                    }),
-                                    {}
-                                ),
-                                null,
-                                2
-                            )}
-                        </pre>
+                        <h4 className="text-sm font-medium mb-2">AI Usage Preview</h4>
+                        {formData.parameters.some((p) => p.source !== 'contact') && (
+                            <>
+                                <p className="text-xs text-muted-foreground mb-2">Parameters the AI will ask for:</p>
+                                <pre className="text-xs bg-background p-4 rounded-md overflow-auto">
+                                    {JSON.stringify(
+                                        formData.parameters
+                                            .filter((p) => p.source !== 'contact')
+                                            .reduce(
+                                                (acc, p) => ({
+                                                    ...acc,
+                                                    [p.name]:
+                                                        p.default !== undefined
+                                                            ? p.default
+                                                            : `<${p.type}>`,
+                                                }),
+                                                {}
+                                            ),
+                                        null,
+                                        2
+                                    )}
+                                </pre>
+                            </>
+                        )}
+                        {formData.parameters.some((p) => p.source === 'contact') && (
+                            <div className="mt-3">
+                                <p className="text-xs text-muted-foreground mb-2">Auto-injected from contact (hidden from AI):</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {formData.parameters
+                                        .filter((p) => p.source === 'contact')
+                                        .map((p) => (
+                                            <Badge key={p.name} variant="secondary" className="font-mono text-xs">
+                                                {p.name} ← {p.contactField}
+                                            </Badge>
+                                        ))}
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             )}

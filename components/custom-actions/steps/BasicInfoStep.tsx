@@ -5,7 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, X, Sparkles } from 'lucide-react';
+import { Plus, X, Sparkles, Shield } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import type { AccessLevel } from '@/types/customActions';
 import { cn } from '@/lib/utils';
 import type { ActionFormErrors } from '@/utils/customActionValidation';
 
@@ -196,6 +199,98 @@ export const BasicInfoStep: React.FC<Props> = ({
                             These help you and the AI validate when the action should trigger.
                         </p>
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Access Control */}
+            <Card className="shadow-none border-border bg-[--surface-secondary]">
+                <CardHeader>
+                    <CardTitle className="type-h3 flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Access Control
+                    </CardTitle>
+                    <CardDescription className="type-body-muted">
+                        Control who can use this action based on their identity status.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-3">
+                        <Label className="type-label">Who can use this action?</Label>
+                        <RadioGroup
+                            value={formData.accessLevel || 'anonymous'}
+                            onValueChange={(v) => {
+                                updateField('accessLevel', v as AccessLevel);
+                                if (v === 'anonymous') {
+                                    updateField('requiredContactFields', []);
+                                }
+                            }}
+                            className="space-y-2"
+                        >
+                            <div className={cn(
+                                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                                (formData.accessLevel || 'anonymous') === 'anonymous' ? "border-primary bg-primary/5" : "border-border hover:border-border/80"
+                            )} onClick={() => { updateField('accessLevel', 'anonymous'); updateField('requiredContactFields', []); }}>
+                                <RadioGroupItem value="anonymous" id="access_anonymous" className="mt-0.5" />
+                                <div>
+                                    <Label htmlFor="access_anonymous" className="type-label block">Everyone</Label>
+                                    <p className="text-xs text-muted-foreground">All users including anonymous visitors can trigger this action.</p>
+                                </div>
+                            </div>
+                            <div className={cn(
+                                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                                (formData.accessLevel || 'anonymous') === 'visitor' ? "border-primary bg-primary/5" : "border-border hover:border-border/80"
+                            )} onClick={() => updateField('accessLevel', 'visitor')}>
+                                <RadioGroupItem value="visitor" id="access_visitor" className="mt-0.5" />
+                                <div>
+                                    <Label htmlFor="access_visitor" className="type-label block">Returning visitors</Label>
+                                    <p className="text-xs text-muted-foreground">Only users with an existing contact record.</p>
+                                </div>
+                            </div>
+                            <div className={cn(
+                                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                                (formData.accessLevel || 'anonymous') === 'user' ? "border-primary bg-primary/5" : "border-border hover:border-border/80"
+                            )} onClick={() => updateField('accessLevel', 'user')}>
+                                <RadioGroupItem value="user" id="access_user" className="mt-0.5" />
+                                <div>
+                                    <Label htmlFor="access_user" className="type-label block">Verified users only</Label>
+                                    <p className="text-xs text-muted-foreground">Only users verified via identity verification (JWT). Recommended for actions that use contact data.</p>
+                                </div>
+                            </div>
+                        </RadioGroup>
+                    </div>
+
+                    {(formData.accessLevel === 'user' || formData.accessLevel === 'visitor') && (
+                        <div className="space-y-3">
+                            <Label className="type-label">Required contact fields</Label>
+                            <p className="text-xs text-muted-foreground">
+                                If any of these fields are missing from the user's contact record, this action will be hidden from the AI.
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {['externalId', 'email', 'name', 'phone'].map((field) => {
+                                    const selected = (formData.requiredContactFields || []).includes(field);
+                                    return (
+                                        <Badge
+                                            key={field}
+                                            variant={selected ? 'default' : 'outline'}
+                                            className={cn(
+                                                "cursor-pointer font-mono text-xs transition-colors",
+                                                selected ? "" : "hover:bg-muted"
+                                            )}
+                                            onClick={() => {
+                                                const current = formData.requiredContactFields || [];
+                                                const next = selected
+                                                    ? current.filter((f) => f !== field)
+                                                    : [...current, field];
+                                                updateField('requiredContactFields', next);
+                                            }}
+                                        >
+                                            {field}
+                                        </Badge>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

@@ -44,6 +44,8 @@ const toolParamSchema = z
     key: z.string().optional(),
     bodyPath: z.string().optional(),
     default: z.any().optional(),
+    source: z.enum(["user", "contact"]).optional().default("user"),
+    contactField: z.string().optional(),
     enum: z.array(z.string()).optional(),
     pattern: z.string().optional(),
     minimum: z.number().optional(),
@@ -62,6 +64,17 @@ const toolParamSchema = z
       .optional(),
   })
   .superRefine((p, ctx) => {
+    // Contact-sourced params: only need name + contactField
+    if (p.source === "contact") {
+      if (!(p.contactField ?? "").trim().length || p.contactField === "metadata.") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Contact field is required when source is 'contact'.",
+          path: ["contactField"],
+        });
+      }
+      return; // Skip user-param validations (description length, location rules)
+    }
     if ((p.location === "query" || p.location === "header") && !((p.key ?? p.name ?? "").trim().length)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -140,8 +153,9 @@ export function validateActionForTest(
   const errors = validateCore(action);
 
   // Required params must have a test value (or a default).
+  // Contact-sourced params are optional for testing (auto-injected at runtime).
   for (const p of action.parameters) {
-    if (!p.required) continue;
+    if (!p.required || p.source === 'contact') continue;
     const raw = (testValues?.[p.name] ?? "").toString().trim();
     const hasDefault = p.default !== undefined && p.default !== "";
     if (!raw.length && !hasDefault) {
