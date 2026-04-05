@@ -17,7 +17,7 @@ export function useAccessControl(workspaceId: string) {
 
         actions: {
             canManage: capabilities.canEditChatbot,
-            isEnabledOnPlan: !!entitlements?.features?.actions && isAccountActive,
+            isEnabledOnPlan: !!entitlements?.limits?.actions && isAccountActive,
             limit: entitlements?.limits?.actionsNum ?? -1,
         },
 
@@ -88,7 +88,7 @@ export function useSuspenseAccessControl(workspaceId: string): AccessControlResu
 
         actions: {
             canManage: capabilities.canEditChatbot,
-            isEnabledOnPlan: !!entitlements?.features?.actions && isAccountActive,
+            isEnabledOnPlan: !!entitlements?.limits?.actions && isAccountActive,
             limit: entitlements?.limits?.actionsNum ?? -1,
         },
 
@@ -180,7 +180,7 @@ export function useOptimisticAccessControl(workspaceId: string): OptimisticAcces
 
         actions: {
             canManage: capabilities?.canEditChatbot ?? defaultOptimisticAccess.canManage,
-            isEnabledOnPlan: (!!entitlements?.features?.actions && isAccountActive) ?? defaultOptimisticAccess.isEnabledOnPlan,
+            isEnabledOnPlan: (!!entitlements?.limits?.actions && isAccountActive) ?? defaultOptimisticAccess.isEnabledOnPlan,
             limit: Number(entitlements?.limits?.actionsNum ?? defaultOptimisticAccess.limit),
         },
 
