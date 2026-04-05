@@ -151,7 +151,7 @@ export default function PlaygroundPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Interface */}
         <div className="flex flex-1 items-center justify-center p-6 overflow-hidden">
-          <div className="relative w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
+          <div className="w-[420px] h-[620px] shadow-2xl rounded-lg overflow-hidden">
             <PlaygroundWidget
               key={widgetKey}
               chatbotId={botId}
@@ -160,17 +160,6 @@ export default function PlaygroundPage() {
               model={model}
               temperature={temperature}
             />
-            {chatbotStatus === "TRAINING" && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background/90 backdrop-blur-sm">
-                <div className="flex flex-col items-center gap-3 px-8 text-center">
-                  <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                  <h3 className="text-base font-semibold">Training in progress</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Your chatbot is learning from newly added sources. This usually takes a few minutes. The widget will become available automatically once training is complete.
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -178,6 +167,14 @@ export default function PlaygroundPage() {
         <div className="w-[380px] border-l bg-background flex flex-col h-full">
           <div className="flex-1 overflow-y-auto">
             <div className="p-6 space-y-6">
+              {chatbotStatus === "TRAINING" && (
+                <div className="flex items-center gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-900/50 dark:bg-amber-950/30">
+                  <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+                  <span className="text-xs font-medium text-amber-800 dark:text-amber-300">
+                    Training — sources are being processed
+                  </span>
+                </div>
+              )}
               <div>
                 <h3 className="mb-4 type-section-title tracking-tight">Configuration</h3>
 
