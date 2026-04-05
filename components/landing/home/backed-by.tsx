@@ -91,10 +91,6 @@ const backers = [
 
 export default function BackedBy() {
   return (
-    <div className="relative z-10 mx-auto flex w-full flex-col items-center pt-16 md:pt-24">
-      <p className="mb-6 text-[13px] font-bold uppercase tracking-[0.2em] text-[#667085]">
-        Supported By
-      </p>
 
       <div className="flex w-full flex-wrap border-y border-[#eaecf0] bg-white/40 backdrop-blur-md sm:flex-nowrap">
         {backers.map((b, i) => (
@@ -108,6 +104,5 @@ export default function BackedBy() {
           </div>
         ))}
       </div>
-    </div>
   );
 }

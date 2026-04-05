@@ -13,13 +13,13 @@ import { Laptop, Moon, Sun, User, Mail, Shield, CreditCard, Crown, Zap, Building
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCurrentSubscription, CurrentSubscription } from "@/lib/api/subscription";
-import { QUERY_KEY } from "@/utils/query-key";
 import { useRouter, useParams } from "next/navigation";
 import { usePermissions } from "@/hooks/use-permissions";
 import { getChatbots } from "@/lib/api/chatbot";
 import { createCreditRequest } from "@/lib/api/billing";
 import { useGetWorkspaces } from "@/services/workspace";
+import { useSubscription } from "@/contexts/subscription-context";
+import { useEntitlements } from "@/hooks/useEntitlements";
 import {
     Dialog,
     DialogContent,
@@ -63,6 +63,8 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(false);
     const { isOwner } = usePermissions();
     const queryClient = useQueryClient();
+    const { subscription: currentSubscription, isLoading: subscriptionLoading } = useSubscription();
+    const { data: entitlementsData, isLoading: entitlementsLoading } = useEntitlements(workspaceId);
 
     // Credit Request State
     const [isRequestCreditOpen, setIsRequestCreditOpen] = useState(false);
@@ -103,12 +105,6 @@ export default function ProfilePage() {
             reason: creditReason
         });
     };
-
-    const { data: currentSubscription, isLoading: subscriptionLoading } = useQuery<CurrentSubscription | null>({
-        queryKey: [QUERY_KEY.CURRENT_SUBSCRIPTION],
-        queryFn: getCurrentSubscription,
-        retry: false,
-    });
 
     useEffect(() => {
         if (user) {
@@ -263,7 +259,7 @@ export default function ProfilePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {subscriptionLoading ? (
+                            {subscriptionLoading || entitlementsLoading ? (
                                 <div className="flex items-center justify-center py-8">
                                     <Loader2 className="h-6 w-6 animate-spin text-primary" />
                                     <p className="ml-3 text-muted-foreground">Loading subscription...</p>
@@ -281,9 +277,9 @@ export default function ProfilePage() {
                                                     {currentSubscription.status}
                                                 </Badge>
                                             </div>
-                                            {currentSubscription.currentPeriodEnd && (
+                                            {currentSubscription.validUntil && (
                                                 <p className="text-sm text-muted-foreground">
-                                                    {currentSubscription.status === "ACTIVE" ? "Renews" : "Expires"}: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}
+                                                    {currentSubscription.status === "ACTIVE" ? "Renews" : "Expires"}: {new Date(currentSubscription.validUntil).toLocaleDateString()}
                                                 </p>
                                             )}
                                         </div>
@@ -296,64 +292,52 @@ export default function ProfilePage() {
                                         <div className="space-y-1">
                                             <p className="text-sm text-muted-foreground">Chatbots</p>
                                             <p className="text-lg font-semibold">
-                                                {currentSubscription.usage.chatbots} /{" "}
-                                                {currentSubscription.entitlements?.maxChatbots === -1
+                                                {entitlementsData?.usage?.chatbots ?? 0} /{" "}
+                                                {(entitlementsData?.limits?.chatbots as number | undefined) === -1
                                                     ? "∞"
-                                                    : currentSubscription.entitlements?.maxChatbots || 0}
+                                                    : (entitlementsData?.limits?.chatbots as number | undefined) ?? 0}
                                             </p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-sm text-muted-foreground">Team Members</p>
                                             <p className="text-lg font-semibold">
-                                                {currentSubscription.usage.users} /{" "}
-                                                {currentSubscription.entitlements?.maxUsers === -1
+                                                {entitlementsData?.usage?.team_members ?? 0} /{" "}
+                                                {(entitlementsData?.limits?.team_members as number | undefined) === -1
                                                     ? "∞"
-                                                    : currentSubscription.entitlements?.maxUsers || 0}
+                                                    : (entitlementsData?.limits?.team_members as number | undefined) ?? 0}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Features */}
-                                    {currentSubscription.entitlements && (
+                                    {entitlementsData && (
                                         <>
                                             <Separator />
                                             <div className="space-y-2">
                                                 <p className="text-sm font-medium">Plan Features</p>
                                                 <div className="grid grid-cols-2 gap-2 text-sm">
-                                                    {currentSubscription.entitlements.allowWhatsApp && (
+                                                    {entitlementsData.features.actions && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>WhatsApp</span>
+                                                            <span>Actions</span>
                                                         </div>
                                                     )}
-                                                    {currentSubscription.entitlements.allowVoice && (
+                                                    {(entitlementsData.limits.datasources as number | undefined ?? 0) > 0 && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>Voice</span>
+                                                            <span>Datasources</span>
                                                         </div>
                                                     )}
-                                                    {currentSubscription.entitlements.allowAPI && (
+                                                    {(entitlementsData.limits.actionsNum as number | undefined ?? 0) > 0 && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>API Access</span>
+                                                            <span>Action Slots</span>
                                                         </div>
                                                     )}
-                                                    {currentSubscription.entitlements.allowWebhooks && (
+                                                    {entitlementsData.features.remove_branding && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>Webhooks</span>
-                                                        </div>
-                                                    )}
-                                                    {currentSubscription.entitlements.allowCustomBranding && (
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>Custom Branding</span>
-                                                        </div>
-                                                    )}
-                                                    {currentSubscription.entitlements.prioritySupport && (
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                            <span>Priority Support</span>
+                                                            <span>Remove Branding</span>
                                                         </div>
                                                     )}
                                                 </div>

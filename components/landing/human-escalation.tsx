@@ -143,7 +143,7 @@ export default function HumanEscalationSection() {
     }, []);
 
     return (
-        <section className="py-20 lg:py-24 bg-slate-50 relative overflow-hidden perspective-1000">
+        <section className="landing-home-section landing-home-section--soft py-20 lg:py-24 relative overflow-hidden perspective-1000">
             {/* Dynamic Background */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent opacity-50" />
@@ -177,7 +177,7 @@ export default function HumanEscalationSection() {
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm w-fit"
+                            className="landing-home-eyebrow w-fit"
                         >
                             <Zap size={14} />
                             Smart Escalation Handling
@@ -189,10 +189,10 @@ export default function HumanEscalationSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.1 }}
-                                className="font-[Georgia,Times,'Times_New_Roman',serif] text-[34px] leading-[1.02] tracking-[-0.04em] text-[#221f1b] md:text-[52px]"
+                                className="landing-home-title text-[34px] md:text-[52px]"
                             >
                                 When AI hits a wall,{" "}
-                                <span className="text-[#6e6558]">
+                                <span className="landing-home-title-muted">
                                     Humans Step In.
                                 </span>
                             </motion.h2>
@@ -202,7 +202,7 @@ export default function HumanEscalationSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.2 }}
-                                className="text-[15px] leading-7 text-[#6d665d] max-w-lg md:text-[17px]"
+                                className="landing-home-copy max-w-lg text-[15px] md:text-[17px]"
                             >
                                 Seamlessly transition from AI to human agents when conversations get complex. Zero context loss, 100% customer satisfaction.
                             </motion.p>
@@ -239,7 +239,7 @@ export default function HumanEscalationSection() {
                             className="pt-4"
                         >
                             <Link href="/login">
-                                <Button size="lg" className="rounded-full bg-[#315EEA] text-white hover:bg-[#2850d0] px-8 h-13 text-[15px] shadow-[0_12px_30px_rgba(49,94,234,0.22)] hover:shadow-[0_16px_36px_rgba(49,94,234,0.30)] hover:-translate-y-0.5 transition-all duration-300">
+                                <Button size="lg" className="rounded-full bg-[#315EEA] text-white hover:bg-[#2850d0] px-8 h-13 text-[15px] shadow-[0_12px_30px_rgba(49,94,234,0.18)] hover:shadow-[0_16px_36px_rgba(49,94,234,0.24)] hover:-translate-y-0.5 transition-all duration-300">
                                     Start Building <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
                             </Link>

@@ -418,19 +418,11 @@ export default function PlatformModules() {
         {/* Header */}
         <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,760px)_minmax(0,360px)] lg:items-end lg:justify-between">
           <div>
-            <span className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
-              Platform Modules
-            </span>
-            <h2 className="mt-5 max-w-[720px] font-[Georgia,Times,'Times_New_Roman',serif] text-[42px] leading-[0.98] tracking-[-0.04em] text-white md:text-[64px]">
+            <h2 className="mt-5 max-w-[1220px] font-[Georgia,Times,'Times_New_Roman',serif] text-[36px] leading-[0.98] tracking-[-0.04em] text-white md:text-[44px]">
               Here&apos;s why teams love
               <span className="block text-white/50">One connected platform.</span>
             </h2>
           </div>
-
-          <p className="max-w-[360px] text-[15px] leading-8 text-white/52 lg:justify-self-end">
-            Each module works on its own — but they&apos;re built to work together. Explore how
-            every layer fits into your support workflow.
-          </p>
         </div>
 
         {/* Module selector pills */}

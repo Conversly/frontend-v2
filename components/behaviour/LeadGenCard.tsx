@@ -1,6 +1,6 @@
 "use client";
 
-import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw, User, Mail, Phone, Building2 } from "lucide-react";
+import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw, User, Mail, Phone, Building2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { LeadForm, LeadFormField } from "@/types/lead-forms";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Predefined system fields configuration
 const PREDEFINED_FIELDS = [
@@ -36,6 +37,7 @@ interface LeadGenCardProps {
 
 export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadGenCardProps) {
     const form = state.form;
+    const hasNoFieldsSelected = form?.isEnabled && form.fields.length === 0;
 
     const updateState = (updates: Partial<LeadGenState>) => {
         onChange({ ...state, ...updates });
@@ -386,6 +388,16 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                             </div>
                         </div>
 
+                        {hasNoFieldsSelected && (
+                            <Alert className="border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)] [&>svg]:text-[var(--status-warning-fg)]">
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle>No fields selected</AlertTitle>
+                                <AlertDescription className="text-[var(--status-warning-fg)]">
+                                    Lead generation is enabled, but the form is empty. Add at least one predefined or custom field before saving.
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         {/* Selected Fields List - System fields (read-only), Custom fields (editable) */}
                         {form.fields.length > 0 && (
                             <div className="space-y-2">
@@ -543,5 +555,4 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         </div>
     )
 }
-
 

@@ -30,7 +30,7 @@ export default function Navbar() {
     <>
       <nav
         id="marketing-navbar"
-        className="fixed left-0 right-0 top-0 z-50 mx-auto flex h-[74px] w-full -translate-y-[150%] items-center rounded-none border border-slate-200 bg-white text-slate-900 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-transform duration-300 lg:top-6 lg:max-w-7xl lg:rounded-[47px]"
+        className="fixed left-0 right-0 top-0 z-50 mx-auto flex h-[74px] w-full -translate-y-[150%] items-center rounded-none border border-[#d7e2f4] bg-white/88 text-slate-900 shadow-[0_18px_48px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-transform duration-300 lg:top-6 lg:max-w-7xl lg:rounded-[47px]"
       >
         <div className="mx-auto flex h-full w-full items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
@@ -45,22 +45,22 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">
-            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/about">
+            <Link className="rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/about">
               About
             </Link>
-            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/features">
+            <Link className="rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/features">
               Features
             </Link>
-            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/pricing">
+            <Link className="rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/pricing">
               Pricing
             </Link>
-            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/compare">
+            <Link className="rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/compare">
               Compare
             </Link>
-            <Link className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/why-verly">
+            <Link className="rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/why-verly">
               Why Verly
             </Link>
-            <Link className="relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" href="/voice">
+            <Link className="relative flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] transition-colors hover:bg-[#f3f7ff] hover:text-[#0b1536]" href="/voice">
               <Mic className="h-3.5 w-3.5" />
               Voice
               <span className="inline-flex items-center rounded-full bg-[#8af0be]/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#059669]">
@@ -70,13 +70,13 @@ export default function Navbar() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="group h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 data-[state=open]:bg-slate-100 data-[state=open]:text-blue-600">
+                <Button variant="ghost" className="group h-auto rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] hover:bg-[#f3f7ff] hover:text-[#0b1536] data-[state=open]:bg-[#f3f7ff] data-[state=open]:text-blue-600">
                   Solutions
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto border-0 bg-transparent p-0 shadow-none" align="start" sideOffset={10}>
-                <div className="flex w-[1100px] rounded-[20px] border border-slate-200 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.14)]">
+                <div className="flex w-[1100px] rounded-[24px] border border-[#d7e2f4] bg-white/96 shadow-[0_24px_64px_rgba(15,23,42,0.12)] backdrop-blur-xl">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4">
                       <Link href="/solutions/enterprise" className="group flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-[#0B1536] to-[#1a2a5e] px-4 py-2.5 transition-all hover:shadow-lg hover:shadow-blue-900/20">
@@ -170,13 +170,13 @@ export default function Navbar() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="group h-auto rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 data-[state=open]:bg-slate-100/90 data-[state=open]:text-blue-600">
+                <Button variant="ghost" className="group h-auto rounded-full px-3 py-2 text-sm font-semibold text-[#5d6b85] hover:bg-[#f3f7ff] hover:text-[#0b1536] data-[state=open]:bg-[#f3f7ff] data-[state=open]:text-blue-600">
                   Resources
                   <ChevronDown className="ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto border-0 bg-transparent p-0 shadow-none" align="start" sideOffset={10}>
-                <div className="overflow-hidden rounded-[20px] border border-border bg-white shadow-lg dark:bg-slate-950">
+                <div className="overflow-hidden rounded-[24px] border border-[#d7e2f4] bg-white shadow-[0_24px_64px_rgba(15,23,42,0.12)] dark:bg-slate-950">
                   <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <Link
