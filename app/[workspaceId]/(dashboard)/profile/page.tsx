@@ -316,7 +316,7 @@ export default function ProfilePage() {
                                             <div className="space-y-2">
                                                 <p className="text-sm font-medium">Plan Features</p>
                                                 <div className="grid grid-cols-2 gap-2 text-sm">
-                                                    {entitlementsData.features.actions && (
+                                                    {entitlementsData.limits.actions && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                                                             <span>Actions</span>
@@ -334,7 +334,7 @@ export default function ProfilePage() {
                                                             <span>Action Slots</span>
                                                         </div>
                                                     )}
-                                                    {entitlementsData.features.remove_branding && (
+                                                    {entitlementsData.limits.remove_branding && (
                                                         <div className="flex items-center gap-2">
                                                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                                                             <span>Remove Branding</span>

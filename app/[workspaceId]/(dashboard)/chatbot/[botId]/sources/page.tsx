@@ -275,6 +275,7 @@ interface DataSourcesContentProps {
   workspaceId: string;
   selectedCategory: SourceCategory;
   searchQuery: string;
+  onAddKnowledge: () => void;
   onSourceToDelete: (source: DataSourceItem) => void;
   onEditingSource: (source: DataSourceItem) => void;
   onNavigateToSource: (source: DataSourceItem) => void;
@@ -286,6 +287,7 @@ function DataSourcesContent({
   workspaceId,
   selectedCategory,
   searchQuery,
+  onAddKnowledge,
   onSourceToDelete,
   onEditingSource,
   onNavigateToSource,
@@ -331,7 +333,7 @@ function DataSourcesContent({
                 icon={<Database />}
                 primaryAction={accessControl.datasources.canManage ? {
                   label: "Add Knowledge",
-                  onClick: () => {},
+                  onClick: onAddKnowledge,
                   icon: isLocked ? <Lock /> : <Plus />,
                 } : undefined}
                 className="border-dashed bg-card/30"
@@ -519,7 +521,7 @@ export default function DataSourcesPage() {
                       <FeatureGuard feature="datasources" currentUsage={0}>
                         {({ isLocked }) => (
                           <Button
-                            onClick={() => setIsAddDialogOpen(true)}
+                            onClick={handleOpenAddKnowledge}
                             variant={!isLocked ? "default" : "outline"}
                             className={isLocked ? "border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)]" : ""}
                           >
@@ -546,6 +548,7 @@ export default function DataSourcesPage() {
               workspaceId={workspaceId}
               selectedCategory={selectedCategory}
               searchQuery={searchQuery}
+              onAddKnowledge={handleOpenAddKnowledge}
               onSourceToDelete={handleDelete}
               onEditingSource={setEditingSource}
               onNavigateToSource={(source) => router.push(`/${workspaceId}/chatbot/${botId}/sources/${source.id}`)}

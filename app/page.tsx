@@ -59,13 +59,11 @@ export default function Home() {
       {/* 4. Product story: lifecycle */}
       <SupportLifecycle />
 
-      {/* <FullscreenVideo /> */}
+      {/* 6. Human handoff section */}
+      <HumanEscalationSection />
 
       {/* 5. Omnichannel proof: web, WhatsApp, voice */}
       <OmnichannelSection />
-
-      {/* 6. Human handoff section */}
-      <HumanEscalationSection />
 
       <FeatureShowcase />
 
@@ -73,7 +71,7 @@ export default function Home() {
       <ProofCardsSection />
 
       {/* 8. Use cases */}
-      {/* <UseCases /> */}
+      <UseCases />
 
       {/* 9. Security & privacy trust block */}
       <SecurityPrivacySection />

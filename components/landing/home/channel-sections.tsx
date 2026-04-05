@@ -506,10 +506,7 @@ export function OmnichannelSection() {
           transition={{ duration: 0.55 }}
           className="mx-auto max-w-[760px] text-center"
         >
-          <div className="landing-home-eyebrow mb-4">
-            <Headphones className="h-4 w-4" />
-            Omnichannel Support
-          </div>
+
           <h2 className="landing-home-title text-[34px] md:text-[52px]">
             Three channels.
             <span className="landing-home-title-muted block">One support brain.</span>
