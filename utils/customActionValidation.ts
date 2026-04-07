@@ -167,6 +167,19 @@ export function validateActionForTest(
   return { ok: true, errors: {}, step: null };
 }
 
+export function validateActionForDraft(action: CustomAction): ValidationResult {
+  const errors: ActionFormErrors = {};
+
+  const nameRes = actionNameSchema.safeParse(action.name);
+  if (!nameRes.success) errors.name = nameRes.error.issues[0]?.message ?? "Invalid action name.";
+
+  const descRes = descriptionSchema.safeParse(action.description);
+  if (!descRes.success) errors.description = descRes.error.issues[0]?.message ?? "Invalid description.";
+
+  if (Object.keys(errors).length) return { ok: false, errors, step: 1 };
+  return { ok: true, errors: {}, step: null };
+}
+
 export function validateActionForSave(action: CustomAction): ValidationResult {
   const errors = validateCore(action);
   if (Object.keys(errors).length) return { ok: false, errors, step: pickStep(errors) };
@@ -181,4 +194,3 @@ export function formatValidationErrors(errors: ActionFormErrors, max = 4): strin
   const rest = unique.length - head.length;
   return rest > 0 ? `${head.join(" • ")} • +${rest} more` : head.join(" • ");
 }
-

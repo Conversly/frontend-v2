@@ -40,7 +40,10 @@ export const SkillWizard: React.FC<Props> = ({
             name: '',
             displayName: '',
             description: '',
+            status: 'DRAFT',
             isEnabled: true,
+            accessLevel: 'anonymous',
+            requiredContactFields: [],
             apiConfig: {
                 method: 'GET',
                 baseUrl: '',

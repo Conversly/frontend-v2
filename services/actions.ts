@@ -43,7 +43,11 @@ export const useCreateCustomAction = () => {
             queryClient.invalidateQueries({
                 queryKey: ["custom-actions", { chatbotId: variables.chatbotId }],
             });
-            toast.success("Custom action created successfully");
+            toast.success(
+                variables.status === "DRAFT"
+                    ? "Draft saved successfully"
+                    : "Custom action created successfully"
+            );
         },
         onError: (error: Error) => {
             toast.error(error.message);
@@ -63,7 +67,11 @@ export const useUpdateCustomAction = () => {
             queryClient.invalidateQueries({
                 queryKey: ["custom-action", variables.chatbotId, variables.actionId],
             });
-            toast.success("Custom action updated successfully");
+            toast.success(
+                variables.status === "DRAFT"
+                    ? "Draft updated successfully"
+                    : "Custom action updated successfully"
+            );
         },
         onError: (error: Error) => {
             toast.error(error.message);

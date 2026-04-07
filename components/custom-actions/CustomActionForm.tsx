@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import {
     ActionFormErrors,
     formatValidationErrors,
+    validateActionForDraft,
     validateActionForSave,
     validateActionForTest,
 } from '@/utils/customActionValidation';
@@ -21,7 +22,7 @@ import {
 interface Props {
     chatbotId: string;
     existingAction?: CustomAction;
-    onSave: (action: CustomAction) => Promise<void>;
+    onSave: (action: CustomAction, saveMode: 'draft' | 'publish') => Promise<void>;
     onCancel: () => void;
 }
 
@@ -31,6 +32,7 @@ const buildDefaultAction = (chatbotId: string): CustomAction => ({
     name: '',
     displayName: '',
     description: '',
+    status: 'DRAFT',
     isEnabled: true,
     accessLevel: 'anonymous',
     requiredContactFields: [],
@@ -123,9 +125,9 @@ export const CustomActionForm: React.FC<Props> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatbotId, existingAction?.id]);
 
-    const isStep1Valid = useMemo(() => {
-        return formData.name.trim().length >= 3 && formData.description.trim().length >= 20;
-    }, [formData.name, formData.description]);
+    const isDraftValid = useMemo(() => validateActionForDraft(formData).ok, [formData.name, formData.description]);
+    const canSaveDraft = !existingAction || existingAction.status === 'DRAFT';
+    const saveActionLabel = existingAction?.status === 'DRAFT' ? 'Publish Action' : 'Save Action';
 
     const updateField = (path: string, value: any) => {
         setFormData((prev) => {
@@ -159,24 +161,6 @@ export const CustomActionForm: React.FC<Props> = ({
     };
 
     const { mutateAsync: testAction } = useTestCustomAction();
-
-    const getParameterValidationError = (): string | null => {
-        for (const p of formData.parameters) {
-            if (!p.name || !p.name.trim()) return 'Parameter name is required.';
-            if (!p.type) return `Parameter type is required for ${p.name}.`;
-            if (!p.description || p.description.trim().length < 10) {
-                return `Parameter description must be at least 10 chars (${p.name}).`;
-            }
-            if (!p.location) return `Parameter destination is required (${p.name}).`;
-            if (p.location === 'body' && !(p.bodyPath || '').trim()) {
-                return `bodyPath is required for body parameter (${p.name}).`;
-            }
-            if ((p.location === 'query' || p.location === 'header') && !((p.key ?? p.name ?? '').trim().length)) {
-                return `key is required for ${p.location} parameter (${p.name}).`;
-            }
-        }
-        return null;
-    };
 
     const handleTest = async () => {
         const validation = validateActionForTest(formData, testValues);
@@ -223,7 +207,27 @@ export const CustomActionForm: React.FC<Props> = ({
         }
     };
 
-    const handleSave = async () => {
+    const handleSave = async (saveMode: 'draft' | 'publish') => {
+        if (saveMode === 'draft') {
+            const validation = validateActionForDraft(formData);
+            if (!validation.ok) {
+                setErrors(validation.errors);
+                toast.error('Complete the basic action details before saving a draft.', {
+                    description: formatValidationErrors(validation.errors),
+                });
+                setCurrentStep(1);
+                return;
+            }
+
+            setSaving(true);
+            try {
+                await onSave(formData, 'draft');
+            } finally {
+                setSaving(false);
+            }
+            return;
+        }
+
         const validation = validateActionForSave(formData);
         if (!validation.ok) {
             setErrors(validation.errors);
@@ -236,7 +240,7 @@ export const CustomActionForm: React.FC<Props> = ({
 
         setSaving(true);
         try {
-            await onSave(formData);
+            await onSave(formData, 'publish');
         } finally {
             setSaving(false);
         }
@@ -277,6 +281,16 @@ export const CustomActionForm: React.FC<Props> = ({
                         Configure how your chatbot interacts with external services
                     </p>
                 </div>
+                {canSaveDraft && (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleSave('draft')}
+                        disabled={saving || !isDraftValid}
+                    >
+                        Save as Draft
+                    </Button>
+                )}
             </div>
             <div className="flex-1 min-h-0 pb-6 w-full min-w-0">
                 {/* Content Panel - Left aligned with max width for form readability */}
@@ -402,7 +416,8 @@ export const CustomActionForm: React.FC<Props> = ({
                                         testResult={testResult}
                                         saving={saving}
                                         onBack={() => setCurrentStep(4)}
-                                        onSave={handleSave}
+                                        onSave={() => handleSave('publish')}
+                                        saveLabel={saveActionLabel}
                                     />
                                 )}
                             </div>

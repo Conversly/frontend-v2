@@ -108,7 +108,14 @@ export const ActionList: React.FC<Props> = ({
                         <CardHeader className="pb-3">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-base">{action.displayName}</CardTitle>
+                                    <div className="flex items-center gap-2">
+                                        <CardTitle className="text-base">{action.displayName || action.name}</CardTitle>
+                                        {action.status === 'DRAFT' && (
+                                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+                                                Draft
+                                            </Badge>
+                                        )}
+                                    </div>
                                     <CardDescription className="font-mono text-xs">
                                         {action.name}
                                     </CardDescription>
@@ -152,7 +159,11 @@ export const ActionList: React.FC<Props> = ({
                                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
                                     <span>{action.parameters.length} params</span>
                                     <div className="flex items-center gap-1">
-                                        {action.testStatus === 'passed' ? (
+                                        {action.status === 'DRAFT' ? (
+                                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+                                                Draft
+                                            </Badge>
+                                        ) : action.testStatus === 'passed' ? (
                                             <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-100">
                                                 Tested
                                             </Badge>

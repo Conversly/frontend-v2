@@ -65,6 +65,7 @@ interface Props {
   saving: boolean;
   onBack: () => void;
   onSave: () => void;
+  saveLabel?: string;
 }
 
 export const DataAccessStep: React.FC<Props> = ({
@@ -74,6 +75,7 @@ export const DataAccessStep: React.FC<Props> = ({
   saving,
   onBack,
   onSave,
+  saveLabel = "Save Action",
 }) => {
   const dataAccess: DataAccess = (formData.apiConfig.responseMapping ? "limited" : "full") as DataAccess;
 
@@ -235,11 +237,10 @@ export const DataAccessStep: React.FC<Props> = ({
               Saving Action...
             </>
           ) : (
-            "Save Action"
+            saveLabel
           )}
         </Button>
       </div>
     </div>
   );
 };
-

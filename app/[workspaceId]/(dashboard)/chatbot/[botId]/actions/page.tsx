@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { CustomAction } from '@/types/customActions';
+import { CustomAction, CustomActionStatus } from '@/types/customActions';
 import { ActionList } from '@/components/custom-actions/ActionList';
 import { CustomActionForm } from '@/components/custom-actions/CustomActionForm';
 import { useParams } from 'next/navigation';
@@ -17,13 +17,11 @@ import { FeatureGuard } from '@/components/shared/FeatureGuard';
 export default function ActionsPage() {
   const params = useParams();
   const chatbotId = params.botId as string;
-  const workspaceId = params.workspaceId as string;
 
   const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
   const [selectedAction, setSelectedAction] = useState<CustomAction | undefined>(undefined);
 
   const { data: actions, isLoading } = useCustomActions({ chatbotId });
-  const actionsUsed = actions?.length ?? 0;
   const createAction = useCreateCustomAction();
   const updateAction = useUpdateCustomAction();
   const deleteAction = useDeleteCustomAction();
@@ -44,15 +42,19 @@ export default function ActionsPage() {
     }
   };
 
-  const handleSave = async (action: CustomAction) => {
+  const handleSave = async (action: CustomAction, saveMode: 'draft' | 'publish') => {
     try {
+      const status: CustomActionStatus = saveMode === 'draft' ? 'DRAFT' : 'PUBLISHED';
+
       if (view === 'create') {
         await createAction.mutateAsync({
           chatbotId,
           name: action.name,
           description: action.description,
+          status,
           accessLevel: action.accessLevel,
           requiredContactFields: action.requiredContactFields,
+          triggerExamples: action.triggerExamples,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
         });
@@ -63,8 +65,10 @@ export default function ActionsPage() {
           actionId: action.id,
           name: action.name,
           description: action.description,
+          status: action.status === 'DRAFT' || saveMode === 'draft' ? status : undefined,
           accessLevel: action.accessLevel,
           requiredContactFields: action.requiredContactFields,
+          triggerExamples: action.triggerExamples,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
         });

@@ -4,6 +4,7 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type AuthType = 'none' | 'bearer' | 'api_key' | 'basic';
 export type TestStatus = 'passed' | 'failed' | 'not_tested' | 'error';
+export type CustomActionStatus = 'DRAFT' | 'PUBLISHED';
 
 /**
  * Matches backend yup schema keys (camelCase).
@@ -102,13 +103,14 @@ export interface CustomAction {
   name: string;
   displayName: string;
   description: string;
+  status: CustomActionStatus;
   isEnabled: boolean;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
-  triggerExamples?: string[]; // UI-only (not sent to backend create/update)
-  toolSchema?: ToolSchema;
+  triggerExamples?: string[];
+  toolSchema?: ToolSchema | null;
   version: number;
   createdAt: string | null;
   updatedAt: string | null;
@@ -135,8 +137,10 @@ export interface CreateCustomActionInput {
   chatbotId: string;
   name: string;
   description: string;
+  status?: CustomActionStatus;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
 }
@@ -146,8 +150,10 @@ export interface UpdateCustomActionInput {
   actionId: string;
   name?: string;
   description?: string;
+  status?: CustomActionStatus;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig?: ApiConfig;
   parameters?: ToolParameter[];
 }
@@ -175,9 +181,14 @@ export interface CustomActionResponse {
   name: string;
   displayName: string;
   description: string;
+  status: CustomActionStatus;
   isEnabled: boolean;
+  accessLevel?: AccessLevel;
+  requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
+  toolSchema?: ToolSchema | null;
   version: number;
   createdAt: string | null;
   updatedAt: string | null;
@@ -235,6 +246,5 @@ export interface GetLogsQuery {
 export interface GetTemplatesQuery {
   category?: string;
 }
-
 
 
