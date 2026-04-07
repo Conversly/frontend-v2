@@ -50,7 +50,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
       className="space-y-6"
     >
       {/* System Prompt */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="System Prompt"
           description="Define how your AI assistant behaves and responds"
@@ -60,13 +60,13 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
         <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-sm text-foreground">Prompt Instructions</label>
+              <label className="type-label">Prompt Instructions</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Instructions that define the AI's personality, tone, and behavior
                   </p>
                 </TooltipContent>
@@ -75,12 +75,12 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
             <TextareaAutosize
               value={systemPrompt || ''}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onSystemPromptChange(e.target.value)}
-              className="flex w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono text-sm resize-none overflow-y-auto minimal-scrollbar text-foreground"
+              className="minimal-scrollbar flex w-full resize-none overflow-y-auto rounded-[var(--radius-input)] border border-border bg-[var(--input-background)] px-3 py-2 font-mono text-sm text-foreground shadow-xs placeholder:text-muted-foreground focus-visible:border-primary/30 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/12 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="You are a helpful assistant..."
               minRows={5}
               maxRows={15}
             />
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="type-body-muted mt-2">
               {(systemPrompt || '').length} characters
             </p>
           </div>
@@ -107,7 +107,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
       </div>
 
       {/* AI Behavior Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="AI Behavior"
           description="Configure how the AI interacts with users"
@@ -116,13 +116,13 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Collect User Feedback</label>
+              <label className="type-label">Collect User Feedback</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Allow users to rate responses with thumbs up/down
                   </p>
                 </TooltipContent>
@@ -133,19 +133,19 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
               id="collectFeedback"
               checked={config.collectFeedback || false}
               onChange={(e) => updateConfig({ collectFeedback: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Allow Message Regeneration</label>
+              <label className="type-label">Allow Message Regeneration</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Let users regenerate AI responses to get alternative answers
                   </p>
                 </TooltipContent>
@@ -156,7 +156,7 @@ export function AITab({ config, updateConfig, systemPrompt, onSystemPromptChange
               id="allowRegenerate"
               checked={config.allowRegenerate || false}
               onChange={(e) => updateConfig({ allowRegenerate: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
         </div>

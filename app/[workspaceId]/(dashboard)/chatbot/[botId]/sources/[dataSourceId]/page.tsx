@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
 import { MarkdownRenderer } from '@/components/shared/markdown-renderer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -51,7 +51,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -61,14 +61,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { FeatureGuard } from '@/components/shared/FeatureGuard';
 
@@ -76,31 +76,44 @@ import { FeatureGuard } from '@/components/shared/FeatureGuard';
 // Constants
 // =============================================================================
 
-const DATA_SOURCE_ICONS = {
-  URL: Globe,
-  WEBSITE: Globe,
-  DOCUMENT: FileText,
-  PDF: FileText,
-  QNA: MessageSquare,
-  TXT: AlignLeft,
+const DATA_SOURCE_META = {
+  URL: { icon: Globe, label: 'URL' },
+  WEBSITE: { icon: Globe, label: 'Website' },
+  DOCUMENT: { icon: FileText, label: 'Document' },
+  PDF: { icon: FileText, label: 'PDF' },
+  QNA: { icon: MessageSquare, label: 'Q&A' },
+  TXT: { icon: AlignLeft, label: 'Text' },
 } as const;
 
-const TRAINING_STATUS_BADGE_COLORS = {
-  DRAFT: 'border-muted-foreground/30 bg-muted text-muted-foreground',
-  QUEUEING: 'border-amber-300 bg-amber-50 text-amber-700',
-  PROCESSING: 'border-blue-300 bg-blue-50 text-blue-700',
-  COMPLETED: 'border-green-300 bg-green-50 text-green-700',
-  FAILED: 'border-red-300 bg-red-50 text-red-700',
+const STATUS_CHIP_CLASSES = {
+  DRAFT: 'dashboard-status-chip dashboard-status-chip--neutral',
+  QUEUEING: 'dashboard-status-chip dashboard-status-chip--warning',
+  PROCESSING: 'dashboard-status-chip dashboard-status-chip--info',
+  COMPLETED: 'dashboard-status-chip dashboard-status-chip--success',
+  FAILED: 'dashboard-status-chip dashboard-status-chip--danger',
 } as const;
 
-function getStatusBadgeClass(status: string | null | undefined, map: Record<string, string>) {
-  if (!status) return map.DRAFT;
-  return map[status.toUpperCase()] || map.DRAFT;
+function formatLabel(value: string | null | undefined, fallback: string) {
+  const normalized = value?.trim();
+
+  if (!normalized) return fallback;
+
+  return normalized
+    .toLowerCase()
+    .split(/[_\s]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
-// Pill-style tab trigger — matches CustomizationTab standard
-const PILL_TAB_CLASS =
-  'text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground';
+function getStatusChipClass(status: string | null | undefined) {
+  if (!status) return STATUS_CHIP_CLASSES.DRAFT;
+  return STATUS_CHIP_CLASSES[status.toUpperCase() as keyof typeof STATUS_CHIP_CLASSES] || STATUS_CHIP_CLASSES.DRAFT;
+}
+
+function getSourceTypeMeta(type: string | null | undefined) {
+  const normalized = type?.toUpperCase() as keyof typeof DATA_SOURCE_META | undefined;
+  return normalized ? DATA_SOURCE_META[normalized] || DATA_SOURCE_META.DOCUMENT : DATA_SOURCE_META.DOCUMENT;
+}
 
 // =============================================================================
 // Content Viewer Components
@@ -112,14 +125,14 @@ function WebContentView({ content }: { content: WebContent }) {
       {(content.title || content.url) && (
         <div className="pb-5 border-b border-border">
           {content.title && (
-            <h3 className="text-base font-semibold text-foreground leading-snug">{content.title}</h3>
+            <h3 className="type-card-title leading-snug">{content.title}</h3>
           )}
           {content.url && (
             <a
               href={content.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-primary hover:text-primary/80 break-all mt-1.5 block"
+              className="mt-1.5 block break-all text-sm text-primary hover:text-primary/80"
             >
               {content.url}
             </a>
@@ -130,9 +143,9 @@ function WebContentView({ content }: { content: WebContent }) {
         {content.sections?.map((section, i) => (
           <div key={i}>
             {section.heading && (
-              <h4 className="text-sm font-semibold text-foreground mb-2">{section.heading}</h4>
+              <h4 className="type-heading-small mb-2">{section.heading}</h4>
             )}
-            <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{section.content}</p>
+            <p className="type-body whitespace-pre-wrap leading-7">{section.content}</p>
           </div>
         ))}
       </div>
@@ -145,11 +158,11 @@ function FileContentView({ content }: { content: FileContent }) {
     <div className="space-y-6">
       {content.pages?.map((page, i) => (
         <div key={page.page}>
-          <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{page.content}</p>
+          <p className="type-body whitespace-pre-wrap leading-7">{page.content}</p>
           {i < (content.pages?.length ?? 0) - 1 && (
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 border-t border-border" />
-              <span className="text-xs text-muted-foreground font-medium">Page {page.page + 1}</span>
+              <span className="type-caption">Page {page.page + 1}</span>
               <div className="flex-1 border-t border-border" />
             </div>
           )}
@@ -163,21 +176,19 @@ function QAContentView({ content }: { content: QASourceContent }) {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Question</p>
-        <p className="text-sm text-foreground leading-[1.75]">{content.question}</p>
+        <p className="type-caption mb-2">Question</p>
+        <p className="type-body leading-7">{content.question}</p>
       </div>
       <div className="border-t border-border pt-6">
-        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Answer</p>
-        <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{content.answer}</p>
+        <p className="type-caption mb-2">Answer</p>
+        <p className="type-body whitespace-pre-wrap leading-7">{content.answer}</p>
       </div>
     </div>
   );
 }
 
 function TextContentView({ content }: { content: TextSourceContent }) {
-  return (
-    <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">{content.content}</p>
-  );
+  return <p className="type-body whitespace-pre-wrap leading-7">{content.content}</p>;
 }
 
 function SourceContentRenderer({ content }: { content: SourceContentItem }) {
@@ -192,7 +203,7 @@ function SourceContentRenderer({ content }: { content: SourceContentItem }) {
       return <TextContentView content={content.structuredContent as TextSourceContent} />;
     default:
       return (
-        <p className="text-sm text-foreground/80 leading-[1.75] whitespace-pre-wrap">
+        <p className="type-body whitespace-pre-wrap leading-7">
           {content.plainText || 'No content available'}
         </p>
       );
@@ -254,26 +265,26 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      className="group rounded-2xl border border-border/70 bg-card/90 p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card"
+      className="dashboard-panel group rounded-[var(--panel-radius-md)] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/25"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline" className="border-primary/15 bg-primary/5 text-primary">
+            <Badge variant="info">
               {sectionTitle}
             </Badge>
-            <Badge variant="outline" className="border-border bg-background text-muted-foreground">
+            <Badge variant="neutral">
               {formatChunkType(embedding.chunkType)}
             </Badge>
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="type-label">
               Chunk {position}{totalChunks ? ` of ${totalChunks}` : ''}
             </span>
           </div>
 
           {embedding.summary && (
-            <div className="flex items-start gap-2 rounded-xl border border-primary/10 bg-primary/[0.04] px-3 py-2.5">
+            <div className="flex items-start gap-2 rounded-[var(--panel-radius-sm)] border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-3 py-2.5">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm leading-6 text-foreground/90">{embedding.summary}</p>
+              <p className="type-body leading-6">{embedding.summary}</p>
             </div>
           )}
 
@@ -281,7 +292,10 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <ListTree className="h-3.5 w-3.5" />
               {headingContext.map((heading) => (
-                <span key={heading} className="rounded-full bg-muted px-2.5 py-1">
+                <span
+                  key={heading}
+                  className="rounded-full border border-[var(--border-secondary)] bg-[var(--surface-secondary)] px-2.5 py-1"
+                >
                   {heading}
                 </span>
               ))}
@@ -296,15 +310,15 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
           className="shrink-0 text-muted-foreground hover:text-foreground"
         >
           {copied ? (
-            <Check className="w-3.5 h-3.5 text-green-500" />
+            <Check className="h-3.5 w-3.5 text-[var(--status-success-fg)]" />
           ) : (
-            <Copy className="w-3.5 h-3.5" />
+            <Copy className="h-3.5 w-3.5" />
           )}
         </Button>
       </div>
 
-      <div className="mt-4 rounded-xl border border-border/70 bg-[--surface-secondary]/60 p-4">
-        <div className="text-sm leading-6 text-foreground/90">
+      <div className="dashboard-panel-muted mt-4 rounded-[var(--panel-radius-sm)] p-4">
+        <div className="type-body leading-6">
           <MarkdownRenderer>
             {shouldTruncate && !expanded ? displayText + '...' : displayText}
           </MarkdownRenderer>
@@ -324,7 +338,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
       <div className="mt-4 space-y-3">
         {hasKeywords && (
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            <div className="type-caption flex items-center gap-2">
               <Tag className="h-3.5 w-3.5" />
               Keywords
             </div>
@@ -332,7 +346,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
               {keywords.map((keyword) => (
                 <span
                   key={`${embedding.id}-${keyword}`}
-                  className="rounded-full border border-border bg-background px-2.5 py-1 text-xs text-foreground/75"
+                  className="rounded-full border border-[var(--border-secondary)] bg-background px-2.5 py-1 text-xs text-muted-foreground"
                 >
                   {keyword}
                 </span>
@@ -343,7 +357,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
 
         {hasQuestions && (
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            <div className="type-caption flex items-center gap-2">
               <HelpCircle className="h-3.5 w-3.5" />
               Suggested prompts
             </div>
@@ -351,7 +365,7 @@ function EmbeddingChunk({ embedding, index }: { embedding: EmbeddingItem; index:
               {questions.map((question, questionIndex) => (
                 <span
                   key={`${embedding.id}-question-${questionIndex}`}
-                  className="rounded-full border border-primary/15 bg-primary/[0.04] px-2.5 py-1 text-xs text-foreground/80"
+                  className="rounded-full border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-2.5 py-1 text-xs text-[var(--status-info-fg)]"
                 >
                   {question}
                 </span>
@@ -400,31 +414,37 @@ function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
   return (
     <>
       <div className="mb-6 grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-border/70 bg-card/90 p-4">
-          <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Total chunks</div>
-          <div className="mt-2 text-2xl font-semibold text-foreground">{embeddings.length}</div>
-        </div>
-        <div className="rounded-2xl border border-border/70 bg-card/90 p-4">
-          <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Sections</div>
-          <div className="mt-2 text-2xl font-semibold text-foreground">{groupedEmbeddings.length}</div>
-        </div>
-        <div className="rounded-2xl border border-border/70 bg-card/90 p-4">
-          <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">View style</div>
-          <div className="mt-2 text-sm leading-6 text-muted-foreground">
-            Summaries, chunk type, keywords, prompts, and readable chunk bodies.
-          </div>
-        </div>
+        <Card className="dashboard-kpi-card">
+          <CardContent className="pt-5">
+            <div className="type-caption">Total chunks</div>
+            <div className="mt-2 text-2xl font-semibold text-foreground">{embeddings.length}</div>
+          </CardContent>
+        </Card>
+        <Card className="dashboard-kpi-card">
+          <CardContent className="pt-5">
+            <div className="type-caption">Sections</div>
+            <div className="mt-2 text-2xl font-semibold text-foreground">{groupedEmbeddings.length}</div>
+          </CardContent>
+        </Card>
+        <Card className="dashboard-kpi-card">
+          <CardContent className="pt-5">
+            <div className="type-caption">View style</div>
+            <div className="mt-2 text-sm leading-6 text-muted-foreground">
+              Summaries, chunk type, keywords, prompts, and readable chunk bodies.
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="space-y-6">
         {groupedEmbeddings.map(([sectionName, sectionEmbeddings]) => (
-          <section key={sectionName} className="rounded-[28px] border border-border/60 bg-background/50 p-4 md:p-5">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-border/50 pb-4">
+          <section key={sectionName} className="dashboard-panel-muted rounded-[var(--panel-radius-md)] p-5">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-secondary)] pb-4">
               <div>
-                <div className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Section</div>
-                <h5 className="mt-1 text-lg font-semibold text-foreground">{sectionName}</h5>
+                <div className="type-caption">Section</div>
+                <h5 className="mt-1 type-card-title">{sectionName}</h5>
               </div>
-              <Badge variant="outline" className="border-primary/15 bg-primary/[0.04] text-primary">
+              <Badge variant="info">
                 {sectionEmbeddings.length} {sectionEmbeddings.length === 1 ? 'chunk' : 'chunks'}
               </Badge>
             </div>
@@ -448,6 +468,8 @@ function EmbeddingChunksContent({ dataSourceId }: { dataSourceId: string }) {
 // =============================================================================
 
 function DetailsSidebarRows({ dataSource, wordCount }: { dataSource: DataSourceItem; wordCount?: number }) {
+  const typeMeta = getSourceTypeMeta(dataSource.type);
+
   const formatDate = (date: string | Date | null) => {
     if (!date) return 'N/A';
     const d = new Date(date);
@@ -459,37 +481,39 @@ function DetailsSidebarRows({ dataSource, wordCount }: { dataSource: DataSourceI
   };
 
   return (
-    <div className="divide-y divide-border">
-      <div className="flex items-baseline justify-between py-3">
-        <span className="text-sm text-muted-foreground">Created:</span>
-        <span className="text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
+    <div className="divide-y divide-[var(--border-secondary)]">
+      <div className="flex items-start justify-between gap-4 px-5 py-4">
+        <span className="type-label">Created</span>
+        <span className="text-right text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
       </div>
-      <div className="flex items-baseline justify-between py-3">
-        <span className="text-sm text-muted-foreground">Last updated:</span>
-        <span className="text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
+      <div className="flex items-start justify-between gap-4 px-5 py-4">
+        <span className="type-label">Last updated</span>
+        <span className="text-right text-sm font-medium text-foreground">{formatDate(dataSource.createdAt)}</span>
       </div>
       {wordCount != null && wordCount > 0 && (
-        <div className="flex items-baseline justify-between py-3">
-          <span className="text-sm text-muted-foreground">Words:</span>
-          <span className="text-sm font-medium text-foreground">{wordCount.toLocaleString()}</span>
+        <div className="flex items-start justify-between gap-4 px-5 py-4">
+          <span className="type-label">Words</span>
+          <span className="text-right text-sm font-medium text-foreground">{wordCount.toLocaleString()}</span>
         </div>
       )}
-      <div className="flex items-baseline justify-between py-3">
-        <span className="text-sm text-muted-foreground">Type:</span>
-        <span className="text-sm font-medium text-foreground capitalize">{(dataSource.type || 'Document').toLowerCase()}</span>
+      <div className="flex items-start justify-between gap-4 px-5 py-4">
+        <span className="type-label">Type</span>
+        <span className="dashboard-status-chip dashboard-status-chip--neutral">{typeMeta.label}</span>
       </div>
-      <div className="flex items-baseline justify-between py-3">
-        <span className="text-sm text-muted-foreground">Status:</span>
-        <span className="text-sm font-medium text-foreground capitalize">{(dataSource.ingestionStatus || 'Draft').toLowerCase()}</span>
+      <div className="flex items-start justify-between gap-4 px-5 py-4">
+        <span className="type-label">Status</span>
+        <span className={getStatusChipClass(dataSource.ingestionStatus)}>
+          {formatLabel(dataSource.ingestionStatus, 'Draft')}
+        </span>
       </div>
       {dataSource.citation && (
-        <div className="flex items-baseline justify-between gap-4 py-3">
-          <span className="text-sm text-muted-foreground shrink-0">Citation:</span>
+        <div className="flex items-start justify-between gap-4 px-5 py-4">
+          <span className="type-label shrink-0">Citation</span>
           <a
             href={dataSource.citation}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-primary hover:text-primary/80 break-all text-right"
+            className="text-right text-sm font-medium text-primary hover:text-primary/80 break-all"
           >
             {dataSource.citation}
           </a>
@@ -674,6 +698,8 @@ function DataSourceDetailContent({
     () => dataSources?.find((ds) => ds.id === dataSourceId),
     [dataSources, dataSourceId]
   );
+  const typeMeta = getSourceTypeMeta(dataSource?.type);
+  const TypeIcon = typeMeta.icon;
 
   if (!dataSource) {
     return (
@@ -694,29 +720,30 @@ function DataSourceDetailContent({
       <section className="flex-1 flex flex-col overflow-hidden min-w-0 bg-background">
 
         {/* Header */}
-        <div className="px-6 pt-5 pb-0 lg:px-10 lg:pt-6 border-b border-border">
+        <div className="border-b border-[var(--border-secondary)] bg-background px-6 py-5 lg:px-8 lg:py-6">
           <button
             onClick={() => router.push(backUrl)}
-            className="flex items-center gap-0.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3"
+            className="mb-3 flex items-center gap-0.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ChevronLeft className="size-4" />
             Back to sources
           </button>
 
-          <div className="flex items-start justify-between pb-4 gap-4">
-            <div className="min-w-0">
-              <h1 className="text-xl font-semibold text-foreground leading-tight break-words">
-                {dataSource.name}
-              </h1>
-              <Badge
-                variant="outline"
-                className={cn(
-                  'mt-2 text-xs px-2 py-0.5 font-medium',
-                  getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
-                )}
-              >
-                {dataSource.ingestionStatus ?? 'Draft'}
-              </Badge>
+          <div className="page-header mb-0 md:flex-row md:items-start md:justify-between">
+            <div className="min-w-0 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={getStatusChipClass(dataSource.ingestionStatus)}>
+                  {formatLabel(dataSource.ingestionStatus, 'Draft')}
+                </span>
+                <span className="dashboard-status-chip dashboard-status-chip--neutral">
+                  <TypeIcon className="size-3" />
+                  {typeMeta.label}
+                </span>
+              </div>
+              <h1 className="type-page-title break-words">{dataSource.name}</h1>
+              <p className="type-body-muted max-w-3xl">
+                Review the source metadata, preview the extracted content, and inspect the stored chunks.
+              </p>
             </div>
 
             <DropdownMenu>
@@ -724,7 +751,7 @@ function DataSourceDetailContent({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
+                  className="mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
                 >
                   <Ellipsis className="size-4" />
                 </Button>
@@ -753,9 +780,13 @@ function DataSourceDetailContent({
         <Tabs defaultValue="overview" className="flex flex-1 flex-col gap-0 overflow-hidden">
           {/* Mobile-only tab triggers */}
           <div className="px-6 pt-4 lg:hidden">
-            <TabsList className="w-full">
-              <TabsTrigger value="overview" className="flex-1">Overview</TabsTrigger>
-              <TabsTrigger value="details" className="flex-1">Details</TabsTrigger>
+            <TabsList variant="segmented" className="w-full">
+              <TabsTrigger value="overview" variant="segmented" className="flex-1 justify-center data-[state=active]:text-primary">
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="details" variant="segmented" className="flex-1 justify-center data-[state=active]:text-primary">
+                Details
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -763,36 +794,45 @@ function DataSourceDetailContent({
           <TabsContent value="overview" className="flex-1 flex flex-col mt-0 overflow-hidden">
             {/* Inner Content / Chunks tabs */}
             <Tabs defaultValue="content" className="flex-1 flex flex-col gap-0 overflow-hidden">
-              {/* Pill-style tab triggers — matches app standard */}
-              <div className="px-6 lg:px-10 pt-5">
-                <TabsList className="bg-muted p-1 rounded-lg">
-                  <TabsTrigger value="content" className={PILL_TAB_CLASS}>
+              <div className="px-6 pt-5 lg:px-8">
+                <TabsList variant="segmented" className="w-full sm:w-auto">
+                  <TabsTrigger
+                    value="content"
+                    variant="segmented"
+                    className="flex-1 justify-center data-[state=active]:text-primary sm:flex-none"
+                  >
                     Content
                   </TabsTrigger>
-                  <TabsTrigger value="chunks" className={PILL_TAB_CLASS}>
+                  <TabsTrigger
+                    value="chunks"
+                    variant="segmented"
+                    className="flex-1 justify-center data-[state=active]:text-primary sm:flex-none"
+                  >
                     Chunks
                   </TabsTrigger>
                 </TabsList>
               </div>
 
               <TabsContent value="content" className="flex-1 overflow-y-auto mt-0">
-                <div className="px-6 py-6 lg:px-10">
-                  <div className="border border-border rounded-lg p-6">
-                    <AsyncBoundary
-                      loadingFallback={
-                        <div className="flex items-center justify-center py-16">
-                          <div className="text-sm text-muted-foreground">Loading content...</div>
-                        </div>
-                      }
-                    >
-                      <SourceContentTabBody dataSourceId={dataSourceId} />
-                    </AsyncBoundary>
-                  </div>
+                <div className="px-6 py-6 lg:px-8">
+                  <Card className="overflow-hidden">
+                    <CardContent className="px-5 py-5">
+                      <AsyncBoundary
+                        loadingFallback={
+                          <div className="flex items-center justify-center py-16">
+                            <div className="text-sm text-muted-foreground">Loading content...</div>
+                          </div>
+                        }
+                      >
+                        <SourceContentTabBody dataSourceId={dataSourceId} />
+                      </AsyncBoundary>
+                    </CardContent>
+                  </Card>
                 </div>
               </TabsContent>
 
               <TabsContent value="chunks" className="flex-1 overflow-y-auto mt-0">
-                <div className="px-6 py-6 lg:px-10">
+                <div className="px-6 py-6 lg:px-8">
                   <AsyncBoundary
                     loadingFallback={
                       <div className="flex items-center justify-center py-16">
@@ -809,17 +849,22 @@ function DataSourceDetailContent({
 
           {/* Details — mobile only (desktop uses the sidebar) */}
           <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-6 mt-0">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-base font-semibold text-foreground">Details</h2>
-              <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
-                <DetailsSidebarRowsWithContent dataSource={dataSource} />
-              </AsyncBoundary>
+            <div className="space-y-4">
+              <div>
+                <h2 className="type-card-title">Details</h2>
+                <p className="type-body-muted mt-1">Source metadata and citation settings.</p>
+              </div>
+              <div className="dashboard-panel overflow-hidden">
+                <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
+                  <DetailsSidebarRowsWithContent dataSource={dataSource} />
+                </AsyncBoundary>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
 
         {/* Mobile sticky bottom action bar */}
-        <div className="sticky bottom-0 flex w-full gap-4 border-t bg-background p-5 lg:hidden">
+        <div className="sticky bottom-0 flex w-full gap-4 border-t border-[var(--border-secondary)] bg-background p-5 shadow-[var(--shadow-reverse)] lg:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex-1 h-9">
@@ -848,12 +893,17 @@ function DataSourceDetailContent({
       </section>
 
       {/* ─── Desktop Details Sidebar ───────────────────────────────────── */}
-      <aside className="hidden h-full w-72 flex-shrink-0 border-l border-border bg-background lg:flex flex-col">
-        <div className="flex flex-col gap-2 p-6 overflow-y-auto flex-1">
-          <h2 className="text-base font-semibold text-foreground">Details</h2>
-          <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
-            <DetailsSidebarRowsWithContent dataSource={dataSource} />
-          </AsyncBoundary>
+      <aside className="hidden h-full w-80 flex-shrink-0 border-l border-sidebar-border bg-sidebar lg:flex lg:flex-col">
+        <div className="flex flex-1 flex-col overflow-y-auto p-6">
+          <div className="mb-4">
+            <h2 className="type-card-title">Details</h2>
+            <p className="type-body-muted mt-1">Source metadata and citation settings.</p>
+          </div>
+          <div className="dashboard-panel overflow-hidden">
+            <AsyncBoundary loadingFallback={<DetailsSidebarRows dataSource={dataSource} />}>
+              <DetailsSidebarRowsWithContent dataSource={dataSource} />
+            </AsyncBoundary>
+          </div>
         </div>
       </aside>
 

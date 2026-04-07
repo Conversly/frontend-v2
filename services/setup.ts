@@ -6,6 +6,7 @@ import type { DataSourceItem } from '@/types/datasource';
 import { useDataSourcesStore } from '@/store/chatbot/data-sources';
 import type { DataSource } from '@/store/chatbot/data-sources';
 import { useCustomizationStore } from '@/store/chatbot/customization';
+import { getDefaultChatbotBrandColor } from '@/lib/chatbot-brand-color';
 
 function mapDataSources(items: DataSourceItem[]): DataSource[] {
   return items.map((s) => {
@@ -41,6 +42,7 @@ export async function runInitialSetup(
   input: BootstrapSetupInput
 ): Promise<BootstrapSetupResult> {
   const result = await bootstrapAgentSetup(input);
+  const defaultBrandColor = getDefaultChatbotBrandColor();
 
   // Hydrate data sources store
   if (result.searchSources?.data) {
@@ -84,8 +86,8 @@ export async function runInitialSetup(
             popupSoundEnabled: false,
             soundUrl: '',
           },
-          primaryColor: '#0e4b75',
-          widgetBubbleColour: '#0e4b75',
+          primaryColor: defaultBrandColor,
+          widgetBubbleColour: defaultBrandColor,
           PrimaryIcon: '',
           widgeticon: 'chat',
           buttonAlignment: 'right',
@@ -105,8 +107,8 @@ export async function runInitialSetup(
 
         DisplayName: result.inferPrompt?.name || draft?.DisplayName || 'Support Bot',
         PrimaryIcon: result.widgetConfig.logoUrl || draft?.PrimaryIcon || '',
-        primaryColor: result.widgetConfig.primaryColor || draft?.primaryColor || '#0e4b75',
-        widgetBubbleColour: result.widgetConfig.primaryColor || draft?.widgetBubbleColour || '#0e4b75',
+        primaryColor: result.widgetConfig.primaryColor || draft?.primaryColor || defaultBrandColor,
+        widgetBubbleColour: result.widgetConfig.primaryColor || draft?.widgetBubbleColour || defaultBrandColor,
         InitialMessage: result.widgetConfig.initialMessage || draft?.InitialMessage || 'Hi! How can I help you today? 👋',
         starterQuestions: result.widgetConfig.suggestedMessages || draft?.starterQuestions || [],
       });

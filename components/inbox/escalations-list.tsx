@@ -1,11 +1,10 @@
 "use client";
 
 import { useAgentInboxStore, type InboxQueue } from "@/store/agent-inbox";
-import { type EscalationItem, type MessageChannel } from "@/types/activity";
+import { type ConversationItem, type EscalationItem } from "@/types/activity";
 import { cn } from "@/lib/utils";
-import { Search, Check, Copy, MessageSquare, Filter, AlertTriangle, UserPlus } from "lucide-react";
+import { Search, MessageSquare, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { conversationStateIconMap } from "@/components/icons/conversation-icons";
 
@@ -58,48 +57,25 @@ function getWaitStats(ts: string) {
     return { timeText, isWarning, isBreached };
 }
 
-function getChannelLabel(channel?: MessageChannel | null) {
-    const normalized = (channel || "WIDGET").toUpperCase();
-
-    switch (normalized) {
-        case "WIDGET":
-            return "Web chat";
-        case "WHATSAPP":
-            return "WhatsApp";
-        case "SMS":
-            return "SMS";
-        case "EMAIL":
-            return "Email";
-        case "VOICE":
-            return "Voice";
-        default:
-            return normalized.toLowerCase().replace(/_/g, " ");
+function getKnownContactIdentityTitle(conversation?: ConversationItem) {
+    if (!conversation?.contact || conversation.contact.role === "visitor") {
+        return null;
     }
-}
 
-function getWaitChipVariant(input: {
-    isWarning: boolean;
-    isBreached: boolean;
-    resolvedAt: string | null;
-    acceptedAt: string | null;
-    assignedAt: string | null;
-}) {
-    if (input.resolvedAt) return "dashboard-status-chip--neutral";
-    if (input.acceptedAt) return "dashboard-status-chip--success";
-    if (input.assignedAt) return "dashboard-status-chip--warning";
-    if (input.isBreached) return "dashboard-status-chip--danger";
-    if (input.isWarning) return "dashboard-status-chip--warning";
-    return "dashboard-status-chip--info";
+    return (
+        conversation.contact.displayName ||
+        conversation.contact.email ||
+        conversation.contact.phoneNumber ||
+        null
+    );
 }
 
 export function EscalationsList({
     inboxItems,
     isLoading,
-    agentUserId,
     searchQuery,
     setSearchQuery,
     onSelectRow,
-    onClaim,
     counts,
     activeQueue,
     onQueueChange,
@@ -108,9 +84,9 @@ export function EscalationsList({
     hasMore,
 }: EscalationsListProps) {
     const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
+    const conversationsById = useAgentInboxStore((s) => s.conversationsById);
     const unreadCountByConversationId = useAgentInboxStore((s) => s.unreadCountByConversationId);
     const messagesByConversationId = useAgentInboxStore((s) => s.messagesByConversationId);
-    const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
     const isDetailsOpen = useAgentInboxStore((s) => s.isDetailsOpen);
 
     const tabs: QueueTab[] = [
@@ -134,21 +110,6 @@ export function EscalationsList({
         >
             <div className="border-b border-border/60 bg-card px-3 py-3 sm:px-4">
                 <div className="rounded-[var(--panel-radius-md)] border border-border/70 bg-[var(--surface-secondary)] p-3 shadow-[var(--shadow-1)]">
-                    <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                                Inbox Queue
-                            </p>
-                            <p className="mt-1 truncate text-sm font-semibold text-foreground">
-                                Escalations
-                            </p>
-                        </div>
-                        <span className="dashboard-status-chip dashboard-status-chip--neutral shrink-0">
-                            <Filter className="size-3" />
-                            <span>{activeTab.count}</span>
-                            <span className="hidden sm:inline">{activeTab.label}</span>
-                        </span>
-                    </div>
 
                     <div className="mt-3 dashboard-search-shell bg-card">
                         <div className="relative flex-1">
@@ -203,31 +164,17 @@ export function EscalationsList({
                                 key={i}
                                 className="rounded-[var(--panel-radius-md)] border border-border/70 bg-card px-3 py-3 shadow-[var(--shadow-1)] sm:px-4"
                             >
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="flex min-w-0 items-start gap-3">
-                                        <Skeleton className="size-7 rounded-full" />
-                                        <div className="min-w-0 space-y-2">
-                                            <Skeleton className="h-4 w-24" />
-                                            <Skeleton className="h-5 w-32 rounded-full" />
+                                <div className="flex items-start gap-3">
+                                    <Skeleton className="size-7 rounded-full" />
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <Skeleton className="h-4 w-44" />
+                                            <div className="flex flex-col items-end gap-1.5">
+                                                <Skeleton className="h-3 w-8" />
+                                                <Skeleton className="h-5 w-6 rounded-full" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-5 w-14 rounded-full" />
-                                        <Skeleton className="ml-auto h-5 w-6 rounded-full" />
-                                    </div>
-                                </div>
-                                <div className="mt-3 rounded-[var(--panel-radius-sm)] border border-border/60 bg-[var(--surface-secondary)] px-3 py-2">
-                                    <Skeleton className="h-4 w-full" />
-                                    <Skeleton className="mt-2 h-4 w-4/5" />
-                                </div>
-                                <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/60 pt-3">
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-3 w-28" />
-                                        <Skeleton className="h-3 w-20" />
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Skeleton className="h-8 w-16 rounded-[var(--radius-input)]" />
-                                        <Skeleton className="size-8 rounded-[var(--radius-input)]" />
+                                        <Skeleton className="mt-2 h-4 w-full" />
                                     </div>
                                 </div>
                             </div>
@@ -237,39 +184,36 @@ export function EscalationsList({
                     <div className="space-y-3">
                         {inboxItems.map((e) => {
                             const isActive = activeConversationId === e.conversationId;
-                            const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
-                            const isAssigned = Boolean(e.agentUserId);
-                            const waitingForAgent =
-                                (e.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED";
-                            const canClaim = waitingForAgent && !isAssigned;
                             const unread = Math.max(
                                 0,
                                 (unreadCountByConversationId[e.conversationId] ?? 0) + (e.unreadCount ?? 0)
                             );
                             const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
                             const lastUserMsg = [...lastMsgList].reverse().find((m) => m.senderType === "USER");
-                            const primaryReason = (e.reason || "").trim();
                             const lastMsgText = (lastUserMsg?.text || "").trim();
                             const messagePreview =
-                                lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
-                                    ? lastMsgText
-                                    : e.lastUserMessage?.trim() || primaryReason || "Open chat";
+                                lastMsgText || e.lastUserMessage?.trim() || "Open chat";
                             const { timeText, isWarning, isBreached } = e.lastMessageAt
                                 ? getWaitStats(e.lastMessageAt)
                                 : getWaitStats(e.requestedAt);
-                            const waitChipVariant = getWaitChipVariant({
-                                isWarning,
-                                isBreached,
-                                resolvedAt: e.resolvedAt,
-                                acceptedAt: e.acceptedAt,
-                                assignedAt: e.assignedAt,
-                            });
-                            const claimErr = lastClaimErrorByConversationId[e.conversationId];
-                            const contactName = e.contactName || "Visitor";
-                            const channelLabel = getChannelLabel(e.channel);
+                            const conversation = conversationsById[e.conversationId];
+                            const knownContactTitle = getKnownContactIdentityTitle(conversation);
+                            const identityLabel =
+                                conversation?.contact?.role === "visitor"
+                                    ? "Visitor"
+                                    : knownContactTitle || e.contactName?.trim() || "Visitor";
                             const assigneeLabel = e.agentDisplayName || "None";
+                            const titleLine = `${identityLabel} > ${assigneeLabel}`;
                             const stateConfig =
                                 conversationStateIconMap[e.conversationState || ""] || conversationStateIconMap.CLOSED;
+                            const timeClassName = cn(
+                                "text-[11px] font-medium tabular-nums",
+                                isBreached
+                                    ? "text-[var(--status-danger-fg)]"
+                                    : isWarning
+                                        ? "text-[var(--status-warning-fg)]"
+                                        : "text-muted-foreground"
+                            );
 
                             return (
                                 <div
@@ -289,8 +233,8 @@ export function EscalationsList({
                                         )}
                                     />
 
-                                    <div className="flex items-start justify-between gap-3 pl-2">
-                                        <div className="flex min-w-0 items-start gap-3">
+                                    <div className="flex items-start gap-3 pl-2">
+                                        <div className={cn("shrink-0", isActive && "translate-y-px")}>
                                             <div className={stateConfig.wrapperClass} title={e.conversationState || "CLOSED"}>
                                                 <div
                                                     className="size-4 bg-current"
@@ -306,125 +250,35 @@ export function EscalationsList({
                                                     }}
                                                 />
                                             </div>
+                                        </div>
 
-                                            <div className="min-w-0">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="truncate text-sm font-semibold text-foreground sm:text-[15px]">
-                                                        {contactName}
-                                                    </span>
-                                                    {isMine && (
-                                                        <span className="dashboard-status-chip dashboard-status-chip--success hidden shrink-0 sm:inline-flex">
-                                                            <Check className="size-3" />
-                                                            Mine
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <p
+                                                    className="min-w-0 flex-1 truncate text-sm font-semibold leading-5 text-foreground sm:text-[15px]"
+                                                    title={titleLine}
+                                                >
+                                                    {identityLabel}
+                                                    <span className="px-1.5 text-muted-foreground">{">"}</span>
+                                                    <span className="text-foreground/80">{assigneeLabel}</span>
+                                                </p>
+
+                                                <div className="flex shrink-0 flex-col items-end gap-1">
+                                                    <span className={timeClassName}>{timeText}</span>
+                                                    {unread > 0 && (
+                                                        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-[var(--shadow-1)]">
+                                                            {unread}
                                                         </span>
                                                     )}
                                                 </div>
-
-                                                {primaryReason && (
-                                                    <div className="mt-1 flex items-center gap-1.5">
-                                                        <span
-                                                            className="dashboard-status-chip dashboard-status-chip--info max-w-[150px] truncate sm:max-w-[220px]"
-                                                            title={primaryReason}
-                                                        >
-                                                            {primaryReason}
-                                                        </span>
-                                                    </div>
-                                                )}
                                             </div>
-                                        </div>
 
-                                        <div className="flex shrink-0 flex-col items-end gap-1">
-                                            <span className={cn("dashboard-status-chip", waitChipVariant)}>
-                                                {isBreached ? <AlertTriangle className="size-3" /> : <span className="size-1.5 rounded-full bg-current" />}
-                                                {timeText}
-                                            </span>
-                                            {unread > 0 && (
-                                                <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-[var(--shadow-1)]">
-                                                    {unread}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-3 rounded-[var(--panel-radius-sm)] border border-border/60 bg-[var(--surface-secondary)] px-3 py-2.5">
-                                        <p
-                                            className={cn(
-                                                "min-h-0 text-sm leading-5 text-muted-foreground line-clamp-1 sm:line-clamp-2",
-                                                claimErr && "font-medium text-[var(--status-danger-fg)]"
-                                            )}
-                                            title={claimErr ? `Claim failed: ${claimErr}` : messagePreview}
-                                        >
-                                            {claimErr ? `Claim failed: ${claimErr}` : messagePreview}
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/60 pt-3 pl-2">
-                                        <div className="min-w-0">
-                                            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                                                <span className="shrink-0 font-medium uppercase tracking-[0.14em]">
-                                                    Assigned
-                                                </span>
-                                                <span className="truncate text-foreground">{assigneeLabel}</span>
-                                            </div>
-                                            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                                                <span className="shrink-0 font-medium uppercase tracking-[0.14em]">
-                                                    Channel
-                                                </span>
-                                                <span className="truncate text-foreground/80">{channelLabel}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex shrink-0 items-center gap-1.5">
-                                            {isAssigned && (
-                                                <div
-                                                    className="flex size-7 items-center justify-center overflow-hidden rounded-full border border-border/70 bg-[var(--surface-secondary)]"
-                                                    title={`Working on it: ${assigneeLabel}`}
-                                                >
-                                                    {e.agentAvatarUrl ? (
-                                                        <img
-                                                            src={e.agentAvatarUrl}
-                                                            alt={assigneeLabel}
-                                                            className="size-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <span className="text-[10px] font-semibold text-foreground">
-                                                            {assigneeLabel.charAt(0).toUpperCase()}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {canClaim && (
-                                                <Button
-                                                    variant="default"
-                                                    size="sm"
-                                                    className="h-8 px-3 text-xs shadow-[var(--shadow-1)]"
-                                                    onClick={(evt) => {
-                                                        evt.preventDefault();
-                                                        evt.stopPropagation();
-                                                        onClaim(e);
-                                                    }}
-                                                >
-                                                    <UserPlus className="size-3.5" />
-                                                    Claim
-                                                </Button>
-                                            )}
-
-                                            {canClaim && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    className="hidden h-8 w-8 sm:inline-flex"
-                                                    onClick={(evt) => {
-                                                        evt.preventDefault();
-                                                        evt.stopPropagation();
-                                                        navigator.clipboard.writeText(e.conversationId);
-                                                        toast.success("Copied ID");
-                                                    }}
-                                                >
-                                                    <Copy className="size-3.5" />
-                                                </Button>
-                                            )}
+                                            <p
+                                                className="mt-1 truncate text-sm font-normal leading-5 text-muted-foreground"
+                                                title={messagePreview}
+                                            >
+                                                {messagePreview}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

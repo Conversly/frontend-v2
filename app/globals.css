@@ -126,6 +126,7 @@
   /* Primary — Ant Design 5 blue ≈ #1677ff */
   --primary:                oklch(0.548 0.217 261);
   --primary-foreground:     oklch(1 0 0);
+  --chatbot-brand-default:  #0e4b75;
 
   /* Secondary surface — sidebar bg ≈ #f5f7fa */
   --secondary:              oklch(0.968 0.006 264);
@@ -271,6 +272,7 @@
 
   --primary:                oklch(0.63 0.20 260);
   --primary-foreground:     oklch(1 0 0);
+  --chatbot-brand-default:  #0e4b75;
 
   --secondary:              oklch(0.27 0.006 286);
   --secondary-foreground:   oklch(0.98 0.005 286);
@@ -498,6 +500,7 @@
   /* Primary */
   --primary:            oklch(0.548 0.217 261);
   --ring:               oklch(0.548 0.217 261);
+  --chatbot-brand-default: #0e4b75;
 
   /* Input background */
   --input-background:   oklch(0.979 0.004 264);
@@ -573,6 +576,7 @@
   --sidebar-border:     oklch(0.35 0.008 286);
   --primary:            oklch(0.63 0.20 260);
   --ring:               oklch(0.63 0.20 260);
+  --chatbot-brand-default: #0e4b75;
   --input-background:   oklch(0.145 0.005 286);
   --muted:              oklch(0.21 0.006 286);
   --surface-secondary:  oklch(0.24 0.006 286);
@@ -1380,7 +1384,6 @@
     padding: 0 24px;
     background: var(--header-background);
     border-bottom: 1px solid var(--border-secondary);
-    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
   }
 
   .customization-tabs__list {
@@ -1474,6 +1477,126 @@
     .customization-tabs__trigger {
       min-height: 56px;
     }
+  }
+
+  .customization-card {
+    background: var(--card);
+    border: 1px solid var(--panel-border-soft, var(--border));
+    border-radius: var(--panel-radius-md, 8px);
+    box-shadow: var(--shadow-1);
+    padding: 20px;
+  }
+
+  .customization-card--compact {
+    padding: 16px;
+  }
+
+  .customization-subtle-surface {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--panel-radius-md, 8px);
+  }
+
+  .customization-code-block {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--panel-radius-md, 8px);
+    padding: 16px;
+  }
+
+  .customization-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--panel-radius-md, 8px);
+    background: var(--surface-secondary);
+  }
+
+  .customization-callout--warning {
+    border-color: var(--status-warning-border);
+    background: var(--status-warning-bg);
+    color: var(--status-warning-fg);
+  }
+
+  .customization-callout--danger {
+    border-color: var(--status-danger-border);
+    background: var(--status-danger-bg);
+    color: var(--status-danger-fg);
+  }
+
+  .customization-callout__icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: inherit;
+  }
+
+  .customization-callout__title {
+    margin: 0 0 2px;
+  }
+
+  .customization-icon-button {
+    background: var(--status-info-bg);
+    border: 1px solid var(--status-info-border);
+    color: var(--status-info-fg);
+    box-shadow: var(--shadow-1);
+  }
+
+  .customization-icon-button:hover {
+    background: color-mix(in oklab, var(--status-info-bg) 82%, var(--primary) 18%);
+    border-color: color-mix(in oklab, var(--status-info-border) 72%, var(--primary) 28%);
+  }
+
+  .customization-media-shell {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--panel-radius-md, 8px);
+    overflow: hidden;
+  }
+
+  .customization-upload-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-input);
+    background: var(--surface-secondary);
+    color: var(--icon-default);
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+
+  .customization-upload-trigger:hover {
+    background: var(--surface-tertiary);
+    border-color: var(--border-default);
+    color: var(--icon-strong);
+  }
+
+  .customization-preview-frame {
+    overflow: hidden;
+    border-radius: var(--panel-radius-md, 8px);
+    box-shadow: var(--shadow-2);
+  }
+
+  .customization-secret-shell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--panel-radius-md, 8px);
+  }
+
+  .customization-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-input);
+    background: var(--input-background);
+    accent-color: var(--primary);
   }
 
   /* ── Divider ────────────────────────────────────────────────────────── */

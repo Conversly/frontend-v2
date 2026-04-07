@@ -60,17 +60,8 @@ export function EscalationHeadbar({
                     <MessageCircle className="size-5 shrink-0" />
                 </div>
                 <div className="min-w-0">
-                    <div className="mb-1 flex items-center gap-2">
-                        <span className={connectionClass}>
-                            {connectionState === ConnectionState.CONNECTED ? <Wifi className="size-3" /> : <WifiOff className="size-3" />}
-                            {connectionLabel}
-                        </span>
-                        <span className="dashboard-status-chip dashboard-status-chip--neutral">
-                            ID: {activeConversationId?.slice(-6) || "----"}
-                        </span>
-                    </div>
                     <div className="flex items-center gap-2 truncate">
-                        <span className="truncate text-sm font-semibold tracking-[-0.01em]" title={headerTitle}>Active Chat: {headerTitle}</span>
+                        <span className="truncate text-sm font-semibold tracking-[-0.01em]" title={headerTitle}>Last Message: {headerTitle}</span>
                     </div>
                 </div>
             </div>

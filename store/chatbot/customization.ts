@@ -11,6 +11,7 @@ import {
   createApiKey,
   DomainInfo
 } from '@/lib/api/deploy';
+import { getDefaultChatbotBrandColor } from '@/lib/chatbot-brand-color';
 
 interface CustomizationState {
   // Saved server payload
@@ -47,6 +48,7 @@ interface CustomizationState {
 function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput {
   const p = payload.partial;
   const s = (p.styles ?? {}) as WidgetStyles;
+  const defaultBrandColor = getDefaultChatbotBrandColor();
   return {
     DisplayName: s.displayName || 'Support Bot',
     InitialMessage: (p.initialMessage as string) || 'Hi! How can I help you today? 👋',
@@ -66,8 +68,8 @@ function payloadToUIConfig(payload: ChatbotCustomizationPayload): UIConfigInput 
       popupSoundEnabled: p.attention?.popupSoundEnabled ?? false,
       soundUrl: p.attention?.soundUrl ?? '',
     },
-    primaryColor: s.primaryColor || '#0e4b75',
-    widgetBubbleColour: s.widgetBubbleColour || '#0e4b75',
+    primaryColor: s.primaryColor || defaultBrandColor,
+    widgetBubbleColour: s.widgetBubbleColour || defaultBrandColor,
     PrimaryIcon: s.PrimaryIcon || '',
     widgeticon: s.widgeticon || 'chat',
     buttonAlignment: s.alignChatButton || 'right',
@@ -221,5 +223,4 @@ export const useCustomizationStore = create<CustomizationState>((set, get) => ({
 
 // Backward-compatible selector name returning the new draftConfig
 export const useCustomizationDraft = () => useCustomizationStore((s) => s.draftConfig);
-
 
