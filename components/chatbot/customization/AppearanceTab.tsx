@@ -38,7 +38,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
       className="space-y-6"
     >
       {/* Theme Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Theme Settings"
           description="Customize the visual appearance of your widget"
@@ -49,13 +49,13 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
           {/* Color Picker */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="font-sans text-sm text-foreground">Theme Color</label>
+              <label className="type-label">Theme Color</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     This color will be used for the widget's header, buttons, and accents
                   </p>
                 </TooltipContent>
@@ -66,26 +66,26 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
                 type="color"
                 value={config.primaryColor}
                 onChange={(e) => updateConfig({ primaryColor: e.target.value, widgetBubbleColour: e.target.value })}
-                className="w-16 h-10 p-1 rounded-lg cursor-pointer bg-muted/50 border-border/50"
+                className="h-10 w-16 cursor-pointer p-1"
               />
               <Input
                 value={config.primaryColor}
                 onChange={(e) => updateConfig({ primaryColor: e.target.value, widgetBubbleColour: e.target.value })}
-                placeholder="#000000"
-                className="flex-1 bg-muted/50 border-border/50 text-foreground"
+                placeholder="Enter a hex color"
+                className="flex-1"
               />
             </div>
           </div>
           {/* Header Text */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="font-sans text-sm text-foreground">Widget Header</label>
+              <label className="type-label">Widget Header</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     The title shown at the top of your chat widget
                   </p>
                 </TooltipContent>
@@ -95,13 +95,12 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               value={config.DisplayName}
               onChange={(e) => updateConfig({ DisplayName: e.target.value })}
               placeholder="Support Bot"
-              className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
         </div>
       </div>
       {/* Icon Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Icon Settings"
           description="Choose or upload a custom icon for your chat widget"
@@ -115,7 +114,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
                 key={icon.id}
                 variant={config.widgeticon === icon.id && !config.PrimaryIcon ? 'default' : 'outline'}
                 onClick={() => updateConfig({ widgeticon: icon.id, PrimaryIcon: '' })}
-                className="p-3 bg-muted/50 border-border/50 hover:bg-muted"
+                size="icon-lg"
               >
                 {icon.component}
               </Button>
@@ -123,7 +122,7 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
             <div className="flex items-center gap-2">
               <label
                 htmlFor="customIconUpload"
-                className="cursor-pointer p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors"
+                className="customization-upload-trigger"
               >
                 <Upload className="w-6 h-6 text-muted-foreground" />
               </label>
@@ -142,14 +141,14 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
 
           <div className="flex items-center gap-2 text-muted-foreground">
             <HelpCircle className="w-4 h-4" />
-            <p className="font-sans text-sm">
+            <p className="type-body-muted">
               Select a preset icon or upload your own. Custom icons will override presets.
             </p>
           </div>
         </div>
       </div>
       {/* Size & Position */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Size & Position"
           description="Configure the dimensions and placement of your widget"
@@ -158,27 +157,25 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
 
         <div className="flex gap-4">
           <div className="flex-1">
-            <label className="font-sans text-sm text-foreground mb-2 block">Widget Width</label>
+            <label className="type-label mb-2 block">Widget Width</label>
             <Input
               value={config.chatWidth}
               onChange={(e) => updateConfig({ chatWidth: e.target.value })}
               placeholder="e.g., 420px"
-              className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
           <div className="flex-1">
-            <label className="font-sans text-sm text-foreground mb-2 block">Widget Height</label>
+            <label className="type-label mb-2 block">Widget Height</label>
             <Input
               value={config.chatHeight}
               onChange={(e) => updateConfig({ chatHeight: e.target.value })}
               placeholder="e.g., 700px"
-              className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
         </div>
       </div>
       {/* Button Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Button Settings"
           description="Customize the chat button appearance"
@@ -187,25 +184,17 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
 
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <label className="font-sans text-sm text-foreground">Button Alignment</label>
+            <label className="type-label">Button Alignment</label>
             <div className="flex items-center gap-4">
               <Button
                 variant={config.buttonAlignment === 'left' ? 'default' : 'outline'}
                 onClick={() => updateConfig({ buttonAlignment: 'left' })}
-                className={config.buttonAlignment === 'left'
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border-border text-foreground hover:bg-muted/50"
-                }
               >
                 Left
               </Button>
               <Button
                 variant={config.buttonAlignment === 'right' ? 'default' : 'outline'}
                 onClick={() => updateConfig({ buttonAlignment: 'right' })}
-                className={config.buttonAlignment === 'right'
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border-border text-foreground hover:bg-muted/50"
-                }
               >
                 Right
               </Button>
@@ -213,13 +202,13 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Show Button Text</label>
+              <label className="type-label">Show Button Text</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">Display text next to the chat button</p>
+                  <p className="type-body">Display text next to the chat button</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -227,17 +216,16 @@ export function AppearanceTab({ config, updateConfig, icons, onIconUpload }: App
               type="checkbox"
               checked={config.showButtonText}
               onChange={(e) => updateConfig({ showButtonText: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
           {config.showButtonText && (
             <div className="space-y-2">
-              <label className="font-sans text-sm text-foreground">Button Text</label>
+              <label className="type-label">Button Text</label>
               <Input
                 value={config.widgetButtonText}
                 onChange={(e) => updateConfig({ widgetButtonText: e.target.value })}
                 placeholder="Chat with us"
-                className="bg-muted/50 border-border/50 text-foreground"
               />
             </div>
           )}

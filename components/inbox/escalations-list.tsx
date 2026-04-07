@@ -1,19 +1,11 @@
 "use client";
 
 import { useAgentInboxStore, type InboxQueue } from "@/store/agent-inbox";
-import { type EscalationItem } from "@/types/activity";
+import { type ConversationItem, type EscalationItem } from "@/types/activity";
 import { cn } from "@/lib/utils";
-import { Search, Check, Copy, MessageSquare, Filter, AlertTriangle } from "lucide-react";
+import { Search, MessageSquare, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { conversationStateIconMap } from "@/components/icons/conversation-icons";
 
 interface Counts {
@@ -54,9 +46,8 @@ function getWaitStats(ts: string) {
     const m = Math.max(0, Math.floor(diff / 1000 / 60));
     const h = m / 60;
 
-    // SLA thresholds
-    const isWarning = m >= 15 && h < 1; // 15 mins to 1 hr
-    const isBreached = h >= 1; // >= 1 hr
+    const isWarning = m >= 15 && h < 1;
+    const isBreached = h >= 1;
 
     let timeText = "";
     if (m < 60) timeText = `${m}m`;
@@ -66,15 +57,25 @@ function getWaitStats(ts: string) {
     return { timeText, isWarning, isBreached };
 }
 
+function getKnownContactIdentityTitle(conversation?: ConversationItem) {
+    if (!conversation?.contact || conversation.contact.role === "visitor") {
+        return null;
+    }
+
+    return (
+        conversation.contact.displayName ||
+        conversation.contact.email ||
+        conversation.contact.phoneNumber ||
+        null
+    );
+}
 
 export function EscalationsList({
     inboxItems,
     isLoading,
-    agentUserId,
     searchQuery,
     setSearchQuery,
     onSelectRow,
-    onClaim,
     counts,
     activeQueue,
     onQueueChange,
@@ -83,9 +84,10 @@ export function EscalationsList({
     hasMore,
 }: EscalationsListProps) {
     const activeConversationId = useAgentInboxStore((s) => s.activeConversationId);
+    const conversationsById = useAgentInboxStore((s) => s.conversationsById);
     const unreadCountByConversationId = useAgentInboxStore((s) => s.unreadCountByConversationId);
     const messagesByConversationId = useAgentInboxStore((s) => s.messagesByConversationId);
-    const lastClaimErrorByConversationId = useAgentInboxStore((s) => s.lastClaimErrorByConversationId);
+    const isDetailsOpen = useAgentInboxStore((s) => s.isDetailsOpen);
 
     const tabs: QueueTab[] = [
         { id: "all", label: "Active", count: counts.all - counts.resolved - counts.closed },
@@ -95,269 +97,223 @@ export function EscalationsList({
         { id: "closed", label: "Closed", count: counts.closed },
     ];
 
-    const isDetailsOpen = useAgentInboxStore((s) => s.isDetailsOpen);
+    const activeTab = tabs.find((tab) => tab.id === activeQueue) ?? tabs[0];
 
     return (
         <div
             className={cn(
-                "flex flex-col bg-card shrink-0 border-r border-border/70 transition-all duration-300",
+                "flex shrink-0 flex-col border-r border-border/70 bg-card transition-[width] duration-300",
                 isDetailsOpen
-                    ? "w-[280px] lg:w-[330px]"
-                    : "w-[clamp(260px,28vw,400px)]"
+                    ? "w-[clamp(252px,25vw,360px)] xl:w-[clamp(272px,26vw,380px)]"
+                    : "w-[clamp(272px,31vw,420px)]"
             )}
         >
-            <div className="border-b border-border/60 p-3 space-y-3 bg-[var(--surface-secondary)]">
-                <div className="dashboard-search-shell">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                        <input
-                            className="w-full bg-transparent pl-7 pr-1 py-1.5 text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
-                            placeholder="Search by ID or Exact Email (Press Enter)..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && onLoadMore) {
-                                    // Let parent handle search
-                                }
-                            }}
-                        />
-                    </div>
-                </div>
+            <div className="border-b border-border/60 bg-card px-3 py-3 sm:px-4">
+                <div className="rounded-[var(--panel-radius-md)] border border-border/70 bg-[var(--surface-secondary)] p-3 shadow-[var(--shadow-1)]">
 
-                {/* Queue Filter Tabs */}
-                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => onQueueChange(tab.id)}
-                            className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all shrink-0 border",
-                                activeQueue === tab.id
-                                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                                    : "bg-card text-muted-foreground border-border/70 hover:border-primary/20 hover:text-foreground hover:bg-[var(--surface-secondary)]"
-                            )}
-                        >
-                            {tab.label}
-                            {tab.count > 0 && (
-                                <span className={cn(
-                                    "text-[10px] px-1.5 py-0.5 rounded-full font-semibold",
-                                    activeQueue === tab.id
-                                        ? "bg-primary-foreground/20 text-primary-foreground"
-                                        : "bg-[var(--surface-secondary)] text-foreground"
-                                )}>
-                                    {tab.count}
-                                </span>
-                            )}
-                        </button>
-                    ))}
+                    <div className="mt-3 dashboard-search-shell bg-card">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                            <input
+                                className="w-full bg-transparent py-1.5 pl-7 pr-1 text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
+                                placeholder="Search by ID or exact email..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="-mx-1 mt-3 overflow-x-auto px-1 pb-1">
+                        <div className="flex min-w-max items-center gap-1.5">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => onQueueChange(tab.id)}
+                                    className={cn(
+                                        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-all",
+                                        activeQueue === tab.id
+                                            ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-1)]"
+                                            : "border-border/70 bg-card text-muted-foreground hover:border-primary/20 hover:bg-background hover:text-foreground"
+                                    )}
+                                >
+                                    {tab.label}
+                                    {tab.count > 0 && (
+                                        <span
+                                            className={cn(
+                                                "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+                                                activeQueue === tab.id
+                                                    ? "bg-primary-foreground/20 text-primary-foreground"
+                                                    : "bg-[var(--surface-secondary)] text-foreground"
+                                            )}
+                                        >
+                                            {tab.count}
+                                        </span>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto bg-[var(--surface-secondary)] p-3">
+            <div className="flex-1 min-h-0 overflow-y-auto bg-[var(--surface-secondary)] px-3 py-3 sm:px-4">
                 {isLoading ? (
-                    Array.from({ length: 10 }).map((_, i) => (
-                        <div key={i} className="mb-3 flex flex-col gap-1.5 rounded-[var(--panel-radius-sm)] border border-border/70 bg-card px-3 py-3">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Skeleton className="size-6 rounded-full" />
-                                    <Skeleton className="h-3.0 w-24" />
-                                </div>
-                                <Skeleton className="h-3.0 w-16 rounded-full" />
-                            </div>
-                            <Skeleton className="h-3.0 w-3/4" />
-                            <div className="flex items-center justify-between mt-0.5">
-                                <Skeleton className="h-3 w-24" />
-                                <Skeleton className="size-4 rounded-full" />
-                            </div>
-                        </div>
-                    ))
-                ) : inboxItems.length > 0 ? (
-                    inboxItems.map((e) => {
-                        const isActive = activeConversationId === e.conversationId;
-                        const isMine = Boolean(agentUserId) && e.agentUserId === agentUserId;
-                        const isAssigned = Boolean(e.agentUserId);
-
-                        const waitingForAgent =
-                            (e.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED";
-
-                        const canClaim = waitingForAgent && !isAssigned;
-                        const unread = Math.max(0, (unreadCountByConversationId[e.conversationId] ?? 0) + (e.unreadCount ?? 0));
-                        const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
-                        // Find the last message that is specifically from the user
-                        const lastUserMsg = [...lastMsgList].reverse().find(m => m.senderType === "USER");
-                        const primaryReason = (e.reason || "").trim();
-                        const lastMsgText = (lastUserMsg?.text || "").trim();
-
-                        const messagePreview =
-                            lastMsgText && (!primaryReason || lastMsgText.toLowerCase() !== primaryReason.toLowerCase())
-                                ? lastMsgText
-                                : e.lastUserMessage?.trim() || primaryReason || "Open chat";
-
-                        const { timeText, isWarning, isBreached } = e.lastMessageAt ? getWaitStats(e.lastMessageAt) : getWaitStats(e.requestedAt);
-
-                        const claimErr = lastClaimErrorByConversationId[e.conversationId];
-                        const contactName = e.contactName || "Visitor";
-
-                        // State color for time pill dot and SLA
-                        let stateColor = "text-yellow-600 bg-yellow-50 border border-yellow-200";
-
-                        if (e.resolvedAt) {
-                            stateColor = "text-gray-500 bg-gray-50 border border-gray-200";
-                        } else if (e.acceptedAt) {
-                            stateColor = "text-green-600 bg-green-50 border border-green-200";
-                        } else if (e.assignedAt) {
-                            stateColor = "text-orange-600 bg-orange-50 border border-orange-200";
-                        } else if (isBreached) {
-                            stateColor = "text-red-600 bg-red-50 border border-red-200 font-bold shadow-sm";
-                        } else if (isWarning) {
-                            stateColor = "text-orange-600 bg-orange-50 border border-orange-200 font-semibold";
-                        }
-
-                        return (
+                    <div className="space-y-3">
+                        {Array.from({ length: 8 }).map((_, i) => (
                             <div
-                                key={e.escalationId}
-                                onClick={() => onSelectRow(e.conversationId)}
-                                className={cn(
-                                    "dashboard-list-row mb-3 cursor-pointer group transition-all flex flex-col relative",
-                                    isActive
-                                        ? "border-primary/45 bg-primary/[0.045] shadow-md"
-                                        : "hover:bg-card"
-                                )}
+                                key={i}
+                                className="rounded-[var(--panel-radius-md)] border border-border/70 bg-card px-3 py-3 shadow-[var(--shadow-1)] sm:px-4"
                             >
-                                {/* Top Row - Identity, Reason Pill & Wait Time */}
-                                <div className="flex items-center justify-between mb-1">
-                                    <div className="flex items-center gap-2 min-w-0 pr-2">
-                                        {(() => {
-                                            const stateConfig = conversationStateIconMap[e.conversationState || ""] || conversationStateIconMap.CLOSED;
-                                            return (
-                                                <div className={stateConfig.wrapperClass} title={e.conversationState || "CLOSED"}>
-                                                    <div
-                                                        className="size-4 bg-current"
-                                                        style={{
-                                                            WebkitMaskImage: `url(/icons/${stateConfig.icon}.svg)`,
-                                                            WebkitMaskSize: 'contain',
-                                                            WebkitMaskRepeat: 'no-repeat',
-                                                            WebkitMaskPosition: 'center',
-                                                            maskImage: `url(/icons/${stateConfig.icon}.svg)`,
-                                                            maskSize: 'contain',
-                                                            maskRepeat: 'no-repeat',
-                                                            maskPosition: 'center'
-                                                        }}
-                                                    />
-                                                </div>
-                                            );
-                                        })()}
-                                        <span className="text-sm font-semibold truncate text-foreground">{contactName}</span>
-                                        {primaryReason && (
-                                            <span className="dashboard-status-chip dashboard-status-chip--info max-w-[200px] truncate" title={primaryReason}>
-                                                {primaryReason}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <div className={cn("dashboard-status-chip", stateColor)}>
-                                            {isBreached && <AlertTriangle className="size-2.5" />}
-                                            {!isBreached && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
-                                            {timeText}
-                                        </div>
-                                        {unread > 0 && (
-                                            <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm">
-                                                {unread}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Last Message */}
-                                <p className="text-sm text-muted-foreground line-clamp-1 pr-12 min-h-0">
-                                    {claimErr ? <span className="text-destructive font-medium">Claim failed: {claimErr}</span> : messagePreview}
-                                </p>
-
-                                {/* Bottom Row - Assigned */}
-                                <div className="flex items-center justify-between mt-1 min-h-[16px]">
-                                    <div className="text-[11px] text-muted-foreground mr-2 truncate">
-                                        Assigned: <span className="font-medium text-foreground ml-1">{e.agentDisplayName || "None"}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                        {isMine && !isActive && <Check className="size-3.5 text-green-600" />}
-                                        {isAssigned && (
-                                            <div
-                                            className="size-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 overflow-hidden"
-                                            title={`Working on it: ${e.agentDisplayName}`}
-                                        >
-                                                {e.agentAvatarUrl ? (
-                                                    <img src={e.agentAvatarUrl} alt={e.agentDisplayName!} className="size-full object-cover" />
-                                                ) : (
-                                                    <span className="text-[10px] font-semibold text-primary">
-                                                        {(e.agentDisplayName || "A").charAt(0).toUpperCase()}
-                                                    </span>
-                                                )}
+                                <div className="flex items-start gap-3">
+                                    <Skeleton className="size-7 rounded-full" />
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <Skeleton className="h-4 w-44" />
+                                            <div className="flex flex-col items-end gap-1.5">
+                                                <Skeleton className="h-3 w-8" />
+                                                <Skeleton className="h-5 w-6 rounded-full" />
                                             </div>
-                                        )}
+                                        </div>
+                                        <Skeleton className="mt-2 h-4 w-full" />
                                     </div>
                                 </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : inboxItems.length > 0 ? (
+                    <div className="space-y-3">
+                        {inboxItems.map((e) => {
+                            const isActive = activeConversationId === e.conversationId;
+                            const unread = Math.max(
+                                0,
+                                (unreadCountByConversationId[e.conversationId] ?? 0) + (e.unreadCount ?? 0)
+                            );
+                            const lastMsgList = messagesByConversationId[e.conversationId] ?? [];
+                            const lastUserMsg = [...lastMsgList].reverse().find((m) => m.senderType === "USER");
+                            const lastMsgText = (lastUserMsg?.text || "").trim();
+                            const messagePreview =
+                                lastMsgText || e.lastUserMessage?.trim() || "Open chat";
+                            const { timeText, isWarning, isBreached } = e.lastMessageAt
+                                ? getWaitStats(e.lastMessageAt)
+                                : getWaitStats(e.requestedAt);
+                            const conversation = conversationsById[e.conversationId];
+                            const knownContactTitle = getKnownContactIdentityTitle(conversation);
+                            const identityLabel =
+                                conversation?.contact?.role === "visitor"
+                                    ? "Visitor"
+                                    : knownContactTitle || e.contactName?.trim() || "Visitor";
+                            const assigneeLabel = e.agentDisplayName || "None";
+                            const titleLine = `${identityLabel} > ${assigneeLabel}`;
+                            const stateConfig =
+                                conversationStateIconMap[e.conversationState || ""] || conversationStateIconMap.CLOSED;
+                            const timeClassName = cn(
+                                "text-[11px] font-medium tabular-nums",
+                                isBreached
+                                    ? "text-[var(--status-danger-fg)]"
+                                    : isWarning
+                                        ? "text-[var(--status-warning-fg)]"
+                                        : "text-muted-foreground"
+                            );
 
-                                {/* Hover actions right-aligned */}
-                                {canClaim && (
+                            return (
+                                <div
+                                    key={e.escalationId}
+                                    onClick={() => onSelectRow(e.conversationId)}
+                                    className={cn(
+                                        "group relative cursor-pointer overflow-hidden rounded-[var(--panel-radius-md)] border bg-card px-3 py-3 shadow-[var(--shadow-1)] transition-all sm:px-4",
+                                        isActive
+                                            ? "border-primary/30 bg-[var(--bg-accent-selected)] shadow-[var(--shadow-2)]"
+                                            : "border-border/70 hover:border-primary/15 hover:bg-card"
+                                    )}
+                                >
                                     <div
                                         className={cn(
-                                            "absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1.5 bg-card/80 backdrop-blur-sm p-1 rounded-lg border border-border shadow-sm transition-opacity z-20 flex",
-                                            "opacity-0 group-hover:opacity-100"
+                                            "absolute inset-y-3 left-1 w-1 rounded-full bg-primary transition-opacity",
+                                            isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
                                         )}
-                                    >
-                                        <Button
-                                            variant="default"
-                                            size="sm"
-                                            className="h-7 text-xs px-2.5"
-                                            onClick={(evt) => {
-                                                evt.preventDefault();
-                                                evt.stopPropagation();
-                                                onClaim(e);
-                                            }}
-                                        >
-                                            Claim
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="icon"
-                                            className="h-7 w-7"
-                                            onClick={(evt) => {
-                                                evt.preventDefault();
-                                                evt.stopPropagation();
-                                                navigator.clipboard.writeText(e.conversationId);
-                                                toast.success("Copied ID");
-                                            }}
-                                        >
-                                            <Copy className="size-3.5" />
-                                        </Button>
+                                    />
+
+                                    <div className="flex items-start gap-3 pl-2">
+                                        <div className={cn("shrink-0", isActive && "translate-y-px")}>
+                                            <div className={stateConfig.wrapperClass} title={e.conversationState || "CLOSED"}>
+                                                <div
+                                                    className="size-4 bg-current"
+                                                    style={{
+                                                        WebkitMaskImage: `url(/icons/${stateConfig.icon}.svg)`,
+                                                        WebkitMaskSize: "contain",
+                                                        WebkitMaskRepeat: "no-repeat",
+                                                        WebkitMaskPosition: "center",
+                                                        maskImage: `url(/icons/${stateConfig.icon}.svg)`,
+                                                        maskSize: "contain",
+                                                        maskRepeat: "no-repeat",
+                                                        maskPosition: "center",
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <p
+                                                    className="min-w-0 flex-1 truncate text-sm font-semibold leading-5 text-foreground sm:text-[15px]"
+                                                    title={titleLine}
+                                                >
+                                                    {identityLabel}
+                                                    <span className="px-1.5 text-muted-foreground">{">"}</span>
+                                                    <span className="text-foreground/80">{assigneeLabel}</span>
+                                                </p>
+
+                                                <div className="flex shrink-0 flex-col items-end gap-1">
+                                                    <span className={timeClassName}>{timeText}</span>
+                                                    {unread > 0 && (
+                                                        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-[var(--shadow-1)]">
+                                                            {unread}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <p
+                                                className="mt-1 truncate text-sm font-normal leading-5 text-muted-foreground"
+                                                title={messagePreview}
+                                            >
+                                                {messagePreview}
+                                            </p>
+                                        </div>
                                     </div>
-                                )}
-                            </div>
-                        );
-                    })
+                                </div>
+                            );
+                        })}
+                    </div>
                 ) : (
-                    // Empty state (no items)
-                    <div className="flex flex-col items-center justify-center rounded-[var(--panel-radius-md)] border border-dashed border-border/70 bg-card p-8 text-center">
-                        <MessageSquare className="size-8 text-muted-foreground/30 mb-3" />
-                        <h3 className="text-sm font-medium text-foreground">No escalations found</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Everything is caught up. Have a coffee! ☕️
-                        </p>
+                    <div className="flex h-full items-center justify-center">
+                        <div className="w-full rounded-[var(--panel-radius-md)] border border-dashed border-border/70 bg-card p-8 text-center shadow-[var(--shadow-1)]">
+                            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full border border-border/70 bg-[var(--surface-secondary)]">
+                                <MessageSquare className="size-5 text-muted-foreground" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-foreground">
+                                No {activeTab.label.toLowerCase()} escalations
+                            </h3>
+                            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                                New conversations will appear here as soon as they need attention.
+                            </p>
+                        </div>
                     </div>
                 )}
 
                 {inboxItems.length > 0 && hasMore && (
-                    <div className="px-1 pb-1 pt-2 flex justify-center">
+                    <div className="pt-3">
                         <Button
                             variant="secondary"
                             size="sm"
                             onClick={onLoadMore}
                             disabled={isFetchingMore}
-                            className="w-full bg-[var(--surface-secondary)] text-muted-foreground hover:bg-[var(--surface-tertiary)]"
+                            className="w-full bg-card text-muted-foreground hover:bg-background"
                         >
                             {isFetchingMore ? (
                                 <span className="flex items-center gap-2">
-                                    <span className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin" /> Loading...
+                                    <span className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                    Loading...
                                 </span>
                             ) : "Load More"}
                         </Button>

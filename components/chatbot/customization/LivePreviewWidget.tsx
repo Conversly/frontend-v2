@@ -84,7 +84,7 @@ export function LivePreviewWidget({
 
             // Appearance
             appearance: config.appearance,
-            position: config.alignChatButton === "left" ? "bottom-left" : "bottom-right",
+            position: (config.buttonAlignment || config.alignChatButton) === "left" ? "bottom-left" : "bottom-right",
 
             // Size & Layout (these affect the internal container in the iframe, if applicable)
             chatWidth: config.chatWidth,
@@ -92,7 +92,7 @@ export function LivePreviewWidget({
 
             // Button Options
             showButtonText: config.showButtonText,
-            buttonText: config.buttonText || config.widgetButtonText, // fallback
+            buttonText: config.widgetButtonText || config.buttonText, // fallback
 
             // Behavior
             autoShowInitial: config.autoShowInitial,
@@ -136,4 +136,3 @@ export function LivePreviewWidget({
         </div>
     );
 }
-

@@ -1,8 +1,7 @@
 "use client";
 
-import { Magnet, Sparkles, Loader2, Plus, Trash2, GripVertical, RefreshCw, User, Mail, Phone, Building2, AlertTriangle } from "lucide-react";
+import { Magnet, Sparkles, Loader2, Plus, Trash2, RefreshCw, User, Mail, Phone, Building2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LeadGenState } from "./BehaviourState";
@@ -17,10 +16,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { LeadForm, LeadFormField } from "@/types/lead-forms";
-import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
-// Predefined system fields configuration
 const PREDEFINED_FIELDS = [
     { key: 'name', label: 'Name', icon: User, type: 'text', required: true },
     { key: 'email', label: 'Email', icon: Mail, type: 'email', required: true },
@@ -39,22 +36,15 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
     const form = state.form;
     const hasNoFieldsSelected = form?.isEnabled && form.fields.length === 0;
 
-    const updateState = (updates: Partial<LeadGenState>) => {
-        onChange({ ...state, ...updates });
-    };
-
+    const updateState = (updates: Partial<LeadGenState>) => onChange({ ...state, ...updates });
     const updateForm = (updates: Partial<LeadForm>) => {
         if (!form) return;
         updateState({ form: { ...form, ...updates } });
     };
 
-    // Check if a predefined field is already added
-    const isPredefinedFieldAdded = (systemFieldKey: string) => {
-        if (!form) return false;
-        return form.fields.some(f => f.systemField === systemFieldKey);
-    };
+    const isPredefinedFieldAdded = (systemFieldKey: string) =>
+        form?.fields.some(f => f.systemField === systemFieldKey) ?? false;
 
-    // Update a custom field (only for non-system fields)
     const updateField = (index: number, updates: Partial<LeadFormField>) => {
         if (!form) return;
         const newFields = [...form.fields];
@@ -62,79 +52,60 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
         updateForm({ fields: newFields });
     };
 
-    // Add a custom field
     const addCustomField = () => {
         if (!form) return;
-        const newField: LeadFormField = {
-            id: `temp_${Date.now()}`,
-            formId: form.id,
-            label: "New Field",
-            type: "text",
-            required: false,
-            position: form.fields.length,
-            systemField: "none",
-        };
-        updateForm({ fields: [...form.fields, newField] });
+        updateForm({
+            fields: [...form.fields, {
+                id: `temp_${Date.now()}`, formId: form.id,
+                label: "New Field", type: "text", required: false,
+                position: form.fields.length, systemField: "none",
+            }],
+        });
     };
 
-    // Remove a field (works for both system and custom fields)
     const removeField = (index: number) => {
         if (!form) return;
-        const newFields = form.fields.filter((_, i) => i !== index);
-        updateForm({ fields: newFields });
+        updateForm({ fields: form.fields.filter((_, i) => i !== index) });
     };
 
-    // Add a predefined system field
-    const addPredefinedField = (systemFieldKey: string) => {
-        if (!form) return;
-        const predefined = PREDEFINED_FIELDS.find(f => f.key === systemFieldKey);
-        if (!predefined) return;
-
-        // Add the field (using LeadFormField type)
-        const newField = {
-            id: `temp_${Date.now()}_${systemFieldKey}`,
-            formId: form.id,
-            label: predefined.label,
-            type: predefined.type as 'text' | 'email' | 'phone' | 'textarea' | 'select',
-            required: predefined.required,
-            position: form.fields.length,
-            systemField: systemFieldKey as 'name' | 'email' | 'phone' | 'company',
-        };
-        updateForm({ fields: [...form.fields, newField as any] });
-    };
-
-    // Remove a predefined system field
-    const removePredefinedField = (systemFieldKey: string) => {
-        if (!form) return;
-        const newFields = form.fields.filter(f => f.systemField !== systemFieldKey);
-        updateForm({ fields: newFields });
-    };
-
-    // Toggle a predefined field
     const togglePredefinedField = (systemFieldKey: string, checked: boolean) => {
+        if (!form) return;
         if (checked) {
-            addPredefinedField(systemFieldKey);
+            const predefined = PREDEFINED_FIELDS.find(f => f.key === systemFieldKey);
+            if (!predefined) return;
+            updateForm({
+                fields: [...form.fields, {
+                    id: `temp_${Date.now()}_${systemFieldKey}`, formId: form.id,
+                    label: predefined.label, type: predefined.type as any,
+                    required: predefined.required, position: form.fields.length,
+                    systemField: systemFieldKey as any,
+                }],
+            });
         } else {
-            removePredefinedField(systemFieldKey);
+            updateForm({ fields: form.fields.filter(f => f.systemField !== systemFieldKey) });
         }
     };
 
     if (!form) {
-        return (
-            <div className="text-sm text-muted-foreground">Loading form configuration...</div>
-        );
+        return <div className="px-5 py-8 text-sm text-muted-foreground">Loading form configuration...</div>;
     }
 
     return (
-        <div className="p-6">
+        <div className="divide-y divide-[var(--border-secondary)]">
+
+            {/* ── SECTION HEADER ── */}
+            <div className="px-5 py-2.5 bg-muted/30">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Lead Generation</p>
+            </div>
+
             {/* Toggle Row */}
-            <div className="flex items-center justify-between mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+            <div className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Magnet className="h-4 w-4" />
+                    <div className="flex size-8 items-center justify-center rounded-[var(--radius-input)] bg-primary/10">
+                        <Magnet className="size-4 text-primary" />
                     </div>
                     <div>
-                        <p className="text-sm font-semibold text-foreground">Enable Lead Generation</p>
+                        <p className="text-sm font-medium text-foreground">Enable Lead Generation</p>
                         <p className="text-xs text-muted-foreground">Capture leads during conversations</p>
                     </div>
                 </div>
@@ -145,56 +116,42 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
             </div>
 
             {form.isEnabled && (
-                <div className="space-y-4">
+                <>
+                    {/* ── SECTION HEADER: Detection ── */}
+                    <div className="px-5 py-2.5 bg-muted/30">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Detection Strategy</p>
+                    </div>
 
-                    {/* 1. Lead Detection Strategy */}
-                    <div className="space-y-4">
-
-                        {/* High Intent Signals */}
-                        <div className="grid gap-2">
-                            <Label className="text-sm font-semibold">1. High-Intent Signals</Label>
-                            <p className="text-sm text-muted-foreground">Trigger lead form when visitor:</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* High-Intent Signals */}
+                    <div className="px-5 py-4">
+                        <div className="form-field">
+                            <label className="form-field-label">High-Intent Signals</label>
+                            <p className="text-xs text-muted-foreground mb-3">Trigger lead form when visitor:</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-6">
                                 {[
                                     { key: "pricing", label: "Asks about pricing or cost" },
                                     { key: "demo", label: "Asks for a demo or trial" },
                                     { key: "human", label: "Wants to talk to a human" },
                                     { key: "started", label: "Asks how to get started" },
-                                    { key: "plans", label: "Asks about plans/packages" },
-                                    { key: "intent", label: "Shows purchase intent ('I want this')" },
+                                    { key: "plans", label: "Asks about plans / packages" },
+                                    { key: "intent", label: "Shows purchase intent" },
                                     { key: "repeated", label: "Repeatedly asks questions" },
+                                    { key: "custom", label: "Custom signal..." },
                                 ].map((signal) => (
-                                    <div key={signal.key} className="flex items-center space-x-2">
+                                    <label key={signal.key} className="flex items-center gap-2.5 cursor-pointer">
                                         <Checkbox
                                             id={`signal-${signal.key}`}
                                             checked={(state.leadConfig.signals as any)[signal.key]}
                                             onCheckedChange={(c) => updateState({
-                                                leadConfig: {
-                                                    ...state.leadConfig,
-                                                    signals: { ...state.leadConfig.signals, [signal.key]: c },
-                                                },
+                                                leadConfig: { ...state.leadConfig, signals: { ...state.leadConfig.signals, [signal.key]: c } },
                                             })}
                                         />
-                                        <Label htmlFor={`signal-${signal.key}`} className="font-normal text-sm text-foreground">{signal.label}</Label>
-                                    </div>
+                                        <span className="text-sm text-foreground">{signal.label}</span>
+                                    </label>
                                 ))}
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="signal-custom"
-                                        checked={state.leadConfig.signals.custom}
-                                        onCheckedChange={(c) => updateState({
-                                            leadConfig: {
-                                                ...state.leadConfig,
-                                                signals: { ...state.leadConfig.signals, custom: c as boolean },
-                                            },
-                                        })}
-                                    />
-                                    <Label htmlFor="signal-custom" className="font-normal text-sm text-foreground">Custom...</Label>
-                                </div>
                             </div>
-
                             {state.leadConfig.signals.custom && (
-                                <div className="ml-1 mt-2">
+                                <div className="mt-3">
                                     <Input
                                         value={state.leadConfig.customSignal || ""}
                                         onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, customSignal: e.target.value } })}
@@ -203,352 +160,305 @@ export function LeadGenCard({ state, onChange, onGenerate, isGenerating }: LeadG
                                 </div>
                             )}
                         </div>
+                    </div>
 
-                        <Separator />
-
-                        {/* Aggressiveness */}
-                        <div className="grid gap-2">
-                            <Label className="text-sm font-semibold">2. Aggressiveness</Label>
-                            <div className="grid grid-cols-3 gap-3">
+                    {/* Aggressiveness */}
+                    <div className="px-5 py-4">
+                        <div className="form-field">
+                            <label className="form-field-label">Aggressiveness</label>
+                            <div className="grid grid-cols-3 gap-3 mt-1.5">
                                 {["Conservative", "Balanced", "Aggressive"].map((mode) => (
-                                    <div
+                                    <button
                                         key={mode}
-                                        className={`flex flex-col items-center justify-center p-3 border rounded-md cursor-pointer transition-all ${state.leadConfig.sensitivity === mode
-                                            ? "bg-primary/5 border-primary ring-1 ring-primary"
-                                            : "border-border hover:bg-muted/50"
-                                            }`}
+                                        type="button"
                                         onClick={() => updateState({ leadConfig: { ...state.leadConfig, sensitivity: mode as any } })}
+                                        className={cn(
+                                            "flex flex-col items-center justify-center py-3 px-2 border rounded-[var(--radius-input)] cursor-pointer transition-all text-center",
+                                            state.leadConfig.sensitivity === mode
+                                                ? "bg-[var(--bg-accent-selected)] border-primary text-primary"
+                                                : "border-border hover:bg-muted/40 text-foreground"
+                                        )}
                                     >
-                                        <span className="font-medium text-sm">{mode}</span>
-                                        <span className="text-[10px] text-muted-foreground mt-1">
+                                        <span className="text-sm font-medium">{mode}</span>
+                                        <span className="text-[10px] text-muted-foreground mt-0.5">
                                             {mode === "Conservative" ? "High confidence only" : mode === "Aggressive" ? "Capture more leads" : "Recommended"}
                                         </span>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
                         </div>
+                    </div>
 
-                        <Separator />
-
-                        {/* Keywords */}
-                        <div className="grid gap-2">
-                            <Label className="text-sm font-semibold">3. Mandatory Keywords (Optional)</Label>
+                    {/* Keywords */}
+                    <div className="px-5 py-4">
+                        <div className="form-field">
+                            <label className="form-field-label">Mandatory Keywords <span className="font-normal text-muted-foreground">(optional)</span></label>
                             <Input
                                 value={state.leadConfig.keywords || ""}
                                 onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, keywords: e.target.value } })}
                                 placeholder="enterprise, quote, proposal, hire us"
                             />
-                            <p className="text-[10px] text-muted-foreground">Always trigger if message contains these words.</p>
-                        </div>
-
-                        <Separator />
-
-                        {/* Target Pages */}
-                        <div className="grid gap-2">
-                            <Label className="text-sm font-semibold">4. Target Pages</Label>
-                            <p className="text-sm text-muted-foreground">Which pages should trigger lead capture aggressively?</p>
-                            <div className="grid gap-3">
-                                <Textarea
-                                    value={state.leadConfig.pageTriggers || ""}
-                                    onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, pageTriggers: e.target.value } })}
-                                    placeholder="/pricing, /contact, /enterprise/*"
-                                    className="min-h-[80px] text-sm"
-                                />
-                                <div className="flex flex-wrap gap-2">
-                                    <span className="text-xs text-muted-foreground mr-2 self-center">Quick Add:</span>
-                                    {[
-                                        { path: "/pricing", label: "Pricing" },
-                                        { path: "/contact", label: "Contact" },
-                                        { path: "/features", label: "Features" },
-                                    ].map((item) => {
-                                        const isIncluded = (state.leadConfig.pageTriggers || "").includes(item.path);
-                                        return (
-                                            <div
-                                                key={item.path}
-                                                className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs cursor-pointer transition-colors ${isIncluded
-                                                    ? "bg-primary/10 border-primary text-primary"
-                                                    : "bg-card border-border hover:bg-muted/50"
-                                                    }`}
-                                                onClick={() => {
-                                                    const current = state.leadConfig.pageTriggers || "";
-                                                    let newValue = current;
-                                                    if (isIncluded) {
-                                                        newValue = current.replace(new RegExp(`${item.path},? ?`), "").trim();
-                                                        if (newValue.endsWith(",")) newValue = newValue.slice(0, -1);
-                                                    } else {
-                                                        newValue = current ? `${current}, ${item.path}` : item.path;
-                                                    }
-                                                    updateState({ leadConfig: { ...state.leadConfig, pageTriggers: newValue } });
-                                                }}
-                                            >
-                                                {isIncluded && <span className="text-[10px]">✔</span>} {item.label}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                            <p className="text-[11px] text-muted-foreground mt-1">Always trigger if message contains these words (comma-separated).</p>
                         </div>
                     </div>
 
-                    <Separator />
-
-                    {/* 2. Form Appearance */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <Magnet className="h-4 w-4 text-primary" />
-                            <h3 className="text-base font-semibold text-foreground">Form Appearance</h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label className="text-sm font-semibold">Form Title</Label>
-                                <Input
-                                    value={form.title}
-                                    onChange={(e) => updateForm({ title: e.target.value })}
-                                    placeholder="Contact Us"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-sm font-semibold">Subtitle</Label>
-                                <Input
-                                    value={form.subtitle || ""}
-                                    onChange={(e) => updateForm({ subtitle: e.target.value })}
-                                    placeholder="We'll get back to you..."
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-sm font-semibold">CTA Button Text</Label>
-                                <Input
-                                    value={form.ctaText || ""}
-                                    onChange={(e) => updateForm({ ctaText: e.target.value })}
-                                    placeholder="Send Message"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-sm font-semibold">Success Message</Label>
-                                <Input
-                                    value={form.successMessage || ""}
-                                    onChange={(e) => updateForm({ successMessage: e.target.value })}
-                                    placeholder="Thanks! We received your message."
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    {/* 3. Fields Editor */}
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <GripVertical className="h-4 w-4 text-primary" />
-                                <h3 className="text-base font-semibold text-foreground">Form Fields</h3>
-                            </div>
-                            <Button variant="outline" size="sm" onClick={addCustomField}>
-                                <Plus className="h-3 w-3 mr-1" /> Add Custom Field
-                            </Button>
-                        </div>
-
-                        {/* System Fields - Checkbox Selection (Read-only) */}
-                        <div className="p-4 bg-muted/30 border border-border rounded-lg space-y-3">
-                            <p className="text-sm font-medium text-foreground">Predefined System Fields</p>
-                            <p className="text-xs text-muted-foreground">Select which system fields to include (cannot be modified)</p>
-                            <div className="flex flex-wrap gap-3">
-                                {PREDEFINED_FIELDS.map((field) => {
-                                    const Icon = field.icon;
-                                    const isAdded = isPredefinedFieldAdded(field.key);
+                    {/* Target Pages */}
+                    <div className="px-5 py-4">
+                        <div className="form-field">
+                            <label className="form-field-label">Target Pages</label>
+                            <p className="text-xs text-muted-foreground mb-1.5">Pages where lead capture should be triggered aggressively.</p>
+                            <Textarea
+                                value={state.leadConfig.pageTriggers || ""}
+                                onChange={(e) => updateState({ leadConfig: { ...state.leadConfig, pageTriggers: e.target.value } })}
+                                placeholder="/pricing, /contact, /enterprise/*"
+                                className="min-h-[72px]"
+                            />
+                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                <span className="text-[11px] text-muted-foreground">Quick add:</span>
+                                {[
+                                    { path: "/pricing", label: "Pricing" },
+                                    { path: "/contact", label: "Contact" },
+                                    { path: "/features", label: "Features" },
+                                ].map((item) => {
+                                    const isIncluded = (state.leadConfig.pageTriggers || "").includes(item.path);
                                     return (
-                                        <div
-                                            key={field.key}
-                                            className={`flex items-center gap-2 px-3 py-2 rounded-md border cursor-pointer transition-all ${isAdded
-                                                ? 'bg-primary/10 border-primary'
-                                                : 'bg-card border-border hover:bg-muted/50'
-                                                }`}
-                                            onClick={() => togglePredefinedField(field.key, !isAdded)}
-                                        >
-                                            <Checkbox
-                                                checked={isAdded}
-                                                onCheckedChange={(c) => togglePredefinedField(field.key, c as boolean)}
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                            <Icon className={`h-4 w-4 ${isAdded ? 'text-primary' : 'text-muted-foreground'}`} />
-                                            <span className={`text-sm ${isAdded ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                                                {field.label}
-                                            </span>
-                                            {field.required && (
-                                                <span className="text-[10px] text-primary">(required)</span>
+                                        <button
+                                            key={item.path}
+                                            type="button"
+                                            onClick={() => {
+                                                const current = state.leadConfig.pageTriggers || "";
+                                                let newValue = current;
+                                                if (isIncluded) {
+                                                    newValue = current.replace(new RegExp(`${item.path},? ?`), "").trim();
+                                                    if (newValue.endsWith(",")) newValue = newValue.slice(0, -1);
+                                                } else {
+                                                    newValue = current ? `${current}, ${item.path}` : item.path;
+                                                }
+                                                updateState({ leadConfig: { ...state.leadConfig, pageTriggers: newValue } });
+                                            }}
+                                            className={cn(
+                                                "px-2.5 py-0.5 rounded-full border text-[11px] cursor-pointer transition-colors",
+                                                isIncluded
+                                                    ? "bg-[var(--bg-accent-selected)] border-primary text-primary"
+                                                    : "bg-card border-border text-foreground hover:bg-muted/40"
                                             )}
-                                        </div>
+                                        >
+                                            {item.label}
+                                        </button>
                                     );
                                 })}
                             </div>
                         </div>
-
-                        {hasNoFieldsSelected && (
-                            <Alert className="border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)] [&>svg]:text-[var(--status-warning-fg)]">
-                                <AlertTriangle className="h-4 w-4" />
-                                <AlertTitle>No fields selected</AlertTitle>
-                                <AlertDescription className="text-[var(--status-warning-fg)]">
-                                    Lead generation is enabled, but the form is empty. Add at least one predefined or custom field before saving.
-                                </AlertDescription>
-                            </Alert>
-                        )}
-
-                        {/* Selected Fields List - System fields (read-only), Custom fields (editable) */}
-                        {form.fields.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="text-sm font-medium text-muted-foreground">Field Configuration</p>
-                                <div className="space-y-3">
-                                    {form.fields.map((field, index) => {
-                                        const isSystemField = field.systemField && field.systemField !== 'none';
-                                        const predefinedConfig = isSystemField
-                                            ? PREDEFINED_FIELDS.find(p => p.key === field.systemField)
-                                            : null;
-
-                                        // System fields are displayed as read-only cards
-                                        if (isSystemField) {
-                                            const Icon = predefinedConfig?.icon || User;
-                                            return (
-                                                <div key={field.id || index} className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-md">
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
-                                                        <Icon className="h-4 w-4 text-primary" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-sm font-medium">{field.label}</span>
-                                                            <span className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">System</span>
-                                                            {field.required && (
-                                                                <span className="text-[10px] text-muted-foreground">(required)</span>
-                                                            )}
-                                                        </div>
-                                                        <p className="text-xs text-muted-foreground">Type: {field.type}</p>
-                                                    </div>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => removeField(index)}
-                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            );
-                                        }
-
-                                        // Custom fields are fully editable
-                                        return (
-                                            <div key={field.id || index} className="flex items-start gap-3 p-3 bg-muted/40 border border-border rounded-md group">
-                                                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
-                                                    <div className="md:col-span-4 space-y-1">
-                                                        <Label className="text-xs text-muted-foreground">Label</Label>
-                                                        <Input
-                                                            value={field.label}
-                                                            onChange={(e) => updateField(index, { label: e.target.value })}
-                                                            className="h-8"
-                                                            placeholder="Field label"
-                                                        />
-                                                    </div>
-                                                    <div className="md:col-span-3 space-y-1">
-                                                        <Label className="text-xs text-muted-foreground">Type</Label>
-                                                        <Select
-                                                            value={field.type}
-                                                            onValueChange={(value: any) => updateField(index, { type: value })}
-                                                        >
-                                                            <SelectTrigger className="h-8">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="text">Text</SelectItem>
-                                                                <SelectItem value="email">Email</SelectItem>
-                                                                <SelectItem value="phone">Phone</SelectItem>
-                                                                <SelectItem value="textarea">Text Area</SelectItem>
-                                                                <SelectItem value="select">Select (Dropdown)</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                    <div className="md:col-span-3 space-y-1">
-                                                        <Label className="text-xs text-muted-foreground">Placeholder</Label>
-                                                        <Input
-                                                            value={field.placeholder || ""}
-                                                            onChange={(e) => updateField(index, { placeholder: e.target.value })}
-                                                            className="h-8"
-                                                            placeholder="Placeholder..."
-                                                        />
-                                                    </div>
-                                                    <div className="md:col-span-2 space-y-1 flex flex-col justify-end pb-1">
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox
-                                                                id={`req-${index}`}
-                                                                checked={field.required}
-                                                                onCheckedChange={(c) => updateField(index, { required: c as boolean })}
-                                                            />
-                                                            <Label htmlFor={`req-${index}`} className="text-xs font-normal">Required</Label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => removeField(index)}
-                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
-                        {form.fields.length === 0 && (
-                            <div className="text-center py-8 border-2 border-dashed border-border rounded-lg text-muted-foreground text-sm">
-                                No fields added yet. Select predefined system fields above or click &ldquo;Add Custom Field&rdquo; to create custom ones.
-                            </div>
-                        )}
                     </div>
-                </div>
+
+                    {/* ── SECTION HEADER: Form Appearance ── */}
+                    <div className="px-5 py-2.5 bg-muted/30">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Form Appearance</p>
+                    </div>
+
+                    <div className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div className="form-field">
+                            <label className="form-field-label">Form Title</label>
+                            <Input value={form.title} onChange={(e) => updateForm({ title: e.target.value })} placeholder="Contact Us" />
+                        </div>
+                        <div className="form-field">
+                            <label className="form-field-label">Subtitle</label>
+                            <Input value={form.subtitle || ""} onChange={(e) => updateForm({ subtitle: e.target.value })} placeholder="We'll get back to you..." />
+                        </div>
+                        <div className="form-field">
+                            <label className="form-field-label">CTA Button Text</label>
+                            <Input value={form.ctaText || ""} onChange={(e) => updateForm({ ctaText: e.target.value })} placeholder="Send Message" />
+                        </div>
+                        <div className="form-field">
+                            <label className="form-field-label">Success Message</label>
+                            <Input value={form.successMessage || ""} onChange={(e) => updateForm({ successMessage: e.target.value })} placeholder="Thanks! We received your message." />
+                        </div>
+                    </div>
+
+                    {/* ── SECTION HEADER: Form Fields ── */}
+                    <div className="px-5 py-2.5 bg-muted/30 flex items-center justify-between">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Form Fields</p>
+                        <Button variant="outline" size="sm" onClick={addCustomField}>
+                            <Plus className="size-3.5" /> Add Custom Field
+                        </Button>
+                    </div>
+
+                    {/* Predefined System Fields */}
+                    <div className="px-5 py-4">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Predefined Fields</p>
+                        <p className="text-[11px] text-muted-foreground mb-3">Click to include standard fields in your form.</p>
+                        <div className="flex flex-wrap gap-2">
+                            {PREDEFINED_FIELDS.map((field) => {
+                                const Icon = field.icon;
+                                const isAdded = isPredefinedFieldAdded(field.key);
+                                return (
+                                    <button
+                                        key={field.key}
+                                        type="button"
+                                        onClick={() => togglePredefinedField(field.key, !isAdded)}
+                                        className={cn(
+                                            "flex items-center gap-2 px-3 py-2 rounded-[var(--radius-input)] border text-sm cursor-pointer transition-all",
+                                            isAdded
+                                                ? "bg-[var(--bg-accent-selected)] border-primary text-primary"
+                                                : "bg-card border-border text-foreground hover:bg-muted/40"
+                                        )}
+                                    >
+                                        <Icon className={cn("size-3.5", isAdded ? "text-primary" : "text-muted-foreground")} />
+                                        <span className={isAdded ? "font-medium" : ""}>{field.label}</span>
+                                        {field.required && <span className="text-[10px] text-muted-foreground ml-0.5">*</span>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Warning: no fields */}
+                    {hasNoFieldsSelected && (
+                        <div className="mx-5 mb-4 flex items-start gap-2 px-3 py-2.5 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-[var(--radius-input)]">
+                            <AlertTriangle className="size-3.5 text-[var(--status-warning-fg)] shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-xs font-semibold text-[var(--status-warning-fg)]">No fields selected</p>
+                                <p className="text-[11px] text-[var(--status-warning-fg)] mt-0.5">Lead generation is enabled, but the form has no fields. Add at least one before saving.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Field Configuration List */}
+                    {form.fields.length > 0 && (
+                        <div className="px-5 pb-4 space-y-2">
+                            <p className="text-xs font-medium text-muted-foreground mb-2">Field Configuration</p>
+                            {form.fields.map((field, index) => {
+                                const isSystemField = field.systemField && field.systemField !== 'none';
+                                const predefinedConfig = isSystemField
+                                    ? PREDEFINED_FIELDS.find(p => p.key === field.systemField)
+                                    : null;
+
+                                if (isSystemField) {
+                                    const Icon = predefinedConfig?.icon || User;
+                                    return (
+                                        <div key={field.id || index} className="flex items-center gap-3 px-3 py-2.5 bg-[var(--bg-accent-selected)] border border-primary/20 rounded-[var(--radius-input)]">
+                                            <div className="flex size-7 items-center justify-center rounded bg-primary/10">
+                                                <Icon className="size-3.5 text-primary" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-sm font-medium text-foreground">{field.label}</span>
+                                                    <span className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-full leading-none">System</span>
+                                                    {field.required && <span className="text-[10px] text-muted-foreground">(required)</span>}
+                                                </div>
+                                                <p className="text-[11px] text-muted-foreground">Type: {field.type}</p>
+                                            </div>
+                                            <Button variant="ghost" size="icon-sm" onClick={() => removeField(index)}
+                                                className="text-muted-foreground hover:text-destructive">
+                                                <Trash2 className="size-3.5" />
+                                            </Button>
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <div key={field.id || index} className="flex items-start gap-3 px-3 py-3 bg-muted/30 border border-border rounded-[var(--radius-input)] group">
+                                        <div className="grid grid-cols-12 gap-3 flex-1">
+                                            <div className="col-span-4 form-field">
+                                                <label className="form-field-label">Label</label>
+                                                <Input
+                                                    value={field.label}
+                                                    onChange={(e) => updateField(index, { label: e.target.value })}
+                                                    placeholder="Field label"
+                                                />
+                                            </div>
+                                            <div className="col-span-3 form-field">
+                                                <label className="form-field-label">Type</label>
+                                                <Select value={field.type} onValueChange={(v: any) => updateField(index, { type: v })}>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="text">Text</SelectItem>
+                                                        <SelectItem value="email">Email</SelectItem>
+                                                        <SelectItem value="phone">Phone</SelectItem>
+                                                        <SelectItem value="textarea">Text Area</SelectItem>
+                                                        <SelectItem value="select">Dropdown</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="col-span-3 form-field">
+                                                <label className="form-field-label">Placeholder</label>
+                                                <Input
+                                                    value={field.placeholder || ""}
+                                                    onChange={(e) => updateField(index, { placeholder: e.target.value })}
+                                                    placeholder="Placeholder..."
+                                                />
+                                            </div>
+                                            <div className="col-span-2 form-field flex flex-col justify-end pb-0.5">
+                                                <label className="flex items-center gap-1.5 cursor-pointer">
+                                                    <Checkbox
+                                                        id={`req-${index}`}
+                                                        checked={field.required}
+                                                        onCheckedChange={(c) => updateField(index, { required: c as boolean })}
+                                                    />
+                                                    <span className="text-xs text-muted-foreground">Required</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="ghost" size="icon-sm"
+                                            onClick={() => removeField(index)}
+                                            className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity mt-5"
+                                        >
+                                            <Trash2 className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {form.fields.length === 0 && (
+                        <div className="mx-5 mb-4 py-8 border border-dashed border-border rounded-[var(--radius-input)] flex flex-col items-center justify-center gap-1 text-center">
+                            <p className="text-sm font-medium text-muted-foreground">No fields added</p>
+                            <p className="text-xs text-muted-foreground">Select predefined fields above or add a custom one.</p>
+                        </div>
+                    )}
+                </>
             )}
 
-            {/* 4. Magic Prompt — same style as HandoffCard */}
-            <div className="mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-primary" />
-                        <Label className="text-primary font-medium">Magic Prompt</Label>
-                    </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                            if (!form.isEnabled) {
-                                toast.error("Please enable Lead Generation first to generate a prompt.");
-                                return;
-                            }
-                            onGenerate();
-                        }}
-                        disabled={isGenerating}
-                        className="h-8 border-primary/20 text-primary hover:bg-primary/10 hover:text-primary"
-                    >
-                        {isGenerating ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <RefreshCw className="mr-2 h-3 w-3" />}
-                        Generate from Settings
-                    </Button>
+            {/* ── SECTION HEADER: Prompt ── */}
+            <div className="px-5 py-2.5 bg-muted/30 flex items-center justify-between">
+                <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Lead Gen System Prompt</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Used only during the lead generation flow.</p>
                 </div>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                        if (!form.isEnabled) {
+                            toast.error("Enable Lead Generation first.");
+                            return;
+                        }
+                        onGenerate();
+                    }}
+                    disabled={isGenerating}
+                >
+                    {isGenerating ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+                    {isGenerating ? "Generating..." : "Re-generate"}
+                </Button>
+            </div>
 
-                <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Generated System Prompt</Label>
-                    <Textarea
-                        value={state.systemPrompt}
-                        onChange={(e) => updateState({ systemPrompt: e.target.value })}
-                        className="min-h-[120px] font-mono text-base bg-card border-border"
-                        placeholder="Click generate to create a prompt from your settings..."
-                    />
-                    <p className="text-[10px] text-muted-foreground italic">
-                        This prompt is used ONLY during the lead generation flow.
-                    </p>
+            <div className="px-5 py-4 space-y-2">
+                <Textarea
+                    value={state.systemPrompt}
+                    onChange={(e) => updateState({ systemPrompt: e.target.value })}
+                    className="min-h-[140px] font-mono text-xs bg-muted/20"
+                    placeholder="Click Re-generate to create a prompt from your lead gen settings..."
+                />
+                <div className="flex items-start gap-1.5 text-[11px] text-[var(--status-info-fg)] bg-[var(--status-info-bg)] border border-[var(--status-info-border)] px-3 py-2 rounded-[var(--radius-input)]">
+                    <Sparkles className="size-3 mt-0.5 shrink-0" />
+                    <span>This prompt is auto-generated from your lead detection strategy and form settings.</span>
                 </div>
             </div>
-        </div>
-    )
-}
 
+        </div>
+    );
+}

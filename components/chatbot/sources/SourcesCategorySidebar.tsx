@@ -128,8 +128,8 @@ export function SourcesCategorySidebar({
   };
 
   return (
-    <div className="flex h-full w-[252px] flex-col overflow-hidden border-r border-border/70 bg-card">
-      <div className="border-b border-border/60 px-4 py-4">
+    <div className="flex h-full w-[272px] flex-col overflow-hidden border-r border-sidebar-border/80 bg-sidebar">
+      <div className="border-b border-sidebar-border/70 px-4 py-4">
         <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Knowledge Base</p>
         <p className="mt-1 text-sm font-semibold text-foreground">Sources & training queue</p>
       </div>
@@ -148,25 +148,27 @@ export function SourcesCategorySidebar({
                 key={category.id}
                 onClick={() => onCategoryChange(category.id)}
                 className={cn(
-                  'w-full flex items-center gap-3 px-3 py-3 rounded-[var(--panel-radius-sm)] text-sm transition-all border',
+                  'group flex w-full items-center gap-3 rounded-2xl border px-3 py-3 text-sm transition-all',
                   isSelected
-                    ? 'border-primary/20 bg-primary/10 text-primary shadow-sm'
-                    : 'border-transparent text-muted-foreground hover:border-border/70 hover:bg-[var(--surface-secondary)] hover:text-foreground'
+                    ? 'border-sidebar-border/70 bg-sidebar-accent/60 text-sidebar-primary shadow-xs'
+                    : 'border-transparent text-muted-foreground hover:border-sidebar-border/60 hover:bg-sidebar-accent/60 hover:text-foreground'
                 )}
               >
                 <div className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border",
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-sidebar-border/70 bg-background shadow-xs transition-colors",
                   isSelected
-                    ? "border-primary/20 bg-primary/10"
-                    : "border-border/60 bg-card"
+                    ? "text-sidebar-primary"
+                    : "text-muted-foreground group-hover:text-foreground"
                 )}>
                   <Icon className="w-4 h-4 flex-shrink-0" />
                 </div>
-                <span className="flex-1 text-left">{category.label}</span>
+                <span className="min-w-0 flex-1 text-left font-medium">{category.label}</span>
                 {count > 0 && (
                   <span className={cn(
-                    'text-2xs px-2 py-0.5 rounded-full font-medium',
-                    isSelected ? 'bg-primary/15 text-primary' : 'bg-[var(--surface-secondary)] text-muted-foreground'
+                    'rounded-full border px-2 py-0.5 text-2xs font-medium',
+                    isSelected
+                      ? 'border-sidebar-border/70 bg-background text-sidebar-primary'
+                      : 'border-sidebar-border/60 bg-background text-muted-foreground'
                   )}>
                     {count}
                   </span>
@@ -177,29 +179,29 @@ export function SourcesCategorySidebar({
         </div>
 
         {/* Coming Soon Integrations */}
-        <div className="mt-4 pt-4 border-t border-border/60">
+        <div className="mt-4 border-t border-sidebar-border/60 pt-4">
           <p className="px-1 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground/70">Integrations</p>
           <div className="space-y-1.5">
             {comingSoonIntegrations.map((integration) => (
               <button
                 key={integration.id}
                 onClick={() => handleIntegrationClick(integration.label)}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-[var(--panel-radius-sm)] text-sm transition-all border border-transparent text-muted-foreground hover:border-border/70 hover:bg-[var(--surface-secondary)] hover:text-foreground"
+                className="group flex w-full items-center gap-3 rounded-2xl border border-transparent px-3 py-3 text-sm text-muted-foreground transition-all hover:border-sidebar-border/60 hover:bg-sidebar-accent/60 hover:text-foreground"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-card overflow-hidden">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                   <Image src={integration.logo} alt={integration.label} width={20} height={20} className="object-contain" />
                 </div>
-                <span className="flex-1 text-left">{integration.label}</span>
+                <span className="min-w-0 flex-1 text-left font-medium">{integration.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Request Integration */}
-        <div className="p-2 pt-4 border-t border-border mt-auto">
+        <div className="mt-auto border-t border-sidebar-border/60 p-2 pt-4">
           <Button
             variant="outline"
-            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            className="w-full justify-start border-sidebar-border/70 bg-background text-muted-foreground shadow-xs hover:bg-sidebar-accent/60 hover:text-foreground"
             onClick={() => setIsRequestModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -209,7 +211,7 @@ export function SourcesCategorySidebar({
       </div>
 
       {/* Pending Sources Panel (at bottom of sidebar) */}
-      <div className="p-4 border-t border-border/60 mt-auto bg-[var(--surface-secondary)]">
+      <div className="mt-auto border-t border-sidebar-border/60 bg-sidebar p-4">
         <PendingSourcesPanel chatbotId={chatbotId} />
       </div>
 

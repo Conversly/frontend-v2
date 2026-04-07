@@ -8,7 +8,7 @@ import { TicketStatus, TicketPriority } from "@/types/tickets";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-import { Search, Plus, History, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, CheckCircle2, UserPlus, XCircle } from "lucide-react";
+import { Search, Plus, History, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 
 import {
     DropdownMenu,
@@ -28,7 +28,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 // Mapping internal tabs to API status
@@ -40,6 +39,14 @@ const TABS: { label: string; value: TabValue }[] = [
     { label: "Resolved", value: "RESOLVED" },
     { label: "Closed", value: "CLOSED" },
 ];
+
+const TAB_BADGE_STYLES: Partial<Record<TabValue, string>> = {
+    ALL: "dashboard-status-chip dashboard-status-chip--neutral",
+    OPEN: "dashboard-status-chip dashboard-status-chip--info",
+    PENDING: "dashboard-status-chip dashboard-status-chip--warning",
+    RESOLVED: "dashboard-status-chip dashboard-status-chip--success",
+    CLOSED: "dashboard-status-chip dashboard-status-chip--neutral",
+};
 
 export default function TicketsOverviewPage() {
     const params = useParams<{ workspaceId: string; botId: string }>();
@@ -164,19 +171,19 @@ export default function TicketsOverviewPage() {
     };
 
     // Badge Style Helper
-    const getStatusBadgeStyles = (status: TicketStatus) => {
+    const getStatusChipClass = (status: TicketStatus) => {
         switch (status) {
             case "OPEN":
-                return "bg-blue-100/80 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-none";
+                return "dashboard-status-chip dashboard-status-chip--info";
             case "PENDING_USER":
             case "PENDING_INTERNAL":
-                return "bg-amber-100/80 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-none";
+                return "dashboard-status-chip dashboard-status-chip--warning";
             case "RESOLVED":
-                return "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-none";
+                return "dashboard-status-chip dashboard-status-chip--success";
             case "CLOSED":
-                return "bg-slate-100/80 text-slate-700 dark:bg-slate-800/50 dark:text-slate-400 border-none";
+                return "dashboard-status-chip dashboard-status-chip--neutral";
             default:
-                return "bg-muted text-muted-foreground border-transparent";
+                return "dashboard-status-chip dashboard-status-chip--neutral";
         }
     };
 
@@ -191,13 +198,18 @@ export default function TicketsOverviewPage() {
         }
     };
 
-    const getPriorityStyles = (priority: TicketPriority | null) => {
+    const getPriorityChipClass = (priority: TicketPriority | null) => {
         switch (priority) {
-            case "URGENT": return "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400";
-            case "HIGH": return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400";
-            case "MEDIUM": return "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400";
-            case "LOW": return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400";
-            default: return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400";
+            case "URGENT":
+                return "dashboard-status-chip dashboard-status-chip--danger";
+            case "HIGH":
+                return "dashboard-status-chip dashboard-status-chip--warning";
+            case "MEDIUM":
+                return "dashboard-status-chip dashboard-status-chip--info";
+            case "LOW":
+                return "dashboard-status-chip dashboard-status-chip--neutral";
+            default:
+                return "dashboard-status-chip dashboard-status-chip--neutral";
         }
     };
 
@@ -205,7 +217,10 @@ export default function TicketsOverviewPage() {
     const TableHeaderSortable = ({ label, field, className }: { label: string; field: SortField; className?: string }) => {
         return (
             <TableHead
-                className={cn("font-bold text-xs tracking-wider text-muted-foreground uppercase cursor-pointer hover:text-foreground transition-colors group/header", className)}
+                className={cn(
+                    "cursor-pointer font-bold text-xs uppercase tracking-wider text-[var(--text-secondary)] transition-colors hover:text-foreground group/header",
+                    className
+                )}
                 onClick={() => {
                     if (sortField === field) {
                         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -240,7 +255,10 @@ export default function TicketsOverviewPage() {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" className="text-sm font-semibold border-border hover:bg-[--surface-secondary] rounded-md px-4 py-2">
+                    <Button
+                        variant="outline"
+                        className="rounded-md border-[var(--border-default)] bg-card px-4 py-2 text-sm font-semibold hover:bg-[var(--surface-secondary)]"
+                    >
                         <History className="h-4 w-4 mr-2" />
                         Activity Log
                     </Button>
@@ -253,26 +271,10 @@ export default function TicketsOverviewPage() {
 
             {/* Tabs & Search */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex items-center bg-muted/60 dark:bg-slate-800/60 rounded-lg p-1 gap-0.5 overflow-x-auto hidescrollbar border border-border/50">
+                <div className="flex items-center overflow-x-auto hidescrollbar rounded-xl border border-[var(--border-secondary)] bg-card p-1 shadow-[var(--shadow-1)]">
                     {TABS.map((tab) => {
                         const isActive = activeTab === tab.value;
                         const count = getTabCount(tab.value);
-
-                        const activeCountStyles: Partial<Record<TabValue, string>> = {
-                            ALL: "bg-slate-200/80 text-slate-700 dark:bg-slate-600/60 dark:text-slate-200",
-                            OPEN: "bg-blue-200/80 text-blue-700 dark:bg-blue-800/60 dark:text-blue-300",
-                            PENDING: "bg-amber-200/80 text-amber-700 dark:bg-amber-800/60 dark:text-amber-300",
-                            RESOLVED: "bg-emerald-200/80 text-emerald-700 dark:bg-emerald-800/60 dark:text-emerald-300",
-                            CLOSED: "bg-slate-200/80 text-slate-500 dark:bg-slate-700/60 dark:text-slate-400",
-                        };
-
-                        const activeTabStyles: Partial<Record<TabValue, string>> = {
-                            ALL: "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100",
-                            OPEN: "bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400",
-                            PENDING: "bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400",
-                            RESOLVED: "bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400",
-                            CLOSED: "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400",
-                        };
 
                         return (
                             <button
@@ -282,18 +284,18 @@ export default function TicketsOverviewPage() {
                                     setPage(1);
                                 }}
                                 className={cn(
-                                    "px-3.5 py-1.5 text-sm rounded-md whitespace-nowrap transition-all duration-150 flex items-center gap-2 select-none",
+                                    "flex select-none items-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-2 text-sm transition-all duration-150",
                                     isActive
-                                        ? cn("font-semibold shadow-sm ring-1 ring-black/[0.06] dark:ring-white/[0.08]", activeTabStyles[tab.value])
-                                        : "font-medium text-muted-foreground hover:text-foreground hover:bg-white/50 dark:hover:bg-slate-700/50"
+                                        ? "bg-[var(--bg-accent-subtle)] font-semibold text-[var(--text-accent)]"
+                                        : "font-medium text-muted-foreground hover:bg-[var(--surface-secondary)] hover:text-foreground"
                                 )}
                             >
                                 {tab.label}
                                 <span className={cn(
-                                    "text-[10px] rounded px-1.5 py-0 min-w-[20px] inline-flex items-center justify-center font-bold tabular-nums",
+                                    "inline-flex min-w-[24px] items-center justify-center px-1.5 tabular-nums",
                                     isActive
-                                        ? activeCountStyles[tab.value]
-                                        : "bg-slate-200/70 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
+                                        ? (TAB_BADGE_STYLES[tab.value] ?? "dashboard-status-chip dashboard-status-chip--neutral")
+                                        : "dashboard-status-chip dashboard-status-chip--neutral"
                                 )}>
                                     {count}
                                 </span>
@@ -303,7 +305,7 @@ export default function TicketsOverviewPage() {
                 </div>
 
                 <div className="relative w-full sm:w-64 shrink-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--icon-secondary)]" />
                     <Input
                         placeholder="Search email or ID..."
                         value={searchQuery}
@@ -311,20 +313,20 @@ export default function TicketsOverviewPage() {
                             setSearchQuery(e.target.value);
                             setPage(1);
                         }}
-                        className="pl-9 bg-white dark:bg-slate-950 border-border"
+                        className="border-[var(--border-default)] bg-card pl-9"
                     />
                 </div>
             </div>
 
             {/* Main Table Card */}
-            <div className="bg-card border border-border mt-2 rounded-xl shadow-card overflow-hidden flex flex-col min-h-[400px]">
+            <div className="mt-2 min-h-[400px]">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-[var(--surface-secondary)] [&_tr]:border-[var(--border-secondary)]">
                         <TableRow className="hover:bg-transparent">
                             <TableHeaderSortable label="Ticket ID" field="id" className="w-[120px]" />
-                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase leading-none mt-4">Subject</TableHead>
+                            <TableHead className="mt-4 font-bold uppercase leading-none tracking-wider text-[var(--text-secondary)]">Subject</TableHead>
                             <TableHeaderSortable label="Priority" field="priority" className="w-[100px]" />
-                            <TableHead className="font-bold text-xs tracking-wider text-muted-foreground uppercase leading-none mt-4">Requester</TableHead>
+                            <TableHead className="mt-4 font-bold uppercase leading-none tracking-wider text-[var(--text-secondary)]">Requester</TableHead>
                             <TableHeaderSortable label="Status" field="status" className="w-[120px]" />
                             <TableHeaderSortable label="Assigned Agent" field="assignedAgentUserId" className="w-[180px]" />
                             <TableHeaderSortable label="Last Updated" field="updatedAt" className="w-[140px] text-right" />
@@ -348,8 +350,8 @@ export default function TicketsOverviewPage() {
                                 <TableRow
                                     key={ticket.id}
                                     className={cn(
-                                        "group hover:bg-[--surface-secondary] transition-colors cursor-pointer",
-                                        focusedIndex === index && "bg-[--surface-secondary] ring-1 ring-inset ring-primary"
+                                        "group cursor-pointer border-[var(--border-secondary)] transition-colors hover:bg-[var(--surface-secondary)]",
+                                        focusedIndex === index && "bg-[var(--bg-accent-subtle)] ring-1 ring-inset ring-primary"
                                     )}
                                     onClick={() => {
                                         if (ticket.conversationId) {
@@ -372,10 +374,10 @@ export default function TicketsOverviewPage() {
                                     <TableCell onClick={(e) => e.stopPropagation()}>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button className="flex items-center hover:opacity-80 transition-opacity">
-                                                    <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md min-w-min uppercase tracking-wider text-center", getPriorityStyles(ticket.priority))}>
+                                                <button className="flex items-center transition-opacity hover:opacity-80">
+                                                    <span className={cn("min-w-[76px] justify-center", getPriorityChipClass(ticket.priority))}>
                                                         {ticket.priority || 'MEDIUM'}
-                                                    </div>
+                                                    </span>
                                                 </button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="start" className="w-[180px] p-1.5 flex flex-col gap-0.5">
@@ -383,9 +385,9 @@ export default function TicketsOverviewPage() {
                                                     <DropdownMenuItem
                                                         key={priority}
                                                         onClick={() => handlePriorityUpdate(ticket.id, priority)}
-                                                        className="cursor-pointer focus:bg-slate-100 dark:focus:bg-slate-800"
+                                                        className="cursor-pointer focus:bg-[var(--surface-secondary)]"
                                                     >
-                                                        <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getPriorityStyles(priority))}>
+                                                        <span className={getPriorityChipClass(priority)}>
                                                             {priority}
                                                         </span>
                                                     </DropdownMenuItem>
@@ -399,8 +401,8 @@ export default function TicketsOverviewPage() {
                                     <TableCell onClick={(e) => e.stopPropagation()}>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button className="flex items-center hover:opacity-80 transition-opacity">
-                                                    <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getStatusBadgeStyles(ticket.status))}>
+                                                <button className="flex items-center transition-opacity hover:opacity-80">
+                                                    <span className={getStatusChipClass(ticket.status)}>
                                                         {getStatusLabel(ticket.status)}
                                                     </span>
                                                 </button>
@@ -411,9 +413,9 @@ export default function TicketsOverviewPage() {
                                                     <DropdownMenuItem
                                                         key={status}
                                                         onClick={() => handleStatusUpdate(ticket.id, status)}
-                                                        className="cursor-pointer focus:bg-slate-100 dark:focus:bg-slate-800"
+                                                        className="cursor-pointer focus:bg-[var(--surface-secondary)]"
                                                     >
-                                                        <span className={cn("px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-wider", getStatusBadgeStyles(status))}>
+                                                        <span className={getStatusChipClass(status)}>
                                                             {getStatusLabel(status)}
                                                         </span>
                                                     </DropdownMenuItem>
@@ -424,12 +426,15 @@ export default function TicketsOverviewPage() {
                                     <TableCell onClick={(e) => e.stopPropagation()}>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button id={`assign-trigger-${ticket.id}`} className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-md transition-colors w-full text-left">
+                                                <button
+                                                    id={`assign-trigger-${ticket.id}`}
+                                                    className="flex w-full items-center gap-2 rounded-md p-1.5 text-left transition-colors hover:bg-[var(--surface-secondary)]"
+                                                >
                                                     {ticket.assignedAgent ? (
                                                         <>
                                                             <Avatar className="h-5 w-5">
                                                                 <AvatarImage src={ticket.assignedAgent.avatarUrl || undefined} />
-                                                                <AvatarFallback className="text-[9px] bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+                                                                <AvatarFallback className="bg-[var(--text-default)] text-[var(--text-inverse)] text-[9px]">
                                                                     {ticket.assignedAgent.displayName?.[0]?.toUpperCase() || "A"}
                                                                 </AvatarFallback>
                                                             </Avatar>
@@ -447,7 +452,7 @@ export default function TicketsOverviewPage() {
                                                     <DropdownMenuItem key={member.user.id} onClick={() => handleAssign(ticket.id, member.user.id)}>
                                                         <Avatar className="h-5 w-5 mr-2">
                                                             <AvatarImage src={member.user.avatarUrl || undefined} />
-                                                            <AvatarFallback className="text-[9px] bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+                                                            <AvatarFallback className="bg-[var(--text-default)] text-[var(--text-inverse)] text-[9px]">
                                                                 {member.user.displayName?.[0]?.toUpperCase() || "A"}
                                                             </AvatarFallback>
                                                         </Avatar>

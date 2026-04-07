@@ -1,9 +1,8 @@
 "use client";
 
-import { User, MessageSquare, Sparkles, Loader2, RefreshCw, ChevronDown } from "lucide-react";
+import { Sparkles, Loader2, RefreshCw, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
@@ -38,191 +37,190 @@ export function IdentityCard({
     onGenerate,
     isGenerating
 }: IdentityCardProps) {
-    const [isAdvancedStyleOpen, setIsAdvancedStyleOpen] = useState(false);
+    const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
-    const handleIdentityChange = (field: keyof IdentityState, value: string) => {
+    const updateIdentity = (field: keyof IdentityState, value: string) => {
         onIdentityChange({ ...identity, [field]: value });
     };
 
-    const handleStyleUpdate = (updates: Partial<StyleState>) => {
+    const updateStyle = (updates: Partial<StyleState>) => {
         onStyleChange({ ...style, ...updates });
     };
 
     return (
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-[var(--border-secondary)]">
 
-            {/* 1. IDENTITY SECTION */}
-            <div className="p-6 space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                    <User className="h-4 w-4 text-primary" />
-                    <h3 className="text-base font-semibold text-foreground">1. Identity</h3>
+            {/* ── SECTION HEADER: Identity ── */}
+            <div className="px-5 py-2.5 bg-muted/30">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Identity</p>
+            </div>
+
+            {/* Row: AI Agent Name + Role */}
+            <div className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div className="form-field">
+                    <label className="form-field-label">AI Agent Name</label>
+                    <Input
+                        placeholder="e.g. Alice"
+                        value={identity.aiName}
+                        onChange={(e) => updateIdentity("aiName", e.target.value)}
+                    />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="ai-name" className="text-sm font-semibold">AI Agent Name</Label>
-                        <Input
-                            id="ai-name"
-                            placeholder="e.g. Alice"
-                            value={identity.aiName}
-                            onChange={(e) => handleIdentityChange("aiName", e.target.value)}
-                        />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="role" className="text-sm font-semibold">Role / Occupation</Label>
-                        <Select
-                            value={identity.role}
-                            onValueChange={(value) => handleIdentityChange("role", value as RoleType)}
-                        >
-                            <SelectTrigger id="role">
-                                <SelectValue placeholder="Select a role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Customer Support Agent">Customer Support Agent</SelectItem>
-                                <SelectItem value="Sales Assistant">Sales Assistant</SelectItem>
-                                <SelectItem value="Product Expert">Product Expert</SelectItem>
-                                <SelectItem value="Consultant">Consultant</SelectItem>
-                                <SelectItem value="Custom">Custom</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                <div className="form-field">
+                    <label className="form-field-label">Role / Occupation</label>
+                    <Select value={identity.role} onValueChange={(v) => updateIdentity("role", v as RoleType)}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Customer Support Agent">Customer Support Agent</SelectItem>
+                            <SelectItem value="Sales Assistant">Sales Assistant</SelectItem>
+                            <SelectItem value="Product Expert">Product Expert</SelectItem>
+                            <SelectItem value="Consultant">Consultant</SelectItem>
+                            <SelectItem value="Custom">Custom</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
+            </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="purpose" className="text-sm font-semibold">Primary Goal</Label>
+            {/* Row: Primary Goal */}
+            <div className="px-5 py-4">
+                <div className="form-field">
+                    <label className="form-field-label">Primary Goal</label>
                     <Textarea
-                        id="purpose"
                         placeholder="e.g. Answering questions about our pricing and features..."
-                        className="min-h-[80px] text-sm"
+                        className="min-h-[80px]"
                         value={identity.purpose}
-                        onChange={(e) => handleIdentityChange("purpose", e.target.value)}
+                        onChange={(e) => updateIdentity("purpose", e.target.value)}
                     />
                 </div>
+            </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="constraints" className="text-sm font-semibold">Boundaries & Guardrails</Label>
+            {/* Row: Boundaries */}
+            <div className="px-5 py-4">
+                <div className="form-field">
+                    <label className="form-field-label">Boundaries & Guardrails</label>
+                    <p className="text-[11px] text-muted-foreground mb-1.5">Topics or actions the AI should avoid.</p>
                     <Textarea
-                        id="constraints"
                         placeholder="e.g. Never promise a specific delivery date, don't mention competitors..."
-                        className="min-h-[80px] text-sm"
+                        className="min-h-[80px]"
                         value={identity.constraints}
-                        onChange={(e) => handleIdentityChange("constraints", e.target.value)}
+                        onChange={(e) => updateIdentity("constraints", e.target.value)}
                     />
                 </div>
             </div>
 
-            {/* 2. STYLE SECTION */}
-            <div className="p-6 space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare className="h-4 w-4 text-primary" />
-                    <h3 className="text-base font-semibold text-foreground">2. Conversation Style</h3>
+            {/* ── SECTION HEADER: Style ── */}
+            <div className="px-5 py-2.5 bg-muted/30">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Conversation Style</p>
+            </div>
+
+            {/* Row: Tone + Response Depth */}
+            <div className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div className="form-field">
+                    <label className="form-field-label">Tone of Voice</label>
+                    <Select value={style.tone} onValueChange={(v) => updateStyle({ tone: v as ToneType })}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select tone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Friendly">Friendly</SelectItem>
+                            <SelectItem value="Professional">Professional</SelectItem>
+                            <SelectItem value="Technical">Technical</SelectItem>
+                            <SelectItem value="Sales-focused">Sales-focused</SelectItem>
+                            <SelectItem value="Casual startup">Casual startup</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="grid gap-2">
-                        <Label className="text-sm font-semibold">Tone of Voice</Label>
-                        <Select
-                            value={style.tone}
-                            onValueChange={(value) => handleStyleUpdate({ tone: value as ToneType })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select tone" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Friendly">Friendly</SelectItem>
-                                <SelectItem value="Professional">Professional</SelectItem>
-                                <SelectItem value="Technical">Technical</SelectItem>
-                                <SelectItem value="Sales-focused">Sales-focused</SelectItem>
-                                <SelectItem value="Casual startup">Casual startup</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label className="text-sm font-semibold">Response Depth</Label>
-                        <Select
-                            value={style.responseLength}
-                            onValueChange={(value) => handleStyleUpdate({ responseLength: value as ResponseLengthType })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select length" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Concise">Concise</SelectItem>
-                                <SelectItem value="Balanced">Balanced</SelectItem>
-                                <SelectItem value="Detailed">Detailed</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                <div className="form-field">
+                    <label className="form-field-label">Response Depth</label>
+                    <Select value={style.responseLength} onValueChange={(v) => updateStyle({ responseLength: v as ResponseLengthType })}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select length" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Concise">Concise</SelectItem>
+                            <SelectItem value="Balanced">Balanced</SelectItem>
+                            <SelectItem value="Detailed">Detailed</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="flex items-center justify-between rounded-md border border-border bg-card p-3 hover:border-primary/30 transition-colors">
-                        <span className="text-sm font-medium">Use emojis</span>
-                        <Switch
-                            checked={style.useEmojis}
-                            onCheckedChange={(checked) => handleStyleUpdate({ useEmojis: checked })}
-                        />
+            {/* Row: Toggles */}
+            <div className="divide-y divide-[var(--border-secondary)]">
+                <div className="flex items-center justify-between px-5 py-3">
+                    <div>
+                        <p className="text-sm text-foreground">Use emojis</p>
+                        <p className="text-xs text-muted-foreground">Include emojis in AI responses</p>
                     </div>
-                    <div className="flex items-center justify-between rounded-md border border-border bg-card p-3 hover:border-primary/30 transition-colors">
-                        <span className="text-sm font-medium">Ask follow-ups</span>
-                        <Switch
-                            checked={style.askFollowUp}
-                            onCheckedChange={(checked) => handleStyleUpdate({ askFollowUp: checked })}
-                        />
-                    </div>
+                    <Switch
+                        checked={style.useEmojis}
+                        onCheckedChange={(checked) => updateStyle({ useEmojis: checked })}
+                    />
                 </div>
+                <div className="flex items-center justify-between px-5 py-3">
+                    <div>
+                        <p className="text-sm text-foreground">Ask follow-up questions</p>
+                        <p className="text-xs text-muted-foreground">Proactively ask clarifying questions</p>
+                    </div>
+                    <Switch
+                        checked={style.askFollowUp}
+                        onCheckedChange={(checked) => updateStyle({ askFollowUp: checked })}
+                    />
+                </div>
+            </div>
 
-                <Collapsible open={isAdvancedStyleOpen} onOpenChange={setIsAdvancedStyleOpen}>
-                    <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="flex w-full items-center justify-between p-0 h-auto font-normal text-muted-foreground hover:bg-transparent hover:text-foreground">
-                            <span className="text-xs">Advanced instructions for tone...</span>
-                            <ChevronDown className={`h-4 w-4 transition-transform ${isAdvancedStyleOpen ? "rotate-180" : ""}`} />
-                        </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="pt-2">
+            {/* Row: Advanced Instructions (Collapsible) */}
+            <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
+                <CollapsibleTrigger asChild>
+                    <button className="flex w-full items-center justify-between px-5 py-3 text-left hover:bg-muted/30 transition-colors">
+                        <span className="text-xs font-medium text-muted-foreground">Advanced style instructions</span>
+                        <ChevronDown className={`size-3.5 text-muted-foreground transition-transform ${isAdvancedOpen ? "rotate-180" : ""}`} />
+                    </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <div className="px-5 pb-4">
                         <Textarea
-                            placeholder="e.g. Use a bit of British slang, or always start by saying 'Howdy'..."
-                            className="min-h-[80px] text-sm"
+                            placeholder="e.g. Use a bit of British slang, or always start with 'Howdy'..."
+                            className="min-h-[80px]"
                             value={style.advancedInstructions}
-                            onChange={(e) => handleStyleUpdate({ advancedInstructions: e.target.value })}
+                            onChange={(e) => updateStyle({ advancedInstructions: e.target.value })}
                         />
-                    </CollapsibleContent>
-                </Collapsible>
+                    </div>
+                </CollapsibleContent>
+            </Collapsible>
+
+            {/* ── SECTION HEADER: System Prompt ── */}
+            <div className="px-5 py-2.5 bg-muted/30 flex items-center justify-between">
+                <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Master System Prompt</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">The "brain" of your AI — auto-generated from settings above.</p>
+                </div>
+                <Button
+                    onClick={onGenerate}
+                    disabled={isGenerating}
+                    size="sm"
+                    variant="outline"
+                >
+                    {isGenerating
+                        ? <Loader2 className="size-3.5 animate-spin" />
+                        : <RefreshCw className="size-3.5" />
+                    }
+                    {isGenerating ? "Generating..." : "Re-generate"}
+                </Button>
             </div>
 
-            {/* MASTER PROMPT SECTION */}
-            <div className="p-6 bg-primary/5">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        <div>
-                            <Label className="text-foreground font-semibold block">Master Instruction (System Prompt)</Label>
-                            <span className="text-[10px] text-muted-foreground">The "brain" of your AI widget.</span>
-                        </div>
-                    </div>
-                    <Button
-                        onClick={onGenerate}
-                        disabled={isGenerating}
-                        className="h-9"
-                    >
-                        {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
-                        Generate Brain
-                    </Button>
-                </div>
-
-                <div className="space-y-3">
-                    <Textarea
-                        value={systemPrompt}
-                        onChange={(e) => onSystemPromptChange(e.target.value)}
-                        className="min-h-[200px] font-mono text-base bg-card border-border shadow-sm focus-visible:ring-primary/30"
-                        placeholder="Click generate to create instructions from your settings..."
-                    />
-                    <div className="flex items-start gap-2 text-[11px] text-primary bg-primary/5 p-2 rounded border border-primary/20">
-                        <Sparkles className="h-3 w-3 mt-0.5 shrink-0" />
-                        <span>This prompt is auto-generated based on your identity and style settings. You can manually edit it if you need specific tweaks.</span>
-                    </div>
+            {/* Prompt Textarea */}
+            <div className="px-5 py-4 space-y-2">
+                <Textarea
+                    value={systemPrompt}
+                    onChange={(e) => onSystemPromptChange(e.target.value)}
+                    className="min-h-[200px] font-mono text-xs bg-muted/20"
+                    placeholder="Click Re-generate to create instructions from your settings above..."
+                />
+                <div className="flex items-start gap-1.5 text-[11px] text-[var(--status-info-fg)] bg-[var(--status-info-bg)] border border-[var(--status-info-border)] px-3 py-2 rounded-[var(--radius-input)]">
+                    <Sparkles className="size-3 mt-0.5 shrink-0" />
+                    <span>Auto-generated from your identity and style settings. You can manually edit it for specific tweaks.</span>
                 </div>
             </div>
 

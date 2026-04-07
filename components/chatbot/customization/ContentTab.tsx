@@ -62,7 +62,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       className="space-y-6"
     >
       {/* Initial Message */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="First Chat Message"
           description="The message shown when someone opens the chat"
@@ -74,7 +74,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
             <div className="flex items-center justify-between mb-2">
               <Tooltip>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     This message appears when users first open the chat widget
                   </p>
                 </TooltipContent>
@@ -85,14 +85,13 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               onChange={(e) => updateConfig({ InitialMessage: e.target.value })}
               placeholder="Hi! How can I help you today? 👋"
               rows={3}
-              className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
         </div>
       </div>
 
       {/* Starter Questions */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Buttons to Start"
           description="Short prompts users can tap to begin"
@@ -109,7 +108,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
                   newQuestions[index] = e.target.value;
                   updateConfig({ starterQuestions: newQuestions });
                 }}
-                className="flex-1 bg-muted/50 border-border/50 text-foreground"
+                className="flex-1"
                 placeholder={`Question ${index + 1}`}
               />
               {(config.starterQuestions || []).length > 2 && (
@@ -117,7 +116,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleRemoveQuestion(index)}
-                  className="text-destructive hover:text-destructive/80"
+                  className="text-[var(--status-danger-fg)] hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger-fg)]"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -129,7 +128,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
             <Button
               variant="outline"
               onClick={handleAddQuestion}
-              className="w-full border-border text-foreground hover:bg-muted/50"
+              className="w-full"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Question
@@ -139,7 +138,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
       </div>
 
       {/* Message Settings */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Chat Box Options"
           description="Control what users see when they message you"
@@ -148,13 +147,13 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
         <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-sm text-foreground">Message Placeholder</label>
+              <label className="type-label">Message Placeholder</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">Placeholder text shown in the message input field</p>
+                  <p className="type-body">Placeholder text shown in the message input field</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -162,40 +161,20 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               value={config.messagePlaceholder || ''}
               onChange={(e) => updateConfig({ messagePlaceholder: e.target.value })}
               placeholder="Message..."
-              className="bg-muted/50 border-border/50 text-foreground"
             />
           </div>
 
-          {/* Todo : Footer Text Need to Add Payment Guard */}
-          {/* <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="font-sans text-sm text-foreground">Footer Text</label>
-              <Tooltip>
-                <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="font-sans text-sm">Optional text displayed at the bottom of the chat widget</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            <Input
-              value={config.footerText || ''}
-              onChange={(e) => updateConfig({ footerText: e.target.value })}
-              placeholder="Powered by VerlyAI"
-              className="bg-muted/50 border-border/50 text-foreground"
-            />
-          </div> */}
+          {/* Footer text stays disabled until its payment guard is added back. */}
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Keep Showing Suggested Messages</label>
+              <label className="type-label">Keep Showing Suggested Messages</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Continue showing suggested messages even after the user sends a message
                   </p>
                 </TooltipContent>
@@ -205,14 +184,14 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               type="checkbox"
               checked={config.keepShowingSuggested || false}
               onChange={(e) => updateConfig({ keepShowingSuggested: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
         </div>
       </div>
 
       {/* Calls + Attention */}
-      <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl p-4">
+      <div className="customization-card">
         <SectionHeader
           title="Pop-ups and Alert Sound"
           description="Optional pop-up and sound (and voice calling if enabled)"
@@ -222,13 +201,13 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Allow Voice Calls</label>
+              <label className="type-label">Allow Voice Calls</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Toggles call/voice entrypoints in the widget UI.
                   </p>
                 </TooltipContent>
@@ -238,7 +217,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               type="checkbox"
               checked={config.callEnabled || false}
               onChange={(e) => updateConfig({ callEnabled: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
 
@@ -246,14 +225,14 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-muted-foreground" />
-                <label className="font-sans text-sm text-foreground">Message Popup</label>
+                <label className="type-label">Message Popup</label>
               </div>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Shows a small message popup when the widget is collapsed.
                   </p>
                 </TooltipContent>
@@ -263,19 +242,19 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               type="checkbox"
               checked={attention.messagePopupEnabled || false}
               onChange={(e) => updateAttention({ messagePopupEnabled: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
             />
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-3">
-              <label className="font-sans text-sm text-foreground">Play Alert Sound</label>
+              <label className="type-label">Play Alert Sound</label>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-sans text-sm">
+                  <p className="type-body">
                     Plays an optional sound when the popup shows (requires Message Popup).
                   </p>
                 </TooltipContent>
@@ -285,7 +264,7 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
               type="checkbox"
               checked={attention.popupSoundEnabled || false}
               onChange={(e) => updateAttention({ popupSoundEnabled: e.target.checked })}
-              className="w-5 h-5 rounded border-border bg-muted/50 accent-primary"
+              className="customization-checkbox"
               disabled={!attention.messagePopupEnabled}
             />
           </div>
@@ -293,13 +272,13 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
           {(attention.messagePopupEnabled || attention.popupSoundEnabled) && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="font-sans text-sm text-foreground">Custom Alert Sound Link</label>
+                <label className="type-label">Custom Alert Sound Link</label>
                 <Tooltip>
                   <TooltipTrigger>
                     <HelpCircle className="w-4 h-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="font-sans text-sm">
+                    <p className="type-body">
                       Absolute URL to an audio file. Leave empty to use default / no sound.
                     </p>
                   </TooltipContent>
@@ -309,7 +288,6 @@ export function ContentTab({ config, updateConfig }: ContentTabProps) {
                 value={attention.soundUrl || ''}
                 onChange={(e) => updateAttention({ soundUrl: e.target.value })}
                 placeholder="https://cdn.example.com/ping.mp3"
-                className="bg-muted/50 border-border/50 text-foreground"
                 disabled={!attention.popupSoundEnabled}
               />
             </div>

@@ -22,6 +22,7 @@ import {
 } from "@/types/websocket";
 
 import {
+  useConversationsQuery,
   useEscalationsQuery,
   useMessagesQuery,
 } from "@/services/activity";
@@ -295,6 +296,7 @@ export default function InboxPage() {
   const convertToTicketMutation = useConvertToTicket();
 
   // Data fetching
+  const { data: conversations } = useConversationsQuery(botId);
   const { data: escalationsAll, isLoading: isLoadingEscalationsAll } = useEscalationsQuery(botId, {
     mine: false,
     limit: 200,
@@ -309,6 +311,10 @@ export default function InboxPage() {
     limit: 200,
     search: serverSearchQuery || undefined,
   });
+
+  useEffect(() => {
+    if (conversations) hydrateSnapshots({ conversations });
+  }, [conversations, hydrateSnapshots]);
 
   useEffect(() => {
     if (escalationsAll) hydrateSnapshots({ escalations: escalationsAll });

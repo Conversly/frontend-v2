@@ -41,6 +41,7 @@ import { AppearanceTab } from './AppearanceTab';
 import { AITab } from './AITab';
 import { IntegrationTab } from './IntegrationTab';
 import { useEditGuard } from '@/store/branch';
+import { getDefaultChatbotBrandColor } from '@/lib/chatbot-brand-color';
 
 interface CustomizationTabProps {
   chatbotId: string;
@@ -50,6 +51,7 @@ interface CustomizationTabProps {
 export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt }: CustomizationTabProps) {
   const [systemPrompt, setSystemPrompt] = useState(initialSystemPrompt);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const defaultBrandColor = getDefaultChatbotBrandColor();
 
   // Update systemPrompt when initialSystemPrompt changes
   useEffect(() => {
@@ -110,8 +112,8 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
       popupSoundEnabled: false,
       soundUrl: '',
     },
-    primaryColor: '#0e4b75',
-    widgetBubbleColour: '#0e4b75',
+    primaryColor: defaultBrandColor,
+    widgetBubbleColour: defaultBrandColor,
     PrimaryIcon: 'https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/Screenshot%202025-11-01%20at%203.18.10%E2%80%AFpm.png',
     widgeticon: 'https://rle3ob7wdla6y74q.public.blob.vercel-storage.com/Screenshot%202025-11-01%20at%203.18.10%E2%80%AFpm.png',
     buttonAlignment: 'right',
@@ -175,10 +177,10 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
     <TooltipProvider>
       {/* Save Confirmation Dialog */}
       <AlertDialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
-        <AlertDialogContent className="border-2 border-amber-500/50 bg-card">
+        <AlertDialogContent className="border-[var(--status-warning-border)] bg-card">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl font-bold">
-              <span className="text-amber-500">⚠</span>
+              <span className="text-[var(--status-warning-fg)]">⚠</span>
               Save Changes?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-base text-muted-foreground pt-2">
@@ -212,48 +214,55 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
         {/* Main Settings Tabs - Full width row at top */}
         <Tabs defaultValue="content" className="flex flex-col h-full">
           {/* Tabs with actions on the right - full width */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
-            <TabsList className="bg-card/60 p-1 rounded-xl flex flex-nowrap gap-2 flex-1 max-w-full lg:max-w-[500px] overflow-x-auto">
+          <div className="customization-tabs__bar flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
+            <TabsList
+              variant="mindtickle"
+              className="customization-tabs__list flex-1 max-w-full lg:max-w-[760px]"
+            >
               <TabsTrigger
                 value="content"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Settings2 className="w-4 h-4 mr-2" />
+                <Settings2 className="customization-tabs__icon w-4 h-4" />
                 Content
               </TabsTrigger>
               <TabsTrigger
                 value="appearance"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Palette className="w-4 h-4 mr-2" />
+                <Palette className="customization-tabs__icon w-4 h-4" />
                 Appearance
               </TabsTrigger>
               <TabsTrigger
                 value="ai"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <BrainCircuit className="w-4 h-4 mr-2" />
+                <BrainCircuit className="customization-tabs__icon w-4 h-4" />
                 AI
               </TabsTrigger>
               <TabsTrigger
                 value="integration"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Code className="w-4 h-4 mr-2" />
+                <Code className="customization-tabs__icon w-4 h-4" />
                 Integration
               </TabsTrigger>
             </TabsList>
 
             {/* Actions: Widget status + Save/Reset */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="customization-tabs__actions flex items-center gap-3 shrink-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Widget</span>
+                <span className="type-body-muted">Widget</span>
                 <input
                   type="checkbox"
                   checked={config.widgetEnabled}
                   onChange={(e) => updateConfig({ widgetEnabled: e.target.checked })}
                   disabled={isLiveMode}
-                  className="w-4 h-4 rounded border-border bg-muted/50 accent-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="customization-checkbox h-4 w-4 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <Separator orientation="vertical" className="h-6" />
@@ -263,7 +272,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                   size="sm"
                   onClick={() => guardEdit(() => resetDraftFromSaved())}
                   disabled={isLiveMode}
-                  className="border-border text-foreground hover:bg-muted/50 disabled:opacity-50"
+                  className="disabled:opacity-50"
                 >
                   Reset
                 </Button>
@@ -271,7 +280,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                   size="sm"
                   disabled={isSaving || isLiveMode}
                   onClick={() => guardEdit(() => setShowSaveConfirm(true))}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[70px] disabled:opacity-50"
+                  className="min-w-[70px] disabled:opacity-50"
                 >
                   {isSaving ? 'Saving…' : 'Save'}
                 </Button>
@@ -329,7 +338,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
 
             {/* Preview Right Column - aligned with form start */}
             <div className="hidden lg:block overflow-y-auto no-scrollbar">
-              <div className="bg-card/60 backdrop-blur-sm border border-border/60 rounded-2xl px-6 py-4">
+              <div className="customization-card">
                 <SectionHeader
                   title="Live Preview"
                   description="See how your chatbot will appear on your website"
@@ -339,7 +348,7 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
                 <div className="mt-4 h-[900px]">
                   <div className="flex justify-center h-full">
                     <div
-                      className="rounded-lg overflow-hidden shadow-lg"
+                      className="customization-preview-frame"
                       style={{
                         width: `min(${config.chatWidth || '350px'}, 100%)`,
                         height: `min(${config.chatHeight || '500px'}, 800px)`,
