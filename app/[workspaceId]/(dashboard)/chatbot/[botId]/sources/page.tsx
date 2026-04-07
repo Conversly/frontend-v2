@@ -16,7 +16,7 @@ import {
   AlertTriangle,
   MoreVertical,
   Plus,
-  Lock
+  Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +24,6 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
-  TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
@@ -102,19 +101,11 @@ const TRAINING_STATUS_BADGE_COLORS = {
   FAILED: 'bg-destructive/10 text-destructive border-destructive/20',
 } as const;
 
-const USAGE_STATUS_BADGE_COLORS = {
-  DRAFT: 'bg-muted text-muted-foreground border-border',
-  TRAINING: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  ACTIVE: 'bg-green-500/10 text-green-600 border-green-500/20',
-  INACTIVE: 'bg-muted text-muted-foreground border-border',
-} as const;
-
 function getStatusBadgeClass(status: string | null | undefined, map: Record<string, string>) {
   if (!status) return map.DRAFT;
   const normalizedKey = status.toUpperCase();
   return map[normalizedKey] || map.DRAFT;
 }
-
 
 function EditCitationDialog({
   dataSource,
@@ -175,7 +166,16 @@ function DataSourceCard({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col justify-between rounded-[var(--panel-radius-md)] border border-[var(--panel-border-soft)] bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+      role="button"
+      tabIndex={0}
+      onClick={onViewChunks}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onViewChunks();
+        }
+      }}
+      className="group relative flex cursor-pointer flex-col justify-between rounded-[var(--panel-radius-md)] border border-[var(--panel-border-soft)] bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
@@ -191,7 +191,7 @@ function DataSourceCard({
               {dataSource.name}
             </h3>
             {dataSource.citation && (
-              <p className="text-xs text-muted-foreground truncate" title={dataSource.citation}>
+              <p className="text-xs text-muted-foreground truncate transition-colors group-hover:text-primary/80" title={dataSource.citation}>
                 {dataSource.citation}
               </p>
             )}
@@ -278,7 +278,7 @@ interface DataSourcesContentProps {
   onAddKnowledge: () => void;
   onSourceToDelete: (source: DataSourceItem) => void;
   onEditingSource: (source: DataSourceItem) => void;
-  onNavigateToSource: (source: DataSourceItem) => void;
+  onViewingSource: (source: DataSourceItem) => void;
   isLiveMode: boolean;
 }
 
@@ -290,7 +290,7 @@ function DataSourcesContent({
   onAddKnowledge,
   onSourceToDelete,
   onEditingSource,
-  onNavigateToSource,
+  onViewingSource,
   isLiveMode,
 }: DataSourcesContentProps) {
   const { data: dataSources } = useSuspenseDataSources(botId);
@@ -358,7 +358,7 @@ function DataSourcesContent({
             dataSource={source}
             onDelete={() => onSourceToDelete(source)}
             onEditCitation={() => onEditingSource(source)}
-            onViewChunks={() => onNavigateToSource(source)}
+            onViewChunks={() => onViewingSource(source)}
             isLiveMode={isLiveMode}
           />
         ))}
@@ -402,6 +402,10 @@ export default function DataSourcesPage() {
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
   const { guardEdit, isLiveMode } = useEditGuard();
+
+  const handleViewSource = (source: DataSourceItem) => {
+    router.push(`/${workspaceId}/chatbot/${botId}/sources/${source.id}`);
+  };
 
   const confirmDelete = async () => {
     if (!sourceToDelete) return;
@@ -551,7 +555,7 @@ export default function DataSourcesPage() {
               onAddKnowledge={handleOpenAddKnowledge}
               onSourceToDelete={handleDelete}
               onEditingSource={setEditingSource}
-              onNavigateToSource={(source) => router.push(`/${workspaceId}/chatbot/${botId}/sources/${source.id}`)}
+              onViewingSource={handleViewSource}
               isLiveMode={isLiveMode}
             />
           </AsyncBoundary>

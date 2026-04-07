@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
   CheckCircle2,
-  Lock,
   ExternalLink,
   MessageCircle,
   Slack,
@@ -41,8 +40,6 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) {
   const IconComponent = iconMap[integration.icon] || MessageCircle;
   const isConnected = integration.status === 'connected';
-  const isComingSoon = integration.status === 'coming-soon';
-
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'messaging':
@@ -72,8 +69,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
           "integration-card relative overflow-hidden transition-all duration-300",
           "hover:shadow-xl hover:shadow-primary/5 border-2",
           isConnected && "ring-2 ring-green-500/30 bg-gradient-to-br from-green-500/5 to-transparent border-green-500/30",
-          isComingSoon && "hover:border-blue-500/30",
-          !isConnected && !isComingSoon && "hover:border-primary/30"
+          !isConnected && "hover:border-primary/30"
         )}
       >
         <div className="p-6 space-y-4">
@@ -103,14 +99,6 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
               </motion.div>
             )}
 
-            {isComingSoon && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                <Lock className="w-4 h-4 text-blue-500" />
-                <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
-                  Request Access
-                </span>
-              </div>
-            )}
           </div>
 
           {/* Content */}
@@ -131,17 +119,14 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
               variant={isConnected ? 'outline' : 'default'}
               className={cn(
                 "flex-1 h-10 transition-all duration-300",
-                !isConnected && !isComingSoon && "bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25",
+                !isConnected && "bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25",
                 isConnected && "border-green-500/30 hover:bg-green-500/10",
-                isComingSoon && "bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400"
               )}
             >
               <span className="flex items-center gap-2">
                 {isConnected
                   ? (integration.id === 'whatsapp' ? 'Open' : 'Manage')
-                  : isComingSoon
-                    ? 'Request Access'
-                    : 'Set Up Integration'}
+                  : 'Set Up Integration'}
                 {!isConnected && (
                   <ArrowRight className="w-4 h-4" />
                 )}
@@ -175,9 +160,7 @@ export function IntegrationCard({ integration, onSetup }: IntegrationCardProps) 
           </div>
 
           {/* Hover Gradient Effect */}
-          {!isComingSoon && (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-lg" />
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-lg" />
         </div>
       </Card>
     </motion.div>

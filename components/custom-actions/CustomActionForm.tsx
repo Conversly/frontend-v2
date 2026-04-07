@@ -32,6 +32,8 @@ const buildDefaultAction = (chatbotId: string): CustomAction => ({
     displayName: '',
     description: '',
     isEnabled: true,
+    accessLevel: 'anonymous',
+    requiredContactFields: [],
     apiConfig: {
         method: 'GET',
         baseUrl: '',

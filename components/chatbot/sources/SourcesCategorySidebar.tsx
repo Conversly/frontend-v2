@@ -11,13 +11,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { joinWaitlist } from "@/lib/api/waitlist";
-import { Loader2, Plus, Sparkles, CheckCircle2, Globe, FileText, MessageSquare, AlignLeft } from "lucide-react";
+import { Loader2, Plus, Sparkles, CheckCircle2, Globe, FileText, MessageSquare, AlignLeft, Clock, Mail } from "lucide-react";
 import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { PendingSourcesPanel } from "./PendingSourcesPanel";
+import { UpgradeDialog } from "@/components/billingsdk/UpgradeDialog";
+import { useSubscription } from "@/contexts/subscription-context";
+import Image from "next/image";
 
 export type SourceCategory = 'all' | 'URL' | 'DOCUMENT' | 'QNA' | 'TXT';
 
@@ -43,6 +46,11 @@ const categories = [
   { id: 'TXT' as const, label: 'Text', icon: AlignLeft },
 ];
 
+const comingSoonIntegrations = [
+  { id: 'notion', label: 'Notion', logo: '/integrations/notion.png' },
+  { id: 'confluence', label: 'Confluence', logo: '/integrations/confluence.png' },
+];
+
 export function SourcesCategorySidebar({
   selectedCategory,
   onCategoryChange,
@@ -50,12 +58,31 @@ export function SourcesCategorySidebar({
   chatbotId,
   sourceCounts = { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 }
 }: SourcesCategorySidebarProps) {
+  const { subscription, accountStatus } = useSubscription();
+  const isPaidUser = (
+    accountStatus === 'ACTIVE' &&
+    (subscription?.planName?.toLowerCase() === 'standard' || subscription?.planName?.toLowerCase() === 'pro')
+  );
+
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [requestEmail, setRequestEmail] = useState("");
   const [integrationName, setIntegrationName] = useState("");
   const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
   const [requestError, setRequestError] = useState("");
+
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
+  const [comingSoonIntegrationName, setComingSoonIntegrationName] = useState("");
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
+
+  const handleIntegrationClick = (name: string) => {
+    if (isPaidUser) {
+      setComingSoonIntegrationName(name);
+      setIsComingSoonOpen(true);
+    } else {
+      setIsUpgradeDialogOpen(true);
+    }
+  };
 
   const resetRequestForm = () => {
     setIsRequestSuccess(false);
@@ -149,6 +176,25 @@ export function SourcesCategorySidebar({
           })}
         </div>
 
+        {/* Coming Soon Integrations */}
+        <div className="mt-4 pt-4 border-t border-border/60">
+          <p className="px-1 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground/70">Integrations</p>
+          <div className="space-y-1.5">
+            {comingSoonIntegrations.map((integration) => (
+              <button
+                key={integration.id}
+                onClick={() => handleIntegrationClick(integration.label)}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-[var(--panel-radius-sm)] text-sm transition-all border border-transparent text-muted-foreground hover:border-border/70 hover:bg-[var(--surface-secondary)] hover:text-foreground"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-card overflow-hidden">
+                  <Image src={integration.logo} alt={integration.label} width={20} height={20} className="object-contain" />
+                </div>
+                <span className="flex-1 text-left">{integration.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Request Integration */}
         <div className="p-2 pt-4 border-t border-border mt-auto">
           <Button
@@ -166,6 +212,41 @@ export function SourcesCategorySidebar({
       <div className="p-4 border-t border-border/60 mt-auto bg-[var(--surface-secondary)]">
         <PendingSourcesPanel chatbotId={chatbotId} />
       </div>
+
+      {/* Coming Soon Modal (for paid Standard/Pro users) */}
+      <Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
+        <DialogContent className="sm:max-w-[420px] p-0 overflow-hidden border-border bg-background shadow-2xl gap-0">
+          <div className="p-6 flex flex-col items-center text-center">
+            <div className="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+              <Clock className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+            </div>
+            <DialogTitle className="text-xl font-bold mb-2">
+              {comingSoonIntegrationName} — Coming Soon
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground leading-relaxed mb-6">
+              We're actively building the <strong>{comingSoonIntegrationName}</strong> integration. As a valued subscriber, you'll get early access as soon as it's ready.
+            </DialogDescription>
+            <a
+              href={`mailto:support@conversly.ai?subject=${encodeURIComponent(`Early access: ${comingSoonIntegrationName} integration`)}`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors mb-3"
+            >
+              <Mail className="w-4 h-4" />
+              Get notified by email
+            </a>
+            <Button variant="ghost" size="sm" onClick={() => setIsComingSoonOpen(false)} className="text-muted-foreground">
+              Maybe later
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upgrade Dialog (for free/hobby users) */}
+      <UpgradeDialog
+        open={isUpgradeDialogOpen}
+        onOpenChange={setIsUpgradeDialogOpen}
+        title="Unlock third-party integrations"
+        description="Upgrade your plan to connect Notion, Confluence, and more as knowledge sources for your chatbot."
+      />
 
       {/* Request Integration Modal */}
       <Dialog open={isRequestModalOpen} onOpenChange={(open) => {

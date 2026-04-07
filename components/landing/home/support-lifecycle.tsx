@@ -9,13 +9,13 @@ export default function SupportLifecycle() {
       className="landing-home-section landing-home-section--soft py-14 text-[#19253b] md:py-16 lg:py-[4.5rem]"
     >
       <div className="relative mx-auto max-w-[1440px] px-5 md:px-6">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,450px)_minmax(0,1fr)] xl:gap-10">
-          <div className="max-w-[540px] lg:pr-4">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,540px)_minmax(0,1fr)] xl:gap-14">
+          <div className="max-w-[540px] lg:pr-8 xl:pr-12">
             <div className="landing-home-eyebrow mb-6">
               <Sparkles className="h-4 w-4" />
               Lifecycle Solution
             </div>
-            <h2 className="landing-home-title max-w-[13ch] sm:text-[32px] md:text-[42px] lg:max-w-none lg:text-[48px]">
+            <h2 className="landing-home-title max-w-[15ch] sm:text-[32px] md:max-w-none md:text-[42px] lg:text-[48px]">
               A complete customer support lifecycle solution
             </h2>
             <p className="landing-home-copy mt-7 max-w-[560px] text-[18px] leading-[1.65] sm:text-[20px]">
@@ -40,7 +40,7 @@ function ProductMockup() {
           <FullscreenVideo
             as="div"
             embedded
-            className="aspect-[21/11] min-h-[360px] bg-[#081121] sm:min-h-[420px] lg:min-h-[500px]"
+            className="aspect-[21/11] w-full bg-[#081121]"
           />
         </div>
       </div>

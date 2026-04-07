@@ -93,7 +93,7 @@ export default function FeatureShowcase() {
                 <div className="grid gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
                   <div className={`${reverseLayout ? "lg:order-2" : ""}`}>
                     <div className="p-3 md:p-4">
-                      <div className="relative min-h-[320px] w-full overflow-hidden rounded-[20px] border border-[#ebe5da] bg-[#f7f3ec] sm:min-h-[380px] lg:min-h-[440px]">
+                      <div className="relative min-h-[380px] w-full overflow-hidden rounded-[20px] border border-[#ebe5da] bg-[#f7f3ec] sm:min-h-[440px] lg:min-h-[520px]">
                         <Image
                           src={item.image}
                           alt={item.title}

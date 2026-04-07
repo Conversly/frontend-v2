@@ -29,9 +29,9 @@ export default function LandingHero() {
               <motion.div variants={fadeUp} className="page-main-title__title-wrapper">
                 <h1 className="page-main-title__title font-[Georgia,Times,'Times_New_Roman',serif]">
                   <span>
-                    The AI customer support platform for{" "}
+                    The AI customer support platform that{" "}
                     <span className="emphasis">
-                      <span className="emphasis-text">your Customers.</span>
+                      <span className="emphasis-text">works for you.</span>
                     </span>
                   </span>
                 </h1>

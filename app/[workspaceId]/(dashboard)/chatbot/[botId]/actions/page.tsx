@@ -51,6 +51,8 @@ export default function ActionsPage() {
           chatbotId,
           name: action.name,
           description: action.description,
+          accessLevel: action.accessLevel,
+          requiredContactFields: action.requiredContactFields,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
         });
@@ -61,6 +63,8 @@ export default function ActionsPage() {
           actionId: action.id,
           name: action.name,
           description: action.description,
+          accessLevel: action.accessLevel,
+          requiredContactFields: action.requiredContactFields,
           apiConfig: action.apiConfig,
           parameters: action.parameters,
         });

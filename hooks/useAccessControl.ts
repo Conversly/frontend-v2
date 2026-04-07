@@ -39,7 +39,11 @@ export function useAccessControl(workspaceId: string) {
             limit: entitlements?.limits?.team_members ?? -1,
         },
 
-        // Extensible for future features (e.g. custom domain, remove branding, etc.)
+        integrations: {
+            canManage: capabilities.canEditChatbot,
+            isEnabledOnPlan: !!entitlements?.limits?.integrations && isAccountActive,
+            limit: -1,
+        },
     };
 }
 
@@ -63,6 +67,11 @@ export interface AccessControlResult {
         limit: number | boolean;
     };
     team_members: {
+        canManage: boolean;
+        isEnabledOnPlan: boolean;
+        limit: number | boolean;
+    };
+    integrations: {
         canManage: boolean;
         isEnabledOnPlan: boolean;
         limit: number | boolean;
@@ -109,6 +118,12 @@ export function useSuspenseAccessControl(workspaceId: string): AccessControlResu
             isEnabledOnPlan: isAccountActive,
             limit: entitlements?.limits?.team_members ?? -1,
         },
+
+        integrations: {
+            canManage: capabilities.canEditChatbot,
+            isEnabledOnPlan: !!entitlements?.limits?.integrations && isAccountActive,
+            limit: -1,
+        },
     };
 }
 
@@ -138,6 +153,11 @@ interface OptimisticAccessControlResult {
         limit: number;
     };
     team_members: {
+        canManage: boolean;
+        isEnabledOnPlan: boolean;
+        limit: number;
+    };
+    integrations: {
         canManage: boolean;
         isEnabledOnPlan: boolean;
         limit: number;
@@ -200,6 +220,12 @@ export function useOptimisticAccessControl(workspaceId: string): OptimisticAcces
             canManage: capabilities?.canManageMembers ?? defaultOptimisticAccess.canManage,
             isEnabledOnPlan: isAccountActive ?? defaultOptimisticAccess.isEnabledOnPlan,
             limit: Number(entitlements?.limits?.team_members ?? defaultOptimisticAccess.limit),
+        },
+
+        integrations: {
+            canManage: capabilities?.canEditChatbot ?? defaultOptimisticAccess.canManage,
+            isEnabledOnPlan: (!!entitlements?.limits?.integrations && isAccountActive) ?? defaultOptimisticAccess.isEnabledOnPlan,
+            limit: -1,
         },
     };
 }

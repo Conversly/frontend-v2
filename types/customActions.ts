@@ -46,6 +46,8 @@ export type CustomActionConfig = ApiConfig;
 // ============================================
 export type ParamType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
 export type ParamLocation = 'path' | 'query' | 'header' | 'body';
+export type AccessLevel = 'user' | 'visitor' | 'anonymous';
+export type ParamSource = 'user' | 'contact';
 
 // Backwards-compatible aliases (older UI code uses ParameterType/ParameterLocation)
 export type ParameterType = ParamType;
@@ -73,6 +75,10 @@ export interface ToolParameter {
   // For body params only
   bodyPath?: string;
 
+  // Source: who provides this parameter's value
+  source?: ParamSource;       // default: 'user' (LLM asks). 'contact' = auto-injected server-side.
+  contactField?: string;      // e.g., 'externalId', 'email', 'name', 'phone', 'metadata.plan'
+
   // For array/object types
   items?: { type: ParamType };
   properties?: Record<string, { type: ParamType; description?: string }>;
@@ -97,6 +103,8 @@ export interface CustomAction {
   displayName: string;
   description: string;
   isEnabled: boolean;
+  accessLevel?: AccessLevel;
+  requiredContactFields?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
   triggerExamples?: string[]; // UI-only (not sent to backend create/update)
@@ -127,6 +135,8 @@ export interface CreateCustomActionInput {
   chatbotId: string;
   name: string;
   description: string;
+  accessLevel?: AccessLevel;
+  requiredContactFields?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
 }
@@ -136,6 +146,8 @@ export interface UpdateCustomActionInput {
   actionId: string;
   name?: string;
   description?: string;
+  accessLevel?: AccessLevel;
+  requiredContactFields?: string[];
   apiConfig?: ApiConfig;
   parameters?: ToolParameter[];
 }

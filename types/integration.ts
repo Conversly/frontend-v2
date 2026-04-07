@@ -1,4 +1,4 @@
-export type IntegrationStatus = 'connected' | 'not-connected' | 'coming-soon';
+export type IntegrationStatus = 'connected' | 'not-connected';
 
 export type IntegrationPlatform =
   | 'whatsapp'

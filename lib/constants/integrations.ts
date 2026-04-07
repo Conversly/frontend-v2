@@ -12,7 +12,7 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     name: 'Slack',
     description: 'Manage your Slack conversations and notifications',
     icon: 'Slack',
-    status: 'coming-soon',
+    status: 'not-connected',
     category: 'messaging',
   },
   {
@@ -20,7 +20,7 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     name: 'Stripe',
     description: 'Manage payments, billing, and automate financial operations',
     icon: 'CreditCard',
-    status: 'coming-soon',
+    status: 'not-connected',
     category: 'payment',
   },
   {
@@ -28,7 +28,7 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     name: 'Calendly',
     description: 'Schedule meetings and manage your calendar',
     icon: 'Calendar',
-    status: 'coming-soon',
+    status: 'not-connected',
     category: 'scheduling',
   },
   {
@@ -36,7 +36,7 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     name: 'Notion',
     description: 'Sync data and automate workflows with Notion',
     icon: 'FileText',
-    status: 'coming-soon',
+    status: 'not-connected',
     category: 'productivity',
   },
   {
@@ -44,7 +44,7 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     name: 'Zendesk',
     description: 'Create and manage support tickets automatically',
     icon: 'Cloud',
-    status: 'coming-soon',
+    status: 'not-connected',
     category: 'support',
   },
 ];

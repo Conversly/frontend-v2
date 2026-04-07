@@ -76,7 +76,7 @@ export default function RootLayout({
           src="https://widget.verlyai.xyz/embed.js"
           data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
           data-position="bottom-right"
-          data-primary-color="#4F46E5"
+          data-primary-color="rgb(33, 32, 32)"
           data-testing="false"
           strategy="afterInteractive"
         />
