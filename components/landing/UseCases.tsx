@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import {
   Building2,
   ShoppingCart,
@@ -92,18 +89,8 @@ export default function UseCases() {
       className="landing-home-section landing-home-section--plain"
       id="use-cases"
     >
-      {/* subtle grid */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,145,201,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.03)_1px,transparent_1px)] bg-[size:72px_72px]" />
-
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="mx-auto mb-14 max-w-[760px] text-center"
-        >
+        <div className="mx-auto mb-14 max-w-[760px] text-center">
           <div className="landing-home-eyebrow mb-4">
             Industries
           </div>
@@ -115,29 +102,21 @@ export default function UseCases() {
             See how teams across industries use Verly to automate support, reduce cost, and
             scale without scaling headcount.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Grid */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {useCases.map((uc, i) => (
-            <motion.a
+          {useCases.map((uc) => (
+            <a
               key={uc.title}
               href={uc.link}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: i * 0.06 }}
-              whileHover={{ y: -6 }}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(37,99,235,0.1)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
             >
-              {/* Accent corner glow */}
               <div
-                className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-[0.15] blur-3xl transition-opacity duration-500 group-hover:opacity-[0.28]"
+                className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-[0.15] blur-3xl"
                 style={{ background: uc.accent }}
               />
 
               <div>
-                {/* Icon */}
                 <div
                   className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm"
                   style={{ backgroundColor: uc.accentBg, color: uc.accent }}
@@ -145,7 +124,6 @@ export default function UseCases() {
                   <uc.icon className="h-6 w-6" />
                 </div>
 
-                {/* Title */}
                 <h3 className="font-title-bold text-[1.3rem] leading-snug tracking-[-0.03em] text-[#0b1536]">
                   {uc.title}
                   <span className="block text-[0.85rem] font-medium text-[#7b89a4]">
@@ -153,15 +131,12 @@ export default function UseCases() {
                   </span>
                 </h3>
 
-                {/* Description */}
                 <p className="mt-3 text-[0.88rem] leading-[1.7] text-[#5d6b85]">
                   {uc.description}
                 </p>
               </div>
 
-              {/* Footer row */}
               <div className="mt-6 flex items-end justify-between">
-                {/* Stat */}
                 <div className="flex items-baseline gap-1.5">
                   <span
                     className="text-[1.6rem] font-bold leading-none tracking-tight"
@@ -174,33 +149,25 @@ export default function UseCases() {
                   </span>
                 </div>
 
-                {/* Arrow */}
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d7e2f4] bg-[#f7faff] text-[#7b89a4] transition-all duration-300 group-hover:border-transparent group-hover:bg-[#315EEA] group-hover:text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d7e2f4] bg-[#f7faff] text-[#7b89a4]">
                   <ArrowUpRight className="h-4 w-4" />
                 </div>
               </div>
-            </motion.a>
+            </a>
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 text-center"
-        >
+        <div className="mt-12 text-center">
           <p className="text-[0.92rem] text-[#7b89a4]">
             Don&apos;t see your industry?{" "}
             <a
               href="/solutions"
-              className="font-semibold text-[#315EEA] underline decoration-[#315EEA]/30 underline-offset-4 transition-colors hover:text-[#1d47c4]"
+              className="font-semibold text-[#315EEA] underline decoration-[#315EEA]/30 underline-offset-4"
             >
               Explore all solutions
             </a>
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -167,7 +167,7 @@ export function EscalationDetails() {
                                     <div key={conv.conversationId} className="dashboard-list-row cursor-pointer group p-3">
                                         <div className="flex justify-between items-center mb-1">
                                             <p className="text-xs font-bold group-hover:text-primary transition-colors truncate capitalize">
-                                                {((conv as any).state || conv.status || "OPEN").toLowerCase().replace('_', ' ')}
+                                                {(conv.state || "OPEN").toLowerCase().replace('_', ' ')}
                                             </p>
                                             <span className="text-[10px] text-muted-foreground">
                                                 {conv.createdAt ? new Date(conv.createdAt).toLocaleDateString() : "—"}

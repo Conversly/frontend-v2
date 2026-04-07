@@ -4,7 +4,7 @@ import type {
   CloseConversationResponse,
   ConversationItem,
   ConversationMessageItem,
-  ConversationStatus,
+  ConversationState,
   GetConversationMessagesResponse,
   GetConversationsResponse,
   MessageChannel,
@@ -32,7 +32,7 @@ function fillPath(pathTemplate: string, params: Record<string, string>): string 
 
 export async function listConversations(params: {
   chatbotId: string;
-  status?: ConversationStatus;
+  status?: ConversationState;
   channel?: MessageChannel;
   limit?: number;
 }): Promise<ConversationItem[]> {

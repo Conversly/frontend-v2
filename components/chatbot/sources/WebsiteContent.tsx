@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Globe, ChevronDown, ChevronUp, Info, Loader2, CheckSquare, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,8 +24,41 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [fetchedPages, setFetchedPages] = useState<string[]>([]);
-  const [selectedPages, setSelectedPages] = useState<Set<string>>(new Set());
-  const { addPendingSource } = useDataSourcesStore();
+  const pendingSources = useDataSourcesStore((state) => state.pendingSources);
+  const { addPendingSource, removePendingSource } = useDataSourcesStore();
+
+  const pendingWebsiteSources = useMemo(
+    () => pendingSources.filter((source) => source.type === 'Website'),
+    [pendingSources]
+  );
+
+  const pendingWebsiteNames = useMemo(
+    () => new Set(pendingWebsiteSources.map((source) => source.name)),
+    [pendingWebsiteSources]
+  );
+
+  const selectedFetchedPages = useMemo(
+    () => fetchedPages.filter((page) => pendingWebsiteNames.has(page)),
+    [fetchedPages, pendingWebsiteNames]
+  );
+
+  const selectedFetchedPageCount = selectedFetchedPages.length;
+
+  const addWebsitePageToPending = (page: string) => {
+    const alreadyPending = pendingWebsiteNames.has(page);
+    if (alreadyPending) return;
+
+    addPendingSource({
+      type: 'Website',
+      name: page,
+    });
+  };
+
+  const removeWebsitePageFromPending = (page: string) => {
+    pendingWebsiteSources
+      .filter((source) => source.name === page)
+      .forEach((source) => removePendingSource(source.id));
+  };
 
   const handleFetchLinks = async () => {
     const fullUrl = url.startsWith('http') ? url : `${protocol}${url}`;
@@ -46,64 +79,54 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
       });
 
       if (response.pages && response.pages.length > 0) {
-        setFetchedPages(response.pages);
-        setSelectedPages(new Set(response.pages));
-        toast.success(`Found ${response.pages.length} page${response.pages.length === 1 ? '' : 's'}`);
+        const uniquePages = Array.from(new Set(response.pages));
+
+        setFetchedPages(uniquePages);
+
+        const knownPages = new Set(pendingWebsiteNames);
+        uniquePages.forEach((page) => {
+          if (knownPages.has(page)) return;
+
+          knownPages.add(page);
+          addPendingSource({
+            type: 'Website',
+            name: page,
+          });
+        });
+
+        toast.success(`Found ${uniquePages.length} page${uniquePages.length === 1 ? '' : 's'}`);
       } else {
         toast.info('No pages found for this URL');
         setFetchedPages([]);
-        setSelectedPages(new Set());
       }
     } catch (error) {
       toast.error('Failed to fetch links', {
         description: error instanceof Error ? error.message : 'Unknown error',
       });
       setFetchedPages([]);
-      setSelectedPages(new Set());
     } finally {
       setIsFetching(false);
     }
   };
 
   const handleTogglePage = (page: string) => {
-    setSelectedPages((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(page)) {
-        newSet.delete(page);
-      } else {
-        newSet.add(page);
-      }
-      return newSet;
-    });
-  };
+    const isSelected = pendingWebsiteNames.has(page);
 
-  const handleToggleAll = () => {
-    if (selectedPages.size === fetchedPages.length) {
-      setSelectedPages(new Set());
-    } else {
-      setSelectedPages(new Set(fetchedPages));
-    }
-  };
-
-  const handleAddSelectedPages = () => {
-    if (selectedPages.size === 0) {
-      toast.error('Please select at least one page');
+    if (isSelected) {
+      removeWebsitePageFromPending(page);
       return;
     }
 
-    selectedPages.forEach((page) => {
-      addPendingSource({
-        type: 'Website',
-        name: page,
-      });
-    });
+    addWebsitePageToPending(page);
+  };
 
-    toast.success(`Added ${selectedPages.size} page${selectedPages.size === 1 ? '' : 's'} to sources`);
+  const handleToggleAll = () => {
+    if (selectedFetchedPageCount === fetchedPages.length) {
+      fetchedPages.forEach((page) => removeWebsitePageFromPending(page));
+      return;
+    }
 
-    setUrl('');
-    setFetchedPages([]);
-    setSelectedPages(new Set());
-    onSuccess?.();
+    fetchedPages.forEach((page) => addWebsitePageToPending(page));
   };
 
   const handleAddIndividualLink = () => {
@@ -117,10 +140,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
       return;
     }
 
-    addPendingSource({
-      type: 'Website',
-      name: fullUrl,
-    });
+    addWebsitePageToPending(fullUrl);
 
     toast.success('URL added successfully');
     setUrl('');
@@ -209,7 +229,7 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
                   onClick={handleToggleAll}
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  {selectedPages.size === fetchedPages.length ? (
+                  {selectedFetchedPageCount === fetchedPages.length ? (
                     <>
                       <CheckSquare className="w-4 h-4 mr-1.5" />
                       Deselect all
@@ -224,15 +244,16 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
               </div>
 
               <div className="max-h-[400px] overflow-y-auto space-y-2.5 pr-2">
-                {fetchedPages.map((page, index) => (
+                {fetchedPages.map((page) => (
                   <div
-                    key={index}
+                    key={page}
                     className="flex items-start gap-4 p-4 bg-[--surface-secondary] rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-border"
                     onClick={() => handleTogglePage(page)}
                   >
                     <Checkbox
-                      checked={selectedPages.has(page)}
+                      checked={pendingWebsiteNames.has(page)}
                       onCheckedChange={() => handleTogglePage(page)}
+                      onClick={(event) => event.stopPropagation()}
                       className="mt-0.5"
                     />
                     <div className="flex-1 min-w-0">
@@ -244,15 +265,11 @@ export function WebsiteContent({ chatbotId, onSuccess }: WebsiteContentProps) {
 
               <div className="flex items-center justify-between pt-3">
                 <p className="type-caption">
-                  {selectedPages.size} of {fetchedPages.length} selected
+                  {selectedFetchedPageCount} of {fetchedPages.length} selected
                 </p>
-                <Button
-                  onClick={handleAddSelectedPages}
-                  disabled={selectedPages.size === 0}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-6"
-                >
-                  Add selected pages
-                </Button>
+                <p className="type-caption text-right">
+                  Selected pages are added to pending sources automatically
+                </p>
               </div>
             </div>
           )}

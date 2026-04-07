@@ -111,7 +111,7 @@ export const useDataSourcesStore = create<DataSourcesState>((set, get) => ({
   addPendingSource: (source) => {
     const newSource: PendingSource = {
       ...source,
-      id: Date.now().toString(),
+      id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     };
     set((state) => ({
       pendingSources: [...state.pendingSources, newSource],
@@ -243,5 +243,4 @@ export const useIsLoading = () => useDataSourcesStore((s) => s.isLoading);
 export const useUploadLoading = () => useDataSourcesStore((s) => s.uploadLoading);
 export const useShowQADialog = () => useDataSourcesStore((s) => s.showQADialog);
 export const useFetchDataSources = () => useDataSourcesStore((s) => s.fetchSources);
-
 

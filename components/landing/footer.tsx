@@ -50,7 +50,7 @@ export function FooterCta() {
       className="relative"
       style={{
         background:
-          "linear-gradient(to bottom, #ffffff 0%, #f7fbff 12.5%, #edf5ff 25%, #d6eaff 37.5%, #b3d7ff 50%, #80bfff 62.5%, #4d94ff 75%, #0056b3 87.5%, #000000 100%)",
+          "linear-gradient(to bottom, #ffffff 0%, #ffffff 14%, #edf5ff 28%, #d6eaff 42%, #b3d7ff 56%, #80bfff 68%, #4d94ff 80%, #0056b3 90%, #000000 100%)",
       }}
     >
       <div className="relative pb-14 pt-24 md:pb-16 md:pt-28">

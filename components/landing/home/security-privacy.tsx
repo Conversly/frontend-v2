@@ -40,16 +40,6 @@ const securityCards = [
 export default function SecurityPrivacySection() {
   return (
     <section className="landing-home-section landing-home-section--soft">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(49,94,234,0.10),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(103,217,236,0.16),transparent_20%),radial-gradient(circle_at_18%_88%,rgba(244,195,159,0.10),transparent_24%)]" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(34,31,27,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(34,31,27,0.08) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-        }}
-      />
-
       <div className="landing-container">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)] lg:gap-12">
           <div className="flex flex-col justify-between">

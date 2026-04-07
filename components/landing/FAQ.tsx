@@ -75,10 +75,6 @@ export default function FAQ({ showStructuredData = true }: FAQProps) {
         className="landing-home-section landing-home-section--plain pb-16 pt-20 md:pb-20 md:pt-28"
         id="faq"
       >
-        {/* Decorative background */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8f9ff_50%,#ffffff_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(49,94,234,0.04),transparent_62%)]" />
-
         <div className="relative mx-auto max-w-[860px] px-5 md:px-8">
           <div className="mb-12 text-center">
             <div className="landing-home-eyebrow mb-4">
