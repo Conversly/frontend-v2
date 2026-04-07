@@ -5,8 +5,6 @@
 // - Backend returns timestamps as ISO strings, not Date objects.
 // - This file intentionally models the HTTP/JSON shapes, not DB schema types.
 
-export type ConversationStatus = "OPEN" | "CLOSED";
-
 // Keep this in sync with backend `ConversationState` enum.
 export type ConversationState =
   | "AI_ACTIVE"
@@ -38,12 +36,21 @@ export const Feedback = {
 
 export type FeedbackType = (typeof Feedback)[keyof typeof Feedback];
 
+export interface ConversationContactSummary {
+  id: string | null;
+  role: "visitor" | "lead" | "user" | null;
+  displayName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  identityVerifiedAt: string | null;
+}
+
 export interface ConversationItem {
   conversationId: string;
   workspaceId: string;
   chatbotId: string;
   channel: MessageChannel;
-  status: ConversationStatus;
+  state: ConversationState;
   createdAt: string;
   updatedAt: string;
   lastMessageAt: string | null;
@@ -51,6 +58,7 @@ export interface ConversationItem {
   lastUserMessageAt: string | null;
   closedAt: string | null;
   metadata: Record<string, unknown>;
+  contact: ConversationContactSummary;
 }
 
 export interface GetConversationsResponse {
@@ -77,7 +85,7 @@ export interface CloseConversationResponse {
   success: true;
   data: {
     conversationId: string;
-    status: "CLOSED";
+    state: "CLOSED";
     closedAt: string;
   };
 }
@@ -101,7 +109,6 @@ export interface EscalationItem {
 
   // Optional (when escalations endpoint includes conversation fields)
   channel?: MessageChannel;
-  conversationStatus?: ConversationStatus;
   conversationClosedAt?: string | null;
 
   // Optional (present when `mine=true` on GET /activity/escalations)

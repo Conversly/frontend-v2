@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
-import type { ConversationMessageItem } from "@/types/activity";
+import type { ConversationItem, ConversationMessageItem } from "@/types/activity";
 import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
 import { downloadJsonFile } from "@/lib/utils";
 import {
@@ -43,6 +43,11 @@ export default function ChatLogsPage() {
     data: messages,
     isLoading: isLoadingMessages,
   } = useMessagesQuery(botId, selectedConvId || "");
+
+  const selectedConversation = useMemo(
+    () => chatlogs?.find((conversation) => conversation.conversationId === selectedConvId) ?? null,
+    [chatlogs, selectedConvId]
+  );
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<ChatLogsFilters>({
@@ -89,15 +94,25 @@ export default function ChatLogsPage() {
         const query = searchQuery.toLowerCase();
         const message = String(log.lastUserMessage || "").toLowerCase();
         const id = String(log.conversationId || "").toLowerCase();
-        return message.includes(query) || id.includes(query);
+        const contactName = String(log.contact?.displayName || "").toLowerCase();
+        const contactEmail = String(log.contact?.email || "").toLowerCase();
+        const contactPhone = String(log.contact?.phoneNumber || "").toLowerCase();
+
+        return (
+          message.includes(query) ||
+          id.includes(query) ||
+          contactName.includes(query) ||
+          contactEmail.includes(query) ||
+          contactPhone.includes(query)
+        );
       }
 
       return true;
     });
   }, [chatlogs, activeTab, searchQuery]);
 
-  const statusDot = (status?: string) => {
-    const s = String(status || "").toUpperCase();
+  const statusDot = (state?: string) => {
+    const s = String(state || "").toUpperCase();
     if (!s) return "bg-muted-foreground/30";
     if (s.includes("WAIT") || s.includes("PENDING")) return "bg-blue-500";
     if (s.includes("ACTIVE") || s.includes("OPEN") || s.includes("IN_PROGRESS")) return "bg-green-500";
@@ -186,7 +201,9 @@ export default function ChatLogsPage() {
                 const isActive = selectedConvId === c.conversationId;
                 const ts = c.lastUserMessageAt ?? c.lastMessageAt ?? c.updatedAt ?? c.createdAt;
                 const channelLabel = String(c.channel || "WIDGET").toUpperCase();
-                const title = String(c.lastUserMessage || "").trim() || "No user message";
+                const title = getConversationDisplayTitle(c);
+                const subtitle = getConversationListSubtitle(c);
+                const roleLabel = getKnownContactRoleLabel(c);
                 return (
                   <button
                     key={c.conversationId}
@@ -205,7 +222,7 @@ export default function ChatLogsPage() {
                       <span
                         className={cn(
                           "absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background",
-                          statusDot(c.status),
+                          statusDot(c.state),
                         )}
                         aria-hidden="true"
                       />
@@ -219,7 +236,16 @@ export default function ChatLogsPage() {
                           {formatShortDateTime(ts)}
                         </span>
                       </div>
-
+                      <div className="mt-1 flex items-center gap-2 min-w-0">
+                        {roleLabel ? (
+                          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                            {roleLabel}
+                          </span>
+                        ) : null}
+                        <span className="truncate text-xs text-muted-foreground">
+                          {subtitle}
+                        </span>
+                      </div>
                     </div>
                   </button>
                 );
@@ -256,9 +282,13 @@ export default function ChatLogsPage() {
           <div className="border-b bg-card px-6 py-4">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h1 className="type-section-title tracking-tight">Conversation</h1>
+                <h1 className="type-section-title tracking-tight">
+                  {getConversationHeaderTitle(selectedConversation)}
+                </h1>
                 <p className="type-body-muted mt-0.5">
-                  {selectedConvId ? `Conversation • ${selectedConvId}` : "Select a conversation"}
+                  {selectedConversation
+                    ? getConversationHeaderSubtitle(selectedConversation)
+                    : "Select a conversation"}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -363,4 +393,59 @@ function formatShortDateTime(dateLike: Date | string) {
   }
 }
 
+function getKnownContactRoleLabel(conversation: ConversationItem) {
+  const role = conversation.contact?.role;
+  if (role === "lead") return "Lead";
+  if (role === "user") return "User";
+  return null;
+}
 
+function getKnownContactIdentity(conversation: ConversationItem) {
+  if (!conversation.contact || conversation.contact.role === "visitor") {
+    return null;
+  }
+
+  return {
+    title:
+      conversation.contact.displayName ||
+      conversation.contact.email ||
+      conversation.contact.phoneNumber ||
+      null,
+    email: conversation.contact.email,
+    phoneNumber: conversation.contact.phoneNumber,
+    roleLabel: getKnownContactRoleLabel(conversation),
+  };
+}
+
+function getConversationDisplayTitle(conversation: ConversationItem) {
+  const identity = getKnownContactIdentity(conversation);
+  if (identity?.title) return identity.title;
+
+  return String(conversation.lastUserMessage || "").trim() || "No user message";
+}
+
+function getConversationListSubtitle(conversation: ConversationItem) {
+  const preview = String(conversation.lastUserMessage || "").trim();
+  if (preview) return preview;
+
+  return `Conversation ${conversation.conversationId}`;
+}
+
+function getConversationHeaderTitle(conversation: ConversationItem | null) {
+  if (!conversation) return "Conversation";
+
+  return getConversationDisplayTitle(conversation);
+}
+
+function getConversationHeaderSubtitle(conversation: ConversationItem) {
+  const identity = getKnownContactIdentity(conversation);
+  const parts = [
+    identity?.roleLabel ?? null,
+    identity?.email ?? null,
+    identity?.phoneNumber ?? null,
+    conversation.channel ? String(conversation.channel).toUpperCase() : null,
+    `Conversation ${conversation.conversationId}`,
+  ].filter(Boolean);
+
+  return parts.join(" • ");
+}
