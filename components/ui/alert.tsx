@@ -4,13 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-    "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+    "relative w-full rounded-[var(--radius-input)] border p-3 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-3 [&>svg]:top-3",
     {
         variants: {
             variant: {
-                default: "bg-background text-foreground",
+                default:
+                    "bg-background text-foreground border-border [&>svg]:text-muted-foreground",
                 destructive:
-                    "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+                    "bg-[var(--status-danger-bg)] text-[var(--status-danger-fg)] border-[var(--status-danger-border)] [&>svg]:text-[var(--status-danger-fg)]",
+                info:
+                    "bg-[var(--status-info-bg)] text-[var(--status-info-fg)] border-[var(--status-info-border)] [&>svg]:text-[var(--status-info-fg)]",
+                success:
+                    "bg-[var(--status-success-bg)] text-[var(--status-success-fg)] border-[var(--status-success-border)] [&>svg]:text-[var(--status-success-fg)]",
+                warning:
+                    "bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)] border-[var(--status-warning-border)] [&>svg]:text-[var(--status-warning-fg)]",
             },
         },
         defaultVariants: {
@@ -38,7 +45,7 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <h5
         ref={ref}
-        className={cn("mb-1 font-semibold leading-none tracking-tight", className)}
+        className={cn("mb-1 text-sm font-semibold leading-none tracking-tight", className)}
         {...props}
     />
 ))

@@ -1,16 +1,16 @@
 import { merge } from "@/utils/ui";
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import RootClientShell from "@/components/providers/root-client-shell";
 import "./globals.css";
 import "./landing-page.css";
 import { defaultMetadata, organizationSchema, softwareApplicationSchema, websiteSchema } from "@/lib/metadata";
 
-const lato = Lato({
-  variable: "--font-lato",
-  weight: ["100", "300", "400", "700", "900"],
-  preload: true,
+// Inter is a variable font — supports all weights 100-900 continuously.
+// This ensures font-medium (500) and font-semibold (600) render correctly.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -61,7 +61,7 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={merge(
-          lato.variable,
+          inter.variable,
           "h-screen overflow-hidden font-sans antialiased m-0 p-0",
         )}
       >

@@ -2,7 +2,6 @@
 
 import { useState, useMemo, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
   Globe,
@@ -11,7 +10,6 @@ import {
   Search,
   Trash2,
   Edit3,
-  Calendar,
   Database,
   AlertTriangle,
   MoreVertical,
@@ -34,7 +32,6 @@ import { EmptyState } from '@/components/shared';
 import { useEditGuard } from '@/store/branch';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { AsyncBoundary } from '@/components/shared/AsyncBoundary';
-import { DataSourceCardSkeleton } from '@/components/skeletons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,36 +72,35 @@ const DATA_SOURCE_ICONS = {
   TXT: AlignLeft,
 } as const;
 
-const DATA_SOURCE_COLORS = {
-  URL: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
-  WEBSITE: 'from-green-500/10 via-green-500/5 to-transparent border-green-500/20 text-green-600',
-  DOCUMENT: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
-  PDF: 'from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 text-blue-600',
-  QNA: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20 text-purple-600',
-  TXT: 'from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 text-orange-600',
+const DATA_SOURCE_ICON_COLORS = {
+  URL: 'text-green-600 bg-green-500/10',
+  WEBSITE: 'text-green-600 bg-green-500/10',
+  DOCUMENT: 'text-blue-600 bg-blue-500/10',
+  PDF: 'text-blue-600 bg-blue-500/10',
+  QNA: 'text-purple-600 bg-purple-500/10',
+  TXT: 'text-orange-600 bg-orange-500/10',
 } as const;
 
 const DATA_SOURCE_BADGE_COLORS = {
-  URL: 'bg-green-500/10 text-green-600 border-green-500/20',
-  WEBSITE: 'bg-green-500/10 text-green-600 border-green-500/20',
-  DOCUMENT: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  PDF: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  QNA: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
-  TXT: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+  URL: 'bg-green-500/10 text-green-700 border-green-500/20',
+  WEBSITE: 'bg-green-500/10 text-green-700 border-green-500/20',
+  DOCUMENT: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
+  PDF: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
+  QNA: 'bg-purple-500/10 text-purple-700 border-purple-500/20',
+  TXT: 'bg-orange-500/10 text-orange-700 border-orange-500/20',
 } as const;
 
 const TRAINING_STATUS_BADGE_COLORS = {
   DRAFT: 'bg-muted text-muted-foreground border-border',
-  QUEUEING: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
-  PROCESSING: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  COMPLETED: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  QUEUEING: 'bg-amber-500/10 text-amber-700 border-amber-500/20',
+  PROCESSING: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
+  COMPLETED: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
   FAILED: 'bg-destructive/10 text-destructive border-destructive/20',
 } as const;
 
 function getStatusBadgeClass(status: string | null | undefined, map: Record<string, string>) {
   if (!status) return map.DRAFT;
-  const normalizedKey = status.toUpperCase();
-  return map[normalizedKey] || map.DRAFT;
+  return map[status.toUpperCase()] || map.DRAFT;
 }
 
 function EditCitationDialog({
@@ -144,12 +140,12 @@ function EditCitationDialog({
   );
 }
 
-function DataSourceCard({
+function DataSourceRow({
   dataSource,
   onDelete,
   onEditCitation,
   onViewChunks,
-  isLiveMode
+  isLiveMode,
 }: {
   dataSource: DataSourceItem;
   onDelete: () => void;
@@ -159,62 +155,87 @@ function DataSourceCard({
 }) {
   const normalizedType = (dataSource.type || 'DOCUMENT').toUpperCase() as keyof typeof DATA_SOURCE_ICONS;
   const Icon = DATA_SOURCE_ICONS[normalizedType] || FileText;
+  const iconColor = DATA_SOURCE_ICON_COLORS[normalizedType as keyof typeof DATA_SOURCE_ICON_COLORS] || DATA_SOURCE_ICON_COLORS.DOCUMENT;
   const badgeColor = DATA_SOURCE_BADGE_COLORS[normalizedType as keyof typeof DATA_SOURCE_BADGE_COLORS] || DATA_SOURCE_BADGE_COLORS.DOCUMENT;
-  const colorClass = DATA_SOURCE_COLORS[normalizedType as keyof typeof DATA_SOURCE_COLORS] || DATA_SOURCE_COLORS.DOCUMENT;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+    <div
       role="button"
       tabIndex={0}
       onClick={onViewChunks}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           onViewChunks();
         }
       }}
-      className="group relative flex cursor-pointer flex-col justify-between rounded-[var(--panel-radius-md)] border border-[var(--panel-border-soft)] bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+      className="group flex items-center gap-4 px-6 py-4 border-b border-border/50 hover:bg-muted/40 cursor-pointer transition-colors last:border-b-0"
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className={cn(
-            'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-card shadow-xs',
-            normalizedType === 'URL' || normalizedType === 'DOCUMENT' ? 'border-border/70' : 'border-border/60'
-          )}>
-            <Icon className={cn('h-5 w-5', colorClass.split(" ").at(-1))} />
-          </div>
-          <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-foreground truncate" title={dataSource.name}>
-              {dataSource.name}
-            </h3>
-            {dataSource.citation && (
-              <p className="text-xs text-muted-foreground truncate transition-colors group-hover:text-primary/80" title={dataSource.citation}>
-                {dataSource.citation}
-              </p>
-            )}
-          </div>
-        </div>
+      {/* Icon */}
+      <div className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', iconColor)}>
+        <Icon className="h-4 w-4" />
+      </div>
 
+      {/* Name + Citation */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors" title={dataSource.name}>
+          {dataSource.name}
+        </p>
+        {dataSource.citation && (
+          <p className="text-xs text-muted-foreground truncate mt-0.5" title={dataSource.citation}>
+            {dataSource.citation}
+          </p>
+        )}
+      </div>
+
+      {/* Type */}
+      <div className="w-24 shrink-0 hidden sm:flex justify-center">
+        <Badge
+          variant="outline"
+          className={cn('text-[10px] px-2 py-0.5 h-5 font-semibold tracking-[0.04em]', badgeColor)}
+        >
+          {normalizedType}
+        </Badge>
+      </div>
+
+      {/* Status */}
+      <div className="w-28 shrink-0 hidden md:flex justify-center">
+        <Badge
+          variant="outline"
+          className={cn(
+            'text-[10px] px-2 py-0.5 h-5 font-semibold tracking-[0.04em]',
+            getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
+          )}
+        >
+          {dataSource.ingestionStatus ?? 'Draft'}
+        </Badge>
+      </div>
+
+      {/* Created date */}
+      <div className="w-24 shrink-0 hidden lg:block text-xs text-muted-foreground">
+        {dataSource.createdAt ? new Date(dataSource.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: '2-digit' }) : 'N/A'}
+      </div>
+
+      {/* Citation status */}
+      <div className="w-28 shrink-0 hidden lg:block text-xs text-muted-foreground text-right">
+        {dataSource.citation ? 'Citation attached' : 'No citation'}
+      </div>
+
+      {/* Actions */}
+      <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground"
-              onClick={(e) => e.stopPropagation()}
+              className="h-8 w-8 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-foreground transition-opacity"
             >
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+          <DropdownMenuContent align="end">
             <FeatureGuard feature="datasources">
-              <DropdownMenuItem
-                onClick={onEditCitation}
-                disabled={isLiveMode}
-              >
+              <DropdownMenuItem onClick={onEditCitation} disabled={isLiveMode}>
                 <Edit3 className="w-4 h-4 mr-2" />
                 Edit citation
               </DropdownMenuItem>
@@ -230,39 +251,7 @@ function DataSourceCard({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Badge
-          variant="outline"
-          className={cn(
-            'text-[10px] px-2 py-0.5 h-6 font-semibold tracking-[0.04em]',
-            badgeColor
-          )}
-        >
-          {normalizedType}
-        </Badge>
-        <Badge
-          variant="outline"
-          className={cn(
-            'text-[10px] px-2 py-0.5 h-6 font-semibold tracking-[0.04em]',
-            getStatusBadgeClass(dataSource.ingestionStatus, TRAINING_STATUS_BADGE_COLORS)
-          )}
-        >
-          {dataSource.ingestionStatus ?? 'Draft'}
-        </Badge>
-      </div>
-
-      {/* Footer / Status */}
-      <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Calendar className="h-3.5 w-3.5" />
-          <span>{dataSource.createdAt ? new Date(dataSource.createdAt).toLocaleDateString() : 'N/A'}</span>
-        </div>
-        <div className="text-[11px] font-medium text-muted-foreground">
-          {dataSource.citation ? "Citation attached" : "No citation"}
-        </div>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -296,25 +285,11 @@ function DataSourcesContent({
   const { data: dataSources } = useSuspenseDataSources(botId);
   const accessControl = useAccessControl(workspaceId);
 
-  // Calculate source counts by type
-  const sourceCounts = useMemo(() => {
-    if (!dataSources) return { all: 0, URL: 0, DOCUMENT: 0, QNA: 0, TXT: 0 };
-
-    return {
-      all: dataSources.length,
-      URL: dataSources.filter(s => s.type === 'URL').length,
-      DOCUMENT: dataSources.filter(s => s.type === 'DOCUMENT').length,
-      QNA: dataSources.filter(s => s.type === 'QNA').length,
-      TXT: dataSources.filter(s => s.type === 'TXT').length,
-    };
-  }, [dataSources]);
-
-  // Filter sources by category and search
   const filteredSources = useMemo(() => {
     if (!dataSources) return [];
-
     return dataSources.filter((source) => {
-      const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const matchesSearch =
+        source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || source.type === selectedCategory;
       return matchesSearch && matchesCategory;
@@ -341,7 +316,7 @@ function DataSourcesContent({
             )}
           </FeatureGuard>
         ) : (
-          <div className="dashboard-panel flex min-h-[240px] items-center justify-center text-center text-muted-foreground">
+          <div className="flex min-h-[240px] items-center justify-center text-sm text-muted-foreground">
             No sources match your search
           </div>
         )}
@@ -350,32 +325,62 @@ function DataSourcesContent({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
-      <AnimatePresence mode="popLayout">
-        {filteredSources.map((source) => (
-          <DataSourceCard
-            key={source.id}
-            dataSource={source}
-            onDelete={() => onSourceToDelete(source)}
-            onEditCitation={() => onEditingSource(source)}
-            onViewChunks={() => onViewingSource(source)}
-            isLiveMode={isLiveMode}
-          />
-        ))}
-      </AnimatePresence>
+    <div>
+      {/* Table header */}
+      <div className="flex items-center gap-4 px-6 py-2.5 border-b border-border/60">
+        <div className="w-9 shrink-0" />
+        <div className="flex-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Name</div>
+        <div className="w-24 shrink-0 hidden sm:block text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground text-center">Type</div>
+        <div className="w-28 shrink-0 hidden md:block text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground text-center">Status</div>
+        <div className="w-24 shrink-0 hidden lg:block text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Created</div>
+        <div className="w-28 shrink-0 hidden lg:block text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground text-right">Citation</div>
+        <div className="w-8 shrink-0" />
+      </div>
+
+      {/* Rows */}
+      {filteredSources.map((source) => (
+        <DataSourceRow
+          key={source.id}
+          dataSource={source}
+          onDelete={() => onSourceToDelete(source)}
+          onEditCitation={() => onEditingSource(source)}
+          onViewChunks={() => onViewingSource(source)}
+          isLiveMode={isLiveMode}
+        />
+      ))}
     </div>
   );
 }
 
 // =============================================================================
-// Grid Skeleton for Loading State
+// List Skeleton for Loading State
 // =============================================================================
 
-function DataSourceGridSkeleton({ count = 9 }: { count?: number }) {
+function DataSourceListSkeleton({ count = 8 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 pb-20">
+    <div>
+      <div className="flex items-center gap-4 px-6 py-2.5 border-b border-border/60">
+        <div className="w-9 shrink-0" />
+        <div className="flex-1 h-3 w-12 bg-muted rounded animate-pulse" />
+        <div className="w-24 shrink-0 hidden sm:block h-3 w-8 bg-muted rounded animate-pulse" />
+        <div className="w-28 shrink-0 hidden md:block h-3 w-10 bg-muted rounded animate-pulse" />
+        <div className="w-24 shrink-0 hidden lg:block h-3 w-12 bg-muted rounded animate-pulse" />
+        <div className="w-28 shrink-0 hidden lg:block h-3 w-14 bg-muted rounded animate-pulse" />
+        <div className="w-8 shrink-0" />
+      </div>
       {Array.from({ length: count }).map((_, i) => (
-        <DataSourceCardSkeleton key={i} />
+        <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-border/50">
+          <div className="w-9 h-9 shrink-0 rounded-lg bg-muted animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3.5 bg-muted rounded animate-pulse w-48" />
+            <div className="h-3 bg-muted/60 rounded animate-pulse w-32" />
+          </div>
+          <div className="w-24 shrink-0 hidden sm:block h-5 w-12 bg-muted rounded-full animate-pulse" />
+          <div className="w-28 shrink-0 hidden md:block h-5 w-16 bg-muted rounded-full animate-pulse" />
+          <div className="w-24 shrink-0 hidden lg:block h-3 w-16 bg-muted rounded animate-pulse" />
+          <div className="w-28 shrink-0 hidden lg:block h-3 w-20 bg-muted rounded animate-pulse" />
+          <div className="w-8 shrink-0" />
+        </div>
       ))}
     </div>
   );
@@ -409,7 +414,6 @@ export default function DataSourcesPage() {
 
   const confirmDelete = async () => {
     if (!sourceToDelete) return;
-
     try {
       await deleteMutation.mutateAsync({
         chatbotId: botId,
@@ -431,7 +435,6 @@ export default function DataSourcesPage() {
   const handleSaveCitation = async (citation: string) => {
     if (!editingSource) return;
     if (!guardEdit(() => true)) return;
-
     try {
       await addCitationMutation.mutateAsync({
         chatbotId: botId,
@@ -477,7 +480,7 @@ export default function DataSourcesPage() {
 
   return (
     <div className="h-[calc(100vh-64px)] flex bg-background overflow-hidden rounded-[var(--panel-radius-lg)] border border-[var(--panel-border-soft)] shadow-sm">
-      {/* Left Sidebar - Categories (Fixed) - Note: sourceCounts comes from hook inside sidebar */}
+      {/* Left Sidebar */}
       <div className="flex-shrink-0 h-full">
         <SourcesCategorySidebar
           selectedCategory={selectedCategory}
@@ -488,16 +491,13 @@ export default function DataSourcesPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[var(--surface-secondary)]">
-        {/* Header (Fixed) */}
-        <div className="flex-shrink-0 border-b border-border/60 bg-card p-6">
-          <div className="dashboard-toolbar">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-card">
+        {/* Header */}
+        <div className="flex-shrink-0 px-6 pt-6 pb-5 border-b border-border/60">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="type-page-title">
-                {getCategoryTitle()}
-              </h1>
+              <h1 className="type-page-title">{getCategoryTitle()}</h1>
               <p className="type-body-muted mt-1">
-                {/* Show loading state for count */}
                 <Suspense fallback="Loading...">
                   <DataSourceCount
                     botId={botId}
@@ -507,8 +507,9 @@ export default function DataSourcesPage() {
                 </Suspense>
               </p>
             </div>
-            <div className="dashboard-toolbar__group">
-              <div className="dashboard-search-shell min-w-[280px] max-w-md">
+
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="dashboard-search-shell min-w-[240px]">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchQuery}
@@ -542,11 +543,9 @@ export default function DataSourcesPage() {
           </div>
         </div>
 
-        {/* Table (Scrollable) - Wrapped in AsyncBoundary for streaming */}
+        {/* List (Scrollable) */}
         <div className="flex-1 overflow-auto">
-          <AsyncBoundary
-            loadingFallback={<DataSourceGridSkeleton count={9} />}
-          >
+          <AsyncBoundary loadingFallback={<DataSourceListSkeleton count={8} />}>
             <DataSourcesContent
               botId={botId}
               workspaceId={workspaceId}
@@ -598,13 +597,12 @@ export default function DataSourcesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 }
 
 // =============================================================================
-// Helper component for rendering source count in header
+// Helper component for source count in header
 // =============================================================================
 
 function DataSourceCount({
@@ -621,14 +619,13 @@ function DataSourceCount({
   const filteredSources = useMemo(() => {
     if (!dataSources) return [];
     return dataSources.filter((source) => {
-      const matchesSearch = source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const matchesSearch =
+        source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         source.citation?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || source.type === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [dataSources, searchQuery, selectedCategory]);
 
-  return (
-    <>{filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}</>
-  );
+  return <>{filteredSources.length} {filteredSources.length === 1 ? 'item' : 'items'}</>;
 }

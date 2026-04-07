@@ -5,15 +5,12 @@
 
 /* ─── Material Symbols Outlined ─────────────────────────────────────────────
  * Variable icon font loaded in app/layout.tsx via Google Fonts.
- * These defaults give a clean, outlined look at weight 400.
- * Override per-instance via `font-variation-settings` or the style prop.
  * ─────────────────────────────────────────────────────────────────────────── */
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
-  /* default render size */
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -31,893 +28,793 @@
 }
 
 /**
- * Theme Configuration
- * 
- * All theme values are centralized in lib/theme/index.ts
- * To change the theme, modify the values in that file.
- * 
- * This CSS file uses CSS variables with OKLCH color format.
- * OKLCH provides better perceptual uniformity than HSL.
+ * ═══════════════════════════════════════════════════════════════════════════
+ * DESIGN SYSTEM — Mindtickle-Aligned
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Color format: OKLCH (perceptual uniformity, wide gamut)
+ * Primary:      Ant Design 5 Blue  ≈ #1677ff
+ * Surfaces:     White + neutral blue-gray hierarchy (#f5f7fa range)
+ * Radius:       4px (inputs/buttons) · 8px (cards/panels) · 999px (pills)
+ * Shadows:      Mindtickle exact rgba() values
+ * Font:         Lato (swap to Inter in lib/theme/fonts.ts for closer match)
+ *
+ * Token reference:
+ *   Text     → --text-{default|secondary|tertiary|disabled|accent|danger…}
+ *   Icon     → --icon-{default|secondary|strong|accent|disabled…}
+ *   Border   → --border-{default|secondary|accent|danger…}
+ *   Shadow   → --shadow-{1|2|3|4|reverse}  (Mindtickle LEVEL1–4 + REVERSE)
+ *   Status   → --status-{info|success|warning|danger|neutral}-{bg|fg|border}
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 
 :root {
-  /* Typography - Update fonts in lib/theme/fonts.ts */
-  font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
-  /* `--font-lato` is provided by next/font in app/layout.tsx */
+  /* ── Font ──────────────────────────────────────────────────────────────
+   * --font-inter is injected by next/font in app/layout.tsx
+   * Inter is a variable font — all weights 100-900 available             */
+  font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
 
-  /* Typography tokens */
-  --font-h1: 24px;
-  --font-h2: 20px;
-  --font-h3: 18px;
-  --font-h4: 16px;
-  --font-h5: 14px;
-  --font-body: 14px;
-  --font-small: 13px;
-  --font-xsmall: 12px;
-  --font-ui: 15px;
+  /* ── Font Size Scale (Mindtickle XS → 4XL) ────────────────────────── */
+  --font-xs:    10px;   /* XS  · labelSmall                             */
+  --font-s:     12px;   /* S   · labelMedium, bodySmall                 */
+  --font-m:     14px;   /* M   · body default, headingXsmall            */
+  --font-l:     16px;   /* L   · headingSmall                           */
+  --font-xl:    20px;   /* XL  · headingMedium                          */
+  --font-2xl:   24px;   /* 2XL · headingLarge                           */
+  --font-3xl:   28px;   /* 3XL · headingXLarge                          */
+  --font-4xl:   32px;   /* 4XL · displayLarge                           */
 
-  /* Line heights: headings 1.2x, body 1.5x, small/caption 1.6x+ */
-  --line-h1: 29px;
-  /* 24 × 1.2 */
-  --line-h2: 24px;
-  /* 20 × 1.2 */
-  --line-h3: 22px;
-  /* 18 × 1.2 */
-  --line-h4: 19px;
-  /* 16 × 1.2 */
-  --line-h5: 17px;
-  /* 14 × 1.2 */
-  --line-body: 21px;
-  /* 14 × 1.5 */
-  --line-small: 21px;
-  /* 13 × 1.6 */
-  --line-xsmall: 20px;
-  /* 12 × 1.65 */
-  --line-ui: 23px;
-  /* 15 × 1.5 */
+  /* Legacy aliases — existing components reference these */
+  --font-xsmall: var(--font-xs);
+  --font-small:  var(--font-s);
+  --font-body:   var(--font-m);
+  --font-ui:     15px;
+  --font-h1:     var(--font-2xl);
+  --font-h2:     var(--font-xl);
+  --font-h3:     18px;
+  --font-h4:     var(--font-l);
+  --font-h5:     var(--font-m);
 
-  /* Paragraph spacing: ~1x of body font size */
+  /* ── Line Heights ──────────────────────────────────────────────────── */
+  /* Headings 1.2× · body 1.5× · labels/captions 1.6×                  */
+  --line-xs:   16px;   /* 10 × 1.6 */
+  --line-s:    19px;   /* 12 × 1.6 */
+  --line-m:    21px;   /* 14 × 1.5 */
+  --line-l:    24px;   /* 16 × 1.5 */
+  --line-xl:   24px;   /* 20 × 1.2 */
+  --line-2xl:  29px;   /* 24 × 1.2 */
+  --line-3xl:  34px;   /* 28 × 1.2 */
+  --line-4xl:  38px;   /* 32 × 1.2 */
+
+  /* Legacy aliases */
+  --line-xsmall: var(--line-xs);
+  --line-small:  var(--line-s);
+  --line-body:   var(--line-m);
+  --line-ui:     23px;
+  --line-h1:     var(--line-2xl);
+  --line-h2:     var(--line-xl);
+  --line-h3:     22px;
+  --line-h4:     var(--line-l);
+  --line-h5:     17px;
+
   --paragraph-spacing: 14px;
   --content-max-width: 1280px;
 
-  /* Global Cursor Rules */
-  /* These will be applied via base layer or utility classes eventually, but defining here for reference if needed */
+  /* ── Border Radius — Mindtickle Style ─────────────────────────────── */
+  /* The tightest element defines the UI's character. Mindtickle is     */
+  /* professional / compact. 4px for all interactive elements.          */
+  --radius:        0.5rem;        /* 8px  · base (cards, panels)        */
+  --radius-input:  0.25rem;       /* 4px  · inputs, buttons, tags       */
+  --radius-card:   0.5rem;        /* 8px  · cards, panels               */
+  --radius-modal:  0.5rem;        /* 8px  · modals, dialogs             */
+  --radius-pill:   624.9375rem;   /* 999px· chips, pills, search bars   */
 
-  /* Theme Variables */
-  --radius: 0.625rem;
+  /* ── Surface Hierarchy (L0 → L2) ──────────────────────────────────── */
+  /* L0  --background    Page canvas — pure white                        */
+  /* L1  --secondary     Sidebar/chrome — neutral blue-gray (#f5f7fa)   */
+  /* L2  --card          Content panels — pure white                     */
 
-  /* ─── 3-Surface Hierarchy ─────────────────────────────────────────────────
-   * L0  --background       Page canvas (tinted off-white)
-   * L1  --sidebar          Structural chrome (sidebar, navbar) — slightly lighter
-   * L2  --card             Foreground content (cards, panels) — pure white
-   *
-   * Nested panels should use --surface-secondary (between L1 and L2)
-   * ─────────────────────────────────────────────────────────────────────── */
+  --background:             oklch(1 0 0);
+  --foreground:             oklch(0.215 0.020 264);
 
-  /* Backgrounds */
-  --background: oklch(1 0 0);
-  /* L0 — pure white canvas for public pages */
-  --foreground: oklch(0.2101 0.0318 264.66);
-  /* Near-black heading color */
+  --card:                   oklch(1 0 0);
+  --card-foreground:        oklch(0.215 0.020 264);
 
-  /* Cards / Popovers */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2101 0.0318 264.66);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2101 0.0318 264.66);
+  --popover:                oklch(1 0 0);
+  --popover-foreground:     oklch(0.215 0.020 264);
 
-  /* Primary — Brand Blue */
-  --primary: oklch(0.5461 0.2152 262.88);
-  --primary-foreground: oklch(1 0 0);
+  /* Primary — Ant Design 5 blue ≈ #1677ff */
+  --primary:                oklch(0.548 0.217 261);
+  --primary-foreground:     oklch(1 0 0);
 
-  /* Secondary surface — slightly darker for nested panels */
-  --secondary: oklch(0.9671 0.0021 286.37);
-  --secondary-foreground: oklch(0.2101 0.0318 264.66);
+  /* Secondary surface — sidebar bg ≈ #f5f7fa */
+  --secondary:              oklch(0.968 0.006 264);
+  --secondary-foreground:   oklch(0.215 0.020 264);
 
-  /* Muted — subtle background, e.g. tags, skeletons */
-  --muted: oklch(0.9671 0.0021 286.37);
-  --muted-foreground: oklch(0.551 0.0234 264.36);
-  /* Mid-gray for captions/disabled */
+  /* Muted — disabled bg, tag bg ≈ #f0f2f5 */
+  --muted:                  oklch(0.958 0.006 264);
+  --muted-foreground:       oklch(0.420 0.015 264);  /* ≈ #4d4d4d — darkened for contrast on gray surfaces */
 
-  /* Extra surface token for nested panels inside cards (between L1 and L2) */
-  --surface-secondary: oklch(0.9820 0.003 248);
+  /* Accent — hover state for ghost buttons, rows ≈ #f5f7fa */
+  --accent:                 oklch(0.954 0.008 264);
+  --accent-foreground:      oklch(0.215 0.020 264);
 
-  /* Accent — subtle neutral for hover states (ghost/outline buttons) */
-  --accent: oklch(0.9671 0.0021 286.37);
-  --accent-foreground: oklch(0.2101 0.0318 264.66);
-
-  /* Destructive — warm red */
-  --destructive: oklch(0.65 0.20 25);
+  /* Destructive — Ant Design red ≈ #ff4d4f */
+  --destructive:            oklch(0.548 0.200 22);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders & Inputs */
-  --border: oklch(0.8700 0.0080 264.53);
-  --input: oklch(0.8700 0.0080 264.53);
-  --ring: oklch(0.5461 0.2152 262.88);
+  /* Borders & Inputs — Ant Design border ≈ #d9d9d9 */
+  --border:                 oklch(0.866 0.005 264);
+  --input:                  oklch(0.866 0.005 264);
+  --ring:                   oklch(0.548 0.217 261);
 
-  /* Chart colors — Blue gradient */
-  --chart-1: oklch(0.5461 0.2152 262.88);
-  --chart-2: oklch(0.60 0.20 263);
-  --chart-3: oklch(0.50 0.20 263);
-  --chart-4: oklch(0.40 0.20 263);
-  --chart-5: oklch(0.30 0.20 263);
+  /* Input background — slightly off-white for contrast against card */
+  --input-background:       oklch(0.979 0.004 264);
 
-  /* Sidebar — L1: Pure white structural chrome */
-  --sidebar: oklch(0.9820 0.003 248);
-  --sidebar-background: oklch(0.9820 0.003 248);
-  --sidebar-foreground: oklch(0.2101 0.0318 264.66);
-  --sidebar-primary: oklch(0.5461 0.2152 262.88);
+  /* ── Nested Surface Tokens ─────────────────────────────────────────── */
+  --surface-secondary:  oklch(0.968 0.006 264);   /* same as --secondary  */
+  --surface-tertiary:   oklch(0.954 0.008 264);   /* hover / deeper nesting */
+
+  /* ── Text Hierarchy (Mindtickle 4-level system) ────────────────────── */
+  --text-default:    oklch(0.215 0.020 264);   /* ≈ #262626 — primary     */
+  --text-secondary:  oklch(0.420 0.015 264);   /* ≈ #4d4d4d — secondary (darkened for AA contrast on gray surfaces) */
+  --text-tertiary:   oklch(0.560 0.010 264);   /* ≈ #717171 — hint/disabled    */
+  --text-disabled:   oklch(0.765 0.005 264);   /* ≈ #bfbfbf — disabled    */
+  --text-accent:     oklch(0.548 0.217 261);   /* blue — links, active    */
+  --text-danger:     oklch(0.548 0.200 22);
+  --text-success:    oklch(0.516 0.155 142);
+  --text-warning:    oklch(0.620 0.160 75);
+  --text-inverse:    oklch(1 0 0);             /* white — on dark bg      */
+
+  /* ── Icon Hierarchy ────────────────────────────────────────────────── */
+  --icon-default:    oklch(0.560 0.015 264);
+  --icon-secondary:  oklch(0.660 0.010 264);
+  --icon-disabled:   oklch(0.775 0.005 264);
+  --icon-strong:     oklch(0.350 0.020 264);
+  --icon-accent:     oklch(0.548 0.217 261);
+  --icon-success:    oklch(0.516 0.155 142);
+  --icon-warning:    oklch(0.620 0.160 75);
+  --icon-danger:     oklch(0.548 0.200 22);
+  --icon-inverse:    oklch(1 0 0);
+
+  /* ── Border Hierarchy ──────────────────────────────────────────────── */
+  --border-default:    oklch(0.866 0.005 264);   /* ≈ #d9d9d9 standard   */
+  --border-secondary:  oklch(0.916 0.004 264);   /* ≈ #e8e8e8 dividers   */
+  --border-tertiary:   oklch(0.940 0.003 264);   /* very subtle          */
+  --border-strong:     oklch(0.760 0.010 264);   /* emphasized           */
+  --border-accent:     oklch(0.548 0.217 261);   /* blue focus ring      */
+  --border-danger:     oklch(0.750 0.100 18);
+  --border-success:    oklch(0.820 0.095 142);
+  --border-warning:    oklch(0.840 0.120 80);
+
+  /* ── Accent State Backgrounds ──────────────────────────────────────── */
+  /* Used for selected rows, active list items — light blue wash          */
+  --bg-accent-selected:  oklch(0.955 0.032 250);
+  --bg-accent-subtle:    oklch(0.963 0.024 248);
+  --bg-disabled:         oklch(0.960 0.005 264);
+
+  /* ── Shadows — Mindtickle Exact Values ─────────────────────────────── */
+  /* rgba() gives reliable cross-browser results for very subtle shadows  */
+  --shadow-1:       0 2px 4px 0 rgba(0,0,0,0.08);        /* LEVEL1 cards    */
+  --shadow-2:       0 4px 8px 0 rgba(0,0,0,0.08);        /* LEVEL2 dropdowns */
+  --shadow-3:       0 8px 16px 0 rgba(0,0,0,0.10);       /* LEVEL3 modals    */
+  --shadow-4:       0 16px 32px 0 rgba(0,0,0,0.12);      /* LEVEL4 overlays  */
+  --shadow-reverse: 0 -2px 4px 0 rgba(0,0,0,0.08);       /* sticky footer    */
+
+  /* Aliases — keep existing component references working */
+  --shadow-sm: var(--shadow-1);
+  --shadow:    var(--shadow-2);
+  --shadow-md: var(--shadow-3);
+  --shadow-lg: var(--shadow-4);
+  --shadow-xl: 0 20px 40px 0 rgba(0,0,0,0.14);
+
+  /* ── Z-Index Stack ──────────────────────────────────────────────────── */
+  --z-toast:    9999;
+  --z-loader:   9990;
+  --z-overlay:  9980;
+  --z-confirm:  9970;
+  --z-tooltip:  9950;
+  --z-popover:  9940;
+  --z-modal:    9912;
+  --z-header:   9900;
+
+  /* ── Semantic Status Fills (bg + fg + border) ───────────────────────── */
+  --status-info-bg:         oklch(0.963 0.028 248);
+  --status-info-fg:         oklch(0.548 0.217 261);
+  --status-info-border:     oklch(0.868 0.075 245);
+
+  --status-success-bg:      oklch(0.971 0.040 148);
+  --status-success-fg:      oklch(0.516 0.155 142);
+  --status-success-border:  oklch(0.852 0.095 148);
+
+  --status-warning-bg:      oklch(0.985 0.042 85);
+  --status-warning-fg:      oklch(0.620 0.160 75);
+  --status-warning-border:  oklch(0.884 0.125 82);
+
+  --status-danger-bg:       oklch(0.976 0.022 20);
+  --status-danger-fg:       oklch(0.548 0.200 22);
+  --status-danger-border:   oklch(0.840 0.095 18);
+
+  --status-neutral-bg:      oklch(0.963 0.005 264);
+  --status-neutral-fg:      oklch(0.479 0.012 264);
+  --status-neutral-border:  oklch(0.900 0.005 264);
+
+  /* ── Chart Colors — Blue gradient ──────────────────────────────────── */
+  --chart-1: oklch(0.548 0.217 261);
+  --chart-2: oklch(0.620 0.195 261);
+  --chart-3: oklch(0.490 0.225 261);
+  --chart-4: oklch(0.420 0.200 261);
+  --chart-5: oklch(0.355 0.175 261);
+
+  /* ── Sidebar ────────────────────────────────────────────────────────── */
+  --sidebar:                    oklch(0.968 0.006 264);
+  --sidebar-background:         oklch(0.968 0.006 264);
+  --sidebar-foreground:         oklch(0.215 0.020 264);
+  --sidebar-primary:            oklch(0.548 0.217 261);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.9842 0.0034 247.86);
-  /* blue-tinted gray for hover */
-  --sidebar-accent-foreground: oklch(0.5461 0.2152 262.88);
-  --sidebar-border: oklch(0.8700 0.0080 264.53);
-  --sidebar-ring: oklch(0.5461 0.2152 262.88);
-
-  /* Input Backgrounds — slightly off-white for contrast */
-  --input-background: oklch(0.9846 0.0017 247.84);
+  --sidebar-accent:             oklch(0.955 0.032 250);
+  --sidebar-accent-foreground:  oklch(0.548 0.217 261);
+  --sidebar-border:             oklch(0.898 0.005 264);
+  --sidebar-ring:               oklch(0.548 0.217 261);
 }
 
-/* Dark Theme - IDE Style (Zinc 950 base) */
+/* ── Dark Theme — IDE Style ─────────────────────────────────────────────── */
 .dark {
-  /* Background: Deep dark base (Zinc 950) */
-  --background: oklch(0.145 0.005 286);
-  --foreground: oklch(0.98 0.005 286);
+  --background:             oklch(0.145 0.005 286);
+  --foreground:             oklch(0.98 0.005 286);
 
-  /* Card: Slightly lighter dark (Zinc 900) */
-  --card: oklch(0.21 0.006 286);
-  --card-foreground: oklch(0.98 0.005 286);
+  --card:                   oklch(0.21 0.006 286);
+  --card-foreground:        oklch(0.98 0.005 286);
 
-  --popover: oklch(0.21 0.006 286);
-  --popover-foreground: oklch(0.98 0.005 286);
+  --popover:                oklch(0.21 0.006 286);
+  --popover-foreground:     oklch(0.98 0.005 286);
 
-  /* Blue Accent */
-  --primary: oklch(0.63 0.20 260);
-  --primary-foreground: oklch(1 0 0);
+  --primary:                oklch(0.63 0.20 260);
+  --primary-foreground:     oklch(1 0 0);
 
-  /* Medium dark for secondary elements (Zinc 800) */
-  --secondary: oklch(0.27 0.006 286);
-  --secondary-foreground: oklch(0.98 0.005 286);
+  --secondary:              oklch(0.27 0.006 286);
+  --secondary-foreground:   oklch(0.98 0.005 286);
 
-  --muted: oklch(0.21 0.006 286);
-  --muted-foreground: oklch(0.71 0.01 286);
+  --muted:                  oklch(0.21 0.006 286);
+  --muted-foreground:       oklch(0.71 0.01 286);
 
-  /* Accent — subtle neutral for hover states */
-  --accent: oklch(0.27 0.006 286);
-  --accent-foreground: oklch(0.98 0.005 286);
+  --accent:                 oklch(0.27 0.006 286);
+  --accent-foreground:      oklch(0.98 0.005 286);
 
-  --destructive: oklch(0.65 0.20 25);
+  --destructive:            oklch(0.65 0.20 25);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders (Zinc 700) */
-  --border: oklch(0.35 0.008 286);
-  --input: oklch(0.35 0.008 286);
-  --ring: oklch(0.63 0.20 260);
+  --border:                 oklch(0.35 0.008 286);
+  --input:                  oklch(0.35 0.008 286);
+  --ring:                   oklch(0.63 0.20 260);
 
-  /* Chart colors - Blue gradient */
+  --input-background:       oklch(0.145 0.005 286);
+  --surface-secondary:      oklch(0.24 0.006 286);
+  --surface-tertiary:       oklch(0.28 0.007 286);
+
+  --text-default:    oklch(0.98 0.005 286);
+  --text-secondary:  oklch(0.71 0.01 286);
+  --text-tertiary:   oklch(0.58 0.008 286);
+  --text-disabled:   oklch(0.42 0.006 286);
+  --text-accent:     oklch(0.63 0.20 260);
+  --text-inverse:    oklch(0.145 0.005 286);
+
+  --icon-default:    oklch(0.71 0.01 286);
+  --icon-secondary:  oklch(0.58 0.008 286);
+  --icon-disabled:   oklch(0.42 0.006 286);
+  --icon-strong:     oklch(0.90 0.008 286);
+  --icon-accent:     oklch(0.63 0.20 260);
+  --icon-inverse:    oklch(0.145 0.005 286);
+
+  --border-default:   oklch(0.35 0.008 286);
+  --border-secondary: oklch(0.30 0.007 286);
+  --border-accent:    oklch(0.63 0.20 260);
+
+  --bg-accent-selected: oklch(0.28 0.03 258);
+  --bg-accent-subtle:   oklch(0.26 0.025 258);
+  --bg-disabled:        oklch(0.24 0.006 286);
+
+  --shadow-1:       0 2px 4px 0 rgba(0,0,0,0.30);
+  --shadow-2:       0 4px 8px 0 rgba(0,0,0,0.35);
+  --shadow-3:       0 8px 16px 0 rgba(0,0,0,0.40);
+  --shadow-4:       0 16px 32px 0 rgba(0,0,0,0.45);
+  --shadow-reverse: 0 -2px 4px 0 rgba(0,0,0,0.30);
+  --shadow-sm: var(--shadow-1);
+  --shadow:    var(--shadow-2);
+  --shadow-md: var(--shadow-3);
+  --shadow-lg: var(--shadow-4);
+  --shadow-xl: 0 20px 40px 0 rgba(0,0,0,0.50);
+
   --chart-1: oklch(0.63 0.20 260);
   --chart-2: oklch(0.55 0.22 260);
   --chart-3: oklch(0.47 0.24 260);
   --chart-4: oklch(0.40 0.21 260);
   --chart-5: oklch(0.33 0.18 260);
 
-  /* Sidebar - Slightly lighter than background (Zinc 900) to match IDE aesthetic (like VS Code/Cursor) */
-  --sidebar: oklch(0.21 0.006 286);
-  --sidebar-background: oklch(0.21 0.006 286);
-  --sidebar-foreground: oklch(0.95 0.01 286);
-  --sidebar-primary: oklch(0.63 0.20 260);
+  --sidebar:                    oklch(0.21 0.006 286);
+  --sidebar-background:         oklch(0.21 0.006 286);
+  --sidebar-foreground:         oklch(0.95 0.01 286);
+  --sidebar-primary:            oklch(0.63 0.20 260);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.27 0.006 286);
-  --sidebar-accent-foreground: oklch(0.98 0.01 286);
-  --sidebar-border: oklch(0.35 0.008 286);
-  --sidebar-ring: oklch(0.63 0.20 260);
+  --sidebar-accent:             oklch(0.27 0.006 286);
+  --sidebar-accent-foreground:  oklch(0.98 0.01 286);
+  --sidebar-border:             oklch(0.35 0.008 286);
+  --sidebar-ring:               oklch(0.63 0.20 260);
 
-  --input-background: oklch(0.145 0.005 286);
+  --status-info-bg:         oklch(0.28 0.03 258);
+  --status-info-fg:         oklch(0.80 0.08 252);
+  --status-info-border:     oklch(0.38 0.03 258);
+  --status-success-bg:      oklch(0.28 0.03 151);
+  --status-success-fg:      oklch(0.84 0.08 151);
+  --status-success-border:  oklch(0.37 0.03 151);
+  --status-warning-bg:      oklch(0.29 0.03 82);
+  --status-warning-fg:      oklch(0.86 0.07 82);
+  --status-warning-border:  oklch(0.38 0.03 82);
+  --status-danger-bg:       oklch(0.28 0.03 24);
+  --status-danger-fg:       oklch(0.84 0.08 24);
+  --status-danger-border:   oklch(0.39 0.03 24);
+  --status-neutral-bg:      oklch(0.24 0.006 286);
+  --status-neutral-fg:      oklch(0.82 0.01 286);
+  --status-neutral-border:  oklch(0.35 0.008 286);
 }
 
 @theme inline {
-  /* Font families - Managed by lib/theme/fonts.ts */
-  --font-sans: var(--font-lato);
-  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
-  --font-lato: var(--font-lato);
+  /* Font families */
+  --font-sans:    var(--font-inter);
+  --font-heading: var(--font-inter);   /* used by font-heading class — same face, different semantic intent */
+  --font-mono:    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Typography (Tailwind v4) */
-  /* Font sizes */
-  --text-2xs: var(--font-xsmall);
-  --text-2xs--line-height: var(--line-xsmall);
-  --text-xs: var(--font-small);
-  --text-xs--line-height: var(--line-small);
-  --text-sm: var(--font-body);
-  --text-sm--line-height: var(--line-body);
-  --text-base: var(--font-ui);
-  --text-base--line-height: var(--line-ui);
-  --text-lg: var(--font-h4);
-  --text-lg--line-height: var(--line-h4);
-  --text-xl: var(--font-h2);
-  --text-xl--line-height: var(--line-h2);
-  --text-2xl: var(--font-h1);
-  --text-2xl--line-height: var(--line-h1);
+  /* ── Typography (Tailwind v4 size → CSS var) ─────────────────────── */
+  --text-2xs:               var(--font-xs);       /* 10px */
+  --text-2xs--line-height:  var(--line-xs);
+  --text-xs:                var(--font-s);        /* 12px */
+  --text-xs--line-height:   var(--line-s);
+  --text-sm:                var(--font-m);        /* 14px — Mindtickle body default */
+  --text-sm--line-height:   var(--line-m);
+  --text-base:              var(--font-m);        /* 14px — aligns text-base with MT body */
+  --text-base--line-height: var(--line-m);
+  --text-lg:                var(--font-l);        /* 16px */
+  --text-lg--line-height:   var(--line-l);
+  --text-xl:                var(--font-h2);       /* 20px */
+  --text-xl--line-height:   var(--line-xl);
+  --text-2xl:               var(--font-h1);       /* 24px */
+  --text-2xl--line-height:  var(--line-2xl);
 
   /* Font weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
+  --font-weight-light:    300;
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
 
-  /* Radius values */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* ── Radius (Tailwind v4) ────────────────────────────────────────── */
+  --radius-sm:  var(--radius-input);  /* 4px */
+  --radius-md:  calc(var(--radius) - 2px);
+  --radius-lg:  var(--radius);        /* 8px */
+  --radius-xl:  calc(var(--radius) + 4px);
 
-  /* Container */
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
+  /* ── Breakpoints ─────────────────────────────────────────────────── */
+  --breakpoint-sm:  640px;
+  --breakpoint-md:  768px;
+  --breakpoint-lg:  1024px;
+  --breakpoint-xl:  1280px;
   --breakpoint-2xl: 1440px;
 
-  /* Color tokens */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
+  /* ── Color tokens ────────────────────────────────────────────────── */
+  --color-background:               var(--background);
+  --color-foreground:               var(--foreground);
+  --color-card:                     var(--card);
+  --color-card-foreground:          var(--card-foreground);
+  --color-popover:                  var(--popover);
+  --color-popover-foreground:       var(--popover-foreground);
+  --color-primary:                  var(--primary);
+  --color-primary-foreground:       var(--primary-foreground);
+  --color-secondary:                var(--secondary);
+  --color-secondary-foreground:     var(--secondary-foreground);
+  --color-muted:                    var(--muted);
+  --color-muted-foreground:         var(--muted-foreground);
+  --color-accent:                   var(--accent);
+  --color-accent-foreground:        var(--accent-foreground);
+  --color-destructive:              var(--destructive);
+  --color-destructive-foreground:   var(--destructive-foreground);
+  --color-border:                   var(--border);
+  --color-input:                    var(--input);
+  --color-ring:                     var(--ring);
+  --color-chart-1:                  var(--chart-1);
+  --color-chart-2:                  var(--chart-2);
+  --color-chart-3:                  var(--chart-3);
+  --color-chart-4:                  var(--chart-4);
+  --color-chart-5:                  var(--chart-5);
+  --color-sidebar:                  var(--sidebar);
+  --color-sidebar-foreground:       var(--sidebar-foreground);
+  --color-sidebar-primary:          var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent:           var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border:           var(--sidebar-border);
+  --color-sidebar-ring:             var(--sidebar-ring);
 
-  /* Animation Variables */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-gradient: gradient 8s linear infinite;
-  --animate-meteor: meteor 5s linear infinite;
-  --animate-grid: grid 15s linear infinite;
-  --animate-marquee: marquee var(--duration) infinite linear;
-  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
-  --animate-marquee-left: marquee-infinite 20s linear infinite;
-  --animate-marquee-left-slow: marquee-infinite 35s linear infinite;
-  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
-  --animate-shiny-text: shiny-text 8s infinite;
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
-  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
-  --animate-rippling: rippling var(--duration, 0.6s) ease-out;
-  --animate-line: line 2s linear infinite;
-  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+  /* ── Shadow utilities — map Tailwind shadow classes to our tokens ── */
+  /* Without this, Tailwind's built-in shadow-sm (0 1px 2px / 0.05)    */
+  /* overrides dashboard-panel's box-shadow via @layer utilities.       */
+  --shadow-sm:   var(--shadow-1);   /* 0 2px 4px 0 rgba(0,0,0,0.08) */
+  --shadow:      var(--shadow-2);   /* 0 4px 8px 0 rgba(0,0,0,0.08) */
+  --shadow-md:   var(--shadow-3);   /* 0 8px 16px 0 rgba(0,0,0,0.10) */
+  --shadow-lg:   var(--shadow-4);   /* 0 16px 32px 0 rgba(0,0,0,0.12) */
+  --shadow-xl:   0 20px 40px 0 rgba(0,0,0,0.14);
+  --shadow-none: none;
+
+  /* ── Animation Variables ─────────────────────────────────────────── */
+  --animate-accordion-down:            accordion-down 0.2s ease-out;
+  --animate-accordion-up:              accordion-up 0.2s ease-out;
+  --animate-gradient:                  gradient 8s linear infinite;
+  --animate-meteor:                    meteor 5s linear infinite;
+  --animate-grid:                      grid 15s linear infinite;
+  --animate-marquee:                   marquee var(--duration) infinite linear;
+  --animate-marquee-vertical:          marquee-vertical var(--duration) linear infinite;
+  --animate-marquee-left:              marquee-infinite 20s linear infinite;
+  --animate-marquee-left-slow:         marquee-infinite 35s linear infinite;
+  --animate-spin-around:               spin-around calc(var(--speed) * 2) infinite linear;
+  --animate-shiny-text:                shiny-text 8s infinite;
+  --animate-shimmer-slide:             shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-ripple:                    ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
+  --animate-rippling:                  rippling var(--duration, 0.6s) ease-out;
+  --animate-line:                      line 2s linear infinite;
+  --animate-orbit:                     orbit calc(var(--duration) * 1s) linear infinite;
   --animate-background-position-spin: background-position-spin 3000ms infinite alternate;
-  --animate-shine: shine var(--duration) infinite linear;
-  --animate-pulse: pulse var(--duration) ease-out infinite;
-  --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
-  --animate-line-shadow: line-shadow 15s linear infinite;
-  --animate-aurora: aurora 8s ease-in-out infinite alternate;
-  --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-  --animate-blink-cursor: blink-cursor 1.2s step-end infinite;
+  --animate-shine:                     shine var(--duration) infinite linear;
+  --animate-pulse:                     pulse var(--duration) ease-out infinite;
+  --animate-rainbow:                   rainbow var(--speed, 2s) infinite linear;
+  --animate-line-shadow:               line-shadow 15s linear infinite;
+  --animate-aurora:                    aurora 8s ease-in-out infinite alternate;
+  --animate-ping:                      ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-blink-cursor:              blink-cursor 1.2s step-end infinite;
 }
 
-/* 
- * Workspace Theme - Refined 3-Layer System
- * Layer 1 (Bottom): Soft Blue Background (#F4F7FB)
- * Layer 2 (Structure): White Sidebar (#FFFFFF)
- * Layer 3 (Content): White Cards with Shadow (#FFFFFF)
+/* ── Workspace Theme — Mindtickle Dashboard Style ───────────────────────── */
+/*
+ * Applied on the authenticated dashboard shell.
+ * All panel/card radii are tighter than the landing page.
+ * Shadows use Mindtickle's exact rgba formula.
  */
 .theme-workspace {
-  /* ─── 3-Surface Hierarchy for Dashboard ────────────────────────────────
-   * L0  --background   Cool tinted canvas (page body)
-   * L1  --sidebar      Pure white structural chrome
-   * L2  --card         Pure white foreground content
-   * ─────────────────────────────────────────────────────────────────── */
-
-  /* L0 — Page canvas (pure white — hierarchy via borders & elevation) */
-  --background: oklch(1 0 0);
-
-  /* L1 — Sidebar: Pure White */
-  --sidebar: oklch(1 0 0);
+  /* Surfaces */
+  --background:         oklch(0.958 0.006 264);  /* ≈ #f0f2f5 — page canvas off-white so cards float */
+  --card:               oklch(1 0 0);
+  --popover:            oklch(1 0 0);
+  --sidebar:            oklch(1 0 0);
   --sidebar-background: oklch(1 0 0);
-  --header-background: oklch(1 0 0);
-
-  /* L2 — Cards/panels: Pure white */
-  --card: oklch(1 0 0);
-  --popover: oklch(1 0 0);
-
-  /* Typography — aligned with global tokens */
-  --foreground: oklch(0.2101 0.0318 264.66);
-  --muted-foreground: oklch(0.551 0.0234 264.36);
-
-  /* Borders */
-  --border: oklch(0.8700 0.0080 264.53);
-  --input: oklch(0.8700 0.0080 264.53);
-  --sidebar-border: oklch(0.8700 0.0080 264.53);
-
-  /* Primary — Brand Blue */
-  --primary: oklch(0.5461 0.2152 262.88);
-  --ring: oklch(0.5461 0.2152 262.88);
-
-  /* Input Backgrounds */
-  --input-background: oklch(0.9846 0.0017 247.84);
-
-  /* Muted surface — for tags, skeletons, chat bubbles */
-  --muted: oklch(0.9671 0.0021 286.37);
-
-  /* Nested panel surface (between L1 and L2) */
-  --surface-secondary: oklch(0.9820 0.003 248);
-  --surface-tertiary: oklch(0.9720 0.004 248);
-
-  /* Dashboard surfaces */
-  --toolbar-background: oklch(0.992 0.002 248);
-  --toolbar-border: oklch(0.902 0.007 264.53);
-  --panel-border-soft: oklch(0.912 0.007 264.53);
-  --panel-border-strong: oklch(0.866 0.009 264.53);
-  --panel-radius-sm: 12px;
-  --panel-radius-md: 16px;
-  --panel-radius-lg: 20px;
-  --panel-radius-xl: 24px;
-  --control-height-sm: 32px;
-  --control-height-md: 36px;
-  --control-height-lg: 40px;
-
-  /* Semantic status fills */
-  --status-info-bg: oklch(0.962 0.02 252);
-  --status-info-fg: oklch(0.53 0.15 257);
-  --status-info-border: oklch(0.89 0.02 255);
-  --status-success-bg: oklch(0.969 0.028 151);
-  --status-success-fg: oklch(0.54 0.14 151);
-  --status-success-border: oklch(0.9 0.025 151);
-  --status-warning-bg: oklch(0.978 0.03 82);
-  --status-warning-fg: oklch(0.62 0.14 70);
-  --status-warning-border: oklch(0.91 0.025 78);
-  --status-danger-bg: oklch(0.97 0.02 20);
-  --status-danger-fg: oklch(0.59 0.18 28);
-  --status-danger-border: oklch(0.9 0.02 24);
-  --status-neutral-bg: oklch(0.972 0.003 248);
-  --status-neutral-fg: oklch(0.5 0.02 264);
-  --status-neutral-border: oklch(0.9 0.006 264);
-
-  /* Shadows — soft elevation on white cards over tinted canvas */
-  --shadow-sm: 0 1px 2px 0 oklch(0.15 0.02 265 / 0.05);
-  --shadow: 0 1px 3px 0 oklch(0.15 0.02 265 / 0.08), 0 1px 2px -1px oklch(0.15 0.02 265 / 0.06);
-  --shadow-md: 0 4px 6px -1px oklch(0.15 0.02 265 / 0.08), 0 2px 4px -2px oklch(0.15 0.02 265 / 0.05);
-  --shadow-lg: 0 10px 15px -3px oklch(0.15 0.02 265 / 0.08), 0 4px 6px -4px oklch(0.15 0.02 265 / 0.04);
-  --shadow-xl: 0 20px 25px -5px oklch(0.15 0.02 265 / 0.08), 0 10px 10px -5px oklch(0.15 0.02 265 / 0.03);
-}
-
-/*
- * Dark Theme Workspace Override
- *
- * CRITICAL: .theme-workspace overrides .dark vars if not explicitly targeted
- * with higher specificity. This guarantees dark mode always looks correct.
- */
-.dark .theme-workspace {
-  /* Background layers - IDE Style */
-  --background: oklch(0.145 0.005 286);
-  --card: oklch(0.21 0.006 286);
-  --popover: oklch(0.21 0.006 286);
+  --header-background:  oklch(1 0 0);
 
   /* Typography */
-  --foreground: oklch(0.98 0.005 286);
-  --muted-foreground: oklch(0.71 0.01 286);
-
-  /* Sidebar */
-  --sidebar: oklch(0.21 0.006 286);
-  --sidebar-background: oklch(0.21 0.006 286);
-  --sidebar-foreground: oklch(0.95 0.01 286);
-  --header-background: oklch(0.145 0.005 286);
-  /* Match main background */
+  --foreground:         oklch(0.215 0.020 264);
+  --muted-foreground:   oklch(0.420 0.015 264);  /* matches --text-secondary */
 
   /* Borders */
-  --border: oklch(0.35 0.008 286);
-  --input: oklch(0.35 0.008 286);
-  --sidebar-border: oklch(0.35 0.008 286);
+  --border:             oklch(0.866 0.005 264);
+  --input:              oklch(0.866 0.005 264);
+  --sidebar-border:     oklch(0.898 0.005 264);
 
   /* Primary */
-  --primary: oklch(0.63 0.20 260);
-  --ring: oklch(0.63 0.20 260);
+  --primary:            oklch(0.548 0.217 261);
+  --ring:               oklch(0.548 0.217 261);
 
-  /* Input Background */
-  --input-background: oklch(0.145 0.005 286);
+  /* Input background */
+  --input-background:   oklch(0.979 0.004 264);
 
-  /* Muted */
-  --muted: oklch(0.21 0.006 286);
-  --surface-secondary: oklch(0.24 0.006 286);
-  --surface-tertiary: oklch(0.28 0.007 286);
+  /* Muted surface — tags, skeletons */
+  --muted:              oklch(0.958 0.006 264);
+
+  /* Nested panel surfaces */
+  --surface-secondary:  oklch(0.968 0.006 264);
+  --surface-tertiary:   oklch(0.954 0.008 264);
+
+  /* ── Panel Radii (tighter than landing) ──────────────────────────── */
+  /* These map to the component-level rounded-[var(--panel-radius-*)] */
+  --panel-radius-sm:  6px;
+  --panel-radius-md:  8px;
+  --panel-radius-lg:  10px;
+  --panel-radius-xl:  12px;
+
+  /* ── Control Heights ─────────────────────────────────────────────── */
+  --control-height-sm:  28px;
+  --control-height-md:  32px;
+  --control-height-lg:  36px;
+
+  /* ── Toolbar / Panel Borders ─────────────────────────────────────── */
+  --toolbar-background:   oklch(0.979 0.003 264);
+  --toolbar-border:       oklch(0.898 0.006 264);
+  --panel-border-soft:    oklch(0.908 0.006 264);
+  --panel-border-strong:  oklch(0.858 0.008 264);
+
+  /* ── Semantic Status ─────────────────────────────────────────────── */
+  --status-info-bg:         oklch(0.963 0.028 248);
+  --status-info-fg:         oklch(0.548 0.217 261);
+  --status-info-border:     oklch(0.868 0.075 245);
+  --status-success-bg:      oklch(0.971 0.040 148);
+  --status-success-fg:      oklch(0.516 0.155 142);
+  --status-success-border:  oklch(0.852 0.095 148);
+  --status-warning-bg:      oklch(0.985 0.042 85);
+  --status-warning-fg:      oklch(0.620 0.160 75);
+  --status-warning-border:  oklch(0.884 0.125 82);
+  --status-danger-bg:       oklch(0.976 0.022 20);
+  --status-danger-fg:       oklch(0.548 0.200 22);
+  --status-danger-border:   oklch(0.840 0.095 18);
+  --status-neutral-bg:      oklch(0.963 0.005 264);
+  --status-neutral-fg:      oklch(0.479 0.012 264);
+  --status-neutral-border:  oklch(0.900 0.005 264);
+
+  /* ── Shadows — Mindtickle Exact ──────────────────────────────────── */
+  --shadow-sm: 0 2px 4px 0 rgba(0,0,0,0.08);
+  --shadow:    0 4px 8px 0 rgba(0,0,0,0.08);
+  --shadow-md: 0 8px 16px 0 rgba(0,0,0,0.10);
+  --shadow-lg: 0 16px 32px 0 rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 40px 0 rgba(0,0,0,0.14);
+  --shadow-1:  var(--shadow-sm);
+  --shadow-2:  var(--shadow);
+  --shadow-3:  var(--shadow-md);
+  --shadow-4:  var(--shadow-lg);
+  --shadow-reverse: 0 -2px 4px 0 rgba(0,0,0,0.08);
+}
+
+/* ── Dark Workspace Override ─────────────────────────────────────────────── */
+.dark .theme-workspace {
+  --background:         oklch(0.145 0.005 286);
+  --card:               oklch(0.21 0.006 286);
+  --popover:            oklch(0.21 0.006 286);
+  --foreground:         oklch(0.98 0.005 286);
+  --muted-foreground:   oklch(0.71 0.01 286);
+  --sidebar:            oklch(0.21 0.006 286);
+  --sidebar-background: oklch(0.21 0.006 286);
+  --sidebar-foreground: oklch(0.95 0.01 286);
+  --header-background:  oklch(0.145 0.005 286);
+  --border:             oklch(0.35 0.008 286);
+  --input:              oklch(0.35 0.008 286);
+  --sidebar-border:     oklch(0.35 0.008 286);
+  --primary:            oklch(0.63 0.20 260);
+  --ring:               oklch(0.63 0.20 260);
+  --input-background:   oklch(0.145 0.005 286);
+  --muted:              oklch(0.21 0.006 286);
+  --surface-secondary:  oklch(0.24 0.006 286);
+  --surface-tertiary:   oklch(0.28 0.007 286);
   --toolbar-background: oklch(0.195 0.006 286);
-  --toolbar-border: oklch(0.32 0.008 286);
-  --panel-border-soft: oklch(0.32 0.008 286);
+  --toolbar-border:     oklch(0.32 0.008 286);
+  --panel-border-soft:  oklch(0.32 0.008 286);
   --panel-border-strong: oklch(0.38 0.01 286);
 
-  --status-info-bg: oklch(0.28 0.03 258);
-  --status-info-fg: oklch(0.8 0.08 252);
-  --status-info-border: oklch(0.38 0.03 258);
-  --status-success-bg: oklch(0.28 0.03 151);
-  --status-success-fg: oklch(0.84 0.08 151);
-  --status-success-border: oklch(0.37 0.03 151);
-  --status-warning-bg: oklch(0.29 0.03 82);
-  --status-warning-fg: oklch(0.86 0.07 82);
-  --status-warning-border: oklch(0.38 0.03 82);
-  --status-danger-bg: oklch(0.28 0.03 24);
-  --status-danger-fg: oklch(0.84 0.08 24);
-  --status-danger-border: oklch(0.39 0.03 24);
-  --status-neutral-bg: oklch(0.24 0.006 286);
-  --status-neutral-fg: oklch(0.82 0.01 286);
-  --status-neutral-border: oklch(0.35 0.008 286);
+  --status-info-bg:         oklch(0.28 0.03 258);
+  --status-info-fg:         oklch(0.80 0.08 252);
+  --status-info-border:     oklch(0.38 0.03 258);
+  --status-success-bg:      oklch(0.28 0.03 151);
+  --status-success-fg:      oklch(0.84 0.08 151);
+  --status-success-border:  oklch(0.37 0.03 151);
+  --status-warning-bg:      oklch(0.29 0.03 82);
+  --status-warning-fg:      oklch(0.86 0.07 82);
+  --status-warning-border:  oklch(0.38 0.03 82);
+  --status-danger-bg:       oklch(0.28 0.03 24);
+  --status-danger-fg:       oklch(0.84 0.08 24);
+  --status-danger-border:   oklch(0.39 0.03 24);
+  --status-neutral-bg:      oklch(0.24 0.006 286);
+  --status-neutral-fg:      oklch(0.82 0.01 286);
+  --status-neutral-border:  oklch(0.35 0.008 286);
 
-  /* Shadows - Dark-appropriate */
-  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.2);
-  --shadow: 0 1px 3px 0 oklch(0 0 0 / 0.3), 0 1px 2px -1px oklch(0 0 0 / 0.2);
-  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.3), 0 2px 4px -2px oklch(0 0 0 / 0.2);
-  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.35), 0 4px 6px -4px oklch(0 0 0 / 0.25);
-  --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.4), 0 10px 10px -5px oklch(0 0 0 / 0.3);
+  --shadow-sm: 0 2px 4px 0 rgba(0,0,0,0.30);
+  --shadow:    0 4px 8px 0 rgba(0,0,0,0.35);
+  --shadow-md: 0 8px 16px 0 rgba(0,0,0,0.40);
+  --shadow-lg: 0 16px 32px 0 rgba(0,0,0,0.45);
+  --shadow-xl: 0 20px 40px 0 rgba(0,0,0,0.50);
+  --shadow-1:  var(--shadow-sm);
+  --shadow-2:  var(--shadow);
+  --shadow-3:  var(--shadow-md);
+  --shadow-4:  var(--shadow-lg);
+  --shadow-reverse: 0 -2px 4px 0 rgba(0,0,0,0.30);
 }
 
 
-/* Animation Keyframes (Tailwind v4) */
-@keyframes accordion-down {
-  from {
-    height: 0;
-  }
+/* ═══════════════════════════════════════════════════════════════════════════
+ * ANIMATION KEYFRAMES
+ * ═══════════════════════════════════════════════════════════════════════════ */
 
-  to {
-    height: var(--radix-accordion-content-height);
-  }
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
 }
 
 @keyframes accordion-up {
-  from {
-    height: var(--radix-accordion-content-height);
-  }
-
-  to {
-    height: 0;
-  }
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
 }
 
 @keyframes background-position-spin {
-  0% {
-    background-position: top center;
-  }
-
-  100% {
-    background-position: bottom center;
-  }
+  0%   { background-position: top center; }
+  100% { background-position: bottom center; }
 }
 
 @keyframes gradient {
-  to {
-    background-position: var(--bg-size, 300%) 0;
-  }
+  to { background-position: var(--bg-size, 300%) 0; }
 }
 
 @keyframes meteor {
-  0% {
-    transform: rotate(var(--angle)) translateX(0);
-    opacity: 1;
-  }
-
-  70% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: rotate(var(--angle)) translateX(-500px);
-    opacity: 0;
-  }
+  0%   { transform: rotate(var(--angle)) translateX(0); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateX(-500px); opacity: 0; }
 }
 
 @keyframes grid {
-  0% {
-    transform: translateY(-50%);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
+  0%   { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
 }
 
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-100% - var(--gap))); }
 }
 
 @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
-  }
+  from { transform: translateY(0); }
+  to   { transform: translateY(calc(-100% - var(--gap))); }
 }
 
 @keyframes marquee-infinite {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 @keyframes spin-around {
-  0% {
-    transform: translateZ(0) rotate(0);
-  }
-
-  15%,
-  35% {
-    transform: translateZ(0) rotate(90deg);
-  }
-
-  65%,
-  85% {
-    transform: translateZ(0) rotate(270deg);
-  }
-
-  100% {
-    transform: translateZ(0) rotate(360deg);
-  }
+  0%        { transform: translateZ(0) rotate(0); }
+  15%, 35%  { transform: translateZ(0) rotate(90deg); }
+  65%, 85%  { transform: translateZ(0) rotate(270deg); }
+  100%      { transform: translateZ(0) rotate(360deg); }
 }
 
 @keyframes ripple {
-
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  50% {
-    transform: translate(-50%, -50%) scale(0.9);
-  }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(0.9); }
 }
 
 @keyframes rippling {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+  0%   { opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
 }
 
 @keyframes shimmer-slide {
-  to {
-    transform: translate(calc(100cqw - 100%), 0);
-  }
+  to { transform: translate(calc(100cqw - 100%), 0); }
 }
 
 @keyframes line {
-  0% {
-    mask-position-x: 0%;
-  }
-
-  100% {
-    mask-position-x: 100%;
-  }
+  0%   { mask-position-x: 0%; }
+  100% { mask-position-x: 100%; }
 }
 
 @keyframes shiny-text {
-
-  0%,
-  90%,
-  100% {
-    background-position: calc(-100% - var(--shiny-width)) 0;
-  }
-
-  30%,
-  60% {
-    background-position: calc(100% + var(--shiny-width)) 0;
-  }
+  0%, 90%, 100% { background-position: calc(-100% - var(--shiny-width)) 0; }
+  30%, 60%      { background-position: calc(100% + var(--shiny-width)) 0; }
 }
 
 @keyframes orbit {
-  0% {
-    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
-  }
-
-  100% {
-    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
-  }
+  0%   { transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg)); }
+  100% { transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg)); }
 }
 
 @keyframes shine {
-  0% {
-    background-position: 0% 0%;
-  }
-
-  50% {
-    background-position: 100% 100%;
-  }
-
-  to {
-    background-position: 0% 0%;
-  }
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  to   { background-position: 0% 0%; }
 }
 
 @keyframes pulse {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 var(--pulse-color);
-  }
-
-  50% {
-    box-shadow: 0 0 0 8px var(--pulse-color);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 var(--pulse-color); }
+  50%      { box-shadow: 0 0 0 8px var(--pulse-color); }
 }
 
 @keyframes rainbow {
-  0% {
-    background-position: 0%;
-  }
-
-  100% {
-    background-position: 200%;
-  }
+  0%   { background-position: 0%; }
+  100% { background-position: 200%; }
 }
 
 @keyframes line-shadow {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 100% -100%;
-  }
+  0%   { background-position: 0 0; }
+  100% { background-position: 100% -100%; }
 }
 
 @keyframes aurora {
-  0% {
-    background-position: 0% 50%;
-    transform: rotate(-5deg) scale(0.9);
-  }
-
-  25% {
-    background-position: 50% 100%;
-    transform: rotate(5deg) scale(1.1);
-  }
-
-  50% {
-    background-position: 100% 50%;
-    transform: rotate(-3deg) scale(0.95);
-  }
-
-  75% {
-    background-position: 50% 0%;
-    transform: rotate(3deg) scale(1.05);
-  }
-
-  100% {
-    background-position: 0% 50%;
-    transform: rotate(-5deg) scale(0.9);
-  }
+  0%   { background-position: 0% 50%;   transform: rotate(-5deg) scale(0.9); }
+  25%  { background-position: 50% 100%; transform: rotate(5deg) scale(1.1); }
+  50%  { background-position: 100% 50%; transform: rotate(-3deg) scale(0.95); }
+  75%  { background-position: 50% 0%;   transform: rotate(3deg) scale(1.05); }
+  100% { background-position: 0% 50%;   transform: rotate(-5deg) scale(0.9); }
 }
 
 @keyframes ping {
-
-  75%,
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+  75%, 100% { transform: scale(2); opacity: 0; }
 }
 
 @keyframes blink-cursor {
-
-  0%,
-  49% {
-    opacity: 1;
-  }
-
-  50%,
-  100% {
-    opacity: 0;
-  }
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
-/* Custom Animations (Existing) */
 @keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-20px); }
 }
 
 @keyframes float-delay {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-15px);
-  }
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-15px); }
 }
 
 @keyframes tilt {
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(1deg);
-  }
-
-  75% {
-    transform: rotate(-1deg);
-  }
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(1deg); }
+  75%      { transform: rotate(-1deg); }
 }
 
 @keyframes pulse-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 5px color-mix(in oklch, var(--primary) 50%), 0 0 10px color-mix(in oklch, var(--primary) 30%), 0 0 15px color-mix(in oklch, var(--primary) 10%);
-  }
-
-  50% {
-    box-shadow: 0 0 10px color-mix(in oklch, var(--primary) 80%), 0 0 20px color-mix(in oklch, var(--primary) 50%), 0 0 30px color-mix(in oklch, var(--primary) 30%);
-  }
+  0%, 100% { box-shadow: 0 0 5px color-mix(in oklch, var(--primary) 50%), 0 0 10px color-mix(in oklch, var(--primary) 30%), 0 0 15px color-mix(in oklch, var(--primary) 10%); }
+  50%      { box-shadow: 0 0 10px color-mix(in oklch, var(--primary) 80%), 0 0 20px color-mix(in oklch, var(--primary) 50%), 0 0 30px color-mix(in oklch, var(--primary) 30%); }
 }
 
 @keyframes magnetic {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  100% {
-    transform: translate(var(--x, 0), var(--y, 0)) scale(1.05);
-  }
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(var(--x, 0), var(--y, 0)) scale(1.05); }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 @keyframes slide-in-from-right {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 @keyframes slide-in-from-top {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scale-in {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 @keyframes slide-up {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
 @keyframes typing {
-
-  0%,
-  60%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.7;
-  }
-
-  30% {
-    transform: translateY(-10px);
-    opacity: 1;
-  }
+  0%, 60%, 100% { transform: translateY(0);     opacity: 0.7; }
+  30%           { transform: translateY(-10px); opacity: 1; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * BASE LAYER — HTML element defaults
+ * ═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
   :root {
     @apply overflow-x-hidden;
 
-    /* Custom Scrollbar Styling */
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
+    /* Thin, subtle scrollbar — Mindtickle style */
+    &::-webkit-scrollbar       { width: 6px; height: 6px; }
+    &::-webkit-scrollbar-track { background: transparent; }
     &::-webkit-scrollbar-thumb {
-      background-color: var(--border);
-      border-radius: var(--radius);
+      background-color: var(--border-secondary);
+      border-radius: var(--radius-pill);
     }
-
     &::-webkit-scrollbar-thumb:hover {
-      background-color: color-mix(in oklch, var(--border), black 10%);
+      background-color: var(--border-default);
     }
-
-    /* Firefox Scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-color: var(--border-secondary) transparent;
   }
 
   * {
@@ -926,307 +823,258 @@
   }
 
   ::selection {
-    background: color-mix(in oklch, var(--primary) 30%, transparent);
+    background: color-mix(in oklch, var(--primary) 20%, transparent);
     color: var(--foreground);
   }
 
-  .dark ::selection {
-    background: color-mix(in oklch, var(--primary) 25%, transparent);
-    color: var(--foreground);
-  }
-
-  :root {
-    height: 100%;
-  }
-
-  html {
-    height: 100%;
-    overflow: hidden;
-  }
+  :root { height: 100%; }
+  html  { height: 100%; overflow: hidden; }
 
   body {
     @apply bg-background text-foreground h-full w-full overflow-hidden;
-    background-color: var(--background);
-    color: var(--foreground);
-    font-feature-settings: "rlig" 1, "calt" 1;
-    transition: background-color 0.5s ease, color 0.5s ease;
-    font-synthesis-weight: none;
-    text-rendering: optimizeLegibility;
-    font-family: var(--font-lato), "Lato", "Helvetica Neue", "Arial", sans-serif;
-    font-size: var(--font-body);
+    font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+    font-size: var(--font-m);       /* 14px — Mindtickle body default */
     font-weight: 400;
-    line-height: var(--line-body);
+    line-height: var(--line-m);     /* 21px */
     letter-spacing: 0;
-    /* Body: no letter-spacing adjustment */
+    text-rendering: optimizeLegibility;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Paragraph spacing */
   p {
     margin-bottom: var(--paragraph-spacing);
+    &:last-child { margin-bottom: 0; }
   }
 
-  p:last-child {
-    margin-bottom: 0;
+  /* ── Heading Hierarchy — Mindtickle Style ───────────────────────────
+   * Mindtickle uses LIGHTER weights at larger sizes (headingXLarge is
+   * 300/Light). This gives the clean, airy enterprise look.
+   * —————————————————————————————————————————————————————————————————— */
+
+  /* H1 — Page title (headingLarge equivalent) */
+  h1, .h1 {
+    font-size: var(--font-2xl);     /* 24px */
+    font-weight: 500;               /* Medium — matches Mindtickle headingLarge */
+    line-height: var(--line-2xl);   /* 29px */
+    letter-spacing: -0.016em;
+    color: var(--text-default);
   }
 
-  /* Hero & Titles - Font defined in lib/theme/fonts.ts */
-  h1,
-  .hero-title,
-  .hero-heading {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: var(--font-h1);
-    font-weight: 700;
-    line-height: var(--line-h1);
-    letter-spacing: -0.02em;
-    /* Headings: -2% */
+  /* H2 — Section title (headingLarge equivalent) */
+  h2, .h2 {
+    font-size: var(--font-xl);      /* 20px */
+    font-weight: 400;               /* Regular — Mindtickle headingLarge */
+    line-height: var(--line-xl);    /* 24px */
+    letter-spacing: -0.012em;
+    color: var(--text-default);
   }
 
-  h2 {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: var(--font-h2);
-    font-weight: 700;
-    line-height: var(--line-h2);
-    letter-spacing: -0.015em;
-    /* Headings: -1.5% */
+  /* H3 — Sub-section title (headingMedium) */
+  h3, .h3 {
+    font-size: var(--font-h3);      /* 18px */
+    font-weight: 400;               /* Regular */
+    line-height: var(--line-h3);    /* 22px */
+    letter-spacing: -0.008em;
+    color: var(--text-default);
   }
 
-  h3 {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: var(--font-h3);
-    font-weight: 600;
-    line-height: var(--line-h3);
-    letter-spacing: -0.01em;
-    /* Headings: -1% */
+  /* H4 — Card title (headingSmall) */
+  h4, .h4 {
+    font-size: var(--font-l);       /* 16px */
+    font-weight: 500;               /* Medium */
+    line-height: var(--line-l);     /* 24px */
+    letter-spacing: -0.004em;
+    color: var(--text-default);
   }
 
-  h4 {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: var(--font-h4);
-    font-weight: 600;
-    line-height: var(--line-h4);
-    letter-spacing: -0.005em;
-    /* Subheadings: softer */
-  }
-
-  h5 {
-    font-family: var(--font-lato), "Lato", sans-serif;
-    font-size: var(--font-h5);
-    font-weight: 600;
-    line-height: var(--line-h5);
+  /* H5 — Small heading (headingXsmall) */
+  h5, .h5 {
+    font-size: var(--font-m);       /* 14px */
+    font-weight: 600;               /* Semibold */
+    line-height: var(--line-m);     /* 21px */
     letter-spacing: 0;
-    /* h5: no adjustment */
+    color: var(--text-default);
   }
 
-  /* Reset link default to inherit unless specified */
+  /* H6 — Label heading */
+  h6, .h6 {
+    font-size: var(--font-s);       /* 12px */
+    font-weight: 600;
+    line-height: var(--line-s);     /* 19px */
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
   a {
     color: inherit;
     text-decoration: none;
-    font-family: var(--font-lato), "Lato", sans-serif;
   }
 
-  /* Specific A tag style requested - applied to class or default? Assuming default for now or specific context */
-  /*
-  {
-        "level": "A",
-        "font": "Lato, Helvetica, sans-serif",
-        "size": "10px",
-        "weight": "500",
-        "lineHeight": "28px",
-        "letterSpacing": "0.5px"
-    } 
-  */
-  a.small-link {
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 28px;
-    letter-spacing: 0.5px;
+  a.link, a.text-accent {
+    color: var(--text-accent);
+    &:hover { text-decoration: underline; }
   }
 
-  a:active,
-  button:active {
-    @apply opacity-60 md:opacity-100;
-  }
+  button, a, [role="button"], .clickable { cursor: pointer; }
+  [disabled], [aria-disabled="true"]     { cursor: not-allowed; }
+  input, textarea, select                { cursor: text; }
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
   }
-
-  /* Global Cursor Rules */
-  button,
-  a,
-  [role="button"],
-  .clickable {
-    cursor: pointer;
-  }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * COMPONENT LAYER — Mindtickle-Aligned Utilities
+ * ═══════════════════════════════════════════════════════════════════════════ */
 @layer components {
 
-  /* Typography utilities */
+  /* ── Typography Utilities ───────────────────────────────────────────── */
+  /* Use these instead of raw Tailwind for consistent hierarchy           */
+
   .type-page-title {
-    font-size: var(--font-h1);
-    line-height: var(--line-h1);
-    font-weight: 700;
-    color: var(--foreground);
-    letter-spacing: -0.02em;
-    /* -2% for prominent page titles */
+    font-size: var(--font-2xl);     /* 24px */
+    font-weight: 500;               /* Medium — matches Mindtickle headingLarge */
+    line-height: var(--line-2xl);
+    letter-spacing: -0.016em;
+    color: var(--text-default);
     margin: 0;
   }
 
   .type-section-title {
-    font-size: var(--font-h2);
-    line-height: var(--line-h2);
-    font-weight: 600;
-    color: var(--foreground);
-    letter-spacing: -0.015em;
-    /* -1.5% */
+    font-size: var(--font-xl);
+    font-weight: 400;
+    line-height: var(--line-xl);
+    letter-spacing: -0.012em;
+    color: var(--text-default);
     margin: 0;
   }
 
-  .type-subtitle {
-    font-size: var(--font-h3);
-    line-height: var(--line-h3);
+  .type-card-title {
+    font-size: var(--font-l);
+    font-weight: 500;
+    line-height: var(--line-l);
+    color: var(--text-default);
+    margin: 0;
+  }
+
+  .type-heading-small {
+    font-size: var(--font-m);
     font-weight: 600;
-    color: var(--foreground);
+    line-height: var(--line-m);
+    color: var(--text-default);
   }
 
   .type-body {
-    font-size: var(--font-body);
-    line-height: var(--line-body);
+    font-size: var(--font-m);
     font-weight: 400;
-    color: var(--foreground);
+    line-height: var(--line-m);
+    color: var(--text-default);
+  }
+
+  .type-body-strong {
+    font-size: var(--font-m);
+    font-weight: 600;
+    line-height: var(--line-m);
+    color: var(--text-default);
   }
 
   .type-body-muted {
-    font-size: var(--font-small);
-    line-height: var(--line-small);
+    font-size: var(--font-s);
     font-weight: 400;
-    color: var(--muted-foreground);
+    line-height: var(--line-s);
+    color: var(--text-secondary);
   }
 
+  /* Form labels */
   .type-label {
-    font-size: var(--font-xsmall);
-    line-height: var(--line-xsmall);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted-foreground);
+    font-size: var(--font-s);
+    font-weight: 400;
+    line-height: var(--line-s);
+    color: var(--text-secondary);
   }
 
+  .type-label-accent {
+    font-size: var(--font-s);
+    font-weight: 500;
+    line-height: var(--line-s);
+    color: var(--text-default);
+  }
+
+  /* Metadata, overlines, counts */
   .type-caption {
-    font-size: var(--font-xsmall);
-    line-height: var(--line-xsmall);
-    font-weight: 400;
-    color: var(--muted-foreground);
-  }
-
-  .type-micro-heading {
-    font-size: var(--font-small);
-    line-height: var(--line-small);
-    font-weight: 500;
-    color: var(--foreground);
-  }
-
-  /* Layout & page structure */
-  .page-container {
-    width: 100%;
-  }
-
-  .page-header {
-    margin-bottom: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .page-title {
-    font-size: var(--font-h1);
-    line-height: var(--line-h1);
+    font-size: var(--font-xs);
     font-weight: 600;
-    margin: 0;
-    color: var(--foreground);
-    letter-spacing: -0.01em;
+    line-height: var(--line-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
   }
 
-  .page-subtitle {
-    font-size: var(--font-small);
-    color: var(--muted-foreground);
-    margin-top: 4px;
+  .type-error {
+    font-size: var(--font-s);
     font-weight: 400;
+    color: var(--text-danger);
   }
 
-  .breadcrumb {
-    font-size: 12px;
-    color: #6b7280;
-  }
-
-  /* Override breadcrumb item text if needed to enforce color */
-  .breadcrumb-current {
-    color: var(--foreground);
-    font-weight: 500;
-  }
-
-  /* Chat Widget Override: Force user messages to be black/foreground color */
-  div[class*="group/message"] {
-    color: var(--foreground) !important;
-  }
-
+  /* Page header structure */
   .page-header {
     margin-bottom: 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
   }
 
   .page-title {
+    font-size: var(--font-2xl);
+    font-weight: 500;
+    line-height: var(--line-2xl);
+    letter-spacing: -0.018em;
+    color: var(--text-default);
     margin: 0;
-    font-size: var(--font-h1);
-    line-height: var(--line-h1);
-    font-weight: 600;
-    color: var(--foreground);
   }
 
   .page-subtitle {
-    margin: 0;
-    margin-top: 4px;
-    font-size: var(--font-small);
-    line-height: var(--line-small);
+    font-size: var(--font-s);
     font-weight: 400;
-    color: var(--muted-foreground);
+    line-height: var(--line-s);
+    color: var(--text-secondary);
+    margin: 0;
   }
 
-  /* Breadcrumbs */
+  /* Breadcrumb */
   .breadcrumb {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: var(--font-xsmall);
-    line-height: var(--line-xsmall);
-    color: #6b7280;
+    font-size: var(--font-xs);
+    line-height: var(--line-xs);
+    color: var(--text-tertiary);
   }
-
-  .breadcrumb a {
-    color: #6b7280;
-  }
-
+  .breadcrumb a { color: var(--text-tertiary); }
   .breadcrumb .breadcrumb-current {
-    color: var(--foreground);
-    font-weight: 600;
+    color: var(--text-default);
+    font-weight: 500;
   }
+
+  /* ── Layout Shells ──────────────────────────────────────────────────── */
 
   .app-shell {
-    background:
-      radial-gradient(circle at top, oklch(1 0 0 / 0.8) 0%, transparent 42%),
-      linear-gradient(180deg, var(--background) 0%, color-mix(in oklab, var(--background) 88%, white) 100%);
+    background: var(--background);
   }
 
   .dashboard-page {
     display: flex;
     min-height: 100%;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;                    /* tighter than before — Mindtickle is dense */
   }
 
   .dashboard-page--flush {
@@ -1234,66 +1082,155 @@
     padding: 0;
   }
 
+  /* ── Cards / Panels ─────────────────────────────────────────────────── */
+  /*
+   * dashboard-panel  — default card with subtle shadow (Mindtickle LEVEL1)
+   * dashboard-panel-muted — background panel, no shadow, tinted surface
+   * dashboard-panel-flat  — flush panel with border only (settings cards)
+   */
+
   .dashboard-panel {
-    border: 1px solid var(--panel-border-soft);
-    border-radius: var(--panel-radius-md);
-    background: linear-gradient(180deg, color-mix(in oklab, var(--card) 96%, white) 0%, var(--card) 100%);
-    box-shadow: var(--shadow-sm);
+    background: var(--card);
+    border: 1px solid var(--panel-border-soft, var(--border));
+    border-radius: var(--panel-radius-md, 8px);
+    box-shadow: var(--shadow-1);    /* 0 2px 4px 0 rgba(0,0,0,0.08) */
   }
 
   .dashboard-panel-muted {
-    border: 1px solid var(--panel-border-soft);
-    border-radius: var(--panel-radius-md);
-    background: linear-gradient(180deg, var(--surface-secondary) 0%, color-mix(in oklab, var(--surface-secondary) 85%, var(--card)) 100%);
-    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.35);
+    background: var(--surface-secondary);
+    border: 1px solid var(--panel-border-soft, var(--border));
+    border-radius: var(--panel-radius-md, 8px);
+    box-shadow: none;
   }
+
+  .dashboard-panel-flat {
+    background: var(--card);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0 var(--panel-radius-md, 8px) 0 0;  /* top-right only */
+    box-shadow: none;
+  }
+
+  /* ── Toolbar ────────────────────────────────────────────────────────── */
 
   .dashboard-toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    border: 1px solid var(--toolbar-border);
-    border-radius: var(--panel-radius-md);
+    gap: 10px;
     background: var(--toolbar-background);
-    padding: 12px 14px;
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--toolbar-border);
+    border-radius: var(--panel-radius-md, 8px);
+    padding: 8px 12px;
+    box-shadow: var(--shadow-1);
   }
 
   .dashboard-toolbar__group {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
+
+  /* ── Search Shell (pill-shaped) ─────────────────────────────────────── */
 
   .dashboard-search-shell {
     position: relative;
     display: flex;
     align-items: center;
-    min-height: var(--control-height-md);
+    min-height: var(--control-height-md, 32px);
     border: 1px solid var(--toolbar-border);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--card);
     padding-inline: 12px;
-    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.45);
+    gap: 8px;
   }
+
+  /* ── List Row ───────────────────────────────────────────────────────── */
+  /*
+   * Mindtickle list items: min-height 38px, 8px vertical / 10–14px horizontal
+   * State bg: default → hover (tertiary) → active (accent-selected)
+   */
+
+  .dashboard-list-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 14px;
+    background: var(--card);
+    border: 1px solid var(--panel-border-soft, var(--border));
+    border-radius: var(--panel-radius-sm, 6px);
+    cursor: pointer;
+    transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  }
+
+  .dashboard-list-row:hover {
+    background: var(--surface-secondary);
+    border-color: color-mix(in oklab, var(--primary) 15%, var(--panel-border-soft));
+    box-shadow: var(--shadow-1);
+  }
+
+  .dashboard-list-row[data-active="true"],
+  .dashboard-list-row.active {
+    background: var(--bg-accent-selected);
+    border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+  }
+
+  /* ── Table Shell ────────────────────────────────────────────────────── */
+
+  .dashboard-table-shell {
+    background: var(--card);
+    border: 1px solid var(--panel-border-soft, var(--border));
+    border-radius: var(--panel-radius-md, 8px);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+  }
+
+  /* ── KPI / Stat Card ────────────────────────────────────────────────── */
+
+  .dashboard-kpi-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dashboard-kpi-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--primary) 60%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  /* ── Status Chips — Mindtickle pill style ───────────────────────────── */
+  /*
+   * Use instead of bg-green-100 / bg-red-100 hardcoded colors.
+   * ALWAYS prefer these over inline Tailwind color classes.
+   *
+   * <span class="dashboard-status-chip dashboard-status-chip--success">
+   *   Passed
+   * </span>
+   */
 
   .dashboard-status-chip {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 24px;
-    border-radius: 999px;
+    gap: 4px;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: var(--radius-pill);
     border: 1px solid var(--status-neutral-border);
     background: var(--status-neutral-bg);
-    padding: 0 10px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
+    font-size: var(--font-xs);      /* 10px */
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--status-neutral-fg);
+    white-space: nowrap;
   }
 
   .dashboard-status-chip--info {
@@ -1326,324 +1263,351 @@
     color: var(--status-neutral-fg);
   }
 
-  .dashboard-list-row {
-    border: 1px solid var(--panel-border-soft);
-    border-radius: var(--panel-radius-sm);
+  /* ── Form Patterns ──────────────────────────────────────────────────── */
+  /*
+   * Mindtickle form-field: label on top, 6px gap, input, error below
+   * Section dividers: 1px border-bottom between groups
+   */
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field-label {
+    font-size: var(--font-s);
+    font-weight: 400;
+    line-height: var(--line-s);
+    color: var(--text-secondary);
+  }
+
+  .form-field-label.required::after {
+    content: " *";
+    color: var(--text-danger);
+  }
+
+  .form-field-error {
+    font-size: var(--font-s);
+    color: var(--text-danger);
+    margin-top: 2px;
+  }
+
+  .form-field-note {
+    font-size: var(--font-s);
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    &:last-child { border-bottom: none; }
+  }
+
+  .form-section-title {
+    font-size: var(--font-m);
+    font-weight: 500;
+    color: var(--text-default);
+    margin-bottom: 4px;
+  }
+
+  /* ── Sticky Panels ──────────────────────────────────────────────────── */
+  /*
+   * Mindtickle uses REVERSE1 shadow for sticky elements anchored to bottom
+   */
+
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header, 9900);
     background: var(--card);
-    padding: 14px 16px;
-    box-shadow: var(--shadow-sm);
-    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    border-bottom: 1px solid var(--border-default);
+    box-shadow: var(--shadow-1);
+    height: 55px;                   /* Mindtickle tab nav height */
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
   }
 
-  .dashboard-list-row:hover {
-    border-color: color-mix(in oklab, var(--primary) 22%, var(--panel-border-soft));
-    box-shadow: var(--shadow);
-  }
-
-  .dashboard-table-shell {
-    border: 1px solid var(--panel-border-soft);
-    border-radius: var(--panel-radius-md);
+  .sticky-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
     background: var(--card);
-    box-shadow: var(--shadow-sm);
+    border-top: 1px solid var(--border-default);
+    box-shadow: var(--shadow-reverse);
+    padding: 8px 24px;
+    gap: 12px;
+    display: flex;
+    align-items: center;
   }
 
-  .dashboard-kpi-card {
-    position: relative;
-    overflow: hidden;
-  }
+  /* ── Sidebar Item ───────────────────────────────────────────────────── */
 
-  .dashboard-kpi-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: linear-gradient(90deg, color-mix(in oklab, var(--primary) 30%, transparent) 0%, transparent 75%);
-  }
-
-  @media (max-width: 768px) {
-    .dashboard-page {
-      gap: 16px;
-    }
-  }
-
-  /* Sidebar item helper */
   .sidebar-item {
     display: inline-flex;
     align-items: center;
-    height: 40px;
-    font-size: var(--font-body);
-    font-weight: 500;
+    height: 36px;
+    padding: 0 12px;
     gap: 10px;
-  }
-
-  /* Cursor rules */
-  button,
-  [role="button"],
-  a,
-  .clickable,
-  .sidebar-item {
+    border-radius: var(--radius-input, 4px);
+    font-size: var(--font-m);
+    font-weight: 500;
+    color: var(--text-secondary);
     cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
   }
 
-  [disabled],
-  [aria-disabled="true"] {
-    cursor: not-allowed;
+  .sidebar-item:hover {
+    background: var(--accent);
+    color: var(--text-default);
   }
 
-  input,
-  textarea,
-  select {
-    cursor: text;
+  .sidebar-item[data-active="true"],
+  .sidebar-item.active {
+    background: var(--bg-accent-selected);
+    color: var(--text-accent);
   }
 
-  /* Primary button hover: darken by mixing with black */
+  /* ── Mindtickle Tabs ───────────────────────────────────────────────── */
+
+  .customization-tabs__bar {
+    margin-inline: -24px;
+    padding: 0 24px;
+    background: var(--header-background);
+    border-bottom: 1px solid var(--border-secondary);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+  }
+
+  .customization-tabs__list {
+    gap: 32px;
+    min-height: 72px;
+    scrollbar-width: none;
+  }
+
+  .customization-tabs__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .customization-tabs__actions {
+    min-height: 72px;
+  }
+
+  .customization-tabs__trigger {
+    position: relative;
+    min-height: 72px;
+    padding: 0 6px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-default);
+    font-size: var(--font-l);
+    font-weight: 600;
+    line-height: var(--line-l);
+    transition: color 150ms ease;
+  }
+
+  .customization-tabs__trigger::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    transition: background-color 150ms ease;
+  }
+
+  .customization-tabs__trigger:hover {
+    color: var(--text-default);
+    background: transparent;
+  }
+
+  .customization-tabs__trigger:hover::after {
+    background: color-mix(in oklab, var(--primary) 28%, transparent);
+  }
+
+  .customization-tabs__trigger[data-state="active"] {
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-accent);
+  }
+
+  .customization-tabs__trigger[data-state="active"]::after {
+    background: var(--primary);
+  }
+
+  .customization-tabs__trigger:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .customization-tabs__icon {
+    color: var(--icon-default);
+    transition: color 150ms ease;
+  }
+
+  .customization-tabs__trigger:hover .customization-tabs__icon {
+    color: var(--icon-strong);
+  }
+
+  .customization-tabs__trigger[data-state="active"] .customization-tabs__icon {
+    color: var(--icon-accent);
+  }
+
+  @media (max-width: 1024px) {
+    .customization-tabs__bar {
+      margin-inline: 0;
+      padding: 16px;
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--panel-radius-lg, 10px);
+    }
+
+    .customization-tabs__list,
+    .customization-tabs__actions,
+    .customization-tabs__trigger {
+      min-height: 56px;
+    }
+  }
+
+  /* ── Divider ────────────────────────────────────────────────────────── */
+
+  .divider-h {
+    height: 1px;
+    background: var(--border-secondary);
+    margin: 0;
+  }
+
+  .divider-v {
+    width: 1px;
+    background: var(--border-secondary);
+    align-self: stretch;
+  }
+
+  /* ── Alert Banners ──────────────────────────────────────────────────── */
+
+  .alert-info    { background: var(--status-info-bg);    border-left: 3px solid var(--status-info-fg);    color: var(--status-info-fg); }
+  .alert-success { background: var(--status-success-bg); border-left: 3px solid var(--status-success-fg); color: var(--status-success-fg); }
+  .alert-warning { background: var(--status-warning-bg); border-left: 3px solid var(--status-warning-fg); color: var(--status-warning-fg); }
+  .alert-danger  { background: var(--status-danger-bg);  border-left: 3px solid var(--status-danger-fg);  color: var(--status-danger-fg); }
+
+  .alert-info, .alert-success, .alert-warning, .alert-danger {
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-input, 4px) var(--radius-input, 4px) 0;
+    font-size: var(--font-s);
+  }
+
+  /* ── Button Hover Override (darken primary) ─────────────────────────── */
   .btn-primary:hover,
   [data-slot="button"].bg-primary:hover {
     background-color: color-mix(in oklch, var(--primary) 85%, black);
   }
 
-  /* Animation Classes */
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
+  /* ── Animation Utilities ─────────────────────────────────────────────── */
+  .animate-float        { animation: float 6s ease-in-out infinite; }
+  .animate-float-delay  { animation: float-delay 8s ease-in-out infinite; }
+  .animate-shimmer      { animation: shimmer 2s infinite; }
+  .animate-tilt         { animation: tilt 4s ease-in-out infinite; }
+  .animate-pulse-glow   { animation: pulse-glow 2s ease-in-out infinite; }
+  .animate-fade-in      { animation: fade-in 0.6s ease-out forwards; }
+  .animate-slide-up     { animation: slide-up 0.5s ease-out forwards; }
+  .animate-typing       { animation: typing 1.4s ease-in-out infinite; }
 
-  .animate-float-delay {
-    animation: float-delay 8s ease-in-out infinite;
-  }
+  .animate-in           { animation-duration: 0.3s; animation-fill-mode: both; }
+  .slide-in-from-right  { animation-name: slide-in-from-right; }
+  .slide-in-from-top    { animation-name: slide-in-from-top; }
+  .slide-in-from-top-2  { animation-name: slide-in-from-top; animation-duration: 0.2s; }
+  .fade-in              { animation-name: fade-in; }
+  .scale-in             { animation-name: scale-in; }
+  .duration-300         { animation-duration: 300ms; }
+  .duration-500         { animation-duration: 500ms; }
 
-  .animate-gradient {
-    background-size: 400% 400%;
-    animation: gradient 8s ease infinite;
-  }
+  /* ── Text Clamp ─────────────────────────────────────────────────────── */
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-  .animate-shimmer {
-    animation: shimmer 2s infinite;
-  }
-
-  .animate-orbit {
-    animation: orbit 20s linear infinite;
-  }
-
-  .animate-tilt {
-    animation: tilt 4s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .animate-magnetic {
-    animation: magnetic 0.3s ease-out forwards;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.5s ease-out forwards;
-  }
-
-  .animate-typing {
-    animation: typing 1.4s ease-in-out infinite;
-  }
-
-  .animate-in {
-    animation-duration: 0.3s;
-    animation-fill-mode: both;
-  }
-
-  .slide-in-from-right {
-    animation-name: slide-in-from-right;
-  }
-
-  .slide-in-from-top {
-    animation-name: slide-in-from-top;
-  }
-
-  .slide-in-from-top-2 {
-    animation-name: slide-in-from-top;
-    animation-duration: 0.2s;
-  }
-
-  .fade-in {
-    animation-name: fade-in;
-  }
-
-  .scale-in {
-    animation-name: scale-in;
-  }
-
-  .duration-300 {
-    animation-duration: 300ms;
-  }
-
-  .duration-500 {
-    animation-duration: 500ms;
-  }
-
-  /* Utility Classes */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Glass morphism effect */
-  .glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  /* Advanced glass effect */
-  .glass-advanced {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Magnetic effect for interactive elements */
-  .magnetic {
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  .magnetic:hover {
-    transform: scale(1.05);
-  }
-
-  /* Glow effect */
-  .glow {
-    position: relative;
-  }
-
-  .glow::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-    filter: blur(10px);
-  }
-
-  .glow:hover::before {
-    opacity: 0.7;
-  }
-
-  /* Smooth transitions for integration cards */
-  .integration-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .integration-card:hover {
-    transform: translateY(-4px);
-  }
-
-  /* Sidebar transitions */
-  .sidebar-transition {
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* AiSensy-style shadows - soft 3D elevation */
-  .shadow-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
-      0 4px 12px rgba(0, 0, 0, 0.06);
-  }
+  /* ── Shadow Named Classes ───────────────────────────────────────────── */
+  /* Prefer CSS vars above, but these are kept for component compatibility */
+  .shadow-card       { box-shadow: var(--shadow-1); }
+  .shadow-dropdown   { box-shadow: var(--shadow-2); }
+  .shadow-elevated   { box-shadow: var(--shadow-3); }
+  .shadow-overlay    { box-shadow: var(--shadow-4); }
+  .shadow-header     { box-shadow: 0 1px 0 rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04); }
 
   .shadow-card-hover {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
-      0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-1);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
-
   .shadow-card-hover:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06),
-      0 12px 24px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+    transform: translateY(-1px);    /* very subtle — Mindtickle is conservative */
   }
 
-  .shadow-header {
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05),
-      0 2px 8px rgba(0, 0, 0, 0.04);
+  .dark .shadow-card         { box-shadow: var(--shadow-1); }
+  .dark .shadow-card-hover   { box-shadow: var(--shadow-1); }
+  .dark .shadow-card-hover:hover { box-shadow: var(--shadow-2); }
+
+  /* ── Sidebar transitions ────────────────────────────────────────────── */
+  .sidebar-transition { transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* ── Responsive ─────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .dashboard-page { gap: 12px; }
   }
 
-  .shadow-elevated {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04),
-      0 8px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  .shadow-float {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04),
-      0 12px 32px rgba(0, 0, 0, 0.12);
-  }
-
-  /* Dark mode shadows - more pronounced */
-  .dark .shadow-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
-      0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .dark .shadow-card-hover {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
-      0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .dark .shadow-card-hover:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
-      0 12px 24px rgba(0, 0, 0, 0.4);
-  }
-
-  .dark .shadow-header {
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3),
-      0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .dark .shadow-elevated {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25),
-      0 8px 16px rgba(0, 0, 0, 0.35);
-  }
-
-  .dark .shadow-float {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3),
-      0 12px 32px rgba(0, 0, 0, 0.45);
-  }
+  /* Cursor rules */
+  button, [role="button"], a, .clickable, .sidebar-item { cursor: pointer; }
+  [disabled], [aria-disabled="true"]                     { cursor: not-allowed; }
+  input, textarea, select                                { cursor: text; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * SCROLLBAR UTILITIES
+ * ═══════════════════════════════════════════════════════════════════════════ */
 
 @utility no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  &::-webkit-scrollbar { display: none; }
 }
 
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
 
-  &::-webkit-scrollbar {
-    display: none;
+@utility minimal-scrollbar {
+  &::-webkit-scrollbar       { width: 4px; height: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--border-secondary);
+    border-radius: var(--radius-pill);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-default);
   }
 }
 
-/* Reduced motion: disable all animations for users who prefer it */
+/* Global scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * REDUCED MOTION
+ * ═══════════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -1651,78 +1615,25 @@
   }
 }
 
-@utility minimal-scrollbar {
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: color-mix(in oklch, var(--muted-foreground) 20%, transparent);
-    border-radius: 3px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in oklch, var(--muted-foreground) 40%, transparent);
-  }
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-}
-
-/* Custom scrollbar for integration modal */
-.integration-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.integration-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.integration-scroll::-webkit-scrollbar-thumb {
-  background: color-mix(in oklch, var(--muted-foreground) 30%, transparent);
-  border-radius: 4px;
-}
-
-.integration-scroll::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
-}
-
-/* Focus styles */
+/* ═══════════════════════════════════════════════════════════════════════════
+ * FOCUS & SELECTION
+ * ═══════════════════════════════════════════════════════════════════════════ */
 .focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
-/* Advanced cursor styles */
-.cursor-none {
-  cursor: none !important;
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
 }
 
-.cursor-none * {
-  cursor: none !important;
-}
 
-/* Landing design system utilities */
+/* ═══════════════════════════════════════════════════════════════════════════
+ * LANDING PAGE — Intentionally separate design system
+ * (different visual language from dashboard — keep isolated)
+ * ═══════════════════════════════════════════════════════════════════════════ */
 .landing-section {
   @apply relative py-20 md:py-28 overflow-hidden bg-[#fbf9f4];
 }
@@ -1740,17 +1651,4 @@
 }
 .landing-btn-secondary {
   @apply inline-flex h-13 items-center justify-center rounded-full border border-[#e4ddd4] bg-white px-7 text-sm font-semibold text-[#1e1c19] transition-all hover:bg-[#fafaf9] hover:shadow-[0_8px_16px_rgba(59,43,22,0.04)];
-}
-
-/*---break---
- */
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
 }

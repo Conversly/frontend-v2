@@ -1,30 +1,23 @@
 /**
  * Font Configuration
- * 
- * Centralized font configuration reference for the application.
- * 
- * NOTE: Next.js font loaders require literal values, so if you change fonts here,
- * you MUST also update the corresponding font loader in app/layout.tsx with the same values.
- * 
- * This file serves as the single source of truth for documentation and CSS references.
+ *
+ * Inter is a variable font (supports all weights 100-900 continuously).
+ * This means font-medium (500) and font-semibold (600) render correctly —
+ * unlike Lato which only had 100/300/400/700/900, causing weight fallbacks.
+ *
+ * NOTE: Next.js font loaders require literal values in app/layout.tsx.
+ * This file is the single source of truth for documentation.
  */
 
 export const FONTS = {
-  // Hero & Titles
-  display: {
-    name: "Lato",
-    variable: "--font-lato",
-    weights: ["100", "300", "400", "700", "900"],
+  // Primary UI font — matches Mindtickle's Inter/system-ui stack
+  sans: {
+    name: "Inter",
+    variable: "--font-inter",
+    // Variable font — no weight array needed; all weights 100-900 available
   },
 
-  // Dashboard & Body Text
-  body: {
-    name: "Lato",
-    variable: "--font-lato",
-    weights: ["100", "300", "400", "700", "900"],
-  },
-
-  // Monospace (code, technical content)
+  // Monospace (code, system prompts, technical content)
   mono: {
     fallback:
       'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
@@ -32,4 +25,3 @@ export const FONTS = {
 } as const;
 
 export type FontConfig = typeof FONTS;
-

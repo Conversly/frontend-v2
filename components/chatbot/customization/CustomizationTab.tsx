@@ -212,40 +212,47 @@ export function CustomizationTab({ chatbotId, systemPrompt: initialSystemPrompt 
         {/* Main Settings Tabs - Full width row at top */}
         <Tabs defaultValue="content" className="flex flex-col h-full">
           {/* Tabs with actions on the right - full width */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
-            <TabsList className="bg-card/60 p-1 rounded-xl flex flex-nowrap gap-2 flex-1 max-w-full lg:max-w-[500px] overflow-x-auto">
+          <div className="customization-tabs__bar flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
+            <TabsList
+              variant="mindtickle"
+              className="customization-tabs__list flex-1 max-w-full lg:max-w-[760px]"
+            >
               <TabsTrigger
                 value="content"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Settings2 className="w-4 h-4 mr-2" />
+                <Settings2 className="customization-tabs__icon w-4 h-4" />
                 Content
               </TabsTrigger>
               <TabsTrigger
                 value="appearance"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Palette className="w-4 h-4 mr-2" />
+                <Palette className="customization-tabs__icon w-4 h-4" />
                 Appearance
               </TabsTrigger>
               <TabsTrigger
                 value="ai"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <BrainCircuit className="w-4 h-4 mr-2" />
+                <BrainCircuit className="customization-tabs__icon w-4 h-4" />
                 AI
               </TabsTrigger>
               <TabsTrigger
                 value="integration"
-                className="font-sans text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                variant="mindtickle"
+                className="customization-tabs__trigger font-sans"
               >
-                <Code className="w-4 h-4 mr-2" />
+                <Code className="customization-tabs__icon w-4 h-4" />
                 Integration
               </TabsTrigger>
             </TabsList>
 
             {/* Actions: Widget status + Save/Reset */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="customization-tabs__actions flex items-center gap-3 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Widget</span>
                 <input
