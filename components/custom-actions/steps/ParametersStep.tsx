@@ -485,8 +485,37 @@ export const ParametersStep: React.FC = () => {
               key={index}
               className="shadow-card border-border bg-[--surface-secondary]"
             >
-              <CardContent className="p-4 space-y-4">
-                <div className="grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_140px_180px_auto_auto] items-start">
+              <CardContent className="relative p-4 pr-12 space-y-4">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-4 top-4 h-7 w-7 rounded-full text-muted-foreground"
+                    >
+                      <Info className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" align="start" className="max-w-xs">
+                    <p className="font-semibold">Value source options</p>
+                    <p className="mt-1">
+                      <span className="font-medium">Customer input:</span>{" "}
+                      AI reads the conversation and fills this value.
+                    </p>
+                    <p className="mt-1">
+                      <span className="font-medium">Use contact field:</span>{" "}
+                      This value comes from the contact record and is not shown
+                      to the AI.
+                    </p>
+                    <p className="mt-1">
+                      <span className="font-medium">Fixed value:</span> This
+                      value is always the saved value and is not shown to the AI.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <div className="grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_140px_180px_auto_auto] xl:items-end">
                   <div className="space-y-1.5">
                     <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                       Input name
@@ -555,7 +584,7 @@ export const ParametersStep: React.FC = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="mt-6 h-10 w-10 shrink-0"
+                    className="h-10 w-10 shrink-0"
                     onClick={() =>
                       setAdvancedOpen((current) => ({
                         ...current,
@@ -573,7 +602,7 @@ export const ParametersStep: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="mt-6 h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                     onClick={() => removeParameter(index)}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -581,44 +610,6 @@ export const ParametersStep: React.FC = () => {
                 </div>
 
                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,420px)] lg:items-start">
-                  <div className="flex justify-end lg:col-span-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 rounded-full text-muted-foreground"
-                        >
-                          <Info className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="left"
-                        align="start"
-                        className="max-w-xs"
-                      >
-                        <p className="font-semibold">Value source options</p>
-                        <p className="mt-1">
-                          <span className="font-medium">Customer input:</span>{" "}
-                          AI reads the conversation and fills this value.
-                        </p>
-                        <p className="mt-1">
-                          <span className="font-medium">
-                            Use contact field:
-                          </span>{" "}
-                          This value comes from the contact record and is not
-                          shown to the AI.
-                        </p>
-                        <p className="mt-1">
-                          <span className="font-medium">Fixed value:</span>{" "}
-                          This value is always the saved value and is not shown
-                          to the AI.
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-
                   {source === "contact" ? (
                     <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-3 space-y-3">
                       <div className="flex items-center gap-2 text-sm font-medium text-blue-900">

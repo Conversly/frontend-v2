@@ -67,8 +67,8 @@ export const themeTokens = {
   typography: {
     fontFamily: {
       sans: [
-        FONTS.body.variable,
-        FONTS.body.name,
+        FONTS.sans.variable,
+        FONTS.sans.name,
         "Helvetica Neue",
         "Arial",
         "sans-serif",
