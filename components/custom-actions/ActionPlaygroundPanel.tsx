@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, MessageSquareDashed, RefreshCcw } from "lucide-react";
 import { PlaygroundWidget } from "@/components/PlaygroundWidget";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
 import type { UIConfigInput } from "@/types/customization";
@@ -63,9 +63,7 @@ function mapWidgetConfigToUiConfig(
 export function ActionPlaygroundPanel({
   workspaceId,
   chatbotId,
-  lastSavedAction,
   enabled,
-  hasUnsavedChanges,
   playgroundVersion,
 }: ActionPlaygroundPanelProps) {
   const [config, setConfig] = useState<UIConfigInput | null>(null);
@@ -108,79 +106,61 @@ export function ActionPlaygroundPanel({
     };
   }, [chatbotId, workspaceId]);
 
-  const statusCopy = useMemo(() => {
-    if (!lastSavedAction?.id) {
-      return "Complete the form and save once to unlock end-to-end chatbot testing.";
-    }
-
-    if (!enabled) {
-      return "Finish every required field, then save again. This panel only runs against the latest saved DEV snapshot.";
-    }
-
-    return "Use this panel to test whether the saved chatbot actually chooses and uses this action in conversation. Unsaved edits on the left stay isolated until the next successful save.";
-  }, [enabled, lastSavedAction]);
-
   return (
-    <div className="rounded-lg border border-border bg-card shadow-card h-full overflow-hidden">
-
-      <div className="space-y-4 p-5">
-        <div className="flex flex-wrap items-center gap-2">
-        </div>
-
-        <div
-          className={cn(
-            "flex min-h-[760px] items-center justify-center rounded-xl border border-border/70 bg-muted/20 p-4 transition-opacity",
-            !enabled && "opacity-75",
-          )}
-        >
-          {isLoading ? (
-            <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Loading playground...
+    <Card className="h-full overflow-hidden border-border bg-card shadow-card">
+      <CardContent
+        className={cn(
+          "flex min-h-[760px] items-center justify-center p-5 transition-opacity",
+          !enabled && "opacity-75",
+        )}
+      >
+        {isLoading ? (
+          <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Loading playground...
+          </div>
+        ) : loadError ? (
+          <div className="max-w-sm text-center text-sm text-destructive">
+            {loadError}
+          </div>
+        ) : !config ? (
+          <div className="max-w-sm text-center text-sm text-muted-foreground">
+            Playground configuration is unavailable for this chatbot.
+          </div>
+        ) : enabled ? (
+          <div className="h-[700px] w-full">
+            <PlaygroundWidget
+              key={`${chatbotId}-${playgroundVersion}`}
+              chatbotId={chatbotId}
+              config={config}
+              systemPrompt={systemPrompt}
+              model="gpt-5-mini"
+              temperature={1}
+              resetKey={playgroundVersion}
+            />
+          </div>
+        ) : (
+          <div className="flex max-w-sm flex-col items-center gap-4 text-center text-sm text-muted-foreground">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background shadow-sm">
+              <MessageSquareDashed className="h-6 w-6" />
             </div>
-          ) : loadError ? (
-            <div className="max-w-sm text-center text-sm text-destructive">
-              {loadError}
+            <div>
+              <p className="font-medium text-foreground">
+                Playground unlocks after a full save
+              </p>
+              <p className="mt-2">
+                Raw request testing still happens in the form. End-to-end AI
+                behavior testing starts only after the action is fully valid and
+                saved to the DEV branch.
+              </p>
             </div>
-          ) : !config ? (
-            <div className="max-w-sm text-center text-sm text-muted-foreground">
-              Playground configuration is unavailable for this chatbot.
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs">
+              <RefreshCcw className="h-3.5 w-3.5" />
+              Save remounts the widget and clears the prior test conversation.
             </div>
-          ) : enabled ? (
-            <div className="h-[700px] w-full">
-              <PlaygroundWidget
-                key={`${chatbotId}-${playgroundVersion}`}
-                chatbotId={chatbotId}
-                config={config}
-                systemPrompt={systemPrompt}
-                model="gpt-5-mini"
-                temperature={1}
-                resetKey={playgroundVersion}
-              />
-            </div>
-          ) : (
-            <div className="flex max-w-sm flex-col items-center gap-4 text-center text-sm text-muted-foreground">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background shadow-sm">
-                <MessageSquareDashed className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="font-medium text-foreground">
-                  Playground unlocks after a full save
-                </p>
-                <p className="mt-2">
-                  Raw request testing still happens in the form. End-to-end AI
-                  behavior testing starts only after the action is fully valid
-                  and saved to the DEV branch.
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs">
-                <RefreshCcw className="h-3.5 w-3.5" />
-                Save remounts the widget and clears the prior test conversation.
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
