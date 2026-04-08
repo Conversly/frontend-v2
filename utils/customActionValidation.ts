@@ -2,10 +2,15 @@ import { z } from "zod";
 import type { CustomAction, ToolParameter } from "@/types/customActions";
 
 export type ActionFormErrors = Record<string, string>;
+export type ActionFormTab =
+  | "behavior"
+  | "inputs"
+  | "connection"
+  | "test-output";
 
 type ValidationResult =
-  | { ok: true; errors: ActionFormErrors; step: null }
-  | { ok: false; errors: ActionFormErrors; step: 1 | 2 | 3 | 4 | 5 };
+  | { ok: true; errors: ActionFormErrors; tab: null }
+  | { ok: false; errors: ActionFormErrors; tab: ActionFormTab };
 
 const actionNameSchema = z
   .string()
@@ -38,13 +43,13 @@ const toolParamSchema = z
       .min(1, "Parameter name is required.")
       .regex(/^[a-z0-9_]+$/, "Parameter name must be lowercase letters, numbers, underscores."),
     type: z.enum(["string", "number", "integer", "boolean", "array", "object"]),
-    description: z.string().trim().min(10, "Parameter description must be at least 10 characters."),
+    description: z.string().optional().default(""),
     required: z.boolean(),
     location: z.enum(["path", "query", "header", "body"]),
     key: z.string().optional(),
     bodyPath: z.string().optional(),
     default: z.any().optional(),
-    source: z.enum(["user", "contact"]).optional().default("user"),
+    source: z.enum(["user", "contact", "fixed"]).optional().default("user"),
     contactField: z.string().optional(),
     enum: z.array(z.string()).optional(),
     pattern: z.string().optional(),
@@ -64,7 +69,13 @@ const toolParamSchema = z
       .optional(),
   })
   .superRefine((p, ctx) => {
-    // Contact-sourced params: only need name + contactField
+    if ((p.source ?? "user") === "user" && (p.description ?? "").trim().length < 10) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Parameter description must be at least 10 characters.",
+        path: ["description"],
+      });
+    }
     if (p.source === "contact") {
       if (!(p.contactField ?? "").trim().length || p.contactField === "metadata.") {
         ctx.addIssue({
@@ -73,7 +84,15 @@ const toolParamSchema = z
           path: ["contactField"],
         });
       }
-      return; // Skip user-param validations (description length, location rules)
+    }
+    if (p.source === "fixed") {
+      if (p.default === undefined || p.default === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Default value is required when source is 'fixed'.",
+          path: ["default"],
+        });
+      }
     }
     if ((p.location === "query" || p.location === "header") && !((p.key ?? p.name ?? "").trim().length)) {
       ctx.addIssue({
@@ -91,13 +110,33 @@ const toolParamSchema = z
     }
   });
 
-function pickStep(errors: ActionFormErrors): 1 | 2 | 3 | 4 | 5 {
+function pickTab(errors: ActionFormErrors): ActionFormTab {
   const keys = Object.keys(errors);
-  if (keys.some((k) => k === "name" || k === "description" || k.startsWith("triggerExamples"))) return 1;
-  if (keys.some((k) => k.startsWith("apiConfig."))) return 2;
-  if (keys.some((k) => k.startsWith("parameters."))) return 3;
-  if (keys.some((k) => k.startsWith("testArgs."))) return 4;
-  return 5;
+  if (
+    keys.some(
+      (k) =>
+        k === "name" ||
+        k === "description" ||
+        k.startsWith("triggerExamples") ||
+        k === "accessLevel" ||
+        k.startsWith("requiredContactFields"),
+    )
+  ) {
+    return "behavior";
+  }
+  if (
+    keys.some(
+      (k) =>
+        k.startsWith("testArgs.") ||
+        k === "responseMapping" ||
+        k === "apiConfig.responseMapping",
+    )
+  ) {
+    return "test-output";
+  }
+  if (keys.some((k) => k.startsWith("apiConfig."))) return "connection";
+  if (keys.some((k) => k.startsWith("parameters."))) return "inputs";
+  return "test-output";
 }
 
 function addZodIssues(out: ActionFormErrors, prefix: string, issues: z.ZodIssue[]) {
@@ -155,7 +194,7 @@ export function validateActionForTest(
   // Required params must have a test value (or a default).
   // Contact-sourced params are optional for testing (auto-injected at runtime).
   for (const p of action.parameters) {
-    if (!p.required || p.source === 'contact') continue;
+    if (!p.required || p.source === 'contact' || p.source === 'fixed') continue;
     const raw = (testValues?.[p.name] ?? "").toString().trim();
     const hasDefault = p.default !== undefined && p.default !== "";
     if (!raw.length && !hasDefault) {
@@ -163,8 +202,8 @@ export function validateActionForTest(
     }
   }
 
-  if (Object.keys(errors).length) return { ok: false, errors, step: pickStep(errors) };
-  return { ok: true, errors: {}, step: null };
+  if (Object.keys(errors).length) return { ok: false, errors, tab: pickTab(errors) };
+  return { ok: true, errors: {}, tab: null };
 }
 
 export function validateActionForDraft(action: CustomAction): ValidationResult {
@@ -176,14 +215,14 @@ export function validateActionForDraft(action: CustomAction): ValidationResult {
   const descRes = descriptionSchema.safeParse(action.description);
   if (!descRes.success) errors.description = descRes.error.issues[0]?.message ?? "Invalid description.";
 
-  if (Object.keys(errors).length) return { ok: false, errors, step: 1 };
-  return { ok: true, errors: {}, step: null };
+  if (Object.keys(errors).length) return { ok: false, errors, tab: "behavior" };
+  return { ok: true, errors: {}, tab: null };
 }
 
 export function validateActionForSave(action: CustomAction): ValidationResult {
   const errors = validateCore(action);
-  if (Object.keys(errors).length) return { ok: false, errors, step: pickStep(errors) };
-  return { ok: true, errors: {}, step: null };
+  if (Object.keys(errors).length) return { ok: false, errors, tab: pickTab(errors) };
+  return { ok: true, errors: {}, tab: null };
 }
 
 export function formatValidationErrors(errors: ActionFormErrors, max = 4): string {

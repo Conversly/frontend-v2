@@ -48,7 +48,7 @@ export type CustomActionConfig = ApiConfig;
 export type ParamType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
 export type ParamLocation = 'path' | 'query' | 'header' | 'body';
 export type AccessLevel = 'user' | 'visitor' | 'anonymous';
-export type ParamSource = 'user' | 'contact';
+export type ParamSource = 'user' | 'contact' | 'fixed';
 
 // Backwards-compatible aliases (older UI code uses ParameterType/ParameterLocation)
 export type ParameterType = ParamType;
@@ -136,6 +136,7 @@ export interface TestResult {
 export interface CreateCustomActionInput {
   chatbotId: string;
   name: string;
+  displayName: string;
   description: string;
   status?: CustomActionStatus;
   accessLevel?: AccessLevel;
@@ -149,6 +150,7 @@ export interface UpdateCustomActionInput {
   chatbotId: string;
   actionId: string;
   name?: string;
+  displayName?: string;
   description?: string;
   status?: CustomActionStatus;
   accessLevel?: AccessLevel;
@@ -246,5 +248,3 @@ export interface GetLogsQuery {
 export interface GetTemplatesQuery {
   category?: string;
 }
-
-

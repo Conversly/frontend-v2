@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "@/utils/query-key";
 import {
-  getChatlogs,
   getMessages,
   listConversations,
+  type ListConversationsParams,
 } from "@/lib/api/activity";
 import { listEscalations } from "@/lib/api/escalate";
 import type {
@@ -11,15 +11,8 @@ import type {
   ConversationMessageItem,
   ConversationState,
   EscalationItem,
+  MessageChannel,
 } from "@/types/activity";
-
-export const useChatlogsQuery = (chatbotId: string) =>
-  useQuery<ConversationItem[]>({
-    queryKey: [QUERY_KEY.ACTIVITY_CHATLOGS, chatbotId],
-    queryFn: () => getChatlogs(chatbotId),
-    staleTime: 60_000,
-    enabled: Boolean(chatbotId),
-  });
 
 export const useMessagesQuery = (chatbotId: string, conversationId: string) =>
   useQuery<ConversationMessageItem[]>({
@@ -29,10 +22,27 @@ export const useMessagesQuery = (chatbotId: string, conversationId: string) =>
     enabled: Boolean(conversationId),
   });
 
-export const useConversationsQuery = (chatbotId: string) =>
+export const useConversationsQuery = (
+  chatbotId: string,
+  params?: {
+    status?: ConversationState;
+    channel?: MessageChannel;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  },
+) =>
   useQuery<ConversationItem[]>({
-    queryKey: [QUERY_KEY.ACTIVITY_CONVERSATIONS, chatbotId],
-    queryFn: () => listConversations({ chatbotId }),
+    queryKey: [
+      QUERY_KEY.ACTIVITY_CONVERSATIONS,
+      chatbotId,
+      params?.status,
+      params?.channel,
+      params?.limit,
+      params?.offset,
+      params?.search,
+    ],
+    queryFn: () => listConversations({ chatbotId, ...params } satisfies ListConversationsParams),
     staleTime: 30_000,
     enabled: Boolean(chatbotId),
   });
@@ -47,4 +57,3 @@ export const useEscalationsQuery = (
     staleTime: 10_000,
     enabled: Boolean(chatbotId),
   });
-

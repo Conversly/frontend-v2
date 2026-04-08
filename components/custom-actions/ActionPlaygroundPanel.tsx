@@ -110,47 +110,21 @@ export function ActionPlaygroundPanel({
 
   const statusCopy = useMemo(() => {
     if (!lastSavedAction?.id) {
-      return "Complete the full action form and save it once to unlock chatbot testing.";
+      return "Complete the form and save once to unlock end-to-end chatbot testing.";
     }
 
     if (!enabled) {
-      return "Finish every required field, then save again. The playground only runs against the latest saved DEV snapshot.";
+      return "Finish every required field, then save again. This panel only runs against the latest saved DEV snapshot.";
     }
 
-    return "This panel runs end-to-end chatbot tests against the saved DEV branch. Unsaved edits on the left stay isolated until the next successful save.";
+    return "Use this panel to test whether the saved chatbot actually chooses and uses this action in conversation. Unsaved edits on the left stay isolated until the next successful save.";
   }, [enabled, lastSavedAction]);
 
   return (
     <div className="rounded-lg border border-border bg-card shadow-card h-full overflow-hidden">
-      <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
-        <div>
-          <h2 className="type-section-title">Action Playground</h2>
-          <p className="type-body-muted mt-1">{statusCopy}</p>
-        </div>
-        {enabled ? (
-          <Badge variant="info" className="shrink-0">
-            DEV saved state
-          </Badge>
-        ) : (
-          <Badge variant="neutral" className="shrink-0">
-            Disabled
-          </Badge>
-        )}
-      </div>
 
       <div className="space-y-4 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">
-            {lastSavedAction?.displayName ||
-              lastSavedAction?.name ||
-              "No saved action yet"}
-          </Badge>
-          {lastSavedAction?.status ? (
-            <Badge variant="secondary">{lastSavedAction.status}</Badge>
-          ) : null}
-          {hasUnsavedChanges ? (
-            <Badge variant="warning">Unsaved changes</Badge>
-          ) : null}
         </div>
 
         <div
@@ -194,9 +168,9 @@ export function ActionPlaygroundPanel({
                   Playground unlocks after a full save
                 </p>
                 <p className="mt-2">
-                  Raw API testing still happens in the action form. Chatbot
-                  testing starts only after the action is fully valid and saved
-                  to the DEV branch.
+                  Raw request testing still happens in the form. End-to-end AI
+                  behavior testing starts only after the action is fully valid
+                  and saved to the DEV branch.
                 </p>
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs">

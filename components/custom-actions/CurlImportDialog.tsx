@@ -233,8 +233,13 @@ export const CurlImportDialog: React.FC<Props> = ({ onImport, trigger }) => {
                                 </div>
 
                                 {/* Summary */}
-                                <div className="text-sm text-muted-foreground pt-2 border-t">
-                                    {selectedHeaders.size} header{selectedHeaders.size !== 1 ? 's' : ''} will be imported
+                                <div className="space-y-1 text-sm text-muted-foreground pt-2 border-t">
+                                    <div>
+                                        {selectedHeaders.size} header{selectedHeaders.size !== 1 ? 's' : ''} will be imported into the action.
+                                    </div>
+                                    <div className="text-xs">
+                                        Browser-specific headers stay unselected by default because they are usually not needed for server-side tool calls.
+                                    </div>
                                 </div>
                             </div>
                         </ScrollArea>

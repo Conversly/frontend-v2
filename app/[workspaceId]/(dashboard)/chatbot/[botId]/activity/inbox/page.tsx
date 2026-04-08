@@ -33,10 +33,15 @@ import {
   useConvertToTicket,
 } from "@/services/escalate";
 import { closeConversation } from "@/lib/api/activity";
-import { markEscalationRead } from "@/lib/api/escalate";
-import type { EscalationItem } from "@/types/activity";
+import { listEscalations, markEscalationRead } from "@/lib/api/escalate";
+import type { ConversationState, EscalationItem } from "@/types/activity";
 import type { TicketPriority } from "@/types/escalate";
-import { useAgentInboxStore, type ChatMessage, type SenderType } from "@/store/agent-inbox";
+import { useAgentInboxStore, type ChatMessage, type InboxQueue, type SenderType } from "@/store/agent-inbox";
+import {
+  ACTIVITY_LIST_INITIAL_PAGE_SIZE,
+  ACTIVITY_LIST_PAGE_SIZE,
+  ACTIVITY_LIST_SEARCH_DEBOUNCE_MS,
+} from "@/components/chatbot/activity/pagination-constants";
 
 import { toast } from "sonner";
 
@@ -85,6 +90,33 @@ function isBroadcastEvent(msg: WebSocketInboundMessage): msg is WebSocketBroadca
 
 function isCommandResponse(msg: WebSocketInboundMessage): msg is WebSocketCommandResponse {
   return Boolean((msg as any)?.status);
+}
+
+function getEscalationQueryParams(activeQueue: InboxQueue, search?: string) {
+  const trimmedSearch = search?.trim() || undefined;
+
+  let mine = false;
+  let status: ConversationState | undefined;
+
+  if (activeQueue === "mine") {
+    mine = true;
+  } else if (activeQueue === "unassigned") {
+    status = "ESCALATED_UNASSIGNED";
+  } else if (activeQueue === "user-waiting") {
+    status = "USER_WAITING_HUMAN";
+  } else if (activeQueue === "waiting-for-user") {
+    status = "HUMAN_WAITING_USER";
+  } else if (activeQueue === "resolved") {
+    status = "RESOLVED";
+  } else if (activeQueue === "closed") {
+    status = "CLOSED";
+  }
+
+  return {
+    mine,
+    status,
+    search: trimmedSearch,
+  };
 }
 
 function ConversationRoomSubscriber({ conversationId }: { conversationId: string }) {
@@ -278,6 +310,7 @@ export default function InboxPage() {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [serverSearchQuery, setServerSearchQuery] = useState("");
+  const [pagedEscalations, setPagedEscalations] = useState<EscalationItem[]>([]);
 
   // Transfer dialog state
   const [transferAgentId, setTransferAgentId] = useState("");
@@ -297,20 +330,31 @@ export default function InboxPage() {
 
   // Data fetching
   const { data: conversations } = useConversationsQuery(botId);
-  const { data: escalationsAll, isLoading: isLoadingEscalationsAll } = useEscalationsQuery(botId, {
+  const activeEscalationQueryParams = useMemo(
+    () => ({
+      ...getEscalationQueryParams(activeQueue, serverSearchQuery),
+      limit: ACTIVITY_LIST_INITIAL_PAGE_SIZE,
+      offset: 0,
+    }),
+    [activeQueue, serverSearchQuery]
+  );
+  const { data: escalationsAll } = useEscalationsQuery(botId, {
     mine: false,
-    limit: 200,
+    limit: ACTIVITY_LIST_INITIAL_PAGE_SIZE,
     search: serverSearchQuery || undefined,
   });
   const {
     data: myEscalations,
     refetch: refetchMyEscalations,
-    isLoading: isLoadingMyEscalations,
   } = useEscalationsQuery(botId, {
     mine: true,
-    limit: 200,
+    limit: ACTIVITY_LIST_INITIAL_PAGE_SIZE,
     search: serverSearchQuery || undefined,
   });
+  const {
+    data: activeEscalationsPage,
+    isLoading: isLoadingActiveEscalations,
+  } = useEscalationsQuery(botId, activeEscalationQueryParams);
 
   useEffect(() => {
     if (conversations) hydrateSnapshots({ conversations });
@@ -330,6 +374,15 @@ export default function InboxPage() {
       })),
     );
   }, [hydrateSnapshots, myEscalations, setUnreadCountsFromInbox]);
+
+  useEffect(() => {
+    if (!activeEscalationsPage) return;
+    if (pagedEscalations.length > 0) return;
+
+    hydrateSnapshots({ escalations: activeEscalationsPage });
+    setPagedEscalations(activeEscalationsPage);
+    setHasMoreItems(activeEscalationsPage.length === ACTIVITY_LIST_INITIAL_PAGE_SIZE);
+  }, [activeEscalationsPage, hydrateSnapshots, pagedEscalations.length]);
 
   const notificationsRoomId = useMemo(() => {
     if (!workspaceId || !botId) return "";
@@ -452,95 +505,51 @@ export default function InboxPage() {
   }, [escalationsById, agentUserId]);
 
   const inboxItems = useMemo(() => {
-    // Source list is server-driven + local merged
-    const list = Object.values(escalationsById);
-    const filtered = list.filter((e) => {
+    if (activeQueue !== "mine") {
+      return pagedEscalations;
+    }
+
+    return pagedEscalations.filter((e) => {
       const state = (e.conversationState || "").toUpperCase();
-      const isWaiting = state === "ESCALATED_UNASSIGNED";
-      const isClosed = state === "RESOLVED" || state === "CLOSED";
-      const isMine = e.agentUserId === agentUserId;
-
-      if (activeQueue === "unassigned") {
-        if (!isWaiting || e.agentUserId) return false;
-      } else if (activeQueue === "mine") {
-        if (!isMine || isClosed) return false;
-      } else if (activeQueue === "user-waiting") {
-        if (state !== "USER_WAITING_HUMAN") return false;
-      } else if (activeQueue === "resolved") {
-        if (state !== "RESOLVED") return false;
-      } else if (activeQueue === "closed") {
-        if (state !== "CLOSED") return false;
-      } else if (activeQueue === "all") {
-        // Show all
-      } else {
-        // Fallback default hide closed unless in specific queue
-        if (isClosed) return false;
-      }
-
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        const msg = String(e.lastUserMessage || "").toLowerCase();
-        if (
-          !msg.includes(q) &&
-          !e.conversationId.toLowerCase().includes(q) &&
-          !(e.reason || "").toLowerCase().includes(q)
-        ) {
-          return false;
-        }
-      }
-
-      return true;
+      return e.agentUserId === agentUserId && state !== "RESOLVED" && state !== "CLOSED";
     });
-
-    // Sort: waiting first, then by requestedAt desc.
-    filtered.sort((a, b) => {
-      const aWaiting = (a.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" ? 0 : 1;
-      const bWaiting = (b.conversationState || "").toUpperCase() === "ESCALATED_UNASSIGNED" ? 0 : 1;
-      if (aWaiting !== bWaiting) return aWaiting - bWaiting;
-      return new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime();
-    });
-
-    return filtered;
-  }, [activeQueue, agentUserId, escalationsById, searchQuery]);
+  }, [activeQueue, agentUserId, pagedEscalations]);
 
   // Handle explicitly searching on enter
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      setServerSearchQuery(searchQuery);
-    }, 500);
+      setServerSearchQuery(searchQuery.trim());
+    }, ACTIVITY_LIST_SEARCH_DEBOUNCE_MS);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
+
+  useEffect(() => {
+    setPagedEscalations([]);
+    setHasMoreItems(true);
+    setIsFetchingMore(false);
+  }, [activeQueue, botId, serverSearchQuery]);
 
   const handleLoadMore = useCallback(async () => {
     if (isFetchingMore || !hasMoreItems) return;
     setIsFetchingMore(true);
 
     try {
-      // Determine what queue to fetch
-      const isMineQueue = activeQueue === "mine";
-      let statusParam: string | undefined;
-
-      if (activeQueue === "unassigned") statusParam = "ESCALATED_UNASSIGNED";
-      else if (activeQueue === "user-waiting") statusParam = "USER_WAITING_HUMAN";
-      else if (activeQueue === "resolved") statusParam = "RESOLVED";
-      else if (activeQueue === "closed") statusParam = "CLOSED";
-
-      const currentOffset = inboxItems.length;
-
-      const { listEscalations } = await import("@/lib/api/escalate");
+      const currentOffset = pagedEscalations.length;
+      const queueParams = getEscalationQueryParams(activeQueue, serverSearchQuery);
       const moreItems = await listEscalations({
         chatbotId: botId,
-        limit: 50,
+        limit: ACTIVITY_LIST_PAGE_SIZE,
         offset: currentOffset,
-        mine: isMineQueue,
-        status: statusParam as any,
-        search: serverSearchQuery || undefined,
+        mine: queueParams.mine,
+        status: queueParams.status,
+        search: queueParams.search,
       });
 
-      if (moreItems && moreItems.length > 0) {
+      if (moreItems.length > 0) {
         hydrateSnapshots({ escalations: moreItems });
-        if (moreItems.length < 50) setHasMoreItems(false);
+        setPagedEscalations((current) => [...current, ...moreItems]);
+        setHasMoreItems(moreItems.length === ACTIVITY_LIST_PAGE_SIZE);
       } else {
         setHasMoreItems(false);
       }
@@ -550,7 +559,7 @@ export default function InboxPage() {
     } finally {
       setIsFetchingMore(false);
     }
-  }, [activeQueue, botId, hasMoreItems, hydrateSnapshots, inboxItems.length, isFetchingMore, serverSearchQuery]);
+  }, [activeQueue, botId, hasMoreItems, hydrateSnapshots, isFetchingMore, pagedEscalations.length, serverSearchQuery]);
 
   const { data: activeHistory, isLoading: isLoadingHistory } = useMessagesQuery(
     botId,
@@ -721,7 +730,7 @@ export default function InboxPage() {
     }
   }, [activeConversationId, convertToTicketMutation, escalationIdByConversationId]);
 
-  const isLoadingInbox = activeQueue === "mine" ? isLoadingMyEscalations : isLoadingEscalationsAll;
+  const isLoadingInbox = isLoadingActiveEscalations;
 
   // New Live Chat Layout Container
   return (
@@ -755,11 +764,10 @@ export default function InboxPage() {
           activeQueue={activeQueue}
           onQueueChange={(q) => {
             setActiveQueue(q);
-            setHasMoreItems(true); // Reset hasMore when queue changes
           }}
           onLoadMore={handleLoadMore}
           isFetchingMore={isFetchingMore}
-          hasMore={hasMoreItems && inboxItems.length >= 50}
+          hasMore={hasMoreItems}
         />
 
         {/* 2. Right: Active Chat Window */}
