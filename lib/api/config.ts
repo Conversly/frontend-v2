@@ -192,6 +192,17 @@ export const API = {
       TEST: allMode(() => "/test"),  // Testing is read-like, doesn't persist changes
       TEMPLATES: allMode(() => "/templates"),
     },
+    MCP: {
+      BASE_URL: () => "/mcp",
+      VERIFY: allMode(() => "/preview/verify"),
+      CREATE: devMode(() => "/create"),
+      LIST: allMode(() => "/list"),
+      GET: allMode(() => "/get"),
+      UPDATE: devMode(() => "/update"),
+      DELETE: devMode(() => "/delete"),
+      TOGGLE_CONNECTION: devMode(() => "/toggle-connection"),
+      UPDATE_TOOL: devMode(() => "/update-tool"),
+    },
     VOICE: {
       BASE_URL: () => "/voice",
       // Assistant Management
