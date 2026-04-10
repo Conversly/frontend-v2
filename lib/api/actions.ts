@@ -1,4 +1,4 @@
-import { fetch, guardedFetch, getPath } from "./axios";
+import { fetch, guardedFetch } from "./axios";
 import { API, ApiResponse } from "./config";
 import {
     ApiConfig,
@@ -12,6 +12,28 @@ import {
     ActionTemplate,
     GetTemplatesQuery,
 } from "@/types/customActions";
+
+function toDisplayName(raw: string): string {
+    return raw
+        .trim()
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function normalizeCustomActionFromApi(action: CustomAction): CustomAction {
+    return {
+        ...action,
+        displayName: action.displayName || toDisplayName(action.name || ""),
+        status: action.status ?? "PUBLISHED",
+        accessLevel: action.accessLevel ?? "anonymous",
+        requiredContactFields: action.requiredContactFields ?? [],
+        triggerExamples: action.triggerExamples ?? [],
+        apiConfig: normalizeApiConfigForBackend(action.apiConfig),
+        parameters: action.parameters ?? [],
+        toolSchema: action.toolSchema ?? null,
+    };
+}
 
 function normalizeApiConfigForBackend(config: ApiConfig): ApiConfig {
     // Strip any accidental legacy keys by explicit pick.
@@ -52,7 +74,7 @@ export const createCustomAction = async (data: CreateCustomActionInput) => {
         throw new Error(res.message);
     }
 
-    return res.data;
+    return normalizeCustomActionFromApi(res.data);
 };
 
 export const getCustomActions = async (data: GetActionsQuery) => {
@@ -65,7 +87,7 @@ export const getCustomActions = async (data: GetActionsQuery) => {
         throw new Error(res.message);
     }
 
-    return res.data;
+    return res.data.map(normalizeCustomActionFromApi);
 };
 
 export const getCustomAction = async (chatbotId: string, actionId: string) => {
@@ -78,7 +100,7 @@ export const getCustomAction = async (chatbotId: string, actionId: string) => {
         throw new Error(res.message);
     }
 
-    return res.data;
+    return normalizeCustomActionFromApi(res.data);
 };
 
 export const updateCustomAction = async (data: UpdateCustomActionInput) => {
@@ -99,7 +121,7 @@ export const updateCustomAction = async (data: UpdateCustomActionInput) => {
         throw new Error(res.message);
     }
 
-    return res.data;
+    return normalizeCustomActionFromApi(res.data);
 };
 
 export const deleteCustomAction = async (chatbotId: string, actionId: string) => {

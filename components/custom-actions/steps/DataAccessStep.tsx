@@ -1,6 +1,11 @@
 import React, { useMemo } from "react";
-import { CustomAction, TestResult } from "@/types/customActions";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,10 +13,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Shield, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  useEditorFormData,
+  useEditorSaving,
+  useEditorTestResult,
+  useEditorUpdateField,
+} from "@/store/custom-action-editor";
 
 type DataAccess = "full" | "limited";
 
-function safeJsonParse(value: unknown): { ok: true; json: any } | { ok: false } {
+function safeJsonParse(
+  value: unknown,
+): { ok: true; json: any } | { ok: false } {
   if (typeof value !== "string") return { ok: false };
   try {
     return { ok: true, json: JSON.parse(value) };
@@ -59,27 +72,28 @@ function formatPreview(value: any): string {
 }
 
 interface Props {
-  formData: CustomAction;
-  updateField: (path: string, value: any) => void;
-  testResult: TestResult | null;
-  saving: boolean;
-  onBack: () => void;
-  onSave: () => void;
+  onBack?: () => void;
+  onSave?: () => void;
+  saveLabel?: string;
 }
 
 export const DataAccessStep: React.FC<Props> = ({
-  formData,
-  updateField,
-  testResult,
-  saving,
   onBack,
   onSave,
+  saveLabel = "Save Action",
 }) => {
-  const dataAccess: DataAccess = (formData.apiConfig.responseMapping ? "limited" : "full") as DataAccess;
+  const formData = useEditorFormData();
+  const updateField = useEditorUpdateField();
+  const testResult = useEditorTestResult();
+  const saving = useEditorSaving();
+  const dataAccess: DataAccess = (
+    formData.apiConfig.responseMapping ? "limited" : "full"
+  ) as DataAccess;
 
   const rawResponse = useMemo(() => {
     if (!testResult?.responseBody) return null;
-    if (typeof testResult.responseBody === "string") return testResult.responseBody;
+    if (typeof testResult.responseBody === "string")
+      return testResult.responseBody;
     return JSON.stringify(testResult.responseBody, null, 2);
   }, [testResult?.responseBody]);
 
@@ -89,10 +103,15 @@ export const DataAccessStep: React.FC<Props> = ({
     if (!rawResponse) return null;
 
     // Not JSON: just return raw response as preview (both modes)
-    if (!parsed.ok) return { mode: dataAccess, text: rawResponse, mappedEmpty: false };
+    if (!parsed.ok)
+      return { mode: dataAccess, text: rawResponse, mappedEmpty: false };
 
     if (dataAccess === "full") {
-      return { mode: dataAccess, text: formatPreview(parsed.json), mappedEmpty: false };
+      return {
+        mode: dataAccess,
+        text: formatPreview(parsed.json),
+        mappedEmpty: false,
+      };
     }
 
     const mapping = formData.apiConfig.responseMapping || "";
@@ -109,7 +128,11 @@ export const DataAccessStep: React.FC<Props> = ({
 
     // Your choice: fallback to full response if mapping is empty.
     if (!extractedText) {
-      return { mode: dataAccess, text: formatPreview(parsed.json), mappedEmpty: true };
+      return {
+        mode: dataAccess,
+        text: formatPreview(parsed.json),
+        mappedEmpty: true,
+      };
     }
 
     return { mode: dataAccess, text: extractedText, mappedEmpty: false };
@@ -125,48 +148,80 @@ export const DataAccessStep: React.FC<Props> = ({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="type-section-title">Data Access</h2>
+        <h2 className="type-section-title">Output</h2>
         <p className="type-body-muted">
-          Control how much of the API response your AI agent can use. Maximum response size is 20KB.
+          Control how much of the API response the AI can use after the request
+          succeeds. Maximum response size is 20KB.
         </p>
       </div>
 
-      <Card className="shadow-none border-border bg-[--surface-secondary]">
+      <Card className="shadow-card border-border bg-[--surface-secondary]">
         <CardHeader>
           <CardTitle className="type-h3 flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-primary" />
-            Security & Access Level
+            Response Access
           </CardTitle>
-          <CardDescription className="type-body-muted italic leading-relaxed">Choose whether the agent sees the full result or just a specific part.</CardDescription>
+          <CardDescription className="type-body-muted italic leading-relaxed">
+            Choose whether the AI sees the full response or only a mapped value.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <RadioGroup value={dataAccess} onValueChange={(v) => setDataAccess(v as DataAccess)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className={cn(
-              "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
-              dataAccess === "full" ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20" : "bg-background border-border hover:border-border/80"
-            )} onClick={() => setDataAccess("full")}>
-              <RadioGroupItem value="full" id="data_access_full" className="mt-1" />
+          <RadioGroup
+            value={dataAccess}
+            onValueChange={(v) => setDataAccess(v as DataAccess)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
+                dataAccess === "full"
+                  ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20"
+                  : "bg-background border-border hover:border-border/80",
+              )}
+              onClick={() => setDataAccess("full")}
+            >
+              <RadioGroupItem
+                value="full"
+                id="data_access_full"
+                className="mt-1"
+              />
               <div className="flex-1">
-                <Label htmlFor="data_access_full" className="type-label block mb-1">
+                <Label
+                  htmlFor="data_access_full"
+                  className="type-label block mb-1"
+                >
                   Full data access
                 </Label>
                 <p className="type-caption leading-relaxed">
-                  The agent can access the full API response to produce comprehensive answers.
+                  The AI can access the full API response when composing an
+                  answer.
                 </p>
               </div>
             </div>
 
-            <div className={cn(
-              "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
-              dataAccess === "limited" ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20" : "bg-background border-border hover:border-border/80"
-            )} onClick={() => setDataAccess("limited")}>
-              <RadioGroupItem value="limited" id="data_access_limited" className="mt-1" />
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-4 transition-all duration-200 cursor-pointer",
+                dataAccess === "limited"
+                  ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20"
+                  : "bg-background border-border hover:border-border/80",
+              )}
+              onClick={() => setDataAccess("limited")}
+            >
+              <RadioGroupItem
+                value="limited"
+                id="data_access_limited"
+                className="mt-1"
+              />
               <div className="flex-1">
-                <Label htmlFor="data_access_limited" className="type-label block mb-1">
+                <Label
+                  htmlFor="data_access_limited"
+                  className="type-label block mb-1"
+                >
                   Limited data access
                 </Label>
                 <p className="type-caption leading-relaxed">
-                  The agent only uses the extracted value from your mapping.
+                  The AI only receives the extracted value from your mapping.
                 </p>
               </div>
             </div>
@@ -182,12 +237,15 @@ export const DataAccessStep: React.FC<Props> = ({
               </div>
               <Input
                 value={formData.apiConfig.responseMapping || ""}
-                onChange={(e) => updateField("apiConfig.responseMapping", e.target.value)}
+                onChange={(e) =>
+                  updateField("apiConfig.responseMapping", e.target.value)
+                }
                 placeholder="$.data.price"
                 className="font-mono"
               />
               <p className="text-xs text-muted-foreground">
-                This is applied server-side during execution; we preview using a minimal JSON path reader.
+                This mapping is applied server-side during execution. The
+                preview below uses a lightweight local path reader.
               </p>
             </div>
           )}
@@ -195,11 +253,13 @@ export const DataAccessStep: React.FC<Props> = ({
           <div className="rounded-md bg-muted p-3">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
               <Shield className="h-3.5 w-3.5" />
-              Preview (from last test)
+              Output preview (from the last request test)
             </div>
 
             {!testResult ? (
-              <div className="text-xs text-muted-foreground">Run a test to preview the response here.</div>
+              <div className="text-xs text-muted-foreground">
+                Run a test to preview the response here.
+              </div>
             ) : preview ? (
               <div className="space-y-2">
                 {preview.mappedEmpty && (
@@ -212,34 +272,43 @@ export const DataAccessStep: React.FC<Props> = ({
                 </pre>
               </div>
             ) : (
-              <div className="text-xs text-muted-foreground">No response body available.</div>
+              <div className="text-xs text-muted-foreground">
+                No response body available.
+              </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      <div className="flex justify-between pt-8 border-t border-border mt-8">
-        <Button variant="ghost" onClick={onBack} className="px-8">
-          ← Back
-        </Button>
-
-        <Button
-          onClick={onSave}
-          disabled={saving}
-          className="px-8 shadow-card"
-          size="lg"
-        >
-          {saving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving Action...
-            </>
+      {onBack || onSave ? (
+        <div className="flex justify-between pt-8 border-t border-border mt-8">
+          {onBack ? (
+            <Button variant="ghost" onClick={onBack} className="px-8">
+              ← Back
+            </Button>
           ) : (
-            "Save Action"
+            <div />
           )}
-        </Button>
-      </div>
+
+          {onSave ? (
+            <Button
+              onClick={onSave}
+              disabled={saving}
+              className="px-8 shadow-card"
+              size="lg"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving Action...
+                </>
+              ) : (
+                saveLabel
+              )}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 };
-

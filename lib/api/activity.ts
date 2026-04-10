@@ -30,21 +30,25 @@ function fillPath(pathTemplate: string, params: Record<string, string>): string 
 
 // New Activity API (conversationId-based).
 
-export async function listConversations(params: {
+export type ListConversationsParams = {
   chatbotId: string;
   status?: ConversationState;
   channel?: MessageChannel;
   limit?: number;
-}): Promise<ConversationItem[]> {
+  offset?: number;
+  search?: string;
+};
+
+export async function listConversations(params: ListConversationsParams): Promise<ConversationItem[]> {
   try {
-    const { chatbotId, status, channel, limit } = params;
+    const { chatbotId, status, channel, limit, offset, search } = params;
     if (!chatbotId || chatbotId.trim() === "") {
       throw new Error("chatbotId is required");
     }
 
     const endpoint =
       API.ENDPOINTS.ACTIVITY.BASE_URL() + API.ENDPOINTS.ACTIVITY.LIST_CONVERSATIONS.path();
-    const url = `${endpoint}${buildQuery({ chatbotId, status, channel, limit })}`;
+    const url = `${endpoint}${buildQuery({ chatbotId, status, channel, limit, offset, search })}`;
 
     const res = (await fetch(url, { method: "GET" }).then((r) => r.data)) as GetConversationsResponse;
     return res.data;
@@ -108,8 +112,8 @@ export async function closeConversation(conversationId: string): Promise<CloseCo
 
 // Back-compat exports (legacy names used by the dashboard page).
 // These now map to the new conversationId-based endpoints.
-export const getChatlogs = async (chatbotId: string): Promise<ConversationItem[]> =>
-  listConversations({ chatbotId });
+export const getChatlogs = async (params: ListConversationsParams): Promise<ConversationItem[]> =>
+  listConversations(params);
 
 export const getMessages = async (_chatbotId: string, conversationId: string): Promise<ConversationMessageItem[]> =>
   getConversationMessages(conversationId);

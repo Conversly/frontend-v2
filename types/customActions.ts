@@ -4,6 +4,7 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type AuthType = 'none' | 'bearer' | 'api_key' | 'basic';
 export type TestStatus = 'passed' | 'failed' | 'not_tested' | 'error';
+export type CustomActionStatus = 'DRAFT' | 'PUBLISHED';
 
 /**
  * Matches backend yup schema keys (camelCase).
@@ -47,7 +48,7 @@ export type CustomActionConfig = ApiConfig;
 export type ParamType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
 export type ParamLocation = 'path' | 'query' | 'header' | 'body';
 export type AccessLevel = 'user' | 'visitor' | 'anonymous';
-export type ParamSource = 'user' | 'contact';
+export type ParamSource = 'user' | 'contact' | 'fixed';
 
 // Backwards-compatible aliases (older UI code uses ParameterType/ParameterLocation)
 export type ParameterType = ParamType;
@@ -102,13 +103,14 @@ export interface CustomAction {
   name: string;
   displayName: string;
   description: string;
+  status: CustomActionStatus;
   isEnabled: boolean;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
-  triggerExamples?: string[]; // UI-only (not sent to backend create/update)
-  toolSchema?: ToolSchema;
+  triggerExamples?: string[];
+  toolSchema?: ToolSchema | null;
   version: number;
   createdAt: string | null;
   updatedAt: string | null;
@@ -134,9 +136,12 @@ export interface TestResult {
 export interface CreateCustomActionInput {
   chatbotId: string;
   name: string;
+  displayName: string;
   description: string;
+  status?: CustomActionStatus;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
 }
@@ -145,9 +150,12 @@ export interface UpdateCustomActionInput {
   chatbotId: string;
   actionId: string;
   name?: string;
+  displayName?: string;
   description?: string;
+  status?: CustomActionStatus;
   accessLevel?: AccessLevel;
   requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig?: ApiConfig;
   parameters?: ToolParameter[];
 }
@@ -175,9 +183,14 @@ export interface CustomActionResponse {
   name: string;
   displayName: string;
   description: string;
+  status: CustomActionStatus;
   isEnabled: boolean;
+  accessLevel?: AccessLevel;
+  requiredContactFields?: string[];
+  triggerExamples?: string[];
   apiConfig: ApiConfig;
   parameters: ToolParameter[];
+  toolSchema?: ToolSchema | null;
   version: number;
   createdAt: string | null;
   updatedAt: string | null;
@@ -235,6 +248,3 @@ export interface GetLogsQuery {
 export interface GetTemplatesQuery {
   category?: string;
 }
-
-
-

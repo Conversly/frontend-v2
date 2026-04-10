@@ -7,14 +7,20 @@ import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useChatlogsQuery, useMessagesQuery } from "@/services/activity";
-import type { ConversationItem, ConversationMessageItem } from "@/types/activity";
+import { listConversations } from "@/lib/api/activity";
+import { useConversationsQuery, useMessagesQuery } from "@/services/activity";
+import type { ConversationItem, ConversationMessageItem, MessageChannel } from "@/types/activity";
 import { ChatLogsFilterDialog, type ChatLogsFilters } from "@/components/chatbot/activity/ChatLogsFilterDialog";
 import { downloadJsonFile } from "@/lib/utils";
 import {
   ACTIVITY_CHAT_LIST_SIDEBAR_CLASSNAME,
   ACTIVITY_PAGE_ROOT_CLASSNAME,
 } from "@/components/chatbot/activity/layout-constants";
+import {
+  ACTIVITY_LIST_INITIAL_PAGE_SIZE,
+  ACTIVITY_LIST_PAGE_SIZE,
+  ACTIVITY_LIST_SEARCH_DEBOUNCE_MS,
+} from "@/components/chatbot/activity/pagination-constants";
 import { ConversationViewer, type ConversationMessage } from "@/components/chatbot/activity/ConversationViewer";
 import { ReviseAnswerSheet } from "@/components/chatbot/activity/ReviseAnswerSheet";
 import { Download, Filter, Search, MessageCircle, MessageSquare, Mail, Globe, Hash } from "lucide-react";
@@ -29,25 +35,15 @@ export default function ChatLogsPage() {
     return null;
   }
 
-  const { data: chatlogs, isLoading: isLoadingChatlogs } = useChatlogsQuery(botId);
+  const [chatlogItems, setChatlogItems] = useState<ConversationItem[]>([]);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
-
-  // Select first conversation by default once chatlogs load
-  useEffect(() => {
-    if (!selectedConvId && chatlogs && chatlogs.length > 0) {
-      setSelectedConvId(chatlogs[0].conversationId);
-    }
-  }, [chatlogs, selectedConvId]);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMoreItems, setHasMoreItems] = useState(true);
 
   const {
     data: messages,
     isLoading: isLoadingMessages,
   } = useMessagesQuery(botId, selectedConvId || "");
-
-  const selectedConversation = useMemo(
-    () => chatlogs?.find((conversation) => conversation.conversationId === selectedConvId) ?? null,
-    [chatlogs, selectedConvId]
-  );
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<ChatLogsFilters>({
@@ -60,6 +56,7 @@ export default function ChatLogsPage() {
 
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [serverSearchQuery, setServerSearchQuery] = useState("");
 
   const [reviseTarget, setReviseTarget] = useState<{
     userMessage: string;
@@ -76,40 +73,89 @@ export default function ChatLogsPage() {
     []
   );
 
-  const filteredChatlogs = useMemo(() => {
-    if (!chatlogs) return [];
+  const activeChannel = useMemo<MessageChannel | undefined>(() => {
+    if (activeTab === "widget") return "WIDGET";
+    if (activeTab === "whatsapp") return "WHATSAPP";
+    if (activeTab === "other") return "OTHER";
+    return undefined;
+  }, [activeTab]);
 
-    return chatlogs.filter((log) => {
-      // 1. Filter by Channel
-      if (activeTab !== "all") {
-        const logChannel = (log.channel || "WIDGET").toUpperCase();
-        if (activeTab === "whatsapp" && logChannel !== "WHATSAPP") return false;
-        if (activeTab === "widget" && logChannel !== "WIDGET") return false;
-        // 'other' could catch everything else
-        if (activeTab === "other" && (logChannel === "WHATSAPP" || logChannel === "WIDGET")) return false;
+  const conversationQueryParams = useMemo(
+    () => ({
+      limit: ACTIVITY_LIST_INITIAL_PAGE_SIZE,
+      offset: 0,
+      channel: activeChannel,
+      search: serverSearchQuery || undefined,
+    }),
+    [activeChannel, serverSearchQuery]
+  );
+
+  const {
+    data: initialChatlogs,
+    isLoading: isLoadingChatlogs,
+  } = useConversationsQuery(botId, conversationQueryParams);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setServerSearchQuery(searchQuery.trim());
+    }, ACTIVITY_LIST_SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setChatlogItems([]);
+    setHasMoreItems(true);
+    setIsFetchingMore(false);
+  }, [botId, activeChannel, serverSearchQuery]);
+
+  useEffect(() => {
+    if (!initialChatlogs) return;
+    if (chatlogItems.length > 0) return;
+
+    setChatlogItems(initialChatlogs);
+    setHasMoreItems(initialChatlogs.length === ACTIVITY_LIST_INITIAL_PAGE_SIZE);
+  }, [chatlogItems.length, initialChatlogs]);
+
+  useEffect(() => {
+    if (chatlogItems.length === 0) {
+      if (selectedConvId !== null) {
+        setSelectedConvId(null);
       }
+      return;
+    }
 
-      // 2. Filter by Search Query
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const message = String(log.lastUserMessage || "").toLowerCase();
-        const id = String(log.conversationId || "").toLowerCase();
-        const contactName = String(log.contact?.displayName || "").toLowerCase();
-        const contactEmail = String(log.contact?.email || "").toLowerCase();
-        const contactPhone = String(log.contact?.phoneNumber || "").toLowerCase();
+    if (selectedConvId && chatlogItems.some((conversation) => conversation.conversationId === selectedConvId)) {
+      return;
+    }
 
-        return (
-          message.includes(query) ||
-          id.includes(query) ||
-          contactName.includes(query) ||
-          contactEmail.includes(query) ||
-          contactPhone.includes(query)
-        );
-      }
+    setSelectedConvId(chatlogItems[0].conversationId);
+  }, [chatlogItems, selectedConvId]);
 
-      return true;
-    });
-  }, [chatlogs, activeTab, searchQuery]);
+  const handleLoadMore = useCallback(async () => {
+    if (isFetchingMore || !hasMoreItems) return;
+
+    setIsFetchingMore(true);
+    try {
+      const moreItems = await listConversations({
+        chatbotId: botId,
+        limit: ACTIVITY_LIST_PAGE_SIZE,
+        offset: chatlogItems.length,
+        channel: activeChannel,
+        search: serverSearchQuery || undefined,
+      });
+
+      setChatlogItems((current) => [...current, ...moreItems]);
+      setHasMoreItems(moreItems.length === ACTIVITY_LIST_PAGE_SIZE);
+    } finally {
+      setIsFetchingMore(false);
+    }
+  }, [activeChannel, botId, chatlogItems.length, hasMoreItems, isFetchingMore, serverSearchQuery]);
+
+  const selectedConversation = useMemo(
+    () => chatlogItems.find((conversation) => conversation.conversationId === selectedConvId) ?? null,
+    [chatlogItems, selectedConvId]
+  );
 
   const statusDot = (state?: string) => {
     const s = String(state || "").toUpperCase();
@@ -152,7 +198,7 @@ export default function ChatLogsPage() {
           <div className="flex items-center justify-between">
             <h2 className="type-subtitle font-semibold text-foreground">Chat logs</h2>
             <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-              {filteredChatlogs.length}
+              {chatlogItems.length}
             </span>
           </div>
 
@@ -196,8 +242,8 @@ export default function ChatLogsPage() {
                   </div>
                 </div>
               ))
-            ) : filteredChatlogs.length > 0 ? (
-              filteredChatlogs.map((c) => {
+            ) : chatlogItems.length > 0 ? (
+              chatlogItems.map((c) => {
                 const isActive = selectedConvId === c.conversationId;
                 const ts = c.lastUserMessageAt ?? c.lastMessageAt ?? c.updatedAt ?? c.createdAt;
                 const channelLabel = String(c.channel || "WIDGET").toUpperCase();
@@ -269,6 +315,25 @@ export default function ChatLogsPage() {
                   }}
                 >
                   Clear all filters
+                </Button>
+              </div>
+            )}
+
+            {chatlogItems.length > 0 && hasMoreItems && (
+              <div className="px-4 py-3">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleLoadMore}
+                  disabled={isFetchingMore}
+                  className="w-full bg-card text-muted-foreground hover:bg-background"
+                >
+                  {isFetchingMore ? (
+                    <span className="flex items-center gap-2">
+                      <span className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Loading...
+                    </span>
+                  ) : "Load More"}
                 </Button>
               </div>
             )}

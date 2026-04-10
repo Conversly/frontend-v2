@@ -1,871 +1,1018 @@
-import React, { useEffect, useMemo } from 'react';
-import { CustomAction, ToolParameter } from '@/types/customActions';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useEffect, useMemo, useState } from "react";
+import { ToolParameter } from "@/types/customActions";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Trash2, Plus, ChevronRight, Sparkles, Info, ShieldCheck } from 'lucide-react';
-import type { ParamSource } from '@/types/customActions';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Trash2,
+  Plus,
+  ChevronDown,
+  Sparkles,
+  Settings2,
+  ShieldCheck,
+  Info,
+} from "lucide-react";
+import type { ParamSource } from "@/types/customActions";
+import {
+  useEditorFormData,
+  useEditorReplaceParameters,
+  useEditorUpdateField,
+} from "@/store/custom-action-editor";
+import {
+  collectBodyTemplateBindings,
+  CONTACT_FIELD_OPTIONS,
+  extractExactTemplateVar,
+  extractLegacyVariables,
+  extractPathParams,
+  formatBindingSummary,
+  listDotPaths,
+} from "../parameter-utils";
 
-interface Props {
-    formData: CustomAction;
-    updateField: (path: string, value: any) => void;
-    onNext: () => void;
-    onBack: () => void;
+function formatEditableValue(value: any): string {
+  if (value === undefined || value === null) return "";
+  if (typeof value === "string") return value;
+  return JSON.stringify(value);
 }
 
-function extractPathParams(endpoint: string): string[] {
-    const found: string[] = [];
-    const curly = endpoint.match(/\{([^}]+)\}/g) || [];
-    for (const m of curly) {
-        const name = m.replace(/[{}]/g, '').trim();
-        if (name) found.push(name);
+function parseDefaultValue(paramType: ToolParameter["type"], raw: string): any {
+  if (!raw.trim().length) return undefined;
+  if (paramType === "object" || paramType === "array") {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
     }
-    const colon = endpoint.match(/:([A-Za-z0-9_]+)/g) || [];
-    for (const m of colon) {
-        const name = m.slice(1).trim();
-        if (name) found.push(name);
-    }
-    return [...new Set(found)];
+  }
+  if (paramType === "number") {
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : raw;
+  }
+  if (paramType === "integer") {
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isFinite(parsed) ? parsed : raw;
+  }
+  if (paramType === "boolean") {
+    if (raw === "true") return true;
+    if (raw === "false") return false;
+  }
+  return raw;
 }
 
-// Legacy extraction for `{{var}}` templates (backwards compatibility).
-function extractLegacyVariables(str: string): string[] {
-    const matches = str.match(/\{\{([^}]+)\}\}/g) || [];
-    return [...new Set(matches.map(m => m.replace(/\{\{|\}\}/g, '').trim()).filter(Boolean))];
+function canAddTopLevelContactField(
+  contactField?: string,
+): contactField is "externalId" | "email" | "name" | "phone" {
+  return ["externalId", "email", "name", "phone"].includes(contactField || "");
 }
 
-function listDotPaths(value: any, prefix = '', out: string[] = [], depth = 0): string[] {
-    if (depth > 6) return out;
-    if (!value || typeof value !== 'object') return out;
-    if (Array.isArray(value)) return out;
+export const ParametersStep: React.FC = () => {
+  const [advancedOpen, setAdvancedOpen] = useState<Record<number, boolean>>({});
+  const formData = useEditorFormData();
+  const updateField = useEditorUpdateField();
+  const replaceParameters = useEditorReplaceParameters();
+  const endpoint = formData.apiConfig.endpoint || "";
+  const staticBody = formData.apiConfig.staticBody;
+  const staticHeaders = formData.apiConfig.staticHeaders ?? {};
 
-    for (const key of Object.keys(value)) {
-        const next = prefix ? `${prefix}.${key}` : key;
-        out.push(next);
-        listDotPaths((value as any)[key], next, out, depth + 1);
-        if (out.length > 250) return out;
-    }
-    return out;
-}
+  const detectedPathParams = useMemo(
+    () => extractPathParams(endpoint),
+    [endpoint],
+  );
+  const detectedLegacyVariables = useMemo(
+    () => extractLegacyVariables(endpoint),
+    [endpoint],
+  );
+  const bodyPathSuggestions = useMemo(
+    () => listDotPaths(staticBody),
+    [staticBody],
+  );
+  const detectedBodyBindings = useMemo(() => {
+    if (
+      !staticBody ||
+      typeof staticBody !== "object" ||
+      Array.isArray(staticBody)
+    )
+      return [];
+    return collectBodyTemplateBindings(staticBody);
+  }, [staticBody]);
 
-function extractExactTemplateVar(v: any): string | null {
-    if (typeof v !== 'string') return null;
-    const m = v.trim().match(/^\{\{([^}]+)\}\}$/);
-    if (!m) return null;
-    const name = (m[1] || '').trim();
-    return name.length ? name : null;
-}
+  const hasLegacyTemplates = useMemo(() => {
+    if (detectedLegacyVariables.length > 0) return true;
+    if (
+      Object.values(staticHeaders).some(
+        (value) => typeof value === "string" && value.includes("{{"),
+      )
+    )
+      return true;
+    return false;
+  }, [detectedLegacyVariables.length, staticHeaders]);
 
-function collectBodyTemplateBindings(value: any, prefix = '', out: Array<{ name: string; bodyPath: string }> = []): Array<{ name: string; bodyPath: string }> {
-    if (!value || typeof value !== 'object') return out;
-    if (Array.isArray(value)) return out; // keep simple: no array index paths for now
+  const existingParamNames = new Set(
+    formData.parameters.map((param) => param.name),
+  );
+  const missingPathParams = detectedPathParams.filter(
+    (value) => !existingParamNames.has(value),
+  );
+  const missingLegacyVariables = detectedLegacyVariables.filter(
+    (value) => !existingParamNames.has(value),
+  );
+  const missingBodyBindings = detectedBodyBindings.filter(
+    (binding) => !existingParamNames.has(binding.name),
+  );
 
-    for (const key of Object.keys(value)) {
-        const nextPath = prefix ? `${prefix}.${key}` : key;
-        const child = (value as any)[key];
-        const exact = extractExactTemplateVar(child);
-        if (exact) {
-            out.push({ name: exact, bodyPath: nextPath });
-        } else if (child && typeof child === 'object' && !Array.isArray(child)) {
-            collectBodyTemplateBindings(child, nextPath, out);
-        }
-        if (out.length > 250) return out;
-    }
-    return out;
-}
+  useEffect(() => {
+    if (detectedBodyBindings.length === 0) return;
 
-const CONTACT_FIELD_OPTIONS = [
-    { value: 'externalId', label: 'User ID (externalId)' },
-    { value: 'email', label: 'Email' },
-    { value: 'name', label: 'Name' },
-    { value: 'phone', label: 'Phone' },
-    { value: 'id', label: 'Internal Contact ID' },
-];
-
-export const ParametersStep: React.FC<Props> = ({
-    formData,
-    updateField,
-    onNext,
-    onBack,
-}) => {
-    const endpoint = formData.apiConfig.endpoint || '';
-    const legacyBodyTemplate = '';
-
-    const detectedPathParams = useMemo(() => extractPathParams(endpoint), [endpoint]);
-    const detectedLegacyVariables = useMemo(() => {
-        const vars = [
-            ...extractLegacyVariables(endpoint),
-        ];
-        return [...new Set(vars)];
-    }, [endpoint, legacyBodyTemplate]);
-
-    const staticBody = formData.apiConfig.staticBody;
-    const bodyPathSuggestions = useMemo(() => listDotPaths(staticBody), [staticBody]);
-    const detectedBodyBindings = useMemo(() => {
-        // Prefer structured staticBody; fallback to parsing legacy bodyTemplate.
-        let bodyObj: any = staticBody;
-        // legacyBodyTemplate intentionally not supported (backend contract is staticBody only)
-        if (!bodyObj || typeof bodyObj !== 'object' || Array.isArray(bodyObj)) return [];
-        return collectBodyTemplateBindings(bodyObj);
-    }, [staticBody, legacyBodyTemplate]);
-    const staticHeaders = formData.apiConfig.staticHeaders ?? {};
-    const staticQueryParams: Record<string, string> = {};
-
-    const hasLegacyTemplates = useMemo(() => {
-        if (detectedLegacyVariables.length > 0) return true;
-        if (Object.values(staticHeaders).some((v) => typeof v === 'string' && v.includes('{{'))) return true;
-        if (Object.values(staticQueryParams).some((v) => typeof v === 'string' && v.includes('{{'))) return true;
-        return false;
-    }, [detectedLegacyVariables.length, staticHeaders, staticQueryParams]);
-
-    const existingParamNames = new Set(formData.parameters.map(p => p.name));
-    const missingPathParams = detectedPathParams.filter(v => !existingParamNames.has(v));
-    const missingLegacyVariables = detectedLegacyVariables.filter(v => !existingParamNames.has(v));
-    const missingBodyBindings = detectedBodyBindings.filter((b) => !existingParamNames.has(b.name));
-
-    // Auto-create body-bound parameters from exact "{{name}}" placeholders in JSON body.
-    // Runs when entering this step (component mounts) and when body changes.
-    useEffect(() => {
-        if (detectedBodyBindings.length === 0) return;
-
-        const nextParams: ToolParameter[] = [...formData.parameters];
-        const byName = new Map(nextParams.map((p, idx) => [p.name, idx] as const));
-        let changed = false;
-
-        for (const b of detectedBodyBindings) {
-            const name = (b.name || '').trim();
-            const bodyPath = (b.bodyPath || '').trim();
-            if (!name || !bodyPath) continue;
-
-            const idx = byName.get(name);
-            if (idx === undefined) {
-                nextParams.push({
-                    name,
-                    type: 'string' as const,
-                    description: `Auto-detected body placeholder for ${bodyPath}`,
-                    required: true,
-                    location: 'body',
-                    bodyPath,
-                });
-                byName.set(name, nextParams.length - 1);
-                changed = true;
-                continue;
-            }
-
-            const cur = nextParams[idx];
-            // Only patch if user hasn't explicitly bound it yet.
-            if (!cur.location) {
-                nextParams[idx] = { ...cur, location: 'body', bodyPath };
-                changed = true;
-                continue;
-            }
-            if (cur.location === 'body' && !(cur.bodyPath || '').trim().length) {
-                nextParams[idx] = { ...cur, bodyPath };
-                changed = true;
-                continue;
-            }
-        }
-
-        if (changed) updateField('parameters', nextParams);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [detectedBodyBindings]);
-
-    const addDetectedParameters = () => {
-        const newParams: ToolParameter[] = [
-            ...missingPathParams.map((name) => ({
-                name,
-                type: 'string' as const,
-                description: `Path parameter for {${name}} in the endpoint`,
-                required: true,
-                location: 'path' as const,
-            })),
-            ...missingLegacyVariables.map((name) => ({
-                name,
-                type: 'string' as const,
-                description: `Legacy template variable {{${name}}} detected in endpoint/body template`,
-                required: true,
-                location: 'path' as const,
-            })),
-            ...missingBodyBindings.map(({ name, bodyPath }) => ({
-                name,
-                type: 'string' as const,
-                description: `Body placeholder "{{${name}}}" detected at ${bodyPath}`,
-                required: true,
-                location: 'body' as const,
-                bodyPath,
-            })),
-        ];
-        updateField('parameters', [...formData.parameters, ...newParams]);
-    };
-
-    const convertLegacyTemplatesToBindings = () => {
-        // 1) Convert legacy endpoint placeholders {{x}} -> {x}
-        const nextEndpoint = endpoint.replace(/\{\{([^}]+)\}\}/g, (_m, name) => `{${String(name).trim()}}`);
-        if (nextEndpoint !== endpoint) {
-            updateField('apiConfig.endpoint', nextEndpoint);
-        }
-
-        // 2) Build desired parameter patches from static headers/query and body template markers
-        const patchesByName = new Map<string, Partial<ToolParameter>>();
-
-        for (const [key, value] of Object.entries(staticQueryParams)) {
-            const name = extractExactTemplateVar(value);
-            if (!name) continue;
-            patchesByName.set(name, { location: 'query' as const, key });
-        }
-
-        for (const [key, value] of Object.entries(staticHeaders)) {
-            const name = extractExactTemplateVar(value);
-            if (!name) continue;
-            patchesByName.set(name, { location: 'header' as const, key });
-        }
-
-        // Body: use staticBody if present, otherwise try parsing legacy bodyTemplate JSON
-        let bodyObj: any = staticBody;
-        // legacy bodyTemplate not supported
-
-        if (bodyObj && typeof bodyObj === 'object' && !Array.isArray(bodyObj)) {
-            const bindings = collectBodyTemplateBindings(bodyObj);
-            for (const b of bindings) {
-                const existing = patchesByName.get(b.name) || {};
-                // Prefer body binding if we found an exact marker in body
-                patchesByName.set(b.name, { ...existing, location: 'body' as const, bodyPath: b.bodyPath });
-            }
-        }
-
-        // 3) Apply patches (create missing params, update existing)
-        const nextParams: ToolParameter[] = [...formData.parameters];
-        const byName = new Map(nextParams.map((p, idx) => [p.name, idx] as const));
-
-        for (const [name, patch] of patchesByName.entries()) {
-            const idx = byName.get(name);
-            if (idx === undefined) {
-                if (!patch.location) continue;
-                nextParams.push({
-                    name,
-                    type: 'string' as const,
-                    description: `Auto-generated from legacy template marker for ${name}`,
-                    required: true,
-                    location: patch.location,
-                    key:
-                        patch.location === 'query' || patch.location === 'header'
-                            ? ((patch.key ?? name) || name)
-                            : undefined,
-                    bodyPath: patch.location === 'body' ? patch.bodyPath : undefined,
-                });
-            } else {
-                nextParams[idx] = {
-                    ...nextParams[idx],
-                    ...patch,
-                };
-                // if we set query/header and key is empty, default it
-                if ((nextParams[idx].location === 'query' || nextParams[idx].location === 'header') && !nextParams[idx].key) {
-                    nextParams[idx].key = nextParams[idx].name;
-                }
-            }
-        }
-
-        updateField('parameters', nextParams);
-    };
-
-    const addParameter = () => {
-        const newParam: ToolParameter = {
-            name: '',
-            type: 'string' as const,
-            description: '',
-            required: false,
-            location: 'query',
-            key: '',
-        };
-        updateField('parameters', [...formData.parameters, newParam]);
-    };
-
-    const updateParameter = (index: number, field: string, value: any) => {
-        const updated = [...formData.parameters];
-        updated[index] = { ...updated[index], [field]: value };
-        updateField('parameters', updated);
-    };
-
-    const patchParameter = (index: number, patch: Partial<ToolParameter>) => {
-        const updated = [...formData.parameters];
-        updated[index] = { ...updated[index], ...patch };
-        updateField('parameters', updated);
-    };
-
-    const removeParameter = (index: number) => {
-        const updated = formData.parameters.filter((_, i) => i !== index);
-        updateField('parameters', updated);
-    };
-
-    // Parameters are now OPTIONAL - you can skip this step
-    const isValid = () => {
-        // If there are no parameters, that's fine
-        if (formData.parameters.length === 0) return true;
-
-        // If there are parameters, each must satisfy backend schema requirements.
-        return formData.parameters.every(
-            (p) => {
-                // Contact-sourced params have simpler requirements
-                if (p.source === 'contact') {
-                    return !!(p.name && p.contactField && p.contactField.length > 0 && p.contactField !== 'metadata.');
-                }
-
-                const baseOk = p.name && p.type && p.description.length >= 10 && !!p.location;
-                if (!baseOk) return false;
-
-                if (p.location === 'body') {
-                    return !!(p.bodyPath && p.bodyPath.trim().length > 0);
-                }
-                if (p.location === 'query' || p.location === 'header') {
-                    const key = (p.key ?? p.name ?? '').trim();
-                    return key.length > 0;
-                }
-                return true;
-            }
-        );
-    };
-
-    return (
-        <div className="space-y-8">
-            <div className="space-y-2">
-                <h2 className="type-section-title">Parameters</h2>
-                <p className="type-body-muted">
-                    Define what information the AI needs to extract from the conversation.
-                </p>
-            </div>
-
-            {/* Contact template variables reference */}
-            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800">
-                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <AlertDescription className="text-sm text-blue-900 dark:text-blue-200">
-                    <strong>Contact variables</strong> are automatically available when identity verification is enabled.
-                    Use these as placeholder values in your API body or as default values:
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                        {[
-                            '{{contact.name}}',
-                            '{{contact.email}}',
-                            '{{contact.phone}}',
-                            '{{contact.id}}',
-                            '{{contact.metadata.<key>}}',
-                        ].map((v) => (
-                            <code key={v} className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 font-mono text-xs">
-                                {v}
-                            </code>
-                        ))}
-                    </div>
-                    <p className="mt-1.5 text-xs text-blue-700 dark:text-blue-300">
-                        Example: <code className="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 font-mono">{'{{contact.metadata.plan}}'}</code> resolves to the verified user&apos;s plan from JWT custom_attributes.
-                    </p>
-                </AlertDescription>
-            </Alert>
-
-            {hasLegacyTemplates && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between gap-4">
-                    <div className="flex gap-3">
-                        <Info className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                        <div>
-                            <p className="text-sm font-semibold text-yellow-900">Legacy templates detected</p>
-                            <p className="text-sm text-yellow-800 leading-relaxed mt-0.5">
-                                We found <code className="px-1.5 py-0.5 rounded bg-yellow-100 font-mono text-yellow-900">{'{{var}}'}</code> markers. You can convert them into explicit bindings (Path/Query/Header/Body).
-                            </p>
-                        </div>
-                    </div>
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={convertLegacyTemplatesToBindings}
-                        className="shrink-0 border-yellow-300 text-yellow-900 hover:bg-yellow-100"
-                    >
-                        Convert templates
-                    </Button>
-                </div>
-            )}
-
-            {/* Auto-detected variables prompt */}
-            {(missingPathParams.length > 0 || missingLegacyVariables.length > 0) && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-center justify-between gap-4">
-                    <div className="flex gap-3">
-                        <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <div>
-                            <p className="text-sm font-semibold text-primary">
-                                {missingPathParams.length + missingLegacyVariables.length} variable
-                                {(missingPathParams.length + missingLegacyVariables.length) !== 1 ? 's' : ''} detected
-                            </p>
-                            <p className="text-sm text-primary/80 mt-0.5">
-                                Found in your API config:{' '}
-                                {[
-                                    ...missingPathParams.map((v) => `{${v}}`),
-                                    ...missingLegacyVariables.map((v) => `{{${v}}}`),
-                                ].join(', ')}
-                            </p>
-                        </div>
-                    </div>
-                    <Button
-                        size="sm"
-                        variant="default"
-                        onClick={addDetectedParameters}
-                        className="shrink-0"
-                    >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add All
-                    </Button>
-                </div>
-            )}
-
-            {formData.parameters.length === 0 &&
-                missingPathParams.length === 0 &&
-                missingLegacyVariables.length === 0 && (
-                    <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/50">
-                        <Info className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                        <p className="text-muted-foreground mb-2">No parameters needed?</p>
-                        <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                            If your API doesn't require any dynamic values, you can skip this step.
-                            Otherwise, add parameters that the AI will extract from conversations.
-                        </p>
-                        <Button variant="outline" onClick={addParameter}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Parameter Manually
-                        </Button>
-                    </div>
-                )}
-
-            <div className="space-y-4">
-                {formData.parameters.map((param, index) => (
-                    <Card key={index} className="relative shadow-none bg-[--surface-secondary] border-border overflow-hidden group">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-3 top-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => removeParameter(index)}
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-
-                        <CardHeader className="pb-4">
-                            <CardTitle className="type-h3 flex items-center gap-3">
-                                <span className="bg-primary/10 text-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
-                                    {index + 1}
-                                </span>
-                                <span>Parameter Details</span>
-                                {param.required && (
-                                    <Badge variant="default" className="text-[10px] uppercase tracking-wider font-bold h-5">Required</Badge>
-                                )}
-                            </CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-6">
-                            {/* Value Source Toggle */}
-                            <div className="space-y-2">
-                                <Label className="type-label">Value source</Label>
-                                <div className="flex gap-2">
-                                    <Button
-                                        type="button"
-                                        variant={(param.source || 'user') === 'user' ? 'default' : 'outline'}
-                                        size="sm"
-                                        className="h-8 text-xs"
-                                        onClick={() => patchParameter(index, { source: 'user' as ParamSource, contactField: undefined })}
-                                    >
-                                        User provides
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant={param.source === 'contact' ? 'default' : 'outline'}
-                                        size="sm"
-                                        className="h-8 text-xs"
-                                        onClick={() => patchParameter(index, { source: 'contact' as ParamSource, type: 'string' as const, required: false })}
-                                    >
-                                        <ShieldCheck className="h-3 w-3 mr-1" />
-                                        From contact
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {param.source === 'contact' ? (
-                                /* Contact-sourced parameter UI */
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="type-label">Parameter name <span className="text-destructive">*</span></Label>
-                                            <Input
-                                                value={param.name}
-                                                onChange={(e) =>
-                                                    updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
-                                                }
-                                                placeholder="user_id"
-                                                className="font-mono bg-background h-10"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="type-label">Contact field <span className="text-destructive">*</span></Label>
-                                            <Select
-                                                value={param.contactField || ''}
-                                                onValueChange={(value) => patchParameter(index, { contactField: value })}
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select contact field..." />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {CONTACT_FIELD_OPTIONS.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                    <SelectItem value="metadata.">metadata.&lt;key&gt;</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    {param.contactField === 'metadata.' && (
-                                        <div className="space-y-2">
-                                            <Label className="type-label">Metadata key</Label>
-                                            <Input
-                                                value={(param.contactField || '').replace('metadata.', '')}
-                                                onChange={(e) => patchParameter(index, { contactField: `metadata.${e.target.value.trim()}` })}
-                                                placeholder="plan"
-                                                className="font-mono bg-background h-10"
-                                            />
-                                        </div>
-                                    )}
-                                    <div className="rounded-md bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 p-3 flex items-start gap-2">
-                                        <ShieldCheck className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
-                                        <p className="text-xs text-blue-900 dark:text-blue-200">
-                                            This value is auto-injected server-side from the verified contact. The AI will not see or ask for it.
-                                        </p>
-                                    </div>
-                                </div>
-                            ) : (
-                                /* User-sourced parameter UI (existing) */
-                                <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Name */}
-                                <div className="space-y-2">
-                                    <Label className="type-label">Name <span className="text-destructive">*</span></Label>
-                                    <Input
-                                        value={param.name}
-                                        onChange={(e) =>
-                                            updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
-                                        }
-                                        placeholder="product_id"
-                                        className="font-mono bg-background h-10"
-                                    />
-                                </div>
-
-                                {/* Type */}
-                                <div className="space-y-2">
-                                    <Label>Type <span className="text-destructive">*</span></Label>
-                                    <Select
-                                        value={param.type}
-                                        onValueChange={(value) => updateParameter(index, 'type', value)}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="string">String</SelectItem>
-                                            <SelectItem value="number">Number</SelectItem>
-                                            <SelectItem value="integer">Integer</SelectItem>
-                                            <SelectItem value="boolean">Boolean</SelectItem>
-                                            <SelectItem value="array">Array</SelectItem>
-                                            <SelectItem value="object">Object</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <div className="space-y-2">
-                                <Label>Description <span className="text-destructive">*</span></Label>
-                                <Textarea
-                                    value={param.description}
-                                    onChange={(e) =>
-                                        updateParameter(index, 'description', e.target.value)
-                                    }
-                                    placeholder="The unique identifier for the product. The AI will extract this from phrases like 'product ABC123' or 'item #12345'."
-                                    rows={2}
-                                />
-                                <p className="text-xs text-muted-foreground">
-                                    Help the AI understand what this parameter represents and how to find it.
-                                </p>
-                            </div>
-
-                            <div className="flex flex-wrap gap-6">
-                                {/* Required */}
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id={`required-${index}`}
-                                        checked={!!param.required}
-                                        onCheckedChange={(checked) =>
-                                            updateParameter(index, 'required', checked as boolean)
-                                        }
-                                    />
-                                    <Label htmlFor={`required-${index}`} className="text-sm">Required</Label>
-                                </div>
-
-                                {/* Default Value */}
-                                <div className="flex-1 min-w-[200px]">
-                                    <Input
-                                        value={
-                                            typeof param.default === 'string'
-                                                ? param.default
-                                                : param.default !== undefined
-                                                    ? JSON.stringify(param.default)
-                                                    : ''
-                                        }
-                                        onChange={(e) => {
-                                            const raw = e.target.value;
-                                            if (param.type === 'object' || param.type === 'array') {
-                                                try {
-                                                    patchParameter(index, { default: raw.trim().length ? JSON.parse(raw) : undefined });
-                                                } catch {
-                                                    patchParameter(index, { default: raw });
-                                                }
-                                                return;
-                                            }
-                                            patchParameter(index, { default: raw });
-                                        }}
-                                        placeholder="Default value (optional)"
-                                        className="h-9"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Destination / Binding */}
-                            <div className="rounded-md border bg-muted/20 p-3 space-y-3">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label>Destination</Label>
-                                        <Select
-                                            value={param.location}
-                                            onValueChange={(value) => {
-                                                if (value === 'query' || value === 'header') {
-                                                    patchParameter(index, {
-                                                        location: value as any,
-                                                        key: (param.key ?? param.name ?? '').trim() || (param.name || ''),
-                                                        bodyPath: undefined,
-                                                    });
-                                                    return;
-                                                }
-                                                if (value === 'body') {
-                                                    patchParameter(index, {
-                                                        location: 'body',
-                                                        bodyPath: (param.bodyPath ?? param.name ?? '').trim() || (param.name || ''),
-                                                        key: undefined,
-                                                    });
-                                                    return;
-                                                }
-                                                patchParameter(index, { location: value as any, key: undefined, bodyPath: undefined });
-                                            }}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="path">Path</SelectItem>
-                                                <SelectItem value="query">Query</SelectItem>
-                                                <SelectItem value="header">Header</SelectItem>
-                                                <SelectItem value="body">Body</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <p className="text-xs text-muted-foreground">
-                                            Controls where the backend places this value.
-                                        </p>
-                                    </div>
-
-                                    {(param.location === 'query' || param.location === 'header') && (
-                                        <div className="md:col-span-2 space-y-2">
-                                            <Label>{param.location === 'query' ? 'Query key' : 'Header key'}</Label>
-                                            <Input
-                                                value={param.key ?? param.name ?? ''}
-                                                onChange={(e) => patchParameter(index, { key: e.target.value })}
-                                                placeholder={param.name || 'key'}
-                                                className="font-mono"
-                                            />
-                                        </div>
-                                    )}
-
-                                    {param.location === 'body' && (
-                                        <div className="md:col-span-2 space-y-2">
-                                            <Label>Body path (dot notation)</Label>
-                                            <Input
-                                                value={param.bodyPath ?? ''}
-                                                onChange={(e) => patchParameter(index, { bodyPath: e.target.value })}
-                                                placeholder="partial.styles.primaryColor"
-                                                className="font-mono"
-                                            />
-                                            {bodyPathSuggestions.length > 0 && (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {bodyPathSuggestions
-                                                        .filter((p) =>
-                                                            (param.name || '').trim().length
-                                                                ? p.toLowerCase().includes((param.name || '').toLowerCase())
-                                                                : true
-                                                        )
-                                                        .slice(0, 8)
-                                                        .map((p) => (
-                                                            <Badge
-                                                                key={p}
-                                                                variant="secondary"
-                                                                className="cursor-pointer font-mono"
-                                                                onClick={() => patchParameter(index, { bodyPath: p })}
-                                                            >
-                                                                {p}
-                                                            </Badge>
-                                                        ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Advanced Validation */}
-                            <Collapsible>
-                                <CollapsibleTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
-                                        <ChevronRight className="h-4 w-4 mr-1" />
-                                        Advanced Validation
-                                    </Button>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="pt-4 space-y-4">
-                                    {/* Enum */}
-                                    {param.type === 'string' && (
-                                        <div className="space-y-2">
-                                            <Label>Allowed Values (comma-separated)</Label>
-                                            <Input
-                                                value={param.enum?.join(', ') || ''}
-                                                onChange={(e) =>
-                                                    updateParameter(
-                                                        index,
-                                                        'enum',
-                                                        e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
-                                                    )
-                                                }
-                                                placeholder="USD, EUR, GBP"
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* Pattern */}
-                                    {param.type === 'string' && (
-                                        <div className="space-y-2">
-                                            <Label>Pattern (Regex)</Label>
-                                            <Input
-                                                value={param.pattern || ''}
-                                                onChange={(e) => updateParameter(index, 'pattern', e.target.value)}
-                                                placeholder="^[A-Z0-9-]+$"
-                                                className="font-mono"
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* Min/Max */}
-                                    {(param.type === 'number' || param.type === 'integer') && (
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Minimum</Label>
-                                                <Input
-                                                    type="number"
-                                                    value={param.minimum ?? ''}
-                                                    onChange={(e) =>
-                                                        updateParameter(index, 'minimum', parseFloat(e.target.value))
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Maximum</Label>
-                                                <Input
-                                                    type="number"
-                                                    value={param.maximum ?? ''}
-                                                    onChange={(e) =>
-                                                        updateParameter(index, 'maximum', parseFloat(e.target.value))
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </CollapsibleContent>
-                            </Collapsible>
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-
-            {formData.parameters.length > 0 && (
-                <Button variant="outline" onClick={addParameter} className="w-full border-dashed">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Another Parameter
-                </Button>
-            )}
-
-            {/* Usage Preview */}
-            {formData.parameters.length > 0 && (
-                <Card className="bg-muted/50">
-                    <CardContent className="pt-6">
-                        <h4 className="text-sm font-medium mb-2">AI Usage Preview</h4>
-                        {formData.parameters.some((p) => p.source !== 'contact') && (
-                            <>
-                                <p className="text-xs text-muted-foreground mb-2">Parameters the AI will ask for:</p>
-                                <pre className="text-xs bg-background p-4 rounded-md overflow-auto">
-                                    {JSON.stringify(
-                                        formData.parameters
-                                            .filter((p) => p.source !== 'contact')
-                                            .reduce(
-                                                (acc, p) => ({
-                                                    ...acc,
-                                                    [p.name]:
-                                                        p.default !== undefined
-                                                            ? p.default
-                                                            : `<${p.type}>`,
-                                                }),
-                                                {}
-                                            ),
-                                        null,
-                                        2
-                                    )}
-                                </pre>
-                            </>
-                        )}
-                        {formData.parameters.some((p) => p.source === 'contact') && (
-                            <div className="mt-3">
-                                <p className="text-xs text-muted-foreground mb-2">Auto-injected from contact (hidden from AI):</p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {formData.parameters
-                                        .filter((p) => p.source === 'contact')
-                                        .map((p) => (
-                                            <Badge key={p.name} variant="secondary" className="font-mono text-xs">
-                                                {p.name} ← {p.contactField}
-                                            </Badge>
-                                        ))}
-                                </div>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-            )}
-
-            <div className="flex justify-between pt-8 border-t border-border mt-8">
-                <Button variant="ghost" onClick={onBack} className="px-8">
-                    ← Back
-                </Button>
-                <Button onClick={onNext} disabled={!isValid()} className="px-8 shadow-card">
-                    {formData.parameters.length === 0 ? 'Skip to Testing' : 'Next: Test Response'}
-                </Button>
-            </div>
-        </div>
+    const nextParams: ToolParameter[] = [...formData.parameters];
+    const byName = new Map(
+      nextParams.map((param, index) => [param.name, index] as const),
     );
+    let changed = false;
+
+    for (const binding of detectedBodyBindings) {
+      const name = (binding.name || "").trim();
+      const bodyPath = (binding.bodyPath || "").trim();
+      if (!name || !bodyPath) continue;
+
+      const index = byName.get(name);
+      if (index === undefined) {
+        nextParams.push({
+          name,
+          type: "string",
+          description: `Value for the ${bodyPath.replace(/\./g, " ")} field in the request body.`,
+          required: true,
+          location: "body",
+          bodyPath,
+          source: "user",
+        });
+        byName.set(name, nextParams.length - 1);
+        changed = true;
+        continue;
+      }
+
+      const current = nextParams[index];
+      if (!current.location) {
+        nextParams[index] = { ...current, location: "body", bodyPath };
+        changed = true;
+        continue;
+      }
+      if (
+        current.location === "body" &&
+        !(current.bodyPath || "").trim().length
+      ) {
+        nextParams[index] = { ...current, bodyPath };
+        changed = true;
+      }
+    }
+
+    if (changed) replaceParameters(nextParams);
+  }, [detectedBodyBindings, formData.parameters, replaceParameters]);
+
+  const addDetectedParameters = () => {
+    const newParams: ToolParameter[] = [
+      ...missingPathParams.map((name) => ({
+        name,
+        type: "string" as const,
+        description: `Value for the ${name.replace(/_/g, " ")} path segment.`,
+        required: true,
+        location: "path" as const,
+        source: "user" as const,
+      })),
+      ...missingLegacyVariables.map((name) => ({
+        name,
+        type: "string" as const,
+        description: `Value for the ${name.replace(/_/g, " ")} field.`,
+        required: true,
+        location: "path" as const,
+        source: "user" as const,
+      })),
+      ...missingBodyBindings.map(({ name, bodyPath }) => ({
+        name,
+        type: "string" as const,
+        description: `Value for the ${bodyPath.replace(/\./g, " ")} field in the request body.`,
+        required: true,
+        location: "body" as const,
+        bodyPath,
+        source: "user" as const,
+      })),
+    ];
+    replaceParameters([...formData.parameters, ...newParams]);
+  };
+
+  const convertLegacyTemplatesToBindings = () => {
+    const nextEndpoint = endpoint.replace(
+      /\{\{([^}]+)\}\}/g,
+      (_match, name) => `{${String(name).trim()}}`,
+    );
+    if (nextEndpoint !== endpoint) {
+      updateField("apiConfig.endpoint", nextEndpoint);
+    }
+
+    const nextParams: ToolParameter[] = [...formData.parameters];
+    const byName = new Map(
+      nextParams.map((param, index) => [param.name, index] as const),
+    );
+
+    for (const [key, value] of Object.entries(staticHeaders)) {
+      const name = extractExactTemplateVar(value);
+      if (!name) continue;
+      const index = byName.get(name);
+      if (index === undefined) {
+        nextParams.push({
+          name,
+          type: "string",
+          description: `Value for the ${key} header.`,
+          required: true,
+          location: "header",
+          key,
+          source: "user",
+        });
+        byName.set(name, nextParams.length - 1);
+        continue;
+      }
+      nextParams[index] = {
+        ...nextParams[index],
+        location: "header",
+        key: nextParams[index].key || key,
+        source: nextParams[index].source ?? "user",
+      };
+    }
+
+    for (const binding of detectedBodyBindings) {
+      const index = byName.get(binding.name);
+      if (index === undefined) {
+        nextParams.push({
+          name: binding.name,
+          type: "string",
+          description: `Value for the ${binding.bodyPath.replace(/\./g, " ")} field in the request body.`,
+          required: true,
+          location: "body",
+          bodyPath: binding.bodyPath,
+          source: "user",
+        });
+        byName.set(binding.name, nextParams.length - 1);
+        continue;
+      }
+      nextParams[index] = {
+        ...nextParams[index],
+        location: "body",
+        bodyPath: nextParams[index].bodyPath || binding.bodyPath,
+        source: nextParams[index].source ?? "user",
+      };
+    }
+
+    replaceParameters(nextParams);
+  };
+
+  const addParameter = () => {
+    const newParam: ToolParameter = {
+      name: "",
+      type: "string",
+      description: "",
+      required: false,
+      location: "query",
+      key: "",
+      source: "user",
+    };
+    replaceParameters([...formData.parameters, newParam]);
+  };
+
+  const updateParameters = (nextParameters: ToolParameter[]) => {
+    replaceParameters(nextParameters);
+  };
+
+  const updateParameter = (
+    index: number,
+    field: keyof ToolParameter,
+    value: any,
+  ) => {
+    const next = [...formData.parameters];
+    const current = next[index];
+    const updated = { ...current, [field]: value };
+
+    if (field === "name") {
+      const nextName = (value ?? "").toString();
+      if (updated.location === "query" || updated.location === "header") {
+        if (!updated.key || updated.key === current.name)
+          updated.key = nextName;
+      }
+      if (
+        updated.location === "body" &&
+        (!updated.bodyPath || updated.bodyPath === current.name)
+      ) {
+        updated.bodyPath = nextName;
+      }
+    }
+
+    next[index] = updated;
+    updateParameters(next);
+  };
+
+  const patchParameter = (index: number, patch: Partial<ToolParameter>) => {
+    const next = [...formData.parameters];
+    next[index] = { ...next[index], ...patch };
+    updateParameters(next);
+  };
+
+  const removeParameter = (index: number) => {
+    updateParameters(
+      formData.parameters.filter((_, currentIndex) => currentIndex !== index),
+    );
+  };
+
+  const ensureContactAccess = (contactField?: string) => {
+    const nextAccess =
+      (formData.accessLevel || "anonymous") === "anonymous"
+        ? "user"
+        : formData.accessLevel || "user";
+    if (nextAccess !== formData.accessLevel) {
+      updateField("accessLevel", nextAccess);
+    }
+    if (!canAddTopLevelContactField(contactField)) return;
+
+    const currentFields = formData.requiredContactFields || [];
+    if (!currentFields.includes(contactField)) {
+      updateField("requiredContactFields", [...currentFields, contactField]);
+    }
+  };
+
+  const handleSourceChange = (index: number, nextSource: ParamSource) => {
+    const current = formData.parameters[index];
+    const next = [...formData.parameters];
+
+    if (nextSource === "contact") {
+      next[index] = {
+        ...current,
+        source: "contact",
+        type: "string",
+        required: false,
+        default: undefined,
+      };
+      updateParameters(next);
+      ensureContactAccess(current.contactField);
+      return;
+    }
+
+    if (nextSource === "fixed") {
+      next[index] = {
+        ...current,
+        source: "fixed",
+        required: false,
+        contactField: undefined,
+        default: current.default !== undefined ? current.default : "",
+      };
+      updateParameters(next);
+      return;
+    }
+
+    next[index] = {
+      ...current,
+      source: "user",
+      contactField: undefined,
+    };
+    updateParameters(next);
+  };
+
+  const handleContactFieldChange = (index: number, value: string) => {
+    patchParameter(index, { contactField: value });
+    ensureContactAccess(value);
+  };
+
+  const aiVisibleParams = formData.parameters.filter(
+    (param) =>
+      param.source !== "contact" &&
+      param.source !== "fixed" &&
+      param.name.trim().length > 0,
+  );
+  const contactParams = formData.parameters.filter(
+    (param) => param.source === "contact" && param.name.trim().length > 0,
+  );
+  const fixedParams = formData.parameters.filter(
+    (param) => param.source === "fixed" && param.name.trim().length > 0,
+  );
+
+  return (
+    <div className="space-y-6">
+      {hasLegacyTemplates && (
+        <div className="rounded-lg border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-4 py-3 text-sm">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[var(--status-warning-fg)]">
+              Legacy template markers were detected in this request. Convert
+              them into explicit input bindings for a cleaner setup.
+            </p>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs"
+              onClick={convertLegacyTemplatesToBindings}
+            >
+              Convert templates
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {(missingPathParams.length > 0 ||
+        missingLegacyVariables.length > 0 ||
+        missingBodyBindings.length > 0) && (
+        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex items-center justify-between gap-4">
+          <div className="flex gap-3">
+            <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-primary">
+                {missingPathParams.length +
+                  missingLegacyVariables.length +
+                  missingBodyBindings.length}{" "}
+                input
+                {missingPathParams.length +
+                  missingLegacyVariables.length +
+                  missingBodyBindings.length !==
+                1
+                  ? "s"
+                  : ""}{" "}
+                detected
+              </p>
+              <p className="text-sm text-primary/80 mt-0.5">
+                Import them now to avoid re-entering request fields by hand.
+              </p>
+            </div>
+          </div>
+          <Button size="sm" onClick={addDetectedParameters}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add all
+          </Button>
+        </div>
+      )}
+
+      {formData.parameters.length === 0 && (
+        <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/40">
+          <p className="text-muted-foreground mb-2">No dynamic inputs yet</p>
+          <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
+            Import from cURL to prefill request inputs automatically, or add one
+            manually if only a few values need to change per request.
+          </p>
+          <Button variant="outline" onClick={addParameter}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add input manually
+          </Button>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {formData.parameters.map((param, index) => {
+          const source = param.source || "user";
+          const open = !!advancedOpen[index];
+
+          return (
+            <Card
+              key={index}
+              className="shadow-card border-border bg-[--surface-secondary]"
+            >
+              <CardContent className="relative p-4 pr-12 space-y-4">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-4 top-4 h-7 w-7 rounded-full text-muted-foreground"
+                    >
+                      <Info className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" align="start" className="max-w-xs">
+                    <p className="font-semibold">Value source options</p>
+                    <p className="mt-1">
+                      <span className="font-medium">Customer input:</span>{" "}
+                      AI reads the conversation and fills this value.
+                    </p>
+                    <p className="mt-1">
+                      <span className="font-medium">Use contact field:</span>{" "}
+                      This value comes from the contact record and is not shown
+                      to the AI.
+                    </p>
+                    <p className="mt-1">
+                      <span className="font-medium">Fixed value:</span> This
+                      value is always the saved value and is not shown to the AI.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <div className="grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_140px_180px_auto_auto] xl:items-end">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                      Input name
+                    </Label>
+                    <Input
+                      value={param.name}
+                      onChange={(e) =>
+                        updateParameter(
+                          index,
+                          "name",
+                          e.target.value.toLowerCase().replace(/\s+/g, "_"),
+                        )
+                      }
+                      placeholder="product_id"
+                      className="font-mono bg-background h-10"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                      Type
+                    </Label>
+                    <Select
+                      value={param.type}
+                      onValueChange={(value) =>
+                        updateParameter(index, "type", value)
+                      }
+                    >
+                      <SelectTrigger className="bg-background h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="string">String</SelectItem>
+                        <SelectItem value="number">Number</SelectItem>
+                        <SelectItem value="integer">Integer</SelectItem>
+                        <SelectItem value="boolean">Boolean</SelectItem>
+                        <SelectItem value="array">Array</SelectItem>
+                        <SelectItem value="object">Object</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                      Value source
+                    </Label>
+                    <Select
+                      value={source}
+                      onValueChange={(value) =>
+                        handleSourceChange(index, value as ParamSource)
+                      }
+                    >
+                      <SelectTrigger className="bg-background h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">Customer input</SelectItem>
+                        <SelectItem value="contact">
+                          Use contact field
+                        </SelectItem>
+                        <SelectItem value="fixed">Fixed value</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-10 w-10 shrink-0"
+                    onClick={() =>
+                      setAdvancedOpen((current) => ({
+                        ...current,
+                        [index]: !current[index],
+                      }))
+                    }
+                  >
+                    {open ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <Settings2 className="h-4 w-4" />
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => removeParameter(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,420px)] lg:items-start">
+                  {source === "contact" ? (
+                    <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-3 space-y-3">
+                      <div className="flex items-center gap-2 text-sm font-medium text-blue-900">
+                        <ShieldCheck className="h-4 w-4" />
+                        Contact field
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                        <Select
+                          value={param.contactField || ""}
+                          onValueChange={(value) =>
+                            handleContactFieldChange(index, value)
+                          }
+                        >
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Choose a contact field" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CONTACT_FIELD_OPTIONS.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {param.contactField === "metadata." && (
+                          <Input
+                            value={(param.contactField || "").replace(
+                              "metadata.",
+                              "",
+                            )}
+                            onChange={(e) =>
+                              handleContactFieldChange(
+                                index,
+                                `metadata.${e.target.value.trim()}`,
+                              )
+                            }
+                            placeholder="metadata key"
+                            className="bg-background font-mono"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ) : source === "fixed" ? (
+                    <div className="rounded-lg border border-border bg-muted/20 px-3 py-3 space-y-2">
+                      <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                        Fixed value
+                      </Label>
+                      <Input
+                        value={formatEditableValue(param.default)}
+                        onChange={(e) =>
+                          patchParameter(index, {
+                            default: parseDefaultValue(
+                              param.type,
+                              e.target.value,
+                            ),
+                          })
+                        }
+                        placeholder="Always send this value"
+                        className="bg-background"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+
+                <Collapsible
+                  open={open}
+                  onOpenChange={(nextOpen) =>
+                    setAdvancedOpen((current) => ({
+                      ...current,
+                      [index]: nextOpen,
+                    }))
+                  }
+                >
+                  <CollapsibleContent className="space-y-4 pt-1">
+                    {source === "user" && (
+                      <div className="space-y-2 border-t border-border/60 pt-4">
+                        <Label>Description</Label>
+                        <Textarea
+                          value={param.description}
+                          onChange={(e) =>
+                            updateParameter(index, "description", e.target.value)
+                          }
+                          placeholder="Explain what this value means and how the AI should recognize it."
+                          rows={2}
+                        />
+                      </div>
+                    )}
+
+                    <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-3">
+                      <div className="space-y-2">
+                        <Label>Send to</Label>
+                        <Select
+                          value={param.location}
+                          onValueChange={(value) => {
+                            if (value === "query" || value === "header") {
+                              patchParameter(index, {
+                                location: value,
+                                key:
+                                  (param.key ?? param.name ?? "").trim() ||
+                                  param.name ||
+                                  "",
+                                bodyPath: undefined,
+                              });
+                              return;
+                            }
+                            if (value === "body") {
+                              patchParameter(index, {
+                                location: "body",
+                                bodyPath:
+                                  (param.bodyPath ?? param.name ?? "").trim() ||
+                                  param.name ||
+                                  "",
+                                key: undefined,
+                              });
+                              return;
+                            }
+                            patchParameter(index, {
+                              location: value as ToolParameter["location"],
+                              key: undefined,
+                              bodyPath: undefined,
+                            });
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="path">Path</SelectItem>
+                            <SelectItem value="query">Query</SelectItem>
+                            <SelectItem value="header">Header</SelectItem>
+                            <SelectItem value="body">Body</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {(param.location === "query" ||
+                        param.location === "header") && (
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>
+                            {param.location === "query"
+                              ? "Query parameter name"
+                              : "Header name"}
+                          </Label>
+                          <Input
+                            value={param.key ?? param.name ?? ""}
+                            onChange={(e) =>
+                              patchParameter(index, { key: e.target.value })
+                            }
+                            placeholder={param.name || "key"}
+                            className="font-mono"
+                          />
+                        </div>
+                      )}
+
+                      {param.location === "body" && (
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Body field path</Label>
+                          <Input
+                            value={param.bodyPath ?? ""}
+                            onChange={(e) =>
+                              patchParameter(index, {
+                                bodyPath: e.target.value,
+                              })
+                            }
+                            placeholder="customer.email"
+                            className="font-mono"
+                          />
+                          {bodyPathSuggestions.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {bodyPathSuggestions
+                                .filter((path) =>
+                                  (param.name || "").trim().length
+                                    ? path
+                                        .toLowerCase()
+                                        .includes(
+                                          (param.name || "").toLowerCase(),
+                                        )
+                                    : true,
+                                )
+                                .slice(0, 8)
+                                .map((path) => (
+                                  <Badge
+                                    key={path}
+                                    variant="secondary"
+                                    className="cursor-pointer font-mono"
+                                    onClick={() =>
+                                      patchParameter(index, {
+                                        bodyPath: path,
+                                      })
+                                    }
+                                  >
+                                    {path}
+                                  </Badge>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {source === "user" && (
+                      <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Fallback value</Label>
+                          <Input
+                            value={formatEditableValue(param.default)}
+                            onChange={(e) =>
+                              patchParameter(index, {
+                                default: parseDefaultValue(
+                                  param.type,
+                                  e.target.value,
+                                ),
+                              })
+                            }
+                            placeholder="Optional fallback"
+                          />
+                        </div>
+                        <div className="flex items-end pb-2">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`required-${index}`}
+                              checked={!!param.required}
+                              onCheckedChange={(checked) =>
+                                updateParameter(
+                                  index,
+                                  "required",
+                                  checked as boolean,
+                                )
+                              }
+                            />
+                            <Label htmlFor={`required-${index}`}>
+                              Required
+                            </Label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {source === "user" && (
+                      <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-2">
+                        {param.type === "string" && (
+                          <>
+                            <div className="space-y-2">
+                              <Label>Allowed values</Label>
+                              <Input
+                                value={param.enum?.join(", ") || ""}
+                                onChange={(e) =>
+                                  updateParameter(
+                                    index,
+                                    "enum",
+                                    e.target.value
+                                      .split(",")
+                                      .map((item) => item.trim())
+                                      .filter(Boolean),
+                                  )
+                                }
+                                placeholder="USD, EUR, GBP"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Pattern (regex)</Label>
+                              <Input
+                                value={param.pattern || ""}
+                                onChange={(e) =>
+                                  updateParameter(
+                                    index,
+                                    "pattern",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="^[A-Z0-9-]+$"
+                                className="font-mono"
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        {(param.type === "number" ||
+                          param.type === "integer") && (
+                          <>
+                            <div className="space-y-2">
+                              <Label>Minimum</Label>
+                              <Input
+                                type="number"
+                                value={param.minimum ?? ""}
+                                onChange={(e) =>
+                                  updateParameter(
+                                    index,
+                                    "minimum",
+                                    e.target.value
+                                      ? parseFloat(e.target.value)
+                                      : undefined,
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Maximum</Label>
+                              <Input
+                                type="number"
+                                value={param.maximum ?? ""}
+                                onChange={(e) =>
+                                  updateParameter(
+                                    index,
+                                    "maximum",
+                                    e.target.value
+                                      ? parseFloat(e.target.value)
+                                      : undefined,
+                                  )
+                                }
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </CollapsibleContent>
+                </Collapsible>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {formData.parameters.length > 0 && (
+        <Button
+          variant="outline"
+          onClick={addParameter}
+          className="w-full border-dashed"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add another input
+        </Button>
+      )}
+
+      {formData.parameters.length > 0 && (
+        <Card className="bg-muted/40 border-border">
+          <CardContent className="pt-6 space-y-4">
+            {aiVisibleParams.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">AI will extract</h4>
+                <pre className="text-xs bg-background p-4 rounded-md overflow-auto">
+                  {JSON.stringify(
+                    aiVisibleParams.reduce<Record<string, any>>(
+                      (acc, param) => {
+                        acc[param.name] =
+                          param.default !== undefined
+                            ? param.default
+                            : `<${param.type}>`;
+                        return acc;
+                      },
+                      {},
+                    ),
+                    null,
+                    2,
+                  )}
+                </pre>
+              </div>
+            )}
+
+            {contactParams.length > 0 && (
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                  Hidden from AI · Contact fields
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {contactParams.map((param) => (
+                    <Badge
+                      key={param.name}
+                      variant="secondary"
+                      className="font-mono"
+                    >
+                      {param.name} ← {param.contactField}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {fixedParams.length > 0 && (
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                  Hidden from AI · Fixed values
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {fixedParams.map((param) => (
+                    <Badge
+                      key={param.name}
+                      variant="secondary"
+                      className="font-mono"
+                    >
+                      {param.name} = {formatEditableValue(param.default) || "—"}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
 };

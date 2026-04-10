@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "optimize:public": "node scripts/optimize-public-assets.mjs",
     "format:check": "prettier --check .",
