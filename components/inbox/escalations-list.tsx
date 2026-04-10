@@ -109,49 +109,46 @@ export function EscalationsList({
             )}
         >
             <div className="border-b border-border/60 bg-card px-3 py-3 sm:px-4">
-                <div className="rounded-[var(--panel-radius-md)] border border-border/70 bg-[var(--surface-secondary)] p-3 shadow-[var(--shadow-1)]">
-
-                    <div className="mt-3 dashboard-search-shell bg-card">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                            <input
-                                className="w-full bg-transparent py-1.5 pl-7 pr-1 text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
-                                placeholder="Search by ID or exact email..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
+                <div className="dashboard-search-shell bg-card">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                            className="w-full bg-transparent py-1.5 pl-7 pr-1 text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
+                            placeholder="Search by ID or exact email..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
+                </div>
 
-                    <div className="-mx-1 mt-3 overflow-x-auto px-1 pb-1">
-                        <div className="flex min-w-max items-center gap-1.5">
-                            {tabs.map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => onQueueChange(tab.id)}
-                                    className={cn(
-                                        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-all",
-                                        activeQueue === tab.id
-                                            ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-1)]"
-                                            : "border-border/70 bg-card text-muted-foreground hover:border-primary/20 hover:bg-background hover:text-foreground"
-                                    )}
-                                >
-                                    {tab.label}
-                                    {tab.count > 0 && (
-                                        <span
-                                            className={cn(
-                                                "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-                                                activeQueue === tab.id
-                                                    ? "bg-primary-foreground/20 text-primary-foreground"
-                                                    : "bg-[var(--surface-secondary)] text-foreground"
-                                            )}
-                                        >
-                                            {tab.count}
-                                        </span>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
+                <div className="-mx-1 mt-3 overflow-x-auto px-1 pb-1">
+                    <div className="flex min-w-max items-center gap-1.5">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => onQueueChange(tab.id)}
+                                className={cn(
+                                    "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-all",
+                                    activeQueue === tab.id
+                                        ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-1)]"
+                                        : "border-border/70 bg-card text-muted-foreground hover:border-primary/20 hover:bg-background hover:text-foreground"
+                                )}
+                            >
+                                {tab.label}
+                                {tab.count > 0 && (
+                                    <span
+                                        className={cn(
+                                            "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+                                            activeQueue === tab.id
+                                                ? "bg-primary-foreground/20 text-primary-foreground"
+                                                : "bg-[var(--surface-secondary)] text-foreground"
+                                        )}
+                                    >
+                                        {tab.count}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
