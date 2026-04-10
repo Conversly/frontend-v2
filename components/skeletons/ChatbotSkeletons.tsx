@@ -4,53 +4,41 @@ import { Separator } from '@/components/ui/separator';
 /**
  * Individual chatbot card skeleton
  * Matches the layout of ChatbotPreviewCard with:
- * - Gradient header area (100px height)
- * - Avatar icon that straddles header/body (-mt-7)
- * - Name + creation time
- * - Metrics row (Conversations, Version, Deployed)
- * - Action buttons (Manage + dropdown)
+ * - Large visual hero area with centered logo
+ * - Assistant name
+ * - Compact detail rows
+ * - Action buttons
  */
 export function ChatbotCardSkeleton() {
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-card">
-      {/* Gradient Header Area */}
-      <Skeleton className="h-[100px] w-full rounded-none" />
+    <div className="flex flex-col overflow-hidden rounded-[var(--panel-radius-lg)] border border-border bg-card">
+      <div className="flex h-52 items-center justify-center border-b border-border/60 px-6 py-8">
+        <Skeleton className="h-40 w-40 rounded-[40px]" />
+      </div>
 
-      {/* Card Body */}
-      <div className="relative flex flex-1 flex-col px-5 pb-5 pt-0">
-        {/* Avatar Icon (straddles header/body) */}
-        <Skeleton className="-mt-7 mb-3 h-14 w-14 rounded-lg ring-[3px] ring-card" />
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-2/3" />
 
-        {/* Title + Subtitle */}
-        <div className="mb-4 space-y-1.5">
-          <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-3 w-24" />
-        </div>
+          <div className="space-y-3 border-t border-border/60 pt-4">
+            <div className="flex items-center justify-between gap-3">
+              <Skeleton className="h-4 w-14" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </div>
 
-        {/* Metrics Row */}
-        <div className="mb-5 flex items-start gap-5 border-t border-border pt-3">
-          {/* Conversations */}
-          <div className="space-y-1">
-            <Skeleton className="h-3 w-20" />
-            <div className="flex items-center gap-1.5">
-              <Skeleton className="h-3.5 w-3.5 rounded-full" />
-              <Skeleton className="h-4 w-8" />
+            <div className="flex items-center justify-between gap-3">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-4 w-10" />
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-28" />
             </div>
           </div>
-          {/* Version */}
-          <div className="space-y-1">
-            <Skeleton className="h-3 w-14" />
-            <Skeleton className="h-4 w-12" />
-          </div>
-          {/* Deployed (optional - smaller) */}
-          <div className="ml-auto space-y-1 text-right">
-            <Skeleton className="h-3 w-16" />
-            <Skeleton className="h-3 w-12" />
-          </div>
         </div>
 
-        {/* Actions */}
-        <div className="mt-auto flex items-center gap-2">
+        <div className="mt-auto flex items-center gap-2 border-t border-border/60 pt-4">
           <Skeleton className="h-9 flex-1 rounded-md" />
           <Skeleton className="h-9 w-9 rounded-md" />
         </div>

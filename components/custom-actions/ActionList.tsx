@@ -28,6 +28,8 @@ const ActionsVisual = dynamic(() => import('./ActionsVisual'), {
 
 interface Props {
     actions: CustomAction[];
+    enabledActionsCount: number;
+    currentUsage: number;
     onCreate: () => void;
     onEdit: (action: CustomAction) => void;
     onDelete: (actionId: string) => void;
@@ -35,6 +37,8 @@ interface Props {
 
 export const ActionList: React.FC<Props> = ({
     actions,
+    enabledActionsCount,
+    currentUsage,
     onCreate,
     onEdit,
     onDelete,
@@ -72,7 +76,7 @@ export const ActionList: React.FC<Props> = ({
                             ))}
                         </div>
 
-                        <FeatureGuard feature="actions" currentUsage={actions.length}>
+                        <FeatureGuard feature="actions" currentUsage={currentUsage}>
                             <Button size="lg" onClick={onCreate} className="shadow-lg">
                                 <Plus className="h-4 w-4 mr-2" />
                                 Teach Your First Skill
@@ -93,8 +97,13 @@ export const ActionList: React.FC<Props> = ({
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Your Skills ({actions.length})</h2>
-                <FeatureGuard feature="actions" currentUsage={actions.length}>
+                <div>
+                    <h2 className="text-xl font-semibold">Your Skills ({actions.length})</h2>
+                    <p className="text-sm text-muted-foreground">
+                        {enabledActionsCount} enabled custom action{enabledActionsCount === 1 ? "" : "s"} using shared action slots.
+                    </p>
+                </div>
+                <FeatureGuard feature="actions" currentUsage={currentUsage}>
                     <Button onClick={onCreate}>
                         <Plus className="h-4 w-4 mr-2" />
                         Teach New Skill

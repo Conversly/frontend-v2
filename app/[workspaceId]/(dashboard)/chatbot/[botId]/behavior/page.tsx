@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle, AlertCircle, Wand2 } from "lucide-react";
+import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle, AlertCircle, Wand2, FileSearch } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import { getLeadFormConfig, upsertLeadFormConfig } from "@/lib/api/lead-forms";
 import { IdentityCard } from "@/components/behaviour/IdentityCard";
 import { HandoffCard } from "@/components/behaviour/HandoffCard";
 import { LeadGenCard } from "@/components/behaviour/LeadGenCard";
+import { PageContextCard } from "@/components/behaviour/PageContextCard";
 import {
     BehaviourState,
     DEFAULT_BEHAVIOUR_STATE,
@@ -31,12 +32,13 @@ import {
 import { generateChannelPrompt, getChannelPrompt, upsertChannelPrompt } from "@/lib/api/prompt";
 import { getBehaviourConfigs, upsertBehaviourConfig } from "@/lib/api/behaviour-config";
 
-type TabId = "identity" | "lead-gen" | "handoff";
+type TabId = "identity" | "lead-gen" | "handoff" | "page-context";
 
 const TABS: { id: TabId; label: string; icon: React.ElementType; description: string }[] = [
     { id: "identity", label: "Identity", icon: User, description: "Personality & tone" },
     { id: "lead-gen", label: "Lead Generation", icon: Magnet, description: "Capture leads" },
     { id: "handoff", label: "Human Handoff", icon: UserPlus, description: "Escalation rules" },
+    { id: "page-context", label: "Page Context", icon: FileSearch, description: "Read the current page" },
 ];
 
 function deepEqual(a: any, b: any): boolean {
@@ -79,9 +81,12 @@ export default function BehaviourPage() {
         handoff: originalBehaviour
             ? !deepEqual(originalBehaviour.handoff, behaviour.handoff)
             : false,
+        pageContext: originalBehaviour
+            ? originalBehaviour.pageContextEnabled !== behaviour.pageContextEnabled
+            : false,
     }), [originalBehaviour, behaviour]);
 
-    const anyChanges = hasChanges.identity || hasChanges.leadGen || hasChanges.handoff;
+    const anyChanges = hasChanges.identity || hasChanges.leadGen || hasChanges.handoff || hasChanges.pageContext;
 
     const updateBehaviour = (updater: (prev: BehaviourState) => BehaviourState) => {
         setBehaviour(prev => {
@@ -155,6 +160,7 @@ export default function BehaviourPage() {
                                 keywords: leadFormData?.keywordTriggers?.join(", ") ?? DEFAULT_BEHAVIOUR_STATE.leadGen.leadConfig.keywords,
                             },
                     },
+                    pageContextEnabled: chatbotData.pageContextEnabled ?? false,
                     mainSystemPrompt: widgetPrompt?.systemPrompt || "",
                 };
 
@@ -216,6 +222,9 @@ export default function BehaviourPage() {
                     fallbackAction: behaviour.handoff.fallbackAction,
                     additionalInstructions: behaviour.handoff.additionalInstructions,
                 }));
+            }
+            if (hasChanges.pageContext) {
+                promises.push(updateChatbot({ id: botId, workspaceId, pageContextEnabled: behaviour.pageContextEnabled }));
             }
             await Promise.all(promises);
 
@@ -309,7 +318,8 @@ export default function BehaviourPage() {
                         const tabHasChanges =
                             (tab.id === "identity" && hasChanges.identity) ||
                             (tab.id === "lead-gen" && hasChanges.leadGen) ||
-                            (tab.id === "handoff" && hasChanges.handoff);
+                            (tab.id === "handoff" && hasChanges.handoff) ||
+                            (tab.id === "page-context" && hasChanges.pageContext);
                         return (
                             <button
                                 key={tab.id}
@@ -360,6 +370,7 @@ export default function BehaviourPage() {
                             { label: "Answer questions", enabled: true },
                             { label: "Escalate to human", enabled: behaviour.handoff.enabled },
                             { label: "Capture leads", enabled: behaviour.leadGen.form?.isEnabled ?? false },
+                            { label: "Use page context", enabled: behaviour.pageContextEnabled },
                             { label: `Stay ${behaviour.style.tone.toLowerCase()}`, enabled: true },
                         ].map((item) => (
                             <li key={item.label} className="flex items-center gap-1.5 text-xs">
@@ -409,6 +420,7 @@ export default function BehaviourPage() {
                             {activeTab === "identity" && "Configure your AI's name, role, tone, and core instructions."}
                             {activeTab === "lead-gen" && "Set up lead capture triggers, form fields, and detection strategy."}
                             {activeTab === "handoff" && "Define when and how conversations escalate to a human agent."}
+                            {activeTab === "page-context" && "Control whether the AI can use the current page's visible content to answer contextually."}
                         </p>
                     </div>
 
@@ -444,6 +456,12 @@ export default function BehaviourPage() {
                                     ...prev, handoff: { ...prev.handoff, systemPrompt: p },
                                 })))}
                                 isGenerating={isGeneratingHandoff}
+                            />
+                        )}
+                        {activeTab === "page-context" && (
+                            <PageContextCard
+                                enabled={behaviour.pageContextEnabled}
+                                onChange={(enabled) => updateBehaviour(prev => ({ ...prev, pageContextEnabled: enabled }))}
                             />
                         )}
                     </div>

@@ -27,6 +27,7 @@ export interface ChatbotResponse {
   primaryColor?: string | null;
   leadGenerationEnabled?: boolean;
   escalationEnabled?: boolean;
+  pageContextEnabled?: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
 
@@ -78,6 +79,7 @@ export interface UpdateChatbotInput {
   status?: ChatbotStatus;
   leadGenerationEnabled?: boolean;
   escalationEnabled?: boolean;
+  pageContextEnabled?: boolean;
   workspaceId: string;
   // Setup wizard progress
   setupCurrentStep?: number;

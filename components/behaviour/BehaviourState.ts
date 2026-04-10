@@ -91,6 +91,7 @@ export interface BehaviourState {
     style: StyleState;
     handoff: HandoffState;
     leadGen: LeadGenState;
+    pageContextEnabled: boolean;
     // We store the main prompt here or in identity?
     // Identity + Style = Main Prompt (WIDGET)
     mainSystemPrompt: string;
@@ -145,6 +146,7 @@ export const DEFAULT_BEHAVIOUR_STATE: BehaviourState = {
             pageTriggers: "/pricing, /contact",
         }
     },
+    pageContextEnabled: false,
     mainSystemPrompt: "",
 };
 
@@ -261,4 +263,3 @@ export function serializeStateForPromptGen(
 
     return parts.join("\n");
 }
-
