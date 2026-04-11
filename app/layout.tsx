@@ -74,7 +74,7 @@ export default function RootLayout({
         <RootClientShell />
         <Script
           src="https://widget.verlyai.xyz/embed.js"
-          data-chatbot-id="t5eetmzucjp1o75lafl3duk3"
+          data-chatbot-id="e9he80l4xpd4d1v6hpharqwy"
           data-position="bottom-right"
           data-primary-color="rgb(33, 32, 32)"
           data-testing="false"
