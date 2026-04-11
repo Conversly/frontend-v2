@@ -243,7 +243,7 @@ export function McpConnectionForm({
         </div>
       </div>
 
-      <Card className="border-border/70 shadow-none">
+      <Card className="border-border/70">
         <CardHeader>
           <CardTitle>Connection details</CardTitle>
           <CardDescription>
@@ -407,7 +407,7 @@ export function McpConnectionForm({
         </CardContent>
       </Card>
 
-      <Card className="border-border/70 shadow-none">
+      <Card className="border-border/70">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />

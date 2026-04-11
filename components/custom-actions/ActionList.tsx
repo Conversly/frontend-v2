@@ -46,7 +46,7 @@ export const ActionList: React.FC<Props> = ({
     if (actions.length === 0) {
         return (
             <div className="flex items-center justify-center p-6 h-full">
-                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 border-dashed rounded-xl bg-card overflow-hidden min-h-[600px] shadow-sm">
+                <div className="w-full max-w-6xl mx-auto grid min-h-[600px] grid-cols-1 gap-0 overflow-hidden rounded-xl border-2 border-dashed bg-card shadow-card lg:grid-cols-2">
                     {/* Left side - Content */}
                     <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">

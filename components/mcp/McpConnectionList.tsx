@@ -37,7 +37,7 @@ export function McpConnectionList({
   if (connections.length === 0) {
     return (
       <div className="flex items-center justify-center py-10">
-        <div className="grid w-full max-w-5xl gap-0 overflow-hidden rounded-2xl border-2 border-dashed bg-card lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="grid w-full max-w-5xl gap-0 overflow-hidden rounded-2xl border-2 border-dashed bg-card shadow-card lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-6 p-8 lg:p-12">
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/20">
               <Cable className="h-7 w-7" />
@@ -73,7 +73,7 @@ export function McpConnectionList({
           </div>
 
           <div className="border-t bg-gradient-to-br from-muted/30 via-background to-cyan-50/50 p-8 lg:border-l lg:border-t-0">
-            <div className="space-y-4 rounded-2xl border border-border/70 bg-background/90 p-5 shadow-sm">
+            <div className="space-y-4 rounded-2xl border border-border/70 bg-background/90 p-5">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Server status</span>
                 <Badge>Verified</Badge>
@@ -117,7 +117,7 @@ export function McpConnectionList({
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         {connections.map((connection) => (
-          <Card key={connection.id} className="border-border/70 shadow-none">
+          <Card key={connection.id} className="border-border/70">
             <CardHeader className="gap-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">

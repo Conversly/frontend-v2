@@ -315,7 +315,7 @@ export default function ActionsPage() {
               </p>
             </div>
 
-            <Card className="border-border/70 shadow-none">
+            <Card className="border-border/70">
               <CardContent className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-col gap-4 md:flex-row">
                   <div className="rounded-2xl border border-border/70 bg-muted/20 px-4 py-3">

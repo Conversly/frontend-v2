@@ -114,7 +114,7 @@ const docSections = [
     iconColor: "text-cyan-600",
     items: [
       { label: "WhatsApp", href: "/channels/whatsapp" },
-      { label: "Integration", href: "/channels/integration" },
+      { label: "Website Integration", href: "/channels/integration" },
     ],
   },
   {
@@ -150,8 +150,8 @@ const quickLinks = [
   },
   {
     icon: Plug,
-    title: "Integrations",
-    description: "Connect Verly to WhatsApp, your website, and more.",
+    title: "Website Integration",
+    description: "Add the chatbot widget to your website with one code snippet.",
     href: `${DOCS_BASE}/channels/integration`,
     iconBg: "bg-emerald-50",
     iconColor: "text-emerald-600",

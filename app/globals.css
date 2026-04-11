@@ -1090,7 +1090,7 @@
   /*
    * dashboard-panel  — default card with subtle shadow (Mindtickle LEVEL1)
    * dashboard-panel-muted — background panel, no shadow, tinted surface
-   * dashboard-panel-flat  — flush panel with border only (settings cards)
+   * dashboard-panel-flat  — flush panel with border only for attached surfaces
    */
 
   .dashboard-panel {

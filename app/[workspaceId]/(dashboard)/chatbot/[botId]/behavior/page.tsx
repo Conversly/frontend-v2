@@ -425,7 +425,7 @@ export default function BehaviourPage() {
                     </div>
 
                     {/* Card */}
-                    <div className="bg-card rounded-lg border border-[var(--border-secondary)] shadow-[var(--shadow-1)] overflow-hidden">
+                    <div className="dashboard-panel overflow-hidden">
                         {activeTab === "identity" && (
                             <IdentityCard
                                 identity={behaviour.identity}

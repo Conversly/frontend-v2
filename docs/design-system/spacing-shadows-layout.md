@@ -54,9 +54,9 @@ from modern "round everything" design.
 | `--panel-radius-lg`| 10px    | in .theme-workspace | Larger panels                    |
 | `--radius-pill`    | 999px   | `rounded-full`      | Chips, pills, search bars        |
 
-### Asymmetric radius (settings cards)
+### Asymmetric radius (attached panels)
 ```css
-border-radius: 0 8px 0 0;  /* top-right only — Mindtickle settings card pattern */
+border-radius: 0 8px 0 0;  /* top-right only — attached panel pattern */
 ```
 
 ### Components that MUST use 4px (not rounded-xl)
@@ -90,7 +90,7 @@ border-radius: 0 8px 0 0;  /* top-right only — Mindtickle settings card patter
 | LEVEL3     | `--shadow-3`| `shadow-elevated`    | Modals, dialogs                |
 | LEVEL4     | `--shadow-4`| `shadow-overlay`     | Full-screen overlays           |
 | REVERSE    | `--shadow-reverse` | (sticky-footer) | Sticky footer bars            |
-| None       | —           | `shadow-none`        | Settings cards (flat)          |
+| None       | —           | `shadow-none`        | Nested or intentionally flush surfaces |
 
 ### Key insight: Most things use LEVEL1 only
 ```
