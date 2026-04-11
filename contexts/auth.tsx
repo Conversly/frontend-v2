@@ -68,34 +68,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // to the embedded support chatbot widget so it can greet them by name.
   const identifiedUserRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!user?.id || identifiedUserRef.current === user.id) return;
+    if (typeof window === "undefined") return;
 
-    // Avoid re-identifying the same user on re-renders
-    identifiedUserRef.current = user.id;
+    if (!user?.id) {
+      if (identifiedUserRef.current && typeof (window as any).verly === "function") {
+        (window as any).verly("resetUser");
+      }
+      identifiedUserRef.current = null;
+      return;
+    }
 
-    getVerlyIdentityToken().then((token) => {
-      if (!token || typeof window === "undefined") return;
+    if (identifiedUserRef.current === user.id) return;
 
-      const callIdentify = () => {
-        (window as any).verly("identify", {
-          token,
-          name: user.displayName || user.username || "",
-        });
+    let cancelled = false;
+    let retryTimeout: number | null = null;
+    const script = document.querySelector('script[src*="verlyai.xyz/embed.js"]');
+    const identifyPayload = {
+      name: user.displayName || user.username || "",
+    };
+
+    const tryIdentify = (token: string) => {
+      if (cancelled || identifiedUserRef.current === user.id) return true;
+
+      if (typeof (window as any).verly !== "function") {
+        return false;
+      }
+
+      (window as any).verly("identify", {
+        token,
+        ...identifyPayload,
+      });
+      identifiedUserRef.current = user.id;
+      return true;
+    };
+
+    const scheduleIdentifyRetries = (token: string) => {
+      let attempts = 0;
+      const maxAttempts = 20;
+      const retryDelayMs = 250;
+
+      const attempt = () => {
+        if (tryIdentify(token) || cancelled) return;
+        attempts += 1;
+        if (attempts >= maxAttempts) return;
+        retryTimeout = window.setTimeout(attempt, retryDelayMs);
       };
 
-      if (typeof (window as any).verly === "function") {
-        // Widget already loaded
-        callIdentify();
-      } else {
-        // Widget not yet loaded — wait for its script to initialise
-        const script = document.querySelector('script[src*="verlyai.xyz/embed.js"]');
-        if (script) {
-          script.addEventListener("load", callIdentify, { once: true });
+      attempt();
+    };
+
+    const handleScriptLoad = () => {
+      getVerlyIdentityToken().then((token) => {
+        if (!token || cancelled) return;
+        if (!tryIdentify(token)) {
+          scheduleIdentifyRetries(token);
         }
+      }).catch(() => {
+        // Silent — identity verification is best-effort, never blocks the app
+      });
+    };
+
+    if (script) {
+      script.addEventListener("load", handleScriptLoad, { once: true });
+    }
+
+    handleScriptLoad();
+
+    return () => {
+      cancelled = true;
+      if (retryTimeout !== null) {
+        window.clearTimeout(retryTimeout);
       }
-    }).catch(() => {
-      // Silent — identity verification is best-effort, never blocks the app
-    });
+      if (script) {
+        script.removeEventListener("load", handleScriptLoad);
+      }
+    };
   }, [user]);
 
   // Protect dashboard routes - redirect to home if not authenticated
