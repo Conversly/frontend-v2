@@ -10,7 +10,7 @@ import {
 } from "@/store/chatbot/data-sources";
 import { useSetupStore } from "@/store/chatbot/setup";
 import { processDataSource } from "@/lib/api/datasource";
-import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle, Sparkles } from "lucide-react";
+import { FileText, MessageSquare, Globe, HelpCircle, ExternalLink, File, Loader2, AlertCircle, Sparkles, ShieldAlert } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useWorkspace } from "@/contexts/workspace-context";
 import { useAccessControl } from "@/hooks/useAccessControl";
@@ -28,6 +28,7 @@ type SourceType = "url" | "file" | "text" | "qa";
 
 interface Step3DataSourcesProps {
   onContinue: () => void;
+  isScrapingBlocked?: boolean;
 }
 
 const SOURCE_CONFIG: Record<SourceType, { icon: React.ReactNode; label: string; plural: string }> = {
@@ -37,7 +38,7 @@ const SOURCE_CONFIG: Record<SourceType, { icon: React.ReactNode; label: string; 
   qa: { icon: <HelpCircle className="h-5 w-5" />, label: "Q&A", plural: "Q&A pairs" },
 };
 
-export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
+export function Step3DataSources({ onContinue, isScrapingBlocked }: Step3DataSourcesProps) {
   const { workspaceId } = useWorkspace();
   const accessControl = useAccessControl(workspaceId);
   const datasourcesLimit = accessControl.datasources.limit;
@@ -110,6 +111,20 @@ export function Step3DataSources({ onContinue }: Step3DataSourcesProps) {
             Found {sources.length} source{sources.length !== 1 ? 's' : ''} — {totalSelected} selected for training.
           </p>
         </div>
+
+        {isScrapingBlocked && (
+          <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm dark:border-amber-800 dark:bg-amber-950/30">
+            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <div className="flex flex-col gap-1">
+              <span className="font-semibold text-amber-800 dark:text-amber-300">
+                Site protected by anti-bot measures
+              </span>
+              <span className="text-amber-700 dark:text-amber-400">
+                We couldn&apos;t read this site&apos;s content. Common defaults have been applied — you can customise the prompt, topics, and sources from the dashboard after setup.
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col gap-3">
           <SourceRow

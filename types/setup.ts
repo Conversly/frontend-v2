@@ -70,6 +70,7 @@ export interface BootstrapSetupResult {
   searchSources?: SearchSourcesResponse;
   widgetConfig?: GenerateWidgetConfigResponse;
   mapLinks?: string[];
+  scrapingBlocked?: boolean;
   errors: {
     inferPrompt?: string;
     generateTopics?: string;

@@ -176,6 +176,8 @@ export default function SetupWizardPage() {
     }
   }, [step, chatbotId]);
 
+  const [isScrapingBlocked, setIsScrapingBlocked] = useState(false);
+
   const progressStage = useStagedProgress(isSubmitting && step === 2);
   const stage = step >= 3 ? "completed" : progressStage;
   const tuningSubstep = useTuningSubsteps(stage);
@@ -321,7 +323,15 @@ export default function SetupWizardPage() {
         });
         // Invalidate chatbots cache since a new chatbot was created
         queryClient.invalidateQueries({ queryKey: [QUERY_KEY.GET_CHATBOTS] });
-        toast.success("Initial setup complete");
+        if (result.scrapingBlocked) {
+          setIsScrapingBlocked(true);
+          toast.info(
+            `${trimmedHost} uses anti-bot protection — we couldn't read its content. We've applied common defaults. You can customise everything from the dashboard.`,
+            { duration: 8000 }
+          );
+        } else {
+          toast.success("Initial setup complete");
+        }
         setHasStep2Failed(false);
         setStep(3);
       } catch (err: any) {
@@ -435,7 +445,7 @@ export default function SetupWizardPage() {
                     onManualSetup={() => router.push(`/${workspaceId}/chatbot/create`)}
                   />
                 )}
-                {step === 3 && <Step3DataSources onContinue={onStep3Continue} />}
+                {step === 3 && <Step3DataSources onContinue={onStep3Continue} isScrapingBlocked={isScrapingBlocked} />}
                 {step === 4 && <Step4UIConfig onSubmit={onStep3Submit} />}
                 {step === 5 && <Step5Topics chatbotId={chatbotId} onContinue={() => setStep(6)} />}
                 {step === 6 && (
