@@ -150,7 +150,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                                     updateParameter(index, 'name', e.target.value.toLowerCase().replace(/\s+/g, '_'))
                                 }
                                 placeholder="variable_name"
-                                className="w-32 font-mono text-xs h-8"
+                                className="w-24 xl:w-32 font-mono text-xs h-8"
                             />
 
                             {/* Type */}
@@ -158,7 +158,7 @@ export const DataExtractionSection: React.FC<Props> = ({
                                 value={param.type}
                                 onValueChange={(value) => updateParameter(index, 'type', value)}
                             >
-                                <SelectTrigger className="w-24 h-8 text-xs">
+                                <SelectTrigger className="w-20 xl:w-24 h-8 text-xs">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>

@@ -131,7 +131,6 @@ export function SourcesCategorySidebar({
     <div className="flex h-full w-[272px] flex-col overflow-hidden border-r border-sidebar-border/80 bg-sidebar">
       <div className="border-b border-sidebar-border/70 px-4 py-4">
         <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Knowledge Base</p>
-        <p className="mt-1 text-sm font-semibold text-foreground">Sources & training queue</p>
       </div>
 
       {/* Categories */}

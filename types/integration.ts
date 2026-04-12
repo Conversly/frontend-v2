@@ -4,6 +4,7 @@ export type IntegrationPlatform =
   | 'whatsapp'
   | 'slack'
   | 'stripe'
+  | 'shopify'
   | 'calendly'
   | 'notion'
   | 'zendesk'
@@ -17,7 +18,7 @@ export interface IntegrationConfig {
   icon: string; // Icon component name or emoji
   status: IntegrationStatus;
   docsUrl?: string;
-  category: 'messaging' | 'payment' | 'scheduling' | 'productivity' | 'support';
+  category: 'messaging' | 'payment' | 'scheduling' | 'productivity' | 'support' | 'ecommerce';
 }
 
 export interface WhatsAppCredentials {

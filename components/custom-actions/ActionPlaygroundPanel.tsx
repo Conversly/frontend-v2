@@ -107,10 +107,10 @@ export function ActionPlaygroundPanel({
   }, [chatbotId, workspaceId]);
 
   return (
-    <Card className="h-full overflow-hidden border-border bg-card shadow-card">
+    <Card className="overflow-hidden border-border bg-card shadow-card">
       <CardContent
         className={cn(
-          "flex min-h-[760px] items-center justify-center p-5 transition-opacity",
+          "flex min-h-[600px] xl:min-h-[720px] 2xl:min-h-[800px] items-center justify-center p-5 transition-opacity",
           !enabled && "opacity-75",
         )}
       >
@@ -128,7 +128,7 @@ export function ActionPlaygroundPanel({
             Playground configuration is unavailable for this chatbot.
           </div>
         ) : enabled ? (
-          <div className="h-[700px] w-full">
+          <div className="h-[600px] xl:h-[680px] 2xl:h-[760px] w-full">
             <PlaygroundWidget
               key={`${chatbotId}-${playgroundVersion}`}
               chatbotId={chatbotId}

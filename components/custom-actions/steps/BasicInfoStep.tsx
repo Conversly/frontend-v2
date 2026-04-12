@@ -314,43 +314,6 @@ export const BasicInfoStep: React.FC = () => {
               </div>
             </RadioGroup>
           </div>
-
-          {(formData.accessLevel === "user" ||
-            formData.accessLevel === "visitor") && (
-            <div className="space-y-3">
-              <Label className="type-label">Required contact fields</Label>
-              <p className="text-xs text-muted-foreground">
-                If any of these fields are missing from the user's contact
-                record, this action will be hidden from the AI.
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {["externalId", "email", "name", "phone"].map((field) => {
-                  const selected = (
-                    formData.requiredContactFields || []
-                  ).includes(field);
-                  return (
-                    <Badge
-                      key={field}
-                      variant={selected ? "default" : "outline"}
-                      className={cn(
-                        "cursor-pointer font-mono text-xs transition-colors",
-                        selected ? "" : "hover:bg-muted",
-                      )}
-                      onClick={() => {
-                        const current = formData.requiredContactFields || [];
-                        const next = selected
-                          ? current.filter((f) => f !== field)
-                          : [...current, field];
-                        updateField("requiredContactFields", next);
-                      }}
-                    >
-                      {field}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

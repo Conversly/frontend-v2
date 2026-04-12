@@ -1,193 +1,145 @@
-import React from 'react';
-import dynamic from 'next/dynamic';
-import { CustomAction } from '@/types/customActions';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Plus, MoreVertical, Play, Zap, Globe, Database } from 'lucide-react';
+import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { FeatureGuard } from "@/components/shared/FeatureGuard";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { FeatureGuard } from '@/components/shared/FeatureGuard';
-
-// Dynamic import to prevent SSR issues with framer-motion
-const ActionsVisual = dynamic(() => import('./ActionsVisual'), {
-    ssr: false,
-    loading: () => (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/30">
-            <div className="animate-pulse flex flex-col items-center gap-2">
-                <div className="w-16 h-16 rounded-full bg-slate-200" />
-                <div className="w-24 h-3 bg-slate-200 rounded" />
-            </div>
-        </div>
-    )
-});
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CustomAction } from "@/types/customActions";
+import { Edit, MoreVertical, PlusCircle, Trash2, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
-    actions: CustomAction[];
-    enabledActionsCount: number;
-    currentUsage: number;
-    onCreate: () => void;
-    onEdit: (action: CustomAction) => void;
-    onDelete: (actionId: string) => void;
+  actions: CustomAction[];
+  enabledActionsCount: number;
+  currentUsage: number;
+  onCreate: () => void;
+  onEdit: (action: CustomAction) => void;
+  onDelete: (actionId: string) => void;
+  onToggle?: (action: CustomAction, isEnabled: boolean) => void;
 }
 
 export const ActionList: React.FC<Props> = ({
-    actions,
-    enabledActionsCount,
-    currentUsage,
-    onCreate,
-    onEdit,
-    onDelete,
+  actions,
+  enabledActionsCount,
+  currentUsage,
+  onCreate,
+  onEdit,
+  onDelete,
+  onToggle,
 }) => {
-    if (actions.length === 0) {
-        return (
-            <div className="flex items-center justify-center p-6 h-full">
-                <div className="w-full max-w-6xl mx-auto grid min-h-[600px] grid-cols-1 gap-0 overflow-hidden rounded-xl border-2 border-dashed bg-card shadow-card lg:grid-cols-2">
-                    {/* Left side - Content */}
-                    <div className="flex flex-col items-center justify-center p-8 lg:p-12 text-center">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
-                            <Zap className="h-7 w-7 text-white" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-foreground mb-3">
-                            Your bot doesn't have any skills yet
-                        </h3>
-                        <p className="text-muted-foreground mb-8 max-w-md leading-relaxed">
-                            Teach your bot new skills to fetch data, submit forms, or call your APIs during conversations.
-                        </p>
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Add card */}
+      <FeatureGuard feature="actions" currentUsage={currentUsage}>
+        <button
+          type="button"
+          onClick={onCreate}
+          className="flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 text-primary transition-colors hover:bg-primary/10 dark:border-primary/30 dark:bg-primary/10 dark:hover:bg-primary/20"
+        >
+          <PlusCircle className="h-6 w-6" />
+          <span className="text-sm font-medium">Add custom action</span>
+        </button>
+      </FeatureGuard>
 
-                        {/* Feature highlights */}
-                        <div className="flex flex-wrap justify-center gap-3 mb-8">
-                            {[
-                                { icon: Globe, label: "Call APIs" },
-                                { icon: Database, label: "Query Databases" },
-                                { icon: Zap, label: "Trigger Actions" },
-                            ].map((feature, idx) => (
-                                <div
-                                    key={idx}
-                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-sm"
-                                >
-                                    <feature.icon className="h-3.5 w-3.5" />
-                                    {feature.label}
-                                </div>
-                            ))}
-                        </div>
-
-                        <FeatureGuard feature="actions" currentUsage={currentUsage}>
-                            <Button size="lg" onClick={onCreate} className="shadow-lg">
-                                <Plus className="h-4 w-4 mr-2" />
-                                Teach Your First Skill
-                            </Button>
-                        </FeatureGuard>
-                    </div>
-
-                    {/* Right side - Visualization */}
-                    <div className="hidden lg:block border-l border-border bg-gradient-to-br from-muted/30 to-background">
-                        <ActionsVisual />
-                    </div>
-                </div>
-            </div>
-        );
-
-    }
-
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-xl font-semibold">Your Skills ({actions.length})</h2>
-                    <p className="text-sm text-muted-foreground">
-                        {enabledActionsCount} enabled custom action{enabledActionsCount === 1 ? "" : "s"} using shared action slots.
-                    </p>
-                </div>
-                <FeatureGuard feature="actions" currentUsage={currentUsage}>
-                    <Button onClick={onCreate}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Teach New Skill
-                    </Button>
-                </FeatureGuard>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {actions.map((action) => (
-                    <Card key={action.id} className="hover:shadow-md transition-shadow">
-                        <CardHeader className="pb-3">
-                            <div className="flex justify-between items-start">
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <CardTitle className="text-base">{action.displayName || action.name}</CardTitle>
-                                        {action.status === 'DRAFT' && (
-                                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                                                Draft
-                                            </Badge>
-                                        )}
-                                    </div>
-                                    <CardDescription className="font-mono text-xs">
-                                        {action.name}
-                                    </CardDescription>
-                                </div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="-mr-2">
-                                            <MoreVertical className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <FeatureGuard feature="actions">
-                                            <DropdownMenuItem onClick={() => onEdit(action)}>
-                                                <Edit className="h-4 w-4 mr-2" />
-                                                Edit
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive" onClick={() => action.id && onDelete(action.id)}>
-                                                <Trash2 className="h-4 w-4 mr-2" />
-                                                Delete
-                                            </DropdownMenuItem>
-                                        </FeatureGuard>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <p className="text-sm text-muted-foreground line-clamp-2 h-10">
-                                    {action.description}
-                                </p>
-
-                                <div className="flex items-center gap-2 text-xs font-mono bg-muted p-2 rounded">
-                                    <Badge variant="outline" className="text-2xs px-1 py-0 h-5">
-                                        {action.apiConfig.method}
-                                    </Badge>
-                                    <span className="truncate" title={action.apiConfig.endpoint}>
-                                        {action.apiConfig.endpoint}
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
-                                    <span>{action.parameters.length} params</span>
-                                    <div className="flex items-center gap-1">
-                                        {action.status === 'DRAFT' ? (
-                                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                                                Draft
-                                            </Badge>
-                                        ) : action.testStatus === 'passed' ? (
-                                            <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-100">
-                                                Tested
-                                            </Badge>
-                                        ) : (
-                                            <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-                                                Untested
-                                            </Badge>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-        </div>
-    );
+      {actions.map((action) => (
+        <ActionCard
+          key={action.id}
+          action={action}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onToggle={onToggle}
+        />
+      ))}
+    </div>
+  );
 };
+
+function ActionCard({
+  action,
+  onEdit,
+  onDelete,
+  onToggle,
+}: {
+  action: CustomAction;
+  onEdit: (a: CustomAction) => void;
+  onDelete: (id: string) => void;
+  onToggle?: (a: CustomAction, enabled: boolean) => void;
+}) {
+  const isDraft = action.status === "DRAFT";
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm">
+      {/* Header: icon + name + status badge */}
+      <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/40">
+          <Zap className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <span className="flex-1 truncate text-sm font-semibold">
+          {action.displayName || action.name}
+        </span>
+        <Badge
+          variant="outline"
+          className={cn(
+            "shrink-0 text-[11px]",
+            isDraft
+              ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-400"
+              : "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950/50 dark:text-green-400",
+          )}
+        >
+          {isDraft ? "Draft" : "Published"}
+        </Badge>
+      </div>
+
+      {/* Edit button */}
+      <div className="px-4 pb-4">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => onEdit(action)}
+        >
+          Edit
+        </Button>
+      </div>
+
+      {/* Footer: toggle + label + 3-dot */}
+      <div className="flex items-center gap-2 border-t border-border/60 bg-muted/30 px-4 py-2.5">
+        <Switch
+          checked={action.isEnabled}
+          onCheckedChange={(checked) => onToggle?.(action, checked)}
+          disabled={!onToggle}
+        />
+        <span className="flex-1 text-xs text-muted-foreground">
+          {action.isEnabled ? "Enabled" : "Disabled"}
+        </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
+              <MoreVertical className="h-3.5 w-3.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(action)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <FeatureGuard feature="actions">
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => action.id && onDelete(action.id)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </FeatureGuard>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+}

@@ -277,7 +277,7 @@ export const TestSection: React.FC<TestSectionProps> = ({
           uses this action in conversation.
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs p-4 rounded-lg bg-muted/30 border border-border/50">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs p-4 rounded-lg bg-muted/30 border border-border/50">
           <span className="text-muted-foreground">Action:</span>
           <span className="font-semibold text-foreground">
             {formData.displayName || formData.name || "—"}

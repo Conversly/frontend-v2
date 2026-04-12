@@ -16,11 +16,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
   Trash2,
   Plus,
   ChevronDown,
@@ -28,7 +23,6 @@ import {
   Sparkles,
   Settings2,
   ShieldCheck,
-  Info,
   BookOpen,
 } from "lucide-react";
 import type { ParamSource } from "@/types/customActions";
@@ -43,9 +37,9 @@ import {
   extractExactTemplateVar,
   extractLegacyVariables,
   extractPathParams,
-  formatBindingSummary,
   listDotPaths,
 } from "../parameter-utils";
+import { cn } from "@/lib/utils";
 
 function formatEditableValue(value: any): string {
   if (value === undefined || value === null) return "";
@@ -411,7 +405,8 @@ export const ParametersStep: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* ── "How do inputs work?" collapsible ── */}
       <div className="rounded-lg border border-border bg-white dark:bg-background shadow-sm">
         <button
           type="button"
@@ -432,7 +427,6 @@ export const ParametersStep: React.FC = () => {
         {howItWorksOpen && (
           <div className="border-t border-border px-4 pb-5 pt-4 space-y-5">
             <div className="grid gap-3 sm:grid-cols-3">
-              {/* Customer input — blue */}
               <div className="rounded-md border border-blue-200 bg-blue-50 p-3 space-y-2 dark:border-blue-900 dark:bg-blue-950/40">
                 <p className="text-xs font-semibold text-blue-700 dark:text-blue-400">
                   Customer input
@@ -445,8 +439,6 @@ export const ParametersStep: React.FC = () => {
                   source: user
                 </code>
               </div>
-
-              {/* Fixed value — amber */}
               <div className="rounded-md border border-amber-200 bg-amber-50 p-3 space-y-2 dark:border-amber-900 dark:bg-amber-950/40">
                 <p className="text-xs font-semibold text-amber-700 dark:text-amber-400">
                   Fixed value
@@ -459,8 +451,6 @@ export const ParametersStep: React.FC = () => {
                   source: fixed
                 </code>
               </div>
-
-              {/* Contact field — green */}
               <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 space-y-2 dark:border-emerald-900 dark:bg-emerald-950/40">
                 <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                   Contact field
@@ -497,10 +487,6 @@ export const ParametersStep: React.FC = () => {
                   <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
                     ?key=value
                   </code>
-                  {" · good for "}
-                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
-                    ?mode=dev
-                  </code>
                 </li>
                 <li>
                   <span className="font-medium text-foreground">Header</span>
@@ -519,18 +505,19 @@ export const ParametersStep: React.FC = () => {
         )}
       </div>
 
+      {/* ── Legacy templates warning ── */}
       {hasLegacyTemplates && (
         <div className="rounded-lg border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-4 py-3 text-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[var(--status-warning-fg)]">
-              Legacy template markers were detected in this request. Convert
-              them into explicit input bindings for a cleaner setup.
+              Legacy template markers were detected. Convert them into explicit
+              input bindings for a cleaner setup.
             </p>
             <Button
               type="button"
               size="sm"
               variant="outline"
-              className="h-8 text-xs"
+              className="h-8 text-xs shrink-0"
               onClick={convertLegacyTemplatesToBindings}
             >
               Convert templates
@@ -539,10 +526,11 @@ export const ParametersStep: React.FC = () => {
         </div>
       )}
 
+      {/* ── Auto-detected inputs banner ── */}
       {(missingPathParams.length > 0 ||
         missingLegacyVariables.length > 0 ||
         missingBodyBindings.length > 0) && (
-        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex items-center justify-between gap-4">
+        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex gap-3">
             <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div>
@@ -564,169 +552,105 @@ export const ParametersStep: React.FC = () => {
               </p>
             </div>
           </div>
-          <Button size="sm" onClick={addDetectedParameters}>
+          <Button size="sm" onClick={addDetectedParameters} className="shrink-0">
             <Plus className="h-4 w-4 mr-2" />
             Add all
           </Button>
         </div>
       )}
 
-      {formData.parameters.length === 0 && (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/40">
-          <p className="text-muted-foreground mb-2">No dynamic inputs yet</p>
-          <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-            Import from cURL to prefill request inputs automatically, or add one
-            manually if only a few values need to change per request.
-          </p>
-          <Button variant="outline" onClick={addParameter}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add input manually
-          </Button>
-        </div>
-      )}
+      {/* ── Parameter table ── */}
+      {formData.parameters.length > 0 && (
+        <div className="rounded-lg border border-border bg-white dark:bg-background shadow-sm overflow-hidden divide-y divide-border/20">
+          {/* Column headers */}
+          <div className="grid grid-cols-[minmax(0,1fr)_110px_150px_36px_36px] items-center gap-3 border-b border-border/30 px-4 py-2">
+            <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Input name
+            </span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Type
+            </span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Value source
+            </span>
+            <span />
+            <span />
+          </div>
 
-      <div className="space-y-4">
-        {formData.parameters.map((param, index) => {
-          const source = param.source || "user";
-          const open = !!advancedOpen[index];
+          {/* Parameter rows */}
+          {formData.parameters.map((param, index) => {
+            const source = param.source || "user";
+            const open = !!advancedOpen[index];
 
-          return (
-            <Card
-              key={index}
-              className="shadow-card border-border bg-[--surface-secondary]"
-            >
-              <CardContent className="relative p-4 pr-12 space-y-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-4 top-4 h-7 w-7 rounded-full text-muted-foreground"
-                    >
-                      <Info className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="left" align="start" className="max-w-sm">
-                    <p className="font-semibold mb-1.5">Value source</p>
-                    <div className="space-y-2 text-xs">
-                      <div>
-                        <p className="font-medium">Customer input</p>
-                        <p className="text-muted-foreground mt-0.5">
-                          AI reads the value from the conversation.
-                        </p>
-                        <p className="text-muted-foreground italic mt-0.5">
-                          Example: user says &quot;show product 42&quot; → AI
-                          fills{" "}
-                          <code className="bg-background px-0.5 rounded">
-                            productId = 42
-                          </code>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="font-medium">Fixed value</p>
-                        <p className="text-muted-foreground mt-0.5">
-                          Always the same saved value. Never exposed to the AI.
-                        </p>
-                        <p className="text-muted-foreground italic mt-0.5">
-                          Example:{" "}
-                          <code className="bg-background px-0.5 rounded">
-                            workspaceId = abc123
-                          </code>{" "}
-                          — same for every call.
-                        </p>
-                      </div>
-                      <div>
-                        <p className="font-medium">Contact field</p>
-                        <p className="text-muted-foreground mt-0.5">
-                          Pulled from the contact record, injected server-side.
-                        </p>
-                        <p className="text-muted-foreground italic mt-0.5">
-                          Example:{" "}
-                          <code className="bg-background px-0.5 rounded">
-                            userId ← externalId
-                          </code>{" "}
-                          from the logged-in user.
-                        </p>
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
+            return (
+              <div
+                key={index}
+                className={cn(open && "bg-muted/10")}
+              >
+                {/* Main row */}
+                <div className="grid grid-cols-[minmax(0,1fr)_110px_150px_36px_36px] items-center gap-3 px-4 py-3">
+                  <Input
+                    value={param.name}
+                    onChange={(e) =>
+                      updateParameter(
+                        index,
+                        "name",
+                        e.target.value.toLowerCase().replace(/\s+/g, "_"),
+                      )
+                    }
+                    placeholder="variable_name"
+                    className="h-9 font-mono text-sm bg-background"
+                  />
 
-                <div className="grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_140px_180px_auto_auto] xl:items-end">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                      Input name
-                    </Label>
-                    <Input
-                      value={param.name}
-                      onChange={(e) =>
-                        updateParameter(
-                          index,
-                          "name",
-                          e.target.value.toLowerCase().replace(/\s+/g, "_"),
-                        )
-                      }
-                      placeholder="product_id"
-                      className="font-mono bg-background h-10"
-                    />
-                  </div>
+                  <Select
+                    value={param.type}
+                    onValueChange={(value) =>
+                      updateParameter(index, "type", value)
+                    }
+                  >
+                    <SelectTrigger className="h-9 bg-background text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="string">String</SelectItem>
+                      <SelectItem value="number">Number</SelectItem>
+                      <SelectItem value="integer">Integer</SelectItem>
+                      <SelectItem value="boolean">Boolean</SelectItem>
+                      <SelectItem value="array">Array</SelectItem>
+                      <SelectItem value="object">Object</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                  <div className="space-y-1.5">
-                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                      Type
-                    </Label>
-                    <Select
-                      value={param.type}
-                      onValueChange={(value) =>
-                        updateParameter(index, "type", value)
-                      }
-                    >
-                      <SelectTrigger className="bg-background h-10">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="string">String</SelectItem>
-                        <SelectItem value="number">Number</SelectItem>
-                        <SelectItem value="integer">Integer</SelectItem>
-                        <SelectItem value="boolean">Boolean</SelectItem>
-                        <SelectItem value="array">Array</SelectItem>
-                        <SelectItem value="object">Object</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                      Value source
-                    </Label>
-                    <Select
-                      value={source}
-                      onValueChange={(value) =>
-                        handleSourceChange(index, value as ParamSource)
-                      }
-                    >
-                      <SelectTrigger className="bg-background h-10">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="user">Customer input</SelectItem>
-                        <SelectItem value="contact">
-                          Use contact field
-                        </SelectItem>
-                        <SelectItem value="fixed">Fixed value</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select
+                    value={source}
+                    onValueChange={(value) =>
+                      handleSourceChange(index, value as ParamSource)
+                    }
+                  >
+                    <SelectTrigger className="h-9 bg-background text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="user">Customer input</SelectItem>
+                      <SelectItem value="contact">Contact field</SelectItem>
+                      <SelectItem value="fixed">Fixed value</SelectItem>
+                    </SelectContent>
+                  </Select>
 
                   <Button
-                    variant="outline"
+                    type="button"
+                    variant="ghost"
                     size="icon"
-                    className="h-10 w-10 shrink-0"
+                    className={cn(
+                      "h-9 w-9 shrink-0",
+                      open
+                        ? "text-primary bg-primary/10 hover:bg-primary/15"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
                     onClick={() =>
-                      setAdvancedOpen((current) => ({
-                        ...current,
-                        [index]: !current[index],
+                      setAdvancedOpen((prev) => ({
+                        ...prev,
+                        [index]: !prev[index],
                       }))
                     }
                   >
@@ -738,223 +662,79 @@ export const ParametersStep: React.FC = () => {
                   </Button>
 
                   <Button
+                    type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                     onClick={() => removeParameter(index)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
 
-                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,420px)] lg:items-start">
-                  {source === "contact" ? (
-                    <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-3 space-y-3">
-                      <div className="flex items-center gap-2 text-sm font-medium text-blue-900">
-                        <ShieldCheck className="h-4 w-4" />
-                        Contact field
-                      </div>
-                      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                        <Select
-                          value={param.contactField || ""}
-                          onValueChange={(value) =>
-                            handleContactFieldChange(index, value)
-                          }
-                        >
-                          <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Choose a contact field" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {CONTACT_FIELD_OPTIONS.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {param.contactField === "metadata." && (
-                          <Input
-                            value={(param.contactField || "").replace(
-                              "metadata.",
-                              "",
-                            )}
-                            onChange={(e) =>
-                              handleContactFieldChange(
-                                index,
-                                `metadata.${e.target.value.trim()}`,
-                              )
-                            }
-                            placeholder="metadata key"
-                            className="bg-background font-mono"
-                          />
-                        )}
-                      </div>
-                    </div>
-                  ) : source === "fixed" ? (
-                    <div className="rounded-lg border border-border bg-muted/20 px-3 py-3 space-y-2">
-                      <Label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                        Fixed value
-                      </Label>
-                      <Input
-                        value={formatEditableValue(param.default)}
-                        onChange={(e) =>
-                          patchParameter(index, {
-                            default: parseDefaultValue(
-                              param.type,
-                              e.target.value,
-                            ),
-                          })
-                        }
-                        placeholder="Always send this value"
-                        className="bg-background"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-
+                {/* Advanced / expanded panel */}
                 <Collapsible
                   open={open}
                   onOpenChange={(nextOpen) =>
-                    setAdvancedOpen((current) => ({
-                      ...current,
-                      [index]: nextOpen,
-                    }))
+                    setAdvancedOpen((prev) => ({ ...prev, [index]: nextOpen }))
                   }
                 >
-                  <CollapsibleContent className="space-y-4 pt-1">
-                    {source === "user" && (
-                      <div className="space-y-2 border-t border-border/60 pt-4">
-                        <Label>Description</Label>
-                        <Textarea
-                          value={param.description}
-                          onChange={(e) =>
-                            updateParameter(index, "description", e.target.value)
-                          }
-                          placeholder="Explain what this value means and how the AI should recognize it."
-                          rows={2}
-                        />
-                      </div>
-                    )}
-
-                    <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-3">
-                      <div className="space-y-2">
-                        <Label>Send to</Label>
-                        <Select
-                          value={param.location}
-                          onValueChange={(value) => {
-                            if (value === "query" || value === "header") {
-                              patchParameter(index, {
-                                location: value,
-                                key:
-                                  (param.key ?? param.name ?? "").trim() ||
-                                  param.name ||
-                                  "",
-                                bodyPath: undefined,
-                              });
-                              return;
-                            }
-                            if (value === "body") {
-                              patchParameter(index, {
-                                location: "body",
-                                bodyPath:
-                                  (param.bodyPath ?? param.name ?? "").trim() ||
-                                  param.name ||
-                                  "",
-                                key: undefined,
-                              });
-                              return;
-                            }
-                            patchParameter(index, {
-                              location: value as ToolParameter["location"],
-                              key: undefined,
-                              bodyPath: undefined,
-                            });
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="path">Path</SelectItem>
-                            <SelectItem value="query">Query</SelectItem>
-                            <SelectItem value="header">Header</SelectItem>
-                            <SelectItem value="body">Body</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {(param.location === "query" ||
-                        param.location === "header") && (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>
-                            {param.location === "query"
-                              ? "Query parameter name"
-                              : "Header name"}
-                          </Label>
-                          <Input
-                            value={param.key ?? param.name ?? ""}
-                            onChange={(e) =>
-                              patchParameter(index, { key: e.target.value })
-                            }
-                            placeholder={param.name || "key"}
-                            className="font-mono"
-                          />
-                        </div>
-                      )}
-
-                      {param.location === "body" && (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>Body field path</Label>
-                          <Input
-                            value={param.bodyPath ?? ""}
-                            onChange={(e) =>
-                              patchParameter(index, {
-                                bodyPath: e.target.value,
-                              })
-                            }
-                            placeholder="customer.email"
-                            className="font-mono"
-                          />
-                          {bodyPathSuggestions.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {bodyPathSuggestions
-                                .filter((path) =>
-                                  (param.name || "").trim().length
-                                    ? path
-                                        .toLowerCase()
-                                        .includes(
-                                          (param.name || "").toLowerCase(),
-                                        )
-                                    : true,
-                                )
-                                .slice(0, 8)
-                                .map((path) => (
-                                  <Badge
-                                    key={path}
-                                    variant="secondary"
-                                    className="cursor-pointer font-mono"
-                                    onClick={() =>
-                                      patchParameter(index, {
-                                        bodyPath: path,
-                                      })
-                                    }
+                  <CollapsibleContent>
+                    <div className="space-y-4 bg-muted/20 px-4 pb-5 pt-3">
+                      {/* Contact field selector */}
+                      {source === "contact" && (
+                        <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-3 space-y-3">
+                          <div className="flex items-center gap-2 text-sm font-medium text-blue-900">
+                            <ShieldCheck className="h-4 w-4" />
+                            Contact field
+                          </div>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <Select
+                              value={param.contactField || ""}
+                              onValueChange={(value) =>
+                                handleContactFieldChange(index, value)
+                              }
+                            >
+                              <SelectTrigger className="bg-background">
+                                <SelectValue placeholder="Choose a contact field" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {CONTACT_FIELD_OPTIONS.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
                                   >
-                                    {path}
-                                  </Badge>
+                                    {option.label}
+                                  </SelectItem>
                                 ))}
-                            </div>
-                          )}
+                              </SelectContent>
+                            </Select>
+                            {param.contactField === "metadata." && (
+                              <Input
+                                value={(param.contactField || "").replace(
+                                  "metadata.",
+                                  "",
+                                )}
+                                onChange={(e) =>
+                                  handleContactFieldChange(
+                                    index,
+                                    `metadata.${e.target.value.trim()}`,
+                                  )
+                                }
+                                placeholder="metadata key"
+                                className="bg-background font-mono"
+                              />
+                            )}
+                          </div>
                         </div>
                       )}
-                    </div>
 
-                    {source === "user" && (
-                      <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label>Fallback value</Label>
+                      {/* Fixed value input */}
+                      {source === "fixed" && (
+                        <div className="rounded-lg border border-border bg-muted/20 px-3 py-3 space-y-2">
+                          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                            Fixed value
+                          </Label>
                           <Input
                             value={formatEditableValue(param.default)}
                             onChange={(e) =>
@@ -965,127 +745,326 @@ export const ParametersStep: React.FC = () => {
                                 ),
                               })
                             }
-                            placeholder="Optional fallback"
+                            placeholder="Always send this value"
+                            className="bg-background"
                           />
                         </div>
-                        <div className="flex items-end pb-2">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`required-${index}`}
-                              checked={!!param.required}
-                              onCheckedChange={(checked) =>
-                                updateParameter(
-                                  index,
-                                  "required",
-                                  checked as boolean,
-                                )
+                      )}
+
+                      {/* Description */}
+                      {source === "user" && (
+                        <div className="space-y-2">
+                          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                            Description
+                          </Label>
+                          <Textarea
+                            value={param.description}
+                            onChange={(e) =>
+                              updateParameter(
+                                index,
+                                "description",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Explain what this value means and how the AI should recognize it."
+                            rows={2}
+                            className="bg-background resize-none"
+                          />
+                        </div>
+                      )}
+
+                      {/* Send to + key / body path */}
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <div className="space-y-2">
+                          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                            Send to
+                          </Label>
+                          <Select
+                            value={param.location}
+                            onValueChange={(value) => {
+                              if (
+                                value === "query" ||
+                                value === "header"
+                              ) {
+                                patchParameter(index, {
+                                  location: value,
+                                  key:
+                                    (param.key ?? param.name ?? "").trim() ||
+                                    param.name ||
+                                    "",
+                                  bodyPath: undefined,
+                                });
+                                return;
                               }
-                            />
-                            <Label htmlFor={`required-${index}`}>
-                              Required
+                              if (value === "body") {
+                                patchParameter(index, {
+                                  location: "body",
+                                  bodyPath:
+                                    (param.bodyPath ?? param.name ?? "").trim() ||
+                                    param.name ||
+                                    "",
+                                  key: undefined,
+                                });
+                                return;
+                              }
+                              patchParameter(index, {
+                                location:
+                                  value as ToolParameter["location"],
+                                key: undefined,
+                                bodyPath: undefined,
+                              });
+                            }}
+                          >
+                            <SelectTrigger className="bg-background">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="path">Path</SelectItem>
+                              <SelectItem value="query">Query</SelectItem>
+                              <SelectItem value="header">Header</SelectItem>
+                              <SelectItem value="body">Body</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {(param.location === "query" ||
+                          param.location === "header") && (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                              {param.location === "query"
+                                ? "Query parameter name"
+                                : "Header name"}
                             </Label>
+                            <Input
+                              value={param.key ?? param.name ?? ""}
+                              onChange={(e) =>
+                                patchParameter(index, { key: e.target.value })
+                              }
+                              placeholder={param.name || "key"}
+                              className="font-mono bg-background"
+                            />
+                          </div>
+                        )}
+
+                        {param.location === "body" && (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                              Body field path
+                            </Label>
+                            <Input
+                              value={param.bodyPath ?? ""}
+                              onChange={(e) =>
+                                patchParameter(index, {
+                                  bodyPath: e.target.value,
+                                })
+                              }
+                              placeholder="customer.email"
+                              className="font-mono bg-background"
+                            />
+                            {bodyPathSuggestions.length > 0 && (
+                              <div className="flex flex-wrap gap-2">
+                                {bodyPathSuggestions
+                                  .filter((path) =>
+                                    (param.name || "").trim().length
+                                      ? path
+                                          .toLowerCase()
+                                          .includes(
+                                            (param.name || "").toLowerCase(),
+                                          )
+                                      : true,
+                                  )
+                                  .slice(0, 8)
+                                  .map((path) => (
+                                    <Badge
+                                      key={path}
+                                      variant="secondary"
+                                      className="cursor-pointer font-mono"
+                                      onClick={() =>
+                                        patchParameter(index, {
+                                          bodyPath: path,
+                                        })
+                                      }
+                                    >
+                                      {path}
+                                    </Badge>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Required + fallback */}
+                      {source === "user" && (
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                              Fallback value
+                            </Label>
+                            <Input
+                              value={formatEditableValue(param.default)}
+                              onChange={(e) =>
+                                patchParameter(index, {
+                                  default: parseDefaultValue(
+                                    param.type,
+                                    e.target.value,
+                                  ),
+                                })
+                              }
+                              placeholder="Optional fallback"
+                              className="bg-background"
+                            />
+                          </div>
+                          <div className="flex items-end pb-2">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`required-${index}`}
+                                checked={!!param.required}
+                                onCheckedChange={(checked) =>
+                                  updateParameter(
+                                    index,
+                                    "required",
+                                    checked as boolean,
+                                  )
+                                }
+                              />
+                              <Label htmlFor={`required-${index}`}>
+                                Required
+                              </Label>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {source === "user" && (
-                      <div className="grid gap-4 border-t border-border/60 pt-4 md:grid-cols-2">
-                        {param.type === "string" && (
-                          <>
-                            <div className="space-y-2">
-                              <Label>Allowed values</Label>
-                              <Input
-                                value={param.enum?.join(", ") || ""}
-                                onChange={(e) =>
-                                  updateParameter(
-                                    index,
-                                    "enum",
-                                    e.target.value
-                                      .split(",")
-                                      .map((item) => item.trim())
-                                      .filter(Boolean),
-                                  )
-                                }
-                                placeholder="USD, EUR, GBP"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Pattern (regex)</Label>
-                              <Input
-                                value={param.pattern || ""}
-                                onChange={(e) =>
-                                  updateParameter(
-                                    index,
-                                    "pattern",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="^[A-Z0-9-]+$"
-                                className="font-mono"
-                              />
-                            </div>
-                          </>
-                        )}
-
-                        {(param.type === "number" ||
+                      {/* Validation constraints */}
+                      {source === "user" &&
+                        (param.type === "string" ||
+                          param.type === "number" ||
                           param.type === "integer") && (
-                          <>
-                            <div className="space-y-2">
-                              <Label>Minimum</Label>
-                              <Input
-                                type="number"
-                                value={param.minimum ?? ""}
-                                onChange={(e) =>
-                                  updateParameter(
-                                    index,
-                                    "minimum",
-                                    e.target.value
-                                      ? parseFloat(e.target.value)
-                                      : undefined,
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Maximum</Label>
-                              <Input
-                                type="number"
-                                value={param.maximum ?? ""}
-                                onChange={(e) =>
-                                  updateParameter(
-                                    index,
-                                    "maximum",
-                                    e.target.value
-                                      ? parseFloat(e.target.value)
-                                      : undefined,
-                                  )
-                                }
-                              />
-                            </div>
-                          </>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            {param.type === "string" && (
+                              <>
+                                <div className="space-y-2">
+                                  <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                                    Allowed values
+                                  </Label>
+                                  <Input
+                                    value={param.enum?.join(", ") || ""}
+                                    onChange={(e) =>
+                                      updateParameter(
+                                        index,
+                                        "enum",
+                                        e.target.value
+                                          .split(",")
+                                          .map((item) => item.trim())
+                                          .filter(Boolean),
+                                      )
+                                    }
+                                    placeholder="USD, EUR, GBP"
+                                    className="bg-background"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                                    Pattern (regex)
+                                  </Label>
+                                  <Input
+                                    value={param.pattern || ""}
+                                    onChange={(e) =>
+                                      updateParameter(
+                                        index,
+                                        "pattern",
+                                        e.target.value,
+                                      )
+                                    }
+                                    placeholder="^[A-Z0-9-]+$"
+                                    className="font-mono bg-background"
+                                  />
+                                </div>
+                              </>
+                            )}
+                            {(param.type === "number" ||
+                              param.type === "integer") && (
+                              <>
+                                <div className="space-y-2">
+                                  <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                                    Minimum
+                                  </Label>
+                                  <Input
+                                    type="number"
+                                    value={param.minimum ?? ""}
+                                    onChange={(e) =>
+                                      updateParameter(
+                                        index,
+                                        "minimum",
+                                        e.target.value
+                                          ? parseFloat(e.target.value)
+                                          : undefined,
+                                      )
+                                    }
+                                    className="bg-background"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                                    Maximum
+                                  </Label>
+                                  <Input
+                                    type="number"
+                                    value={param.maximum ?? ""}
+                                    onChange={(e) =>
+                                      updateParameter(
+                                        index,
+                                        "maximum",
+                                        e.target.value
+                                          ? parseFloat(e.target.value)
+                                          : undefined,
+                                      )
+                                    }
+                                    className="bg-background"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
                         )}
-                      </div>
-                    )}
+                    </div>
                   </CollapsibleContent>
                 </Collapsible>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
+      {/* ── Empty state ── */}
+      {formData.parameters.length === 0 && (
+        <div className="rounded-lg border-2 border-dashed border-border bg-muted/30 py-12 text-center">
+          <p className="text-muted-foreground mb-1">No dynamic inputs yet</p>
+          <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
+            Import from cURL to prefill request inputs automatically, or add
+            one manually.
+          </p>
+          <Button variant="outline" onClick={addParameter}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add input manually
+          </Button>
+        </div>
+      )}
+
+      {/* ── Add another input button ── */}
       {formData.parameters.length > 0 && (
         <Button
           variant="outline"
           onClick={addParameter}
-          className="w-full border-dashed"
+          className="w-full border-dashed h-10 text-muted-foreground hover:text-foreground"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add another input
         </Button>
       )}
 
+      {/* ── Summary card ── */}
       {formData.parameters.length > 0 && (
         <Card className="bg-muted/40 border-border">
           <CardContent className="pt-6 space-y-4">
@@ -1113,7 +1092,7 @@ export const ParametersStep: React.FC = () => {
 
             {contactParams.length > 0 && (
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground mb-2">
                   Hidden from AI · Contact fields
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -1132,7 +1111,7 @@ export const ParametersStep: React.FC = () => {
 
             {fixedParams.length > 0 && (
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground mb-2">
                   Hidden from AI · Fixed values
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -1142,7 +1121,8 @@ export const ParametersStep: React.FC = () => {
                       variant="secondary"
                       className="font-mono"
                     >
-                      {param.name} = {formatEditableValue(param.default) || "—"}
+                      {param.name} ={" "}
+                      {formatEditableValue(param.default) || "—"}
                     </Badge>
                   ))}
                 </div>

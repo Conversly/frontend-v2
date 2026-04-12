@@ -24,6 +24,14 @@ export const INTEGRATION_PLATFORMS: IntegrationConfig[] = [
     category: 'payment',
   },
   {
+    id: 'shopify',
+    name: 'Shopify',
+    description: 'Access orders, products, and customer data from your Shopify store',
+    icon: 'ShoppingBag',
+    status: 'not-connected',
+    category: 'ecommerce',
+  },
+  {
     id: 'calendly',
     name: 'Calendly',
     description: 'Schedule meetings and manage your calendar',

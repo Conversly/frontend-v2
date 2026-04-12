@@ -329,7 +329,7 @@ export const APIConfigSection: React.FC<Props> = ({
                     </button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-[460px] max-h-[420px] overflow-y-auto p-4"
+                    className="w-[360px] xl:w-[460px] max-h-[420px] overflow-y-auto p-4"
                     align="start"
                     side="bottom"
                   >
