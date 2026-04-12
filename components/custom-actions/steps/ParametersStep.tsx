@@ -24,10 +24,12 @@ import {
   Trash2,
   Plus,
   ChevronDown,
+  ChevronRight,
   Sparkles,
   Settings2,
   ShieldCheck,
   Info,
+  BookOpen,
 } from "lucide-react";
 import type { ParamSource } from "@/types/customActions";
 import {
@@ -83,6 +85,7 @@ function canAddTopLevelContactField(
 
 export const ParametersStep: React.FC = () => {
   const [advancedOpen, setAdvancedOpen] = useState<Record<number, boolean>>({});
+  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const formData = useEditorFormData();
   const updateField = useEditorUpdateField();
   const replaceParameters = useEditorReplaceParameters();
@@ -409,6 +412,113 @@ export const ParametersStep: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <div className="rounded-lg border border-border bg-white dark:bg-background shadow-sm">
+        <button
+          type="button"
+          onClick={() => setHowItWorksOpen((o) => !o)}
+          className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-left hover:bg-muted/40 rounded-lg transition-colors"
+        >
+          <div className="flex items-center gap-2 text-foreground">
+            <BookOpen className="h-4 w-4 text-primary" />
+            How do inputs work?
+          </div>
+          {howItWorksOpen ? (
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          )}
+        </button>
+
+        {howItWorksOpen && (
+          <div className="border-t border-border px-4 pb-5 pt-4 space-y-5">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {/* Customer input — blue */}
+              <div className="rounded-md border border-blue-200 bg-blue-50 p-3 space-y-2 dark:border-blue-900 dark:bg-blue-950/40">
+                <p className="text-xs font-semibold text-blue-700 dark:text-blue-400">
+                  Customer input
+                </p>
+                <p className="text-xs text-blue-900/70 dark:text-blue-300/80">
+                  The AI reads the value from the conversation and fills it in.
+                  Use for anything the user provides dynamically.
+                </p>
+                <code className="text-[10px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded font-mono block">
+                  source: user
+                </code>
+              </div>
+
+              {/* Fixed value — amber */}
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 space-y-2 dark:border-amber-900 dark:bg-amber-950/40">
+                <p className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                  Fixed value
+                </p>
+                <p className="text-xs text-amber-900/70 dark:text-amber-300/80">
+                  Always the same saved value. Never shown to the AI. Use for
+                  hardcoded IDs, tenant slugs, or environment flags.
+                </p>
+                <code className="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-mono block">
+                  source: fixed
+                </code>
+              </div>
+
+              {/* Contact field — green */}
+              <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 space-y-2 dark:border-emerald-900 dark:bg-emerald-950/40">
+                <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                  Contact field
+                </p>
+                <p className="text-xs text-emerald-900/70 dark:text-emerald-300/80">
+                  Pulled from the contact record, injected server-side. Never
+                  shown to the AI. Use for user IDs, emails, or metadata.
+                </p>
+                <code className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-mono block">
+                  source: contact
+                </code>
+              </div>
+            </div>
+
+            <div className="rounded-md bg-muted/60 border border-border px-3 py-3 space-y-2">
+              <p className="text-xs font-semibold text-foreground">
+                Where does the value go?
+              </p>
+              <ul className="text-xs space-y-1.5 text-muted-foreground">
+                <li>
+                  <span className="font-medium text-foreground">Path</span>
+                  {" — replaces a "}
+                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
+                    {"{paramName}"}
+                  </code>
+                  {" token in the URL · "}
+                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
+                    /workspaces/{"{workspaceId}"}/context
+                  </code>
+                </li>
+                <li>
+                  <span className="font-medium text-foreground">Query</span>
+                  {" — appended as "}
+                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
+                    ?key=value
+                  </code>
+                  {" · good for "}
+                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
+                    ?mode=dev
+                  </code>
+                </li>
+                <li>
+                  <span className="font-medium text-foreground">Header</span>
+                  {" — sent as a request header · use for API keys or per-user tokens"}
+                </li>
+                <li>
+                  <span className="font-medium text-foreground">Body</span>
+                  {" — injected into the JSON body at a dot path · "}
+                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
+                    customer.email
+                  </code>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+
       {hasLegacyTemplates && (
         <div className="rounded-lg border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-4 py-3 text-sm">
           <div className="flex items-center justify-between gap-3">
@@ -497,21 +607,49 @@ export const ParametersStep: React.FC = () => {
                       <Info className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="left" align="start" className="max-w-xs">
-                    <p className="font-semibold">Value source options</p>
-                    <p className="mt-1">
-                      <span className="font-medium">Customer input:</span>{" "}
-                      AI reads the conversation and fills this value.
-                    </p>
-                    <p className="mt-1">
-                      <span className="font-medium">Use contact field:</span>{" "}
-                      This value comes from the contact record and is not shown
-                      to the AI.
-                    </p>
-                    <p className="mt-1">
-                      <span className="font-medium">Fixed value:</span> This
-                      value is always the saved value and is not shown to the AI.
-                    </p>
+                  <TooltipContent side="left" align="start" className="max-w-sm">
+                    <p className="font-semibold mb-1.5">Value source</p>
+                    <div className="space-y-2 text-xs">
+                      <div>
+                        <p className="font-medium">Customer input</p>
+                        <p className="text-muted-foreground mt-0.5">
+                          AI reads the value from the conversation.
+                        </p>
+                        <p className="text-muted-foreground italic mt-0.5">
+                          Example: user says &quot;show product 42&quot; → AI
+                          fills{" "}
+                          <code className="bg-background px-0.5 rounded">
+                            productId = 42
+                          </code>
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Fixed value</p>
+                        <p className="text-muted-foreground mt-0.5">
+                          Always the same saved value. Never exposed to the AI.
+                        </p>
+                        <p className="text-muted-foreground italic mt-0.5">
+                          Example:{" "}
+                          <code className="bg-background px-0.5 rounded">
+                            workspaceId = abc123
+                          </code>{" "}
+                          — same for every call.
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Contact field</p>
+                        <p className="text-muted-foreground mt-0.5">
+                          Pulled from the contact record, injected server-side.
+                        </p>
+                        <p className="text-muted-foreground italic mt-0.5">
+                          Example:{" "}
+                          <code className="bg-background px-0.5 rounded">
+                            userId ← externalId
+                          </code>{" "}
+                          from the logged-in user.
+                        </p>
+                      </div>
+                    </div>
                   </TooltipContent>
                 </Tooltip>
 

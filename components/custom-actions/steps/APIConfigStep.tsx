@@ -23,7 +23,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Plus, X, Terminal } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, X, Terminal, HelpCircle } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { URLPatternGuide } from "../URLPatternGuide";
+import {
+  detectFixedIdSegments,
+  buildExtractSuggestion,
+  type ExtractSuggestion,
+} from "../url-analysis";
+import type { ToolParameter } from "@/types/customActions";
 import { CurlImportDialog } from "../CurlImportDialog";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
@@ -94,6 +106,8 @@ export const APIConfigSection: React.FC<Props> = ({
   const [staticBodyError, setStaticBodyError] = useState<string | null>(null);
   const [isBodyDirty, setIsBodyDirty] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const [helpOpen, setHelpOpen] = useState(false);
   const storeFormData = useEditorFormData();
   const storeErrors = useEditorErrors();
   const storeUpdateField = useEditorUpdateField();
@@ -120,7 +134,7 @@ export const APIConfigSection: React.FC<Props> = ({
       updateField("apiConfig", {
         ...config,
         baseUrl: urlObj.origin,
-        endpoint: `${urlObj.pathname}${urlObj.search || ""}`,
+        endpoint: `${urlObj.pathname.replace(/%7B/gi, "{").replace(/%7D/gi, "}")}${urlObj.search || ""}`,
       });
     } catch {
       // If not a valid URL, just update the endpoint
@@ -151,6 +165,28 @@ export const APIConfigSection: React.FC<Props> = ({
     () => extractLegacyVariables(config.endpoint || ""),
     [config.endpoint],
   );
+
+  const detectedIds = useMemo(
+    () =>
+      detectFixedIdSegments(config.endpoint || "").filter(
+        (d) => !dismissedIds.has(d.segment),
+      ),
+    [config.endpoint, dismissedIds],
+  );
+
+  const handleExtractId = (suggestion: ExtractSuggestion) => {
+    updateField("apiConfig.endpoint", suggestion.replacedEndpoint);
+    const newParam: ToolParameter = {
+      name: suggestion.paramName,
+      type: "string",
+      description: `Fixed resource ID for the ${suggestion.paramName.replace(/_/g, " ")} path segment.`,
+      required: false,
+      location: "path",
+      source: "fixed",
+      default: suggestion.defaultValue,
+    };
+    replaceParameters([...formData.parameters, newParam]);
+  };
 
   // Keep the static body editor in sync with config changes.
   useEffect(() => {
@@ -278,9 +314,29 @@ export const APIConfigSection: React.FC<Props> = ({
             </div>
 
             <div className="form-field">
-              <Label className="form-field-label">
-                Full URL or endpoint path
-              </Label>
+              <div className="flex items-center gap-1.5">
+                <Label className="form-field-label">
+                  Full URL or endpoint path
+                </Label>
+                <Popover open={helpOpen} onOpenChange={setHelpOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="URL pattern guide"
+                      className="h-5 w-5 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-[460px] max-h-[420px] overflow-y-auto p-4"
+                    align="start"
+                    side="bottom"
+                  >
+                    <URLPatternGuide />
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input
                 value={fullUrl}
                 onChange={(e) => handleFullUrlChange(e.target.value)}
@@ -331,6 +387,55 @@ export const APIConfigSection: React.FC<Props> = ({
               </Button>
             </div>
           )}
+
+          {detectedIds.map((detected) => {
+            const suggestion = buildExtractSuggestion(
+              config.endpoint || "",
+              detected,
+            );
+            return (
+              <div
+                key={detected.segment}
+                className="flex flex-col gap-3 rounded-lg border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-4 py-3 text-xs sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="text-[var(--status-info-fg)]">
+                  This URL contains what looks like a fixed ID:{" "}
+                  <code className="px-1 py-0.5 rounded bg-background font-mono">
+                    {detected.segment}
+                  </code>
+                  . Leave it hardcoded or extract it as a{" "}
+                  <strong>fixed parameter</strong> named{" "}
+                  <code className="px-1 py-0.5 rounded bg-background font-mono">
+                    {suggestion.paramName}
+                  </code>{" "}
+                  so it is visible in the Inputs tab.
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      setDismissedIds(
+                        (prev) => new Set([...prev, detected.segment]),
+                      )
+                    }
+                  >
+                    Keep hardcoded
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-8 text-xs"
+                    onClick={() => handleExtractId(suggestion)}
+                  >
+                    Extract as fixed param
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
         </CardContent>
       </Card>
 
