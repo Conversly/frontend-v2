@@ -25,7 +25,6 @@ interface Props {
 
 export const ActionList: React.FC<Props> = ({
   actions,
-  enabledActionsCount,
   currentUsage,
   onCreate,
   onEdit,
