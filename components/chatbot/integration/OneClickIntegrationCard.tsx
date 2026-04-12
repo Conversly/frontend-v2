@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FeatureGuard } from "@/components/shared/FeatureGuard";
 import { cn } from "@/lib/utils";
 import type { IntegrationConfig } from "@/types/integration";
 
@@ -68,15 +69,28 @@ export function OneClickIntegrationCard({ integration, onConnect }: Props) {
         {integration.description}
       </p>
 
-      {/* Action button */}
-      <Button
-        variant={isConnected ? "outline" : "outline"}
-        size="sm"
-        className="w-full"
-        onClick={() => onConnect(integration.id)}
-      >
-        {isConnected ? "Manage" : "Connect"}
-      </Button>
+      {/* Action button — guarded by integrations entitlement */}
+      {isConnected ? (
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => onConnect(integration.id)}
+        >
+          Manage
+        </Button>
+      ) : (
+        <FeatureGuard feature="integrations">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={() => onConnect(integration.id)}
+          >
+            Connect
+          </Button>
+        </FeatureGuard>
+      )}
     </div>
   );
 }
