@@ -25,7 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSuspenseDataSources, useDeleteKnowledge, useAddCitation } from '@/services/datasource';
+import { useSuspenseDataSources, useDeleteKnowledge, useAddCitation, useDataSourcesQuery } from '@/services/datasource';
 import { toast } from 'sonner';
 import type { DataSourceItem } from '@/types/datasource';
 import { EmptyState } from '@/components/shared';
@@ -407,6 +407,7 @@ export default function DataSourcesPage() {
   const deleteMutation = useDeleteKnowledge(botId);
   const addCitationMutation = useAddCitation(botId);
   const { guardEdit, isLiveMode } = useEditGuard();
+  const { data: dataSourcesForCount } = useDataSourcesQuery(botId);
 
   const handleViewSource = (source: DataSourceItem) => {
     router.push(`/${workspaceId}/chatbot/${botId}/sources/${source.id}`);
@@ -523,7 +524,7 @@ export default function DataSourcesPage() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span>
-                      <FeatureGuard feature="datasources" currentUsage={0}>
+                      <FeatureGuard feature="datasources" currentUsage={dataSourcesForCount?.length ?? 0}>
                         {({ isLocked }) => (
                           <Button
                             onClick={handleOpenAddKnowledge}
