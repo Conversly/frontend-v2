@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef } from "react";
+
 type FullscreenVideoProps = {
   as?: "div" | "section";
   embedded?: boolean;
@@ -11,6 +15,21 @@ export default function FullscreenVideo({
   className = "",
   videoClassName = "",
 }: FullscreenVideoProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  function handleLoadedMetadata() {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 2;
+    }
+  }
+
+  function handleEnded() {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 2;
+      videoRef.current.play();
+    }
+  }
+
   return (
     <Component
       className={`relative w-full overflow-hidden bg-[#0f172a] ${
@@ -18,12 +37,14 @@ export default function FullscreenVideo({
       } ${className}`.trim()}
     >
       <video
+        ref={videoRef}
         autoPlay
-        loop
         muted
         playsInline
         preload="metadata"
         aria-hidden="true"
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleEnded}
         className={`h-full w-full object-cover object-center ${
           embedded ? "" : "min-h-screen"
         } ${videoClassName}`.trim()}
