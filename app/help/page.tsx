@@ -8,20 +8,20 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 
 export const metadata: Metadata = {
-  title: 'Help & Support | VerlyAI',
-  description: 'Get help with VerlyAI through our support assistant, FAQ, blog resources, and email support for AI customer support agents.',
+  title: 'Help & Support',
+  description: 'Get help with Verly through our support assistant, FAQ, blog resources, and email support for AI customer support agents.',
   alternates: {
     canonical: '/help',
   },
   openGraph: {
-    title: 'Help & Support | VerlyAI',
-    description: 'Get support for VerlyAI through our support assistant, FAQ, blog resources, and email support.',
+    title: 'Help & Support',
+    description: 'Get support for Verly through our support assistant, FAQ, blog resources, and email support.',
     url: 'https://verlyai.xyz/help',
     type: 'website',
   },
   twitter: {
-    title: 'Help & Support | VerlyAI',
-    description: 'Get help with VerlyAI through our support assistant, FAQ, and email support.',
+    title: 'Help & Support',
+    description: 'Get help with Verly through our support assistant, FAQ, and email support.',
   },
 };
 

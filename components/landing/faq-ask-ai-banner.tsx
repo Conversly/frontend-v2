@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Bot, Brain, ExternalLink, SearchCheck, Sparkles } from 'lucide-react';
 
-const sharedPrompt = `I'm evaluating VerlyAI as a customer support platform. Answer my questions about its features, AI agent capabilities, omnichannel support (web chat, WhatsApp, voice), knowledge base training, integrations, pricing plans, security and compliance, and how it compares to alternatives like Zendesk, Intercom, and Freshdesk.`;
+const sharedPrompt = `I'm evaluating Verly as a customer support platform. Answer my questions about its features, AI agent capabilities, omnichannel support (web chat, WhatsApp, voice), knowledge base training, integrations, pricing plans, security and compliance, and how it compares to alternatives like Zendesk, Intercom, and Freshdesk.`;
 
 const aiAssistants = [
   {

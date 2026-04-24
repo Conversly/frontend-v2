@@ -417,7 +417,7 @@ export default function WaitingAnimation() {
             <BotIcon />
           </div>
           <div>
-            <p className="text-xs font-medium text-white/85">VerlyAI Assistant</p>
+            <p className="text-xs font-medium text-white/85">Verly Assistant</p>
             <p className="text-[10px] text-[#97C459]">● Online now</p>
           </div>
         </div>

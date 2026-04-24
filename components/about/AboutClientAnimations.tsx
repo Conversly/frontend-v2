@@ -102,7 +102,7 @@ export function AboutMetricCard({
       <motion.div
         whileHover={{ y: -6 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className={`group relative flex h-full flex-col overflow-hidden rounded-[30px] border bg-gradient-to-br px-6 py-6 text-left shadow-[0_16px_44px_rgba(59,43,22,0.05)] transition-all duration-300 hover:shadow-[0_28px_60px_rgba(59,43,22,0.10)] ${theme.accent} ${theme.border}`}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[26px] border bg-gradient-to-br px-6 py-6 text-left shadow-[0_16px_44px_rgba(59,43,22,0.05)] transition-all duration-300 hover:shadow-[0_28px_60px_rgba(59,43,22,0.10)] ${theme.accent} ${theme.border}`}
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.85),transparent_34%)]" />
         <div className="pointer-events-none absolute -bottom-14 right-0 h-28 w-28 rounded-full bg-white/70 blur-3xl transition-transform duration-500 group-hover:scale-125" />
@@ -467,36 +467,48 @@ export function FounderNote() {
       <div className="mx-auto max-w-[760px] rounded-[2.5rem] border border-[#e4ddd4] bg-white px-10 py-12 shadow-[0_16px_48px_rgba(59,43,22,0.05)] md:px-14">
         <div className="mb-8 flex items-center gap-5">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1e1c19] text-white shadow-lg">
-            <span className="font-[Georgia,serif] text-[1.4rem] font-bold">V</span>
+            <span className="font-[Georgia,serif] text-[1.4rem] font-bold">R</span>
           </div>
           <div>
             <div className="text-[1.1rem] font-semibold text-[#1e1c19]">
-              From the Verly team
+              Raghvendra Dhakar
             </div>
             <p className="text-[0.88rem] text-[#8a8279]">
-              Building alongside early customers
+              Founder, Verly
             </p>
           </div>
         </div>
 
         <blockquote className="space-y-6 font-[Georgia,serif] text-[1.1rem] leading-[1.75] text-[#3d3832] sm:text-[1.25rem]">
           <p>
-            &ldquo;We started Verly because we kept seeing the same problem:
-            support teams forced to stitch together five tools just to handle a
-            customer across chat, WhatsApp, and phone. Context leaks at every
-            handoff, and the team spends more time managing tools than actually
-            helping people.&rdquo;
+            Every founder I&rsquo;ve talked to has had the same month: 50 new
+            customers, one support inbox on fire, and a choice between hiring
+            three agents they can&rsquo;t afford or letting CSAT fall off a
+            cliff.
           </p>
           <p>
-            &ldquo;We&rsquo;re building Verly as one operating layer—shared knowledge,
-            shared routing, shared escalation—so teams can focus on what matters:
-            faster, better resolution.&rdquo;
+            Existing tools aren&rsquo;t built for that moment. They&rsquo;re
+            built for the company you&rsquo;ll be in three years, not the one
+            you are today. They charge per seat. They take weeks to configure.
+            They lock your customer data inside their bot and never give it
+            back.
+          </p>
+          <p>
+            Verly is the opposite. Live in a day. One line of JavaScript for
+            web chat. One number for voice. One WhatsApp integration. Every
+            conversation is yours — exportable, auditable, owned by you. The
+            AI answers what it can, and hands the rest to your team with the
+            full context attached.
+          </p>
+          <p>
+            If that&rsquo;s what you&rsquo;ve been looking for, we&rsquo;d
+            love to show you what we&rsquo;ve built.
           </p>
         </blockquote>
 
         <div className="mt-8 flex items-center gap-2 text-[0.85rem] text-[#9a9189]">
           <Sparkles className="h-4 w-4 text-[#c57f1e]" />
-          <span>Working closely with every early customer</span>
+          <span>Hit reply to any email — I read them all.</span>
         </div>
       </div>
     </AboutSectionReveal>

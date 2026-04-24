@@ -254,7 +254,7 @@ export function BlogPostSidebar({ tocItems }: { tocItems: BlogTocItem[] }) {
               className="pointer-events-none absolute inset-x-3 bottom-0 h-px bg-primary/60"
               aria-hidden
             />
-            Start free with VerlyAI
+            Start free with Verly
           </Link>
         </div>
       </div>

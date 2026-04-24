@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const siteConfig = {
-  name: 'VerlyAI',
-  description: 'VerlyAI is an AI-powered customer support platform that helps businesses automate customer service using intelligent AI chatbots, voice assistants, and WhatsApp agents. It enables instant issue resolution, 24/7 availability, and seamless escalation to human support teams across web, voice, and messaging channels.',
+  name: 'Verly',
+  description: 'Verly is the AI customer support platform for voice, WhatsApp, and web chat — with human handoff built in. One platform for AI, routing, and escalation across every channel your customers use.',
   url: 'https://verlyai.xyz',
   ogImage: 'https://verlyai.xyz/verly_logo.png',
   links: {
@@ -13,10 +13,10 @@ export const siteConfig = {
 
 export const defaultMetadata: Metadata = {
   title: {
-    default: 'VerlyAI - AI Agent for Customer Support',
-    template: '%s | VerlyAI',
+    default: 'Verly — AI Customer Support for Voice, WhatsApp & Chat',
+    template: '%s | Verly',
   },
-  description: 'Automate customer support with VerlyAI. Deploy intelligent AI agents for Voice, WhatsApp, and Web Chat in minutes. Reduce support costs by 80% and handle unlimited conversations simultaneously.',
+  description: 'Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Verly answers 80% of tickets and hands the rest to your team with full context. Start free.',
   keywords: [
     'AI customer support',
     'AI customer support platform',
@@ -24,7 +24,7 @@ export const defaultMetadata: Metadata = {
     'WhatsApp automation',
     'WhatsApp chatbot',
     'Customer service chatbot',
-    'VerlyAI',
+    'Verly',
     'Automated support platform',
     'Reduce support costs',
     '24/7 customer service',
@@ -45,9 +45,9 @@ export const defaultMetadata: Metadata = {
     'healthcare chatbot',
     'SaaS customer support automation',
   ],
-  authors: [{ name: 'VerlyAI Team' }],
-  creator: 'VerlyAI',
-  publisher: 'VerlyAI',
+  authors: [{ name: 'Verly Team' }],
+  creator: 'Verly',
+  publisher: 'Verly',
   formatDetection: {
     email: false,
     address: false,
@@ -58,24 +58,16 @@ export const defaultMetadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
-    title: 'VerlyAI - AI Agent for Customer Support',
-    description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web. Start for free.',
+    title: 'Verly — AI Customer Support for Voice, WhatsApp & Chat',
+    description: 'Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Verly answers 80% of tickets and hands the rest to your team with full context.',
     siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.ogImage,
-        width: 560,
-        height: 374,
-        alt: 'VerlyAI - AI Customer Support Platform',
-      },
-    ],
+    // Image is provided by app/opengraph-image.tsx (1200×630, rendered at build).
   },
   twitter: {
-    // Summary card fits the horizontal logo. Use summary_large_image after adding a 1200×630 OG image.
-    card: 'summary',
-    title: 'VerlyAI - AI Agent for Customer Support',
-    description: 'Deploy AI agents that handle 10X more customers without hiring. Instant answers on Voice, WhatsApp, and Web.',
-    images: [siteConfig.ogImage],
+    card: 'summary_large_image',
+    title: 'Verly — AI Customer Support for Voice, WhatsApp & Chat',
+    description: 'Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Answers 80% of tickets, hands off the rest with full context.',
+    // Image is provided by app/twitter-image.tsx (shares the same 1200×630 render).
     creator: '@VerlyAI',
     site: '@VerlyAI',
   },
@@ -103,7 +95,8 @@ export const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   '@id': 'https://verlyai.xyz/#organization',
-  name: 'VerlyAI',
+  name: 'Verly',
+  alternateName: 'Verly AI',
   url: 'https://verlyai.xyz',
   logo: {
     '@type': 'ImageObject',
@@ -112,7 +105,7 @@ export const organizationSchema = {
     height: 374,
   },
   description:
-    'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration.',
+    'Verly is the AI customer support platform for voice, WhatsApp, and web chat — with human handoff built in. One platform for AI, routing, and escalation across every channel.',
   foundingDate: '2025',
   areaServed: 'Global',
   contactPoint: {
@@ -131,13 +124,14 @@ export const organizationSchema = {
 export const softwareApplicationSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'VerlyAI',
+  name: 'Verly',
+  alternateName: 'Verly AI',
   applicationCategory: 'BusinessApplication',
   applicationSubCategory: 'Customer Support Automation',
   operatingSystem: 'Cloud, Web',
   url: 'https://verlyai.xyz',
   description:
-    'VerlyAI is an AI-powered customer support platform that helps businesses automate customer interactions through intelligent chatbots, voice assistants, and WhatsApp integration. Deploy AI agents that handle 10X more customers without hiring.',
+    'Verly is the AI customer support platform for voice, WhatsApp, and web chat — with human handoff built in. Deploy an AI agent that answers 80% of tickets and hands the rest to your team with full context.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -170,9 +164,9 @@ export const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': 'https://verlyai.xyz/#website',
-  name: 'VerlyAI - AI Customer Support Agents',
+  name: 'Verly — AI Customer Support',
   url: 'https://verlyai.xyz',
-  description: 'Deploy AI agents across Website chat, Voice & WhatsApp in minutes. Automate 80% of customer support tickets with intelligent AI that handles unlimited conversations simultaneously.',
+  description: 'The AI customer support platform for voice, WhatsApp, and web chat — with human handoff built in. Answer 80% of tickets automatically and escalate the rest with full context.',
   publisher: {
     '@id': 'https://verlyai.xyz/#organization',
   },

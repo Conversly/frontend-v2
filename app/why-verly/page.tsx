@@ -15,21 +15,21 @@ import { WHY_VERLY_PAGE } from "@/components/why-verly/why-verly-content";
 import { siteConfig } from "@/lib/metadata";
 
 export const metadata: Metadata = {
-  title: "Why Verly | AI Customer Support That Resolves More",
+  title: "Why Verly — AI Support That Resolves More",
   description:
     "See why fast-growing teams choose Verly for AI customer support across voice, WhatsApp, and web chat. Explore the architecture, workflow, and ROI advantages.",
   alternates: {
     canonical: "/why-verly",
   },
   openGraph: {
-    title: "Why Verly | AI Customer Support That Resolves More",
+    title: "Why Verly — AI Support That Resolves More",
     description:
       "Discover the six reasons support teams choose Verly for AI-native customer support across voice, WhatsApp, and web chat.",
     url: `${siteConfig.url}/why-verly`,
     type: "website",
   },
   twitter: {
-    title: "Why Verly | AI Customer Support That Resolves More",
+    title: "Why Verly — AI Support That Resolves More",
     description:
       "Explore why teams choose Verly for faster replies, lower support cost, and omnichannel AI support.",
   },

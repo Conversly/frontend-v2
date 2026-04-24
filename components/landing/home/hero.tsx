@@ -73,10 +73,13 @@ export default function LandingHero() {
                       rel="noopener noreferrer"
                       className="common-button common-button--white common-button--medium font-sans-bold common-button--roundish"
                     >
-                      <span className="common-button__label ellipsis">Book a demo</span>
+                      <span className="common-button__label ellipsis">Book a 20-min demo</span>
                     </a>
                   </div>
                 </div>
+                <p className="mt-4 text-[13px] text-slate-500">
+                  Free forever plan. No credit card. Cancel in one click.
+                </p>
               </motion.div>
             </div>
           </motion.div>
@@ -95,7 +98,7 @@ export default function LandingHero() {
                 <div className="home-hero-app__screenshot">
                   <Image
                     src="/dashboard.png"
-                    alt="Verly AI helpdesk dashboard"
+                    alt="Verly shared inbox with voice, WhatsApp, and web chat conversations in one queue"
                     width={980}
                     height={600}
                     priority

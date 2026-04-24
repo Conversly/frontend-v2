@@ -52,7 +52,7 @@ export default function FeaturesSection() {
                 Build the perfect customer-facing AI agent
               </h2>
               <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
-                VerlyAI gives you all the tools you need to train your perfect AI agent and connect it to your systems.
+                Verly gives you all the tools you need to train your perfect AI agent and connect it to your systems.
               </p>
             </div>
           </div>

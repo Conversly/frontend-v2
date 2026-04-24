@@ -21,19 +21,20 @@ import { FEATURE_CATEGORIES, FEATURES_PAGE_CONTENT, ThemeKey } from "./constants
 import { siteConfig } from "@/lib/metadata";
 import FeaturesSearch from "./features-search";
 import { getFeatureIconComponent } from "./feature-icon";
+import { buildBreadcrumbSchema } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
-  title: "Features | VerlyAI",
+  title: "Features — AI Support Agent Capabilities",
   description: FEATURES_PAGE_CONTENT.intro,
   alternates: { canonical: "/features" },
   openGraph: {
-    title: "Features | VerlyAI",
+    title: "Features — AI Support Agent Capabilities",
     description: FEATURES_PAGE_CONTENT.intro,
     url: `${siteConfig.url}/features`,
     type: "website",
   },
   twitter: {
-    title: "Features | VerlyAI",
+    title: "Features — AI Support Agent Capabilities",
     description: FEATURES_PAGE_CONTENT.intro,
   },
 };
@@ -177,6 +178,11 @@ const THEME_COLORS: Record<
 
 const CONTENT_WIDTH = "w-[95%] md:w-[85%] lg:w-[80%] max-w-[1360px] mx-auto";
 
+const breadcrumbSchema = buildBreadcrumbSchema([
+  { name: "Home", path: "/" },
+  { name: "Features", path: "/features" },
+]);
+
 export default function FeaturesPage() {
   const totalFeatures = FEATURE_CATEGORIES.reduce(
     (count, category) => count + category.features.length,
@@ -185,6 +191,10 @@ export default function FeaturesPage() {
 
   return (
     <main className="relative min-h-screen bg-[#fcfcfd] text-[#0f1e35] selection:bg-blue-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
       <div className="relative z-10">
         <Navbar />
@@ -199,7 +209,7 @@ export default function FeaturesPage() {
                 Product capabilities
               </div>
               <h1 className="mx-auto mt-6 max-w-[720px] text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-[#0f1e35] sm:text-5xl lg:text-[62px]">
-                Every VerlyAI feature in one place
+                Everything your support AI needs — without the vendor sprawl.
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#5d6b98] sm:text-lg">
                 {FEATURES_PAGE_CONTENT.intro}

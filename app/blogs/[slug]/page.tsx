@@ -29,29 +29,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) {
     return {
-      title: "Blog Post | VerlyAI",
+      title: "Blog Post",
     };
   }
 
   const description =
-    post.excerpt || "Read the latest blog post from the VerlyAI team.";
+    post.excerpt || "Read the latest blog post from the Verly team.";
   const canonical = `${siteConfig.url}/blogs/${slug}`;
   const image = urlForImage(post.mainImage);
   const imageAlt = post.mainImage?.alt || post.title;
 
   return {
-    title: `${post.title} | VerlyAI Blog`,
+    title: `${post.title} | Verly Blog`,
     description,
     alternates: {
       canonical,
     },
     openGraph: {
       type: "article",
-      title: `${post.title} | VerlyAI Blog`,
+      title: `${post.title} | Verly Blog`,
       description,
       url: canonical,
       publishedTime: post.publishedAt ?? post.date,
-      authors: [post.author?.name || "VerlyAI"],
+      authors: [post.author?.name || "Verly"],
       section: post.categories?.[0]?.title || "Blog",
       images: image
         ? [
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: image ? "summary_large_image" : "summary",
-      title: `${post.title} | VerlyAI Blog`,
+      title: `${post.title} | Verly Blog`,
       description,
       images: image ? [image.src] : undefined,
     },
@@ -114,7 +114,7 @@ function buildBlogPostingStructuredData({
     "@id": canonical,
     headline: post.title,
     description:
-      post.excerpt || "Read the latest blog post from the VerlyAI team.",
+      post.excerpt || "Read the latest blog post from the Verly team.",
     datePublished: post.publishedAt ?? post.date,
     dateModified: (post as unknown as { _updatedAt?: string })._updatedAt ?? post.publishedAt ?? post.date,
     mainEntityOfPage: {
@@ -127,7 +127,7 @@ function buildBlogPostingStructuredData({
     inLanguage: "en-US",
     author: {
       "@type": "Person",
-      name: post.author?.name || "VerlyAI",
+      name: post.author?.name || "Verly",
     },
     publisher: {
       "@id": "https://verlyai.xyz/#organization",
@@ -214,7 +214,7 @@ export default async function BlogPostPage({ params }: Props) {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 shrink-0" />
                     <span className="font-medium text-foreground">
-                      {post.author?.name || "VerlyAI"}
+                      {post.author?.name || "Verly"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

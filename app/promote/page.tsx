@@ -4,18 +4,18 @@ import { siteConfig } from "@/lib/metadata";
 import PromotePageClient from "@/components/promote/PromotePageClient";
 
 export const metadata: Metadata = {
-  title: "Launch Directory | VerlyAI",
+  title: "Launch Directory — New Products Every Day",
   description:
-    "Discover the best new products in tech, every day. Browse the latest product launches and upvote your favorites.",
+    "Discover the best new products in tech, every day. Browse the latest launches, upvote your favourites, and ship your own product to thousands of early adopters.",
   alternates: { canonical: "/promote" },
   openGraph: {
-    title: "Launch Directory | VerlyAI",
+    title: "Launch Directory",
     description: "Discover the best new products in tech, every day.",
     url: `${siteConfig.url}/promote`,
     type: "website",
   },
   twitter: {
-    title: "Launch Directory | VerlyAI",
+    title: "Launch Directory",
     description: "Discover the best new products in tech, every day.",
   },
 };

@@ -12,7 +12,7 @@ interface MetricsBarChartProps {
 export default function MetricsBarChart({ metrics, competitorName }: MetricsBarChartProps) {
   const data = metrics.map((m) => ({
     name: m.metric,
-    VerlyAI: m.verly,
+    Verly: m.verly,
     [competitorName]: m.competitor ?? 0,
     unit: m.unit,
     competitorNull: m.competitor === null,
@@ -53,7 +53,7 @@ export default function MetricsBarChart({ metrics, competitorName }: MetricsBarC
             }}
           />
           <Legend wrapperStyle={{ fontSize: '12px' }} />
-          <Bar dataKey="VerlyAI" fill="var(--color-primary)" radius={[0, 6, 6, 0]} barSize={16} />
+          <Bar dataKey="Verly" fill="var(--color-primary)" radius={[0, 6, 6, 0]} barSize={16} />
           <Bar dataKey={competitorName} radius={[0, 6, 6, 0]} barSize={16}>
             {data.map((entry, i) => (
               <Cell

@@ -293,7 +293,7 @@ export default function ComparisonSection() {
                           <div className="p-2 rounded-full bg-primary/10 text-primary">
                             <Zap className="w-5 h-5 fill-primary" />
                           </div>
-                          <span className="text-sm font-bold text-primary uppercase tracking-widest">VerlyAI Agent</span>
+                          <span className="text-sm font-bold text-primary uppercase tracking-widest">Verly Agent</span>
                         </div>
                         <motion.div
                           initial={{ scale: 0.8, opacity: 0 }}

@@ -30,8 +30,8 @@ const pricingPlans = [
     gradient: 'from-primary/10 via-accent/10 to-primary/5',
     stats: '100',
     statsLabel: 'Messages / month',
-    cta: 'Get Started',
-    ctaLoggedIn: 'Your Current Plan',
+    cta: 'Start free',
+    ctaLoggedIn: 'Your current plan',
   },
   {
     key: 'HOBBY',
@@ -48,7 +48,7 @@ const pricingPlans = [
     gradient: 'from-chart-2/10 via-chart-3/10 to-chart-4/10',
     stats: '3k',
     statsLabel: 'Messages / month',
-    cta: 'Start a free trial',
+    cta: 'Start free',
     ctaLoggedIn: 'Upgrade to Hobby',
   },
   {
@@ -68,7 +68,7 @@ const pricingPlans = [
     gradient: 'from-primary/10 via-accent/10 to-primary/5',
     stats: '12k',
     statsLabel: 'Messages / month',
-    cta: 'Start a free trial',
+    cta: 'Start free',
     ctaLoggedIn: 'Upgrade to Standard',
   },
   {
@@ -87,7 +87,7 @@ const pricingPlans = [
     gradient: 'from-chart-3/10 via-chart-4/10 to-chart-5/10',
     stats: '60k',
     statsLabel: 'Messages / month',
-    cta: 'Start a free trial',
+    cta: 'Start free',
     ctaLoggedIn: 'Upgrade to Pro',
   },
 ];
@@ -169,17 +169,16 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
 
           <div className="page-main-title mx-auto max-w-4xl">
             <h2 className="page-main-title__title font-title-bold">
-              Simple pricing that <span className="emphasis">grows with you</span>
+              Pricing that scales with your tickets <span className="emphasis">not your headcount.</span>
             </h2>
           </div>
 
           <p className="mx-auto max-w-3xl text-lg leading-relaxed text-[#5f6f8d] md:text-xl">
-            Start free, scale when your volume grows, and keep a clear line of sight
-            into ROI from day one.
+            Pay for the conversations Verly resolves, not the agents you hire. Start free with 50 messages — upgrade when you&rsquo;re ready, never when you&rsquo;re forced to.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {['No hidden platform fees', 'Cancel anytime', 'Faster than adding headcount'].map((item) => (
+            {['No per-seat fees', 'Cancel in one click', 'Pay only for what Verly resolves'].map((item) => (
               <div
                 key={item}
                 className="rounded-full border border-white/70 bg-white/85 px-4 py-2 text-sm font-semibold text-[#0f172a] shadow-[0_12px_30px_rgba(15,23,42,0.05)]"

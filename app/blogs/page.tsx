@@ -12,11 +12,11 @@ import { format, parseISO } from "date-fns";
 const blogsCanonical = `${siteConfig.url}/blogs`;
 
 export const metadata: Metadata = {
-  title: "Blog — AI agents, voice & WhatsApp support | VerlyAI",
+  title: "Blog — AI agents, voice & WhatsApp support",
   description:
-    "Articles from VerlyAI on deploying AI customer support agents: voice AI, WhatsApp automation, web chat, RAG, tools, and scaling support without extra headcount.",
+    "Articles from Verly on deploying AI customer support agents: voice AI, WhatsApp automation, web chat, RAG, tools, and scaling support without extra headcount.",
   keywords: [
-    "VerlyAI blog",
+    "Verly blog",
     "AI customer support",
     "voice AI agents",
     "WhatsApp business automation",
@@ -26,14 +26,14 @@ export const metadata: Metadata = {
     canonical: "/blogs",
   },
   openGraph: {
-    title: "VerlyAI Blog — insights for AI support teams",
+    title: "Verly Blog — insights for AI support teams",
     description:
       "Practical guides and product updates for building omnichannel AI agents on Voice, WhatsApp, and the web — from the team behind verlyai.xyz.",
     url: `${siteConfig.url}/blogs`,
     type: "website",
   },
   twitter: {
-    title: "Blog — AI agents, voice & WhatsApp support | VerlyAI",
+    title: "Blog — AI agents, voice & WhatsApp support",
     description:
       "Articles on deploying AI customer support agents: voice AI, WhatsApp automation, web chat, and scaling support.",
   },
@@ -57,7 +57,7 @@ export default async function BlogPage() {
       title: post.title,
       excerpt:
         post.excerpt ||
-        "Ideas on AI agents, voice and messaging automation, and customer experience from VerlyAI.",
+        "Ideas on AI agents, voice and messaging automation, and customer experience from Verly.",
       date: formatBlogDate(post.date),
       readTime: `${post.estReadingTime ?? 5} min read`,
       slug: post.slug.current,
@@ -79,7 +79,7 @@ export default async function BlogPage() {
           <div className="space-y-6 text-center">
             <div className="mx-auto inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm">
               <span className="mr-2 flex h-2 w-2 rounded-full bg-primary" />
-              VerlyAI · {siteConfig.url.replace(/^https?:\/\//, "")}
+              Verly · {siteConfig.url.replace(/^https?:\/\//, "")}
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
               Smarter support with{" "}
@@ -90,7 +90,7 @@ export default async function BlogPage() {
             <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground/80 leading-relaxed">
               How to ship and scale autonomous support on voice, WhatsApp, and web
               chat — playbooks, architecture notes, and what we are building at
-              VerlyAI. Explore{" "}
+              Verly. Explore{" "}
               <Link
                 href="/solutions"
                 className="font-medium text-primary underline-offset-4 hover:underline"
@@ -118,7 +118,7 @@ export default async function BlogPage() {
               <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
                 We publish guides on voice AI, WhatsApp automation, and omnichannel
                 support as soon as they are ready. In the meantime, explore how teams
-                use VerlyAI to handle more conversations without hiring.
+                use Verly to handle more conversations without hiring.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link
@@ -131,7 +131,7 @@ export default async function BlogPage() {
                   href="/about"
                   className="inline-flex rounded-full border border-border/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:text-primary"
                 >
-                  About VerlyAI
+                  About Verly
                 </Link>
               </div>
             </div>

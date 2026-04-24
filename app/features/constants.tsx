@@ -1,15 +1,15 @@
 import { enrichFeatureVisuals } from "./feature-visual-enrichment";
 
 export const FEATURES_PAGE_CONTENT = {
-  "title": "Features | VerlyAI",
-  "intro": "Explore every VerlyAI feature in one place. Browse by category, compare capabilities, and open any feature to see how it helps your support team automate faster and serve customers better."
+  "title": "Features | Verly",
+  "intro": "One platform for the agent, the inbox, the knowledge base, the analytics, and the escalation path. No stitching four tools together. No data silos between them."
 } as const;
 
 export const FEATURE_UI_ASSETS = {
   "defaultHeroImagePath": "/images/features/feature-detail.png",
-  "defaultHeroImageAlt": "VerlyAI support workspace preview",
+  "defaultHeroImageAlt": "Verly support workspace with voice, WhatsApp, and web chat in one inbox",
   "trialBannerImagePath": "/images/features/cta-banner-bg-trial.png",
-  "trialBannerImageAlt": "VerlyAI trial banner preview",
+  "trialBannerImageAlt": "Verly trial banner — start free in minutes",
   "trialLogoPath": "/verly_logo.png"
 } as const;
 

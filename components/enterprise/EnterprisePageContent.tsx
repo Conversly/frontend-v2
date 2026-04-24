@@ -226,11 +226,10 @@ export default function EnterprisePageContent() {
               Enterprise
             </div>
             <h1 className="mt-6 font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2.4rem,4.8vw,4.2rem)] leading-[1.04] tracking-[-0.04em] text-[#221f1b]">
-              AI support for teams that need more control than a basic chatbot gives.
+              Built to pass your security review on the first try.
             </h1>
             <p className="mt-5 max-w-[580px] text-[16px] leading-8 text-[#6d665d] md:text-[18px]">
-              Custom integrations, governed workflows, and dedicated rollout support — designed
-              around real operations, not a generic self-serve widget.
+              SOC 2 Type II, SSO/SAML, regional data residency, audit logs, custom DPAs, and a named contact for every incident. If you have a procurement checklist, we&rsquo;ve probably already seen it.
             </p>
 
             <div className="mt-8 grid gap-3">
@@ -253,7 +252,7 @@ export default function EnterprisePageContent() {
                 target="_blank"
                 className="inline-flex h-13 items-center justify-center rounded-full bg-[#315EEA] px-7 text-[14px] font-semibold text-white shadow-[0_12px_28px_rgba(49,94,234,0.3)] transition-all hover:bg-[#264fd4] hover:-translate-y-0.5"
               >
-                Book a custom demo
+                Talk to sales
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link

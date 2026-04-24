@@ -182,7 +182,7 @@ function StickyTrialCard() {
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1976d2]">
             <Image
               src={FEATURE_UI_ASSETS.trialLogoPath}
-              alt="VerlyAI logo"
+              alt="Verly logo"
               width={20}
               height={20}
               className="h-5 w-5 object-contain"
@@ -190,7 +190,7 @@ function StickyTrialCard() {
           </div>
           <div>
             <h3 className="text-[15px] font-semibold text-[#242f47] dark:text-white">
-              Try VerlyAI free
+              Try Verly free
             </h3>
             <p className="text-[13px] text-[#667085] dark:text-slate-400">
               No credit card required
@@ -274,15 +274,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const feature = getFeatureBySlug(slug);
 
   if (!feature) {
-    return { title: "Feature not found | VerlyAI" };
+    return { title: "Feature not found" };
   }
 
   return {
-    title: `${feature.title} | Features | VerlyAI`,
+    title: `${feature.title} | Features | Verly`,
     description: feature.subtitle,
     alternates: { canonical: `/features/${feature.slug}` },
     openGraph: {
-      title: `${feature.title} | VerlyAI Features`,
+      title: `${feature.title} | Verly Features`,
       description: feature.subtitle,
       url: `${siteConfig.url}/features/${feature.slug}`,
       type: "article",
@@ -534,7 +534,7 @@ export default async function FeatureDetailPage({ params }: Props) {
                   href="/login"
                   className="rounded-2xl bg-white px-6 py-3 text-base font-semibold text-[#111827]"
                 >
-                  Try VerlyAI
+                  Try Verly
                 </Link>
                 <Link
                   href="/about"
@@ -587,7 +587,7 @@ export default async function FeatureDetailPage({ params }: Props) {
                               {feature.categoryName}
                             </span>
                             <span className="rounded-xl border border-[#dcdfea] bg-[#fcfcfd] px-3 py-1.5 text-sm text-[#667085] dark:border-[#243146] dark:bg-[#0f1728] dark:text-slate-300">
-                              VerlyAI
+                              Verly
                             </span>
                           </div>
                           <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#242f47] group-hover:text-[#1972f5] dark:text-slate-100 dark:group-hover:text-blue-300">

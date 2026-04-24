@@ -95,12 +95,11 @@ export default function UseCases() {
             Industries
           </div>
           <h2 className="landing-home-title text-[34px] md:text-[52px]">
-            Built for every team.
-            <span className="landing-home-title-muted block">Trusted across industries.</span>
+            Real teams. Real outcomes.
+            <span className="landing-home-title-muted block">10x more support, same headcount.</span>
           </h2>
           <p className="landing-home-copy mx-auto mt-5 max-w-[600px] text-[15px] md:text-[17px]">
-            See how teams across industries use Verly to automate support, reduce cost, and
-            scale without scaling headcount.
+            Here&rsquo;s what Verly does for teams in 6 industries — with the numbers to back it up.
           </p>
         </div>
 
@@ -109,7 +108,7 @@ export default function UseCases() {
             <a
               key={uc.title}
               href={uc.link}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[26px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
             >
               <div
                 className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-[0.15] blur-3xl"

@@ -27,23 +27,23 @@ const breadcrumbSchema = {
 };
 
 export const metadata: Metadata = {
-  title: "About Verly | Why We Built a Unified Support Platform",
+  title: "About Verly — Why We Built a Unified Support Platform",
   description:
-    "Verly exists because support teams deserve one operating layer for web chat, voice, and WhatsApp — not five disconnected tools. Learn why we built it.",
+    "Verly exists because support teams deserve one operating layer for web chat, voice, and WhatsApp — not five disconnected tools. Read the founder's note on why we built it and who we built it for.",
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About Verly | Why We Built a Unified Support Platform",
+    title: "About Verly — Why We Built a Unified Support Platform",
     description:
-      "Learn why we built one operating layer for web chat, voice, and WhatsApp — not five disconnected tools.",
+      "A short note from the founder on why Verly exists — and the support teams we built it for. One operating layer for web chat, voice, and WhatsApp.",
     url: `${siteConfig.url}/about`,
     type: "website",
   },
   twitter: {
-    title: "About Verly | Why We Built a Unified Support Platform",
+    title: "About Verly — Why We Built a Unified Support Platform",
     description:
-      "Verly exists because support teams deserve one operating layer for web chat, voice, and WhatsApp.",
+      "A founder's note on why Verly exists — one operating layer for web chat, voice, and WhatsApp support. Read the story behind the product.",
   },
 };
 
@@ -115,22 +115,21 @@ export default function AboutPage() {
                   </div>
 
                   <h1 className="font-[Georgia,serif] text-[clamp(2.4rem,4.8vw,4.5rem)] leading-[1.02] tracking-[-0.04em] text-[#221f1b]">
-                    Support should feel like one conversation,{" "}
-                    <span className="text-[#6e6558]">not five disconnected tools.</span>
+                    We&rsquo;re building Verly because support{" "}
+                    <span className="text-[#6e6558]">shouldn&rsquo;t be the reason you can&rsquo;t scale.</span>
                   </h1>
 
                   <p className="mt-6 max-w-[580px] text-[17px] leading-8 text-[#6d665d] sm:text-[19px]">
-                    We built Verly because modern support teams are forced to stitch together
-                    chat, WhatsApp, voice, escalation, and automation across too many systems.
+                    A short note from the founder on why this product exists — and the customers it was built for.
                   </p>
 
                   <div className="mt-8 flex flex-wrap gap-4">
-                    <Link href="/features">
+                    <Link href="/login">
                       <Button
                         size="lg"
                         className="h-13 rounded-full bg-[#141923] px-7 text-sm text-white shadow-[0_18px_40px_rgba(20,25,35,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1d2432] hover:shadow-[0_22px_46px_rgba(20,25,35,0.24)] sm:text-base"
                       >
-                        See the platform
+                        Start free
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
@@ -140,7 +139,7 @@ export default function AboutPage() {
                         size="lg"
                         className="h-13 rounded-full border-[#d6d9e2] bg-white/78 px-7 text-sm text-[#071224] shadow-[0_16px_30px_rgba(58,47,25,0.08)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8cfdd] hover:bg-white sm:text-base"
                       >
-                        Book demo
+                        Book a 20-min demo
                       </Button>
                     </Link>
                   </div>
@@ -460,12 +459,12 @@ export default function AboutPage() {
                 </p>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-4">
-                  <Link href="/pricing">
+                  <Link href="/login">
                     <Button
                       size="lg"
                       className="h-13 rounded-full bg-white px-7 text-sm sm:text-base text-[#0f172a] font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_12px_28px_rgba(255,255,255,0.12)]"
                     >
-                      See pricing
+                      Start free
                     </Button>
                   </Link>
                   <Link href="https://calendly.com/rdhakad2002/30min" target="_blank">
@@ -474,7 +473,7 @@ export default function AboutPage() {
                       size="lg"
                       className="h-13 rounded-full border-white/20 bg-transparent px-7 text-sm sm:text-base text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/5"
                     >
-                      Talk to our team
+                      Book a 20-min demo
                     </Button>
                   </Link>
                 </div>

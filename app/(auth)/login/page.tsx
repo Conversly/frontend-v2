@@ -149,12 +149,12 @@ export default function LoginPage() {
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/verly_logo.png"
-            alt="VerlyAI Logo"
+            alt="Verly Logo"
             width={40}
             height={40}
             className="w-10 h-10 object-contain"
           />
-          <span className="font-bold text-lg text-foreground">VerlyAI</span>
+          <span className="font-bold text-lg text-foreground">Verly</span>
         </Link>
       </nav>
 
@@ -327,7 +327,7 @@ export default function LoginPage() {
                 Build the perfect customer-facing AI agent
               </h3>
               <p className="mt-4 text-base text-muted-foreground">
-                VerlyAI gives you all the tools you need to train your perfect AI agent and connect it to your systems.
+                Verly gives you all the tools you need to train your perfect AI agent and connect it to your systems.
               </p>
               <a
                 href="https://docs.verlyai.com"

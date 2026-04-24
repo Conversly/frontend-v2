@@ -78,7 +78,7 @@ export default function ProofCardsSection() {
           {proofCards.map((card) => (
             <article
               key={card.title}
-              className={`group flex h-full min-h-[540px] flex-col overflow-hidden rounded-[30px] border ${card.surfaceClassName} bg-white/92 shadow-[0_24px_60px_rgba(31,41,55,0.07)] backdrop-blur-sm transition-all duration-300 hover:shadow-[0_30px_72px_rgba(37,99,235,0.12)]`}
+              className={`group flex h-full min-h-[540px] flex-col overflow-hidden rounded-[26px] border ${card.surfaceClassName} bg-white/92 shadow-[0_24px_60px_rgba(31,41,55,0.07)] backdrop-blur-sm transition-all duration-300 hover:shadow-[0_30px_72px_rgba(37,99,235,0.12)]`}
             >
               <div
                 className={`relative h-[360px] overflow-hidden border-b border-white/60 p-5 ${card.accentClassName}`}
@@ -123,7 +123,7 @@ function SupportStackVisual() {
 
   return (
     <div className="relative flex h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-[320px] rounded-[28px] border border-white/65 bg-white/92 p-4 shadow-[0_26px_54px_rgba(9,21,48,0.32)] backdrop-blur-md">
+      <div className="mx-auto w-full max-w-[320px] rounded-[26px] border border-white/65 bg-white/92 p-4 shadow-[0_26px_54px_rgba(9,21,48,0.32)] backdrop-blur-md">
         <div className="grid grid-cols-2 gap-3">
           {items.map((item) => (
             <div
@@ -234,7 +234,7 @@ function WindowShell({
 }) {
   return (
     <div
-      className={`w-full rounded-[28px] border border-white/70 bg-white/92 shadow-[0_24px_52px_rgba(8,15,30,0.28)] backdrop-blur-md ${className}`}
+      className={`w-full rounded-[26px] border border-white/70 bg-white/92 shadow-[0_24px_52px_rgba(8,15,30,0.28)] backdrop-blur-md ${className}`}
     >
       <div className="flex items-center gap-2 border-b border-[#ece9e3] px-5 py-3">
         <span className="h-2.5 w-2.5 rounded-full bg-[#f2d8ca]" />

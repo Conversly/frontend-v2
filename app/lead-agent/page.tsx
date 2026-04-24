@@ -16,19 +16,19 @@ import { siteConfig } from "@/lib/metadata";
 import { salesAgentUseCase } from "@/lib/use-cases-data";
 
 export const metadata: Metadata = {
-  title: "AI Lead Agent That Qualifies & Converts Visitors | Verly",
+  title: "AI Lead Agent That Qualifies & Converts Visitors",
   description:
     "Turn high-intent website traffic into pipeline with an AI lead agent that answers product questions, qualifies buyer intent, and routes real opportunities to your team.",
   alternates: { canonical: "/lead-agent" },
   openGraph: {
-    title: "AI Lead Agent That Qualifies & Converts Visitors | Verly",
+    title: "AI Lead Agent That Qualifies & Converts Visitors",
     description:
       "Turn high-intent website traffic into pipeline with an AI lead agent that answers product questions, qualifies buyer intent, and routes real opportunities to your team.",
     url: `${siteConfig.url}/lead-agent`,
     type: "website",
   },
   twitter: {
-    title: "AI Lead Agent That Qualifies & Converts Visitors | Verly",
+    title: "AI Lead Agent That Qualifies & Converts Visitors",
     description:
       "Turn website traffic into pipeline with an AI lead agent that qualifies buyer intent and routes opportunities.",
   },

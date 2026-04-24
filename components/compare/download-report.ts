@@ -36,7 +36,7 @@ const DIMENSION_LABELS: Record<string, string> = {
 };
 
 function winnerLabel(w: string, name: string) {
-  if (w === 'verly') return 'VerlyAI';
+  if (w === 'verly') return 'Verly';
   if (w === 'competitor') return name;
   return 'Tie';
 }
@@ -45,8 +45,8 @@ export function downloadReport(report: Report) {
   const date = new Date(report.generatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const isComparison = report.mode === 'comparison';
   const title = isComparison
-    ? `VerlyAI vs ${report.competitorName} — Report for ${report.prospectDomain}`
-    : `How VerlyAI Helps ${report.prospectDomain}`;
+    ? `Verly vs ${report.competitorName} — Report for ${report.prospectDomain}`
+    : `How Verly Helps ${report.prospectDomain}`;
   const fitLabel = report.fitScore >= 85 ? 'Excellent Fit' : report.fitScore >= 70 ? 'Good Fit' : report.fitScore >= 50 ? 'Moderate Fit' : 'Low Fit';
 
   const css = `
@@ -136,7 +136,7 @@ export function downloadReport(report: Report) {
     <p>Personalized AI-powered analysis for ${report.prospectDomain}</p>
     <div class="stats">
       <div class="stat">Fit Score: ${report.fitScore}/100</div>
-      ${isComparison ? `<div class="stat">VerlyAI wins ${report.executiveSummary.filter(r => r.winner === 'verly').length}/${report.executiveSummary.length}</div>` : ''}
+      ${isComparison ? `<div class="stat">Verly wins ${report.executiveSummary.filter(r => r.winner === 'verly').length}/${report.executiveSummary.length}</div>` : ''}
       <div class="stat">${date}</div>
     </div>
   </div><div class="content">`;
@@ -157,7 +157,7 @@ export function downloadReport(report: Report) {
   // ─── Fit Score ─────────────────────────────────────────────────────
   body += `<div class="fit-box">
     <div class="fit-score">${report.fitScore}</div>
-    <div><div class="fit-label">${fitLabel}</div><div class="fit-sub">VerlyAI Fit Score for ${report.prospectDomain}</div></div>
+    <div><div class="fit-label">${fitLabel}</div><div class="fit-sub">Verly Fit Score for ${report.prospectDomain}</div></div>
   </div>`;
 
   // ─── Benefits-Only: Use Cases + Implementation ─────────────────────
@@ -190,7 +190,7 @@ export function downloadReport(report: Report) {
   // ─── Comparison: Exec Summary + Scores + Sections ──────────────────
   if (isComparison) {
     body += `<h2>Executive Summary</h2>
-    <table><thead><tr><th>Dimension</th><th>${report.competitorName}</th><th style="color:var(--primary)">VerlyAI</th><th style="text-align:center">Winner</th></tr></thead><tbody>
+    <table><thead><tr><th>Dimension</th><th>${report.competitorName}</th><th style="color:var(--primary)">Verly</th><th style="text-align:center">Winner</th></tr></thead><tbody>
     ${report.executiveSummary.map(r => `<tr${r.winner === 'verly' ? ' class="verly-wins"' : ''}>
       <td><strong>${r.dimension}</strong></td><td>${r.competitor}</td><td>${r.verly}</td>
       <td style="text-align:center"><span class="winner ${r.winner}">${winnerLabel(r.winner, report.competitorName)}</span></td>
@@ -207,7 +207,7 @@ export function downloadReport(report: Report) {
     report.sections.forEach((s, i) => {
       body += `<h2>${i + 1}. ${s.title}</h2>
       <div class="insight"><div class="insight-label">Personalized for ${report.prospectDomain}</div>${s.personalizedInsight}</div>
-      <table><thead><tr><th>Feature</th><th>${report.competitorName}</th><th style="color:var(--primary)">VerlyAI</th><th style="text-align:center">Relevance</th></tr></thead><tbody>
+      <table><thead><tr><th>Feature</th><th>${report.competitorName}</th><th style="color:var(--primary)">Verly</th><th style="text-align:center">Relevance</th></tr></thead><tbody>
       ${s.features.map(f => `<tr${f.verlyWins ? ' class="verly-wins"' : ''}>
         <td><strong>${f.verlyWins ? '&#10003; ' : ''}${f.feature}</strong></td><td>${f.competitor}</td><td>${f.verly}</td>
         <td style="text-align:center"><span class="relevance ${f.relevanceToUser}">${f.relevanceToUser}</span></td>
@@ -219,14 +219,14 @@ export function downloadReport(report: Report) {
 
   // ─── Benefits ──────────────────────────────────────────────────────
   if (report.personalizedBenefits.length > 0) {
-    body += `<h2>How VerlyAI Benefits ${report.prospectDomain}</h2>`;
+    body += `<h2>How Verly Benefits ${report.prospectDomain}</h2>`;
     report.personalizedBenefits.forEach(b => {
       body += `<div class="benefit"><span class="benefit-check">&#10003;</span><span>${b}</span></div>`;
     });
   }
 
   if (isComparison && report.whenToChooseVerly.length > 0) {
-    body += `<h2>Why Choose VerlyAI</h2><ul>
+    body += `<h2>Why Choose Verly</h2><ul>
     ${report.whenToChooseVerly.map(r => `<li style="margin:6px 0;font-size:13px">${r}</li>`).join('')}</ul>`;
   }
 
@@ -240,7 +240,7 @@ export function downloadReport(report: Report) {
     <a href="https://verlyai.xyz">Deploy Your AI Agent at verlyai.xyz</a>
   </div>
   </div>
-  <div class="footer">&copy; ${new Date().getFullYear()} VerlyAI. Report generated on ${date} based on publicly available data.<br><a href="https://verlyai.xyz" style="color:var(--primary);text-decoration:none">verlyai.xyz</a></div>`;
+  <div class="footer">&copy; ${new Date().getFullYear()} Verly. Report generated on ${date} based on publicly available data.<br><a href="https://verlyai.xyz" style="color:var(--primary);text-decoration:none">verlyai.xyz</a></div>`;
 
   const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title><style>${css}</style></head><body><div class="page">${body}</div></body></html>`;
 
@@ -249,8 +249,8 @@ export function downloadReport(report: Report) {
   const a = document.createElement('a');
   a.href = url;
   const fileName = isComparison
-    ? `VerlyAI-vs-${report.competitorName}-${report.prospectDomain}.html`
-    : `VerlyAI-Benefits-${report.prospectDomain}.html`;
+    ? `Verly-vs-${report.competitorName}-${report.prospectDomain}.html`
+    : `Verly-Benefits-${report.prospectDomain}.html`;
   a.download = fileName;
   document.body.appendChild(a);
   a.click();

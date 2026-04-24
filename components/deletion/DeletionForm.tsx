@@ -67,7 +67,7 @@ export default function DeletionForm() {
     <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm p-8 md:p-12">
       <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Data Deletion Request</h1>
       <p className="text-muted-foreground mb-8 text-lg">
-        We respect your right to privacy. Submit this form to request the permanent deletion of your personal data from VerlyAI&apos;s systems.
+        We respect your right to privacy. Submit this form to request the permanent deletion of your personal data from Verly&apos;s systems.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">

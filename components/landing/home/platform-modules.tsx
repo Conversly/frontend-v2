@@ -18,9 +18,9 @@ const modules = [
     id: "ai-helpdesk",
     title: "AI Helpdesk",
     eyebrow: "Automation core",
-    description: "Resolve tickets before your team wakes up.",
+    description: "Resolve 7 in 10 tickets before anyone on your team opens them.",
     summary:
-      "AI handles triage, drafts contextual replies, and escalates with full conversation history — so your agents only touch what truly needs a human.",
+      "The AI triages, drafts a contextual reply, checks policy, and pings a human only when judgment is needed. Every escalation arrives with a summary, detected intent, and suggested reply — so agents spend minutes, not hours, per ticket.",
     icon: Bot,
     iconClass: "bg-[#e6ddff] text-[#6a45db]",
     previewLabel: "AI Helpdesk",
@@ -77,9 +77,9 @@ const modules = [
     id: "chat-widget",
     title: "Chat Widget",
     eyebrow: "Website & mobile",
-    description: "Turn visitors into conversations instantly.",
+    description: "Turn your pricing page into your best support channel.",
     summary:
-      "A modern chat experience that captures intent from the first click and routes conversations straight into your Verly workflow — no separate tool needed.",
+      "A lightweight widget that captures the visitor's question, identifies their account, and routes the conversation straight into the shared inbox. One line of JavaScript — no SDK, no tag manager gymnastics.",
     icon: MessageSquareText,
     iconClass: "bg-[#dde7ff] text-[#3f63d8]",
     previewLabel: "Live Chat",
@@ -152,9 +152,9 @@ const modules = [
     id: "shared-inbox",
     title: "Shared Inbox",
     eyebrow: "Omnichannel queue",
-    description: "Every channel, one operating layer.",
+    description: "One queue for voice, WhatsApp, email, and chat.",
     summary:
-      "Email, WhatsApp, Instagram, voice — every conversation lands in one queue with smart routing, ownership, and live priority signals.",
+      "Every channel lands in the same inbox. Assignments, priorities, and SLAs work the way your team already does — no retraining, no context-switching.",
     icon: Inbox,
     iconClass: "bg-[#e4e9ff] text-[#5671ff]",
     previewLabel: "Shared Inbox",
@@ -247,9 +247,9 @@ const modules = [
     id: "knowledge-base",
     title: "Knowledge Base",
     eyebrow: "Training layer",
-    description: "Your best answers, always getting better.",
+    description: "Your docs become the answer engine.",
     summary:
-      "Organize docs, FAQs, and playbooks into a single source of truth that trains both AI and agents — so every response improves over time.",
+      "Import articles, SOPs, and policies from Notion, Confluence, or a live URL. Verly keeps them in sync, cites them in replies, and flags gaps when a question can't be answered.",
     icon: BookOpenText,
     iconClass: "bg-[#dff2d7] text-[#4c8a3e]",
     previewLabel: "Knowledge Base",
@@ -307,9 +307,9 @@ const modules = [
     id: "support-analytics",
     title: "Analytics",
     eyebrow: "Performance layer",
-    description: "Know exactly what needs attention next.",
+    description: "See what your customers are really asking.",
     summary:
-      "Track response quality, missed intents, channel volume, and automation gaps from one dashboard — so you fix problems before customers notice.",
+      "Track CSAT, deflection, first-reply time, and the intents your AI can't handle yet. Every dashboard comes with a recommended action — not just a chart.",
     icon: ChartColumnBig,
     iconClass: "bg-[#f8dfe4] text-[#d54d68]",
     previewLabel: "Support Analytics",
@@ -419,8 +419,8 @@ export default function PlatformModules() {
         <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,760px)_minmax(0,360px)] lg:items-end lg:justify-between">
           <div>
             <h2 className="mt-5 max-w-[1220px] font-[Georgia,Times,'Times_New_Roman',serif] text-[36px] leading-[0.98] tracking-[-0.04em] text-white md:text-[44px]">
-              Here&apos;s why teams love
-              <span className="block text-white/50">One connected platform.</span>
+              Five products. One workflow.
+              <span className="block text-white/50">Zero integrations to babysit.</span>
             </h2>
           </div>
         </div>
@@ -466,7 +466,7 @@ export default function PlatformModules() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.985 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
-                className="col-start-1 row-start-1 h-full flex flex-col w-full overflow-hidden rounded-[34px] border border-white/8 bg-[linear-gradient(180deg,rgba(9,11,20,0.98),rgba(4,6,13,0.98))] p-4 shadow-[0_32px_80px_rgba(0,0,0,0.3)] md:p-6"
+                className="col-start-1 row-start-1 h-full flex flex-col w-full overflow-hidden rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(9,11,20,0.98),rgba(4,6,13,0.98))] p-4 shadow-[0_32px_80px_rgba(0,0,0,0.3)] md:p-6"
               >
                 <div className="mx-auto w-full max-w-[1080px] flex-1 overflow-hidden flex flex-col rounded-[30px] border border-[#d8d9e6] bg-[#dbdde9] shadow-[0_20px_60px_rgba(14,19,43,0.18)]">
                   {/* Module header */}

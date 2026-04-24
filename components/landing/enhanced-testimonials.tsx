@@ -21,7 +21,7 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    quote: "We cut support costs by $12,400/month and customer satisfaction went UP. VerlyAI handled 18,000 conversations last month — our team now focuses on complex issues only. ROI paid for itself in 8 days.",
+    quote: "We cut support costs by $12,400/month and customer satisfaction went UP. Verly handled 18,000 conversations last month — our team now focuses on complex issues only. ROI paid for itself in 8 days.",
     author: "Michael Rodriguez",
     role: "COO",
     company: "CloudPeak",
@@ -34,7 +34,7 @@ const testimonials: Testimonial[] = [
     industry: "SaaS • 120 employees",
   },
   {
-    quote: "Before VerlyAI, we missed 30% of calls during peak hours. Now we answer every single one instantly — that's 200+ extra leads per month we would've lost. Our close rate increased by 18% because prospects get instant answers.",
+    quote: "Before Verly, we missed 30% of calls during peak hours. Now we answer every single one instantly — that's 200+ extra leads per month we would've lost. Our close rate increased by 18% because prospects get instant answers.",
     author: "Jessica Park",
     role: "Founder",
     company: "LuxeHome Realty",
@@ -47,7 +47,7 @@ const testimonials: Testimonial[] = [
     industry: "Real Estate • 25 agents",
   },
   {
-    quote: "Our Shopify store gets 50K visitors/month. VerlyAI's chat widget increased conversions by 23% in the first week. We're capturing leads at 2am that would have been lost. Best ROI we've ever seen from a tool — $15K extra revenue monthly.",
+    quote: "Our Shopify store gets 50K visitors/month. Verly's chat widget increased conversions by 23% in the first week. We're capturing leads at 2am that would have been lost. Best ROI we've ever seen from a tool — $15K extra revenue monthly.",
     author: "David Kim",
     role: "CMO",
     company: "Brew & Bold",
@@ -103,7 +103,7 @@ export default function EnhancedTestimonials() {
             className="text-lg text-muted-foreground max-w-3xl mx-auto"
           >
             See how businesses across industries transformed their support and{" "}
-            <span className="text-foreground font-medium">saved thousands</span> with VerlyAI
+            <span className="text-foreground font-medium">saved thousands</span> with Verly
           </motion.p>
         </motion.div>
 

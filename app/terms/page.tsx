@@ -3,20 +3,20 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | VerlyAI',
-  description: 'VerlyAI Terms of Service. Read our terms for using AI customer support agents, WhatsApp automation, and voice AI services.',
+  title: 'Terms of Service',
+  description: 'Verly Terms of Service. Read our terms for using AI customer support agents, WhatsApp automation, and voice AI services.',
   alternates: {
     canonical: '/terms',
   },
   openGraph: {
-    title: 'Terms of Service | VerlyAI',
-    description: 'Terms and conditions for using VerlyAI platform, including WhatsApp automation and AI customer support services.',
+    title: 'Terms of Service',
+    description: 'Terms and conditions for using Verly platform, including WhatsApp automation and AI customer support services.',
     url: 'https://verlyai.xyz/terms',
     type: 'website',
   },
   twitter: {
-    title: 'Terms of Service | VerlyAI',
-    description: 'Terms and conditions for using VerlyAI platform and AI customer support services.',
+    title: 'Terms of Service',
+    description: 'Terms and conditions for using Verly platform and AI customer support services.',
   },
 };
 

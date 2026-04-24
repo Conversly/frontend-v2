@@ -3,28 +3,38 @@ import Navbar from '@/components/landing/navbar';
 import Footer from '@/components/landing/footer';
 import CompareForm from '@/components/compare/compare-form';
 import { siteConfig } from '@/lib/metadata';
+import { buildBreadcrumbSchema } from '@/lib/seo-schema';
 
 export const metadata: Metadata = {
-  title: 'Compare VerlyAI vs Competitors | VerlyAI',
-  description: 'See how VerlyAI compares to Intercom, Zendesk, Tidio, Chatbase, and more. Get a personalized comparison report for your business.',
+  title: 'Compare Verly vs Competitors',
+  description: 'See how Verly compares to Intercom, Zendesk, Tidio, Chatbase, and more. Get a personalized comparison report for your business.',
   alternates: { canonical: '/compare' },
   openGraph: {
-    title: 'Compare VerlyAI vs Competitors | VerlyAI',
+    title: 'Compare Verly vs Competitors',
     description: 'Get a personalized AI-powered comparison report in 30 seconds.',
     url: `${siteConfig.url}/compare`,
     type: 'website',
   },
   twitter: {
-    title: 'Compare VerlyAI vs Competitors | VerlyAI',
+    title: 'Compare Verly vs Competitors',
     description: 'Get a personalized AI-powered comparison report in 30 seconds.',
   },
 };
 
 const CONTENT_WIDTH = 'w-[95%] md:w-[85%] lg:w-[80%] max-w-[1200px] mx-auto';
 
+const breadcrumbSchema = buildBreadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Compare', path: '/compare' },
+]);
+
 export default function ComparePage() {
   return (
     <main className="bg-background relative w-full overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Subtle dot grid background */}
       <div className="absolute inset-0 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none" />
 
@@ -50,14 +60,14 @@ export default function ComparePage() {
 
               {/* Title with gradient */}
               <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1]">
-                <span className="text-foreground">VerlyAI vs </span>
+                <span className="text-foreground">Verly vs </span>
                 <span className="bg-gradient-to-r from-primary via-chart-2 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
-                  Your Current Tool
+                  your current tool.
                 </span>
               </h1>
 
               <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                Get a personalized, data-driven comparison report for your business in under 60 seconds.
+                An honest, side-by-side report on where Verly wins, where it loses, and whether switching actually pays off for your team. Generated in under 60 seconds.
               </p>
 
               {/* Feature pills */}

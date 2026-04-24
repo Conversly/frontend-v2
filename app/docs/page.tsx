@@ -4,21 +4,21 @@ import Footer from "@/components/landing/footer";
 import DocsContent from "@/components/docs/docs-content";
 
 export const metadata: Metadata = {
-  title: "Documentation | VerlyAI",
+  title: "Documentation — Developer Guides & API Reference",
   description:
-    "Explore VerlyAI documentation — setup guides, AI chatbot management, knowledge training, analytics, human escalations, channels, and voice agents.",
+    "Verly developer documentation: setup guides, API reference, channel integrations, knowledge training, analytics, voice agents, and human handoff. Ship a working agent in an afternoon.",
   alternates: { canonical: "/docs" },
   openGraph: {
-    title: "Documentation | VerlyAI",
+    title: "Documentation",
     description:
-      "Explore VerlyAI documentation — setup guides, AI chatbot management, knowledge training, analytics, channels, and more.",
+      "Explore Verly documentation — setup guides, AI chatbot management, knowledge training, analytics, channels, and more.",
     url: "https://verlyai.xyz/docs",
     type: "website",
   },
   twitter: {
-    title: "Documentation | VerlyAI",
+    title: "Documentation",
     description:
-      "Explore VerlyAI documentation — setup guides, AI chatbot management, knowledge training, analytics, and more.",
+      "Explore Verly documentation — setup guides, AI chatbot management, knowledge training, analytics, and more.",
   },
 };
 

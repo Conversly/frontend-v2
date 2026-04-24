@@ -48,7 +48,7 @@ interface Report {
 function WinnerBadge({ winner, competitorName }: { winner: string; competitorName: string }) {
   if (winner === 'verly') return (
     <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-      <Check className="w-3 h-3" /> VerlyAI
+      <Check className="w-3 h-3" /> Verly
     </span>
   );
   if (winner === 'competitor') return (
@@ -126,7 +126,7 @@ export default function CompareReport({ report }: { report: Report }) {
             Personalized Report
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
-            {isComparison ? `VerlyAI vs ${report.competitorName}` : `How VerlyAI Helps ${report.prospectDomain}`}
+            {isComparison ? `Verly vs ${report.competitorName}` : `How Verly Helps ${report.prospectDomain}`}
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {isComparison
@@ -144,7 +144,7 @@ export default function CompareReport({ report }: { report: Report }) {
                 <div className="w-px h-5 bg-border" />
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Check className="w-4 h-4 text-primary" />
-                  VerlyAI wins {verlyWinCount}/{report.executiveSummary.length}
+                  Verly wins {verlyWinCount}/{report.executiveSummary.length}
                 </div>
               </>
             )}
@@ -229,7 +229,7 @@ export default function CompareReport({ report }: { report: Report }) {
         <div className="p-6 md:p-8 pb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">Executive Summary</h2>
           <span className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full">
-            {verlyWinCount} of {report.executiveSummary.length} dimensions won by VerlyAI
+            {verlyWinCount} of {report.executiveSummary.length} dimensions won by Verly
           </span>
         </div>
         <div className="overflow-x-auto px-2 pb-2">
@@ -238,7 +238,7 @@ export default function CompareReport({ report }: { report: Report }) {
               <tr className="border-t border-border/30">
                 <th className="text-left px-6 py-3.5 text-xs font-bold text-muted-foreground uppercase tracking-wider w-[20%]">Dimension</th>
                 <th className="text-left px-6 py-3.5 text-xs font-bold text-muted-foreground uppercase tracking-wider w-[30%]">{report.competitorName}</th>
-                <th className="text-left px-6 py-3.5 text-xs font-bold text-primary uppercase tracking-wider w-[30%]">VerlyAI</th>
+                <th className="text-left px-6 py-3.5 text-xs font-bold text-primary uppercase tracking-wider w-[30%]">Verly</th>
                 <th className="text-center px-6 py-3.5 text-xs font-bold text-muted-foreground uppercase tracking-wider w-[20%]">Winner</th>
               </tr>
             </thead>
@@ -279,7 +279,7 @@ export default function CompareReport({ report }: { report: Report }) {
             className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl p-6"
           >
             <h3 className="text-base font-bold text-foreground mb-1">Score Comparison</h3>
-            <p className="text-xs text-muted-foreground mb-4">VerlyAI vs {report.competitorName} across 10 dimensions (0-10 scale)</p>
+            <p className="text-xs text-muted-foreground mb-4">Verly vs {report.competitorName} across 10 dimensions (0-10 scale)</p>
             <ScoreRadarChart scores={report.dimensionScores} competitorName={report.competitorName} />
           </motion.div>
         )}
@@ -343,7 +343,7 @@ export default function CompareReport({ report }: { report: Report }) {
       >
         <div className="mb-6">
           <h2 className="text-lg font-bold text-foreground">Documented Performance Metrics</h2>
-          <p className="text-xs text-muted-foreground mt-1">VerlyAI&apos;s published metrics vs {report.competitorName}&apos;s (gray = not publicly documented)</p>
+          <p className="text-xs text-muted-foreground mt-1">Verly&apos;s published metrics vs {report.competitorName}&apos;s (gray = not publicly documented)</p>
         </div>
         <MetricsBarChart metrics={report.performanceMetrics} competitorName={report.competitorName} />
       </motion.div>}
@@ -429,7 +429,7 @@ export default function CompareReport({ report }: { report: Report }) {
                             <tr className="bg-muted/30">
                               <th className="text-left px-4 py-3 text-xs font-bold text-muted-foreground uppercase tracking-wider">Feature</th>
                               <th className="text-left px-4 py-3 text-xs font-bold text-muted-foreground uppercase tracking-wider">{report.competitorName}</th>
-                              <th className="text-left px-4 py-3 text-xs font-bold text-primary uppercase tracking-wider">VerlyAI</th>
+                              <th className="text-left px-4 py-3 text-xs font-bold text-primary uppercase tracking-wider">Verly</th>
                               <th className="text-center px-4 py-3 text-xs font-bold text-muted-foreground uppercase tracking-wider">Relevance</th>
                             </tr>
                           </thead>
@@ -480,7 +480,7 @@ export default function CompareReport({ report }: { report: Report }) {
             <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
               <Zap className="w-4.5 h-4.5 text-primary" />
             </div>
-            How VerlyAI Benefits {report.prospectDomain}
+            How Verly Benefits {report.prospectDomain}
           </h2>
           <ul className="space-y-3">
             {report.personalizedBenefits.map((b, i) => (
@@ -495,7 +495,7 @@ export default function CompareReport({ report }: { report: Report }) {
         </motion.div>
       )}
 
-      {/* ─── Why Choose VerlyAI (comparison only) ─────────────────────────── */}
+      {/* ─── Why Choose Verly (comparison only) ─────────────────────────── */}
       {isComparison && report.whenToChooseVerly.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -503,7 +503,7 @@ export default function CompareReport({ report }: { report: Report }) {
           viewport={{ once: true }}
           className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl p-6 md:p-8 space-y-5"
         >
-          <h2 className="text-lg font-bold text-foreground">Why Choose VerlyAI</h2>
+          <h2 className="text-lg font-bold text-foreground">Why Choose Verly</h2>
           <ul className="grid sm:grid-cols-2 gap-3">
             {report.whenToChooseVerly.map((r, i) => (
               <li key={i} className="flex items-start gap-3 text-sm rounded-xl bg-primary/[0.03] border border-primary/10 p-3.5">

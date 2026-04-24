@@ -4,20 +4,20 @@ import Footer from "@/components/landing/footer";
 import DeletionForm from "@/components/deletion/DeletionForm";
 
 export const metadata: Metadata = {
-  title: 'Data Deletion Request | VerlyAI',
-  description: 'Request the deletion of your personal data from VerlyAI. We respect your privacy rights under GDPR and CCPA regulations.',
+  title: 'Data Deletion — How to Delete Your Verly Account',
+  description: 'Delete your Verly account and all associated data in one click — no retention call. We respect your privacy rights under GDPR and CCPA, and we remove your data within 30 days.',
   alternates: {
     canonical: '/deletion',
   },
   openGraph: {
-    title: 'Data Deletion Request | VerlyAI',
-    description: 'Submit a request to permanently delete your personal data from VerlyAI systems.',
+    title: 'Data Deletion Request',
+    description: 'Submit a request to permanently delete your personal data from Verly systems.',
     url: 'https://verlyai.xyz/deletion',
     type: 'website',
   },
   twitter: {
-    title: 'Data Deletion Request | VerlyAI',
-    description: 'Request the deletion of your personal data from VerlyAI.',
+    title: 'Data Deletion Request',
+    description: 'Request the deletion of your personal data from Verly.',
   },
 };
 

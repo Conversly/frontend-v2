@@ -155,9 +155,9 @@ function HeroSection() {
             transition={{ duration: 0.72, delay: 0.08, ease: "easeOut" }}
             className="max-w-[960px] text-[clamp(3.4rem,7.5vw,6.6rem)] font-light leading-[0.92] tracking-[-0.07em]"
           >
-            <span className="block text-[#8a99bb]">AI voice support</span>
+            <span className="block text-[#8a99bb]">Your phone line, answered</span>
             <span className="mt-1 block bg-gradient-to-b from-[#ffffff] to-[#b8ccee] bg-clip-text text-transparent [text-shadow:none]">
-              for the helpdesk era
+              in under a second.
             </span>
           </motion.h1>
 
@@ -167,9 +167,9 @@ function HeroSection() {
             transition={{ duration: 0.72, delay: 0.14, ease: "easeOut" }}
             className="mt-7 max-w-[690px] text-[1.02rem] leading-8 text-[#c4ceea] sm:text-[1.14rem]"
           >
-            Verly gives support teams one voice system for website voice widget
-            experiences, inbound calls, escalation and handoff, plus outbound
-            qualification and callback automation when needed.
+            Verly Voice picks up on the first ring, answers in your
+            customer&rsquo;s language, pulls account context from your CRM, and
+            transfers to a live agent the moment the conversation needs one.
           </motion.p>
         </div>
 
@@ -201,7 +201,7 @@ function HeroSection() {
             className="relative h-13 min-w-[178px] overflow-hidden rounded-full bg-[#8af0be] px-8 text-[15px] font-semibold text-[#08111f] shadow-[0_0_32px_rgba(138,240,190,0.35)] transition-all hover:bg-[#9bf4c8] hover:shadow-[0_0_44px_rgba(138,240,190,0.5)]"
           >
             <Link href="/login">
-              Start building
+              Start free
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -212,7 +212,7 @@ function HeroSection() {
             onClick={() => void openCalendlyPopup()}
             className="h-13 min-w-[178px] rounded-full border-white/[0.12] bg-white/[0.04] px-8 text-[15px] font-semibold text-[#faf4ea] backdrop-blur-sm hover:bg-white/[0.08]"
           >
-            Book a demo
+            Book a 20-min demo
             <ChevronRight className="h-4 w-4" />
           </Button>
         </motion.div>

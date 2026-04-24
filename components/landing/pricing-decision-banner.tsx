@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Bot, Brain, ExternalLink, SearchCheck, Sparkles } from 'lucide-react';
 
-const sharedPrompt = `Compare VerlyAI's pricing, ROI, and customer support automation value against alternatives like Zendesk, Intercom, and Freshdesk. Explain who VerlyAI is a good fit for, what makes the pricing compelling, and which questions a buyer should ask before switching.`;
+const sharedPrompt = `Compare Verly's pricing, ROI, and customer support automation value against alternatives like Zendesk, Intercom, and Freshdesk. Explain who Verly is a good fit for, what makes the pricing compelling, and which questions a buyer should ask before switching.`;
 
 const aiAssistants = [
   {

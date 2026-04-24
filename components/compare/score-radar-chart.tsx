@@ -26,7 +26,7 @@ interface ScoreRadarChartProps {
 export default function ScoreRadarChart({ scores, competitorName }: ScoreRadarChartProps) {
   const data = Object.entries(scores).map(([key, val]) => ({
     dimension: DIMENSION_LABELS[key] || key,
-    VerlyAI: val.verly,
+    Verly: val.verly,
     [competitorName]: val.competitor,
   }));
 
@@ -46,8 +46,8 @@ export default function ScoreRadarChart({ scores, competitorName }: ScoreRadarCh
             axisLine={false}
           />
           <Radar
-            name="VerlyAI"
-            dataKey="VerlyAI"
+            name="Verly"
+            dataKey="Verly"
             stroke="var(--color-primary)"
             fill="var(--color-primary)"
             fillOpacity={0.2}

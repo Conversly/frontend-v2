@@ -6,19 +6,19 @@ import { SolutionsClientContent } from "@/components/solutions/SolutionsClientCo
 import { solutions } from "@/lib/solutions-data";
 
 export const metadata: Metadata = {
-  title: "Solutions - AI Customer Support for Every Industry | Verly",
+  title: "Solutions - AI Customer Support for Every Industry",
   description:
     "Discover AI customer support solutions for E-commerce, Healthcare, SaaS, Real Estate, Travel & more. Deploy voice AI agents, WhatsApp chatbots, and omnichannel support tailored to your industry.",
   alternates: { canonical: "/solutions" },
   openGraph: {
-    title: "Solutions - AI Customer Support for Every Industry | Verly",
+    title: "Solutions - AI Customer Support for Every Industry",
     description:
       "See how businesses across E-commerce, Healthcare, SaaS, Real Estate, and more use Verly to automate support and save thousands monthly.",
     url: "https://verlyai.xyz/solutions",
     type: "website",
   },
   twitter: {
-    title: "Solutions - AI Customer Support for Every Industry | Verly",
+    title: "Solutions - AI Customer Support for Every Industry",
     description:
       "See how businesses across E-commerce, Healthcare, SaaS, and more use Verly to automate support.",
   },
@@ -52,15 +52,13 @@ export default function SolutionsPage() {
               Industry Solutions
             </div>
             <h1 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[38px] leading-[1.03] tracking-[-0.05em] text-[#221f1b] md:text-[64px]">
-              Solution pages built around
+              Support playbooks built for
               <span className="block bg-[linear-gradient(180deg,#4f7dff_0%,#315EEA_100%)] bg-clip-text text-transparent">
-                real support operations.
+                your industry.
               </span>
             </h1>
             <p className="mx-auto mt-5 max-w-[640px] text-[15px] leading-7 text-[#6d665d] md:text-[18px] md:leading-8">
-              Explore how Verly fits industries with different channel mix, urgency, compliance,
-              and workflow needs. Each solution shows the support motions you can automate, the
-              friction it removes, and the operating model behind it.
+              A SaaS onboarding question is not a healthcare appointment reschedule. Verly ships with industry-specific intents, tone, compliance defaults, and escalation rules — so you&apos;re not starting from scratch.
             </p>
           </div>
 
@@ -70,36 +68,34 @@ export default function SolutionsPage() {
                 Coverage
               </div>
               <div className="mt-3 font-[Georgia,Times,'Times_New_Roman',serif] text-[32px] tracking-[-0.04em] text-[#221f1b]">
-                {solutions.length}
+                {solutions.length} industries
               </div>
               <p className="mt-2 text-[14px] leading-6 text-[#6d665d]">
-                industry playbooks spanning support, voice, commerce, internal ops, and sales-led
-                conversations.
+                40+ pre-built intents across support, voice, commerce, internal ops, and sales-led conversations.
               </p>
             </div>
 
             <div className="rounded-[26px] border border-[#dbe5ff] bg-[linear-gradient(180deg,#fdfefe_0%,#eef4ff_100%)] p-6 shadow-[0_18px_42px_rgba(49,94,234,0.10)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#5b78cb]">
-                Channel model
+                Channels
               </div>
               <div className="mt-3 font-[Georgia,Times,'Times_New_Roman',serif] text-[32px] tracking-[-0.04em] text-[#17316f]">
-                Voice + chat + WhatsApp
+                Voice, WhatsApp, web
               </div>
               <p className="mt-2 text-[14px] leading-6 text-[#53617f]">
-                One operating layer across urgent calls, messaging, and embedded support surfaces.
+                Live on day one. One operating layer across urgent calls, messaging, and embedded support.
               </p>
             </div>
 
             <div className="rounded-[26px] border border-[#e4ddd2] bg-[linear-gradient(180deg,#fffdfa_0%,#f7f3eb_100%)] p-6 shadow-[0_18px_42px_rgba(120,96,58,0.06)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7443]">
-                Design direction
+                Time to value
               </div>
               <div className="mt-3 font-[Georgia,Times,'Times_New_Roman',serif] text-[32px] tracking-[-0.04em] text-[#493622]">
-                Warm + operational
+                2 weeks
               </div>
               <p className="mt-2 text-[14px] leading-6 text-[#6f6256]">
-                The solutions experience now uses the same warm neutral and soft blue palette as
-                the landing and about sections.
+                Average time from first login to your first fully automated resolution — across every industry.
               </p>
             </div>
           </div>

@@ -36,7 +36,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/verly_logo.png"
-              alt="VerlyAI Logo"
+              alt="Verly logo"
               width={139}
               height={33}
               className="h-10 w-auto object-contain"
@@ -184,7 +184,7 @@ export default function Navbar() {
                         href="/about"
                       >
                         <div className="relative z-10 mb-2 mt-4 text-lg font-medium text-white">
-                          About VerlyAI
+                          About Verly
                         </div>
                         <p className="relative z-10 text-sm leading-tight text-white/90">
                           Building the intelligence layer for global customer support.

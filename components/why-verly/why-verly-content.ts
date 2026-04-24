@@ -1,15 +1,15 @@
 export const WHY_VERLY_PAGE = {
   eyebrow: "Why Verly",
-  title: "6 More reasons fast-growing teams choose Verly for AI customer support",
+  title: "You don’t need another chatbot. You need a support layer that ships.",
   description:
-    "Deliver faster replies, lower support costs, and cover voice, WhatsApp, and web chat from one AI-native support system.",
+    "A side-by-side look at how Verly compares to the tools most teams try first — and why teams switch once their support volume outgrows a per-seat plan.",
   primaryCta: {
-    label: "Book demo",
-    href: "https://calendly.com/rdhakad2002/30min",
+    label: "Start free",
+    href: "https://verlyai.xyz/login",
   },
   secondaryCta: {
-    label: "Start free trial",
-    href: "https://verlyai.xyz/login",
+    label: "Book a 20-min demo",
+    href: "https://calendly.com/rdhakad2002/30min",
   },
   heroStats: [
     { value: "80%", label: "lower support cost potential" },

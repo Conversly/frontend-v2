@@ -74,7 +74,7 @@ export default function FitScoreGauge({ score }: FitScoreGaugeProps) {
       </div>
       <div className="text-center">
         <p className="text-sm font-semibold text-foreground">{getLabel(score)}</p>
-        <p className="text-xs text-muted-foreground">VerlyAI Fit Score for your business</p>
+        <p className="text-xs text-muted-foreground">Verly Fit Score for your business</p>
       </div>
     </div>
   );

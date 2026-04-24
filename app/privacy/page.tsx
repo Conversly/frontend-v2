@@ -3,20 +3,20 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | VerlyAI',
-  description: 'VerlyAI privacy policy. Learn how we collect, use, and protect your data. GDPR compliant, SOC 2 certified, and HIPAA-ready for healthcare use cases.',
+  title: 'Privacy Policy',
+  description: 'Verly privacy policy. Learn how we collect, use, and protect your data. GDPR compliant, SOC 2 certified, and HIPAA-ready for healthcare use cases.',
   alternates: {
     canonical: '/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy | VerlyAI',
-    description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA regulations.',
+    title: 'Privacy Policy',
+    description: 'Learn how Verly protects your data and ensures compliance with GDPR, SOC 2, and HIPAA regulations.',
     url: 'https://verlyai.xyz/privacy',
     type: 'website',
   },
   twitter: {
-    title: 'Privacy Policy | VerlyAI',
-    description: 'Learn how VerlyAI protects your data and ensures compliance with GDPR, SOC 2, and HIPAA.',
+    title: 'Privacy Policy',
+    description: 'Learn how Verly protects your data and ensures compliance with GDPR, SOC 2, and HIPAA.',
   },
 };
 

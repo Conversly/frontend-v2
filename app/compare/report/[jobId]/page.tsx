@@ -4,18 +4,18 @@ import { siteConfig } from "@/lib/metadata";
 import ReportPageClient from "@/components/compare/ReportPageClient";
 
 export const metadata: Metadata = {
-  title: "Comparison Report | VerlyAI",
+  title: "Comparison Report",
   description:
     "Your personalized AI-powered competitor comparison report. See how Verly stacks up against the competition.",
   alternates: { canonical: "/compare/report" },
   openGraph: {
-    title: "Comparison Report | VerlyAI",
+    title: "Comparison Report",
     description: "AI-powered competitor comparison report.",
     url: `${siteConfig.url}/compare/report`,
     type: "website",
   },
   twitter: {
-    title: "Comparison Report | VerlyAI",
+    title: "Comparison Report",
     description: "AI-powered competitor comparison report. See how Verly stacks up.",
   },
 };

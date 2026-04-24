@@ -19,23 +19,23 @@ import FullscreenVideo from "@/components/landing/home/fullscreen-video";
 import Certificate from "@/components/landing/home/certificate";
 
 export const metadata: Metadata = {
-  title: "Verly - AI Customer Support Platform | Web Chat, Voice & WhatsApp",
+  title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
   description:
-    "Verly is the AI customer support platform for web chat, voice, and WhatsApp — with human handoff built in. One system for AI, routing, and escalation.",
+    "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Verly answers 80% of tickets and hands the rest to your team with full context. Start free.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Verly - AI Customer Support Platform | Web Chat, Voice & WhatsApp",
+    title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
     description:
-      "The AI customer support platform for web chat, voice, and WhatsApp — with human handoff built in. Replace your fragmented stack with one system.",
+      "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Answers 80% of tickets, hands off the rest with full context.",
     url: siteConfig.url,
     type: "website",
   },
   twitter: {
-    title: "Verly - AI Customer Support Platform | Web Chat, Voice & WhatsApp",
+    title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
     description:
-      "The AI customer support platform for web chat, voice, and WhatsApp — with human handoff built in.",
+      "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Answers 80% of tickets, hands off the rest with full context.",
   },
 };
 

@@ -38,9 +38,9 @@ const breadcrumbSchema = {
 };
 
 export const metadata: Metadata = {
-  title: "FAQ - Verly Customer Support Questions & Answers",
+  title: "FAQ — Questions About Verly Answered",
   description:
-    "Answers to common questions about Verly, including pricing, security, integrations, chatbot training, WhatsApp automation, and voice AI support.",
+    "Everything you wanted to know about Verly — pricing, security, integrations, human handoff, voice AI, and more. Read the FAQ or ask the AI directly.",
   alternates: {
     canonical: "/faq",
   },
@@ -130,7 +130,7 @@ const faqCategories = [
       {
         question: "How do I integrate Verly with my database?",
         answer:
-          "Agents can trigger 'Actions' (function calling) to fetch data or perform tasks in your system. simply define your API schema, and the agent will intelligently query your backend to check order status, book appointments, or update user records.",
+          "Agents trigger 'Actions' (function calling) to fetch data or perform tasks in your system. Define your API schema once, and the agent queries your backend to check order status, book appointments, or update user records.",
       },
       {
         question: "Can I deploy to WhatsApp and Web simultaneously?",
@@ -140,7 +140,7 @@ const faqCategories = [
       {
         question: "What is the latency for Voice Agents?",
         answer:
-          "Our voice infrastructure is optimized for real-time conversation. By using streaming transcription and edge caching, we achieve varying latencies as low as 500ms, providing a natural 'interruptible' conversation experience.",
+          "Typical response latency is under 500ms — fast enough for a natural, interruptible back-and-forth. We use streaming transcription and edge caching to keep it that way, even during peak load.",
       },
       {
         question: "Can I embed the chatbot on my website?",
@@ -268,13 +268,11 @@ const FaqPage = () => {
 
             <div className="faq-hero__copy faq-hero__copy--centered">
               <h1 className="faq-hero__title faq-hero__title--centered">
-                Everything you need to know
-                <span className="faq-hero__title-accent"> before you launch.</span>
+                The questions teams ask
+                <span className="faq-hero__title-accent"> before they switch to Verly.</span>
               </h1>
               <p className="faq-hero__subtitle faq-hero__subtitle--centered">
-                Answers to the questions teams ask before deploying AI support
-                across chat, voice, and WhatsApp — grouped by topic so you can
-                find what matters fast.
+                Pricing, security, setup time, handoff, voice latency — the real stuff. Grouped by topic so you can find what matters fast, or ask the AI directly.
               </p>
             </div>
 

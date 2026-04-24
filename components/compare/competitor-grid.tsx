@@ -55,7 +55,7 @@ export default function CompetitorGrid({ selected, onSelect }: CompetitorGridPro
           <p className={`text-sm font-semibold transition-colors ${isNoneSelected ? 'text-primary' : 'text-primary/80 group-hover:text-primary'}`}>
             Skip competitor — just analyze my business
           </p>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Get a benefits-only report showing how VerlyAI fits your use case</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Get a benefits-only report showing how Verly fits your use case</p>
         </div>
         <ArrowRight className={`w-4 h-4 shrink-0 transition-all duration-200 ${isNoneSelected ? 'text-primary' : 'text-muted-foreground/30 group-hover:text-primary/50 group-hover:translate-x-0.5'}`} />
       </motion.button>

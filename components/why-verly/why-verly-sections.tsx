@@ -39,7 +39,7 @@ export function WhyHero() {
               <Button
                 asChild
                 size="lg"
-                className="h-13 rounded-full bg-[#111111] px-7 text-base text-white shadow-[0_20px_50px_rgba(17,17,17,0.2)] hover:bg-[#202020]"
+                className="h-13 rounded-full bg-[#141923] px-7 text-base text-white shadow-[0_20px_50px_rgba(20,25,35,0.2)] hover:bg-[#1d2432]"
               >
                 <a
                   href={WHY_VERLY_PAGE.primaryCta.href}
@@ -82,7 +82,7 @@ export function WhyHero() {
           </div>
 
           <div className="relative min-h-[520px]">
-            <div className="absolute inset-x-6 top-8 h-[430px] rounded-[36px] bg-[linear-gradient(135deg,rgba(37,99,235,0.18),rgba(255,255,255,0.6),rgba(244,201,118,0.24))] blur-3xl" />
+            <div className="absolute inset-x-6 top-8 h-[430px] rounded-[26px] bg-[linear-gradient(135deg,rgba(37,99,235,0.18),rgba(255,255,255,0.6),rgba(244,201,118,0.24))] blur-3xl" />
 
             <div className="relative ml-auto h-full max-w-[720px]">
               <div className="absolute -left-3 top-14 rounded-[22px] border border-white/80 bg-white/80 px-4 py-3 shadow-[0_20px_45px_rgba(17,17,17,0.12)] backdrop-blur-md">
@@ -109,7 +109,7 @@ export function WhyHero() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-[36px] border border-white/85 bg-white/80 p-4 shadow-[0_38px_90px_rgba(17,17,17,0.15)] backdrop-blur-md">
+              <div className="relative overflow-hidden rounded-[26px] border border-white/85 bg-white/80 p-4 shadow-[0_38px_90px_rgba(17,17,17,0.15)] backdrop-blur-md">
                 <div className="rounded-[28px] border border-[#dce6fb] bg-[linear-gradient(180deg,#f7faff_0%,#edf3ff_100%)] p-3">
                   <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-[#d8e3fb] bg-[linear-gradient(180deg,#eff4ff_0%,#e6eeff_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
                     <video
@@ -553,7 +553,7 @@ export function WhyFinalCta() {
               <Button
                 asChild
                 size="lg"
-                className="h-13 rounded-full bg-[#111111] px-8 text-base text-white hover:bg-[#202020]"
+                className="h-13 rounded-full bg-[#141923] px-8 text-base text-white hover:bg-[#1d2432]"
               >
                 <a
                   href={WHY_VERLY_PAGE.primaryCta.href}

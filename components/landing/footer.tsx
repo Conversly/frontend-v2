@@ -59,12 +59,11 @@ export function FooterCta() {
             Ready to see Verly live?
           </span>
           <h2 className="mx-auto mt-6 max-w-[860px] text-4xl font-bold leading-[0.98] tracking-[-0.04em] text-foreground md:text-5xl lg:text-6xl">
-            Turn support conversations into
-            <span className="block">faster resolutions.</span>
+            Stop triaging.
+            <span className="block">Start resolving.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-[620px] text-base font-medium leading-7 text-foreground/75 md:text-xl md:leading-8">
-            Book a quick walkthrough to see how Verly helps teams handle voice, WhatsApp,
-            and web chat from one streamlined support workflow.
+            See Verly handle your real tickets in a 20-minute demo — or start free and deploy a working agent before lunch.
           </p>
           <div className="mt-10">
             <div className="mx-auto flex max-w-max flex-col items-center gap-4 sm:flex-row">
@@ -79,7 +78,7 @@ export function FooterCta() {
                 className="h-12 min-w-[190px] rounded-full border-black/10 bg-white/14 px-7 text-base text-foreground backdrop-blur-sm transition-all duration-300 hover:bg-white/24"
               >
                 <Link href="/login">
-                  Start building
+                  Start free
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -103,19 +102,19 @@ export function FooterBase() {
             <div className="flex items-center gap-3">
               <Image
                 src="/verly_logo.png"
-                alt="VerlyAI Logo"
+                alt="Verly logo"
                 width={40}
                 height={40}
                 className="h-10 w-10 object-contain"
               />
               <div>
-                <p className="text-[15px] font-semibold text-white">VerlyAI</p>
+                <p className="text-[15px] font-semibold text-white">Verly</p>
                 <p className="text-[13px] text-white/40">AI customer support platform</p>
               </div>
             </div>
 
             <p className="mt-6 max-w-[410px] text-[15px] leading-8 text-white/58 md:text-[16px]">
-              Unified AI support for voice, WhatsApp, and web chat with human handoff built in.
+              Verly is the AI support layer for teams that ship. Voice, WhatsApp, and web chat — with human handoff built in, not bolted on.
             </p>
 
             <a
@@ -178,7 +177,7 @@ export function FooterBase() {
         <div className="border-t border-white/10 pt-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <p className="text-sm leading-6 text-white/50">
-              © {new Date().getFullYear()} VerlyAI. All rights reserved.
+              © {new Date().getFullYear()} Verly AI Inc. All rights reserved.
             </p>
             <p className="max-w-[520px] text-sm leading-6 text-white/35 md:text-right">
               Built for support teams managing voice, WhatsApp, and web chat in one place.
