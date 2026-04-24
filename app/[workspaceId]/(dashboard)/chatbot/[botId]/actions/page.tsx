@@ -1,8 +1,18 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Cable, Loader2, Play, Search, Sparkles, Zap, BrainCircuit } from "lucide-react";
+import {
+  ArrowLeft,
+  Cable,
+  Check,
+  Loader2,
+  Play,
+  Search,
+  Sparkles,
+  Zap,
+  BrainCircuit,
+} from "lucide-react";
 import { FeatureGuard } from "@/components/shared/FeatureGuard";
 import { ActionList } from "@/components/custom-actions/ActionList";
 import { ActionPlaygroundPanel } from "@/components/custom-actions/ActionPlaygroundPanel";
@@ -31,19 +41,99 @@ import {
 import {
   useEditorActiveTab,
   useEditorCanSaveDraft,
+  useEditorFormData,
   useEditorHasUnsavedChanges,
   useEditorLastSavedAction,
   useEditorPlaygroundEnabled,
   useEditorSaveActionLabel,
   useEditorSaving,
   useEditorSetActiveTab,
+  useEditorTestResult,
 } from "@/store/custom-action-editor";
 import { INTEGRATION_PLATFORMS } from "@/lib/constants/integrations";
 import type { CustomAction, CustomActionStatus } from "@/types/customActions";
 import type { McpConnectionSummary } from "@/types/mcp";
-import type { ActionFormTab } from "@/utils/customActionValidation";
+import {
+  validateActionForSave,
+  type ActionFormTab,
+} from "@/utils/customActionValidation";
+import { cn } from "@/lib/utils";
 
 const ONE_CLICK_PLATFORMS = ["stripe", "shopify", "zendesk"] as const;
+
+// ─────────────────────────────────────────────
+// Tab completion helpers
+// ─────────────────────────────────────────────
+type TabStatus = "complete" | "incomplete";
+
+function computeTabStatus(
+  formData: CustomAction,
+  testPassed: boolean,
+): Record<ActionFormTab, TabStatus> {
+  const validation = validateActionForSave(formData);
+  const errorKeys = Object.keys(validation.errors);
+
+  const behaviorBroken = errorKeys.some(
+    (k) =>
+      k === "name" ||
+      k === "description" ||
+      k.startsWith("triggerExamples") ||
+      k === "accessLevel" ||
+      k.startsWith("requiredContactFields"),
+  );
+  const connectionBroken = errorKeys.some((k) => k.startsWith("apiConfig."));
+  const inputsBroken = errorKeys.some((k) => k.startsWith("parameters."));
+
+  return {
+    behavior: behaviorBroken ? "incomplete" : "complete",
+    inputs: inputsBroken ? "incomplete" : "complete",
+    connection: connectionBroken ? "incomplete" : "complete",
+    "test-output": testPassed ? "complete" : "incomplete",
+  };
+}
+
+interface NumberedTabProps {
+  value: ActionFormTab;
+  index: number;
+  label: string;
+  icon: React.ReactNode;
+  status: TabStatus;
+  active: boolean;
+}
+
+function NumberedTab({
+  value,
+  index,
+  label,
+  icon,
+  status,
+  active,
+}: NumberedTabProps) {
+  return (
+    <TabsTrigger
+      value={value}
+      variant="mindtickle"
+      className="font-sans data-[state=active]:text-primary"
+    >
+      <span
+        className={cn(
+          "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold transition-colors",
+          status === "complete"
+            ? "bg-primary text-primary-foreground"
+            : active
+              ? "bg-primary/15 text-primary"
+              : "bg-muted text-muted-foreground",
+        )}
+      >
+        {status === "complete" ? <Check className="h-3 w-3" /> : index}
+      </span>
+      <span className="flex items-center gap-1.5">
+        {icon}
+        {label}
+      </span>
+    </TabsTrigger>
+  );
+}
 
 // ─────────────────────────────────────────────
 // Shared sticky sub-header shell
@@ -118,6 +208,13 @@ function ActionEditorShell({
   const saveActionLabel = useEditorSaveActionLabel();
   const lastSavedAction = useEditorLastSavedAction();
   const playgroundEnabled = useEditorPlaygroundEnabled();
+  const formData = useEditorFormData();
+  const testResult = useEditorTestResult();
+
+  const tabStatus = useMemo(
+    () => computeTabStatus(formData, !!testResult?.success),
+    [formData, testResult?.success],
+  );
 
   return (
     <FeatureGuard
@@ -170,22 +267,38 @@ function ActionEditorShell({
               variant="mindtickle"
               className="max-w-full lg:max-w-[840px] xl:max-w-[960px] 2xl:max-w-[1080px]"
             >
-              <TabsTrigger value="behavior" variant="mindtickle" className="font-sans">
-                <Sparkles className="h-4 w-4" />
-                Behavior
-              </TabsTrigger>
-              <TabsTrigger value="inputs" variant="mindtickle" className="font-sans">
-                <BrainCircuit className="h-4 w-4" />
-                Inputs
-              </TabsTrigger>
-              <TabsTrigger value="connection" variant="mindtickle" className="font-sans">
-                <Cable className="h-4 w-4" />
-                Connection
-              </TabsTrigger>
-              <TabsTrigger value="test-output" variant="mindtickle" className="font-sans">
-                <Play className="h-4 w-4" />
-                Test &amp; Output
-              </TabsTrigger>
+              <NumberedTab
+                value="behavior"
+                index={1}
+                label="Behavior"
+                icon={<Sparkles className="h-4 w-4" />}
+                status={tabStatus.behavior}
+                active={activeTab === "behavior"}
+              />
+              <NumberedTab
+                value="inputs"
+                index={2}
+                label="Inputs"
+                icon={<BrainCircuit className="h-4 w-4" />}
+                status={tabStatus.inputs}
+                active={activeTab === "inputs"}
+              />
+              <NumberedTab
+                value="connection"
+                index={3}
+                label="Connection"
+                icon={<Cable className="h-4 w-4" />}
+                status={tabStatus.connection}
+                active={activeTab === "connection"}
+              />
+              <NumberedTab
+                value="test-output"
+                index={4}
+                label="Test & Output"
+                icon={<Play className="h-4 w-4" />}
+                status={tabStatus["test-output"]}
+                active={activeTab === "test-output"}
+              />
             </TabsList>
           }
         />

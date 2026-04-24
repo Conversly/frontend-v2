@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,6 +28,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { URLPatternGuide } from "../URLPatternGuide";
 import {
   detectFixedIdSegments,
@@ -285,10 +289,6 @@ export const APIConfigSection: React.FC<Props> = ({
           <CardTitle className="type-h3">
             How should we call this service?
           </CardTitle>
-          <CardDescription className="type-body-muted">
-            Set the method and URL. Dynamic values from the Inputs tab will be
-            filled into path, query, header, or body bindings later.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-[120px_minmax(0,1fr)_auto]">
@@ -348,11 +348,6 @@ export const APIConfigSection: React.FC<Props> = ({
             <div className="hidden lg:block" />
           </div>
 
-          <p className="type-caption">
-            Keep the connection simple here. You can define dynamic inputs in
-            the <strong>Inputs</strong> tab, then fine-tune request details in
-            Advanced request options.
-          </p>
           {(errors?.["apiConfig.baseUrl"] ||
             errors?.["apiConfig.endpoint"]) && (
             <p className="text-xs text-destructive">
@@ -442,9 +437,6 @@ export const APIConfigSection: React.FC<Props> = ({
       <Card className="shadow-card border-border bg-[--surface-secondary]">
         <CardHeader>
           <CardTitle className="type-h3">Authentication</CardTitle>
-          <CardDescription className="type-body-muted">
-            Add any fixed credentials this request always needs.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
@@ -470,18 +462,36 @@ export const APIConfigSection: React.FC<Props> = ({
 
             {(config.authType || "none") !== "none" ? (
               <div className="form-field md:col-span-2">
-                <Label className="form-field-label">
-                  {config.authType === "bearer" && "Bearer token"}
-                  {config.authType === "api_key" && "API key"}
-                  {config.authType === "basic" && "Base64 credentials"}
-                </Label>
+                <div className="flex items-center gap-1.5">
+                  <Label className="form-field-label">
+                    {config.authType === "bearer" && "Bearer token"}
+                    {config.authType === "api_key" && "API key"}
+                    {config.authType === "basic" && "Base64 credentials"}
+                  </Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Auth value help"
+                        className="h-4 w-4 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+                      >
+                        <HelpCircle className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs">
+                      Use a secret reference such as{" "}
+                      <code className="font-mono">secrets.MY_API_KEY</code> and
+                      resolve it server-side.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input
                   type="password"
                   value={config.authValue || ""}
                   onChange={(e) =>
                     updateField("apiConfig.authValue", e.target.value)
                   }
-                  placeholder="Enter token, key, or secret reference"
+                  placeholder="Token, key, or secrets.MY_API_KEY"
                   className="h-10 font-mono bg-background"
                 />
                 {errors?.["apiConfig.authValue"] ? (
@@ -489,13 +499,6 @@ export const APIConfigSection: React.FC<Props> = ({
                     {errors["apiConfig.authValue"]}
                   </p>
                 ) : null}
-                <p className="form-field-note">
-                  Tip: use a secret reference such as{" "}
-                  <code className="px-1.5 py-0.5 rounded bg-background font-mono text-foreground">
-                    secrets.MY_API_KEY
-                  </code>{" "}
-                  and resolve it server-side.
-                </p>
               </div>
             ) : null}
           </div>
@@ -504,14 +507,25 @@ export const APIConfigSection: React.FC<Props> = ({
 
       <Card className="shadow-card border-border bg-[--surface-secondary]">
         <CardHeader>
-          <CardTitle className="type-h3">Request Body</CardTitle>
-          <CardDescription className="type-body-muted">
-            Define the static JSON body. Exact placeholder values such as{" "}
-            <code className="px-1 py-0.5 rounded bg-background font-mono">
-              {'"{{appearance}}"'}
-            </code>{" "}
-            become body inputs later.
-          </CardDescription>
+          <div className="flex items-center gap-1.5">
+            <CardTitle className="type-h3">Request Body</CardTitle>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Request body help"
+                  className="h-5 w-5 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+                >
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs">
+                Define the static JSON body. Placeholders like{" "}
+                <code className="font-mono">{'"{{appearance}}"'}</code> become
+                body inputs on the Inputs tab.
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
@@ -586,10 +600,6 @@ export const APIConfigSection: React.FC<Props> = ({
           {staticBodyError ? (
             <p className="form-field-error">{staticBodyError}</p>
           ) : null}
-          <p className="form-field-note">
-            Keep the JSON valid. The next tab detects exact placeholder strings
-            and maps them to body input paths automatically.
-          </p>
         </CardContent>
       </Card>
 
@@ -605,10 +615,6 @@ export const APIConfigSection: React.FC<Props> = ({
                   <CardTitle className="type-h3">
                     Advanced Request Options
                   </CardTitle>
-                  <CardDescription className="type-body-muted mt-1">
-                    Optional request shaping for static headers, query params,
-                    path helpers, and transport controls.
-                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="h-6 px-2 text-xs">
@@ -673,12 +679,7 @@ export const APIConfigSection: React.FC<Props> = ({
               <div className="grid gap-6 xl:grid-cols-2">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h3 className="type-h3">Static Query Parameters</h3>
-                      <p className="type-body-muted">
-                        Values that never change between requests.
-                      </p>
-                    </div>
+                    <h3 className="type-h3">Static Query Parameters</h3>
                     <Badge variant="secondary" className="h-6 px-2 text-xs">
                       {queryParamCount}
                     </Badge>
@@ -694,20 +695,11 @@ export const APIConfigSection: React.FC<Props> = ({
                     placeholder={{ key: "key", value: "value" }}
                     addLabel="Add query param"
                   />
-                  <p className="form-field-note">
-                    Dynamic query values belong in <strong>Inputs</strong> with{" "}
-                    <strong>Send to → Query</strong>.
-                  </p>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h3 className="type-h3">Static Headers</h3>
-                      <p className="type-body-muted">
-                        Fixed headers sent on every request.
-                      </p>
-                    </div>
+                    <h3 className="type-h3">Static Headers</h3>
                     <Badge variant="secondary" className="h-6 px-2 text-xs">
                       {headerCount}
                     </Badge>
@@ -722,21 +714,11 @@ export const APIConfigSection: React.FC<Props> = ({
                     }
                     addLabel="Add header"
                   />
-                  <p className="form-field-note">
-                    Dynamic headers belong in <strong>Inputs</strong> with{" "}
-                    <strong>Send to → Header</strong>.
-                  </p>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <h3 className="type-h3">Transport Controls</h3>
-                  <p className="type-body-muted">
-                    Fine-tune success criteria, timeout behavior, and SSL
-                    verification.
-                  </p>
-                </div>
+                <h3 className="type-h3">Transport Controls</h3>
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="form-field">
                     <Label className="form-field-label">Success codes</Label>

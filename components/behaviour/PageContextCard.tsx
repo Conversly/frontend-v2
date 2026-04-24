@@ -13,7 +13,7 @@ export function PageContextCard({ enabled, onChange }: PageContextCardProps) {
     return (
         <div className="divide-y divide-[var(--border-secondary)]">
             <div className="px-5 py-2.5 bg-muted/30">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Page Context Awareness</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground">Page Context Awareness</p>
             </div>
 
             <div className="flex items-center justify-between px-5 py-4">

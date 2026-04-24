@@ -34,10 +34,10 @@ export function LivePreview({ chatbotId, config, systemPrompt }: LivePreviewProp
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-100px)] sticky top-6">
-            <div className="mb-4">
-                <h2 className="text-xl font-semibold">Test your AI</h2>
-                <p className="text-sm text-muted-foreground">See how it behaves in real-time.</p>
+        <div className="flex flex-col w-full h-full min-h-0">
+            <div className="mb-3 flex-shrink-0">
+                <h2 className="text-sm font-semibold">Test your AI</h2>
+                <p className="text-xs text-muted-foreground">See how it behaves in real-time.</p>
             </div>
 
             <div className="flex-1 overflow-hidden rounded-lg border shadow-xl bg-background relative flex flex-col">

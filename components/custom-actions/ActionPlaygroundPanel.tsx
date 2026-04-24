@@ -1,14 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, MessageSquareDashed, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw, Play } from "lucide-react";
 import { PlaygroundWidget } from "@/components/PlaygroundWidget";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getWidgetConfig } from "@/lib/api/deploy";
 import { getChatbot } from "@/lib/api/chatbot";
 import type { UIConfigInput } from "@/types/customization";
 import type { CustomAction } from "@/types/customActions";
 import { cn } from "@/lib/utils";
+import {
+  useEditorFormData,
+  useEditorTestValues,
+} from "@/store/custom-action-editor";
+import { buildRequestPreview } from "./steps/TestAndSaveStep";
 
 interface ActionPlaygroundPanelProps {
   workspaceId: string;
@@ -58,6 +64,79 @@ function mapWidgetConfigToUiConfig(
     chatHeight: styles.chatHeight || "620px",
     testing: true,
   };
+}
+
+function LiveRequestPreview() {
+  const formData = useEditorFormData();
+  const testValues = useEditorTestValues();
+  const preview = buildRequestPreview(formData, testValues);
+  const method = formData.apiConfig.method;
+  const authType = formData.apiConfig.authType || "none";
+  const hasUrl = !!preview.url;
+
+  return (
+    <div className="flex h-full w-full flex-col gap-3 overflow-y-auto p-1">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Play className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Live request preview
+          </span>
+        </div>
+        <Badge variant="outline" className="text-[10px]">
+          Updates as you edit
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-xs rounded-md border border-border bg-muted/20 px-3 py-2 sm:grid-cols-[auto_1fr]">
+        <span className="text-muted-foreground">Name</span>
+        <span className="font-medium text-foreground truncate">
+          {formData.displayName || formData.name || "—"}
+        </span>
+        <span className="text-muted-foreground">Method</span>
+        <span>
+          <Badge variant="outline" className="h-5 text-[10px] font-bold uppercase">
+            {method}
+          </Badge>
+        </span>
+        <span className="text-muted-foreground">Auth</span>
+        <span className="capitalize text-foreground">{authType}</span>
+      </div>
+
+      <div className="rounded-md border border-border bg-muted/20 p-3">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+          URL
+        </div>
+        <div className="font-mono text-xs break-all">
+          {hasUrl ? preview.url : <span className="text-muted-foreground">Add a URL on the Connection tab.</span>}
+        </div>
+      </div>
+
+      <div className="rounded-md border border-border bg-muted/20 p-3">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+          Headers
+        </div>
+        <pre className="font-mono text-xs whitespace-pre-wrap break-all">
+          {JSON.stringify(preview.headers, null, 2)}
+        </pre>
+      </div>
+
+      <div className="rounded-md border border-border bg-muted/20 p-3">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+          Body
+        </div>
+        <pre className="font-mono text-xs whitespace-pre-wrap break-all">
+          {preview.body !== undefined
+            ? JSON.stringify(preview.body, null, 2)
+            : "—"}
+        </pre>
+      </div>
+
+      <p className="text-[11px] text-muted-foreground px-1">
+        Playground chat unlocks after a full save.
+      </p>
+    </div>
+  );
 }
 
 export function ActionPlaygroundPanel({
@@ -110,24 +189,20 @@ export function ActionPlaygroundPanel({
     <Card className="overflow-hidden border-border bg-card shadow-card">
       <CardContent
         className={cn(
-          "flex min-h-[600px] xl:min-h-[720px] 2xl:min-h-[800px] items-center justify-center p-5 transition-opacity",
-          !enabled && "opacity-75",
+          "flex min-h-[600px] xl:min-h-[720px] 2xl:min-h-[800px] items-stretch justify-center p-5 transition-opacity",
+          !enabled && "opacity-100",
         )}
       >
         {isLoading ? (
-          <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground">
+          <div className="flex flex-1 items-center justify-center gap-3 text-sm text-muted-foreground">
             <Loader2 className="h-5 w-5 animate-spin" />
             Loading playground...
           </div>
         ) : loadError ? (
-          <div className="max-w-sm text-center text-sm text-destructive">
+          <div className="flex flex-1 items-center justify-center max-w-sm text-center text-sm text-destructive">
             {loadError}
           </div>
-        ) : !config ? (
-          <div className="max-w-sm text-center text-sm text-muted-foreground">
-            Playground configuration is unavailable for this chatbot.
-          </div>
-        ) : enabled ? (
+        ) : enabled && config ? (
           <div className="h-[600px] xl:h-[680px] 2xl:h-[760px] w-full">
             <PlaygroundWidget
               key={`${chatbotId}-${playgroundVersion}`}
@@ -140,24 +215,14 @@ export function ActionPlaygroundPanel({
             />
           </div>
         ) : (
-          <div className="flex max-w-sm flex-col items-center gap-4 text-center text-sm text-muted-foreground">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background shadow-sm">
-              <MessageSquareDashed className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground">
-                Playground unlocks after a full save
-              </p>
-              <p className="mt-2">
-                Raw request testing still happens in the form. End-to-end AI
-                behavior testing starts only after the action is fully valid and
-                saved to the DEV branch.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs">
-              <RefreshCcw className="h-3.5 w-3.5" />
-              Save remounts the widget and clears the prior test conversation.
-            </div>
+          <div className="flex flex-1 flex-col gap-3">
+            <LiveRequestPreview />
+            {!enabled && (
+              <div className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-[11px] text-muted-foreground self-start">
+                <RefreshCcw className="h-3 w-3" />
+                Save to unlock end-to-end chat testing.
+              </div>
+            )}
           </div>
         )}
       </CardContent>

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -93,7 +92,7 @@ function formatPreviewValue(value: any): string {
   return JSON.stringify(value);
 }
 
-function buildRequestPreview(
+export function buildRequestPreview(
   action: CustomAction,
   testValues?: Record<string, string>,
 ): { url: string; headers: Record<string, string>; body?: any } {
@@ -260,23 +259,11 @@ export const TestSection: React.FC<TestSectionProps> = ({
           <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
             <Play className="h-4 w-4 text-primary" />
           </div>
-          <div>
-            <CardTitle className="type-section-title">Request Test</CardTitle>
-            <CardDescription className="type-body-muted">
-              Validate request assembly, authentication, parameter binding, and
-              the raw API response before you save.
-            </CardDescription>
-          </div>
+          <CardTitle className="type-section-title">Request Test</CardTitle>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-          This test verifies the tool request itself. Use the playground panel
-          on the right to check whether the saved chatbot actually chooses and
-          uses this action in conversation.
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs p-4 rounded-lg bg-muted/30 border border-border/50">
           <span className="text-muted-foreground">Action:</span>
           <span className="font-semibold text-foreground">
@@ -318,15 +305,9 @@ export const TestSection: React.FC<TestSectionProps> = ({
         ).length > 0 && (
           <div className="space-y-3 rounded-lg border border-border bg-background/60 p-4">
             <div className="flex items-center justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">
-                  Test Inputs
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Provide values for required AI-supplied inputs before sending
-                  the request.
-                </p>
-              </div>
+              <h3 className="text-sm font-semibold text-foreground">
+                Test Inputs
+              </h3>
               <Badge variant="secondary">
                 {
                   formData.parameters.filter(
@@ -391,15 +372,9 @@ export const TestSection: React.FC<TestSectionProps> = ({
 
         <div className="rounded-lg border border-border bg-background/60 p-4 space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">
-                Request Preview
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Preview of the request assembled from your saved configuration
-                and test values.
-              </p>
-            </div>
+            <h3 className="text-sm font-semibold text-foreground">
+              Request Preview
+            </h3>
             <Button
               onClick={() => void handleTest?.()}
               disabled={testing || !handleTest}

@@ -16,14 +16,17 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Trash2,
   Plus,
   ChevronDown,
-  ChevronRight,
   Sparkles,
   Settings2,
-  ShieldCheck,
-  BookOpen,
+  HelpCircle,
 } from "lucide-react";
 import type { ParamSource } from "@/types/customActions";
 import {
@@ -79,7 +82,6 @@ function canAddTopLevelContactField(
 
 export const ParametersStep: React.FC = () => {
   const [advancedOpen, setAdvancedOpen] = useState<Record<number, boolean>>({});
-  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const formData = useEditorFormData();
   const updateField = useEditorUpdateField();
   const replaceParameters = useEditorReplaceParameters();
@@ -406,103 +408,72 @@ export const ParametersStep: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* ── "How do inputs work?" collapsible ── */}
-      <div className="rounded-lg border border-border bg-white dark:bg-background shadow-sm">
-        <button
-          type="button"
-          onClick={() => setHowItWorksOpen((o) => !o)}
-          className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-left hover:bg-muted/40 rounded-lg transition-colors"
-        >
-          <div className="flex items-center gap-2 text-foreground">
-            <BookOpen className="h-4 w-4 text-primary" />
-            How do inputs work?
-          </div>
-          {howItWorksOpen ? (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          )}
-        </button>
-
-        {howItWorksOpen && (
-          <div className="border-t border-border px-4 pb-5 pt-4 space-y-5">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-md border border-blue-200 bg-blue-50 p-3 space-y-2 dark:border-blue-900 dark:bg-blue-950/40">
-                <p className="text-xs font-semibold text-blue-700 dark:text-blue-400">
-                  Customer input
-                </p>
-                <p className="text-xs text-blue-900/70 dark:text-blue-300/80">
-                  The AI reads the value from the conversation and fills it in.
-                  Use for anything the user provides dynamically.
-                </p>
-                <code className="text-[10px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded font-mono block">
-                  source: user
-                </code>
-              </div>
-              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 space-y-2 dark:border-amber-900 dark:bg-amber-950/40">
-                <p className="text-xs font-semibold text-amber-700 dark:text-amber-400">
-                  Fixed value
-                </p>
-                <p className="text-xs text-amber-900/70 dark:text-amber-300/80">
-                  Always the same saved value. Never shown to the AI. Use for
-                  hardcoded IDs, tenant slugs, or environment flags.
-                </p>
-                <code className="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-mono block">
-                  source: fixed
-                </code>
-              </div>
-              <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 space-y-2 dark:border-emerald-900 dark:bg-emerald-950/40">
-                <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                  Contact field
-                </p>
-                <p className="text-xs text-emerald-900/70 dark:text-emerald-300/80">
-                  Pulled from the contact record, injected server-side. Never
-                  shown to the AI. Use for user IDs, emails, or metadata.
-                </p>
-                <code className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-mono block">
-                  source: contact
-                </code>
-              </div>
-            </div>
-
-            <div className="rounded-md bg-muted/60 border border-border px-3 py-3 space-y-2">
-              <p className="text-xs font-semibold text-foreground">
-                Where does the value go?
+      {/* ── Header with help popover ── */}
+      <div className="flex items-center justify-between">
+        <h2 className="type-h3 text-foreground">Inputs</h2>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              How inputs work
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[360px] xl:w-[440px] max-h-[480px] overflow-y-auto p-4 space-y-4"
+            align="end"
+            side="bottom"
+          >
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Value sources
               </p>
-              <ul className="text-xs space-y-1.5 text-muted-foreground">
+              <ul className="text-xs space-y-1.5">
+                <li>
+                  <span className="font-medium text-foreground">Customer input</span>
+                  {" — AI extracts the value from conversation."}
+                </li>
+                <li>
+                  <span className="font-medium text-foreground">Fixed value</span>
+                  {" — always the same. Hidden from AI."}
+                </li>
+                <li>
+                  <span className="font-medium text-foreground">Contact field</span>
+                  {" — pulled from the contact record server-side. Hidden from AI."}
+                </li>
+              </ul>
+            </div>
+            <div className="space-y-2 border-t border-border pt-3">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Where it goes
+              </p>
+              <ul className="text-xs space-y-1.5">
                 <li>
                   <span className="font-medium text-foreground">Path</span>
-                  {" — replaces a "}
-                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
-                    {"{paramName}"}
-                  </code>
-                  {" token in the URL · "}
-                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
-                    /workspaces/{"{workspaceId}"}/context
-                  </code>
+                  {" — replaces "}
+                  <code className="font-mono bg-muted px-1 rounded">{"{name}"}</code>
+                  {" in the URL."}
                 </li>
                 <li>
                   <span className="font-medium text-foreground">Query</span>
                   {" — appended as "}
-                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
-                    ?key=value
-                  </code>
+                  <code className="font-mono bg-muted px-1 rounded">?key=value</code>.
                 </li>
                 <li>
                   <span className="font-medium text-foreground">Header</span>
-                  {" — sent as a request header · use for API keys or per-user tokens"}
+                  {" — sent as a request header."}
                 </li>
                 <li>
                   <span className="font-medium text-foreground">Body</span>
-                  {" — injected into the JSON body at a dot path · "}
-                  <code className="bg-background border border-border px-1 rounded font-mono text-foreground">
-                    customer.email
-                  </code>
+                  {" — injected at a dot path like "}
+                  <code className="font-mono bg-muted px-1 rounded">customer.email</code>.
                 </li>
               </ul>
             </div>
-          </div>
-        )}
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* ── Legacy templates warning ── */}
@@ -683,11 +654,10 @@ export const ParametersStep: React.FC = () => {
                     <div className="space-y-4 bg-muted/20 px-4 pb-5 pt-3">
                       {/* Contact field selector */}
                       {source === "contact" && (
-                        <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-3 space-y-3">
-                          <div className="flex items-center gap-2 text-sm font-medium text-blue-900">
-                            <ShieldCheck className="h-4 w-4" />
+                        <div className="space-y-2">
+                          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
                             Contact field
-                          </div>
+                          </Label>
                           <div className="grid gap-3 sm:grid-cols-2">
                             <Select
                               value={param.contactField || ""}
@@ -731,7 +701,7 @@ export const ParametersStep: React.FC = () => {
 
                       {/* Fixed value input */}
                       {source === "fixed" && (
-                        <div className="rounded-lg border border-border bg-muted/20 px-3 py-3 space-y-2">
+                        <div className="space-y-2">
                           <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
                             Fixed value
                           </Label>

@@ -6,12 +6,10 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, X, Sparkles, Shield } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Plus, X, Shield } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { AccessLevel } from "@/types/customActions";
 import { cn } from "@/lib/utils";
@@ -20,6 +18,8 @@ import {
   useEditorFormData,
   useEditorUpdateField,
 } from "@/store/custom-action-editor";
+
+const DESCRIPTION_PLACEHOLDER = `Example: Use this action when the user asks about product prices, availability, or inventory. Fetches real-time pricing from our e-commerce API. Requires a product ID or product name.`;
 
 export const BasicInfoStep: React.FC = () => {
   const [newExample, setNewExample] = useState("");
@@ -43,7 +43,6 @@ export const BasicInfoStep: React.FC = () => {
       .replace(/_+/g, "_")
       .replace(/^_+|_+$/g, "");
   const displayName = formData.displayName || toDisplayName(formData.name || "");
-  const internalName = formData.name || toInternalName(displayName);
 
   const addExample = () => {
     const trimmed = newExample.trim();
@@ -72,13 +71,8 @@ export const BasicInfoStep: React.FC = () => {
       <Card className="shadow-card border-border bg-[--surface-secondary]">
         <CardHeader>
           <CardTitle className="type-h3">What does this action do?</CardTitle>
-          <CardDescription className="type-body-muted">
-            Give the action a clear name and a description the AI can use for
-            tool selection.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-
           <div className="space-y-2">
             <Label htmlFor="displayName" className="type-label">
               Action Name <span className="text-destructive">*</span>
@@ -103,22 +97,23 @@ export const BasicInfoStep: React.FC = () => {
             {errors?.name && (
               <p className="text-xs text-destructive mt-1">{errors.name}</p>
             )}
-            <p className="type-caption text-muted-foreground">
-              Pick the human-friendly name first. We&apos;ll generate the stored
-              internal ID automatically.
-            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="type-label">
-              When should AI use this?{" "}
-              <span className="text-destructive">*</span>
-            </Label>
+            <div className="flex items-baseline justify-between">
+              <Label htmlFor="description" className="type-label">
+                When should AI use this?{" "}
+                <span className="text-destructive">*</span>
+              </Label>
+              <span className="text-[11px] text-muted-foreground tabular-nums">
+                {formData.description.length} / 1000
+              </span>
+            </div>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => updateField("description", e.target.value)}
-              placeholder="Describe the user intents this action handles, what data it fetches or changes, and any important requirements the AI should know before calling it."
+              placeholder={DESCRIPTION_PLACEHOLDER}
               rows={5}
               required
               minLength={20}
@@ -134,24 +129,6 @@ export const BasicInfoStep: React.FC = () => {
                 {errors.description}
               </p>
             )}
-            <div className="flex justify-between text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-              <span>
-                The AI uses this to decide when this tool should trigger.
-              </span>
-              <span>{formData.description.length} / 1000</span>
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-muted/50 p-4 border border-border/50">
-            <div className="flex items-center gap-2 font-semibold text-foreground mb-1.5 text-sm">
-              <Sparkles className="h-4 w-4 text-primary" />
-              Strong trigger guidance example
-            </div>
-            <p className="type-body-muted italic leading-relaxed">
-              "Use this action when the user asks about product prices,
-              availability, or inventory. It fetches real-time pricing data from
-              our e-commerce API. Requires a product ID or product name."
-            </p>
           </div>
 
           <div className="space-y-3 pt-2">
@@ -201,11 +178,6 @@ export const BasicInfoStep: React.FC = () => {
                 Add
               </Button>
             </div>
-
-            <p className="type-caption">
-              These examples help you validate the behavior and help the AI
-              learn the kinds of requests this action should answer.
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -216,104 +188,94 @@ export const BasicInfoStep: React.FC = () => {
             <Shield className="h-4 w-4" />
             Who can trigger this action?
           </CardTitle>
-          <CardDescription className="type-body-muted">
-            Set identity requirements after you define the behavior. This
-            controls whether the AI is allowed to call the action for a given
-            user.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-3">
-            <Label className="type-label">Who can use this action?</Label>
-            <RadioGroup
-              value={formData.accessLevel || "anonymous"}
-              onValueChange={(v) => {
-                updateField("accessLevel", v as AccessLevel);
-                if (v === "anonymous") {
-                  updateField("requiredContactFields", []);
-                }
+          <RadioGroup
+            value={formData.accessLevel || "anonymous"}
+            onValueChange={(v) => {
+              updateField("accessLevel", v as AccessLevel);
+              if (v === "anonymous") {
+                updateField("requiredContactFields", []);
+              }
+            }}
+            className="space-y-2"
+          >
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                (formData.accessLevel || "anonymous") === "anonymous"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-border/80",
+              )}
+              onClick={() => {
+                updateField("accessLevel", "anonymous");
+                updateField("requiredContactFields", []);
               }}
-              className="space-y-2"
             >
-              <div
-                className={cn(
-                  "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
-                  (formData.accessLevel || "anonymous") === "anonymous"
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-border/80",
-                )}
-                onClick={() => {
-                  updateField("accessLevel", "anonymous");
-                  updateField("requiredContactFields", []);
-                }}
-              >
-                <RadioGroupItem
-                  value="anonymous"
-                  id="access_anonymous"
-                  className="mt-0.5"
-                />
-                <div>
-                  <Label
-                    htmlFor="access_anonymous"
-                    className="type-label block"
-                  >
-                    Everyone
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    All users including anonymous visitors can trigger this
-                    action.
-                  </p>
-                </div>
+              <RadioGroupItem
+                value="anonymous"
+                id="access_anonymous"
+                className="mt-0.5"
+              />
+              <div>
+                <Label
+                  htmlFor="access_anonymous"
+                  className="type-label block"
+                >
+                  Everyone
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Any visitor, including anonymous.
+                </p>
               </div>
-              <div
-                className={cn(
-                  "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
-                  (formData.accessLevel || "anonymous") === "visitor"
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-border/80",
-                )}
-                onClick={() => updateField("accessLevel", "visitor")}
-              >
-                <RadioGroupItem
-                  value="visitor"
-                  id="access_visitor"
-                  className="mt-0.5"
-                />
-                <div>
-                  <Label htmlFor="access_visitor" className="type-label block">
-                    Returning visitors
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    Only users with an existing contact record.
-                  </p>
-                </div>
+            </div>
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                (formData.accessLevel || "anonymous") === "visitor"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-border/80",
+              )}
+              onClick={() => updateField("accessLevel", "visitor")}
+            >
+              <RadioGroupItem
+                value="visitor"
+                id="access_visitor"
+                className="mt-0.5"
+              />
+              <div>
+                <Label htmlFor="access_visitor" className="type-label block">
+                  Returning visitors
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Users with an existing contact record.
+                </p>
               </div>
-              <div
-                className={cn(
-                  "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
-                  (formData.accessLevel || "anonymous") === "user"
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-border/80",
-                )}
-                onClick={() => updateField("accessLevel", "user")}
-              >
-                <RadioGroupItem
-                  value="user"
-                  id="access_user"
-                  className="mt-0.5"
-                />
-                <div>
-                  <Label htmlFor="access_user" className="type-label block">
-                    Verified users only
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    Only users verified via identity verification (JWT).
-                    Recommended for actions that use contact data.
-                  </p>
-                </div>
+            </div>
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                (formData.accessLevel || "anonymous") === "user"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-border/80",
+              )}
+              onClick={() => updateField("accessLevel", "user")}
+            >
+              <RadioGroupItem
+                value="user"
+                id="access_user"
+                className="mt-0.5"
+              />
+              <div>
+                <Label htmlFor="access_user" className="type-label block">
+                  Verified users only
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  JWT-verified users. Recommended for actions using contact data.
+                </p>
               </div>
-            </RadioGroup>
-          </div>
+            </div>
+          </RadioGroup>
         </CardContent>
       </Card>
     </div>

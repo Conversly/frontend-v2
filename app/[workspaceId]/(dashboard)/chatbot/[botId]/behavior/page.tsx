@@ -3,18 +3,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles, User, Magnet, UserPlus, CheckCircle2, XCircle, AlertCircle, Wand2, FileSearch } from "lucide-react";
+import {
+    Loader2,
+    Save,
+    Sparkles,
+    User,
+    Magnet,
+    UserPlus,
+    CheckCircle2,
+    XCircle,
+    FileSearch,
+    PanelRightClose,
+    PanelRightOpen,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 
 // API
 import { getChatbot, updateChatbot } from "@/lib/api/chatbot";
@@ -27,9 +31,13 @@ import { PageContextCard } from "@/components/behaviour/PageContextCard";
 import {
     BehaviourState,
     DEFAULT_BEHAVIOUR_STATE,
-    serializeStateForPromptGen
+    serializeStateForPromptGen,
 } from "@/components/behaviour/BehaviourState";
-import { generateChannelPrompt, getChannelPrompt, upsertChannelPrompt } from "@/lib/api/prompt";
+import {
+    generateChannelPrompt,
+    getChannelPrompt,
+    upsertChannelPrompt,
+} from "@/lib/api/prompt";
 import { getBehaviourConfigs, upsertBehaviourConfig } from "@/lib/api/behaviour-config";
 
 type TabId = "identity" | "lead-gen" | "handoff" | "page-context";
@@ -45,6 +53,14 @@ function deepEqual(a: any, b: any): boolean {
     return JSON.stringify(a) === JSON.stringify(b);
 }
 
+function identityOrStyleIsNonDefault(state: BehaviourState): boolean {
+    const d = DEFAULT_BEHAVIOUR_STATE;
+    return (
+        !deepEqual(state.identity, d.identity) ||
+        !deepEqual(state.style, d.style)
+    );
+}
+
 export default function BehaviourPage() {
     const params = useParams<{ workspaceId: string; botId: string }>();
     const botId = Array.isArray(params.botId) ? params.botId[0] : params.botId;
@@ -53,27 +69,21 @@ export default function BehaviourPage() {
     const [behaviour, setBehaviour] = useState<BehaviourState>(DEFAULT_BEHAVIOUR_STATE);
     const [originalBehaviour, setOriginalBehaviour] = useState<BehaviourState | null>(null);
     const [activeTab, setActiveTab] = useState<TabId>("identity");
+    const [widgetConfig, setWidgetConfig] = useState<any>(null);
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(true);
 
     const [isGeneratingMain, setIsGeneratingMain] = useState(false);
     const [isGeneratingLead, setIsGeneratingLead] = useState(false);
     const [isGeneratingHandoff, setIsGeneratingHandoff] = useState(false);
 
-    const [promptGeneratedFlags, setPromptGeneratedFlags] = useState({
-        identity: false,
-        leadGen: false,
-        handoff: false,
-    });
-
-    const [showSaveDialog, setShowSaveDialog] = useState(false);
-    const [pendingSectionsToGenerate, setPendingSectionsToGenerate] = useState<TabId[]>([]);
-
     const hasChanges = useMemo(() => ({
         identity: originalBehaviour
             ? !deepEqual(originalBehaviour.identity, behaviour.identity) ||
-              !deepEqual(originalBehaviour.style, behaviour.style)
+              !deepEqual(originalBehaviour.style, behaviour.style) ||
+              originalBehaviour.mainSystemPrompt !== behaviour.mainSystemPrompt
             : false,
         leadGen: originalBehaviour
             ? !deepEqual(originalBehaviour.leadGen, behaviour.leadGen)
@@ -89,11 +99,7 @@ export default function BehaviourPage() {
     const anyChanges = hasChanges.identity || hasChanges.leadGen || hasChanges.handoff || hasChanges.pageContext;
 
     const updateBehaviour = (updater: (prev: BehaviourState) => BehaviourState) => {
-        setBehaviour(prev => {
-            const newState = updater(prev);
-            setPromptGeneratedFlags({ identity: false, leadGen: false, handoff: false });
-            return newState;
-        });
+        setBehaviour(updater);
     };
 
     useEffect(() => {
@@ -101,9 +107,9 @@ export default function BehaviourPage() {
             if (!botId || !workspaceId) return;
             setIsLoading(true);
             try {
-                const [chatbotData, , widgetPrompt, leadPrompt, handoffPrompt, leadFormData, behaviourConfigs] = await Promise.all([
+                const [chatbotData, loadedWidgetConfig, widgetPrompt, leadPrompt, handoffPrompt, leadFormData, behaviourConfigs] = await Promise.all([
                     getChatbot(workspaceId, botId),
-                    getWidgetConfig(botId),
+                    getWidgetConfig(botId).catch(() => null),
                     getChannelPrompt(botId, "WIDGET").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "LEAD_GENERATION").catch(() => ({ systemPrompt: "" })),
                     getChannelPrompt(botId, "ESCALATION").catch(() => ({ systemPrompt: "" })),
@@ -166,6 +172,31 @@ export default function BehaviourPage() {
 
                 setBehaviour(loadedBehaviour);
                 setOriginalBehaviour(loadedBehaviour);
+                setWidgetConfig(loadedWidgetConfig);
+
+                // Migration: if config has values but prompt is empty, auto-populate once.
+                if (
+                    !loadedBehaviour.mainSystemPrompt &&
+                    identityOrStyleIsNonDefault(loadedBehaviour)
+                ) {
+                    try {
+                        setIsGeneratingMain(true);
+                        const description = serializeStateForPromptGen(loadedBehaviour, "IDENTITY");
+                        const res = await generateChannelPrompt({
+                            chatbotId: botId,
+                            channel: "WIDGET",
+                            userDescription: description,
+                        });
+                        if (res?.systemPrompt) {
+                            setBehaviour((prev) => ({ ...prev, mainSystemPrompt: res.systemPrompt }));
+                            setOriginalBehaviour((prev) => prev ? { ...prev, mainSystemPrompt: res.systemPrompt } : prev);
+                        }
+                    } catch {
+                        // Non-fatal; user sees empty prompt and can regenerate manually.
+                    } finally {
+                        setIsGeneratingMain(false);
+                    }
+                }
             } catch (error) {
                 toast.error("Failed to load chatbot configuration");
             } finally {
@@ -229,7 +260,6 @@ export default function BehaviourPage() {
             await Promise.all(promises);
 
             setOriginalBehaviour(behaviour);
-            setPromptGeneratedFlags({ identity: false, leadGen: false, handoff: false });
             toast.success("Changes saved successfully!");
         } catch (error) {
             console.error("Save error:", error);
@@ -239,41 +269,10 @@ export default function BehaviourPage() {
         }
     };
 
-    const handleSave = async () => {
-        const sectionsNeedingPrompt: TabId[] = [];
-        if (hasChanges.identity && !promptGeneratedFlags.identity) sectionsNeedingPrompt.push("identity");
-        if (hasChanges.leadGen && !promptGeneratedFlags.leadGen) sectionsNeedingPrompt.push("lead-gen");
-        if (hasChanges.handoff && !promptGeneratedFlags.handoff) sectionsNeedingPrompt.push("handoff");
-
-        if (sectionsNeedingPrompt.length > 0) {
-            setPendingSectionsToGenerate(sectionsNeedingPrompt);
-            setShowSaveDialog(true);
-            return;
-        }
-        await performSave();
-    };
-
-    const generateAllNeededPrompts = async () => {
-        setShowSaveDialog(false);
-        for (const section of pendingSectionsToGenerate) {
-            if (section === "identity") {
-                await generatePrompt("WIDGET", setIsGeneratingMain, (p) => setBehaviour(prev => ({ ...prev, mainSystemPrompt: p })));
-            } else if (section === "lead-gen") {
-                await generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => setBehaviour(prev => ({ ...prev, leadGen: { ...prev.leadGen, systemPrompt: p } })));
-            } else if (section === "handoff") {
-                await generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => setBehaviour(prev => ({ ...prev, handoff: { ...prev.handoff, systemPrompt: p } })));
-            }
-        }
-        await performSave();
-    };
-
-    const saveOnly = async () => { setShowSaveDialog(false); await performSave(); };
-    const getSectionLabel = (id: TabId) => TABS.find(t => t.id === id)?.label || id;
-
     const generatePrompt = async (
         type: "WIDGET" | "LEAD_GENERATION" | "ESCALATION",
         setLoading: (l: boolean) => void,
-        setPrompt: (p: string) => void
+        setPrompt: (p: string) => void,
     ) => {
         if (!botId) return;
         setLoading(true);
@@ -284,13 +283,7 @@ export default function BehaviourPage() {
             else if (type === "ESCALATION") description = serializeStateForPromptGen(behaviour, "HANDOFF");
             const res = await generateChannelPrompt({ chatbotId: botId, channel: type, userDescription: description });
             setPrompt(res.systemPrompt);
-            setPromptGeneratedFlags(prev => ({
-                ...prev,
-                ...(type === "WIDGET" && { identity: true }),
-                ...(type === "LEAD_GENERATION" && { leadGen: true }),
-                ...(type === "ESCALATION" && { handoff: true }),
-            }));
-            toast.success(`Prompt generated!`);
+            toast.success("Prompt generated!");
         } catch {
             toast.error("Failed to generate prompt");
         } finally {
@@ -388,12 +381,20 @@ export default function BehaviourPage() {
 
                 {/* Footer */}
                 <div className="flex-shrink-0 space-y-2 border-t border-sidebar-border/60 p-3">
-                    <div className="flex items-start gap-1.5 rounded-2xl border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-3 py-2">
-                        <Sparkles className="size-3 text-[var(--status-info-fg)] shrink-0 mt-0.5" />
-                        <span className="text-[10px] text-[var(--status-info-fg)] leading-tight">Write in plain language — we'll craft the perfect prompt!</span>
-                    </div>
                     <Button
-                        onClick={handleSave}
+                        onClick={() => setIsPreviewOpen(v => !v)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                    >
+                        {isPreviewOpen
+                            ? <PanelRightClose className="size-3.5" />
+                            : <PanelRightOpen className="size-3.5" />
+                        }
+                        {isPreviewOpen ? "Hide preview" : "Show preview"}
+                    </Button>
+                    <Button
+                        onClick={performSave}
                         disabled={!anyChanges || isSaving}
                         className="w-full"
                         size="sm"
@@ -408,97 +409,67 @@ export default function BehaviourPage() {
             </div>
 
             {/* ── RIGHT CONTENT ── */}
-            <div className="flex-1 overflow-y-auto">
-                <div className="w-full px-6 py-6">
+            <div className="flex-1 min-w-0 flex overflow-hidden">
+                <div className="flex-1 min-w-0 overflow-y-auto">
+                    <div className="w-full px-6 py-6">
 
-                    {/* Page Header */}
-                    <div className="mb-4">
-                        <h2 className="type-card-title">
-                            {TABS.find(t => t.id === activeTab)?.label}
-                        </h2>
-                        <p className="text-xs text-foreground/65 mt-1">
-                            {activeTab === "identity" && "Configure your AI's name, role, tone, and core instructions."}
-                            {activeTab === "lead-gen" && "Set up lead capture triggers, form fields, and detection strategy."}
-                            {activeTab === "handoff" && "Define when and how conversations escalate to a human agent."}
-                            {activeTab === "page-context" && "Control whether the AI can use the current page's visible content to answer contextually."}
-                        </p>
+                        {/* Page Header */}
+                        <div className="mb-4">
+                            <h2 className="type-card-title">
+                                {TABS.find(t => t.id === activeTab)?.label}
+                            </h2>
+                            <p className="text-xs text-foreground/65 mt-1">
+                                {activeTab === "identity" && "Configure your AI's name, role, tone, and core instructions."}
+                                {activeTab === "lead-gen" && "Set up lead capture triggers, form fields, and detection strategy."}
+                                {activeTab === "handoff" && "Define when and how conversations escalate to a human agent."}
+                                {activeTab === "page-context" && "Control whether the AI can use the current page's visible content to answer contextually."}
+                            </p>
+                        </div>
+
+                        {/* Card */}
+                        <div className="dashboard-panel overflow-hidden">
+                            {activeTab === "identity" && (
+                                <IdentityCard
+                                    identity={behaviour.identity}
+                                    onIdentityChange={(s) => updateBehaviour(prev => ({ ...prev, identity: s }))}
+                                    style={behaviour.style}
+                                    onStyleChange={(s) => updateBehaviour(prev => ({ ...prev, style: s }))}
+                                    systemPrompt={behaviour.mainSystemPrompt}
+                                    onSystemPromptChange={(p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
+                                    onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
+                                    isGenerating={isGeneratingMain}
+                                />
+                            )}
+                            {activeTab === "lead-gen" && (
+                                <LeadGenCard
+                                    state={behaviour.leadGen}
+                                    onChange={(s) => updateBehaviour(prev => ({ ...prev, leadGen: s }))}
+                                    onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => updateBehaviour(prev => ({
+                                        ...prev, leadGen: { ...prev.leadGen, systemPrompt: p },
+                                    })))}
+                                    isGenerating={isGeneratingLead}
+                                />
+                            )}
+                            {activeTab === "handoff" && (
+                                <HandoffCard
+                                    state={behaviour.handoff}
+                                    onChange={(s) => updateBehaviour(prev => ({ ...prev, handoff: s }))}
+                                    onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => updateBehaviour(prev => ({
+                                        ...prev, handoff: { ...prev.handoff, systemPrompt: p },
+                                    })))}
+                                    isGenerating={isGeneratingHandoff}
+                                />
+                            )}
+                            {activeTab === "page-context" && (
+                                <PageContextCard
+                                    enabled={behaviour.pageContextEnabled}
+                                    onChange={(enabled) => updateBehaviour(prev => ({ ...prev, pageContextEnabled: enabled }))}
+                                />
+                            )}
+                        </div>
                     </div>
-
-                    {/* Card */}
-                    <div className="dashboard-panel overflow-hidden">
-                        {activeTab === "identity" && (
-                            <IdentityCard
-                                identity={behaviour.identity}
-                                onIdentityChange={(s) => updateBehaviour(prev => ({ ...prev, identity: s }))}
-                                style={behaviour.style}
-                                onStyleChange={(s) => updateBehaviour(prev => ({ ...prev, style: s }))}
-                                systemPrompt={behaviour.mainSystemPrompt}
-                                onSystemPromptChange={(p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p }))}
-                                onGenerate={() => generatePrompt("WIDGET", setIsGeneratingMain, (p) => updateBehaviour(prev => ({ ...prev, mainSystemPrompt: p })))}
-                                isGenerating={isGeneratingMain}
-                            />
-                        )}
-                        {activeTab === "lead-gen" && (
-                            <LeadGenCard
-                                state={behaviour.leadGen}
-                                onChange={(s) => updateBehaviour(prev => ({ ...prev, leadGen: s }))}
-                                onGenerate={() => generatePrompt("LEAD_GENERATION", setIsGeneratingLead, (p) => updateBehaviour(prev => ({
-                                    ...prev, leadGen: { ...prev.leadGen, systemPrompt: p },
-                                })))}
-                                isGenerating={isGeneratingLead}
-                            />
-                        )}
-                        {activeTab === "handoff" && (
-                            <HandoffCard
-                                state={behaviour.handoff}
-                                onChange={(s) => updateBehaviour(prev => ({ ...prev, handoff: s }))}
-                                onGenerate={() => generatePrompt("ESCALATION", setIsGeneratingHandoff, (p) => updateBehaviour(prev => ({
-                                    ...prev, handoff: { ...prev.handoff, systemPrompt: p },
-                                })))}
-                                isGenerating={isGeneratingHandoff}
-                            />
-                        )}
-                        {activeTab === "page-context" && (
-                            <PageContextCard
-                                enabled={behaviour.pageContextEnabled}
-                                onChange={(enabled) => updateBehaviour(prev => ({ ...prev, pageContextEnabled: enabled }))}
-                            />
-                        )}
-                    </div>
-
                 </div>
             </div>
-
-            {/* Save Confirmation Dialog */}
-            <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-                <DialogContent className="sm:max-w-[440px] p-0">
-                    <DialogHeader className="px-5 py-4 border-b border-[var(--border-secondary)]">
-                        <DialogTitle className="flex items-center gap-2 text-base">
-                            <AlertCircle className="size-4 text-[var(--status-warning-fg)]" />
-                            Generate Optimized Prompt{pendingSectionsToGenerate.length > 1 ? "s" : ""}?
-                        </DialogTitle>
-                        <DialogDescription className="text-xs text-muted-foreground mt-1">
-                            {pendingSectionsToGenerate.length === 1 ? (
-                                <>Config changes in <strong className="text-foreground">{getSectionLabel(pendingSectionsToGenerate[0])}</strong> detected. Generate an optimized prompt?</>
-                            ) : (
-                                <>Config changes detected in: {pendingSectionsToGenerate.map(s => getSectionLabel(s)).join(", ")}. Generate optimized prompts for all?</>
-                            )}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="px-5 py-4 flex flex-row items-center justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => setShowSaveDialog(false)} disabled={isSaving}>
-                            Cancel
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={saveOnly} disabled={isSaving}>
-                            Save Only
-                        </Button>
-                        <Button size="sm" onClick={generateAllNeededPrompts} disabled={isSaving}>
-                            {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : <Wand2 className="size-3.5" />}
-                            Generate & Save
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }

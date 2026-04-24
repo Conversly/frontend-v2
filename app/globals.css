@@ -1775,3 +1775,60 @@
 .landing-btn-secondary {
   @apply inline-flex h-13 items-center justify-center rounded-full border border-[#e4ddd4] bg-white px-7 text-sm font-semibold text-[#1e1c19] transition-all hover:bg-[#fafaf9] hover:shadow-[0_8px_16px_rgba(59,43,22,0.04)];
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * TipTap rich text editor — prose styles for the .ProseMirror content area
+ * ═══════════════════════════════════════════════════════════════════════════ */
+.ProseMirror {
+  @apply outline-none min-h-[440px] text-sm px-3 py-2 relative;
+}
+.ProseMirror p {
+  @apply my-1 leading-relaxed;
+}
+.ProseMirror h1 {
+  @apply text-xl font-semibold mt-4 mb-1;
+}
+.ProseMirror h2 {
+  @apply text-lg font-semibold mt-3 mb-1;
+}
+.ProseMirror h3 {
+  @apply text-base font-semibold mt-2 mb-0.5;
+}
+.ProseMirror ul {
+  @apply list-disc pl-5 my-1 space-y-0.5;
+}
+.ProseMirror ol {
+  @apply list-decimal pl-5 my-1 space-y-0.5;
+}
+.ProseMirror li {
+  @apply leading-relaxed;
+}
+.ProseMirror code {
+  @apply font-mono text-xs rounded bg-muted px-1 py-0.5;
+}
+.ProseMirror pre {
+  @apply rounded-md border bg-muted p-3 my-2 overflow-x-auto;
+}
+.ProseMirror pre code {
+  @apply bg-transparent p-0 text-xs;
+}
+.ProseMirror blockquote {
+  @apply border-l-2 border-primary pl-4 italic text-muted-foreground my-2;
+}
+.ProseMirror hr {
+  @apply border-border my-3;
+}
+.ProseMirror strong {
+  @apply font-semibold;
+}
+.ProseMirror em {
+  @apply italic;
+}
+.ProseMirror u {
+  @apply underline underline-offset-2;
+}
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  @apply text-muted-foreground pointer-events-none absolute;
+  content: attr(data-placeholder);
+}
