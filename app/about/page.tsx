@@ -444,6 +444,68 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* ─────── 7b. FIRST 30 DAYS — what changes for your team ─────── */}
+        <section className="relative overflow-hidden py-16 lg:py-22">
+          <AboutSectionBackground tone="sky" />
+          <div className={sectionContentWrap}>
+            <AboutSectionReveal>
+              <div className="mb-10 max-w-[720px]">
+                <div className="mb-6 flex justify-start">
+                  <span className={sectionLabelClass}>What changes for your team</span>
+                </div>
+                <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.4rem)] leading-[1.05] tracking-[-0.04em] text-[#221f1b]">
+                  Your first 30 days with Verly.
+                </h2>
+                <p className="mt-4 text-[16px] leading-8 text-[#6d665d] sm:text-[17px]">
+                  Not a roadmap. Not a promise. What actually happens to support teams that switch — told in the order it happens.
+                </p>
+              </div>
+            </AboutSectionReveal>
+
+            <div className="grid gap-5 md:grid-cols-3">
+              {[
+                {
+                  when: "Day 1",
+                  title: "Your first agent is live.",
+                  body:
+                    "Paste your site URL. Drop the widget script. Test a conversation in the playground. Ship the widget to production before lunch.",
+                  accent: "bg-[#e4eaf8] text-[#315EEA]",
+                },
+                {
+                  when: "Week 1",
+                  title: "The AI learns your edges.",
+                  body:
+                    "Verly flags gaps where it isn't sure — billing scenarios, refund policies, VIP rules. You fill them in. Deflection climbs past 50%.",
+                  accent: "bg-[#f2e7d0] text-[#c57f1e]",
+                },
+                {
+                  when: "Week 4",
+                  title: "Your team runs support differently.",
+                  body:
+                    "Agents spend time on judgment calls, not triage. You hire one fewer support rep than planned. CSAT holds or climbs. Pricing still at the same tier.",
+                  accent: "bg-[#dfecf7] text-[#2b7a3d]",
+                },
+              ].map((milestone) => (
+                <AboutSectionReveal key={milestone.when}>
+                  <article className="flex h-full flex-col rounded-[26px] border border-[#e4e9f4] bg-white/92 p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)] backdrop-blur-sm">
+                    <div
+                      className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${milestone.accent}`}
+                    >
+                      {milestone.when}
+                    </div>
+                    <h3 className="mt-4 font-[Georgia,serif] text-[22px] leading-[1.2] tracking-[-0.02em] text-[#0f172a] md:text-[24px]">
+                      {milestone.title}
+                    </h3>
+                    <p className="mt-3 font-sans text-[15px] leading-[1.7] text-[#5d6b8b]">
+                      {milestone.body}
+                    </p>
+                  </article>
+                </AboutSectionReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ─────── 8. FINAL CTA (dark navy with gradient accent) ─────── */}
         <section className="relative overflow-hidden pb-24 pt-14 bg-[#0f172a]">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(62,128,241,0.14),transparent_40%),radial-gradient(circle_at_top_right,rgba(139,92,246,0.10),transparent_30%)]" />

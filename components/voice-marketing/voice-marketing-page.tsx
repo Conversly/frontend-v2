@@ -502,6 +502,41 @@ function PlatformSection() {
             </span>
           ))}
         </div>
+
+        {/* Sister channels — voice is one of three */}
+        <div className="mt-10 flex flex-col gap-4 border-t border-white/8 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/50">
+              One agent · Three channels
+            </div>
+            <p className="mt-1.5 text-[15px] text-[#b8c2db]">
+              Voice lives alongside web chat and WhatsApp — same knowledge base, same handoff rules.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-[#e2ebfa] transition-colors hover:border-white/25 hover:bg-white/[0.08]"
+            >
+              Web chat widget
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href="/features"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-[#e2ebfa] transition-colors hover:border-white/25 hover:bg-white/[0.08]"
+            >
+              WhatsApp Business
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href="/integrations"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-[#e2ebfa] transition-colors hover:border-white/25 hover:bg-white/[0.08]"
+            >
+              Shared inbox + integrations
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
       </motion.div>
     </section>
   );

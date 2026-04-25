@@ -35,8 +35,29 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-/* ─────────────────────────── Section ─────────────────────────── */
+/* ─────────────────────────── Sections ─────────────────────────── */
 
+const cardBg = {
+  bgGradient:
+    "pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#fbf8f1_0%,#f6f1e6_50%,#faf7f0_100%)]",
+  glowLeft:
+    "pointer-events-none absolute -left-24 top-20 h-[26rem] w-[26rem] rounded-full bg-[#e4eaf8] opacity-70 blur-[120px]",
+  glowRight:
+    "pointer-events-none absolute -right-24 bottom-[-4rem] h-[22rem] w-[22rem] rounded-full bg-[#f2e7d0] opacity-80 blur-[120px]",
+  grain:
+    "pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-multiply",
+  grainStyle: {
+    backgroundImage:
+      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+    backgroundSize: "240px 240px",
+  },
+};
+
+/**
+ * The founder's letter + principle sidebar.
+ * Shown ABOVE the pricing plan cards so the buyer reads the rationale
+ * before the table.
+ */
 export default function PricingFounderNote() {
   return (
     <section
@@ -44,27 +65,42 @@ export default function PricingFounderNote() {
       className="relative overflow-hidden py-16 md:py-24"
       aria-labelledby="pricing-founder-note-title"
     >
-      {/* Ambient background — warm cream with a soft directional glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#fbf8f1_0%,#f6f1e6_50%,#faf7f0_100%)]" />
-      <div className="pointer-events-none absolute -left-24 top-20 h-[26rem] w-[26rem] rounded-full bg-[#e4eaf8] opacity-70 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-[-4rem] h-[22rem] w-[22rem] rounded-full bg-[#f2e7d0] opacity-80 blur-[120px]" />
-
-      {/* Paper grain — cheap SVG turbulence noise, blended low */}
+      <div className={cardBg.bgGradient} />
+      <div className={cardBg.glowLeft} />
+      <div className={cardBg.glowRight} />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-          backgroundSize: "240px 240px",
-        }}
+        className={cardBg.grain}
+        style={cardBg.grainStyle as React.CSSProperties}
       />
 
       <div className="relative mx-auto w-[95%] max-w-[1200px] md:w-[88%]">
         <FounderLetter />
-        <div className="mt-20 md:mt-28">
-          <PricingFaq />
-        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Pricing FAQ — rendered AFTER the plan cards / ROI calculator
+ * so the objection-killer sits right before the final CTA.
+ */
+export function PricingFaqSection() {
+  return (
+    <section
+      aria-labelledby="pricing-faq-title"
+      className="relative overflow-hidden py-16 md:py-24"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#faf7f0_0%,#fbf8f1_60%,#ffffff_100%)]" />
+      <div className="pointer-events-none absolute -right-24 top-10 h-[22rem] w-[22rem] rounded-full bg-[#e4eaf8] opacity-60 blur-[120px]" />
+      <div
+        aria-hidden
+        className={cardBg.grain}
+        style={cardBg.grainStyle as React.CSSProperties}
+      />
+
+      <div className="relative mx-auto w-[95%] max-w-[1200px] md:w-[88%]">
+        <PricingFaq />
       </div>
     </section>
   );

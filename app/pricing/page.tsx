@@ -4,7 +4,8 @@ import Footer from "@/components/landing/footer";
 import ROICalculator from "@/components/landing/roi-calculator";
 import PricingSection from "@/components/landing/pricing";
 import PricingDecisionBanner from "@/components/landing/pricing-decision-banner";
-import PricingFounderNote from "@/components/landing/pricing-founder-note";
+import PricingFounderNote, { PricingFaqSection } from "@/components/landing/pricing-founder-note";
+import StickyMobileCta from "@/components/landing/sticky-mobile-cta";
 import { pricingFaqs } from "@/lib/pricing-faqs";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo-schema";
 import { siteConfig } from "@/lib/metadata";
@@ -57,19 +58,30 @@ export default function PricingPage() {
       <div className="relative z-10">
         <Navbar />
 
+        {/* 1. Founder note FIRST — sets the why before the what */}
+        <PricingFounderNote />
+
+        {/* 2. Plan cards */}
         <div className={`${CONTENT_WIDTH} relative`}>
           <PricingSection />
         </div>
 
-        {/* Full-bleed editorial founder note + pricing FAQ */}
-        <PricingFounderNote />
-
+        {/* 3. ROI calculator */}
         <div className={`${CONTENT_WIDTH} relative`}>
           <ROICalculator />
+        </div>
+
+        {/* 4. Pricing FAQ — objection killer right before the final CTA */}
+        <PricingFaqSection />
+
+        {/* 5. Final decision banner */}
+        <div className={`${CONTENT_WIDTH} relative`}>
           <PricingDecisionBanner />
           <Footer />
         </div>
       </div>
+
+      <StickyMobileCta />
     </main>
   );
 }

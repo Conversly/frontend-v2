@@ -14,6 +14,7 @@ export default function StickyCTABar() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [ctaInView, setCtaInView] = useState(false);
 
   useEffect(() => {
     try {
@@ -36,14 +37,32 @@ export default function StickyCTABar() {
     return () => container.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const targets = document.querySelectorAll<HTMLElement>("[data-cta-region]");
+    if (targets.length === 0) return;
+    const observer = new IntersectionObserver(
+      () => {
+        const stillIn = Array.from(targets).some((t) => {
+          const r = t.getBoundingClientRect();
+          return r.top < window.innerHeight * 0.95 && r.bottom > 0;
+        });
+        setCtaInView(stillIn);
+      },
+      { threshold: [0, 0.15, 0.5] },
+    );
+    targets.forEach((t) => observer.observe(t));
+    return () => observer.disconnect();
+  }, [pathname]);
+
   if (dismissed) return null;
   if (isAuthenticated) return null;
+  if (ctaInView) return null;
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
   if (/^\/[a-f0-9-]{20,}/.test(pathname)) return null;
 
   return (
     <div
-      className={`fixed bottom-5 left-1/2 z-50 -translate-x-1/2 transition-all duration-500 ease-out ${
+      className={`fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 transition-all duration-500 ease-out md:block ${
         visible
           ? "translate-y-0 opacity-100"
           : "translate-y-6 opacity-0 pointer-events-none"

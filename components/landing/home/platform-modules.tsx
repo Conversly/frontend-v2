@@ -195,22 +195,22 @@ const modules = [
                 </span>
               </div>
 
-              <div className="mt-auto pt-4 grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div className="mt-auto grid grid-cols-2 gap-3 pt-4 md:grid-cols-4">
                 {[
-                  { name: "Email", color: "bg-[#4e7ff5]", count: "12" },
-                  { name: "WhatsApp", color: "bg-[#42b97a]", count: "5" },
-                  { name: "Instagram", color: "bg-[#dc4a95]", count: "4" },
-                  { name: "Messenger", color: "bg-[#615ff4]", count: "3" },
+                  { name: "Email", color: "bg-[linear-gradient(135deg,#5e8cff,#3f6df0)]", count: "12" },
+                  { name: "WhatsApp", color: "bg-[linear-gradient(135deg,#5fd391,#2fa563)]", count: "5" },
+                  { name: "Instagram", color: "bg-[linear-gradient(135deg,#f56aa9,#c43c80)]", count: "4" },
+                  { name: "Messenger", color: "bg-[linear-gradient(135deg,#7c79ff,#4f4cdc)]", count: "3" },
                 ].map((channel) => (
                   <div
                     key={channel.name}
-                    className="rounded-[18px] border border-[#eceef6] bg-gradient-to-b from-[#f8f9fc] to-[#f4f6fb] px-3 py-4 text-center shadow-sm relative overflow-hidden"
+                    className="group relative overflow-hidden rounded-[18px] border border-[#e8ebf3] bg-[linear-gradient(180deg,#ffffff_0%,#f6f8fd_100%)] px-3 py-4 text-center shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_8px_18px_-12px_rgba(40,45,65,0.18)] transition-all hover:-translate-y-0.5 hover:border-[#d3d9ec]"
                   >
-                    <div className={`mx-auto flex h-10 w-10 items-center justify-center rounded-2xl ${channel.color} text-white shadow-md`}>
+                    <div className={`mx-auto flex h-10 w-10 items-center justify-center rounded-2xl ${channel.color} text-white shadow-[0_8px_18px_-6px_rgba(40,45,65,0.3)]`}>
                       <Inbox size={18} />
                     </div>
-                    <div className="mt-3 text-[13px] font-semibold text-[#69728c]">{channel.name}</div>
-                    <div className="absolute top-2 right-2 text-[10px] font-bold text-[#8d96b3] bg-white rounded-full px-1.5 min-w-[20px] shadow-sm">
+                    <div className="mt-3 text-[13px] font-semibold text-[#535b75]">{channel.name}</div>
+                    <div className="absolute right-2 top-2 min-w-[22px] rounded-full border border-[#eceff7] bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#5468ff] shadow-sm">
                       {channel.count}
                     </div>
                   </div>
@@ -271,17 +271,17 @@ const modules = [
             />
             <div className="mt-auto pt-6 grid gap-3 sm:grid-cols-2">
               {[
-                { title: "Returns policy", count: "12 docs", icon: "📑" },
-                { title: "Shipping timelines", count: "4 docs", icon: "📦" },
-                { title: "Escalation playbook", count: "8 docs", icon: "🚨" },
-                { title: "Voice call scripts", count: "15 docs", icon: "🎙️" },
+                { title: "Returns policy", count: "12 docs", icon: "📑", tint: "from-[#eaf0ff] to-white" },
+                { title: "Shipping timelines", count: "4 docs", icon: "📦", tint: "from-[#fff3e6] to-white" },
+                { title: "Escalation playbook", count: "8 docs", icon: "🚨", tint: "from-[#ffe9e9] to-white" },
+                { title: "Voice call scripts", count: "15 docs", icon: "🎙️", tint: "from-[#e8fbef] to-white" },
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[16px] border border-[#e8ebf3] bg-gradient-to-b from-[#f8f9fc] to-white px-4 py-4 text-[14px] font-medium text-[#68718b] shadow-sm flex flex-col gap-1"
+                  className={`group relative flex flex-col gap-1 overflow-hidden rounded-[16px] border border-[#e8ebf3] bg-gradient-to-b ${item.tint} px-4 py-4 text-[14px] font-medium text-[#68718b] shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_8px_18px_-12px_rgba(40,45,65,0.18)] transition-all hover:-translate-y-0.5 hover:border-[#d3d9ec]`}
                 >
-                  <span className="text-[18px]">{item.icon}</span>
-                  <span className="mt-1 text-[#3f475c] font-semibold">{item.title}</span>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[18px] shadow-sm">{item.icon}</span>
+                  <span className="mt-2 font-semibold text-[#3f475c]">{item.title}</span>
                   <span className="text-[12px] text-[#9098b0]">{item.count}</span>
                 </div>
               ))}
@@ -416,12 +416,37 @@ export default function PlatformModules() {
 
       <div className="relative mx-auto max-w-[1440px] px-4 md:px-6">
         {/* Header */}
-        <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,760px)_minmax(0,360px)] lg:items-end lg:justify-between">
+        <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,780px)_minmax(0,380px)] lg:items-end lg:justify-between">
           <div>
-            <h2 className="mt-5 max-w-[1220px] font-[Georgia,Times,'Times_New_Roman',serif] text-[36px] leading-[0.98] tracking-[-0.04em] text-white md:text-[44px]">
-              Five products. One workflow.
-              <span className="block text-white/50">Zero integrations to babysit.</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-white/70 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7f95ff]" />
+              The Platform
+            </span>
+            <h2 className="mt-5 max-w-[760px] text-balance text-[34px] font-bold leading-[1.02] tracking-[-0.035em] text-white sm:text-[40px] md:text-[48px] lg:text-[52px]">
+              Five products. One workflow.{" "}
+              <span className="text-white/45">Zero integrations to babysit.</span>
             </h2>
+          </div>
+
+          <div className="lg:pb-2">
+            <p className="max-w-[420px] text-[15px] leading-7 text-white/55 md:text-[16px]">
+              Helpdesk, chat, inbox, knowledge, and analytics — built on the same core.
+              Switch tabs, not tools.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] font-medium uppercase tracking-[0.18em] text-white/40">
+              <span className="flex items-center gap-2">
+                <span className="h-1 w-1 rounded-full bg-emerald-400/80" />
+                Unified data
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-1 w-1 rounded-full bg-[#7f95ff]" />
+                Shared context
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-1 w-1 rounded-full bg-amber-300/80" />
+                Live in 10 min
+              </span>
+            </div>
           </div>
         </div>
 
@@ -468,23 +493,25 @@ export default function PlatformModules() {
                 transition={{ duration: 0.35, ease: "easeOut" }}
                 className="col-start-1 row-start-1 h-full flex flex-col w-full overflow-hidden rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(9,11,20,0.98),rgba(4,6,13,0.98))] p-4 shadow-[0_32px_80px_rgba(0,0,0,0.3)] md:p-6"
               >
-                <div className="mx-auto w-full max-w-[1080px] flex-1 overflow-hidden flex flex-col rounded-[30px] border border-[#d8d9e6] bg-[#dbdde9] shadow-[0_20px_60px_rgba(14,19,43,0.18)]">
+                <div className="mx-auto w-full max-w-[1080px] flex-1 overflow-hidden flex flex-col rounded-[30px] border border-white/70 bg-[linear-gradient(180deg,#ffffff_0%,#f4f6fc_100%)] shadow-[0_24px_70px_rgba(14,19,43,0.22),0_2px_0_rgba(255,255,255,0.6)_inset]">
                   {/* Module header */}
-                  <div className="border-b border-[#c9ccdb] bg-[#dcdeea] px-6 py-6 md:px-8">
+                  <div className="relative border-b border-[#e6e9f3] bg-[linear-gradient(180deg,#ffffff_0%,#f7f9ff_100%)] px-6 py-6 md:px-8 md:py-7">
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7f95ff]/30 to-transparent" />
                     <div className="flex items-start gap-4">
                       <div
-                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${activeModule.iconClass} shadow-[0_12px_24px_rgba(110,131,255,0.18)]`}
+                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${activeModule.iconClass} shadow-[0_14px_30px_rgba(110,131,255,0.22),0_0_0_1px_rgba(255,255,255,0.6)_inset]`}
                       >
                         <ActiveIcon className="h-6 w-6" />
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#8b8ea4]">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6e7693]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#7f95ff]" />
                           {activeModule.previewLabel}
                         </div>
-                        <div className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#2b3245] md:text-[30px]">
+                        <h3 className="mt-2.5 text-[26px] font-semibold leading-[1.15] tracking-[-0.03em] text-[#1a2138] md:text-[30px]">
                           {activeModule.previewTitle}
-                        </div>
-                        <p className="mt-2 max-w-[680px] text-[15px] leading-7 text-[#6f768d]">
+                        </h3>
+                        <p className="mt-2 max-w-[680px] text-[14.5px] leading-[1.65] text-[#6f768d] md:text-[15px]">
                           {activeModule.previewDescription}
                         </p>
                       </div>
@@ -492,24 +519,28 @@ export default function PlatformModules() {
                   </div>
 
                   {/* Module content */}
-                  <div className="p-4 md:p-5 flex flex-1 flex-col">
-                    <div className="rounded-[24px] bg-[#edeff6] p-3 md:p-4 flex-1">
+                  <div className="flex flex-1 flex-col p-4 md:p-5">
+                    <div className="flex-1 rounded-[24px] border border-white/80 bg-[#eef0f7] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] md:p-4">
                       {activeModule.render()}
                     </div>
 
                     {/* Metrics bar */}
-                    <div className="mt-4 grid gap-px overflow-hidden rounded-[16px] bg-[#7086ff] md:grid-cols-3 shrink-0">
-                      {activeModule.metrics.map((stat) => (
-                        <div
-                          key={stat.label}
-                          className="bg-[linear-gradient(180deg,#7f95ff_0%,#637cff_100%)] px-6 py-5 text-center text-white"
-                        >
-                          <div className="text-[18px] font-semibold md:text-[22px]">{stat.value}</div>
-                          <div className="mt-1 text-[12px] font-medium tracking-[0.04em] text-white/80">
-                            {stat.label}
+                    <div className="mt-4 shrink-0 overflow-hidden rounded-[18px] border border-[#5468ff]/30 bg-[linear-gradient(135deg,#5e76ff_0%,#7f95ff_55%,#6275ff_100%)] shadow-[0_18px_40px_rgba(80,103,255,0.28)]">
+                      <div className="grid divide-x divide-white/15 md:grid-cols-3">
+                        {activeModule.metrics.map((stat) => (
+                          <div
+                            key={stat.label}
+                            className="relative px-6 py-5 text-center text-white"
+                          >
+                            <div className="text-[20px] font-semibold tracking-[-0.02em] md:text-[24px]">
+                              {stat.value}
+                            </div>
+                            <div className="mt-1 text-[11.5px] font-medium uppercase tracking-[0.12em] text-white/75">
+                              {stat.label}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -554,19 +585,40 @@ function SmallPanel({
   fullHeight?: boolean;
 }) {
   return (
-    <div className={`rounded-[24px] bg-[#e5e7f0] p-4 ${fullHeight ? "h-full flex flex-col" : ""}`}>
-      <div className={`rounded-[22px] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] ${fullHeight ? "h-full flex flex-col" : ""}`}>
+    <div className={`rounded-[24px] border border-[#e1e5f0] bg-[linear-gradient(180deg,#eef0f8_0%,#e6e9f4_100%)] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] ${fullHeight ? "h-full flex flex-col" : ""}`}>
+      <div className={`rounded-[20px] border border-white bg-[linear-gradient(180deg,#ffffff_0%,#fbfcfe_100%)] p-4 shadow-[0_18px_36px_-18px_rgba(40,45,65,0.18)] ${fullHeight ? "h-full flex flex-col" : ""}`}>
         <div className="flex items-center justify-between gap-3">
-          <div className="text-[17px] font-semibold text-[#31384f]">{title}</div>
+          <div className="text-[16.5px] font-semibold tracking-[-0.01em] text-[#222a40]">{title}</div>
           <StatusChip tone="neutral">{value}</StatusChip>
         </div>
-        <div className={`mt-auto pt-4 space-y-3 ${fullHeight ? "flex-1 flex flex-col justify-end" : ""}`}>
-          {lines.map((line) => (
+
+        <div className="mt-4 overflow-hidden rounded-[14px] border border-[#eceff7] bg-[linear-gradient(135deg,#f3f6ff_0%,#ffffff_50%,#f3f6ff_100%)] px-4 py-3">
+          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7c84a0]">
+            <span className="flex items-center gap-1.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#5468ff] opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#5468ff]" />
+              </span>
+              Live
+            </span>
+            <span className="text-[#5468ff]">{lines.length} signals</span>
+          </div>
+          <div className="mt-2 text-[12.5px] leading-[1.55] text-[#7a829b]">
+            Captured automatically and synced to the workspace.
+          </div>
+        </div>
+
+        <div className={`mt-3 flex flex-col gap-2.5 ${fullHeight ? "flex-1" : ""}`}>
+          {lines.map((line, index) => (
             <div
               key={line}
-              className="rounded-[16px] bg-[#f7f8fc] px-4 py-3 text-[14px] font-medium text-[#69728c] shadow-sm border border-[#f0f2f7]"
+              className={`group flex items-center gap-3 rounded-[14px] border border-[#eceff7] bg-white px-4 text-[13.5px] font-medium text-[#5d6580] shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_2px_8px_-4px_rgba(40,45,65,0.05)] ${fullHeight ? "flex-1 py-2.5" : "py-3"}`}
             >
-              {line}
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#eef1ff,#dde3ff)] text-[10px] font-bold text-[#5468ff] shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="flex-1">{line}</span>
+              <span className="text-[#c8cee0] opacity-0 transition-opacity group-hover:opacity-100">→</span>
             </div>
           ))}
         </div>
@@ -582,7 +634,9 @@ function Bubble({ side, text }: { side: "left" | "right"; text: string }) {
     <div className={`flex ${isRight ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-[90%] rounded-[18px] px-4 py-3 text-[14px] leading-6 ${
-          isRight ? "bg-[#6e83ff] text-white" : "bg-[#f7f8fc] text-[#68718b]"
+          isRight
+            ? "rounded-br-[6px] bg-[linear-gradient(180deg,#7f95ff_0%,#5e76ff_100%)] text-white shadow-[0_8px_20px_-6px_rgba(94,118,255,0.45)]"
+            : "rounded-bl-[6px] border border-[#eceff7] bg-[linear-gradient(180deg,#ffffff_0%,#f6f8fd_100%)] text-[#586079] shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]"
         }`}
       >
         {text}
@@ -593,8 +647,8 @@ function Bubble({ side, text }: { side: "left" | "right"; text: string }) {
 
 function ModuleCard({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-[24px] bg-[#e5e7f0] p-4 h-full flex flex-col">
-      <div className="rounded-[22px] bg-white p-4 lg:p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_12px_24px_rgba(40,45,65,0.04)] h-full flex flex-col">
+    <div className="flex h-full flex-col rounded-[24px] border border-[#e1e5f0] bg-[linear-gradient(180deg,#eef0f8_0%,#e6e9f4_100%)] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+      <div className="flex h-full flex-col rounded-[20px] border border-white bg-white p-4 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_18px_36px_-18px_rgba(40,45,65,0.18)] lg:p-5">
         {children}
       </div>
     </div>
@@ -613,15 +667,16 @@ function SectionTitle({
   return (
     <div>
       {eyebrow ? (
-        <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#8d93aa]">
+        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7c84a0]">
+          <span className="h-1 w-1 rounded-full bg-[#7f95ff]" />
           {eyebrow}
         </div>
       ) : null}
-      <div className={`${eyebrow ? "mt-1" : ""} text-[17px] font-semibold text-[#31384f]`}>
+      <div className={`${eyebrow ? "mt-2" : ""} text-[17px] font-semibold tracking-[-0.01em] text-[#222a40]`}>
         {title}
       </div>
       {description ? (
-        <p className="mt-1.5 text-[14px] leading-6 text-[#7a829b]">{description}</p>
+        <p className="mt-1.5 text-[13.5px] leading-[1.65] text-[#7a829b]">{description}</p>
       ) : null}
     </div>
   );
@@ -629,9 +684,10 @@ function SectionTitle({
 
 function DetailRow({ title, detail }: { title: string; detail: string }) {
   return (
-    <div className="rounded-[16px] border border-[#eaecf4] bg-[#f8f9fc] px-4 py-3">
-      <div className="text-[14px] font-semibold text-[#49536e]">{title}</div>
-      <div className="mt-1 text-[13px] leading-6 text-[#7d859e]">{detail}</div>
+    <div className="group relative overflow-hidden rounded-[16px] border border-[#e8ebf3] bg-[linear-gradient(180deg,#fbfcfe_0%,#f5f7fc_100%)] px-4 py-3 transition-colors hover:border-[#d3d9ec]">
+      <span className="absolute inset-y-2 left-0 w-[3px] rounded-r-full bg-gradient-to-b from-[#7f95ff] to-[#5e76ff] opacity-70" />
+      <div className="pl-2 text-[14px] font-semibold text-[#3a4360]">{title}</div>
+      <div className="mt-1 pl-2 text-[13px] leading-[1.55] text-[#7d859e]">{detail}</div>
     </div>
   );
 }
@@ -643,13 +699,23 @@ function StatusChip({
   children: ReactNode;
   tone: "blue" | "neutral";
 }) {
-  const className =
-    tone === "blue"
-      ? "bg-[#e8ebff] text-[#6e83ff]"
-      : "bg-[#f4f5f9] text-[#7a829b]";
+  const tones = {
+    blue: {
+      bg: "bg-[#eaeeff] text-[#5468ff] border-[#d8def9]",
+      dot: "bg-[#5468ff]",
+    },
+    neutral: {
+      bg: "bg-[#f4f5f9] text-[#7a829b] border-[#e6e8f0]",
+      dot: "bg-[#9ca3b8]",
+    },
+  } as const;
+  const t = tones[tone];
 
   return (
-    <span className={`rounded-full px-3 py-1 text-[12px] font-semibold ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11.5px] font-semibold ${t.bg}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${t.dot}`} />
       {children}
     </span>
   );

@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/metadata";
 import { getAllPosts } from "@/lib/sanity/client";
 import { getAllSolutionSlugs } from "@/lib/solutions-data";
 import { ALL_FEATURES } from "@/app/features/constants";
+import { getAllCompetitorSlugs } from "@/lib/compare-data";
 
 const staticRoutes: MetadataRoute.Sitemap = [
   {
@@ -64,6 +65,18 @@ const staticRoutes: MetadataRoute.Sitemap = [
     url: `${siteConfig.url}/compare`,
     lastModified: new Date(),
     changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    url: `${siteConfig.url}/integrations`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.85,
+  },
+  {
+    url: `${siteConfig.url}/changelog`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
     priority: 0.7,
   },
   {
@@ -138,10 +151,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  const compareRoutes: MetadataRoute.Sitemap = getAllCompetitorSlugs().map(
+    (slug) => ({
+      url: `${siteConfig.url}/compare/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })
+  );
+
   return [
     ...staticRoutes,
     ...blogRoutes,
     ...solutionRoutes,
     ...featureRoutes,
+    ...compareRoutes,
   ];
 }

@@ -78,7 +78,7 @@ export default function LandingHero() {
                   </div>
                 </div>
                 <p className="mt-4 text-[13px] text-slate-500">
-                  Free forever plan. No credit card. Cancel in one click.
+                  Start free — agent live in 10 minutes. No credit card. Cancel in one click.
                 </p>
               </motion.div>
             </div>

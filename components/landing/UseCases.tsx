@@ -90,15 +90,15 @@ export default function UseCases() {
       id="use-cases"
     >
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
-        <div className="mx-auto mb-14 max-w-[760px] text-center">
-          <div className="landing-home-eyebrow mb-4">
+        <div className="mx-auto mb-14 max-w-[860px] text-center">
+          <div className="landing-home-eyebrow mb-5">
             Industries
           </div>
-          <h2 className="landing-home-title text-[34px] md:text-[52px]">
-            Real teams. Real outcomes.
-            <span className="landing-home-title-muted block">10x more support, same headcount.</span>
+          <h2 className="landing-home-title text-balance text-[30px] leading-[1.1] tracking-[-0.03em] sm:text-[36px] md:text-[44px] lg:text-[52px]">
+            Real teams. Real outcomes.{" "}
+            <span className="landing-home-title-muted">10x more support, same headcount.</span>
           </h2>
-          <p className="landing-home-copy mx-auto mt-5 max-w-[600px] text-[15px] md:text-[17px]">
+          <p className="landing-home-copy mx-auto mt-6 max-w-[600px] text-balance text-[15px] md:text-[17px]">
             Here&rsquo;s what Verly does for teams in 6 industries — with the numbers to back it up.
           </p>
         </div>

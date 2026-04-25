@@ -17,6 +17,9 @@ import BackedBy from "@/components/landing/home/backed-by";
 import FeatureShowcase from "@/components/landing/home/feature-showcase";
 import FullscreenVideo from "@/components/landing/home/fullscreen-video";
 import Certificate from "@/components/landing/home/certificate";
+import HowItWorks from "@/components/landing/home/how-it-works-steps";
+import TestimonialStrip from "@/components/landing/home/testimonial-strip";
+import StickyMobileCta from "@/components/landing/sticky-mobile-cta";
 
 export const metadata: Metadata = {
   title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
@@ -47,42 +50,50 @@ export default function Home() {
 
       <Navbar />
 
-      {/* 1. Hero: category, channels, CTA, real product visual */}
+      {/* 1. Hero — what it is + outcome */}
       <LandingHero />
 
-      {/* 2. Early trust strip */}
+      {/* 2. Trust strip */}
       <BackedBy />
 
-      {/* 4. Product story: lifecycle */}
+      {/* 3. Lifecycle + embedded product video (the demo moment) */}
       <SupportLifecycle />
 
-      {/* 6. Human handoff section */}
+      {/* 4. How it works in 3 steps — reduces signup anxiety */}
+      <HowItWorks />
+
+      {/* 5. Use cases — "is this for me?" (moved up for relevance-first) */}
+      <UseCases />
+
+      {/* 6. Omnichannel — channels in action */}
+      <OmnichannelSection />
+
+      {/* 7. Human handoff — the differentiator, framed as an objection-kill */}
       <HumanEscalationSection />
 
-      {/* 3. Main interactive showcase */}
-      <PlatformModules />
+      {/* 8. Testimonial / social proof strip */}
+      {/* <TestimonialStrip /> */}
 
-      {/* 5. Omnichannel proof: web, WhatsApp, voice */}
-      <OmnichannelSection />
+      {/* 9. Full product tour */}
+      <PlatformModules />
 
       <FeatureShowcase />
 
-      {/* 7. Proof cards */}
+      {/* 10. Proof cards — stack, security, guardrails */}
       <ProofCardsSection />
 
-      {/* 8. Use cases */}
-      <UseCases />
-
-      {/* 9. Security & privacy trust block */}
+      {/* 11. Security & privacy trust block */}
       <SecurityPrivacySection />
 
       <Certificate />
 
-      {/* 10. FAQ */}
+      {/* 12. FAQ */}
       <FAQ />
 
-      {/* Footer */}
       <Footer />
+
+      {/* Mobile-only sticky CTA bar */}
+      <StickyMobileCta />
     </main>
   );
 }

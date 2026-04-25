@@ -10,19 +10,21 @@ const exploreLinks = [
   { name: "Features", href: "/features" },
   { name: "Pricing", href: "/pricing" },
   { name: "Solutions", href: "/solutions" },
+  { name: "Integrations", href: "/integrations" },
   { name: "Lead Agent", href: "/lead-agent" },
 ];
 
 const companyLinks = [
   { name: "About", href: "/about" },
   { name: "Enterprise", href: "/solutions/enterprise" },
+  { name: "Changelog", href: "/changelog" },
   { name: "Help", href: "/help" },
 ];
 
 const webLinks = [
-  { name: "Docs", href: "https://docs.verlyai.xyz" },
-  { name: "Blogs", href: "https://verlyai.xyz/blogs" },
-  { name: "Voice", href: "https://verlyai.xyz/voice" },
+  { name: "Docs", href: "/docs" },
+  { name: "Blogs", href: "/blogs" },
+  { name: "Voice", href: "/voice" },
 ];
 
 const legalLinks = [
@@ -47,6 +49,7 @@ function XIcon({ className }: { className?: string }) {
 export function FooterCta() {
   return (
     <div
+      data-cta-region="footer"
       className="relative"
       style={{
         background:
@@ -179,8 +182,8 @@ export function FooterBase() {
             <p className="text-sm leading-6 text-white/50">
               © {new Date().getFullYear()} Verly AI Inc. All rights reserved.
             </p>
-            <p className="max-w-[520px] text-sm leading-6 text-white/35 md:text-right">
-              Built for support teams managing voice, WhatsApp, and web chat in one place.
+            <p className="max-w-[540px] text-sm leading-6 text-white/35 md:text-right">
+              Built for support teams managing voice, WhatsApp, and web chat in one&nbsp;place.
             </p>
           </div>
         </div>
