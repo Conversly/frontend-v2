@@ -9,11 +9,9 @@ import {
     DeployStatus
 } from "@/lib/api/deploy";
 import { useBranch } from "@/store/branch";
-import { DeployVisual } from "@/components/deploy/DeployVisual";
 import { DeploymentDiffView } from "@/components/deploy/DeploymentDiffModal";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
     Rocket,
     RotateCcw,
@@ -22,7 +20,11 @@ import {
     ShieldAlert,
     Info,
     GitBranch,
-    Globe2
+    Globe2,
+    Globe,
+    ArrowRight,
+    Loader2,
+    Clock
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -49,13 +51,10 @@ export default function DeployLivePage() {
             const data = await getDeployStatus(botId);
             if (data) {
                 setStatus(data);
-
-                // Sync store with backend status
                 if (data.deployStatusField) {
                     setDeployState(data.deployStatusField);
                 }
             }
-
             return data;
         } catch (error: any) {
             if (showError) {
@@ -69,21 +68,17 @@ export default function DeployLivePage() {
         }
     }, [botId, setDeployState]);
 
-    // Initial fetch
     useEffect(() => {
         fetchStatus();
     }, [fetchStatus]);
 
-    // Polling while deploying
     useEffect(() => {
         let interval: NodeJS.Timeout;
-
         if (status?.deployStatusField === 'DEPLOYING') {
             interval = setInterval(() => {
                 fetchStatus(false);
             }, 5000);
         }
-
         return () => {
             if (interval) clearInterval(interval);
         };
@@ -100,7 +95,6 @@ export default function DeployLivePage() {
     };
 
     const handleConfirmDeploy = async () => {
-        // Switch back to default view and immediately start animation
         setPageView("default");
         setIsDeployingLocal(true);
         try {
@@ -111,9 +105,7 @@ export default function DeployLivePage() {
                 success: 'Deployment started! Updating systems...',
                 error: (err) => `Deployment failed: ${err.message}`
             });
-
             await promise;
-            // Immediate fetch to set state to DEPLOYING
             await fetchStatus(false);
         } catch (error: any) {
             console.error(error);
@@ -130,7 +122,6 @@ export default function DeployLivePage() {
             });
             return;
         }
-
         try {
             setIsActionInProgress(true);
             const promise = rollbackDev(botId);
@@ -139,7 +130,6 @@ export default function DeployLivePage() {
                 success: 'Successfully rolled back to live version!',
                 error: (err) => `Rollback failed: ${err.message}`
             });
-
             await promise;
             await fetchStatus(false);
             syncVersions();
@@ -157,7 +147,6 @@ export default function DeployLivePage() {
         (status && status.devVersion > status.liveVersion);
     const isLocked = status?.deployStatusField === 'LOCKED';
 
-    // Clear local deploying flag when backend confirms completion
     useEffect(() => {
         if (status?.deployStatusField !== 'DEPLOYING' && status?.deployStatusField !== 'DEV_DIRTY' && isDeployingLocal) {
             setIsDeployingLocal(false);
@@ -181,6 +170,10 @@ export default function DeployLivePage() {
                 return { label: 'Unknown', chipClass: 'dashboard-status-chip dashboard-status-chip--neutral' };
         }
     })();
+
+    const draftPanelStyle = isDirty
+        ? { bg: 'bg-[var(--status-warning-bg)]', border: 'border-[var(--status-warning-border)]', text: 'text-[var(--status-warning-fg)]' }
+        : { bg: 'bg-[var(--surface-secondary)]', border: 'border-[var(--border-secondary)]', text: 'text-muted-foreground' };
 
     return (
         <div className="dashboard-page px-4 py-4 md:px-6 md:py-6">
@@ -207,30 +200,9 @@ export default function DeployLivePage() {
                 )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Column — swaps between DeployVisual and DiffView */}
-                <div className="lg:col-span-2 space-y-6">
-                    {pageView === "default" && isLocked && (
-                        <Alert variant="destructive" className="border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]">
-                            <ShieldAlert className="h-5 w-5" />
-                            <AlertTitle>Deployment Locked</AlertTitle>
-                            <AlertDescription>
-                                Your chatbot configuration is currently locked due to a previous deployment failure.
-                                Please contact support.
-                            </AlertDescription>
-                        </Alert>
-                    )}
-
-                    {pageView === "default" && !isDirty && !isDeploying && !isLocked && (
-                        <Alert className="border-[var(--status-success-border)] bg-[var(--status-success-bg)] text-[var(--status-success-fg)]">
-                            <CheckCircle2 className="h-5 w-5 text-[var(--status-success-fg)]" />
-                            <AlertTitle>All changes synced</AlertTitle>
-                            <AlertDescription>
-                                Your LIVE chatbot is currently running the latest version of your configuration.
-                            </AlertDescription>
-                        </Alert>
-                    )}
-
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Main Column */}
+                <div className="lg:col-span-2 space-y-4">
                     <AnimatePresence mode="wait">
                         {pageView === "reviewing" ? (
                             <motion.div
@@ -238,7 +210,7 @@ export default function DeployLivePage() {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.25 }}
+                                transition={{ duration: 0.2 }}
                             >
                                 <DeploymentDiffView
                                     botId={botId}
@@ -249,129 +221,223 @@ export default function DeployLivePage() {
                             </motion.div>
                         ) : (
                             <motion.div
-                                key="deploy-visual"
+                                key="overview"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
-                                transition={{ duration: 0.25 }}
+                                transition={{ duration: 0.2 }}
+                                className="space-y-4"
                             >
-                                <Card className="overflow-hidden border-border/60 shadow-md h-[calc(100vh-220px)] min-h-[560px]">
-                                    <DeployVisual isDeploying={isDeploying} />
+                                {/* Environment Comparison Card */}
+                                <Card className="border-border/60 shadow-[var(--shadow-1)]">
+                                    <CardHeader className="pb-3">
+                                        <CardTitle className="type-card-title">Environments</CardTitle>
+                                        <CardDescription className="type-body-muted">
+                                            Current state of your live and draft environments.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+                                            {/* LIVE panel */}
+                                            <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-success-border)] bg-[var(--status-success-bg)] p-4 space-y-3">
+                                                <div className="flex items-center gap-2">
+                                                    <Globe className="w-4 h-4 text-[var(--status-success-fg)]" />
+                                                    <span className="type-caption text-[var(--status-success-fg)]">Live</span>
+                                                </div>
+                                                <p className="text-3xl font-bold text-foreground">
+                                                    v{isLoading ? '—' : (status?.liveVersion ?? 0)}
+                                                </p>
+                                                <p className="type-body-muted text-xs">
+                                                    {status?.lastDeployedAt
+                                                        ? <>Last deployed {new Date(status.lastDeployedAt).toLocaleDateString()}</>
+                                                        : status?.liveVersion === 0
+                                                        ? 'Never deployed'
+                                                        : 'No date recorded'}
+                                                </p>
+                                            </div>
+
+                                            {/* Arrow */}
+                                            <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                                                <ArrowRight className="w-5 h-5" />
+                                            </div>
+
+                                            {/* DRAFT panel */}
+                                            <div className={`rounded-[var(--panel-radius-sm)] border ${draftPanelStyle.border} ${draftPanelStyle.bg} p-4 space-y-3`}>
+                                                <div className="flex items-center gap-2">
+                                                    <GitBranch className={`w-4 h-4 ${draftPanelStyle.text}`} />
+                                                    <span className={`type-caption ${draftPanelStyle.text}`}>Draft (DEV)</span>
+                                                </div>
+                                                <p className="text-3xl font-bold text-foreground">
+                                                    v{isLoading ? '—' : (status?.devVersion ?? 0)}
+                                                </p>
+                                                <p className={`text-xs ${draftPanelStyle.text}`}>
+                                                    {isDirty ? 'Unpublished changes' : 'In sync with live'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
                                 </Card>
+
+                                {/* Status Banner */}
+                                {isLocked && (
+                                    <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-4 py-3 flex items-start gap-3">
+                                        <ShieldAlert className="w-4 h-4 mt-0.5 text-[var(--status-danger-fg)] flex-shrink-0" />
+                                        <div>
+                                            <p className="text-sm font-medium text-[var(--status-danger-fg)]">Deployment Locked</p>
+                                            <p className="text-xs text-[var(--status-danger-fg)] opacity-80 mt-0.5">
+                                                Your chatbot configuration is currently locked due to a previous deployment failure. Please contact support.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {isDeploying && (
+                                    <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-4 py-3 flex items-center gap-3">
+                                        <Loader2 className="w-4 h-4 animate-spin text-[var(--status-info-fg)] flex-shrink-0" />
+                                        <div>
+                                            <p className="text-sm font-medium text-[var(--status-info-fg)]">Publishing to production…</p>
+                                            <p className="text-xs text-[var(--status-info-fg)] opacity-80 mt-0.5">
+                                                This usually takes under a minute. The page will update automatically.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!isDeploying && !isLocked && isDirty && (
+                                    <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-4 py-3 flex items-center gap-3">
+                                        <Info className="w-4 h-4 text-[var(--status-warning-fg)] flex-shrink-0" />
+                                        <p className="text-sm text-[var(--status-warning-fg)]">
+                                            You have unpublished changes. Review and publish when ready.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {!isDeploying && !isLocked && !isDirty && status?.deployStatusField !== 'NOT_DEPLOYED' && (
+                                    <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-success-border)] bg-[var(--status-success-bg)] px-4 py-3 flex items-center gap-3">
+                                        <CheckCircle2 className="w-4 h-4 text-[var(--status-success-fg)] flex-shrink-0" />
+                                        <p className="text-sm text-[var(--status-success-fg)]">
+                                            All changes synced. Your live chatbot is up to date.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {!isDeploying && !isLocked && status?.deployStatusField === 'NOT_DEPLOYED' && (
+                                    <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-neutral-border)] bg-[var(--status-neutral-bg)] px-4 py-3 flex items-center gap-3">
+                                        <Clock className="w-4 h-4 text-[var(--status-neutral-fg)] flex-shrink-0" />
+                                        <p className="text-sm text-[var(--status-neutral-fg)]">
+                                            No live version yet. Push your first deployment to go live.
+                                        </p>
+                                    </div>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
 
                 {/* Actions Column */}
-                <div className="space-y-6">
-                    {/* Status Card */}
-                    <Card className="bg-card">
+                <div className="space-y-4">
+                    {/* Release Status Card */}
+                    <Card className="bg-card border-border/60 shadow-[var(--shadow-1)]">
                         <CardHeader className="pb-3">
                             <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Release Status</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="dashboard-panel-muted rounded-[var(--panel-radius-sm)] p-3">
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Live</p>
-                                    <p className="mt-1 text-2xl font-bold text-foreground">v{status?.liveVersion || 0}</p>
-                                </div>
-                                <div className="dashboard-panel-muted rounded-[var(--panel-radius-sm)] p-3">
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Draft</p>
-                                    <p className="mt-1 text-2xl font-bold text-primary">v{status?.devVersion || 0}</p>
-                                </div>
-                            </div>
-                            <div className="pt-2 border-t border-border">
-                                <div className="flex items-center justify-between text-xs">
+                        <CardContent>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">State</span>
                                     <span className={deployStateUi.chipClass}>{deployStateUi.label}</span>
                                 </div>
                                 {status?.lastDeployedAt && (
-                                    <div className="flex items-center justify-between text-xs mt-1">
+                                    <div className="flex items-center justify-between">
                                         <span className="text-muted-foreground">Last Deployed</span>
-                                        <span className="text-foreground">
+                                        <span className="text-foreground text-xs">
                                             {new Date(status.lastDeployedAt).toLocaleDateString()}
                                         </span>
                                     </div>
                                 )}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted-foreground">Live version</span>
+                                    <span className="text-foreground font-medium">v{status?.liveVersion ?? 0}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted-foreground">Draft version</span>
+                                    <span className="text-primary font-medium">v{status?.devVersion ?? 0}</span>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Push Card */}
-                    <Card className={`relative overflow-hidden transition-all duration-300 ${isDirty && !isDeploying && pageView === "default" ? 'border-primary/30 shadow-lg' : 'opacity-80'}`}>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-primary" />
+                    {/* Push to Live Card */}
+                    <Card className={`relative overflow-hidden transition-all duration-300 border-border/60 shadow-[var(--shadow-1)] ${isDirty && !isDeploying && pageView === "default" ? 'border-primary/40' : ''}`}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-2 type-card-title">
+                                <Rocket className="w-4 h-4 text-primary" />
                                 Push to Live
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="type-body-muted">
                                 Publish your draft changes to production.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="pb-4">
-                            <div className="rounded-[var(--panel-radius-sm)] border border-[var(--status-info-border)] bg-[var(--status-info-bg)] p-3 text-xs text-[var(--status-info-fg)] flex gap-3">
-                                <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                                <p>This will deploy all the changes which you have done on your live chatbot. User will be affected.</p>
+                        <CardContent className="pb-3 space-y-2">
+                            <div className="flex items-start gap-2 text-xs text-[var(--status-info-fg)]">
+                                <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                                <p>Deploys all changes to your live chatbot. Users will be affected.</p>
                             </div>
-                            <div className="mt-3 rounded-[var(--panel-radius-sm)] border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] p-3 text-xs text-[var(--status-warning-fg)] flex gap-3">
-                                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                                <p>Your chatbot will be inactive for a short duration (1-2 minutes) during deployment.</p>
+                            <div className="flex items-start gap-2 text-xs text-[var(--status-warning-fg)]">
+                                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                                <p>Chatbot will be inactive for 1–2 minutes during deployment.</p>
                             </div>
                         </CardContent>
                         <CardFooter>
                             <Button
-                                className="w-full"
+                                className="w-full gap-2"
                                 disabled={!isDirty || isDeploying || isActionInProgress || activeBranch !== 'DEV' || pageView === "reviewing"}
                                 onClick={handleReviewChanges}
                             >
+                                <Rocket className="w-4 h-4" />
                                 {isDeploying ? "Deploying..." : pageView === "reviewing" ? "Reviewing Changes…" : "Review & Publish"}
                             </Button>
                         </CardFooter>
 
-                        {/* Progress Overlay if deploying */}
                         <AnimatePresence>
                             {isDeploying && (
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center"
+                                    className="absolute inset-0 bg-background/85 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center"
                                 >
-                                    <motion.div
-                                        animate={{ rotate: 360 }}
-                                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                    >
-                                        <Rocket className="w-10 h-10 text-primary" />
-                                    </motion.div>
-                                    <h4 className="mt-4 font-bold text-foreground">Pushing Changes</h4>
-                                    <p className="text-xs text-muted-foreground mt-1">Please wait until the sync is complete. This usually takes less than a minute.</p>
+                                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                                    <h4 className="mt-3 font-semibold text-sm text-foreground">Publishing Changes</h4>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        Please wait while the sync completes.
+                                    </p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </Card>
 
-                    {/* Rollback Card */}
-                    <Card className={status?.liveVersion === 0 ? 'opacity-50 cursor-not-allowed' : ''}>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <RotateCcw className="w-5 h-5 text-muted-foreground" />
+                    {/* Reset Changes Card */}
+                    <Card className={`border-border/60 shadow-[var(--shadow-1)] ${status?.liveVersion === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-2 type-card-title text-muted-foreground">
+                                <RotateCcw className="w-4 h-4" />
                                 Reset Changes
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="type-body-muted">
                                 Reset your draft and restore from Live.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="pb-4">
-                            <div className="rounded-[var(--panel-radius-sm)] border border-border bg-[var(--surface-secondary)] p-3 text-xs text-muted-foreground flex gap-3">
-                                <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                                <p>This will remove all your changes to the current live stage. Your draft will be replaced by the current production configuration.</p>
+                        <CardContent className="pb-3">
+                            <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                                <ShieldAlert className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                                <p>Removes all draft changes. Your draft will match the current live configuration.</p>
                             </div>
                         </CardContent>
                         <CardFooter>
                             <Button
-                                variant="outline"
-                                className="w-full border-border hover:bg-muted"
+                                variant="ghost"
+                                className="w-full text-destructive hover:bg-destructive/5 hover:text-destructive"
                                 disabled={status?.liveVersion === 0 || isDeploying || isActionInProgress || activeBranch !== 'DEV'}
                                 onClick={handleRollback}
                             >
