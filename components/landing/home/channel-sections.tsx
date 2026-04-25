@@ -745,5 +745,3 @@ export function HandoffSection() {
     </section>
   );
 }
-
-
