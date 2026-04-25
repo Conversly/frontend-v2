@@ -45,20 +45,20 @@ export default function SolutionsPage() {
 
       <section className="relative overflow-hidden px-5 pb-14 pt-28 md:px-8 md:pb-18 md:pt-36">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(49,94,234,0.16),transparent_32%),radial-gradient(circle_at_top_left,rgba(125,164,255,0.18),transparent_24%),linear-gradient(180deg,#eef5ff_0%,#f4f8ff_32%,#f7f4ee_100%)]" />
-        <div className="absolute left-1/2 top-10 h-[18rem] w-[18rem] -translate-x-1/2 rounded-full bg-[#d7e6ff] blur-[110px]" />
+        <div className="absolute left-1/2 top-10 h-[18rem] w-[18rem] -translate-x-1/2 transform-gpu rounded-full bg-[#d7e6ff] blur-[80px]" />
         <div className="relative mx-auto max-w-[1240px]">
           <div className="mx-auto max-w-[820px] text-center">
             <div className="mb-5 inline-flex rounded-full border border-[#d6e2fb] bg-white/86 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#60708d] shadow-[0_12px_28px_rgba(49,94,234,0.08)]">
               Industry Solutions
             </div>
             <h1 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[38px] leading-[1.03] tracking-[-0.05em] text-[#221f1b] md:text-[64px]">
-              Support playbooks built for
+              Support that knows
               <span className="block bg-[linear-gradient(180deg,#4f7dff_0%,#315EEA_100%)] bg-clip-text text-transparent">
-                your industry.
+                your industry on day one.
               </span>
             </h1>
             <p className="mx-auto mt-5 max-w-[640px] text-[15px] leading-7 text-[#6d665d] md:text-[18px] md:leading-8">
-              A SaaS onboarding question is not a healthcare appointment reschedule. Verly ships with industry-specific intents, tone, compliance defaults, and escalation rules — so you&apos;re not starting from scratch.
+              A SaaS onboarding question isn&rsquo;t a healthcare reschedule. Verly ships with industry-specific intents, tone, compliance defaults, and escalation rules — so your agent doesn&rsquo;t sound generic on the first conversation.
             </p>
           </div>
 

@@ -70,12 +70,12 @@ const faqCategories = [
       {
         question: "What is Verly?",
         answer:
-          "Verly is a developer-first platform for building and deploying omni-channel AI agents. We provide the infrastructure (LLM orchestration, RAG, telephony, and state management) so you can focus on building great support experiences via code or our config UI.",
+          "Verly is the AI customer support platform that ships like software. One agent handles voice, WhatsApp, and web chat — trained on your docs, your tone, and your edge cases. You can branch your prompts in dev, preview before you ship, and roll back in one click. Set it up without code, or go deeper with the SDK.",
       },
       {
         question: "Who is Verly for?",
         answer:
-          "We are built for engineering and product teams who want full control over their AI support stack. Unlike black-box chatbot tools, Verly offers comprehensive SDKs, webhooks, and observability to integrate deeply with your existing backend.",
+          "Customer support and operations teams at growing companies — typically 10 to 500 people — who want one AI agent across voice, WhatsApp, and web chat. You can run it without writing code, or go deeper with the SDK, webhooks, and observability if your team is technical.",
       },
       {
         question: "Which LLMs do you support?",

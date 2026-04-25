@@ -38,14 +38,14 @@ export default function FAQAskAIBanner() {
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute inset-y-0 left-0 w-[58%] bg-[radial-gradient(circle_at_left_center,rgba(255,255,255,0.18),transparent_55%)]" />
-          <div className="absolute -left-16 bottom-[-4.5rem] h-52 w-52 rounded-full bg-white/12 blur-2xl" />
-          <div className="absolute right-8 top-8 h-40 w-40 rounded-full bg-[#dbeafe]/18 blur-3xl" />
+          <div className="absolute -left-16 bottom-[-4.5rem] h-52 w-52 transform-gpu rounded-full bg-white/12 blur-2xl" />
+          <div className="absolute right-8 top-8 h-40 w-40 transform-gpu rounded-full bg-[#dbeafe]/18 blur-3xl" />
           <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20" />
         </div>
 
         <div className="relative px-8 py-10 md:px-12 md:py-12">
           <div className="max-w-2xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
+            <div className="mb-6 inline-flex items-center gap-2 transform-gpu rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
               <Brain className="h-4 w-4" />
               Can&apos;t find your answer?
             </div>

@@ -35,10 +35,10 @@ export default function HelpPage() {
                 <section className="space-y-6 text-center">
                     <div className="space-y-2">
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-                            How can we help?
+                            Stuck? Three fast ways to get unstuck.
                         </h1>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            Ask our AI assistant below or browse the FAQ, blog, and support channels for fast answers.
+                            Ask our AI assistant below — it&apos;s trained on the same docs your customers&apos; agent will be. Or browse the FAQ, blog, and email us directly.
                         </p>
                     </div>
 

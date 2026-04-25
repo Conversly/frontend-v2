@@ -61,9 +61,9 @@ export default function LeadAgentPage() {
       />
 
       {/* Blur blob decorations */}
-      <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] rounded-full bg-blue-300/15 blur-[110px]" />
-      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] rounded-full bg-emerald-300/15 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] rounded-full bg-violet-300/15 blur-[110px]" />
+      <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] transform-gpu rounded-full bg-blue-300/15 blur-[80px]" />
+      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] transform-gpu rounded-full bg-emerald-300/15 blur-[80px]" />
+      <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] transform-gpu rounded-full bg-violet-300/15 blur-[80px]" />
       <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,rgba(120,145,201,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.05)_1px,transparent_1px)] bg-[size:72px_72px]" />
 
       <div className="relative z-10">

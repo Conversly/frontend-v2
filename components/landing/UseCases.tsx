@@ -14,9 +14,9 @@ const useCases = [
     title: "B2B SaaS",
     subtitle: "Customer Support",
     description:
-      "AI agents handle technical onboarding, feature explanations, and troubleshooting. Reduce ticket volume by 80% with instant, context-aware answers.",
-    stat: "80%",
-    statLabel: "ticket reduction",
+      "Onboarding, feature questions, and troubleshooting — handled across voice, WhatsApp, and chat with shared context. Iterate on prompts in dev before they hit live users.",
+    stat: "<500ms",
+    statLabel: "voice latency",
     accent: "#3f63d8",
     accentBg: "#dde7ff",
     link: "/solutions/saas-platforms",
@@ -39,8 +39,8 @@ const useCases = [
     subtitle: "Appointment Scheduling",
     description:
       "Voice AI agents handle bookings, reminders, and follow-ups. Free staff to focus on patient care instead of admin tasks.",
-    stat: "40%",
-    statLabel: "fewer no-shows",
+    stat: "24/7",
+    statLabel: "scheduling",
     accent: "#d44a5c",
     accentBg: "#ffe0e6",
     link: "/solutions/healthcare",
@@ -51,8 +51,8 @@ const useCases = [
     subtitle: "Lead Qualification",
     description:
       "Qualify prospects instantly via WhatsApp and voice. AI collects requirements, schedules viewings, and nurtures leads.",
-    stat: "3×",
-    statLabel: "faster response",
+    stat: "Instant",
+    statLabel: "lead capture",
     accent: "#c57f1e",
     accentBg: "#fff3d6",
     link: "/solutions/real-estate",
@@ -63,8 +63,8 @@ const useCases = [
     subtitle: "Course Support",
     description:
       "Answer student questions about courses, assignments, and admissions 24/7. Personalized learning assistance at scale.",
-    stat: "95%",
-    statLabel: "satisfaction",
+    stat: "24/7",
+    statLabel: "study support",
     accent: "#7c3aed",
     accentBg: "#ede4ff",
     link: "/solutions/education",
@@ -95,11 +95,11 @@ export default function UseCases() {
             Industries
           </div>
           <h2 className="landing-home-title text-balance text-[30px] leading-[1.1] tracking-[-0.03em] sm:text-[36px] md:text-[44px] lg:text-[52px]">
-            Real teams. Real outcomes.{" "}
-            <span className="landing-home-title-muted">10x more support, same headcount.</span>
+            Six industries.{" "}
+            <span className="landing-home-title-muted">One agent. Every channel.</span>
           </h2>
           <p className="landing-home-copy mx-auto mt-6 max-w-[600px] text-balance text-[15px] md:text-[17px]">
-            Here&rsquo;s what Verly does for teams in 6 industries — with the numbers to back it up.
+            What Verly looks like in your industry — voice, WhatsApp, and web chat, trained on your playbook.
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export default function UseCases() {
               className="group relative flex flex-col justify-between overflow-hidden rounded-[26px] border border-[#d7e2f4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
             >
               <div
-                className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-[0.15] blur-3xl"
+                className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 transform-gpu rounded-full opacity-[0.15] blur-3xl"
                 style={{ background: uc.accent }}
               />
 

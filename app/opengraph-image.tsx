@@ -167,7 +167,7 @@ export default async function OpenGraphImage() {
             verlyai.xyz
           </div>
           <div style={{ display: "flex", gap: 12 }}>
-            {["80% auto-resolve", "Live in a day", "SOC 2"].map((pill) => (
+            {["Live in 10 minutes", "Voice + WhatsApp + Chat", "SOC 2"].map((pill) => (
               <div
                 key={pill}
                 style={{

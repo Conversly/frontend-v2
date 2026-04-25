@@ -26,8 +26,8 @@ export const VoiceAgentVisual = () => {
   return (
     <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Abstract background elements */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 transform-gpu rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 transform-gpu rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
 
       {/* Chat bubbles container */}
       <div className="w-full max-w-[300px] flex justify-between mb-3 px-2 z-10 min-h-[80px]">

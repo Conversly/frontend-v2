@@ -41,9 +41,9 @@ const cardBg = {
   bgGradient:
     "pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#fbf8f1_0%,#f6f1e6_50%,#faf7f0_100%)]",
   glowLeft:
-    "pointer-events-none absolute -left-24 top-20 h-[26rem] w-[26rem] rounded-full bg-[#e4eaf8] opacity-70 blur-[120px]",
+    "pointer-events-none absolute -left-24 top-20 h-[26rem] w-[26rem] rounded-full bg-[#e4eaf8] opacity-70 blur-[80px]",
   glowRight:
-    "pointer-events-none absolute -right-24 bottom-[-4rem] h-[22rem] w-[22rem] rounded-full bg-[#f2e7d0] opacity-80 blur-[120px]",
+    "pointer-events-none absolute -right-24 bottom-[-4rem] h-[22rem] w-[22rem] rounded-full bg-[#f2e7d0] opacity-80 blur-[80px]",
   grain:
     "pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-multiply",
   grainStyle: {
@@ -92,7 +92,7 @@ export function PricingFaqSection() {
       className="relative overflow-hidden py-16 md:py-24"
     >
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#faf7f0_0%,#fbf8f1_60%,#ffffff_100%)]" />
-      <div className="pointer-events-none absolute -right-24 top-10 h-[22rem] w-[22rem] rounded-full bg-[#e4eaf8] opacity-60 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-24 top-10 h-[22rem] w-[22rem] rounded-full bg-[#e4eaf8] opacity-60 blur-[80px]" />
       <div
         aria-hidden
         className={cardBg.grain}

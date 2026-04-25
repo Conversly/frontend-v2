@@ -22,9 +22,11 @@ const companyLinks = [
 ];
 
 const webLinks = [
+  { name: "Voice", href: "/voice" },
+  { name: "WhatsApp", href: "/whatsapp" },
+  { name: "Web chat", href: "/web-chat" },
   { name: "Docs", href: "/docs" },
   { name: "Blogs", href: "/blogs" },
-  { name: "Voice", href: "/voice" },
 ];
 
 const legalLinks = [

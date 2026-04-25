@@ -133,18 +133,13 @@ export default function PricingSection({ accountId }: PricingSectionProps) {
 
   return (
     <section className="relative overflow-hidden px-4 pb-24 pt-12 lg:pb-32 lg:pt-28" id="pricing">
-      <div className="pointer-events-none absolute inset-0">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ contain: "paint", transform: "translateZ(0)" }}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(191,219,254,0.45),transparent_48%)]" />
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.18, 0.28, 0.18] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-[#bfdbfe] blur-[110px]"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.16, 0.24, 0.16] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-          className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-[#dbeafe] blur-[110px]"
-        />
+        <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-[#bfdbfe] opacity-25 blur-[80px]" />
+        <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-[#dbeafe] opacity-20 blur-[80px]" />
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl">

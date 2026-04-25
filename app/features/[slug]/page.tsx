@@ -523,24 +523,26 @@ export default async function FeatureDetailPage({ params }: Props) {
         <section className="pb-24">
           <div className={`${CONTENT_WIDTH} space-y-16`}>
             <section className="rounded-[36px] bg-[linear-gradient(180deg,#16181d,#1f2d4d)] px-8 py-16 text-center text-white shadow-[0_30px_80px_rgba(16,24,40,0.24)]">
-              <h2 className="mx-auto max-w-[10ch] text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
-                Improve your sales communication
+              <h2 className="mx-auto max-w-[14ch] text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
+                Ship better support, faster.
               </h2>
               <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/70">
-                Bring more clarity, speed, and quality to every customer conversation with {feature.title}.
+                {feature.title} is one of every capability in Verly. One agent across voice, WhatsApp, and web chat — branched, previewed, and rolled back like software.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 <Link
                   href="/login"
                   className="rounded-2xl bg-white px-6 py-3 text-base font-semibold text-[#111827]"
                 >
-                  Try Verly
+                  Start free
                 </Link>
                 <Link
-                  href="/about"
+                  href="https://calendly.com/rdhakad2002/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-2xl border border-white/15 bg-white/10 px-6 py-3 text-base font-semibold text-white"
                 >
-                  Schedule a demo
+                  Book a 20-min demo
                 </Link>
               </div>
             </section>

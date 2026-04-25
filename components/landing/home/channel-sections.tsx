@@ -39,7 +39,7 @@ export function WhySwitchSection() {
 
       <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
         <div className="mx-auto max-w-[760px] text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
+          <div className="mb-4 inline-flex items-center gap-2 transform-gpu rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
             <Zap className="h-4 w-4" />
             Why Switch
           </div>
@@ -180,17 +180,13 @@ function OmnichannelVisualFrame({
     >
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.58),transparent_48%)]" />
       <div className="absolute inset-0 opacity-[0.45] [background-image:linear-gradient(rgba(148,163,184,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.14)_1px,transparent_1px)] [background-size:26px_26px]" />
-      <motion.div
+      <div
         aria-hidden="true"
-        className="absolute -left-10 top-6 h-24 w-24 rounded-full bg-white/55 blur-2xl"
-        animate={{ scale: [1, 1.08, 1], opacity: [0.42, 0.62, 0.42] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -left-10 top-6 h-24 w-24 transform-gpu rounded-full bg-white/55 opacity-50 blur-2xl"
       />
-      <motion.div
+      <div
         aria-hidden="true"
-        className="absolute bottom-2 right-0 h-28 w-28 rounded-full bg-white/45 blur-3xl"
-        animate={{ scale: [1.04, 1, 1.04], opacity: [0.5, 0.32, 0.5] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-2 right-0 h-28 w-28 transform-gpu rounded-full bg-white/45 opacity-40 blur-3xl"
       />
       <div className="relative h-full w-full p-5">{children}</div>
     </div>
@@ -202,7 +198,7 @@ function WebsiteChatCardVisual() {
     <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f7f5ff_0%,#eef2ff_54%,#f6f8ff_100%)]">
       <div className="relative mx-auto flex h-full max-w-[290px] items-center justify-center">
         <motion.div
-          className="absolute left-3 top-4 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6d5bd0] shadow-[0_12px_30px_rgba(109,91,208,0.12)] backdrop-blur-md"
+          className="absolute left-3 top-4 transform-gpu rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6d5bd0] shadow-[0_12px_30px_rgba(109,91,208,0.12)] backdrop-blur-md"
           animate={{ y: [0, -2, 0] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -291,7 +287,7 @@ function WhatsAppCardVisual() {
     <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f4f8f4_0%,#eef6ef_52%,#f8fbf6_100%)]">
       <div className="relative mx-auto flex h-full max-w-[290px] items-center justify-center">
         <motion.div
-          className="absolute left-4 top-5 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1d8f63] shadow-[0_12px_28px_rgba(29,143,99,0.12)] backdrop-blur-md"
+          className="absolute left-4 top-5 transform-gpu rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1d8f63] shadow-[0_12px_28px_rgba(29,143,99,0.12)] backdrop-blur-md"
           animate={{ y: [0, -2, 0] }}
           transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -366,7 +362,7 @@ function VoiceAICardVisual() {
     <OmnichannelVisualFrame gradientClassName="bg-[linear-gradient(180deg,#f4f7ff_0%,#eef3ff_48%,#f8faff_100%)]">
       <div className="relative mx-auto flex h-full max-w-[292px] items-center justify-center">
         <motion.div
-          className="absolute right-4 top-5 rounded-full border border-white/75 bg-white/82 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3b63f0] shadow-[0_12px_28px_rgba(59,99,240,0.12)] backdrop-blur-md"
+          className="absolute right-4 top-5 transform-gpu rounded-full border border-white/75 bg-white/82 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3b63f0] shadow-[0_12px_28px_rgba(59,99,240,0.12)] backdrop-blur-md"
           animate={{ y: [0, -2, 0] }}
           transition={{ duration: 5.8, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -524,7 +520,7 @@ export function OmnichannelSection() {
               <div className="relative h-[17rem] shrink-0 overflow-hidden border-b border-slate-200/70 bg-slate-50/80 md:h-[18.5rem]">
                 {ch.visual}
                 {/* Live indicator */}
-                <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 shadow-sm backdrop-blur-sm">
+                <div className="absolute right-3 top-3 flex items-center gap-1.5 transform-gpu rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 shadow-sm backdrop-blur-sm">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
                   Live
                 </div>
@@ -583,7 +579,7 @@ export function HandoffSection() {
             transition={{ duration: 0.5 }}
             className="max-w-[580px]"
           >
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
+            <div className="mb-5 inline-flex items-center gap-2 transform-gpu rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#315EEA] shadow-[0_10px_30px_rgba(49,94,234,0.06)] backdrop-blur-sm">
               <Headphones className="h-4 w-4" />
               Human Handoff
             </div>

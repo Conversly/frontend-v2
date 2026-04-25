@@ -321,8 +321,8 @@ export default async function SolutionDetailPage({ params }: Props) {
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#eef5ff_0%,#f4f8ff_18%,#f7f4ee_58%,#ffffff_100%)] pt-28 md:pt-36">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(49,94,234,0.16),transparent_32%),radial-gradient(circle_at_top_left,rgba(125,164,255,0.14),transparent_28%),radial-gradient(circle_at_left_center,rgba(245,169,88,0.08),transparent_24%)]" />
-        <div className="absolute left-[12%] top-12 h-[15rem] w-[15rem] rounded-full bg-[#d7e6ff] blur-[110px]" />
-        <div className="absolute right-[10%] top-24 h-[17rem] w-[17rem] rounded-full bg-[#edf3ff] blur-[120px]" />
+        <div className="absolute left-[12%] top-12 h-[15rem] w-[15rem] transform-gpu rounded-full bg-[#d7e6ff] blur-[80px]" />
+        <div className="absolute right-[10%] top-24 h-[17rem] w-[17rem] transform-gpu rounded-full bg-[#edf3ff] blur-[80px]" />
         <div className="relative mx-auto max-w-[1360px] px-5 md:px-8">
           <div className="grid gap-10 pb-16 md:pb-20 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-center">
             <div className="max-w-[700px]">

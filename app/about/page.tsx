@@ -94,9 +94,9 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] rounded-full bg-blue-300/15 blur-[110px]" />
-      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] rounded-full bg-emerald-300/15 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] rounded-full bg-violet-300/15 blur-[110px]" />
+      <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] transform-gpu rounded-full bg-blue-300/15 blur-[80px]" />
+      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] transform-gpu rounded-full bg-emerald-300/15 blur-[80px]" />
+      <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] transform-gpu rounded-full bg-violet-300/15 blur-[80px]" />
       <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,rgba(120,145,201,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.05)_1px,transparent_1px)] bg-[size:72px_72px]" />
 
       <div className="relative z-10">
@@ -137,7 +137,7 @@ export default function AboutPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        className="h-13 rounded-full border-[#d6d9e2] bg-white/78 px-7 text-sm text-[#071224] shadow-[0_16px_30px_rgba(58,47,25,0.08)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8cfdd] hover:bg-white sm:text-base"
+                        className="h-13 transform-gpu rounded-full border-[#d6d9e2] bg-white/78 px-7 text-sm text-[#071224] shadow-[0_16px_30px_rgba(58,47,25,0.08)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8cfdd] hover:bg-white sm:text-base"
                       >
                         Book a 20-min demo
                       </Button>
@@ -166,7 +166,7 @@ export default function AboutPage() {
               <AboutSectionReveal>
                 <div className="max-w-[560px]">
                   <div className="mb-6 flex justify-start">
-                    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 shadow-sm backdrop-blur-sm">The Problem</span>
+                    <span className="inline-flex items-center transform-gpu rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 shadow-sm backdrop-blur-sm">The Problem</span>
                   </div>
 
                   <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-white">
@@ -293,7 +293,7 @@ export default function AboutPage() {
             <AboutSectionReveal>
               <div className="mb-10 max-w-[660px]">
                 <div className="mb-6 flex justify-start">
-                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 shadow-sm backdrop-blur-sm">Product Vision</span>
+                  <span className="inline-flex items-center transform-gpu rounded-full border border-white/10 bg-white/5 px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 shadow-sm backdrop-blur-sm">Product Vision</span>
                 </div>
                 <h2 className="font-[Georgia,serif] text-[clamp(2rem,3.4vw,3.6rem)] leading-[1.04] tracking-[-0.04em] text-white">
                   What Verly is becoming.

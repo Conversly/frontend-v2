@@ -250,13 +250,13 @@ function FlowingGradient({ className }: { className: string }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div
-        className={`absolute -left-12 top-8 h-40 w-48 rounded-full bg-gradient-to-r ${className} blur-3xl opacity-95`}
+        className={`absolute -left-12 top-8 h-40 w-48 transform-gpu rounded-full bg-gradient-to-r ${className} blur-3xl opacity-95`}
       />
       <div
-        className={`absolute right-[-8%] top-[18%] h-52 w-56 rounded-full bg-gradient-to-br ${className} blur-[90px] opacity-80`}
+        className={`absolute right-[-8%] top-[18%] h-52 w-56 transform-gpu rounded-full bg-gradient-to-br ${className} blur-[90px] opacity-80`}
       />
       <div
-        className={`absolute bottom-[-8%] left-[18%] h-44 w-64 rounded-full bg-gradient-to-r ${className} blur-[100px] opacity-75`}
+        className={`absolute bottom-[-8%] left-[18%] h-44 w-64 transform-gpu rounded-full bg-gradient-to-r ${className} blur-[70px] opacity-75`}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.12),transparent_26%),radial-gradient(circle_at_55%_80%,rgba(255,255,255,0.08),transparent_30%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12)_0%,transparent_32%,transparent_68%,rgba(255,255,255,0.08)_100%)]" />

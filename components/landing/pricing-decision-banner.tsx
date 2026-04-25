@@ -39,14 +39,14 @@ export default function PricingDecisionBanner() {
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute inset-y-0 left-0 w-[58%] bg-[radial-gradient(circle_at_left_center,rgba(255,255,255,0.18),transparent_55%)]" />
-          <div className="absolute -left-16 bottom-[-4.5rem] h-52 w-52 rounded-full bg-white/12 blur-2xl" />
-          <div className="absolute right-8 top-8 h-40 w-40 rounded-full bg-[#dbeafe]/18 blur-3xl" />
+          <div className="absolute -left-16 bottom-[-4.5rem] h-52 w-52 transform-gpu rounded-full bg-white/12 blur-2xl" />
+          <div className="absolute right-8 top-8 h-40 w-40 transform-gpu rounded-full bg-[#dbeafe]/18 blur-3xl" />
           <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20" />
         </div>
 
         <div className="relative grid items-center gap-10 px-8 py-10 md:px-12 md:py-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div className="max-w-2xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
+            <div className="mb-6 inline-flex items-center gap-2 transform-gpu rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
               <Brain className="h-4 w-4" />
               Still comparing pricing options?
             </div>
@@ -82,11 +82,11 @@ export default function PricingDecisionBanner() {
           </div>
 
           <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute bottom-3 right-6 hidden h-20 w-20 rounded-full bg-[#84cc16]/55 blur-[50px] lg:block" />
+            <div className="absolute bottom-3 right-6 hidden h-20 w-20 transform-gpu rounded-full bg-[#84cc16]/55 blur-[50px] lg:block" />
             <div className="absolute bottom-0 left-10 hidden h-14 w-32 rounded-[999px] bg-[#1e3a8a]/25 blur-2xl lg:block" />
 
             <div className="relative w-full max-w-[32rem]">
-              <div className="absolute inset-x-6 top-4 h-8 rounded-full bg-white/15 blur-2xl" />
+              <div className="absolute inset-x-6 top-4 h-8 transform-gpu rounded-full bg-white/15 blur-2xl" />
               <div className="relative overflow-hidden rounded-[2rem] border border-white/35 bg-white/12 p-3 backdrop-blur-sm shadow-[0_24px_60px_rgba(15,23,42,0.22)]">
                 <div className="rounded-[1.4rem] border border-white/40 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(238,246,255,0.92)_100%)] p-3">
                   <div className="mb-3 flex items-center justify-between rounded-[1rem] border border-[#d8e6ff] bg-white/90 px-4 py-3">

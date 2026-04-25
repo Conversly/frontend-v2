@@ -190,9 +190,9 @@ export const solutions: SolutionDetail[] = [
       },
     ],
     metrics: [
-      { value: "80%", label: "retail tickets resolved automatically" },
-      { value: "2s", label: "response time on common order questions" },
-      { value: "18%", label: "higher AOV from guided product discovery" },
+      { value: "3 channels", label: "voice, WhatsApp, and web chat handled" },
+      { value: "<2s", label: "response time on common order questions" },
+      { value: "Catalog-aware", label: "live product and order answers" },
       { value: "24/7", label: "coverage during launches and peak demand" },
     ],
     faqItems: [
@@ -364,10 +364,10 @@ export const solutions: SolutionDetail[] = [
       },
     ],
     metrics: [
-      { value: "70%", label: "fewer onboarding tickets for product teams" },
-      { value: "95%", label: "answer accuracy on grounded knowledge flows" },
-      { value: "<30s", label: "resolution time for common SaaS questions" },
-      { value: "80%", label: "lower support-cost pressure on scaling teams" },
+      { value: "Docs-grounded", label: "answers stay synced with product docs" },
+      { value: "Live sync", label: "release notes and FAQs auto-update" },
+      { value: "<500ms", label: "voice response latency on common questions" },
+      { value: "Branchable", label: "test prompt changes before they hit users" },
     ],
     faqItems: [
       {
@@ -539,8 +539,8 @@ export const solutions: SolutionDetail[] = [
     ],
     metrics: [
       { value: "24/7", label: "patient-access coverage outside office hours" },
-      { value: "60%", label: "fewer routine calls reaching front-desk staff" },
-      { value: "<1 min", label: "faster scheduling resolution for common requests" },
+      { value: "HIPAA-aware", label: "compliance defaults built in" },
+      { value: "<500ms", label: "voice response latency on intake questions" },
       { value: "95+", label: "languages available for patient communication" },
     ],
     faqItems: [
@@ -713,8 +713,8 @@ export const solutions: SolutionDetail[] = [
     ],
     metrics: [
       { value: "24/7", label: "guest-response coverage beyond service hours" },
-      { value: "65%", label: "reservation and FAQ volume handled automatically" },
-      { value: "40%", label: "more catering leads captured cleanly" },
+      { value: "Multi-location", label: "venue-specific routing and rules" },
+      { value: "After-hours", label: "lead capture for catering and events" },
       { value: "<10s", label: "response time for common guest questions" },
     ],
     faqItems: [
@@ -887,9 +887,9 @@ export const solutions: SolutionDetail[] = [
     ],
     metrics: [
       { value: "24/7", label: "lead capture across nights and weekends" },
-      { value: "50%", label: "faster response to inbound listing interest" },
-      { value: "35%", label: "more tours booked from inbound demand" },
-      { value: "2x", label: "better qualification before agent handoff" },
+      { value: "Instant", label: "WhatsApp and voice response to listing interest" },
+      { value: "Calendar sync", label: "tour booking inside the conversation" },
+      { value: "Custom intake", label: "qualification fields tuned per agent" },
     ],
     faqItems: [
       {
@@ -1061,8 +1061,8 @@ export const solutions: SolutionDetail[] = [
     ],
     metrics: [
       { value: "24/7", label: "coverage for admissions and student-service questions" },
-      { value: "65%", label: "fewer repetitive inquiries reaching staff" },
-      { value: "40%", label: "more tours and next steps booked quickly" },
+      { value: "Multi-team", label: "campus, registrar, and aid all routed correctly" },
+      { value: "Calendar sync", label: "tour and counseling bookings inline" },
       { value: "<5s", label: "response time on common student questions" },
     ],
     faqItems: [
@@ -1234,10 +1234,10 @@ export const solutions: SolutionDetail[] = [
       },
     ],
     metrics: [
-      { value: "70%", label: "common booking and disruption requests automated" },
+      { value: "Disruption-aware", label: "rebooking and irregular-ops flows built in" },
       { value: "<10s", label: "response time for urgent travel questions" },
       { value: "95+", label: "languages supported for traveler communication" },
-      { value: "50%", label: "reduction in support pressure during surges" },
+      { value: "Burst-ready", label: "handle surges without extra staffing" },
     ],
     faqItems: [
       {
@@ -1408,10 +1408,10 @@ export const solutions: SolutionDetail[] = [
       },
     ],
     metrics: [
-      { value: "40%", label: "more consultations booked from inbound traffic" },
-      { value: "3x", label: "faster onboarding for common client workflows" },
+      { value: "Service-line", label: "intake routed to the right practice" },
+      { value: "White-label", label: "branded support across every channel" },
       { value: "24/7", label: "lead capture beyond office-hour coverage" },
-      { value: "8hrs", label: "operator time saved each week on coordination" },
+      { value: "Calendar sync", label: "consultations booked inside the conversation" },
     ],
     faqItems: [
       {

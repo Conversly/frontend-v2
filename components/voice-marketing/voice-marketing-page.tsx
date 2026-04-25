@@ -165,11 +165,9 @@ function HeroSection() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.72, delay: 0.14, ease: "easeOut" }}
-            className="mt-7 max-w-[690px] text-[1.02rem] leading-8 text-[#c4ceea] sm:text-[1.14rem]"
+            className="mt-7 max-w-[720px] text-[1.02rem] leading-8 text-[#c4ceea] sm:text-[1.14rem]"
           >
-            Verly Voice picks up on the first ring, answers in your
-            customer&rsquo;s language, pulls account context from your CRM, and
-            transfers to a live agent the moment the conversation needs one.
+            Verly Voice picks up on the first ring, answers in your customer&rsquo;s language, and pulls account context from your CRM. The same agent also handles WhatsApp and web chat — so context follows the customer, even when the channel changes.
           </motion.p>
         </div>
 
@@ -515,14 +513,14 @@ function PlatformSection() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/"
+              href="/web-chat"
               className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-[#e2ebfa] transition-colors hover:border-white/25 hover:bg-white/[0.08]"
             >
               Web chat widget
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
-              href="/features"
+              href="/whatsapp"
               className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-[#e2ebfa] transition-colors hover:border-white/25 hover:bg-white/[0.08]"
             >
               WhatsApp Business

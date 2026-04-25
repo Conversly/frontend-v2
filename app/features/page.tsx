@@ -209,7 +209,7 @@ export default function FeaturesPage() {
                 Product capabilities
               </div>
               <h1 className="mx-auto mt-6 max-w-[720px] text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-[#0f1e35] sm:text-5xl lg:text-[62px]">
-                Everything your support AI needs — without the vendor sprawl.
+                Every capability of your AI support agent. One platform.
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#5d6b98] sm:text-lg">
                 {FEATURES_PAGE_CONTENT.intro}

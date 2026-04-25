@@ -12,8 +12,8 @@ export const WHY_VERLY_PAGE = {
     href: "https://calendly.com/rdhakad2002/30min",
   },
   heroStats: [
-    { value: "80%", label: "lower support cost potential" },
-    { value: "<2 sec", label: "response speed goal" },
+    { value: "10 min", label: "from signup to live agent" },
+    { value: "<500ms", label: "voice response latency" },
     { value: "3 channels", label: "voice, WhatsApp, and web" },
   ],
   showcase: {

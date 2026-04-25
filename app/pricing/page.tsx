@@ -48,11 +48,15 @@ export default function PricingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="pointer-events-none absolute inset-0">
+      <div
+        className="pointer-events-none fixed inset-0"
+        style={{ contain: "paint", transform: "translateZ(0)" }}
+        aria-hidden
+      >
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50" />
-        <div className="absolute left-[-12%] top-24 h-[26rem] w-[26rem] rounded-full bg-[#bfdbfe]/50 blur-[120px]" />
-        <div className="absolute right-[-8%] top-[22rem] h-[24rem] w-[24rem] rounded-full bg-[#dbeafe] blur-[120px]" />
-        <div className="absolute bottom-[-8rem] left-1/2 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-[#e0f2fe] blur-[120px]" />
+        <div className="absolute left-[-12%] top-24 h-[26rem] w-[26rem] rounded-full bg-[#bfdbfe]/40 blur-[80px]" />
+        <div className="absolute right-[-8%] top-[22rem] h-[24rem] w-[24rem] rounded-full bg-[#dbeafe]/80 blur-[80px]" />
+        <div className="absolute bottom-[-8rem] left-1/2 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-[#e0f2fe] blur-[80px]" />
       </div>
 
       <div className="relative z-10">

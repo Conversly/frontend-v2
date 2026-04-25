@@ -217,7 +217,7 @@ export default function EnterprisePageContent() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f4ee_0%,#efeade_50%,#f8fbff_100%)] px-5 pb-18 pt-28 md:px-8 md:pb-22 md:pt-36">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(49,94,234,0.08),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(139,92,246,0.06),transparent_36%)]" />
-        <div className="pointer-events-none absolute left-1/2 top-10 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-blue-200/15 blur-[110px]" />
+        <div className="pointer-events-none absolute left-1/2 top-10 h-[22rem] w-[22rem] -translate-x-1/2 transform-gpu rounded-full bg-blue-200/15 blur-[80px]" />
 
         <div className="relative mx-auto grid max-w-[1360px] gap-10 lg:grid-cols-[1fr_0.88fr] lg:items-start">
           <div className="max-w-[660px]">
@@ -312,10 +312,10 @@ export default function EnterprisePageContent() {
       {/* ── Light sections wrapper with about-page background system ── */}
       <div className="relative z-10 bg-[radial-gradient(circle_at_top_left,rgba(62,128,241,0.14),transparent_20%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_18%),radial-gradient(circle_at_70%_34%,rgba(139,92,246,0.10),transparent_16%),linear-gradient(180deg,#fdfbf6_0%,#f7f9ff_24%,#f8fcf7_50%,#fff8ef_74%,#f7f8ff_100%)]">
         {/* Blur blobs */}
-        <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] rounded-full bg-blue-300/15 blur-[110px]" />
-        <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] rounded-full bg-emerald-300/15 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] rounded-full bg-violet-300/15 blur-[110px]" />
-        <div className="pointer-events-none absolute left-[55%] top-[50%] h-[16rem] w-[16rem] rounded-full bg-amber-200/12 blur-[100px]" />
+        <div className="pointer-events-none absolute left-[-8rem] top-20 h-[22rem] w-[22rem] transform-gpu rounded-full bg-blue-300/15 blur-[80px]" />
+        <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-[20rem] w-[20rem] transform-gpu rounded-full bg-emerald-300/15 blur-[80px]" />
+        <div className="pointer-events-none absolute bottom-[18rem] left-[18%] h-[18rem] w-[18rem] transform-gpu rounded-full bg-violet-300/15 blur-[80px]" />
+        <div className="pointer-events-none absolute left-[55%] top-[50%] h-[16rem] w-[16rem] transform-gpu rounded-full bg-amber-200/12 blur-[70px]" />
         {/* Grid overlay */}
         <div className="pointer-events-none absolute inset-0 h-full w-full bg-[linear-gradient(to_right,rgba(120,145,201,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,145,201,0.05)_1px,transparent_1px)] bg-[size:72px_72px]" />
 
@@ -557,8 +557,8 @@ export default function EnterprisePageContent() {
       {/* ── Final CTA — dark with depth ── */}
       <section className="relative overflow-hidden bg-[#0f1b3d] px-5 py-16 md:px-8 md:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.14),transparent_40%),radial-gradient(circle_at_70%_80%,rgba(49,94,234,0.12),transparent_36%),radial-gradient(circle_at_50%_50%,rgba(62,128,241,0.06),transparent_50%)]" />
-        <div className="pointer-events-none absolute left-[-6rem] top-[20%] h-[18rem] w-[18rem] rounded-full bg-violet-500/10 blur-[100px]" />
-        <div className="pointer-events-none absolute bottom-[10%] right-[-4rem] h-[16rem] w-[16rem] rounded-full bg-blue-500/10 blur-[100px]" />
+        <div className="pointer-events-none absolute left-[-6rem] top-[20%] h-[18rem] w-[18rem] transform-gpu rounded-full bg-violet-500/10 blur-[70px]" />
+        <div className="pointer-events-none absolute bottom-[10%] right-[-4rem] h-[16rem] w-[16rem] transform-gpu rounded-full bg-blue-500/10 blur-[70px]" />
         <div className="relative mx-auto max-w-[860px] text-center">
           <h2 className="font-[Georgia,Times,'Times_New_Roman',serif] text-[clamp(2rem,4vw,3.125rem)] leading-[1.04] tracking-[-0.04em] text-white">
             Bring Verly into your enterprise workflow with a clearer rollout path

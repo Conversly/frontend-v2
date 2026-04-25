@@ -56,6 +56,18 @@ const staticRoutes: MetadataRoute.Sitemap = [
     priority: 0.8,
   },
   {
+    url: `${siteConfig.url}/whatsapp`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  },
+  {
+    url: `${siteConfig.url}/web-chat`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  },
+  {
     url: `${siteConfig.url}/why-verly`,
     lastModified: new Date(),
     changeFrequency: "monthly",

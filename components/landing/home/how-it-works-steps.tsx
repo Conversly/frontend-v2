@@ -72,8 +72,8 @@ export default function HowItWorks() {
     >
       {/* Ambient gradient + grain */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_40%,#ffffff_100%)]" />
-      <div className="pointer-events-none absolute -left-24 top-32 h-[24rem] w-[24rem] rounded-full bg-[#dfecff] opacity-60 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-16 h-[22rem] w-[22rem] rounded-full bg-[#f2e7d0] opacity-50 blur-[120px]" />
+      <div className="pointer-events-none absolute -left-24 top-32 h-[24rem] w-[24rem] transform-gpu rounded-full bg-[#dfecff] opacity-60 blur-[80px]" />
+      <div className="pointer-events-none absolute -right-24 bottom-16 h-[22rem] w-[22rem] transform-gpu rounded-full bg-[#f2e7d0] opacity-50 blur-[80px]" />
 
       <div className="relative mx-auto w-[95%] max-w-[1200px] md:w-[88%]">
         <motion.div

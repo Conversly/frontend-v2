@@ -5,8 +5,8 @@ const ChatbotImage: React.FC = () => {
         <div className="hidden md:block md:flex-1 animate__animated animate__fadeInRight">
             <div className="relative">
                 {/* Abstract Chat Bubble Shapes */}
-                <div className="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 rounded-full filter blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 transform-gpu rounded-full filter blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/10 transform-gpu rounded-full filter blur-3xl"></div>
                 
                 {/* Chat Interface Mockup */}
                 <div className="relative bg-neutral-800/50 backdrop-blur-sm p-6 rounded-2xl border border-neutral-700 shadow-md">

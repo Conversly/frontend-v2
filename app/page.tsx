@@ -24,21 +24,21 @@ import StickyMobileCta from "@/components/landing/sticky-mobile-cta";
 export const metadata: Metadata = {
   title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
   description:
-    "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Verly answers 80% of tickets and hands the rest to your team with full context. Start free.",
+    "Deploy an AI support agent across voice, WhatsApp, and web chat. Branch your prompts, preview before you ship, roll back in one click. Live in 10 minutes. Start free.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
     description:
-      "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Answers 80% of tickets, hands off the rest with full context.",
+      "One agent for voice, WhatsApp, and web chat. Branch prompts, preview, roll back — without breaking a live conversation. Live in 10 minutes.",
     url: siteConfig.url,
     type: "website",
   },
   twitter: {
     title: "Verly — AI Customer Support for Voice, WhatsApp & Chat",
     description:
-      "Deploy an AI support agent across voice, WhatsApp, and web chat in under a day. Answers 80% of tickets, hands off the rest with full context.",
+      "One agent for voice, WhatsApp, and web chat. Branch prompts, preview, roll back — without breaking a live conversation. Live in 10 minutes.",
   },
 };
 

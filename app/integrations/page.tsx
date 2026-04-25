@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/metadata";
 export const metadata: Metadata = {
   title: "Integrations — Slack, HubSpot, Shopify, Zendesk & more",
   description:
-    "Verly plugs into the tools your team already uses — Slack, HubSpot, Salesforce, Shopify, Zendesk, Stripe, Notion, and 30+ more. Every conversation stays in sync.",
+    "Verly answers from your real systems — order data, CRM context, internal docs — without your team copy-pasting between tools. Slack, HubSpot, Shopify, Notion, and 30+ more.",
   alternates: { canonical: "/integrations" },
   openGraph: {
     title: "Integrations — Slack, HubSpot, Shopify, Zendesk & more",
@@ -127,9 +127,7 @@ export default function IntegrationsPage() {
             </span>
           </h1>
           <p className="mt-5 text-[17px] leading-[1.7] text-[#5d6b8b] md:text-[19px]">
-            Every support conversation touches five other systems — the CRM, the
-            inbox, the order database, the ticket queue. Verly plugs into them by
-            default so your team never has to alt-tab mid-conversation.
+            Your customer asks &ldquo;where&rsquo;s my order?&rdquo; — Verly checks Shopify and answers. They ask to reschedule — Verly opens Calendar and books. No copy-pasting between tabs. No agents asking the customer to repeat themselves. Just live answers from the systems your team already runs.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
